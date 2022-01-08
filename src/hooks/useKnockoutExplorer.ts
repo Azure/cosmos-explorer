@@ -1,3 +1,4 @@
+import { useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
@@ -16,14 +17,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken,
+  ResourceToken
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata,
+  getDatabaseAccountPropertiesFromMetadata
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -261,6 +262,8 @@ async function configurePortal(): Promise<Explorer> {
           }
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
+        } else if (event.data?.type === MessageTypes.CloseTab) {
+          useTabs.getState().closeTabsByComparator(tab => tab.tabId == event.data.data.tabId)
         }
       },
       false

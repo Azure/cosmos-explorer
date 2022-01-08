@@ -18,7 +18,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse,
+  IResponse
 } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
@@ -35,7 +35,7 @@ import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import {
   get as getWorkspace,
   listByDatabaseAccount,
-  start,
+  start
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -1096,7 +1096,7 @@ export default class Explorer {
 
     const terminalTabs: TerminalTab[] = useTabs
       .getState()
-      .getTabs(ViewModels.CollectionTabKind.Terminal, (tab) => tab.tabTitle() === title) as TerminalTab[];
+      .getTabs(ViewModels.CollectionTabKind.Terminal, (tab) => tab.tabTitle().startsWith(title)) as TerminalTab[];
 
     let index = 1;
     if (terminalTabs.length > 0) {
