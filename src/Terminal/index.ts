@@ -55,7 +55,7 @@ const initTerminal = async (props: TerminalProps) => {
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
-    await JupyterLabAppFactory.createTerminalApp(serverSettings, () => closeTab(props.tabId));
+    await new JupyterLabAppFactory(() => closeTab(props.tabId)).createTerminalApp(serverSettings);
     TelemetryProcessor.traceSuccess(Action.OpenTerminal, data, startTime);
   } catch (error) {
     TelemetryProcessor.traceFailure(Action.OpenTerminal, data, startTime);

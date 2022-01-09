@@ -7,15 +7,28 @@ import { Terminal } from "@jupyterlab/terminal";
 import { Panel, Widget } from "@phosphor/widgets";
 
 export class JupyterLabAppFactory {
-  public static async createTerminalApp(serverSettings: ServerConnection.ISettings, closeTab: () => void) {
+  private isTerminalClosed: boolean
+  private closeTab: () => void
+
+  constructor(closeTab: () => void) {
+    this.closeTab = closeTab;
+  }
+
+  public async createTerminalApp(serverSettings: ServerConnection.ISettings) {
     const manager = new TerminalManager({
       serverSettings: serverSettings,
     });
     const session = await manager.startNew();
     session.messageReceived.connect(async (terminalConnection: ITerminalConnection, message: IMessage) => {
       var content = message.content[0].toString();
-      if (message.type == "stdout" && content.indexOf("bye") != -1) {
-        closeTab();
+      console.log(content)
+      if (message.type == "stdout") {
+        //Close the terminal tab once the terminal closed messages are received
+        if (content.endsWith("bye\r\n") || (content.indexOf("Stopped") !== -1 && content.indexOf("mongo --host") !== -1)) {
+          this.isTerminalClosed = true
+        } else if (content.indexOf("cosmosuser@SandboxHost") != -1 && this.isTerminalClosed) {
+          this.closeTab();
+        }
       }
     }, this)
 
