@@ -529,7 +529,7 @@ export default class Collection implements ViewModels.Collection {
   };
 
   public onSchemaAnalyzerClick = async () => {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixFeatures) {
       await this.container.allocateContainer();
     }
     useSelectedNode.getState().setSelectedNode(this);

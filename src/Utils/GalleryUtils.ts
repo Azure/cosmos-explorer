@@ -228,7 +228,7 @@ export function downloadItem(
     undefined,
     "Download",
     async () => {
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         await container.allocateContainer();
       }
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;

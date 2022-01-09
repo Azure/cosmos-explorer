@@ -38,7 +38,8 @@ interface NotebookState {
   isAllocating: boolean;
   isRefreshed: boolean;
   containerStatus: ContainerInfo;
-  isPhoenix: boolean;
+  isPhoenixNotebooks: boolean;
+  isPhoenixFeatures: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -61,7 +62,8 @@ interface NotebookState {
   setIsRefreshed: (isAllocating: boolean) => void;
   setContainerStatus: (containerStatus: ContainerInfo) => void;
   getPhoenixStatus: () => Promise<void>;
-  setIsPhoenix: (isPhoenix: boolean) => void;
+  setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => void;
+  setIsPhoenixFeatures: (isPhoenixFeatures: boolean) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -96,7 +98,8 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     durationLeftInMinutes: undefined,
     notebookServerInfo: undefined,
   },
-  isPhoenix: undefined,
+  isPhoenixNotebooks: undefined,
+  isPhoenixFeatures: undefined,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -202,7 +205,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    const notebookFolderName = get().isPhoenix ? "Temporary Notebooks" : "My Notebooks";
+    const notebookFolderName = get().isPhoenixNotebooks ? "Temporary Notebooks" : "My Notebooks";
     set({ notebookFolderName });
     const myNotebooksContentRoot = {
       name: get().notebookFolderName,
@@ -299,14 +302,20 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   getPhoenixStatus: async () => {
-    if (get().isPhoenix === undefined) {
+    if (get().isPhoenixNotebooks === undefined || get().isPhoenixFeatures === undefined) {
       let isPhoenix = false;
-      if (userContext.features.phoenix) {
+      if (userContext.features.phoenixNotebooks || userContext.features.phoenixFeatures) {
         const phoenixClient = new PhoenixClient();
         isPhoenix = isPublicInternetAccessAllowed() && (await phoenixClient.isDbAcountWhitelisted());
       }
-      set({ isPhoenix });
+
+      const isPhoenixNotebooks = userContext.features.phoenixNotebooks && isPhoenix;
+      const isPhoenixFeatures = userContext.features.phoenixFeatures && isPhoenix;
+
+      set({ isPhoenixNotebooks: isPhoenixNotebooks });
+      set({ isPhoenixFeatures: isPhoenixFeatures });
     }
   },
-  setIsPhoenix: (isPhoenix: boolean) => set({ isPhoenix }),
+  setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => set({ isPhoenixNotebooks: isPhoenixNotebooks }),
+  setIsPhoenixFeatures: (isPhoenixFeatures: boolean) => set({ isPhoenixFeatures: isPhoenixFeatures }),
 }));

@@ -78,10 +78,10 @@ export function createStaticCommandBarButtons(
     if (container.notebookManager?.gitHubOAuthService) {
       notebookButtons.push(createManageGitHubAccountButton(container));
     }
-    if (useNotebook.getState().isPhoenix && configContext.isTerminalEnabled) {
+    if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
       notebookButtons.push(createOpenTerminalButton(container));
     }
-    if (selectedNodeState.isConnectedToContainer()) {
+    if (useNotebook.getState().isPhoenixNotebooks && selectedNodeState.isConnectedToContainer()) {
       notebookButtons.push(createNotebookWorkspaceResetButton(container));
     }
     if (
@@ -99,19 +99,21 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (!useNotebook.getState().isPhoenix) {
-        if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
+      if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
-        } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
-        } else {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
         }
+      } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
+        }
+      } else if (!useNotebook.getState().isPhoenixNotebooks) {
+        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
       }
       buttons.push(btn);
     });
   } else {
-    if (!isRunningOnNationalCloud() && useNotebook.getState().isPhoenix) {
+    if (!isRunningOnNationalCloud() && useNotebook.getState().isPhoenixNotebooks) {
       buttons.push(createDivider());
       buttons.push(createEnableNotebooksButton(container));
     }

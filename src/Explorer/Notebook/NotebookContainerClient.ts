@@ -149,7 +149,7 @@ export class NotebookContainerClient {
     }
 
     try {
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         const provisionData: IProvisionData = {
           cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
         };
