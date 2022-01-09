@@ -17,14 +17,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken
+  ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata
+  getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -70,16 +70,38 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 
 async function configureHosted(): Promise<Explorer> {
   const win = (window as unknown) as HostedExplorerChildFrame;
+  let explorer: Explorer;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
-    return configureHostedWithEncryptedToken(win.hostedConfig);
+    explorer = configureHostedWithEncryptedToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
-    return configureHostedWithResourceToken(win.hostedConfig);
+    explorer = configureHostedWithResourceToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
-    return configureHostedWithConnectionString(win.hostedConfig);
+    explorer = configureHostedWithConnectionString(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.AAD) {
-    return configureHostedWithAAD(win.hostedConfig);
+    explorer = await configureHostedWithAAD(win.hostedConfig);
+  } else {
+    throw new Error(`Unknown hosted config: ${win.hostedConfig}`);
   }
-  throw new Error(`Unknown hosted config: ${win.hostedConfig}`);
+
+  window.addEventListener(
+    "message",
+    (event) => {
+      if (isInvalidParentFrameOrigin(event)) {
+        return;
+      }
+
+      if (!shouldProcessMessage(event)) {
+        return;
+      }
+
+      if (event.data?.type === MessageTypes.CloseTab) {
+        useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data.data.tabId);
+      }
+    },
+    false
+  );
+
+  return explorer;
 }
 
 async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
@@ -263,7 +285,7 @@ async function configurePortal(): Promise<Explorer> {
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         } else if (event.data?.type === MessageTypes.CloseTab) {
-          useTabs.getState().closeTabsByComparator(tab => tab.tabId == event.data.data.tabId)
+          useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data.data.tabId);
         }
       },
       false
