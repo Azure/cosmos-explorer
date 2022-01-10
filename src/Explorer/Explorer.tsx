@@ -1096,7 +1096,7 @@ export default class Explorer {
 
     const terminalTabs: TerminalTab[] = useTabs
       .getState()
-      .getTabs(ViewModels.CollectionTabKind.Terminal, (tab) => tab.tabTitle() === title) as TerminalTab[];
+      .getTabs(ViewModels.CollectionTabKind.Terminal, (tab) => tab.tabTitle().startsWith(title)) as TerminalTab[];
 
     let index = 1;
     if (terminalTabs.length > 0) {
