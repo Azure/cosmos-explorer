@@ -75,7 +75,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
           selectedLocation.owner,
           selectedLocation.repo
         )} - ${selectedLocation.branch}`;
-      } else if (selectedLocation.type === "MyNotebooks" && useNotebook.getState().isPhoenix) {
+      } else if (selectedLocation.type === "MyNotebooks" && useNotebook.getState().isPhoenixNotebooks) {
         destination = useNotebook.getState().notebookFolderName;
       }
 
