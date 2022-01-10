@@ -95,7 +95,7 @@ async function configureHosted(): Promise<Explorer> {
       }
 
       if (event.data?.type === MessageTypes.CloseTab) {
-        useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data.data.tabId);
+        useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
       }
     },
     false
@@ -285,7 +285,7 @@ async function configurePortal(): Promise<Explorer> {
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         } else if (event.data?.type === MessageTypes.CloseTab) {
-          useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data.data.tabId);
+          useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
         }
       },
       false
