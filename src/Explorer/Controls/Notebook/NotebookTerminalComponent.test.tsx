@@ -55,6 +55,7 @@ describe("NotebookTerminalComponent", () => {
     const props: NotebookTerminalComponentProps = {
       databaseAccount: testAccount,
       notebookServerInfo: testNotebookServerInfo,
+      tabId: undefined,
     };
 
     const wrapper = shallow(<NotebookTerminalComponent {...props} />);
@@ -65,6 +66,7 @@ describe("NotebookTerminalComponent", () => {
     const props: NotebookTerminalComponentProps = {
       databaseAccount: testMongo32Account,
       notebookServerInfo: testMongoNotebookServerInfo,
+      tabId: undefined,
     };
 
     const wrapper = shallow(<NotebookTerminalComponent {...props} />);
@@ -75,6 +77,7 @@ describe("NotebookTerminalComponent", () => {
     const props: NotebookTerminalComponentProps = {
       databaseAccount: testMongo36Account,
       notebookServerInfo: testMongoNotebookServerInfo,
+      tabId: undefined,
     };
 
     const wrapper = shallow(<NotebookTerminalComponent {...props} />);
@@ -85,6 +88,7 @@ describe("NotebookTerminalComponent", () => {
     const props: NotebookTerminalComponentProps = {
       databaseAccount: testCassandraAccount,
       notebookServerInfo: testCassandraNotebookServerInfo,
+      tabId: undefined,
     };
 
     const wrapper = shallow(<NotebookTerminalComponent {...props} />);
