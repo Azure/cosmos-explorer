@@ -439,7 +439,7 @@ export default class Explorer {
       );
       return;
     }
-    const dialogContent = useNotebook.getState().isPhoenix
+    const dialogContent = useNotebook.getState().isPhoenixNotebooks
       ? "Notebooks saved in the temporary workspace will be deleted. Do you want to proceed?"
       : "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?";
 
@@ -516,7 +516,7 @@ export default class Explorer {
       TelemetryProcessor.traceStart(Action.PhoenixResetWorkspace, {
         dataExplorerArea: Areas.Notebook,
       });
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         useTabs.getState().closeAllNotebookTabs(true);
         connectionStatus = {
           status: ConnectionStatusType.Connecting,
@@ -530,7 +530,7 @@ export default class Explorer {
       if (!connectionInfo?.data?.notebookServerUrl) {
         throw new Error(`Reset Workspace: NotebookServerUrl is invalid!`);
       }
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         await this.setNotebookInfo(connectionInfo, connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
@@ -545,7 +545,7 @@ export default class Explorer {
         error: getErrorMessage(error),
         errorStack: getErrorStack(error),
       });
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         connectionStatus = {
           status: ConnectionStatusType.Failed,
         };
@@ -743,7 +743,7 @@ export default class Explorer {
     if (!notebookContentItem || !notebookContentItem.path) {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
-    if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenix) {
+    if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenixNotebooks) {
       await this.allocateContainer();
     }
 
@@ -967,7 +967,7 @@ export default class Explorer {
       handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
     }
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       if (isGithubTree) {
         await this.allocateContainer();
         parent = parent || this.resourceTree.myNotebooksContentRoot;
@@ -1056,7 +1056,7 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixFeatures) {
       await this.allocateContainer();
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
@@ -1197,7 +1197,7 @@ export default class Explorer {
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       await this.allocateContainer();
     } else if (!(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
       this._openSetupNotebooksPaneForQuickstart();
@@ -1231,7 +1231,7 @@ export default class Explorer {
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       useDialog.getState().showOkCancelModalDialog(
         Notebook.newNotebookUploadModalTitle,
         undefined,
@@ -1261,7 +1261,7 @@ export default class Explorer {
   }
 
   public getDownloadModalConent(fileName: string): JSX.Element {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       return (
         <>
           <p>{Notebook.galleryNotebookDownloadContent1}</p>
@@ -1285,16 +1285,18 @@ export default class Explorer {
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
-    const isNotebookEnabled = userContext.features.notebooksDownBanner || useNotebook.getState().isPhoenix;
+    const isNotebookEnabled = userContext.features.notebooksDownBanner || useNotebook.getState().isPhoenixNotebooks;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
-    useNotebook.getState().setIsShellEnabled(useNotebook.getState().isPhoenix && isPublicInternetAccessAllowed());
+    useNotebook
+      .getState()
+      .setIsShellEnabled(useNotebook.getState().isPhoenixFeatures && isPublicInternetAccessAllowed());
 
     TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
       isNotebookEnabled,
       dataExplorerArea: Constants.Areas.Notebook,
     });
 
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
     }
   }
