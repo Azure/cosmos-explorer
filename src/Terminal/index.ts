@@ -63,7 +63,10 @@ const initTerminal = async (props: TerminalProps) => {
 };
 
 const closeTab = (tabId: string): void => {
-  window.parent.postMessage({ type: MessageTypes.CloseTab, data: { tabId: tabId }, signature: "pcIframe" });
+  window.parent.postMessage(
+    { type: MessageTypes.CloseTab, data: { tabId: tabId }, signature: "pcIframe" },
+    window.document.referrer
+  );
 };
 
 const main = async (): Promise<void> => {

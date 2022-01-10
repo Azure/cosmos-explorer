@@ -2,24 +2,27 @@
  * JupyterLab applications based on jupyterLab components
  */
 import { ServerConnection, TerminalManager } from "@jupyterlab/services";
-import { IMessage, ITerminalConnection } from "@jupyterlab/services/lib/terminal/terminal";
+import { IMessage } from "@jupyterlab/services/lib/terminal/terminal";
 import { Terminal } from "@jupyterlab/terminal";
 import { Panel, Widget } from "@phosphor/widgets";
 import { userContext } from "UserContext";
 
 export class JupyterLabAppFactory {
-  private shouldCloseTerminalTab: boolean;
-  private closeTab: () => void;
-  private isShellClosed: (content: string) => boolean;
+  private isShellClosed: boolean;
+  private onShellExited: () => void;
+  private checkShellClosed: ((content: string | undefined) => boolean | undefined) | undefined;
 
   constructor(closeTab: () => void) {
-    this.closeTab = closeTab;
+    this.onShellExited = closeTab;
+    this.isShellClosed = false;
+    this.checkShellClosed = undefined;
+
     switch (userContext.apiType) {
       case "Mongo":
-        this.isShellClosed = JupyterLabAppFactory.isMongoShellClosed;
+        this.checkShellClosed = JupyterLabAppFactory.isMongoShellClosed;
         break;
       case "Cassandra":
-        this.isShellClosed = JupyterLabAppFactory.isCassandraShellClosed;
+        this.checkShellClosed = JupyterLabAppFactory.isCassandraShellClosed;
         break;
     }
   }
@@ -29,14 +32,14 @@ export class JupyterLabAppFactory {
       serverSettings: serverSettings,
     });
     const session = await manager.startNew();
-    session.messageReceived.connect(async (terminalConnection: ITerminalConnection, message: IMessage) => {
-      var content = message.content[0].toString();
-      if (message.type == "stdout" && this.isShellClosed) {
+    session.messageReceived.connect(async (_, message: IMessage) => {
+      const content = message.content && message.content[0]?.toString();
+      if (this.checkShellClosed && message.type == "stdout") {
         //Close the terminal tab once the shell closed messages are received
-        if (this.isShellClosed(content)) {
-          this.shouldCloseTerminalTab = true;
-        } else if (content.indexOf("cosmosuser@") != -1 && this.shouldCloseTerminalTab) {
-          this.closeTab();
+        if (this.checkShellClosed(content)) {
+          this.isShellClosed = true;
+        } else if (content?.includes("cosmosuser@") && this.isShellClosed) {
+          this.onShellExited();
         }
       }
     }, this);
@@ -69,11 +72,11 @@ export class JupyterLabAppFactory {
     });
   }
 
-  private static isMongoShellClosed(content: string) {
-    return content.endsWith("bye\r\n") || (content.indexOf("Stopped") !== -1 && content.indexOf("mongo --host") !== -1);
+  private static isMongoShellClosed(content: string | undefined) {
+    return content?.endsWith("bye\r\n") || (content?.includes("Stopped") && content?.includes("mongo --host"));
   }
 
-  private static isCassandraShellClosed(content: string) {
-    return content == "\r\n" || (content.indexOf("Stopped") !== -1 && content.indexOf("cqlsh") !== -1);
+  private static isCassandraShellClosed(content: string | undefined) {
+    return content == "\r\n" || (content?.includes("Stopped") && content?.includes("cqlsh"));
   }
 }
