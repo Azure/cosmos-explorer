@@ -9,8 +9,8 @@ import { userContext } from "UserContext";
 
 export class JupyterLabAppFactory {
   private isShellStarted: boolean;
-  private onShellExited: () => void;
   private checkShellStarted: ((content: string | undefined) => void) | undefined;
+  private onShellExited: () => void;
 
   private isShellExited(content: string | undefined) {
     return content?.includes("cosmosuser@");
@@ -21,7 +21,7 @@ export class JupyterLabAppFactory {
   }
 
   private isCassandraShellStarted(content: string | undefined) {
-    this.isShellStarted = content == "\r\n" || (content?.includes("Stopped") && content?.includes("cqlsh"));
+    this.isShellStarted = content?.includes("Connected to") && content?.includes("cqlsh");
   }
 
   constructor(closeTab: () => void) {
