@@ -8,21 +8,33 @@ import { Panel, Widget } from "@phosphor/widgets";
 import { userContext } from "UserContext";
 
 export class JupyterLabAppFactory {
-  private isShellClosed: boolean;
+  private isShellStarted: boolean;
   private onShellExited: () => void;
-  private checkShellClosed: ((content: string | undefined) => boolean | undefined) | undefined;
+  private checkShellStarted: ((content: string | undefined) => void) | undefined;
+
+  private isShellExited(content: string | undefined) {
+    return content?.includes("cosmosuser@");
+  }
+
+  private isMongoShellStarted(content: string | undefined) {
+    this.isShellStarted = content?.includes("MongoDB shell version");
+  }
+
+  private isCassandraShellStarted(content: string | undefined) {
+    this.isShellStarted = content == "\r\n" || (content?.includes("Stopped") && content?.includes("cqlsh"));
+  }
 
   constructor(closeTab: () => void) {
     this.onShellExited = closeTab;
-    this.isShellClosed = false;
-    this.checkShellClosed = undefined;
+    this.isShellStarted = false;
+    this.checkShellStarted = undefined;
 
     switch (userContext.apiType) {
       case "Mongo":
-        this.checkShellClosed = JupyterLabAppFactory.isMongoShellClosed;
+        this.checkShellStarted = this.isMongoShellStarted;
         break;
       case "Cassandra":
-        this.checkShellClosed = JupyterLabAppFactory.isCassandraShellClosed;
+        this.checkShellStarted = this.isCassandraShellStarted;
         break;
     }
   }
@@ -34,11 +46,12 @@ export class JupyterLabAppFactory {
     const session = await manager.startNew();
     session.messageReceived.connect(async (_, message: IMessage) => {
       const content = message.content && message.content[0]?.toString();
-      if (this.checkShellClosed && message.type == "stdout") {
+      console.log(content);
+      if (this.checkShellStarted && message.type == "stdout") {
         //Close the terminal tab once the shell closed messages are received
-        if (this.checkShellClosed(content)) {
-          this.isShellClosed = true;
-        } else if (content?.includes("cosmosuser@") && this.isShellClosed) {
+        if (!this.isShellStarted) {
+          this.checkShellStarted(content);
+        } else if (this.isShellExited(content)) {
           this.onShellExited();
         }
       }
@@ -70,13 +83,5 @@ export class JupyterLabAppFactory {
     window.addEventListener("unload", () => {
       panel.dispose();
     });
-  }
-
-  private static isMongoShellClosed(content: string | undefined) {
-    return content?.endsWith("bye\r\n") || (content?.includes("Stopped") && content?.includes("mongo --host"));
-  }
-
-  private static isCassandraShellClosed(content: string | undefined) {
-    return content == "\r\n" || (content?.includes("Stopped") && content?.includes("cqlsh"));
   }
 }
