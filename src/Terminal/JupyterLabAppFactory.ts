@@ -8,7 +8,7 @@ import { Panel, Widget } from "@phosphor/widgets";
 import { userContext } from "UserContext";
 
 export class JupyterLabAppFactory {
-  private isShellStarted: boolean;
+  private isShellStarted: boolean | undefined;
   private checkShellStarted: ((content: string | undefined) => void) | undefined;
   private onShellExited: () => void;
 
@@ -46,7 +46,7 @@ export class JupyterLabAppFactory {
     const session = await manager.startNew();
     session.messageReceived.connect(async (_, message: IMessage) => {
       const content = message.content && message.content[0]?.toString();
-      console.log(content);
+
       if (this.checkShellStarted && message.type == "stdout") {
         //Close the terminal tab once the shell closed messages are received
         if (!this.isShellStarted) {
