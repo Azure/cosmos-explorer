@@ -25,7 +25,6 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
-import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
@@ -271,10 +270,6 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
 
 function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
   if (configContext.platform === Platform.Emulator) {
-    return undefined;
-  }
-
-  if (isServerlessAccount()) {
     return undefined;
   }
 

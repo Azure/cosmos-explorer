@@ -887,10 +887,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    if (isServerlessAccount()) {
-      return false;
-    }
-
     switch (userContext.apiType) {
       case "SQL":
       case "Mongo":
