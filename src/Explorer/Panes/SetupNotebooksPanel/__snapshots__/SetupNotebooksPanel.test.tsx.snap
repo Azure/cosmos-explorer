@@ -1120,6 +1120,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                         "overflow": "hidden",
                         "padding": 0,
                         "position": "absolute",
+                        "whiteSpace": "nowrap",
                         "width": 1,
                       },
                       "splitButtonContainer": Array [
@@ -1732,7 +1733,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Complete setup"
-                    className="ms-Button ms-Button--primary btncreatecoll1 btnSetupQueries root-53"
+                    className="ms-Button ms-Button--primary btncreatecoll1 btnSetupQueries root-109"
                     data-is-focusable={true}
                     id="completeSetupBtn"
                     onClick={[Function]}
@@ -1744,14 +1745,14 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-54"
+                      className="ms-Button-flexContainer flexContainer-110"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-55"
+                        className="ms-Button-textContainer textContainer-111"
                       >
                         <span
-                          className="ms-Button-label label-57"
+                          className="ms-Button-label label-113"
                           id="id__0"
                           key="id__0"
                         >
