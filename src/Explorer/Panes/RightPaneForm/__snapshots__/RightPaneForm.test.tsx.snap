@@ -1115,7 +1115,6 @@ exports[`Right Pane Form should render Default properly 1`] = `
                         "overflow": "hidden",
                         "padding": 0,
                         "position": "absolute",
-                        "whiteSpace": "nowrap",
                         "width": 1,
                       },
                       "splitButtonContainer": Array [
@@ -1729,7 +1728,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Load"
-                    className="ms-Button ms-Button--primary root-109"
+                    className="ms-Button ms-Button--primary root-53"
                     data-is-focusable={true}
                     id="sidePanelOkButton"
                     onClick={[Function]}
@@ -1741,14 +1740,14 @@ exports[`Right Pane Form should render Default properly 1`] = `
                     type="submit"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-110"
+                      className="ms-Button-flexContainer flexContainer-54"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-111"
+                        className="ms-Button-textContainer textContainer-55"
                       >
                         <span
-                          className="ms-Button-label label-113"
+                          className="ms-Button-label label-57"
                           id="id__0"
                           key="id__0"
                         >
