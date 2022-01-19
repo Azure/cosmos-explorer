@@ -212,7 +212,12 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           </Text>
 
           <Stack horizontal>
-            <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} aria-label="maxRUDescription">
+            <Text
+              id="maxRU"
+              variant="small"
+              style={{ lineHeight: "20px", fontWeight: 600 }}
+              aria-label="Max request units per second"
+            >
               {isDatabase ? "Database" : getCollectionName()} Max RU/s
             </Text>
             <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
@@ -224,11 +229,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               fieldGroup: { width: 300, height: 27 },
               field: { fontSize: 12 },
             }}
-            onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
+            onChange={(_, newInput?: string) => onThroughputValueChange(newInput)}
             step={AutoPilotUtils.autoPilotIncrementStep}
             min={AutoPilotUtils.minAutoPilotThroughput}
             value={throughput.toString()}
-            aria-label="Max request units per second"
+            aria-labelledby="maxRU"
             required={true}
             errorMessage={throughputError}
           />
@@ -268,7 +273,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
                 fieldGroup: { width: 300, height: 27 },
                 field: { fontSize: 12 },
               }}
-              onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
+              onChange={(_, newInput?: string) => onThroughputValueChange(newInput)}
               step={100}
               min={SharedConstants.CollectionCreation.DefaultCollectionRUs400}
               max={userContext.isTryCosmosDBSubscription ? Constants.TryCosmosExperience.maxRU : Infinity}
