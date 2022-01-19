@@ -57,13 +57,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.subscriptions = [];
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     while (this.subscriptions.length) {
       this.subscriptions.pop().dispose();
     }
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     this.subscriptions.push(
       {
         dispose: useNotebook.subscribe(
@@ -131,13 +131,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     key={`${item.title}${item.description}`}
                     onClick={item.onClick}
                     onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-                    tabIndex={0}
-                    role="button"
                   >
-                    <img src={item.iconSrc} alt="" />
-                    <span className="oneLineContent" title={item.info}>
-                      {item.title}
-                    </span>
+                    <div className="commonTaskList" role="button" tabIndex={0}>
+                      <img src={item.iconSrc} alt="" />
+                      <span className="oneLineContent" title={item.info}>
+                        {item.title}
+                      </span>
+                    </div>
                   </li>
                 ))}
               </ul>
