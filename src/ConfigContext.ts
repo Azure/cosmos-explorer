@@ -125,14 +125,6 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
       const armAPIVersion = params.get("armAPIVersion") || "";
       updateConfigContext({ armAPIVersion });
     }
-    if (params.has("armEndpoint")) {
-      const ARM_ENDPOINT = params.get("armEndpoint") || "";
-      updateConfigContext({ ARM_ENDPOINT });
-    }
-    if (params.has("aadEndpoint")) {
-      const AAD_ENDPOINT = params.get("aadEndpoint") || "";
-      updateConfigContext({ AAD_ENDPOINT });
-    }
     if (params.has("platform")) {
       const platform = params.get("platform");
       switch (platform) {
@@ -152,3 +144,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
