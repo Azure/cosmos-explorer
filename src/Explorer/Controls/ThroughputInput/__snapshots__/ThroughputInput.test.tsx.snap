@@ -17,7 +17,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       horizontal={true}
     >
       <div
-        className="ms-Stack css-109"
+        className="ms-Stack css-53"
       >
         <span
           className="mandatoryStar"
@@ -38,7 +38,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         >
           <span
             aria-label="Throughput header"
-            className="css-110"
+            className="css-54"
             style={
               Object {
                 "fontWeight": 600,
@@ -335,7 +335,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 }
               >
                 <div
-                  className="ms-TooltipHost root-111"
+                  className="ms-TooltipHost root-55"
                   onBlurCapture={[Function]}
                   onFocusCapture={[Function]}
                   onKeyDown={[Function]}
@@ -630,7 +630,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     >
                       <i
                         aria-label="Info"
-                        className="panelInfoIcon root-114"
+                        className="panelInfoIcon root-57"
                         data-icon-name="Info"
                         role="img"
                         tabIndex={0}
@@ -651,7 +651,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       verticalAlign="center"
     >
       <div
-        className="ms-Stack css-115"
+        className="ms-Stack css-58"
       >
         <input
           aria-label="Autoscale mode"
@@ -693,7 +693,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       className="throughputInputSpacing"
     >
       <div
-        className="ms-Stack throughputInputSpacing css-116"
+        className="ms-Stack throughputInputSpacing css-59"
       >
         <Text
           aria-label="ruDescription"
@@ -702,7 +702,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         >
           <span
             aria-label="ruDescription"
-            className="css-110"
+            className="css-54"
           >
             Estimate your required RU/s with
              
@@ -992,7 +992,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               >
                 <a
                   aria-label="ruDescription"
-                  className="ms-Link root-117"
+                  className="ms-Link root-60"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
                   target="_blank"
@@ -1009,7 +1009,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           key=".0:$.1"
         >
           <div
-            className="ms-Stack css-109"
+            className="ms-Stack css-53"
           >
             <Text
               aria-label="maxRUDescription"
@@ -1024,7 +1024,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             >
               <span
                 aria-label="maxRUDescription"
-                className="css-110"
+                className="css-54"
                 style={
                   Object {
                     "fontWeight": 600,
@@ -1322,7 +1322,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     }
                   >
                     <div
-                      className="ms-TooltipHost root-111"
+                      className="ms-TooltipHost root-55"
                       onBlurCapture={[Function]}
                       onFocusCapture={[Function]}
                       onKeyDown={[Function]}
@@ -1617,7 +1617,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         >
                           <i
                             aria-label="Info"
-                            className="panelInfoIcon root-114"
+                            className="panelInfoIcon root-57"
                             data-icon-name="Info"
                             role="img"
                             tabIndex={0}
@@ -1943,17 +1943,17 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             value="4000"
           >
             <div
-              className="ms-TextField is-required root-119"
+              className="ms-TextField is-required root-62"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-120"
+                  className="ms-TextField-fieldGroup fieldGroup-63"
                 >
                   <input
                     aria-invalid={false}
-                    className="ms-TextField-field field-121"
+                    className="ms-TextField-field field-64"
                     id="TextField2"
                     min={4000}
                     onBlur={[Function]}
@@ -1975,7 +1975,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           variant="small"
         >
           <span
-            className="css-110"
+            className="css-54"
           >
             Your 
             container

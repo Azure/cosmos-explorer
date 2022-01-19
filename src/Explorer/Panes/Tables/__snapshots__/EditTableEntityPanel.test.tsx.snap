@@ -32,7 +32,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
           onClick={[Function]}
         >
           <div
-            className="ms-Stack addButtonEntiy css-109"
+            className="ms-Stack addButtonEntiy css-53"
             onClick={[Function]}
           >
             <StyledImageBase
@@ -323,7 +323,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                 width={16}
               >
                 <div
-                  className="ms-Image root-110"
+                  className="ms-Image root-54"
                   style={
                     Object {
                       "height": 30,
@@ -333,7 +333,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                 >
                   <img
                     alt="Add Entity"
-                    className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-111"
+                    className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-55"
                     key="fabricImage"
                     onError={[Function]}
                     onLoad={[Function]}
@@ -347,7 +347,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
               key=".0:$.1"
             >
               <span
-                className="addNewParamStyle css-112"
+                className="addNewParamStyle css-56"
               >
                 Add Property
               </span>
@@ -1458,7 +1458,6 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "overflow": "hidden",
                           "padding": 0,
                           "position": "absolute",
-                          "whiteSpace": "nowrap",
                           "width": 1,
                         },
                         "splitButtonContainer": Array [
@@ -2072,7 +2071,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                   >
                     <button
                       aria-label="Update"
-                      className="ms-Button ms-Button--primary root-113"
+                      className="ms-Button ms-Button--primary root-57"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2084,14 +2083,14 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-114"
+                        className="ms-Button-flexContainer flexContainer-58"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-115"
+                          className="ms-Button-textContainer textContainer-59"
                         >
                           <span
-                            className="ms-Button-label label-117"
+                            className="ms-Button-label label-61"
                             id="id__0"
                             key="id__0"
                           >
