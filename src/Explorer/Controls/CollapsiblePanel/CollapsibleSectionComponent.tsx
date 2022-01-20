@@ -49,7 +49,6 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
           onClick={this.toggleCollapsed}
           onKeyPress={this.onKeyPress}
           tabIndex={0}
-          aria-name="Advanced"
           role="button"
           aria-expanded={this.state.isExpanded}
         >
