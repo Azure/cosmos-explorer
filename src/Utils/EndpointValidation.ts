@@ -41,9 +41,7 @@ export const allowedArcadiaEndpoints: ReadonlyArray<string> = [];
 
 export const allowedArcadiaLivyDnsZones: ReadonlyArray<string> = [];
 
-export const allowedMongoBackendEndpoints: ReadonlyArray<string> = [
-  "https://localhost:1234"
-];
+export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
 
 export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [];
 
