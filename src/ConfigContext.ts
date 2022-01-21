@@ -8,7 +8,6 @@ import {
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
-  allowedJunoEndpoints,
   allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
   validateEndpoint,
@@ -169,12 +168,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.JUNO_ENDPOINT,
-      allowedJunoEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.JUNO_ENDPOINT, configContext.allowedJunoOrigins)) {
     delete newContext.JUNO_ENDPOINT;
   }
 

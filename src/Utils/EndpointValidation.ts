@@ -2,9 +2,16 @@ export function validateEndpoint(endpointToValidate: string | undefined, allowed
   if (!endpointToValidate) {
     return true;
   }
+
   const originToValidate: string = new URL(endpointToValidate).origin;
   const allowedOrigins: string[] = allowedEndpoints.map((allowedEndpoint) => new URL(allowedEndpoint).origin) || [];
-  return allowedOrigins.indexOf(originToValidate) >= 0;
+  const valid = allowedOrigins.indexOf(originToValidate) >= 0;
+
+  if (!valid) {
+    console.error(`${endpointToValidate} not allowed`);
+  }
+
+  return valid;
 }
 
 export const allowedArmEndpoints: ReadonlyArray<string> = [
@@ -15,6 +22,17 @@ export const allowedArmEndpoints: ReadonlyArray<string> = [
 
 export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.microsoftonline.com/"];
 
+export const allowedBackendEndpoints: ReadonlyArray<string> = [
+  "https://main.documentdb.ext.azure.com",
+  "https://localhost:12901",
+  "https://localhost:1234",
+];
+
+export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
+  "https://main.documentdb.ext.azure.com",
+  "https://localhost:12901",
+];
+
 export const allowedEmulatorEndpoints: ReadonlyArray<string> = [];
 
 export const allowedGraphEndpoints: ReadonlyArray<string> = [];
@@ -23,18 +41,12 @@ export const allowedArcadiaEndpoints: ReadonlyArray<string> = [];
 
 export const allowedArcadiaLivyDnsZones: ReadonlyArray<string> = [];
 
-export const allowedBackendEndpoints: ReadonlyArray<string> = [];
-
-export const allowedMongoBackendEndpoints: ReadonlyArray<string> = [];
-
-export const allowedJunoEndpoints: ReadonlyArray<string> = [];
+export const allowedMongoBackendEndpoints: ReadonlyArray<string> = [
+  "https://localhost:1234"
+];
 
 export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [];
 
 export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [];
-
-export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [];
-
-export const allowedPhoenixEndpoints: ReadonlyArray<string> = [];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
