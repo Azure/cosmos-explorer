@@ -1,4 +1,4 @@
-export function validateEndpoint(endpointToValidate: string, allowedEndpoints: ReadonlyArray<string>): boolean {
+export function validateEndpoint(endpointToValidate: string, allowedEndpoints: string[]): boolean {
     if (!endpointToValidate) {
         return true;
     }
