@@ -155,7 +155,7 @@ export class PhoenixClient {
   public static getPhoenixEndpoint(): string {
     const phoenixEndpoint =
       userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (validateEndpoint(phoenixEndpoint, configContext.allowedJunoOrigins)) {
+    if (!validateEndpoint(phoenixEndpoint, configContext.allowedJunoOrigins)) {
       const error = `${phoenixEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);

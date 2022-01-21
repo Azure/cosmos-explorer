@@ -485,7 +485,7 @@ export class JunoClient {
   // public for tests
   public static getJunoEndpoint(): string {
     const junoEndpoint = userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (validateEndpoint(junoEndpoint, configContext.allowedJunoOrigins)) {
+    if (!validateEndpoint(junoEndpoint, configContext.allowedJunoOrigins)) {
       const error = `${junoEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);
