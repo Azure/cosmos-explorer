@@ -1,5 +1,5 @@
 import ko from "knockout";
-import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import { validateEndpoint } from "Utils/EndpointValidation";
 import { GetGithubClientId } from "Utils/GitHubUtils";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
@@ -485,7 +485,7 @@ export class JunoClient {
   // public for tests
   public static getJunoEndpoint(): string {
     const junoEndpoint = userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (validateEndpoint(junoEndpoint, allowedJunoOrigins)) {
+    if (validateEndpoint(junoEndpoint, configContext.allowedJunoOrigins)) {
       const error = `${junoEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);
