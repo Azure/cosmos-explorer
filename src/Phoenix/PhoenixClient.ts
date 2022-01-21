@@ -1,9 +1,13 @@
 import promiseRetry, { AbortError } from "p-retry";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import { validateEndpoint } from "Utils/EndpointValidation";
 import {
   Areas,
-  ConnectionStatusType, ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook
+  ConnectionStatusType,
+  ContainerStatusType,
+  HttpHeaders,
+  HttpStatusCodes,
+  Notebook
 } from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
@@ -149,8 +153,9 @@ export class PhoenixClient {
   }
 
   public static getPhoenixEndpoint(): string {
-    const phoenixEndpoint = userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (validateEndpoint(phoenixEndpoint, allowedJunoOrigins)) {
+    const phoenixEndpoint =
+      userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
+    if (validateEndpoint(phoenixEndpoint, configContext.allowedJunoOrigins)) {
       const error = `${phoenixEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);
@@ -160,8 +165,9 @@ export class PhoenixClient {
   }
 
   public getPhoenixControlPlanePathPrefix(): string {
-    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts${userContext.databaseAccount.id
-      }`;
+    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts${
+      userContext.databaseAccount.id
+    }`;
   }
 
   private static getHeaders(): HeadersInit {

@@ -17,23 +17,6 @@ export const allowedAadEndpoints: ReadonlyArray<string> = [
     "https://login.microsoftonline.com/"
 ];
 
-export const allowedParentFrameOrigins: ReadonlyArray<string> = [
-    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
-    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
-    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
-];
-
-export const allowedJunoOrigins: ReadonlyArray<string> = [
-    "https://juno-test.documents-dev.windows-int.net",
-    "https://juno-test2.documents-dev.windows-int.net",
-    "https://tools.cosmos.azure.com",
-    "https://tools-staging.cosmos.azure.com",
-    "https://localhost",
-];
-
 export const allowedEmulatorEndpoints: ReadonlyArray<string> = [
 ];
 

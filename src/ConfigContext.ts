@@ -1,3 +1,4 @@
+import { JunoEndpoints } from "Common/Constants";
 import { allowedAadEndpoints, allowedArcadiaEndpoints, allowedArcadiaLivyDnsZones, allowedArmEndpoints, allowedBackendEndpoints, allowedEmulatorEndpoints, allowedGraphEndpoints, allowedHostedExplorerEndpoints, allowedJunoEndpoints, allowedMongoBackendEndpoints, allowedMsalRedirectEndpoints, validateEndpoint } from "Utils/EndpointValidation";
 
 export enum Platform {
@@ -8,6 +9,7 @@ export enum Platform {
 
 export interface ConfigContext {
   platform: Platform;
+  allowedParentFrameOrigins: string[];
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -29,12 +31,21 @@ export interface ConfigContext {
   isTerminalEnabled: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
+  allowedJunoOrigins: string[];
   msalRedirectURI?: string;
 }
 
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
+  allowedParentFrameOrigins: [
+    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
+    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
+    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
+  ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -51,6 +62,14 @@ let configContext: Readonly<ConfigContext> = {
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   isTerminalEnabled: false,
+  allowedJunoOrigins: [
+    JunoEndpoints.Test,
+    JunoEndpoints.Test2,
+    JunoEndpoints.Test3,
+    JunoEndpoints.Prod,
+    JunoEndpoints.Stage,
+    "https://localhost",
+  ],
 };
 
 export function resetConfigContext(): void {
@@ -149,28 +168,20 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
         console.error(error);
       }
     }
-
     // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
     if (params.has("armAPIVersion")) {
       const armAPIVersion = params.get("armAPIVersion") || "";
       updateConfigContext({ armAPIVersion });
     }
-
     if (params.has("armEndpoint")) {
       const ARM_ENDPOINT = params.get("armEndpoint") || "";
-      if (validateEndpoint(ARM_ENDPOINT, configContext.validArmEndpoints)) {
-        updateConfigContext({ ARM_ENDPOINT });
-      }
+      updateConfigContext({ ARM_ENDPOINT });
     }
-
     if (params.has("aadEndpoint")) {
       const AAD_ENDPOINT = params.get("aadEndpoint") || "";
-      if (validateEndpoint(AAD_ENDPOINT, configContext.validAadEndpoints)) {
-        updateConfigContext({ AAD_ENDPOINT });
-      }
+      updateConfigContext({ AAD_ENDPOINT });
     }
-
     if (params.has("platform")) {
       const platform = params.get("platform");
       switch (platform) {
