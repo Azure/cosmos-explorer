@@ -1,5 +1,5 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
-import { NotebookUtil } from "Explorer/Notebook/NotebookUtil";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
@@ -529,7 +529,7 @@ export default class Collection implements ViewModels.Collection {
   };
 
   public onSchemaAnalyzerClick = async () => {
-    if (NotebookUtil.isPhoenixEnabled()) {
+    if (useNotebook.getState().isPhoenixFeatures) {
       await this.container.allocateContainer();
     }
     useSelectedNode.getState().setSelectedNode(this);
@@ -576,7 +576,8 @@ export default class Collection implements ViewModels.Collection {
 
   public onSettingsClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
-    await this.loadOffer();
+    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    throughputCap && throughputCap !== -1 ? await useDatabases.getState().loadAllOffers() : await this.loadOffer();
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",

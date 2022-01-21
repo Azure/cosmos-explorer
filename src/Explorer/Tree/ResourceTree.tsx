@@ -121,7 +121,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       children: [],
     };
 
-    if (userContext.features.notebooksTemporarilyDown) {
+    if (!useNotebook.getState().isPhoenixNotebooks) {
       notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
     } else {
       if (galleryContentRoot) {
@@ -130,9 +130,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
       if (
         myNotebooksContentRoot &&
-        ((NotebookUtil.isPhoenixEnabled() &&
-          useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected) ||
-          userContext.features.phoenix === false)
+        useNotebook.getState().isPhoenixNotebooks &&
+        useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected
       ) {
         notebooksTree.children.push(buildMyNotebooksTree());
       }
@@ -166,15 +165,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     const myNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       myNotebooksContentRoot,
       (item: NotebookContentItem) => {
-        container.openNotebook(item).then((hasOpened) => {
-          if (
-            hasOpened &&
-            userContext.features.notebooksTemporarilyDown === false &&
-            userContext.features.phoenix === false
-          ) {
-            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
-          }
-        });
+        container.openNotebook(item);
       }
     );
 
@@ -189,15 +180,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     const gitHubNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
-        container.openNotebook(item).then((hasOpened) => {
-          if (
-            hasOpened &&
-            userContext.features.notebooksTemporarilyDown === false &&
-            userContext.features.phoenix === false
-          ) {
-            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
-          }
-        });
+        container.openNotebook(item);
       },
       true
     );
@@ -397,6 +380,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
     ];
 
+    //disallow renaming of temporary notebook workspace
+    if (item?.path === useNotebook.getState().notebookBasePath) {
+      items = items.filter((item) => item.label !== "Rename");
+    }
+
     // For GitHub paths remove "Delete", "Rename", "New Directory", "Upload File"
     if (GitHubUtils.fromContentUri(item.path)) {
       items = items.filter(
@@ -528,7 +516,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       isNotebookEnabled &&
       userContext.apiType === "Mongo" &&
       isPublicInternetAccessAllowed() &&
-      !userContext.features.notebooksTemporarilyDown
+      useNotebook.getState().isPhoenixFeatures
     ) {
       children.push({
         label: "Schema (Preview)",

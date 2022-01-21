@@ -25,7 +25,6 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
-import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
@@ -78,9 +77,12 @@ export function createStaticCommandBarButtons(
     if (container.notebookManager?.gitHubOAuthService) {
       notebookButtons.push(createManageGitHubAccountButton(container));
     }
-
-    notebookButtons.push(createOpenTerminalButton(container));
-    notebookButtons.push(createNotebookWorkspaceResetButton(container));
+    if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
+      notebookButtons.push(createOpenTerminalButton(container));
+    }
+    if (useNotebook.getState().isPhoenixNotebooks && selectedNodeState.isConnectedToContainer()) {
+      notebookButtons.push(createNotebookWorkspaceResetButton(container));
+    }
     if (
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
@@ -96,19 +98,21 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (userContext.features.notebooksTemporarilyDown) {
-        if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
+      if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
-        } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
-        } else {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
         }
+      } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
+        }
+      } else if (!useNotebook.getState().isPhoenixNotebooks) {
+        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
       }
       buttons.push(btn);
     });
   } else {
-    if (!isRunningOnNationalCloud() && !userContext.features.notebooksTemporarilyDown) {
+    if (!isRunningOnNationalCloud() && useNotebook.getState().isPhoenixNotebooks) {
       buttons.push(createDivider());
       buttons.push(createEnableNotebooksButton(container));
     }
@@ -166,9 +170,7 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          if (!userContext.features.notebooksTemporarilyDown) {
-            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
-          }
+          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
@@ -176,13 +178,6 @@ export function createContextCommandBarButtons(
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      tooltipText:
-        useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown
-          ? Constants.Notebook.mongoShellTemporarilyDownMsg
-          : undefined,
-      disabled:
-        (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
-        (useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown),
     };
     buttons.push(newMongoShellBtn);
   }
@@ -278,10 +273,6 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     return undefined;
   }
 
-  if (isServerlessAccount()) {
-    return undefined;
-  }
-
   if (userContext?.databaseAccount?.properties?.enableAnalyticalStorage) {
     return undefined;
   }
@@ -308,8 +299,13 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
-    onCommandClick: () =>
-      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
+    onCommandClick: async () => {
+      const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+      if (throughputCap && throughputCap !== -1) {
+        await useDatabases.getState().loadAllOffers();
+      }
+      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />);
+    },
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

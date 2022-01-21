@@ -10,7 +10,6 @@ import {
   SortBy,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
-import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -229,7 +228,7 @@ export function downloadItem(
     undefined,
     "Download",
     async () => {
-      if (NotebookUtil.isPhoenixEnabled()) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         await container.allocateContainer();
       }
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;

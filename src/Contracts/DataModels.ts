@@ -27,6 +27,7 @@ export interface DatabaseAccountExtendedProperties {
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
   capacity?: { totalThroughputLimit: number };
+  locations?: DatabaseAccountResponseLocation[];
 }
 
 export interface DatabaseAccountResponseLocation {
@@ -437,15 +438,10 @@ export interface ContainerInfo {
 }
 
 export interface IProvisionData {
-  aadToken: string;
-  subscriptionId: string;
-  resourceGroup: string;
-  dbAccountName: string;
   cosmosEndpoint: string;
 }
 
 export interface IContainerData {
-  dbAccountName: string;
   forwardingId: string;
 }
 

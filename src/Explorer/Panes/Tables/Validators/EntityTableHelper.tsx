@@ -24,6 +24,7 @@ const {
   Ascii,
   Bigint,
   Blob,
+  Date: DateType,
   Decimal,
   Float,
   Int,
@@ -33,6 +34,7 @@ const {
   Inet,
   Smallint,
   Tinyint,
+  Timestamp,
 } = TableConstants.CassandraType;
 export const cassandraOptions = [
   { key: Text, text: Text },
@@ -40,6 +42,7 @@ export const cassandraOptions = [
   { key: Bigint, text: Bigint },
   { key: Blob, text: Blob },
   { key: Boolean, text: Boolean },
+  { key: DateType, text: DateType },
   { key: Decimal, text: Decimal },
   { key: Double, text: Double },
   { key: Float, text: Float },
@@ -50,6 +53,7 @@ export const cassandraOptions = [
   { key: Inet, text: Inet },
   { key: Smallint, text: Smallint },
   { key: Tinyint, text: Tinyint },
+  { key: Timestamp, text: Timestamp },
 ];
 
 export const imageProps: IImageProps = {

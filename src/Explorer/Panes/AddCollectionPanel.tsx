@@ -279,7 +279,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
-                {`${getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
+                {`${getCollectionName()} id`}
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
@@ -667,7 +667,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
                 {userContext.apiType === "SQL" && (
                   <Checkbox
-                    label="My partition key is larger than 100 bytes"
+                    label="My partition key is larger than 101 bytes"
                     checked={this.state.useHashV2}
                     styles={{
                       text: { fontSize: 12 },
@@ -884,10 +884,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   private shouldShowAnalyticalStoreOptions(): boolean {
     if (configContext.platform === Platform.Emulator) {
-      return false;
-    }
-
-    if (isServerlessAccount()) {
       return false;
     }
 

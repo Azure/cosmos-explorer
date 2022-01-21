@@ -55,7 +55,7 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
       <Stack horizontal>
         <Dropdown
           label={dropdownLabel && dropdownLabel}
-          selectedKey={selectedKey}
+          defaultSelectedKey={selectedKey}
           onChange={onParamKeyChange}
           options={options}
           styles={dropdownStyles}
@@ -64,8 +64,9 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
         <TextField
           label={inputLabel && inputLabel}
           id="confirmCollectionId"
-          value={paramValue}
+          defaultValue={paramValue}
           onChange={onParamValueChange}
+          tabIndex={0}
         />
         {isAddRemoveVisible && (
           <>

@@ -25,6 +25,7 @@ export const OpenFullScreen: React.FunctionComponent = () => {
         <TextField label="Read and Write" readOnly defaultValue={readWriteUrl} />
         <Stack horizontal tokens={{ childrenGap: 10 }}>
           <DefaultButton
+            ariaLabel={isReadWriteUrlCopy ? "Copied url" : "Copy"}
             onClick={() => {
               copyToClipboard(readWriteUrl);
               setIsReadWriteUrlCopy(true);
@@ -43,6 +44,7 @@ export const OpenFullScreen: React.FunctionComponent = () => {
         <TextField label="Read Only" readOnly defaultValue={readUrl} />
         <Stack horizontal tokens={{ childrenGap: 10 }}>
           <DefaultButton
+            ariaLabel={isReadUrlCopy ? "Copied url" : "Copy"}
             onClick={() => {
               setIsReadUrlCopy(true);
               copyToClipboard(readUrl);

@@ -12,6 +12,7 @@ import * as StringUtils from "../../../Utils/StringUtils";
 export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
   databaseAccount: DataModels.DatabaseAccount;
+  tabId: string;
 }
 
 export class NotebookTerminalComponent extends React.Component<NotebookTerminalComponentProps> {
@@ -55,6 +56,7 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       apiType: userContext.apiType,
       authType: userContext.authType,
       databaseAccount: userContext.databaseAccount,
+      tabId: this.props.tabId,
     };
 
     postRobot.send(this.terminalWindow, "props", props, {

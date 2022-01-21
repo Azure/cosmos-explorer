@@ -364,13 +364,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   public onTabClick(): void {
-    setTimeout(() => {
-      if (!this.isCloseClicked) {
-        useCommandBar.getState().setContextButtons(this.getTabsButtons());
-      } else {
-        this.isCloseClicked = false;
-      }
-    }, 0);
+    if (!this.isCloseClicked) {
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    } else {
+      this.isCloseClicked = false;
+    }
   }
 
   public onExecuteQueryClick = async (): Promise<void> => {
@@ -875,9 +873,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  render(): JSX.Element {
+  componentDidMount(): void {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
+  }
 
+  render(): JSX.Element {
     return (
       <Fragment>
         <div className="tab-pane" id={this.props.tabId} role="tabpanel">

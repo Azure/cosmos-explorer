@@ -84,9 +84,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
     let recentItems = this.createRecentItems();
-    if (userContext.features.notebooksTemporarilyDown) {
-      recentItems = recentItems.filter((item) => item.description !== "Notebook");
-    }
+    recentItems = recentItems.filter((item) => item.description !== "Notebook");
 
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
@@ -223,7 +221,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (useNotebook.getState().isNotebookEnabled && !userContext.features.notebooksTemporarilyDown) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
@@ -307,10 +305,18 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: AddDatabaseIcon,
         title: "New " + getDatabaseName(),
         description: undefined,
-        onClick: () =>
+        onClick: async () => {
+          const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+          if (throughputCap && throughputCap !== -1) {
+            await useDatabases.getState().loadAllOffers();
+          }
           useSidePanel
             .getState()
-            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
+            .openSidePanel(
+              "New " + getDatabaseName(),
+              <AddDatabasePanel explorer={this.container} buttonElement={document.activeElement as HTMLElement} />
+            );
+        },
       });
     }
 

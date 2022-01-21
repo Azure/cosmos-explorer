@@ -14,32 +14,59 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart pageOptionsPart"
+        className="settingsSectionPart"
       >
-        <div
-          className="settingsSectionLabel"
-        >
-          Page options
+        <fieldset>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="pageOptions"
+          >
+            Page Options
+          </legend>
           <InfoTooltip>
             Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
           </InfoTooltip>
-        </div>
-        <StyledChoiceGroup
-          onChange={[Function]}
-          options={
-            Array [
+          <StyledChoiceGroup
+            ariaLabelledBy="pageOptions"
+            onChange={[Function]}
+            options={
+              Array [
+                Object {
+                  "key": "custom",
+                  "text": "Custom",
+                },
+                Object {
+                  "key": "unlimited",
+                  "text": "Unlimited",
+                },
+              ]
+            }
+            selectedKey="custom"
+            styles={
               Object {
-                "key": "custom",
-                "text": "Custom",
-              },
-              Object {
-                "key": "unlimited",
-                "text": "Unlimited",
-              },
-            ]
-          }
-          selectedKey="custom"
-        />
+                "flexContainer": Array [
+                  Object {
+                    "selectors": Object {
+                      ".ms-ChoiceField": Object {
+                        "marginTop": 0,
+                      },
+                      ".ms-ChoiceField-wrapper label": Object {
+                        "fontSize": 12,
+                        "paddingTop": 0,
+                      },
+                      ".ms-ChoiceFieldGroup root-133": Object {
+                        "clear": "both",
+                      },
+                    },
+                  },
+                ],
+                "root": Object {
+                  "clear": "both",
+                },
+              }
+            }
+          />
+        </fieldset>
       </div>
       <div
         className="tabs settingsSectionPart"

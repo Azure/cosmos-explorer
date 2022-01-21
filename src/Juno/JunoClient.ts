@@ -1,7 +1,8 @@
 import ko from "knockout";
-import { validateEndpoint } from "Utils/EndpointValidation";
+import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import { GetGithubClientId } from "Utils/GitHubUtils";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
-import { allowedJunoOrigins, configContext } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { IGitHubResponse } from "../GitHub/GitHubClient";
@@ -523,7 +524,7 @@ export class JunoClient {
 
   private static getGitHubClientParams(): URLSearchParams {
     const githubParams = new URLSearchParams({
-      client_id: configContext.GITHUB_CLIENT_ID,
+      client_id: GetGithubClientId(),
     });
 
     if (configContext.GITHUB_CLIENT_SECRET) {

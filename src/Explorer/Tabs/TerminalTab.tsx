@@ -25,7 +25,8 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
   public parameters: ko.Computed<boolean>;
   constructor(
     private getNotebookServerInfo: () => DataModels.NotebookWorkspaceConnectionInfo,
-    private getDatabaseAccount: () => DataModels.DatabaseAccount
+    private getDatabaseAccount: () => DataModels.DatabaseAccount,
+    private getTabId: () => string
   ) {}
 
   public renderComponent(): JSX.Element {
@@ -33,6 +34,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
       <NotebookTerminalComponent
         notebookServerInfo={this.getNotebookServerInfo()}
         databaseAccount={this.getDatabaseAccount()}
+        tabId={this.getTabId()}
       />
     ) : (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
@@ -50,7 +52,8 @@ export default class TerminalTab extends TabsBase {
     this.container = options.container;
     this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
       () => this.getNotebookServerInfo(options),
-      () => userContext?.databaseAccount
+      () => userContext?.databaseAccount,
+      () => this.tabId
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
       if (

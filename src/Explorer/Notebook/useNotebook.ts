@@ -1,4 +1,6 @@
+import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { cloneDeep } from "lodash";
+import { PhoenixClient } from "Phoenix/PhoenixClient";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
@@ -17,7 +19,6 @@ import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
-import { NotebookUtil } from "./NotebookUtil";
 
 interface NotebookState {
   isNotebookEnabled: boolean;
@@ -37,6 +38,8 @@ interface NotebookState {
   isAllocating: boolean;
   isRefreshed: boolean;
   containerStatus: ContainerInfo;
+  isPhoenixNotebooks: boolean;
+  isPhoenixFeatures: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -58,6 +61,9 @@ interface NotebookState {
   resetContainerConnection: (connectionStatus: ContainerConnectionInfo) => void;
   setIsRefreshed: (isAllocating: boolean) => void;
   setContainerStatus: (containerStatus: ContainerInfo) => void;
+  getPhoenixStatus: () => Promise<void>;
+  setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => void;
+  setIsPhoenixFeatures: (isPhoenixFeatures: boolean) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -92,6 +98,8 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     durationLeftInMinutes: undefined,
     notebookServerInfo: undefined,
   },
+  isPhoenixNotebooks: undefined,
+  isPhoenixFeatures: undefined,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -104,6 +112,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setNotebookBasePath: (notebookBasePath: string) => set({ notebookBasePath }),
   setNotebookFolderName: (notebookFolderName: string) => set({ notebookFolderName }),
   refreshNotebooksEnabledStateForAccount: async (): Promise<void> => {
+    await get().getPhoenixStatus();
     const { databaseAccount, authType } = userContext;
     if (
       authType === AuthType.EncryptedToken ||
@@ -196,7 +205,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    const notebookFolderName = NotebookUtil.isPhoenixEnabled() === true ? "Temporary Notebooks" : "My Notebooks";
+    const notebookFolderName = get().isPhoenixNotebooks ? "Temporary Notebooks" : "My Notebooks";
     set({ notebookFolderName });
     const myNotebooksContentRoot = {
       name: get().notebookFolderName,
@@ -292,4 +301,21 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
+  getPhoenixStatus: async () => {
+    if (get().isPhoenixNotebooks === undefined || get().isPhoenixFeatures === undefined) {
+      let isPhoenix = false;
+      if (userContext.features.phoenixNotebooks || userContext.features.phoenixFeatures) {
+        const phoenixClient = new PhoenixClient();
+        isPhoenix = isPublicInternetAccessAllowed() && (await phoenixClient.isDbAcountWhitelisted());
+      }
+
+      const isPhoenixNotebooks = userContext.features.phoenixNotebooks && isPhoenix;
+      const isPhoenixFeatures = userContext.features.phoenixFeatures && isPhoenix;
+
+      set({ isPhoenixNotebooks: isPhoenixNotebooks });
+      set({ isPhoenixFeatures: isPhoenixFeatures });
+    }
+  },
+  setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => set({ isPhoenixNotebooks: isPhoenixNotebooks }),
+  setIsPhoenixFeatures: (isPhoenixFeatures: boolean) => set({ isPhoenixFeatures: isPhoenixFeatures }),
 }));

@@ -3,14 +3,19 @@ import { AppState, selectors } from "@nteract/core";
 import domtoimage from "dom-to-image";
 import Html2Canvas from "html2canvas";
 import path from "path";
-import { userContext } from "../../UserContext";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as StringUtils from "../../Utils/StringUtils";
+import * as InMemoryContentProviderUtils from "../Notebook/NotebookComponent/ContentProviders/InMemoryContentProviderUtils";
 import { SnapshotFragment } from "./NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";
+export enum NotebookContentProviderType {
+  GitHubContentProviderType,
+  InMemoryContentProviderType,
+  JupyterContentProviderType,
+}
 // Utilities for notebooks
 export class NotebookUtil {
   public static UntrustedNotebookRunHint = "Please trust notebook first before running any code cells";
@@ -125,6 +130,18 @@ export class NotebookUtil {
     }
 
     return relativePath.split("/").pop();
+  }
+
+  public static getContentProviderType(path: string): NotebookContentProviderType {
+    if (InMemoryContentProviderUtils.fromContentUri(path)) {
+      return NotebookContentProviderType.InMemoryContentProviderType;
+    }
+
+    if (GitHubUtils.fromContentUri(path)) {
+      return NotebookContentProviderType.GitHubContentProviderType;
+    }
+
+    return NotebookContentProviderType.JupyterContentProviderType;
   }
 
   public static replaceName(path: string, newName: string): string {
@@ -328,17 +345,5 @@ export class NotebookUtil {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
-
-  public static getNotebookBtnTitle(fileName: string): string {
-    if (this.isPhoenixEnabled()) {
-      return `Download to ${fileName}`;
-    } else {
-      return `Download to my notebooks`;
-    }
-  }
-
-  public static isPhoenixEnabled(): boolean {
-    return userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true;
   }
 }

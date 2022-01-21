@@ -13,7 +13,13 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isTabsContentExpanded": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
-      "phoenixClient": PhoenixClient {},
+      "phoenixClient": PhoenixClient {
+        "retryOptions": Object {
+          "maxTimeout": 5000,
+          "minTimeout": 5000,
+          "retries": 3,
+        },
+      },
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
         "container": [Circular],
