@@ -1,13 +1,14 @@
+import { validateEndpoint } from "Utils/EndpointValidation";
 import { ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { configContext } from "../ConfigContext";
+import { allowedJunoOrigins, configContext } from "../ConfigContext";
 import {
   ContainerInfo,
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse,
+  IResponse
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
@@ -103,9 +104,8 @@ export class PhoenixClient {
   }
 
   public static getPhoenixEndpoint(): string {
-    const phoenixEndpoint =
-      userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (configContext.allowedJunoOrigins.indexOf(new URL(phoenixEndpoint).origin) === -1) {
+    const phoenixEndpoint = userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
+    if (validateEndpoint(phoenixEndpoint, allowedJunoOrigins)) {
       const error = `${phoenixEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);

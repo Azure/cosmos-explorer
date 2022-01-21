@@ -1,3 +1,5 @@
+import { allowedAadEndpoints, allowedArcadiaEndpoints, allowedArcadiaLivyDnsZones, allowedArmEndpoints, allowedBackendEndpoints, allowedEmulatorEndpoints, allowedGraphEndpoints, allowedHostedExplorerEndpoints, allowedJunoEndpoints, allowedMongoBackendEndpoints, allowedMsalRedirectEndpoints, validateEndpoint } from "Utils/EndpointValidation";
+
 export enum Platform {
   Portal = "Portal",
   Hosted = "Hosted",
@@ -6,7 +8,6 @@ export enum Platform {
 
 export interface ConfigContext {
   platform: Platform;
-  allowedParentFrameOrigins: string[];
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -26,21 +27,12 @@ export interface ConfigContext {
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   hostedExplorerURL: string;
   armAPIVersion?: string;
-  allowedJunoOrigins: string[];
   msalRedirectURI?: string;
 }
 
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
-  allowedParentFrameOrigins: [
-    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
-    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
-    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
-  ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -55,13 +47,6 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-  allowedJunoOrigins: [
-    "https://juno-test.documents-dev.windows-int.net",
-    "https://juno-test2.documents-dev.windows-int.net",
-    "https://tools.cosmos.azure.com",
-    "https://tools-staging.cosmos.azure.com",
-    "https://localhost",
-  ],
 };
 
 export function resetConfigContext(): void {
@@ -72,6 +57,54 @@ export function resetConfigContext(): void {
 }
 
 export function updateConfigContext(newContext: Partial<ConfigContext>): void {
+  if (!newContext) {
+    return;
+  }
+
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, allowedArmEndpoints)) {
+    delete newContext.ARM_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.AAD_ENDPOINT, allowedAadEndpoints)) {
+    delete newContext.AAD_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.EMULATOR_ENDPOINT, allowedEmulatorEndpoints)) {
+    delete newContext.EMULATOR_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, allowedGraphEndpoints)) {
+    delete newContext.GRAPH_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.ARCADIA_ENDPOINT, allowedArcadiaEndpoints)) {
+    delete newContext.ARCADIA_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE, allowedArcadiaLivyDnsZones)) {
+    delete newContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE;
+  }
+
+  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, allowedBackendEndpoints)) {
+    delete newContext.BACKEND_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.MONGO_BACKEND_ENDPOINT, allowedMongoBackendEndpoints)) {
+    delete newContext.MONGO_BACKEND_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoEndpoints)) {
+    delete newContext.JUNO_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.hostedExplorerURL, allowedHostedExplorerEndpoints)) {
+    delete newContext.hostedExplorerURL;
+  }
+
+  if (!validateEndpoint(newContext.msalRedirectURI, allowedMsalRedirectEndpoints)) {
+    delete newContext.msalRedirectURI;
+  }
+
   Object.assign(configContext, newContext);
 }
 
@@ -112,20 +145,28 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
         console.error(error);
       }
     }
+
     // Allow override of platform value with URL query parameter
     const params = new URLSearchParams(window.location.search);
     if (params.has("armAPIVersion")) {
       const armAPIVersion = params.get("armAPIVersion") || "";
       updateConfigContext({ armAPIVersion });
     }
+
     if (params.has("armEndpoint")) {
       const ARM_ENDPOINT = params.get("armEndpoint") || "";
-      updateConfigContext({ ARM_ENDPOINT });
+      if (validateEndpoint(ARM_ENDPOINT, configContext.validArmEndpoints)) {
+        updateConfigContext({ ARM_ENDPOINT });
+      }
     }
+
     if (params.has("aadEndpoint")) {
       const AAD_ENDPOINT = params.get("aadEndpoint") || "";
-      updateConfigContext({ AAD_ENDPOINT });
+      if (validateEndpoint(AAD_ENDPOINT, configContext.validAadEndpoints)) {
+        updateConfigContext({ AAD_ENDPOINT });
+      }
     }
+
     if (params.has("platform")) {
       const platform = params.get("platform");
       switch (platform) {
@@ -145,3 +186,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+

@@ -1,7 +1,8 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import queryString from "querystring";
+import { validateEndpoint } from "Utils/EndpointValidation";
 import { AuthType } from "../AuthType";
-import { configContext } from "../ConfigContext";
+import { allowedMongoProxyEndpoints, configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
@@ -336,14 +337,16 @@ export function createMongoCollectionWithProxy(
 }
 
 export function getFeatureEndpointOrDefault(feature: string): string {
-  return hasFlag(userContext.features.mongoProxyAPIs, feature)
-    ? getEndpoint(userContext.features.mongoProxyEndpoint)
-    : getEndpoint();
+
+  const endpoint = (hasFlag(userContext.features.mongoProxyAPIs, feature) && validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints))
+    ? userContext.features.mongoProxyEndpoint
+    : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
+
+  return getEndpoint(endpoint);
 }
 
-export function getEndpoint(customEndpoint?: string): string {
-  let url = customEndpoint ? customEndpoint : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
-  url += "/api/mongo/explorer";
+export function getEndpoint(endpoint: string): string {
+  let url = endpoint + "/api/mongo/explorer";
 
   if (userContext.authType === AuthType.EncryptedToken) {
     url = url.replace("api/mongo", "api/guest/mongo");

@@ -1,6 +1,7 @@
 import ko from "knockout";
+import { validateEndpoint } from "Utils/EndpointValidation";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
-import { configContext } from "../ConfigContext";
+import { allowedJunoOrigins, configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { IGitHubResponse } from "../GitHub/GitHubClient";
@@ -483,7 +484,7 @@ export class JunoClient {
   // public for tests
   public static getJunoEndpoint(): string {
     const junoEndpoint = userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (configContext.allowedJunoOrigins.indexOf(new URL(junoEndpoint).origin) === -1) {
+    if (validateEndpoint(junoEndpoint, allowedJunoOrigins)) {
       const error = `${junoEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);
