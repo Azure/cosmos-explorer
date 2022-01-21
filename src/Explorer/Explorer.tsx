@@ -20,7 +20,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
@@ -36,7 +36,7 @@ import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import {
   get as getWorkspace,
   listByDatabaseAccount,
-  start
+  start,
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -179,7 +179,11 @@ export default class Explorer {
     this.resourceTree = new ResourceTreeAdapter(this);
 
     // Override notebook server parameters from URL parameters
-    if (userContext.features.notebookServerUrl && validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) && userContext.features.notebookServerToken) {
+    if (
+      userContext.features.notebookServerUrl &&
+      validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+      userContext.features.notebookServerToken
+    ) {
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl,
         authToken: userContext.features.notebookServerToken,
@@ -410,7 +414,10 @@ export default class Explorer {
     connectionStatus.status = ConnectionStatusType.Connected;
     useNotebook.getState().setConnectionInfo(connectionStatus);
     useNotebook.getState().setNotebookServerInfo({
-      notebookServerEndpoint: validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) && userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
+      notebookServerEndpoint:
+        (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+          userContext.features.notebookServerUrl) ||
+        connectionInfo.data.notebookServerUrl,
       authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
       forwardingId: connectionInfo.data.forwardingId,
     });

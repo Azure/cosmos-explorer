@@ -7,7 +7,7 @@ import {
   ContainerStatusType,
   HttpHeaders,
   HttpStatusCodes,
-  Notebook
+  Notebook,
 } from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
@@ -18,7 +18,7 @@ import {
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
