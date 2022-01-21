@@ -84,47 +84,47 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, allowedArmEndpoints)) {
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, allowedArmEndpoints.map(endpoint => endpoint))) {
     delete newContext.ARM_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.AAD_ENDPOINT, allowedAadEndpoints)) {
+  if (!validateEndpoint(newContext.AAD_ENDPOINT, allowedAadEndpoints.map(endpoint => endpoint))) {
     delete newContext.AAD_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.EMULATOR_ENDPOINT, allowedEmulatorEndpoints)) {
+  if (!validateEndpoint(newContext.EMULATOR_ENDPOINT, allowedEmulatorEndpoints.map(endpoint => endpoint))) {
     delete newContext.EMULATOR_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, allowedGraphEndpoints)) {
+  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, allowedGraphEndpoints.map(endpoint => endpoint))) {
     delete newContext.GRAPH_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.ARCADIA_ENDPOINT, allowedArcadiaEndpoints)) {
+  if (!validateEndpoint(newContext.ARCADIA_ENDPOINT, allowedArcadiaEndpoints.map(endpoint => endpoint))) {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE, allowedArcadiaLivyDnsZones)) {
+  if (!validateEndpoint(newContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE, allowedArcadiaLivyDnsZones.map(endpoint => endpoint))) {
     delete newContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE;
   }
 
-  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, allowedBackendEndpoints)) {
+  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, allowedBackendEndpoints.map(endpoint => endpoint))) {
     delete newContext.BACKEND_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.MONGO_BACKEND_ENDPOINT, allowedMongoBackendEndpoints)) {
+  if (!validateEndpoint(newContext.MONGO_BACKEND_ENDPOINT, allowedMongoBackendEndpoints.map(endpoint => endpoint))) {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoEndpoints)) {
+  if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoEndpoints.map(endpoint => endpoint))) {
     delete newContext.JUNO_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.hostedExplorerURL, allowedHostedExplorerEndpoints)) {
+  if (!validateEndpoint(newContext.hostedExplorerURL, allowedHostedExplorerEndpoints.map(endpoint => endpoint))) {
     delete newContext.hostedExplorerURL;
   }
 
-  if (!validateEndpoint(newContext.msalRedirectURI, allowedMsalRedirectEndpoints)) {
+  if (!validateEndpoint(newContext.msalRedirectURI, allowedMsalRedirectEndpoints.map(endpoint => endpoint))) {
     delete newContext.msalRedirectURI;
   }
 
