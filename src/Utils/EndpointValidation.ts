@@ -1,4 +1,4 @@
-export function validateEndpoint(endpointToValidate: string, allowedEndpoints: string[]): boolean {
+export function validateEndpoint(endpointToValidate: string | undefined, allowedEndpoints: string[]): boolean {
   if (!endpointToValidate) {
     return true;
   }
