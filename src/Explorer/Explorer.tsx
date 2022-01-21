@@ -181,7 +181,10 @@ export default class Explorer {
     // Override notebook server parameters from URL parameters
     if (
       userContext.features.notebookServerUrl &&
-      validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+      validateEndpoint(
+        userContext.features.notebookServerUrl,
+        allowedNotebookServerUrls.map((endpoint) => endpoint)
+      ) &&
       userContext.features.notebookServerToken
     ) {
       useNotebook.getState().setNotebookServerInfo({
@@ -415,7 +418,10 @@ export default class Explorer {
     useNotebook.getState().setConnectionInfo(connectionStatus);
     useNotebook.getState().setNotebookServerInfo({
       notebookServerEndpoint:
-        (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+        (validateEndpoint(
+          userContext.features.notebookServerUrl,
+          allowedNotebookServerUrls.map((endpoint) => endpoint)
+        ) &&
           userContext.features.notebookServerUrl) ||
         connectionInfo.data.notebookServerUrl,
       authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
