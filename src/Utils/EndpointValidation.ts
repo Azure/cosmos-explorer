@@ -1,7 +1,11 @@
+import * as Logger from "../Common/Logger";
+
 export function validateEndpoint(endpointToValidate: string | undefined, allowedEndpoints: string[]): boolean {
   try {
     return validateEndpointInternal(endpointToValidate, allowedEndpoints);
-  } catch {
+  } catch (reason) {
+    Logger.logError(`${endpointToValidate} not allowed`, "validateEndpoint");
+    Logger.logError(`${JSON.stringify(reason)}`, "validateEndpoint");
     return false;
   }
 }
@@ -16,7 +20,9 @@ function validateEndpointInternal(endpointToValidate: string | undefined, allowe
   const valid = allowedOrigins.indexOf(originToValidate) >= 0;
 
   if (!valid) {
-    console.error(`${endpointToValidate} not allowed`);
+    throw new Error(
+      `${endpointToValidate} is not an allowed endpoint. Allowed endpoints are ${allowedArmEndpoints.toString()}`
+    );
   }
 
   return valid;
