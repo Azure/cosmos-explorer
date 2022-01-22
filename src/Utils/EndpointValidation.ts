@@ -45,14 +45,14 @@ export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localho
 
 export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
 
-export const allowedGraphEndpoints: ReadonlyArray<string> = [];
+export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.windows.net"];
 
-export const allowedArcadiaEndpoints: ReadonlyArray<string> = [];
+export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspaceartifacts.projectarcadia.net"];
 
-export const allowedArcadiaLivyDnsZones: ReadonlyArray<string> = [];
+export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = ["https://cosmos.azure.com/"];
 
-export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [];
-
-export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [];
+export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [
+  "https://cosmos-explorer-preview.azurewebsites.net/",
+];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];

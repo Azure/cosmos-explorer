@@ -2,7 +2,6 @@ import { JunoEndpoints } from "Common/Constants";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
-  allowedArcadiaLivyDnsZones,
   allowedArmEndpoints,
   allowedBackendEndpoints,
   allowedEmulatorEndpoints,
@@ -139,15 +138,6 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     )
   ) {
     delete newContext.ARCADIA_ENDPOINT;
-  }
-
-  if (
-    !validateEndpoint(
-      newContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE,
-      allowedArcadiaLivyDnsZones.map((endpoint) => endpoint)
-    )
-  ) {
-    delete newContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE;
   }
 
   if (
