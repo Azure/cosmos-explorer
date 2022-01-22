@@ -7,6 +7,10 @@ export function validateEndpoint(endpointToValidate: string | undefined, allowed
 }
 
 function validateEndpointInternal(endpointToValidate: string | undefined, allowedEndpoints: string[]): boolean {
+  if (endpointToValidate === undefined) {
+    return false;
+  }
+
   const originToValidate: string = new URL(endpointToValidate).origin;
   const allowedOrigins: string[] = allowedEndpoints.map((allowedEndpoint) => new URL(allowedEndpoint).origin) || [];
   const valid = allowedOrigins.indexOf(originToValidate) >= 0;
@@ -39,13 +43,13 @@ export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
 
 export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localhost:8081"];
 
+export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
+
 export const allowedGraphEndpoints: ReadonlyArray<string> = [];
 
 export const allowedArcadiaEndpoints: ReadonlyArray<string> = [];
 
 export const allowedArcadiaLivyDnsZones: ReadonlyArray<string> = [];
-
-export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
 
 export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = [];
 
