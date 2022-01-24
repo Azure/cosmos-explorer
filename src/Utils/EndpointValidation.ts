@@ -1,3 +1,4 @@
+import { JunoEndpoints } from "Common/Constants";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -16,7 +17,10 @@ export function validateEndpoint(
   }
 }
 
-function validateEndpointInternal(endpointToValidate: string | undefined, allowedEndpoints: string[]): boolean {
+function validateEndpointInternal(
+  endpointToValidate: string | undefined,
+  allowedEndpoints: ReadonlyArray<string>
+): boolean {
   if (endpointToValidate === undefined) {
     return false;
   }
@@ -65,6 +69,24 @@ export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = ["https://c
 
 export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [
   "https://cosmos-explorer-preview.azurewebsites.net/",
+];
+
+export const allowedParentFrameOrigins: ReadonlyArray<string> = [
+  `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
+  `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+  `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
+  `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
+  `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
+  `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
+];
+
+export const allowedJunoOrigins: ReadonlyArray<string> = [
+  JunoEndpoints.Test,
+  JunoEndpoints.Test2,
+  JunoEndpoints.Test3,
+  JunoEndpoints.Prod,
+  JunoEndpoints.Stage,
+  "https://localhost",
 ];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];

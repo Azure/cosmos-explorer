@@ -1,4 +1,3 @@
-import { JunoEndpoints } from "Common/Constants";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
@@ -7,6 +6,7 @@ import {
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
+  allowedJunoOrigins,
   allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
   validateEndpoint,
@@ -20,7 +20,6 @@ export enum Platform {
 
 export interface ConfigContext {
   platform: Platform;
-  allowedParentFrameOrigins: string[];
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -42,21 +41,12 @@ export interface ConfigContext {
   isTerminalEnabled: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
-  allowedJunoOrigins: string[];
   msalRedirectURI?: string;
 }
 
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
-  allowedParentFrameOrigins: [
-    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
-    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
-    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
-  ],
   // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -73,14 +63,6 @@ let configContext: Readonly<ConfigContext> = {
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   isTerminalEnabled: false,
-  allowedJunoOrigins: [
-    JunoEndpoints.Test,
-    JunoEndpoints.Test2,
-    JunoEndpoints.Test3,
-    JunoEndpoints.Prod,
-    JunoEndpoints.Stage,
-    "https://localhost",
-  ],
 };
 
 export function resetConfigContext(): void {
@@ -123,7 +105,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.JUNO_ENDPOINT, configContext.allowedJunoOrigins)) {
+  if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoOrigins)) {
     delete newContext.JUNO_ENDPOINT;
   }
 
@@ -158,18 +140,8 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     });
     if (response.status === 200) {
       try {
-        const { allowedParentFrameOrigins, allowedJunoOrigins, ...externalConfig } = await response.json();
-        Object.assign(configContext, externalConfig);
-        if (allowedParentFrameOrigins && allowedParentFrameOrigins.length > 0) {
-          updateConfigContext({
-            allowedParentFrameOrigins: [...configContext.allowedParentFrameOrigins, ...allowedParentFrameOrigins],
-          });
-        }
-        if (allowedJunoOrigins && allowedJunoOrigins.length > 0) {
-          updateConfigContext({
-            allowedJunoOrigins: [...configContext.allowedJunoOrigins, ...allowedJunoOrigins],
-          });
-        }
+        const { ...externalConfig } = await response.json();
+        updateConfigContext(externalConfig);
       } catch (error) {
         console.error("Unable to parse json in config file");
         console.error(error);
