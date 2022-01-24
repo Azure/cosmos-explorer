@@ -95,66 +95,31 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.ARM_ENDPOINT,
-      allowedArmEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, allowedArmEndpoints)) {
     delete newContext.ARM_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.AAD_ENDPOINT,
-      allowedAadEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.AAD_ENDPOINT, allowedAadEndpoints)) {
     delete newContext.AAD_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.EMULATOR_ENDPOINT,
-      allowedEmulatorEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.EMULATOR_ENDPOINT, allowedEmulatorEndpoints)) {
     delete newContext.EMULATOR_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.GRAPH_ENDPOINT,
-      allowedGraphEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.GRAPH_ENDPOINT, allowedGraphEndpoints)) {
     delete newContext.GRAPH_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.ARCADIA_ENDPOINT,
-      allowedArcadiaEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.ARCADIA_ENDPOINT, allowedArcadiaEndpoints)) {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.BACKEND_ENDPOINT,
-      allowedBackendEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, allowedBackendEndpoints)) {
     delete newContext.BACKEND_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.MONGO_BACKEND_ENDPOINT,
-      allowedMongoBackendEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.MONGO_BACKEND_ENDPOINT, allowedMongoBackendEndpoints)) {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
@@ -162,21 +127,11 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.JUNO_ENDPOINT;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.hostedExplorerURL,
-      allowedHostedExplorerEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.hostedExplorerURL, allowedHostedExplorerEndpoints)) {
     delete newContext.hostedExplorerURL;
   }
 
-  if (
-    !validateEndpoint(
-      newContext.msalRedirectURI,
-      allowedMsalRedirectEndpoints.map((endpoint) => endpoint)
-    )
-  ) {
+  if (!validateEndpoint(newContext.msalRedirectURI, allowedMsalRedirectEndpoints)) {
     delete newContext.msalRedirectURI;
   }
 

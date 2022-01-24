@@ -1,8 +1,14 @@
 import * as Logger from "../Common/Logger";
 
-export function validateEndpoint(endpointToValidate: string | undefined, allowedEndpoints: string[]): boolean {
+export function validateEndpoint(
+  endpointToValidate: string | undefined,
+  allowedEndpoints: ReadonlyArray<string>
+): boolean {
   try {
-    return validateEndpointInternal(endpointToValidate, allowedEndpoints);
+    return validateEndpointInternal(
+      endpointToValidate,
+      allowedEndpoints.map((e) => e)
+    );
   } catch (reason) {
     Logger.logError(`${endpointToValidate} not allowed`, "validateEndpoint");
     Logger.logError(`${JSON.stringify(reason)}`, "validateEndpoint");

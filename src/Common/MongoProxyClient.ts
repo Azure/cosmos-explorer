@@ -339,10 +339,7 @@ export function createMongoCollectionWithProxy(
 export function getFeatureEndpointOrDefault(feature: string): string {
   const endpoint =
     hasFlag(userContext.features.mongoProxyAPIs, feature) &&
-    validateEndpoint(
-      userContext.features.mongoProxyEndpoint,
-      allowedMongoProxyEndpoints.map((endpoint) => endpoint)
-    )
+    validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints)
       ? userContext.features.mongoProxyEndpoint
       : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
 
