@@ -1562,7 +1562,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 </DropdownBase>
               </Dropdown>
               <StyledTextFieldBase
-                id="confirmCollectionId"
                 key=".0:$.1"
                 label="Value"
                 onChange={[Function]}
@@ -1570,7 +1569,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               >
                 <TextFieldBase
                   deferredValidationTime={200}
-                  id="confirmCollectionId"
                   label="Value"
                   onChange={[Function]}
                   resizable={true}
@@ -1858,12 +1856,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       className="ms-TextField-wrapper"
                     >
                       <StyledLabelBase
-                        htmlFor="confirmCollectionId"
+                        htmlFor="TextField1"
                         id="TextFieldLabel3"
                         styles={[Function]}
                       >
                         <LabelBase
-                          htmlFor="confirmCollectionId"
+                          htmlFor="TextField1"
                           id="TextFieldLabel3"
                           styles={[Function]}
                           theme={
@@ -2142,7 +2140,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <label
                             className="ms-Label root-53"
-                            htmlFor="confirmCollectionId"
+                            htmlFor="TextField1"
                             id="TextFieldLabel3"
                           >
                             Value
@@ -2156,7 +2154,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           aria-invalid={false}
                           aria-labelledby="TextFieldLabel3"
                           className="ms-TextField-field field-77"
-                          id="confirmCollectionId"
+                          id="TextField1"
                           onBlur={[Function]}
                           onChange={[Function]}
                           onFocus={[Function]}
@@ -3721,7 +3719,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               </Dropdown>
               <StyledTextFieldBase
                 defaultValue=""
-                id="confirmCollectionId"
                 key=".0:$.1"
                 label="Param"
                 onChange={[Function]}
@@ -3730,7 +3727,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 <TextFieldBase
                   defaultValue=""
                   deferredValidationTime={200}
-                  id="confirmCollectionId"
                   label="Param"
                   onChange={[Function]}
                   resizable={true}
@@ -4018,12 +4014,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       className="ms-TextField-wrapper"
                     >
                       <StyledLabelBase
-                        htmlFor="confirmCollectionId"
+                        htmlFor="TextField5"
                         id="TextFieldLabel7"
                         styles={[Function]}
                       >
                         <LabelBase
-                          htmlFor="confirmCollectionId"
+                          htmlFor="TextField5"
                           id="TextFieldLabel7"
                           styles={[Function]}
                           theme={
@@ -4302,7 +4298,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <label
                             className="ms-Label root-53"
-                            htmlFor="confirmCollectionId"
+                            htmlFor="TextField5"
                             id="TextFieldLabel7"
                           >
                             Param
@@ -4316,7 +4312,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           aria-invalid={false}
                           aria-labelledby="TextFieldLabel7"
                           className="ms-TextField-field field-77"
-                          id="confirmCollectionId"
+                          id="TextField5"
                           onBlur={[Function]}
                           onChange={[Function]}
                           onFocus={[Function]}
