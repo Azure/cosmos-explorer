@@ -63,7 +63,6 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
         />
         <TextField
           label={inputLabel && inputLabel}
-          id="confirmCollectionId"
           defaultValue={paramValue}
           onChange={onParamValueChange}
           tabIndex={0}
