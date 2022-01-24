@@ -20,6 +20,7 @@ export enum Platform {
 
 export interface ConfigContext {
   platform: Platform;
+  allowedParentFrameOrigins: ReadonlyArray<string>;
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -47,7 +48,14 @@ export interface ConfigContext {
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
-  // Webpack injects this at build time
+  allowedParentFrameOrigins: [
+    `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
+    `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
+    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
+  ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
   AAD_ENDPOINT: "https://login.microsoftonline.com/",

@@ -1,7 +1,7 @@
-import { allowedParentFrameOrigins } from "Utils/EndpointValidation";
+import { configContext } from "../ConfigContext";
 
 export function isInvalidParentFrameOrigin(event: MessageEvent): boolean {
-  return !isValidOrigin(allowedParentFrameOrigins, event);
+  return !isValidOrigin(configContext.allowedParentFrameOrigins, event);
 }
 
 function isValidOrigin(allowedOrigins: ReadonlyArray<string>, event: MessageEvent): boolean {

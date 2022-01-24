@@ -71,15 +71,6 @@ export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [
   "https://cosmos-explorer-preview.azurewebsites.net/",
 ];
 
-export const allowedParentFrameOrigins: ReadonlyArray<string> = [
-  `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
-  `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
-  `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
-  `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
-  `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
-  `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
-];
-
 export const allowedJunoOrigins: ReadonlyArray<string> = [
   JunoEndpoints.Test,
   JunoEndpoints.Test2,
