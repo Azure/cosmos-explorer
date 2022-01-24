@@ -23,7 +23,6 @@ export type Features = {
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly phoenixEndpoint?: string;
-  readonly livyEndpoint?: string;
   readonly notebookBasePath?: string;
   readonly notebookServerToken?: string;
   readonly notebookServerUrl?: string;
@@ -72,7 +71,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     mongoProxyAPIs: get("mongoproxyapis"),
     junoEndpoint: get("junoendpoint"),
     phoenixEndpoint: get("phoenixendpoint"),
-    livyEndpoint: get("livyendpoint"),
     notebookBasePath: get("notebookbasepath"),
     notebookServerToken: get("notebookservertoken"),
     notebookServerUrl: get("notebookserverurl"),

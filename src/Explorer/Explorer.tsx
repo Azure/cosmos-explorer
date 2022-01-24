@@ -1,8 +1,10 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
+import { IGalleryItem } from "Juno/JunoClient";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
+import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
@@ -24,7 +26,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
-import { IGalleryItem } from "../Juno/JunoClient";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -50,7 +51,7 @@ import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
-import type { NotebookPaneContent } from "./Notebook/NotebookManager";
+import { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
@@ -178,7 +179,11 @@ export default class Explorer {
     this.resourceTree = new ResourceTreeAdapter(this);
 
     // Override notebook server parameters from URL parameters
-    if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
+    if (
+      userContext.features.notebookServerUrl &&
+      validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+      userContext.features.notebookServerToken
+    ) {
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl,
         authToken: userContext.features.notebookServerToken,
@@ -188,19 +193,6 @@ export default class Explorer {
 
     if (userContext.features.notebookBasePath) {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
-    }
-
-    if (userContext.features.livyEndpoint) {
-      useNotebook.getState().setSparkClusterConnectionInfo({
-        userName: undefined,
-        password: undefined,
-        endpoints: [
-          {
-            endpoint: userContext.features.livyEndpoint,
-            kind: DataModels.SparkClusterEndpointKind.Livy,
-          },
-        ],
-      });
     }
 
     this.refreshExplorer();
@@ -422,7 +414,10 @@ export default class Explorer {
     connectionStatus.status = ConnectionStatusType.Connected;
     useNotebook.getState().setConnectionInfo(connectionStatus);
     useNotebook.getState().setNotebookServerInfo({
-      notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
+      notebookServerEndpoint:
+        (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+          userContext.features.notebookServerUrl) ||
+        connectionInfo.data.notebookServerUrl,
       authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
       forwardingId: connectionInfo.data.forwardingId,
     });

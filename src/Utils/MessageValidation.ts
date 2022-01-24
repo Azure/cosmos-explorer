@@ -4,7 +4,7 @@ export function isInvalidParentFrameOrigin(event: MessageEvent): boolean {
   return !isValidOrigin(configContext.allowedParentFrameOrigins, event);
 }
 
-function isValidOrigin(allowedOrigins: string[], event: MessageEvent): boolean {
+function isValidOrigin(allowedOrigins: ReadonlyArray<string>, event: MessageEvent): boolean {
   const eventOrigin = (event && event.origin) || "";
   const windowOrigin = (window && window.origin) || "";
   if (eventOrigin === windowOrigin) {

@@ -1,5 +1,6 @@
 import promiseRetry, { AbortError } from "p-retry";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
 import {
   Areas,
   ConnectionStatusType,
@@ -154,7 +155,7 @@ export class PhoenixClient {
   public static getPhoenixEndpoint(): string {
     const phoenixEndpoint =
       userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (configContext.allowedJunoOrigins.indexOf(new URL(phoenixEndpoint).origin) === -1) {
+    if (!validateEndpoint(phoenixEndpoint, allowedJunoOrigins)) {
       const error = `${phoenixEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);
