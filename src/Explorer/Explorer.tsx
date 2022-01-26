@@ -33,11 +33,7 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import {
-  get as getWorkspace,
-  listByDatabaseAccount,
-  start,
-} from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
+import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -57,7 +53,6 @@ import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
-import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
@@ -464,35 +459,6 @@ export default class Explorer {
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
-    }
-  }
-
-  private async ensureNotebookWorkspaceRunning() {
-    if (!userContext.databaseAccount) {
-      return;
-    }
-
-    let clearMessage;
-    try {
-      const notebookWorkspace = await getWorkspace(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
-        "default"
-      );
-      if (
-        notebookWorkspace &&
-        notebookWorkspace.properties &&
-        notebookWorkspace.properties.status &&
-        notebookWorkspace.properties.status.toLowerCase() === "stopped"
-      ) {
-        clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
-        await start(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
-      }
-    } catch (error) {
-      handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
-    } finally {
-      clearMessage && clearMessage();
     }
   }
 
@@ -1182,20 +1148,12 @@ export default class Explorer {
     }
   }
 
-  private _openSetupNotebooksPaneForQuickstart(): void {
-    const title = "Enable Notebooks (Preview)";
-    const description =
-      "You have not yet created a notebooks workspace for this account. To proceed and start using notebooks, we'll need to create a default notebooks workspace in this account.";
-    useSidePanel
-      .getState()
-      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
-  }
-
   public async handleOpenFileAction(path: string): Promise<void> {
+    if (useNotebook.getState().isPhoenixNotebooks === undefined) {
+      await useNotebook.getState().getPhoenixStatus();
+    }
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.allocateContainer();
-    } else if (!(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
-      this._openSetupNotebooksPaneForQuickstart();
     }
 
     // We still use github urls like https://github.com/Azure-Samples/cosmos-notebooks/blob/master/CSharp_quickstarts/GettingStarted_CSharp.ipynb
