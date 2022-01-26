@@ -1278,7 +1278,6 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
-
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled = userContext.features.notebooksDownBanner || useNotebook.getState().isPhoenixNotebooks;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
