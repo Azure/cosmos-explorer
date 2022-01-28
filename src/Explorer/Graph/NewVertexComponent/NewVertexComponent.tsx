@@ -165,7 +165,6 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                 </div>
                 <div>
                   <Dropdown
-                    role="listbox"
                     placeholder="Select an option"
                     defaultSelectedKey={data.values[0].type}
                     style={{ width: 100 }}
@@ -174,6 +173,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                       text: type,
                     }))}
                     onChange={(_, options: IDropdownOption) => onTypeChange(options.key.toString(), index)}
+                    ariaLabel="Select an option"
                   />
                 </div>
                 <div className="actionCol">
