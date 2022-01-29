@@ -215,13 +215,13 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       {
         metric: "Request Charge",
         value: this.state.requestChargeDisplayText,
-        toolTip: "",
+        toolTip: "Request Charge",
         isQueryMetricsEnabled: true,
       },
       {
         metric: "Showing Results",
         value: this.state.showingDocumentsDisplayText,
-        toolTip: "",
+        toolTip: "Showing Results",
         isQueryMetricsEnabled: true,
       },
       {
