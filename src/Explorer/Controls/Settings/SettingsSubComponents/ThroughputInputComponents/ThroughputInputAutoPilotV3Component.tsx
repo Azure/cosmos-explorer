@@ -582,6 +582,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         onChange={this.onThroughputChange}
         min={this.props.minimum}
         errorMessage={this.props.throughputError}
+        ariaLabel="Estimate your required throughput with capacity calculator"
       />
       {this.state.exceedFreeTierThroughput && (
         <MessageBar
