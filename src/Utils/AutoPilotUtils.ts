@@ -1,6 +1,6 @@
 export const minAutoPilotThroughput = 1000;
 export const autoPilotIncrementStep = 1000;
-export const autoPilotDefaultThroughput = 4000;
+export const autoPilotThroughput4K = 4000;
 
 export function isValidAutoPilotThroughput(maxThroughput: number): boolean {
   if (!maxThroughput) {
