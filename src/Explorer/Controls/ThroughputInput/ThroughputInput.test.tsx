@@ -5,6 +5,7 @@ const props = {
   isDatabase: false,
   showFreeTierExceedThroughputTooltip: true,
   isSharded: true,
+  isFreeTier: false,
   setThroughputValue: () => jest.fn(),
   setIsAutoscale: () => jest.fn(),
   setIsThroughputCapExceeded: () => jest.fn(),
