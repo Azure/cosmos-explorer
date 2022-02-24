@@ -241,6 +241,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={true}
             isSharded={databaseCreateNewShared}
+            isFreeTier={isFreeTierAccount}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
             setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
