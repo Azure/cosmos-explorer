@@ -48,15 +48,13 @@ export class NotebookContainerClient {
 
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (notebookServerInfo?.notebookServerEndpoint) {
-      this.scheduleTimerId = setInterval(this.tryUpdateMemoryUsage, delayMs);
-    }
-  }
-
-  private async tryUpdateMemoryUsage(): Promise<void> {
-    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-    if (notebookServerInfo?.notebookServerEndpoint) {
-      const memoryUsageInfo = await this.getMemoryUsage();
-      useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo);
+      this.scheduleTimerId = setInterval(async () => {
+        const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+        if (notebookServerInfo?.notebookServerEndpoint) {
+          const memoryUsageInfo = await this.getMemoryUsage();
+          useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo);
+        }
+      }, delayMs);
     }
   }
 
