@@ -31,7 +31,7 @@ function validateEndpointInternal(
 
   if (!valid) {
     throw new Error(
-      `${endpointToValidate} is not an allowed endpoint. Allowed endpoints are ${allowedArmEndpoints.toString()}`
+      `${endpointToValidate} is not an allowed endpoint. Allowed endpoints are ${allowedEndpoints.toString()}`
     );
   }
 
@@ -48,12 +48,16 @@ export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.micros
 
 export const allowedBackendEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
+  "https://main.documentdb.ext.azure.cn",
+  "https://main.documentdb.ext.azure.us",
   "https://localhost:12901",
   "https://localhost:1234",
 ];
 
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
+  "https://main.documentdb.ext.azure.cn",
+  "https://main.documentdb.ext.azure.us",
   "https://localhost:12901",
 ];
 
