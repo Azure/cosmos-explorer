@@ -303,8 +303,8 @@ export class NotebookContentClient {
   private getServerConfig(): ServerConfig {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     return {
-      endpoint: notebookServerInfo.notebookServerEndpoint,
-      token: notebookServerInfo.authToken,
+      endpoint: notebookServerInfo?.notebookServerEndpoint,
+      token: notebookServerInfo?.authToken,
       crossDomain: true,
     };
   }

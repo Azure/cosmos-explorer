@@ -10,7 +10,6 @@ import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUti
 import Explorer from "../../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../../Notebook/NotebookContentItem";
 import { useNotebook } from "../../Notebook/useNotebook";
-import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
 
@@ -104,11 +103,14 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
     switch (location.type) {
       case "MyNotebooks":
         parent = {
-          name: ResourceTreeAdapter.MyNotebooksTitle,
+          name: useNotebook.getState().notebookFolderName,
           path: useNotebook.getState().notebookBasePath,
           type: NotebookContentItemType.Directory,
         };
         isGithubTree = false;
+        if (useNotebook.getState().isPhoenixNotebooks) {
+          await container.allocateContainer();
+        }
         break;
 
       case "GitHub":

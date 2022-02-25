@@ -386,6 +386,12 @@ export default class Explorer {
         });
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetContainerConnection(connectionStatus);
+        useDialog
+          .getState()
+          .showOkModalDialog(
+            "Connection Failed",
+            "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket."
+          );
         throw error;
       } finally {
         useNotebook.getState().setIsAllocating(false);
