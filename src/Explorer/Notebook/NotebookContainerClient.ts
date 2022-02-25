@@ -15,10 +15,11 @@ import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
-  private clearReconnectionAttemptMessage? = () => {};
+  private clearReconnectionAttemptMessage?= () => { };
   private isResettingWorkspace: boolean;
   private phoenixClient: PhoenixClient;
   private retryOptions: promiseRetry.Options;
+  private scheduleTimerId: NodeJS.Timeout;
 
   constructor(private onConnectionLost: () => void) {
     this.phoenixClient = new PhoenixClient();
@@ -27,34 +28,36 @@ export class NotebookContainerClient {
       maxTimeout: Notebook.retryAttemptDelayMs,
       minTimeout: Notebook.retryAttemptDelayMs,
     };
+
+    this.initHeartbeat(Constants.Notebook.heartbeatDelayMs);
+  }
+
+  private initHeartbeat(delayMs: number): void {
+    this.scheduleHeartbeat(delayMs);
+
+    useNotebook.subscribe(
+      () => this.scheduleHeartbeat(delayMs),
+      (state) => state.notebookServerInfo
+    );
+  }
+
+  private scheduleHeartbeat(delayMs: number) {
+    if (this.scheduleTimerId) {
+      clearInterval(this.scheduleTimerId);
+    }
+
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (notebookServerInfo?.notebookServerEndpoint) {
-      this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-    } else {
-      const unsub = useNotebook.subscribe(
-        (newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
-          if (newServerInfo?.notebookServerEndpoint) {
-            this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-          }
-          unsub();
-        },
-        (state) => state.notebookServerInfo
-      );
+      this.scheduleTimerId = setInterval(this.tryUpdateMemoryUsage, delayMs);
     }
   }
 
-  /**
-   * Heartbeat: each ping schedules another ping
-   */
-  private scheduleHeartbeat(delayMs: number): void {
-    setTimeout(async () => {
+  private async tryUpdateMemoryUsage(): Promise<void> {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    if (notebookServerInfo?.notebookServerEndpoint) {
       const memoryUsageInfo = await this.getMemoryUsage();
       useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo);
-      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-      if (notebookServerInfo?.notebookServerEndpoint) {
-        this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-      }
-    }, delayMs);
+    }
   }
 
   public async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
