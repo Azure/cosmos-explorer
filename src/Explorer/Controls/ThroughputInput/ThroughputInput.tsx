@@ -34,7 +34,9 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 }: ThroughputInputProps) => {
   const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
   const [throughput, setThroughput] = useState<number>(
-    isFreeTier ? AutoPilotUtils.minAutoPilotThroughput : AutoPilotUtils.autoPilotThroughput4K
+    isFreeTier && userContext.features.freetierAutoscaleThroughput
+      ? AutoPilotUtils.autoPilotThroughput1K
+      : AutoPilotUtils.autoPilotThroughput4K
   );
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
   const [throughputError, setThroughputError] = useState<string>("");
@@ -155,9 +157,10 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
     if (mode === "Autoscale") {
-      const defaultThroughput = isFreeTier
-        ? AutoPilotUtils.minAutoPilotThroughput
-        : AutoPilotUtils.autoPilotThroughput4K;
+      const defaultThroughput =
+        isFreeTier && userContext.features.freetierAutoscaleThroughput
+          ? AutoPilotUtils.autoPilotThroughput1K
+          : AutoPilotUtils.autoPilotThroughput4K;
       setThroughput(defaultThroughput);
       setIsAutoScaleSelected(true);
       setThroughputValue(defaultThroughput);
@@ -233,7 +236,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             }}
             onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
             step={AutoPilotUtils.autoPilotIncrementStep}
-            min={AutoPilotUtils.minAutoPilotThroughput}
+            min={
+              userContext.features.freetierAutoscaleThroughput
+                ? AutoPilotUtils.autoPilotThroughput1K
+                : AutoPilotUtils.autoPilotThroughput4K
+            }
             value={throughput.toString()}
             aria-label="Max request units per second"
             required={true}
