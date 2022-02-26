@@ -19,7 +19,7 @@ import { Action, ActionModifiers } from "../../../../../Shared/Telemetry/Telemet
 import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../../../UserContext";
 import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
-import { minAutoPilotThroughput } from "../../../../../Utils/AutoPilotUtils";
+import { autoPilotThroughput1K, autoPilotThroughput4K } from "../../../../../Utils/AutoPilotUtils";
 import { calculateEstimateNumber, usageInGB } from "../../../../../Utils/PricingUtils";
 import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
@@ -540,7 +540,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         step={AutoPilotUtils.autoPilotIncrementStep}
         value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
         onChange={this.onAutoPilotThroughputChange}
-        min={minAutoPilotThroughput}
+        min={userContext.features.freetierAutoscaleThroughput ? autoPilotThroughput1K : autoPilotThroughput4K}
         errorMessage={this.props.throughputError}
       />
       {!this.overrideWithProvisionedThroughputSettings() && this.getAutoPilotUsageCost()}

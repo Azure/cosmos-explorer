@@ -14,6 +14,7 @@ import "./ThroughputInput.less";
 export interface ThroughputInputProps {
   isDatabase: boolean;
   isSharded: boolean;
+  isFreeTier: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
@@ -23,15 +24,20 @@ export interface ThroughputInputProps {
 
 export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   isDatabase,
+  isSharded,
+  isFreeTier,
   showFreeTierExceedThroughputTooltip,
   setThroughputValue,
   setIsAutoscale,
   setIsThroughputCapExceeded,
-  isSharded,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
   const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
-  const [throughput, setThroughput] = useState<number>(AutoPilotUtils.minAutoPilotThroughput);
+  const [throughput, setThroughput] = useState<number>(
+    isFreeTier && userContext.features.freetierAutoscaleThroughput
+      ? AutoPilotUtils.autoPilotThroughput1K
+      : AutoPilotUtils.autoPilotThroughput4K
+  );
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
   const [throughputError, setThroughputError] = useState<string>("");
   const [totalThroughputUsed, setTotalThroughputUsed] = useState<number>(0);
@@ -151,11 +157,15 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
     if (mode === "Autoscale") {
-      setThroughput(AutoPilotUtils.minAutoPilotThroughput);
+      const defaultThroughput =
+        isFreeTier && userContext.features.freetierAutoscaleThroughput
+          ? AutoPilotUtils.autoPilotThroughput1K
+          : AutoPilotUtils.autoPilotThroughput4K;
+      setThroughput(defaultThroughput);
       setIsAutoScaleSelected(true);
-      setThroughputValue(AutoPilotUtils.minAutoPilotThroughput);
+      setThroughputValue(defaultThroughput);
       setIsAutoscale(true);
-      checkThroughputCap(AutoPilotUtils.minAutoPilotThroughput);
+      checkThroughputCap(defaultThroughput);
     } else {
       setThroughput(SharedConstants.CollectionCreation.DefaultCollectionRUs400);
       setIsAutoScaleSelected(false);
@@ -226,7 +236,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             }}
             onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
             step={AutoPilotUtils.autoPilotIncrementStep}
-            min={AutoPilotUtils.minAutoPilotThroughput}
+            min={
+              userContext.features.freetierAutoscaleThroughput
+                ? AutoPilotUtils.autoPilotThroughput1K
+                : AutoPilotUtils.autoPilotThroughput4K
+            }
             value={throughput.toString()}
             aria-label="Max request units per second"
             required={true}

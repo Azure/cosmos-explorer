@@ -146,9 +146,10 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     // TODO add feature flag that disables validation for customers with custom accounts
     if (isAutoscaleSelected) {
       if (!AutoPilotUtils.isValidAutoPilotThroughput(throughput)) {
-        setFormErrors(
-          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
-        );
+        const minAutoPilotThroughput = userContext.features.freetierAutoscaleThroughput
+          ? AutoPilotUtils.autoPilotThroughput1K
+          : AutoPilotUtils.autoPilotThroughput4K;
+        setFormErrors(`Please enter a value greater than ${minAutoPilotThroughput} for autopilot throughput`);
         return false;
       }
     }
@@ -241,6 +242,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={true}
             isSharded={databaseCreateNewShared}
+            isFreeTier={isFreeTierAccount}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
             setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}

@@ -1,4 +1,5 @@
 export type Features = {
+  // set only via feature flags
   readonly canExceedMaximumValue: boolean;
   readonly cosmosdb: boolean;
   readonly enableChangeFeedPolicy: boolean;
@@ -8,12 +9,6 @@ export type Features = {
   readonly enableReactPane: boolean;
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
-  autoscaleDefault: boolean;
-  partitionKeyDefault: boolean;
-  partitionKeyDefault2: boolean;
-  phoenixNotebooks: boolean;
-  phoenixFeatures: boolean;
-  notebooksDownBanner: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -34,11 +29,22 @@ export type Features = {
   readonly mongoProxyEndpoint?: string;
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
+
+  // can be set via both flight and feature flag
+  autoscaleDefault: boolean;
+  partitionKeyDefault: boolean;
+  partitionKeyDefault2: boolean;
+  phoenixNotebooks: boolean;
+  phoenixFeatures: boolean;
+  notebooksDownBanner: boolean;
+  freetierAutoscaleThroughput: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
   const downcased = new URLSearchParams();
-  const set = (value: string, key: string) => downcased.set(key.toLowerCase(), value);
+  const set = (value: string, key: string) => {
+    downcased.set(key.toLowerCase(), value);
+  };
   const get = (key: string, defaultValue?: string) =>
     downcased.get("feature." + key) ?? downcased.get(key) ?? defaultValue;
 
@@ -86,6 +92,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     phoenixFeatures: "true" === get("phoenixfeatures"),
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
+    freetierAutoscaleThroughput: "true" === get("freetierautoscalethroughput"),
   };
 }
 

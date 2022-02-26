@@ -249,6 +249,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
                     isDatabase={true}
                     isSharded={this.state.isSharded}
+                    isFreeTier={this.isFreeTierAccount()}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
                     setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
@@ -483,6 +484,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
               isSharded={this.state.isSharded}
+              isFreeTier={this.isFreeTierAccount()}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
               setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>

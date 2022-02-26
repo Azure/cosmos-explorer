@@ -373,6 +373,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.NotebooksDownBanner) !== -1) {
       userContext.features.notebooksDownBanner = true;
     }
+    if (inputs.flights.indexOf(Flights.FreeTierAutoscaleThroughput) !== -1) {
+      userContext.features.freetierAutoscaleThroughput = true;
+    }
   }
 }
 
