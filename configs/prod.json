@@ -1,5 +1,5 @@
 {
  "JUNO_ENDPOINT": "https://tools.cosmos.azure.com",
  "isTerminalEnabled" : false,
- "isPhoenixFlightDefault" : false
+ "isPhoenixEnabled" : false
 }
