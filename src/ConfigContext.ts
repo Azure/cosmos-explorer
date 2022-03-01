@@ -1,4 +1,3 @@
-import { userContext } from "UserContext";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
@@ -84,12 +83,6 @@ export function resetConfigContext(): void {
 }
 
 export function updateConfigContext(newContext: Partial<ConfigContext>): void {
-  //Updating phoenix feature flags for MPAC based of config context
-  if (configContext.isPhoenixEnabled === true) {
-    userContext.features.phoenixNotebooks = true;
-    userContext.features.phoenixFeatures = true;
-  }
-
   if (!newContext) {
     return;
   }
