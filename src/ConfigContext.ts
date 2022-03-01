@@ -40,6 +40,7 @@ export interface ConfigContext {
   GITHUB_TEST_ENV_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   isTerminalEnabled: boolean;
+  isPhoenixEnabled: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
   msalRedirectURI?: string;
@@ -71,6 +72,7 @@ let configContext: Readonly<ConfigContext> = {
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   isTerminalEnabled: false,
+  isPhoenixEnabled: false,
 };
 
 export function resetConfigContext(): void {
