@@ -364,7 +364,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.PKPartitionKeyTest) !== -1) {
       userContext.features.partitionKeyDefault2 = true;
     }
-    if (configContext.isMPAC === true) {
+    if (configContext.isPhoenixFlightDefault === true) {
       userContext.features.phoenixNotebooks = true;
       userContext.features.phoenixFeatures = true;
     } else {
