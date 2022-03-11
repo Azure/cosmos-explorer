@@ -450,6 +450,15 @@ export interface IResponse<T> {
   data: T;
 }
 
+export interface IValidationError {
+  message: string;
+  type: string;
+}
+
+export interface IMaxAllocationTimeExceeded extends IValidationError {
+  earliestAllocationTimestamp: string;
+}
+
 export interface IPhoenixConnectionInfoResult {
   readonly notebookAuthToken?: string;
   readonly notebookServerUrl?: string;

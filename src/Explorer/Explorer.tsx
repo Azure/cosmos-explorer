@@ -362,12 +362,13 @@ export default class Explorer {
         status: ConnectionStatusType.Connecting,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
+      let connectionInfo;
       try {
         TelemetryProcessor.traceStart(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
         useNotebook.getState().setIsAllocating(true);
-        const connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
+        connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         if (connectionInfo.status !== HttpStatusCodes.OK) {
           throw new Error(`Received status code: ${connectionInfo?.status}`);
         }
@@ -386,12 +387,16 @@ export default class Explorer {
         });
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetContainerConnection(connectionStatus);
-        useDialog
-          .getState()
-          .showOkModalDialog(
-            "Connection Failed",
-            "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket."
-          );
+        if (connectionInfo?.status === HttpStatusCodes.Forbidden) {
+          this.phoenixClient.showForbiddenFailurePopUp(connectionInfo.data);
+        } else {
+          useDialog
+            .getState()
+            .showOkModalDialog(
+              "Connection Failed",
+              "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket."
+            );
+        }
         throw error;
       } finally {
         useNotebook.getState().setIsAllocating(false);

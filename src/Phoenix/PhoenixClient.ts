@@ -1,3 +1,4 @@
+import { useDialog } from "Explorer/Controls/Dialog";
 import promiseRetry, { AbortError } from "p-retry";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
@@ -14,11 +15,10 @@ import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import {
   ContainerConnectionInfo,
-  ContainerInfo,
   IContainerData,
-  IPhoenixConnectionInfoResult,
+  IMaxAllocationTimeExceeded,
   IProvisionData,
-  IResponse,
+  IValidationError,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -33,32 +33,24 @@ export class PhoenixClient {
     minTimeout: Notebook.retryAttemptDelayMs,
   };
 
-  public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  public async allocateContainer(provisionData: IProvisionData) {
     return this.executeContainerAssignmentOperation(provisionData, "allocate");
   }
 
-  public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  public async resetContainer(provisionData: IProvisionData) {
     return this.executeContainerAssignmentOperation(provisionData, "reset");
   }
 
-  private async executeContainerAssignmentOperation(
-    provisionData: IProvisionData,
-    operation: string
-  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  private async executeContainerAssignmentOperation(provisionData: IProvisionData, operation: string) {
     try {
       const response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections`, {
         method: operation === "allocate" ? "POST" : "PATCH",
         headers: PhoenixClient.getHeaders(),
         body: JSON.stringify(provisionData),
       });
-
-      let data: IPhoenixConnectionInfoResult;
-      if (response.status === HttpStatusCodes.OK) {
-        data = await response.json();
-      }
       return {
         status: response.status,
-        data,
+        data: await response?.json(),
       };
     } catch (error) {
       console.error(error);
@@ -79,7 +71,7 @@ export class PhoenixClient {
     }, delayMs);
   }
 
-  private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
+  private async getContainerStatusAsync(containerData: IContainerData) {
     try {
       const runContainerStatusAsync = async () => {
         const response = await window.fetch(
@@ -108,6 +100,15 @@ export class PhoenixClient {
           });
           useNotebook.getState().resetContainerConnection(connectionStatus);
           useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+          useDialog
+            .getState()
+            .showOkModalDialog(
+              "Disconnected",
+              "Disconnected from temporary workspace. Please click on connect button to connect to temporary workspace."
+            );
+          throw new AbortError(response.statusText);
+        } else if (response?.status === HttpStatusCodes.Forbidden) {
+          this.showForbiddenFailurePopUp(await response.json());
           throw new AbortError(response.statusText);
         }
         throw new Error(response.statusText);
@@ -176,5 +177,28 @@ export class PhoenixClient {
       [authorizationHeader.header]: authorizationHeader.token,
       [HttpHeaders.contentType]: "application/json",
     };
+  }
+
+  public showForbiddenFailurePopUp(connectionInfoData: IValidationError) {
+    const errInfo = connectionInfoData;
+    if (errInfo?.type === "MaxAllocationTimeExceeded") {
+      const maxAllocationTimeExceeded = errInfo as IMaxAllocationTimeExceeded;
+      const allocateAfterTimestamp = new Date(maxAllocationTimeExceeded?.earliestAllocationTimestamp);
+      allocateAfterTimestamp.setDate(allocateAfterTimestamp.getDate() + 1);
+      useDialog
+        .getState()
+        .showOkModalDialog(
+          "Connection Failed",
+          `${errInfo.message}` + " Please try again after " + `${allocateAfterTimestamp.toLocaleString()}`
+        );
+    } else if (
+      errInfo?.type === "MaxDbAccountsPerUserExceeded" ||
+      errInfo?.type === "MaxUsersPerDbAccountExceeded" ||
+      errInfo?.type === "AllocationValidationResult" ||
+      errInfo?.type === "RegionNotServicable" ||
+      errInfo?.type === "SubscriptionNotAllowed"
+    ) {
+      useDialog.getState().showOkModalDialog("Connection Failed", `${errInfo.message}`);
+    }
   }
 }
