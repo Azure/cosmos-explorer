@@ -149,7 +149,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.offer = this.database?.offer();
     }
 
-    this.state = {
+    const initialState: SettingsComponentState = {
       throughput: undefined,
       throughputBaseline: undefined,
       autoPilotThroughput: undefined,
@@ -197,6 +197,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       initialNotification: undefined,
       selectedTab: SettingsV2TabTypes.ScaleTab,
+    };
+
+    this.state = {
+      ...initialState,
+      ...this.getBaselineValues(),
     };
 
     this.saveSettingsButton = {
@@ -561,21 +566,24 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public setBaseline = (): void => {
+    const baselineValues = this.getBaselineValues();
+    this.setState(baselineValues as SettingsComponentState);
+  };
+
+  private getBaselineValues = (): Partial<SettingsComponentState> => {
     const offerThroughput = this.offer?.manualThroughput;
 
     if (!this.isCollectionSettingsTab) {
-      this.setState({
+      return {
         throughput: offerThroughput,
         throughputBaseline: offerThroughput,
-      });
-
-      return;
+      };
     }
 
     const defaultTtl = this.collection.defaultTtl();
 
-    let timeToLive: TtlType = this.state.timeToLive;
-    let timeToLiveSeconds = this.state.timeToLiveSeconds;
+    let timeToLive: TtlType;
+    let timeToLiveSeconds: number;
     switch (defaultTtl) {
       case undefined:
       case 0:
@@ -620,7 +628,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       (this.collection.geospatialConfig && this.collection.geospatialConfig()?.type) || GeospatialConfigType.Geometry;
     const geoSpatialConfigType = GeospatialConfigType[geospatialConfigTypeString as keyof typeof GeospatialConfigType];
 
-    this.setState({
+    return {
       throughput: offerThroughput,
       throughputBaseline: offerThroughput,
       changeFeedPolicy: changeFeedPolicy,
@@ -643,7 +651,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       conflictResolutionPolicyProcedureBaseline: conflictResolutionPolicyProcedure,
       geospatialConfigType: geoSpatialConfigType,
       geospatialConfigTypeBaseline: geoSpatialConfigType,
-    });
+    };
   };
 
   private getTabsButtons = (): CommandButtonComponentProps[] => {
