@@ -9,6 +9,7 @@ export enum TabKind {
   Graph,
   SQLQuery,
   ScaleSettings,
+  DataUploader,
 }
 
 /**

@@ -526,6 +526,15 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             .getState()
             .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.SchemaAnalyzer]),
       });
+
+      children.push({
+        label: "Data Upload (Preview)",
+        onClick: collection.onDataUploaderClick.bind(collection),
+        isSelected: () =>
+          useSelectedNode
+            .getState()
+            .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.DataUploader]),
+      });
     }
 
     if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {

@@ -87,6 +87,14 @@ function openCollectionTab(
         }
 
         if (
+          action.tabKind === ActionContracts.TabKind.DataUploader ||
+          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.DataUploader]
+        ) {
+          collection.onDataUploaderClick();
+          break;
+        }
+
+        if (
           action.tabKind === ActionContracts.TabKind.TableEntities ||
           action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.TableEntities]
         ) {

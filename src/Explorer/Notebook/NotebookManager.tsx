@@ -4,6 +4,7 @@
 
 import { ImmutableNotebook } from "@nteract/commutable";
 import type { IContentProvider } from "@nteract/core";
+import { DataUploaderNotebook } from "Explorer/Notebook/DataUploader/DataUploaderUtils";
 import React from "react";
 import { contents } from "rx-jupyter";
 import { Areas, HttpStatusCodes } from "../../Common/Constants";
@@ -67,6 +68,10 @@ export default class NotebookManager {
       [SchemaAnalyzerNotebook.path]: {
         readonly: true,
         content: SchemaAnalyzerNotebook,
+      },
+      [DataUploaderNotebook.path]: {
+        readonly: true,
+        content: DataUploaderNotebook,
       },
     });
 

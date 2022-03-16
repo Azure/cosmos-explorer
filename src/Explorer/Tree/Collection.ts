@@ -574,6 +574,52 @@ export default class Collection implements ViewModels.Collection {
     );
   };
 
+  public onDataUploaderClick = async () => {
+    if (useNotebook.getState().isPhoenixFeatures) {
+      await this.container.allocateContainer();
+    }
+    useSelectedNode.getState().setSelectedNode(this);
+    this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
+    const DataUploaderTab = await (await import("../Tabs/DataUploaderTab")).default;
+    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
+      description: "Data uploader node",
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.ResourceTree,
+    });
+
+    for (const tab of useTabs.getState().openedTabs) {
+      if (
+        tab instanceof DataUploaderTab &&
+        tab.collection?.databaseId === this.databaseId &&
+        tab.collection?.id() === this.id()
+      ) {
+        return useTabs.getState().activateTab(tab);
+      }
+    }
+
+    const startKey = TelemetryProcessor.traceStart(Action.Tab, {
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: "Upload",
+    });
+    this.documentIds([]);
+    useTabs.getState().activateNewTab(
+      new DataUploaderTab({
+        account: userContext.databaseAccount,
+        masterKey: userContext.masterKey || "",
+        container: this.container,
+        tabKind: ViewModels.CollectionTabKind.DataUploader,
+        title: "Upload",
+        tabPath: "",
+        collection: this,
+        node: this,
+        onLoadStartKey: startKey,
+      })
+    );
+  };
+
   public onSettingsClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
