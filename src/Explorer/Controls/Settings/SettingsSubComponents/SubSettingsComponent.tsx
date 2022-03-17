@@ -213,7 +213,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     );
 
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
-    { key: TtlType.Off, text: "Off", disabled: true },
+    { key: TtlType.Off, text: "Off" },
     { key: TtlType.OnNoDefault, text: "On (no default)" },
     { key: TtlType.On, text: "On" },
   ];
