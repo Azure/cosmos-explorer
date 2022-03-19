@@ -213,20 +213,22 @@ const mapDispatchToProps = (
   takeNotebookSnapshot: (request: SnapshotRequest) => dispatch(cdbActions.takeNotebookSnapshot(request)),
 });
 
-const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
+const makeMapStateToProps = (_: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
   const mapStateToProps = (state: AppState) => {
     const cell = selectors.cell.cellFromState(state, { id: ownProps.id, contentRef: ownProps.contentRef });
     const cellType = cell.cell_type;
     const model = selectors.model(state, { contentRef: ownProps.contentRef });
     const cellOrder = selectors.notebook.cellOrder(model as RecordOf<DocumentRecordProps>);
     const cellIndex = cellOrder.indexOf(ownProps.id);
-    const cellIdAbove = cellIndex ? cellOrder.get(cellIndex - 1, undefined) : undefined;
-    const cellIdBelow = cellIndex !== undefined ? cellOrder.get(cellIndex + 1, undefined) : undefined;
+    const cellIdAbove = cellIndex ? cellOrder.get(cellIndex - 1, "") : "";
+    const cellIdBelow = cellIndex !== undefined ? cellOrder.get(cellIndex + 1, "") : "";
 
     return {
       cellType,
       cellIdAbove,
       cellIdBelow,
+      // cellIdAbove: cellIdAbove ? cellIdAbove : "",
+      // cellIdBelow: cellIdBelow ? cellIdBelow : "",
       hasCodeOutput: cellType === "code" && NotebookUtil.hasCodeCellOutput(cell as ImmutableCodeCell),
       isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, ownProps.contentRef),
     };

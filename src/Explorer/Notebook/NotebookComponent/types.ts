@@ -12,7 +12,7 @@ export interface SnapshotFragment {
 export type SnapshotRequest = NotebookSnapshotRequest | CellSnapshotRequest;
 interface NotebookSnapshotRequestBase {
   requestId: string;
-  aspectRatio: number;
+  aspectRatio: number | undefined;
   notebookContentRef: string; // notebook redux contentRef
   downloadFilename?: string; // Optional: will download as a file
 }

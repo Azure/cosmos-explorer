@@ -5,9 +5,9 @@ import { NotebookUtil } from "../NotebookUtil";
 import * as NteractUtil from "../NTeractUtil";
 
 interface VirtualCommandBarComponentProps {
-  kernelSpecName: string;
-  kernelStatus: string;
-  currentCellType: string;
+  kernelSpecName: string | undefined;
+  kernelStatus: string | undefined;
+  currentCellType: string | undefined;
   isNotebookUntrusted: boolean;
   onRender: () => void;
 }
@@ -40,7 +40,7 @@ interface InitialProps {
 
 // Redux
 const makeMapStateToProps = (
-  initialState: AppState,
+  _: AppState,
   initialProps: InitialProps
 ): ((state: AppState) => VirtualCommandBarComponentProps) => {
   const { contentRef } = initialProps;
@@ -70,8 +70,8 @@ const makeMapStateToProps = (
 
     currentCellType = NteractUtil.getCurrentCellType(content);
     return {
-      kernelStatus,
-      kernelSpecName,
+      kernelStatus: kernelStatus ? kernelStatus : "",
+      kernelSpecName: kernelSpecName ? kernelSpecName : "",
       currentCellType,
       isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, contentRef),
       onRender: initialProps.onRender,
