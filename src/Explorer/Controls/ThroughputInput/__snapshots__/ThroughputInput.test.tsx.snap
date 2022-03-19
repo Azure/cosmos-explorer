@@ -1013,7 +1013,8 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             className="ms-Stack css-53"
           >
             <Text
-              aria-label="maxRUDescription"
+              aria-label="Max request units per second"
+              id="maxRU"
               key=".0:$.0"
               style={
                 Object {
@@ -1024,8 +1025,9 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               variant="small"
             >
               <span
-                aria-label="maxRUDescription"
+                aria-label="Max request units per second"
                 className="css-54"
+                id="maxRU"
                 style={
                   Object {
                     "fontWeight": 600,
@@ -1635,7 +1637,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           </div>
         </Stack>
         <StyledTextFieldBase
-          aria-label="Max request units per second"
+          aria-labelledby="maxRU"
           errorMessage=""
           key=".0:$.2"
           min={4000}
@@ -1657,7 +1659,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           value="4000"
         >
           <TextFieldBase
-            aria-label="Max request units per second"
+            aria-labelledby="maxRU"
             deferredValidationTime={200}
             errorMessage=""
             min={4000}
@@ -1954,6 +1956,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 >
                   <input
                     aria-invalid={false}
+                    aria-labelledby="maxRU"
                     className="ms-TextField-field field-64"
                     id="TextField2"
                     min={4000}
