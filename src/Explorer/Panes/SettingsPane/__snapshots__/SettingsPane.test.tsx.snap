@@ -103,14 +103,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       <div
         className="settingsSectionPart"
       >
-        <div
+        <label
           className="settingsSectionLabel"
         >
           Enable cross-partition query
-          <InfoTooltip>
-            Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
-          </InfoTooltip>
-        </div>
+        </label>
+        <InfoTooltip>
+          Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
+        </InfoTooltip>
         <StyledCheckboxBase
           ariaLabel="Enable cross partition query"
           checked={true}
@@ -132,14 +132,15 @@ exports[`Settings Pane should render Default properly 1`] = `
       <div
         className="settingsSectionPart"
       >
-        <div
+        <label
           className="settingsSectionLabel"
+          htmlFor="input65"
         >
           Max degree of parallelism
-          <InfoTooltip>
-            Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
-          </InfoTooltip>
-        </div>
+        </label>
+        <InfoTooltip>
+          Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
+        </InfoTooltip>
         <StyledSpinButton
           ariaLabel="Max degree of parallelism"
           className="textfontclr"
