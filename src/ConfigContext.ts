@@ -52,10 +52,10 @@ let configContext: Readonly<ConfigContext> = {
   allowedParentFrameOrigins: [
     `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
-    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure.de$`,
+    `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure\\.de$`,
     `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
-    `^https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de$`,
+    `^https:\\/\\/cosmos-db-dataexplorer-germanycentral\\.azurewebsites\\.de$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
