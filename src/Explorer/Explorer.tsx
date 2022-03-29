@@ -387,8 +387,8 @@ export default class Explorer {
         });
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetContainerConnection(connectionStatus);
-        if (connectionInfo?.status === HttpStatusCodes.Forbidden) {
-          this.phoenixClient.showForbiddenFailurePopUp(connectionInfo.data);
+        if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+          useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
         } else {
           useDialog
             .getState()

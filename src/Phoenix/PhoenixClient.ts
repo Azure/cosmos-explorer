@@ -15,12 +15,16 @@ import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import {
   ContainerConnectionInfo,
+  ContainerInfo,
   IContainerData,
   IMaxAllocationTimeExceeded,
   IMaxDbAccountsPerUserExceeded,
   IMaxUsersPerDbAccountExceeded,
+  IPhoenixConnectionInfoResult,
   IProvisionData,
+  IResponse,
   IValidationError,
+  PhoenixErrorType,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -35,27 +39,37 @@ export class PhoenixClient {
     minTimeout: Notebook.retryAttemptDelayMs,
   };
 
-  public async allocateContainer(provisionData: IProvisionData) {
+  public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     return this.executeContainerAssignmentOperation(provisionData, "allocate");
   }
 
-  public async resetContainer(provisionData: IProvisionData) {
+  public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     return this.executeContainerAssignmentOperation(provisionData, "reset");
   }
 
-  private async executeContainerAssignmentOperation(provisionData: IProvisionData, operation: string) {
+  private async executeContainerAssignmentOperation(
+    provisionData: IProvisionData,
+    operation: string
+  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    let response;
     try {
-      const response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections`, {
+      response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections`, {
         method: operation === "allocate" ? "POST" : "PATCH",
         headers: PhoenixClient.getHeaders(),
         body: JSON.stringify(provisionData),
       });
+      const responseJson = await response?.json();
+      if (response.status === HttpStatusCodes.Forbidden) {
+        throw new Error(this.ConvertToForbiddenErrorString(responseJson));
+      }
       return {
         status: response.status,
-        data: await response?.json(),
+        data: responseJson,
       };
     } catch (error) {
-      console.error(error);
+      if (response.status === HttpStatusCodes.Forbidden) {
+        error.status = HttpStatusCodes.Forbidden;
+      }
       throw error;
     }
   }
@@ -73,7 +87,7 @@ export class PhoenixClient {
     }, delayMs);
   }
 
-  private async getContainerStatusAsync(containerData: IContainerData) {
+  private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
       const runContainerStatusAsync = async () => {
         const response = await window.fetch(
@@ -110,7 +124,10 @@ export class PhoenixClient {
             );
           throw new AbortError(response.statusText);
         } else if (response?.status === HttpStatusCodes.Forbidden) {
-          this.showForbiddenFailurePopUp(await response.json());
+          const validationMessage = this.ConvertToForbiddenErrorString(await response.json());
+          if (validationMessage) {
+            useDialog.getState().showOkModalDialog("Connection Failed", `${validationMessage}`);
+          }
           throw new AbortError(response.statusText);
         }
         throw new Error(response.statusText);
@@ -181,59 +198,46 @@ export class PhoenixClient {
     };
   }
 
-  public showForbiddenFailurePopUp(connectionInfoData: IValidationError) {
-    const errInfo = connectionInfoData;
+  public ConvertToForbiddenErrorString(jsonData: IValidationError): string {
+    const errInfo = jsonData;
     switch (errInfo?.type) {
-      case "MaxAllocationTimeExceeded": {
+      case PhoenixErrorType.MaxAllocationTimeExceeded: {
         const maxAllocationTimeExceeded = errInfo as IMaxAllocationTimeExceeded;
         const allocateAfterTimestamp = new Date(maxAllocationTimeExceeded?.earliestAllocationTimestamp);
         allocateAfterTimestamp.setDate(allocateAfterTimestamp.getDate() + 1);
-        useDialog
-          .getState()
-          .showOkModalDialog(
-            "Connection Failed",
-            `${errInfo.message}` +
-              "Max allocation time for a day to a user is " +
-              `${maxAllocationTimeExceeded.maxAllocationTimePerDayPerUserInMinutes}` +
-              ". Please try again after " +
-              `${allocateAfterTimestamp.toLocaleString()}`
-          );
-        break;
+        return (
+          `${errInfo.message}` +
+          " Max allocation time for a day to a user is " +
+          `${maxAllocationTimeExceeded.maxAllocationTimePerDayPerUserInMinutes}` +
+          ". Please try again after " +
+          `${allocateAfterTimestamp.toLocaleString()}`
+        );
       }
-      case "MaxDbAccountsPerUserExceeded": {
+      case PhoenixErrorType.MaxDbAccountsPerUserExceeded: {
         const maxDbAccountsPerUserExceeded = errInfo as IMaxDbAccountsPerUserExceeded;
-        useDialog
-          .getState()
-          .showOkModalDialog(
-            "Connection Failed",
-            `${errInfo.message}` +
-              " Max simultaneous connections allowed per user is " +
-              `${maxDbAccountsPerUserExceeded.maxSimultaneousConnectionsPerUser}` +
-              "."
-          );
-        break;
+        return (
+          `${errInfo.message}` +
+          " Max simultaneous connections allowed per user is " +
+          `${maxDbAccountsPerUserExceeded.maxSimultaneousConnectionsPerUser}` +
+          "."
+        );
       }
-      case "MaxUsersPerDbAccountExceeded": {
+      case PhoenixErrorType.MaxUsersPerDbAccountExceeded: {
         const maxUsersPerDbAccountExceeded = errInfo as IMaxUsersPerDbAccountExceeded;
-        useDialog
-          .getState()
-          .showOkModalDialog(
-            "Connection Failed",
-            `${errInfo.message}` +
-              "Max simultaneous users allowed per DbAccount is " +
-              `${maxUsersPerDbAccountExceeded.maxSimultaneousUsersPerDbAccount}` +
-              "."
-          );
-        break;
+        return (
+          `${errInfo.message}` +
+          " Max simultaneous users allowed per DbAccount is " +
+          `${maxUsersPerDbAccountExceeded.maxSimultaneousUsersPerDbAccount}` +
+          "."
+        );
       }
-      case "AllocationValidationResult":
-      case "RegionNotServicable":
-      case "SubscriptionNotAllowed": {
-        useDialog.getState().showOkModalDialog("Connection Failed", `${errInfo.message}`);
-        break;
+      case PhoenixErrorType.AllocationValidationResult:
+      case PhoenixErrorType.RegionNotServicable:
+      case PhoenixErrorType.SubscriptionNotAllowed: {
+        return `${errInfo.message}`;
       }
       default: {
-        break;
+        return undefined;
       }
     }
   }

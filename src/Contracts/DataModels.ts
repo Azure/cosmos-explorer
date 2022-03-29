@@ -549,3 +549,12 @@ export interface ContainerConnectionInfo {
   status: ConnectionStatusType;
   //need to add ram and rom info
 }
+
+export enum PhoenixErrorType {
+  MaxAllocationTimeExceeded = "MaxAllocationTimeExceeded",
+  MaxDbAccountsPerUserExceeded = "MaxDbAccountsPerUserExceeded",
+  MaxUsersPerDbAccountExceeded = "MaxUsersPerDbAccountExceeded",
+  AllocationValidationResult = "AllocationValidationResult",
+  RegionNotServicable = "RegionNotServicable",
+  SubscriptionNotAllowed = "SubscriptionNotAllowed",
+}
