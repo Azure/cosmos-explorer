@@ -17,6 +17,8 @@ import {
   ContainerConnectionInfo,
   IContainerData,
   IMaxAllocationTimeExceeded,
+  IMaxDbAccountsPerUserExceeded,
+  IMaxUsersPerDbAccountExceeded,
   IProvisionData,
   IValidationError,
 } from "../Contracts/DataModels";
@@ -181,24 +183,58 @@ export class PhoenixClient {
 
   public showForbiddenFailurePopUp(connectionInfoData: IValidationError) {
     const errInfo = connectionInfoData;
-    if (errInfo?.type === "MaxAllocationTimeExceeded") {
-      const maxAllocationTimeExceeded = errInfo as IMaxAllocationTimeExceeded;
-      const allocateAfterTimestamp = new Date(maxAllocationTimeExceeded?.earliestAllocationTimestamp);
-      allocateAfterTimestamp.setDate(allocateAfterTimestamp.getDate() + 1);
-      useDialog
-        .getState()
-        .showOkModalDialog(
-          "Connection Failed",
-          `${errInfo.message}` + " Please try again after " + `${allocateAfterTimestamp.toLocaleString()}`
-        );
-    } else if (
-      errInfo?.type === "MaxDbAccountsPerUserExceeded" ||
-      errInfo?.type === "MaxUsersPerDbAccountExceeded" ||
-      errInfo?.type === "AllocationValidationResult" ||
-      errInfo?.type === "RegionNotServicable" ||
-      errInfo?.type === "SubscriptionNotAllowed"
-    ) {
-      useDialog.getState().showOkModalDialog("Connection Failed", `${errInfo.message}`);
+    switch (errInfo?.type) {
+      case "MaxAllocationTimeExceeded": {
+        const maxAllocationTimeExceeded = errInfo as IMaxAllocationTimeExceeded;
+        const allocateAfterTimestamp = new Date(maxAllocationTimeExceeded?.earliestAllocationTimestamp);
+        allocateAfterTimestamp.setDate(allocateAfterTimestamp.getDate() + 1);
+        useDialog
+          .getState()
+          .showOkModalDialog(
+            "Connection Failed",
+            `${errInfo.message}` +
+              "Max allocation time for a day to a user is " +
+              `${maxAllocationTimeExceeded.maxAllocationTimePerDayPerUserInMinutes}` +
+              ". Please try again after " +
+              `${allocateAfterTimestamp.toLocaleString()}`
+          );
+        break;
+      }
+      case "MaxDbAccountsPerUserExceeded": {
+        const maxDbAccountsPerUserExceeded = errInfo as IMaxDbAccountsPerUserExceeded;
+        useDialog
+          .getState()
+          .showOkModalDialog(
+            "Connection Failed",
+            `${errInfo.message}` +
+              " Max simultaneous connections allowed per user is " +
+              `${maxDbAccountsPerUserExceeded.maxSimultaneousConnectionsPerUser}` +
+              "."
+          );
+        break;
+      }
+      case "MaxUsersPerDbAccountExceeded": {
+        const maxUsersPerDbAccountExceeded = errInfo as IMaxUsersPerDbAccountExceeded;
+        useDialog
+          .getState()
+          .showOkModalDialog(
+            "Connection Failed",
+            `${errInfo.message}` +
+              "Max simultaneous users allowed per DbAccount is " +
+              `${maxUsersPerDbAccountExceeded.maxSimultaneousUsersPerDbAccount}` +
+              "."
+          );
+        break;
+      }
+      case "AllocationValidationResult":
+      case "RegionNotServicable":
+      case "SubscriptionNotAllowed": {
+        useDialog.getState().showOkModalDialog("Connection Failed", `${errInfo.message}`);
+        break;
+      }
+      default: {
+        break;
+      }
     }
   }
 }

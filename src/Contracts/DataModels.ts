@@ -457,6 +457,15 @@ export interface IValidationError {
 
 export interface IMaxAllocationTimeExceeded extends IValidationError {
   earliestAllocationTimestamp: string;
+  maxAllocationTimePerDayPerUserInMinutes: string;
+}
+
+export interface IMaxDbAccountsPerUserExceeded extends IValidationError {
+  maxSimultaneousConnectionsPerUser: string;
+}
+
+export interface IMaxUsersPerDbAccountExceeded extends IValidationError {
+  maxSimultaneousUsersPerDbAccount: string;
 }
 
 export interface IPhoenixConnectionInfoResult {
