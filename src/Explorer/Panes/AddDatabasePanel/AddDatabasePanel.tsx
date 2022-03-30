@@ -146,10 +146,9 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     // TODO add feature flag that disables validation for customers with custom accounts
     if (isAutoscaleSelected) {
       if (!AutoPilotUtils.isValidAutoPilotThroughput(throughput)) {
-        const minAutoPilotThroughput = userContext.features.freetierAutoscaleThroughput
-          ? AutoPilotUtils.autoPilotThroughput1K
-          : AutoPilotUtils.autoPilotThroughput4K;
-        setFormErrors(`Please enter a value greater than ${minAutoPilotThroughput} for autopilot throughput`);
+        setFormErrors(
+          `Please enter a value greater than ${AutoPilotUtils.autoPilotThroughput1K} for autopilot throughput`
+        );
         return false;
       }
     }
