@@ -1,6 +1,7 @@
 /**
  * Notebook container related stuff
  */
+import { useDialog } from "Explorer/Controls/Dialog";
 import promiseRetry, { AbortError } from "p-retry";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import * as Constants from "../../Common/Constants";
@@ -159,6 +160,16 @@ export class NotebookContainerClient {
       return null;
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/resetWorkspace");
+      if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+        useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+      } else {
+        useDialog
+          .getState()
+          .showOkModalDialog(
+            "Connection Failed",
+            "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket."
+          );
+      }
       throw error;
     }
   }
