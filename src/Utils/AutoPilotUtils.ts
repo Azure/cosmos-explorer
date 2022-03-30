@@ -9,8 +9,8 @@ export function isValidAutoPilotThroughput(maxThroughput: number): boolean {
     return false;
   }
   const minAutoPilotThroughput = userContext.features.freetierAutoscaleThroughput
-    ? autoPilotThroughput4K
-    : autoPilotThroughput1K;
+    ? autoPilotThroughput1K
+    : autoPilotThroughput4K;
   if (maxThroughput < minAutoPilotThroughput) {
     return false;
   }
