@@ -1,5 +1,3 @@
-import { userContext } from "UserContext";
-
 export const autoPilotThroughput1K = 1000;
 export const autoPilotIncrementStep = 1000;
 export const autoPilotThroughput4K = 4000;
@@ -8,10 +6,7 @@ export function isValidAutoPilotThroughput(maxThroughput: number): boolean {
   if (!maxThroughput) {
     return false;
   }
-  const minAutoPilotThroughput = userContext.features.freetierAutoscaleThroughput
-    ? autoPilotThroughput4K
-    : autoPilotThroughput1K;
-  if (maxThroughput < minAutoPilotThroughput) {
+  if (maxThroughput < autoPilotThroughput1K) {
     return false;
   }
   if (maxThroughput % 1000) {

@@ -202,6 +202,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.state = {
       ...initialState,
       ...this.getBaselineValues(),
+      ...this.getAutoscaleBaselineValues(),
     };
 
     this.saveSettingsButton = {
@@ -230,7 +231,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.loadMongoIndexes();
     }
 
-    this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -291,17 +291,24 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
-  private setAutoPilotStates = (): void => {
+  private getAutoscaleBaselineValues = (): Partial<SettingsComponentState> => {
     const autoscaleMaxThroughput = this.offer?.autoscaleMaxThroughput;
 
     if (autoscaleMaxThroughput && AutoPilotUtils.isValidAutoPilotThroughput(autoscaleMaxThroughput)) {
-      this.setState({
+      return {
         isAutoPilotSelected: true,
         wasAutopilotOriginallySet: true,
         autoPilotThroughput: autoscaleMaxThroughput,
         autoPilotThroughputBaseline: autoscaleMaxThroughput,
-      });
+      };
     }
+
+    return {
+      isAutoPilotSelected: false,
+      wasAutopilotOriginallySet: false,
+      autoPilotThroughput: undefined,
+      autoPilotThroughputBaseline: undefined,
+    };
   };
 
   public hasProvisioningTypeChanged = (): boolean =>
@@ -567,7 +574,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public setBaseline = (): void => {
     const baselineValues = this.getBaselineValues();
-    this.setState(baselineValues as SettingsComponentState);
+    const autoscaleBaselineValues = this.getAutoscaleBaselineValues();
+    this.setState({ ...baselineValues, ...autoscaleBaselineValues } as SettingsComponentState);
   };
 
   private getBaselineValues = (): Partial<SettingsComponentState> => {

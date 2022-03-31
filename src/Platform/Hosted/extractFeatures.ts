@@ -37,7 +37,6 @@ export type Features = {
   phoenixNotebooks?: boolean;
   phoenixFeatures?: boolean;
   notebooksDownBanner: boolean;
-  freetierAutoscaleThroughput: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -90,7 +89,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
-    freetierAutoscaleThroughput: "true" === get("freetierautoscalethroughput"),
   };
 }
 

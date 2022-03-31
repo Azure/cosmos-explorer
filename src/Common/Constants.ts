@@ -99,7 +99,6 @@ export class Flights {
   public static readonly PhoenixNotebooks = "phoenixnotebooks";
   public static readonly PhoenixFeatures = "phoenixfeatures";
   public static readonly NotebooksDownBanner = "notebooksdownbanner";
-  public static readonly FreeTierAutoscaleThroughput = "freetierautoscalethroughput";
 }
 
 export class AfecFeatures {
