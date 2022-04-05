@@ -58,8 +58,10 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
       await loadTranslations(graphAPICompute.constructor.name);
       return graphAPICompute.toSelfServeDescriptor();
     }
-	case SelfServeType.materializedviewsbuilder: {
-      const MaterializedViewsBuilder = await import(/* webpackChunkName: "MaterializedViewsBuilder" */ "./MaterializedViewsBuilder/MaterializedViewsBuilder");
+    case SelfServeType.materializedviewsbuilder: {
+      const MaterializedViewsBuilder = await import(
+        /* webpackChunkName: "MaterializedViewsBuilder" */ "./MaterializedViewsBuilder/MaterializedViewsBuilder"
+      );
       const materializedViewsBuilder = new MaterializedViewsBuilder.default();
       await loadTranslations(materializedViewsBuilder.constructor.name);
       return materializedViewsBuilder.toSelfServeDescriptor();

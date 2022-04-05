@@ -64,14 +64,15 @@ const onNumberOfInstancesChange = (
   baselineValues: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
-  const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")?.value as boolean;
+  const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
+    ?.value as boolean;
   const baselineInstances = baselineValues.get("instances")?.value as number;
   if (!MaterializedViewsBuilderOriginallyEnabled || baselineInstances !== newValue) {
     currentValues.set("warningBanner", {
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviews-overview",
+          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cassandra-introduction",
           textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
@@ -94,7 +95,8 @@ const onEnableMaterializedViewsBuilderChange = (
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentValues.set("enableMaterializedViewsBuilder", { value: newValue });
-  const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")?.value as boolean;
+  const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
+    ?.value as boolean;
   if (MaterializedViewsBuilderOriginallyEnabled === newValue) {
     currentValues.set("sku", baselineValues.get("sku"));
     currentValues.set("instances", baselineValues.get("instances"));
@@ -110,7 +112,7 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviews-pricing",
+          href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
           textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
@@ -126,7 +128,7 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnDelete",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviews-overview",
+          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cassandra-introduction",
           textTKey: "DeprovisioningDetailsText",
         },
       } as Description,
@@ -186,7 +188,7 @@ const NumberOfInstancesDropdownInfo: Info = {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://aka.ms/cosmos-db-materializedviews-pricing",
+    href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
     textTKey: "MaterializedviewsBuilderPricing",
   },
 };
@@ -247,8 +249,10 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
   ): Promise<OnSaveResult> => {
     selfServeTrace({ selfServeClassName: MaterializedViewsBuilder.name });
 
-    const MaterializedViewsBuilderCurrentlyEnabled = currentValues.get("enableMaterializedViewsBuilder")?.value as boolean;
-    const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")?.value as boolean;
+    const MaterializedViewsBuilderCurrentlyEnabled = currentValues.get("enableMaterializedViewsBuilder")
+      ?.value as boolean;
+    const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
+      ?.value as boolean;
 
     currentValues.set("warningBanner", undefined);
 
@@ -340,7 +344,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
       defaults.set("enableMaterializedViewsBuilder", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: false });
-      defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });      
+      defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
 
       defaults.set("metricsString", {
         value: metricsStringValue,
@@ -361,7 +365,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
       textTKey: "MaterializedViewsBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://aka.ms/cosmos-db-materializedviews-overview",
+        href: "https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cassandra-introduction",
         textTKey: "LearnAboutMaterializedViews",
       },
     },
