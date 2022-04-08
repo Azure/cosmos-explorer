@@ -90,7 +90,7 @@ export function client(): Cosmos.CosmosClient {
   if (_client) return _client;
 
   let _defaultHeaders: CosmosHeaders = {};
-  _defaultHeaders["x-ms-cosmos-sdk-supported-capabilities"] =
+  _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
 
   const options: Cosmos.CosmosClientOptions = {
