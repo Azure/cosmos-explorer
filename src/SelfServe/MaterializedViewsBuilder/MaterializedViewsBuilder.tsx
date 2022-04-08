@@ -32,7 +32,7 @@ const costPerHourDefaultValue: Description = {
   type: DescriptionType.Text,
   link: {
     href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
-    textTKey: "MaterializedviewsPricing",
+    textTKey: "MaterializedviewsBuilderPricing",
   },
 };
 
@@ -72,7 +72,7 @@ const onNumberOfInstancesChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cassandra-introduction",
+          href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
           textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
