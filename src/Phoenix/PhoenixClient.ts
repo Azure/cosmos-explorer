@@ -167,6 +167,9 @@ export class PhoenixClient {
       });
       return response.status === HttpStatusCodes.OK;
     } catch (error) {
+      TelemetryProcessor.traceFailure(Action.PhoenixDBAccountAllowed, {
+        dataExplorerArea: Areas.Notebook,
+      });
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
       return false;
     }

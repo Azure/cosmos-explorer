@@ -44,6 +44,11 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     const effect = async () => {
       if (platform) {
+        //Updating phoenix feature flags for MPAC based of config context
+        if (configContext.isPhoenixEnabled === true) {
+          userContext.features.phoenixNotebooks = true;
+          userContext.features.phoenixFeatures = true;
+        }
         if (platform === Platform.Hosted) {
           const explorer = await configureHosted();
           setExplorer(explorer);
@@ -350,11 +355,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   });
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
-  }
-  //Updating phoenix feature flags for MPAC based of config context
-  if (configContext.isPhoenixEnabled === true) {
-    userContext.features.phoenixNotebooks = true;
-    userContext.features.phoenixFeatures = true;
   }
   if (inputs.flights) {
     if (inputs.flights.indexOf(Flights.AutoscaleTest) !== -1) {
