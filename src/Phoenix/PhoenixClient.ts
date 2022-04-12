@@ -161,9 +161,15 @@ export class PhoenixClient {
 
   public async isDbAcountWhitelisted(): Promise<boolean> {
     try {
+      TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
+        dataExplorerArea: Areas.Notebook,
+      });
       const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
+      });
+      TelemetryProcessor.traceSuccess(Action.PhoenixDBAccountAllowed, {
+        dataExplorerArea: Areas.Notebook,
       });
       return response.status === HttpStatusCodes.OK;
     } catch (error) {
