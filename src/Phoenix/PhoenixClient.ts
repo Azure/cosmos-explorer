@@ -10,7 +10,7 @@ import {
   HttpStatusCodes,
   Notebook,
 } from "../Common/Constants";
-import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import {
@@ -160,13 +160,35 @@ export class PhoenixClient {
   }
 
   public async isDbAcountWhitelisted(): Promise<boolean> {
+    const startKey = TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
+      dataExplorerArea: Areas.Notebook,
+    });
     try {
       const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
       });
+      if (response.status !== HttpStatusCodes.OK) {
+        throw new Error(`Received status code: ${response?.status}`);
+      }
+      TelemetryProcessor.traceSuccess(
+        Action.PhoenixDBAccountAllowed,
+        {
+          dataExplorerArea: Areas.Notebook,
+        },
+        startKey
+      );
       return response.status === HttpStatusCodes.OK;
     } catch (error) {
+      TelemetryProcessor.traceFailure(
+        Action.PhoenixDBAccountAllowed,
+        {
+          dataExplorerArea: Areas.Notebook,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
       return false;
     }
