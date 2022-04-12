@@ -160,10 +160,10 @@ export class PhoenixClient {
   }
 
   public async isDbAcountWhitelisted(): Promise<boolean> {
+    const startKey = TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
+      dataExplorerArea: Areas.Notebook,
+    });
     try {
-      TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
-        dataExplorerArea: Areas.Notebook,
-      });
       const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
@@ -171,16 +171,24 @@ export class PhoenixClient {
       if (response.status !== HttpStatusCodes.OK) {
         throw new Error(`Received status code: ${response?.status}`);
       }
-      TelemetryProcessor.traceSuccess(Action.PhoenixDBAccountAllowed, {
-        dataExplorerArea: Areas.Notebook,
-      });
+      TelemetryProcessor.traceSuccess(
+        Action.PhoenixDBAccountAllowed,
+        {
+          dataExplorerArea: Areas.Notebook,
+        },
+        startKey
+      );
       return response.status === HttpStatusCodes.OK;
     } catch (error) {
-      TelemetryProcessor.traceFailure(Action.PhoenixDBAccountAllowed, {
-        dataExplorerArea: Areas.Notebook,
-        error: getErrorMessage(error),
-        errorStack: getErrorStack(error),
-      });
+      TelemetryProcessor.traceFailure(
+        Action.PhoenixDBAccountAllowed,
+        {
+          dataExplorerArea: Areas.Notebook,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
       return false;
     }
