@@ -10,7 +10,7 @@ import {
   HttpStatusCodes,
   Notebook,
 } from "../Common/Constants";
-import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import {
@@ -168,6 +168,9 @@ export class PhoenixClient {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
       });
+      if (response.status !== HttpStatusCodes.OK) {
+        throw new Error(`Received status code: ${response?.status}`);
+      }
       TelemetryProcessor.traceSuccess(Action.PhoenixDBAccountAllowed, {
         dataExplorerArea: Areas.Notebook,
       });
@@ -175,6 +178,8 @@ export class PhoenixClient {
     } catch (error) {
       TelemetryProcessor.traceFailure(Action.PhoenixDBAccountAllowed, {
         dataExplorerArea: Areas.Notebook,
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error),
       });
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
       return false;
