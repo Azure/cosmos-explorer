@@ -906,16 +906,6 @@ export default class DocumentsTab extends TabsBase {
     this.updateNavbarWithTabsButtons();
   }
 
-  private _getPartitionKeyPropertyHeader(): string {
-    return (
-      (this.partitionKey &&
-        this.partitionKey.paths &&
-        this.partitionKey.paths.length > 0 &&
-        this.partitionKey.paths[0]) ||
-      null
-    );
-  }
-
   public static _createUploadButton(container: Explorer): CommandButtonComponentProps {
     const label = "Upload Item";
     return {
