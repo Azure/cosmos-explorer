@@ -31,7 +31,7 @@ const costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
-    href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
+    href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
     textTKey: "MaterializedviewsBuilderPricing",
   },
 };
@@ -45,6 +45,7 @@ const metricsStringValue: Description = {
   },
 };
 
+const CosmosD2s = "Cosmos.D2s";
 const CosmosD4s = "Cosmos.D4s";
 const CosmosD8s = "Cosmos.D8s";
 const CosmosD16s = "Cosmos.D16s";
@@ -72,7 +73,7 @@ const onNumberOfInstancesChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
+          href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
           textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
@@ -112,7 +113,7 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
+          href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
           textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
@@ -128,7 +129,7 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnDelete",
         link: {
-          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cassandra-introduction",
+          href: "https://aka.ms/cosmos-db-materializedviews",
           textTKey: "DeprovisioningDetailsText",
         },
       } as Description,
@@ -160,6 +161,7 @@ const onEnableMaterializedViewsBuilderChange = (
 };
 
 const skuDropDownItems: ChoiceItem[] = [
+  { labelTKey: "CosmosD2s", key: CosmosD2s },
   { labelTKey: "CosmosD4s", key: CosmosD4s },
   { labelTKey: "CosmosD8s", key: CosmosD8s },
   { labelTKey: "CosmosD16s", key: CosmosD16s },
@@ -180,7 +182,7 @@ const getInstancesMax = async (): Promise<number> => {
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: "ResizingDecisionText",
   link: {
-    href: "https://aka.ms/cosmos-db-materializedviews-size",
+    href: "https://aka.ms/cosmos-db-materializedviewbuilders-size",
     textTKey: "ResizingDecisionLink",
   },
 };
@@ -188,7 +190,7 @@ const NumberOfInstancesDropdownInfo: Info = {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://azure.microsoft.com/en-in/pricing/details/cosmos-db/",
+    href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
     textTKey: "MaterializedviewsBuilderPricing",
   },
 };
@@ -326,7 +328,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
     // Based on the RP call enableMaterializedViewsBuilder will be true if it has not yet been enabled and false if it has.
     const defaults = new Map<string, SmartUiInput>();
     defaults.set("enableMaterializedViewsBuilder", { value: false });
-    defaults.set("sku", { value: CosmosD4s, hidden: true });
+    defaults.set("sku", { value: CosmosD2s, hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
     defaults.set("costPerHour", undefined);
     defaults.set("metricsString", {
@@ -365,7 +367,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
       textTKey: "MaterializedViewsBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cassandra-introduction",
+        href: "https://aka.ms/cosmos-db-materializedviews",
         textTKey: "LearnAboutMaterializedViews",
       },
     },
