@@ -37,7 +37,7 @@ describe("Collection", () => {
         version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
-      expect(collection.partitionKeyProperty).toBe("somePartitionKey.anotherPartitionKey");
+      expect(collection.partitionKeyProperties).toBe(["somePartitionKey.anotherPartitionKey"]);
     });
 
     it("should strip out forward slashes from single partition key paths", () => {
@@ -47,7 +47,7 @@ describe("Collection", () => {
         version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
-      expect(collection.partitionKeyProperty).toBe("somePartitionKey");
+      expect(collection.partitionKeyProperties).toBe(["somePartitionKey"]);
     });
   });
 
@@ -61,7 +61,7 @@ describe("Collection", () => {
         version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
-      expect(collection.partitionKeyPropertyHeader).toBe("/somePartitionKey/anotherPartitionKey");
+      expect(collection.partitionKeyPropertyHeaders).toBe(["/somePartitionKey/anotherPartitionKey"]);
     });
 
     it("should preserve forward slash on a single partition key", () => {
@@ -71,7 +71,7 @@ describe("Collection", () => {
         version: 2,
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
-      expect(collection.partitionKeyPropertyHeader).toBe("/somePartitionKey");
+      expect(collection.partitionKeyPropertyHeaders).toBe(["/somePartitionKey"]);
     });
 
     it("should be null if there is no partition key", () => {
@@ -81,7 +81,7 @@ describe("Collection", () => {
         kind: "Hash",
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
-      expect(collection.partitionKeyPropertyHeader).toBeNull();
+      expect(collection.partitionKeyPropertyHeaders).toBeNull();
     });
   });
 });

@@ -65,8 +65,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   constructor(props: SubSettingsComponentProps) {
     super(props);
     this.geospatialVisible = userContext.apiType === "SQL";
-    this.partitionKeyValue = "/" + this.props.collection.partitionKeyProperty;
     this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
+    this.partitionKeyValue = this.getPartitionKeyValue();
   }
 
   componentDidMount(): void {
@@ -250,6 +250,23 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     </Stack>
   );
 
+  private getPartitionKeyValue = (): string => {
+    const partitionKeyValueProperties = this.props.collection.partitionKeyProperties;
+    if (!partitionKeyValueProperties || partitionKeyValueProperties.length === 0) {
+      return "";
+    }
+
+    let partitionKeyValue = "/" + partitionKeyValueProperties[0];
+
+    if (partitionKeyValueProperties.length > 1) {
+      for (let i = 1; i < partitionKeyValueProperties.length; i++) {
+        partitionKeyValue += ", /" + partitionKeyValueProperties[i];
+      }
+    }
+
+    return partitionKeyValue;
+  };
+
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: GeospatialConfigType.Geography, text: "Geography" },
     { key: GeospatialConfigType.Geometry, text: "Geometry" },
@@ -310,7 +327,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     if (
       userContext.apiType === "Cassandra" ||
       userContext.apiType === "Tables" ||
-      !this.props.collection.partitionKeyProperty ||
+      !this.props.collection.partitionKeyProperties ||
+      this.props.collection.partitionKeyProperties.length === 0 ||
       (userContext.apiType === "Mongo" && this.props.collection.partitionKey.systemKey)
     ) {
       return false;

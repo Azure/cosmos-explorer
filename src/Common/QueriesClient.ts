@@ -149,10 +149,10 @@ export class QueriesClient {
     const documentId = new DocumentId(
       {
         partitionKey: QueriesClient.PartitionKey,
-        partitionKeyProperty: "id",
+        partitionKeyProperties: ["id"],
       } as DocumentsTab,
       query,
-      query.queryName
+      [query.queryName]
     ); // TODO: Remove DocumentId's dependency on DocumentsTab
     const options: any = { partitionKey: query.resourceId };
     return deleteDocument(queriesCollection, documentId)

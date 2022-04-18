@@ -126,7 +126,7 @@ export function convertEntitiesToDocuments(
       };
       if (collection.partitionKey) {
         document["partitionKey"] = collection.partitionKey;
-        document[collection.partitionKeyProperty] = entity.PartitionKey._;
+        document[collection.partitionKeyProperties[0]] = entity.PartitionKey._;
         document["partitionKeyValue"] = entity.PartitionKey._;
       }
       for (var property in entity) {

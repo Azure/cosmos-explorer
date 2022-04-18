@@ -25,12 +25,12 @@ const fetchMock = () => {
   });
 };
 
-const partitionKeyProperty = "pk";
+const partitionKeyProperties = ["pk"];
 
 const collection = {
   id: () => "testCollection",
   rid: "testCollectionrid",
-  partitionKeyProperty,
+  partitionKeyProperties,
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
@@ -41,7 +41,7 @@ const collection = {
 const documentId = ({
   partitionKeyHeader: () => "[]",
   self: "db/testDB/db/testCollection/docs/testId",
-  partitionKeyProperty,
+  partitionKeyProperties,
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
