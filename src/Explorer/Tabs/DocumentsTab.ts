@@ -50,7 +50,7 @@ export default class DocumentsTab extends TabsBase {
   public editorState: ko.Observable<ViewModels.DocumentExplorerState>;
   public newDocumentButton: ViewModels.Button;
   public saveNewDocumentButton: ViewModels.Button;
-  public saveExisitingDocumentButton: ViewModels.Button;
+  public saveExistingDocumentButton: ViewModels.Button;
   public discardNewDocumentChangesButton: ViewModels.Button;
   public discardExisitingDocumentChangesButton: ViewModels.Button;
   public deleteExisitingDocumentButton: ViewModels.Button;
@@ -65,8 +65,8 @@ export default class DocumentsTab extends TabsBase {
 
   // TODO need to refactor
   public partitionKey: DataModels.PartitionKey;
-  public partitionKeyPropertyHeader: string;
-  public partitionKeyProperty: string;
+  public partitionKeyPropertyHeaders: string[];
+  public partitionKeyProperties: string[];
   public documentIds: ko.ObservableArray<DocumentId>;
 
   private _documentsIterator: QueryIterator<ItemDefinition & Resource>;
@@ -90,11 +90,10 @@ export default class DocumentsTab extends TabsBase {
     this._resourceTokenPartitionKey = options.resourceTokenPartitionKey;
     this.documentIds = options.documentIds;
 
-    this.partitionKeyPropertyHeader =
-      (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
-    this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
-      ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
-      : null;
+    this.partitionKeyPropertyHeaders = this.collection?.partitionKeyPropertyHeaders || this.partitionKey?.paths;
+    this.partitionKeyProperties = this.partitionKeyPropertyHeaders.map((partitionKeyPropertyHeader) =>
+      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "")
+    );
 
     this.isFilterExpanded = ko.observable<boolean>(false);
     this.isFilterCreated = ko.observable<boolean>(true);
@@ -227,7 +226,7 @@ export default class DocumentsTab extends TabsBase {
       }),
     };
 
-    this.saveExisitingDocumentButton = {
+    this.saveExistingDocumentButton = {
       enabled: ko.computed<boolean>(() => {
         switch (this.editorState()) {
           case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
@@ -445,8 +444,7 @@ export default class DocumentsTab extends TabsBase {
             savedDocument,
             this.partitionKey as PartitionKeyDefinition
           );
-          const partitionKeyValue = partitionKeyValueArray && partitionKeyValueArray[0];
-          let id = new DocumentId(this, savedDocument, partitionKeyValue);
+          let id = new DocumentId(this, savedDocument, partitionKeyValueArray);
           let ids = this.documentIds();
           ids.push(id);
 
@@ -489,14 +487,12 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   };
 
-  public onSaveExisitingDocumentClick = (): Promise<any> => {
+  public onSaveExistingDocumentClick = (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = JSON.parse(this.selectedDocumentContent());
 
     const partitionKeyValueArray = extractPartitionKey(documentContent, this.partitionKey as PartitionKeyDefinition);
-    const partitionKeyValue = partitionKeyValueArray && partitionKeyValueArray[0];
-
-    selectedDocumentId.partitionKeyValue = partitionKeyValue;
+    selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
@@ -800,7 +796,7 @@ export default class DocumentsTab extends TabsBase {
   }
 
   public buildQuery(filter: string): string {
-    return QueryUtils.buildDocumentsQuery(filter, this.partitionKeyProperty, this.partitionKey);
+    return QueryUtils.buildDocumentsQuery(filter, this.partitionKeyProperties, this.partitionKey);
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
@@ -844,16 +840,16 @@ export default class DocumentsTab extends TabsBase {
       });
     }
 
-    if (this.saveExisitingDocumentButton.visible()) {
+    if (this.saveExistingDocumentButton.visible()) {
       const label = "Update";
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
-        onCommandClick: this.onSaveExisitingDocumentClick,
+        onCommandClick: this.onSaveExistingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveExisitingDocumentButton.enabled(),
+        disabled: !this.saveExistingDocumentButton.enabled(),
       });
     }
 
@@ -899,8 +895,8 @@ export default class DocumentsTab extends TabsBase {
         this.saveNewDocumentButton.enabled,
         this.discardNewDocumentChangesButton.visible,
         this.discardNewDocumentChangesButton.enabled,
-        this.saveExisitingDocumentButton.visible,
-        this.saveExisitingDocumentButton.enabled,
+        this.saveExistingDocumentButton.visible,
+        this.saveExistingDocumentButton.enabled,
         this.discardExisitingDocumentChangesButton.visible,
         this.discardExisitingDocumentChangesButton.enabled,
         this.deleteExisitingDocumentButton.visible,

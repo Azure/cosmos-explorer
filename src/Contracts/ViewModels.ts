@@ -106,8 +106,8 @@ export interface CollectionBase extends TreeNode {
   self: string;
   rawDataModel: DataModels.Collection;
   partitionKey: DataModels.PartitionKey;
-  partitionKeyProperty: string;
-  partitionKeyPropertyHeader: string;
+  partitionKeyProperties: string[];
+  partitionKeyPropertyHeaders: string[];
   id: ko.Observable<string>;
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
   children: ko.ObservableArray<TreeNode>;

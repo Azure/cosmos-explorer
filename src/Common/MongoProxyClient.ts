@@ -76,7 +76,7 @@ export function queryDocuments(
     dba: databaseAccount.name,
     pk:
       collection && collection.partitionKey && !collection.partitionKey.systemKey
-        ? collection.partitionKeyProperty
+        ? collection.partitionKeyProperties?.[0]
         : "",
   };
 
@@ -139,7 +139,7 @@ export function readDocument(
     dba: databaseAccount.name,
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperty
+        ? documentId.partitionKeyProperties?.[0]
         : "",
   };
 
@@ -225,7 +225,7 @@ export function updateDocument(
     dba: databaseAccount.name,
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperty
+        ? documentId.partitionKeyProperties?.[0]
         : "",
   };
   const endpoint = getFeatureEndpointOrDefault("updateDocument");
@@ -266,7 +266,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
     dba: databaseAccount.name,
     pk:
       documentId && documentId.partitionKey && !documentId.partitionKey.systemKey
-        ? documentId.partitionKeyProperty
+        ? documentId.partitionKeyProperties?.[0]
         : "",
   };
   const endpoint = getFeatureEndpointOrDefault("deleteDocument");
