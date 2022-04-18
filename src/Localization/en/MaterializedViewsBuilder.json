@@ -1,14 +1,15 @@
 {
-    "MaterializedViewsBuilderDescription": "Provision a Materializedviews builder cluster for your Azure Cosmos DB account. Materializedviews builder is compute in your account by that performs read operations on source collection for any updates and applies them on materialized views depending on the materializedview definition.",
+    "MaterializedViewsBuilderDescription": "Provision a Materializedviews builder cluster for your Azure Cosmos DB account. Materializedviews builder is compute in your account that performs read operations on source collection for any updates and applies them on materialized views as per the materializedview definition.",
     "MaterializedViewsBuilder": "Materializedviews Builder",
     "Provisioned": "Provisioned",
     "Deprovisioned": "Deprovisioned",
     "LearnAboutMaterializedViews": "Learn more about materializedviews.",
-    "DeprovisioningDetailsText": "Learn more about deprovisioning the materializedviews builder.",
+    "DeprovisioningDetailsText": "Learn more about materializedviews.",
     "MaterializedviewsBuilderPricing": "Learn more about materializedviews pricing.",
     "SKUs": "SKUs",
     "SKUsPlaceHolder": "Select SKUs",
     "NumberOfInstances": "Number of instances",
+	"CosmosD2s": "Cosmos.D2s (General Purpose Cosmos Compute with 2 vCPUs, 8 GB Memory)",
     "CosmosD4s": "Cosmos.D4s (General Purpose Cosmos Compute with 4 vCPUs, 16 GB Memory)",
     "CosmosD8s": "Cosmos.D8s (General Purpose Cosmos Compute with 8 vCPUs, 32 GB Memory)",
     "CosmosD16s": "Cosmos.D16s (General Purpose Cosmos Compute with 16 vCPUs, 64 GB Memory)",
@@ -40,5 +41,5 @@
     "ResizingDecisionText": "To understand if the Materializedviews Builder is the right size, ",
     "ResizingDecisionLink": "learn more about Materializedviews Builder sizing.",
     "WarningBannerOnUpdate": "Adding or modifying Materializedviews Builder instances may affect your bill.",
-    "WarningBannerOnDelete": "After deprovisioning the Materializedviews Builder, you must update any applications using the old Materializedviews Builder connection string."
+    "WarningBannerOnDelete": "After deprovisioning the Materializedviews Builder, your materializedviews will not be updated with new source changes anymore. Materializedviews builder is compute in your account that performs read operations on source collection for any updates and applies them on materialized views as per the materializedview definition."
 }
