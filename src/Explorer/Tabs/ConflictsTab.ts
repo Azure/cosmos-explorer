@@ -50,8 +50,8 @@ export default class ConflictsTab extends TabsBase {
   public splitter: Splitter;
 
   public partitionKey: DataModels.PartitionKey;
-  public partitionKeyPropertyHeaders: string[];
-  public partitionKeyProperties: string[];
+  public partitionKeyPropertyHeader: string;
+  public partitionKeyProperty: string;
   public conflictOperation: ko.Observable<string> = ko.observable<string>();
   public conflictIds: ko.ObservableArray<ConflictId>;
 
@@ -73,10 +73,11 @@ export default class ConflictsTab extends TabsBase {
     this.selectedConflictCurrent = editable.observable<any>("");
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
     this.conflictIds = options.conflictIds;
-    this.partitionKeyPropertyHeaders = this.collection?.partitionKeyPropertyHeaders || this.partitionKey?.paths;
-    this.partitionKeyProperties = this.partitionKeyPropertyHeaders.map((partitionKeyPropertyHeader) =>
-      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "")
-    );
+    this.partitionKeyPropertyHeader =
+      this.collection?.partitionKeyPropertyHeaders?.[0] || this._getPartitionKeyPropertyHeader();
+    this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
+      ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
+      : null;
 
     this.dataContentsGridScrollHeight = ko.observable<string>(null);
 
@@ -673,5 +674,15 @@ export default class ConflictsTab extends TabsBase {
     delete jsonObject["_attachments"];
 
     return jsonObject;
+  }
+
+  private _getPartitionKeyPropertyHeader(): string {
+    return (
+      (this.partitionKey &&
+        this.partitionKey.paths &&
+        this.partitionKey.paths.length > 0 &&
+        this.partitionKey.paths[0]) ||
+      null
+    );
   }
 }
