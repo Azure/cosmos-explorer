@@ -1,11 +1,11 @@
-import { GraphData, GremlinVertex, GremlinEdge } from "./GraphData";
+import { GraphData, GremlinEdge, GremlinVertex } from "./GraphData";
 
 describe("Graph Data", () => {
   it("should set only one node as root", () => {
     const graphData = new GraphData<GremlinVertex, GremlinEdge>();
-    const v1: GremlinVertex = { id: "1", label: null };
-    const v2: GremlinVertex = { id: "2", label: null };
-    const v3: GremlinVertex = { id: "3", label: null };
+    const v1: GremlinVertex = { id: "1", label: undefined };
+    const v2: GremlinVertex = { id: "2", label: undefined };
+    const v3: GremlinVertex = { id: "3", label: undefined };
     v3._isRoot = true;
 
     graphData.addVertex(v1);
@@ -28,9 +28,9 @@ describe("Graph Data", () => {
 
   it("should properly find root id", () => {
     const graphData = new GraphData();
-    const v1: GremlinVertex = { id: "1", label: null };
-    const v2: GremlinVertex = { id: "2", label: null };
-    const v3: GremlinVertex = { id: "3", label: null };
+    const v1: GremlinVertex = { id: "1", label: undefined };
+    const v2: GremlinVertex = { id: "2", label: undefined };
+    const v3: GremlinVertex = { id: "3", label: undefined };
 
     graphData.addVertex(v1);
     graphData.addVertex(v2);
@@ -44,12 +44,12 @@ describe("Graph Data", () => {
   it("should remove edge from graph", () => {
     const graphData = new GraphData();
 
-    graphData.addVertex({ id: "v1", label: null });
-    graphData.addVertex({ id: "v2", label: null });
-    graphData.addVertex({ id: "v3", label: null });
+    graphData.addVertex({ id: "v1", label: undefined });
+    graphData.addVertex({ id: "v2", label: undefined });
+    graphData.addVertex({ id: "v3", label: undefined });
 
-    graphData.addEdge({ id: "e1", inV: "v1", outV: "v2", label: null });
-    graphData.addEdge({ id: "e2", inV: "v1", outV: "v3", label: null });
+    graphData.addEdge({ id: "e1", inV: "v1", outV: "v2", label: "" });
+    graphData.addEdge({ id: "e2", inV: "v1", outV: "v3", label: "" });
 
     // in edge
     graphData.removeEdge("e1", false);
