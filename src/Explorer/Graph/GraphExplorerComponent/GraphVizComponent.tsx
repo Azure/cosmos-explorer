@@ -54,7 +54,9 @@ export class GraphVizComponent extends React.Component<GraphVizComponentProps> {
                 }
               }
               xmlSpace="preserve"
+              aria-label="Load more icon"
             >
+              <title>Load More Icon</title>
               <g style={{ opacity: 1 }}>
                 <g>
                   <g style={{ opacity: 0.4 }}>
@@ -151,6 +153,7 @@ export class GraphVizComponent extends React.Component<GraphVizComponentProps> {
               width="20px"
               height="20px"
             >
+              <title>Triangle Right</title>
               <polygon points="0.5,10 0.5,0 5.2,5 " />
             </svg>
             {/*<!-- Make whole area clickable instead of the shape -->*/}
