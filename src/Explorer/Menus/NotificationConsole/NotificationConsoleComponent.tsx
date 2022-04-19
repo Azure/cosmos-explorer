@@ -27,7 +27,7 @@ export interface NotificationConsoleComponentProps {
 }
 
 interface NotificationConsoleComponentState {
-  headerStatus: string;
+  headerStatus: string | undefined;
   selectedFilter: string;
   allConsoleData: ConsoleData[];
 }
@@ -44,7 +44,7 @@ export class NotificationConsoleComponent extends React.Component<
     { key: "Error", text: "Error" },
   ];
   private headerTimeoutId?: number;
-  private prevHeaderStatus: string;
+  private prevHeaderStatus: string | undefined;
   private consoleHeaderElement?: HTMLElement;
 
   constructor(props: NotificationConsoleComponentProps) {
@@ -99,7 +99,7 @@ export class NotificationConsoleComponent extends React.Component<
         <div
           className="notificationConsoleHeader"
           id="notificationConsoleHeader"
-          ref={this.setElememntRef}
+          ref={this.setElememntRef as React.LegacyRef<HTMLDivElement>}
           onClick={() => this.expandCollapseConsole()}
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
           tabIndex={0}
@@ -150,7 +150,7 @@ export class NotificationConsoleComponent extends React.Component<
                 role="combobox"
                 selectedKey={this.state.selectedFilter}
                 options={NotificationConsoleComponent.FilterOptions}
-                onChange={this.onFilterSelected.bind(this)}
+                onChange={() => this.onFilterSelected.bind(this)}
                 aria-labelledby="consoleFilterLabel"
                 aria-label={this.state.selectedFilter}
               />
@@ -212,12 +212,12 @@ export class NotificationConsoleComponent extends React.Component<
     ));
   }
 
-  private onFilterSelected = (event: React.ChangeEvent<HTMLSelectElement>, option: IDropdownOption): void => {
+  private onFilterSelected = (option: IDropdownOption): void => {
     this.setState({ selectedFilter: String(option.key) });
   };
 
   private getFilteredConsoleData(): ConsoleData[] {
-    let filterType: ConsoleDataType;
+    let filterType: ConsoleDataType | undefined;
 
     switch (this.state.selectedFilter) {
       case "In Progress":
@@ -310,7 +310,8 @@ const PrPreview = (props: { pr: string }) => {
 export const NotificationConsole: React.FC = () => {
   const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
   const isExpanded = useNotificationConsole((state) => state.isExpanded);
-  const consoleData = useNotificationConsole((state) => state.consoleData);
+  //eslint-disable-next-line
+  const consoleData = useNotificationConsole((state) => state.consoleData!);
   const inProgressConsoleDataIdToBeDeleted = useNotificationConsole(
     (state) => state.inProgressConsoleDataIdToBeDeleted
   );

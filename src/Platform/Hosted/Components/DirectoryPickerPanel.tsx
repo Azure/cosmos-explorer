@@ -1,4 +1,4 @@
-import { Panel, PanelType, ChoiceGroup } from "@fluentui/react";
+import { ChoiceGroup, Panel, PanelType } from "@fluentui/react";
 import * as React from "react";
 import { useDirectories } from "../../../hooks/useDirectories";
 
@@ -7,7 +7,7 @@ interface Props {
   dismissPanel: () => void;
   tenantId: string;
   armToken: string;
-  switchTenant: (tenantId: string) => void;
+  switchTenant: (tenantId: string | undefined) => void;
 }
 
 export const DirectoryPickerPanel: React.FunctionComponent<Props> = ({
@@ -29,8 +29,8 @@ export const DirectoryPickerPanel: React.FunctionComponent<Props> = ({
       <ChoiceGroup
         options={directories.map((dir) => ({ key: dir.tenantId, text: `${dir.displayName} (${dir.tenantId})` }))}
         selectedKey={tenantId}
-        onChange={(event, option) => {
-          switchTenant(option.key);
+        onChange={(_event, option) => {
+          switchTenant(option?.key);
           dismissPanel();
         }}
       />
