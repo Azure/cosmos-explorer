@@ -143,7 +143,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                   <TextField
                     className="edgeInput"
                     type="text"
-                    id="propertyKeyNewVertexPane"
+                    id={`propertyKeyNewVertexPane${index + 1}`}
                     componentRef={input}
                     placeholder="Key"
                     autoComplete="off"
