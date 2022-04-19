@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { extractPartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
@@ -44,7 +46,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     super.buildCommandBarOptions();
   }
 
-  public onSaveNewDocumentClick = (): Promise<any> => {
+  public onSaveNewDocumentClick = (): Promise<void> => {
     const documentContent = JSON.parse(this.selectedDocumentContent());
     this.displayedError("");
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
@@ -59,9 +61,8 @@ export default class MongoDocumentsTab extends DocumentsTab {
     ) {
       const message = `The document is lacking the shard property: ${this.partitionKeyProperty}`;
       this.displayedError(message);
-      let that = this;
       setTimeout(() => {
-        that.displayedError("");
+        this.displayedError("");
       }, Constants.ClientDefaults.errorNotificationTimeoutMs);
       this.isExecutionError(true);
       TelemetryProcessor.traceFailure(
@@ -82,19 +83,19 @@ export default class MongoDocumentsTab extends DocumentsTab {
     return createDocument(this.collection.databaseId, this.collection, this.partitionKeyProperty, documentContent)
       .then(
         (savedDocument: any) => {
-          let partitionKeyArray = extractPartitionKey(
+          const partitionKeyArray = extractPartitionKey(
             savedDocument,
             this._getPartitionKeyDefinition() as PartitionKeyDefinition
           );
 
-          let partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
+          const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
 
-          let id = new ObjectId(this, savedDocument, partitionKeyValue);
-          let ids = this.documentIds();
+          const id = new ObjectId(this, savedDocument, partitionKeyValue);
+          const ids = this.documentIds();
           ids.push(id);
           delete savedDocument._self;
 
-          let value: string = this.renderObjectForEditor(savedDocument || {}, null, 4);
+          const value: string = this.renderObjectForEditor(savedDocument || {}, null, 4);
           this.selectedDocumentContent.setBaseline(value);
 
           this.selectedDocumentId(id);
@@ -128,7 +129,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       .finally(() => this.isExecuting(false));
   };
 
-  public onSaveExisitingDocumentClick = (): Promise<any> => {
+  public onSaveExisitingDocumentClick = (): Promise<void> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = this.selectedDocumentContent();
     this.isExecutionError(false);
@@ -141,7 +142,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     return updateDocument(this.collection.databaseId, this.collection, selectedDocumentId, documentContent)
       .then(
         (updatedDocument: any) => {
-          let value: string = this.renderObjectForEditor(updatedDocument || {}, null, 4);
+          const value: string = this.renderObjectForEditor(updatedDocument || {}, null, 4);
           this.selectedDocumentContent.setBaseline(value);
 
           this.documentIds().forEach((documentId: DocumentId) => {
@@ -151,7 +152,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 this._getPartitionKeyDefinition() as PartitionKeyDefinition
               );
 
-              let partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
+              const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
 
               const id = new ObjectId(this, updatedDocument, partitionKeyValue);
               documentId.id(id.id());
@@ -196,7 +197,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     this.initDocumentEditor(documentId, content);
   }
 
-  public loadNextPage(): Q.Promise<any> {
+  public loadNextPage(): Q.Promise<void> {
     this.isExecuting(true);
     this.isExecutionError(false);
     const filter: string = this.filterContent().trim();
@@ -228,7 +229,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
             this.selectedDocumentId(null);
             this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
           }
-          if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+          if (this.onLoadStartKey !== null && this.onLoadStartKey !== undefined) {
             TelemetryProcessor.traceSuccess(
               Action.Tab,
               {
@@ -243,8 +244,8 @@ export default class MongoDocumentsTab extends DocumentsTab {
             this.onLoadStartKey = null;
           }
         },
-        (error: any) => {
-          if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+        (error: Error) => {
+          if (this.onLoadStartKey !== null && this.onLoadStartKey !== undefined) {
             TelemetryProcessor.traceFailure(
               Action.Tab,
               {
@@ -265,13 +266,13 @@ export default class MongoDocumentsTab extends DocumentsTab {
       .finally(() => this.isExecuting(false));
   }
 
-  protected _onEditorContentChange(newContent: string) {
+  protected _onEditorContentChange(newContent: string): void {
     try {
       if (
         this.editorState() === ViewModels.DocumentExplorerState.newDocumentValid ||
         this.editorState() === ViewModels.DocumentExplorerState.newDocumentInvalid
       ) {
-        let parsed: any = JSON.parse(newContent);
+        const parsed: any = JSON.parse(newContent);
       }
 
       // Mongo uses BSON format for _id, trying to parse it as JSON blocks normal flow in an edit

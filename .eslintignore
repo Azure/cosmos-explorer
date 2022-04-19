@@ -85,14 +85,10 @@ src/Explorer/Tables/DataTable/DataTableViewModel.ts
 src/Explorer/Tables/DataTable/TableEntityListViewModel.ts
 src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
 src/Explorer/Tables/TableDataClient.ts
-src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
 src/Explorer/Tabs/ConflictsTab.ts
-src/Explorer/Tabs/DatabaseSettingsTab.ts
 src/Explorer/Tabs/DocumentsTab.test.ts
 src/Explorer/Tabs/DocumentsTab.ts
-src/Explorer/Tabs/GraphTab.ts
-src/Explorer/Tabs/MongoDocumentsTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
 src/Explorer/Tabs/TabComponents.ts
