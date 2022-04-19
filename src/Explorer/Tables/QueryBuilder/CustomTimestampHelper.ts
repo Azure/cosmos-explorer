@@ -1,12 +1,12 @@
+import * as DateTimeUtilities from "./DateTimeUtilities";
 import QueryBuilderViewModel from "./QueryBuilderViewModel";
 import QueryClauseViewModel from "./QueryClauseViewModel";
-import * as DateTimeUtilities from "./DateTimeUtilities";
 
 /**
  * Constants
  */
-export var utc = "utc";
-export var local = "local";
+export const utc = "utc";
+export const local = "local";
 
 export interface ITimestampQuery {
   queryType: string; // valid values are "last" and "range"
@@ -41,11 +41,11 @@ export function addRangeTimestamp(
   queryBuilderViewModel.addCustomRange(timestamp, queryClauseViewModel);
 }
 
-export function getDefaultStart(localTime: boolean, durationHours: number = 24): string {
-  var startTimestamp: string;
+export function getDefaultStart(localTime: boolean, durationHours = 24): string {
+  let startTimestamp: string;
 
-  var utcNowString: string = new Date().toISOString();
-  var yesterday: Date = new Date(utcNowString);
+  const utcNowString: string = new Date().toISOString();
+  const yesterday: Date = new Date(utcNowString);
 
   yesterday.setHours(yesterday.getHours() - durationHours);
   startTimestamp = yesterday.toISOString();
@@ -58,9 +58,9 @@ export function getDefaultStart(localTime: boolean, durationHours: number = 24):
 }
 
 export function getDefaultEnd(localTime: boolean): string {
-  var endTimestamp: string;
+  let endTimestamp: string;
 
-  var utcNowString: string = new Date().toISOString();
+  const utcNowString: string = new Date().toISOString();
 
   endTimestamp = utcNowString;
 
@@ -73,14 +73,14 @@ export function getDefaultEnd(localTime: boolean): string {
 
 export function parseDate(dateString: string, isUTC: boolean): Date {
   // TODO validate dateString
-  var date: Date = null;
+  let date: Date = null;
 
   if (dateString) {
     try {
       // Date string is assumed to be UTC in Storage Explorer Standalone.
       // Behavior may vary in other browsers.
       // Here's an example of how the string looks like "2015-10-24T21:44:12"
-      var millisecondTime = Date.parse(dateString),
+      const millisecondTime = Date.parse(dateString),
         parsed: Date = new Date(millisecondTime);
 
       if (isUTC) {
@@ -89,7 +89,7 @@ export function parseDate(dateString: string, isUTC: boolean): Date {
         // Since we parsed in UTC, accessors are flipped - we get local time from the getUTC* group
         // Reinstating, the date is parsed above as UTC, and here we are creating a new date object
         // in local time.
-        var year = parsed.getUTCFullYear(),
+        const year = parsed.getUTCFullYear(),
           month = parsed.getUTCMonth(),
           day = parsed.getUTCDate(),
           hours = parsed.getUTCHours(),
@@ -109,8 +109,8 @@ export function parseDate(dateString: string, isUTC: boolean): Date {
 
 export function utcFromLocalDateString(localDateString: string): string {
   // TODO validate localDateString
-  var localDate = parseDate(localDateString, false),
-    utcDateString: string = null;
+  const localDate = parseDate(localDateString, false);
+  let utcDateString: string = null;
 
   if (localDate) {
     utcDateString = localDate.toISOString();
@@ -120,7 +120,7 @@ export function utcFromLocalDateString(localDateString: string): string {
 }
 
 function padIfNeeded(value: number): string {
-  var padded: string = String(value);
+  let padded = String(value);
 
   if (0 <= value && value < 10) {
     padded = "0" + padded;
@@ -130,7 +130,7 @@ function padIfNeeded(value: number): string {
 }
 
 function toLocalDateString(date: Date): string {
-  var localDateString: string = null;
+  let localDateString: string = null;
 
   if (date) {
     localDateString =
@@ -152,8 +152,8 @@ function toLocalDateString(date: Date): string {
 
 export function localFromUtcDateString(utcDateString: string): string {
   // TODO validate utcDateString
-  var utcDate: Date = parseDate(utcDateString, true),
-    localDateString: string = null;
+  const utcDate: Date = parseDate(utcDateString, true);
+  let localDateString: string = null;
 
   if (utcDate) {
     localDateString = toLocalDateString(utcDate);
@@ -164,8 +164,8 @@ export function localFromUtcDateString(utcDateString: string): string {
 
 export function tryChangeTimestampTimeZone(koTimestamp: ko.Observable<string>, toUTC: boolean): void {
   if (koTimestamp) {
-    var currentDateString: string = koTimestamp(),
-      newDateString: string;
+    const currentDateString: string = koTimestamp();
+    let newDateString: string;
 
     if (currentDateString) {
       if (toUTC) {
@@ -189,16 +189,16 @@ export function tryChangeTimestampTimeZone(koTimestamp: ko.Observable<string>, t
  * Input validation helpers
  */
 
-export var noTooltip = "",
+export const noTooltip = "",
   invalidStartTimeTooltip = "Please provide a valid start time.", // localize
   invalidExpiryTimeRequiredTooltip = "Required field. Please provide a valid expiry time.", // localize
   invalidExpiryTimeGreaterThanStartTimeTooltip = "The expiry time must be greater than the start time."; // localize
 
 export function isDateString(dateString: string): boolean {
-  var success: boolean = false;
+  let success = false;
 
   if (dateString) {
-    var date: number = Date.parse(dateString);
+    const date = Date.parse(dateString);
 
     success = $.isNumeric(date);
   }
@@ -308,10 +308,10 @@ function _getLocalIsoDateStringFromParts(
 }
 
 function _addDaysHours(time: Date, days: number, hours: number): Date {
-  var msPerHour = 1000 * 60 * 60;
-  var daysMs = days * msPerHour * 24;
-  var hoursMs = hours * msPerHour;
-  var newTimeMs = time.getTime() + daysMs + hoursMs;
+  const msPerHour = 1000 * 60 * 60;
+  const daysMs = days * msPerHour * 24;
+  const hoursMs = hours * msPerHour;
+  const newTimeMs = time.getTime() + daysMs + hoursMs;
   return new Date(newTimeMs);
 }
 
@@ -321,7 +321,7 @@ function _daysHoursBeforeNow(days: number, hours: number): Date {
 
 export function _queryLastDaysHours(days: number, hours: number): string {
   /* tslint:disable: no-unused-variable */
-  var daysHoursAgo = _getLocalIsoDateTimeString(_daysHoursBeforeNow(days, hours));
+  let daysHoursAgo = _getLocalIsoDateTimeString(_daysHoursBeforeNow(days, hours));
   daysHoursAgo = DateTimeUtilities.getUTCDateTime(daysHoursAgo);
 
   return daysHoursAgo;
@@ -329,21 +329,21 @@ export function _queryLastDaysHours(days: number, hours: number): string {
 }
 
 export function _queryCurrentMonthLocal(): string {
-  var now = new Date();
-  var start = _getLocalIsoDateStringFromParts(now.getFullYear(), now.getMonth(), 1);
+  const now = new Date();
+  let start = _getLocalIsoDateStringFromParts(now.getFullYear(), now.getMonth(), 1);
   start = DateTimeUtilities.getUTCDateTime(start);
   return start;
 }
 
 export function _queryCurrentYearLocal(): string {
-  var now = new Date();
-  var start = _getLocalIsoDateStringFromParts(now.getFullYear(), 0, 1); // Month is 0..11, date is 1..31
+  const now = new Date();
+  let start = _getLocalIsoDateStringFromParts(now.getFullYear(), 0, 1); // Month is 0..11, date is 1..31
   start = DateTimeUtilities.getUTCDateTime(start);
   return start;
 }
 
 function _addTime(time: Date, lastNumber: number, timeUnit: string): Date {
-  var timeMS: number;
+  let timeMS: number;
   switch (TimeUnit[Number(timeUnit)]) {
     case TimeUnit.Days.toString():
       timeMS = lastNumber * 1000 * 60 * 60 * 24;
@@ -360,7 +360,7 @@ function _addTime(time: Date, lastNumber: number, timeUnit: string): Date {
     default:
     //throw new Errors.ArgumentOutOfRangeError(timeUnit);
   }
-  var newTimeMS = time.getTime() + timeMS;
+  const newTimeMS = time.getTime() + timeMS;
   return new Date(newTimeMS);
 }
 
@@ -370,7 +370,7 @@ function _timeBeforeNow(lastNumber: number, timeUnit: string): Date {
 
 export function _queryLastTime(lastNumber: number, timeUnit: string): string {
   /* tslint:disable: no-unused-variable */
-  var daysHoursAgo = _getLocalIsoDateTimeString(_timeBeforeNow(lastNumber, timeUnit));
+  let daysHoursAgo = _getLocalIsoDateTimeString(_timeBeforeNow(lastNumber, timeUnit));
   daysHoursAgo = DateTimeUtilities.getUTCDateTime(daysHoursAgo);
   return daysHoursAgo;
   /* tslint:enable: no-unused-variable */
