@@ -33,8 +33,9 @@ export async function fetchDatabaseAccounts(subscriptionId: string, accessToken:
 
 export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] | undefined {
   const { data } = useSWR(
-    () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
-    (_, subscriptionId, armToken) => fetchDatabaseAccounts(subscriptionId, armToken)
+    // eslint-disable-next-line no-null/no-null
+    () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : null),
+    (_: string, subscriptionId: string, armToken: string) => fetchDatabaseAccounts(subscriptionId, armToken)
   );
   return data;
 }
