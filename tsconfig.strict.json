@@ -139,7 +139,11 @@
     "./src/userContext.test.ts",
     "src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
-    "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
+    "./src/Platform/Hosted/Components/SwitchSubscription.tsx",
+    "./src/Common/dataAccess/getCollectionDataUsageSize.ts",
+    "./src/Common/dataAccess/readMongoDBCollection.tsx",
+    "./src/Explorer/Controls/CollapsiblePanel/CollapsiblePanel.tsx",
+    "./src/Explorer/Graph/GraphExplorerComponent/LeftPaneComponent.tsx"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
