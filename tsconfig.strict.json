@@ -137,9 +137,12 @@
     "./src/quickstart.ts",
     "./src/setupTests.ts",
     "./src/userContext.test.ts",
-    "src/Common/EntityValue.tsx",
+    "./src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
-    "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
+    "./src/Platform/Hosted/Components/SwitchSubscription.tsx",
+    "./src/Common/DatabaseAccountUtility.ts",
+    "./src/Explorer/Controls/Tabs/TabComponent.tsx",
+    "./src/Explorer/Notebook/NotebookComponent/ContentProviders/InMemoryContentProvider.ts"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
