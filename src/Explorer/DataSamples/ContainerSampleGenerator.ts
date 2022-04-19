@@ -10,6 +10,7 @@ import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import { useDatabases } from "../useDatabases";
 
 interface SampleDataFile extends DataModels.CreateCollectionParams {
+  //eslint-disable-next-line
   data: any[];
 }
 
@@ -23,6 +24,7 @@ export class ContainerSampleGenerator {
    */
   public static async createSampleGeneratorAsync(container: Explorer): Promise<ContainerSampleGenerator> {
     const generator = new ContainerSampleGenerator(container);
+    //eslint-disable-next-line
     let dataFileContent: any;
     if (userContext.apiType === "Gremlin") {
       dataFileContent = await import(
@@ -72,7 +74,7 @@ export class ContainerSampleGenerator {
     if (!collection) {
       throw new Error("No container to populate");
     }
-    const promises: Q.Promise<any>[] = [];
+    // const promises: Q.Promise<any>[] = [];
 
     if (userContext.apiType === "Gremlin") {
       // For Gremlin, all queries are executed sequentially, because some queries might be dependent on other queries
@@ -113,7 +115,7 @@ export class ContainerSampleGenerator {
    * public for unit testing
    * @param data
    */
-  public setData(data: SampleDataFile) {
+  public setData(data: SampleDataFile): void {
     this.sampleDataFile = data;
   }
 }
