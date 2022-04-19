@@ -105,13 +105,10 @@ src/Explorer/Tree/ConflictId.ts
 src/Explorer/Tree/DocumentId.ts
 src/Explorer/Tree/ObjectId.ts
 src/Explorer/Tree/ResourceTokenCollection.ts
-src/Explorer/Tree/StoredProcedure.ts
-src/Explorer/Tree/TreeComponents.ts
 src/Explorer/WaitsForTemplateViewModel.ts
 src/GitHub/GitHubClient.test.ts
 src/GitHub/GitHubClient.ts
 src/Index.ts
-src/Platform/Hosted/Authorization.ts
 src/ReactDevTools.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts

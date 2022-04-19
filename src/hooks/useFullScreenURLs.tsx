@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { GenerateTokenResponse } from "../Contracts/DataModels";
-import AuthHeadersUtil from "../Platform/Hosted/Authorization";
+import * as AuthHeadersUtil from "../Platform/Hosted/Authorization";
 
 export function useFullScreenURLs(): GenerateTokenResponse | undefined {
   const [state, setState] = useState<GenerateTokenResponse>();
