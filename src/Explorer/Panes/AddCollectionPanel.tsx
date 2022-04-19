@@ -1,9 +1,11 @@
 import {
   ActionButton,
   Checkbox,
+  ChoiceGroup,
   DefaultButton,
   DirectionalHint,
   Dropdown,
+  IChoiceGroupOption,
   Icon,
   IconButton,
   IDropdownOption,
@@ -127,6 +129,26 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     };
   }
 
+  choiceButtonStyles = {
+    flexContainer: [
+      {
+        selectors: {
+          ".ms-ChoiceField-wrapper label": {
+            fontSize: 12,
+            paddingTop: 0,
+          },
+          ".ms-ChoiceField": {
+            marginTop: 0,
+          },
+        },
+      },
+    ],
+  };
+  collectionOptions: IChoiceGroupOption[] = [
+    { key: "create", text: "Create new database" },
+    { key: "existing", text: "Use existing database" },
+  ];
+
   render(): JSX.Element {
     const isFirstResourceCreated = useDatabases.getState().isFirstResourceCreated();
 
@@ -154,7 +176,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           <Stack hidden={userContext.apiType === "Tables"}>
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
-              <Text className="panelTextBold" variant="small">
+              <Text id="databaseId" className="panelTextBold" variant="small">
                 Database {userContext.apiType === "Mongo" ? "name" : "id"}
               </Text>
               <TooltipHost
@@ -168,32 +190,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
 
             <Stack horizontal verticalAlign="center">
-              <input
-                className="panelRadioBtn"
-                checked={this.state.createNewDatabase}
-                aria-label="Create new database"
-                aria-checked={this.state.createNewDatabase}
-                name="databaseType"
-                type="radio"
-                role="radio"
-                id="databaseCreateNew"
-                tabIndex={0}
-                onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
+              <ChoiceGroup
+                aria-labelledby="databaseId"
+                styles={this.choiceButtonStyles}
+                options={this.collectionOptions}
+                defaultSelectedKey={this.collectionOptions[0].key}
+                onChange={(_: React.ChangeEvent<HTMLInputElement>, options: IChoiceGroupOption) =>
+                  this.handleOnChangeMode(_, options.key.toString())
+                }
               />
-              <span className="panelRadioBtnLabel">Create new</span>
-
-              <input
-                className="panelRadioBtn"
-                checked={!this.state.createNewDatabase}
-                aria-label="Use existing database"
-                aria-checked={!this.state.createNewDatabase}
-                name="databaseType"
-                type="radio"
-                role="radio"
-                tabIndex={0}
-                onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
-              />
-              <span className="panelRadioBtnLabel">Use existing</span>
             </Stack>
 
             {this.state.createNewDatabase && (
@@ -211,7 +216,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   size={40}
                   className="panelTextField"
                   aria-label="New database id"
-                  autoFocus
                   tabIndex={0}
                   value={this.state.newDatabaseId}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -716,6 +720,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         return "e.g., /address/zipCode";
     }
   }
+
+  private handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
+    if (mode === "create") {
+      this.onCreateNewDatabaseRadioBtnChange(event);
+    } else {
+      this.onUseExistingDatabaseRadioBtnChange(event);
+    }
+  };
 
   private onCreateNewDatabaseRadioBtnChange(event: React.ChangeEvent<HTMLInputElement>): void {
     if (event.target.checked && !this.state.createNewDatabase) {
