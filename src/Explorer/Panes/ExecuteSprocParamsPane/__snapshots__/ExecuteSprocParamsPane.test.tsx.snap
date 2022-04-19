@@ -319,6 +319,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               className="ms-Stack css-54"
             >
               <Dropdown
+                ariaLabel="Key"
                 defaultSelectedKey="string"
                 key=".0:$.0"
                 label="Key"
@@ -345,6 +346,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 tabIndex={0}
               >
                 <DropdownBase
+                  ariaLabel="Key"
                   defaultSelectedKey="string"
                   label="Key"
                   onChange={[Function]}
@@ -637,6 +639,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   }
                 >
                   <DropdownInternal
+                    ariaLabel="Key"
                     defaultSelectedKey="string"
                     hoisted={
                       Object {
@@ -1235,7 +1238,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
-                        aria-labelledby="Dropdown0-label Dropdown0-option"
+                        aria-label="Key"
                         className="ms-Dropdown dropdown-55"
                         data-is-focusable={true}
                         data-ktp-target={true}
@@ -2477,6 +2480,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               className="ms-Stack css-54"
             >
               <Dropdown
+                ariaLabel="Key"
                 defaultSelectedKey="string"
                 key=".0:$.0"
                 label="Key"
@@ -2503,6 +2507,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 tabIndex={0}
               >
                 <DropdownBase
+                  ariaLabel="Key"
                   defaultSelectedKey="string"
                   label="Key"
                   onChange={[Function]}
@@ -2795,6 +2800,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   }
                 >
                   <DropdownInternal
+                    ariaLabel="Key"
                     defaultSelectedKey="string"
                     hoisted={
                       Object {
@@ -3393,7 +3399,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
-                        aria-labelledby="Dropdown4-label Dropdown4-option"
+                        aria-label="Key"
                         className="ms-Dropdown dropdown-55"
                         data-is-focusable={true}
                         data-ktp-target={true}

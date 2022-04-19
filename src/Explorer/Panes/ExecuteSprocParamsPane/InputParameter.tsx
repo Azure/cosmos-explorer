@@ -60,6 +60,7 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
           options={options}
           styles={dropdownStyles}
           tabIndex={0}
+          ariaLabel="Key"
         />
         <TextField
           label={inputLabel && inputLabel}
