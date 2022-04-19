@@ -48,11 +48,9 @@ src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.ts
 src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.test.ts
 src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.ts
-src/Explorer/Graph/GraphExplorerComponent/EdgeInfoCache.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.test.ts
-src/Explorer/Graph/GraphExplorerComponent/GremlinClient.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.ts
 src/Explorer/Menus/ContextMenu.ts
@@ -99,7 +97,6 @@ src/Explorer/Tabs/TabComponents.ts
 src/Explorer/Tabs/TabsBase.ts
 src/Explorer/Tabs/TriggerTab.ts
 src/Explorer/Tabs/UserDefinedFunctionTab.ts
-src/Explorer/Tree/AccessibleVerticalList.ts
 src/Explorer/Tree/Collection.ts
 src/Explorer/Tree/ConflictId.ts
 src/Explorer/Tree/DocumentId.ts

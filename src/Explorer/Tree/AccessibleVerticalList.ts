@@ -1,5 +1,5 @@
-import * as _ from "underscore";
 import * as ko from "knockout";
+import * as _ from "underscore";
 
 enum ScrollPosition {
   Top,
@@ -7,25 +7,25 @@ enum ScrollPosition {
 }
 
 export class AccessibleVerticalList {
-  private items: any[] = [];
-  private onSelect?: (item: any) => void;
+  private items: unknown[] = [];
+  private onSelect?: (item: unknown) => void;
 
   public currentItemIndex: ko.Observable<number>;
-  public currentItem: ko.Computed<any>;
+  public currentItem: ko.Computed<unknown>;
 
-  constructor(initialSetOfItems: any[]) {
+  constructor(initialSetOfItems: unknown[]) {
     this.items = initialSetOfItems;
-    this.currentItemIndex = this.items != null && this.items.length > 0 ? ko.observable(0) : ko.observable(-1);
-    this.currentItem = ko.computed<any>(() => this.items[this.currentItemIndex()]);
+    this.currentItemIndex = this.items !== undefined && this.items.length > 0 ? ko.observable(0) : ko.observable(-1);
+    this.currentItem = ko.computed<unknown>(() => this.items[this.currentItemIndex()]);
   }
 
-  public setOnSelect(onSelect: (item: any) => void): void {
+  public setOnSelect(onSelect: (item: unknown) => void): void {
     this.onSelect = onSelect;
   }
 
   public onKeyDown = (_src: unknown, event: KeyboardEvent): boolean => {
     const targetContainer: Element = <Element>event.target;
-    if (this.items == null || this.items.length === 0) {
+    if (this.items === undefined || this.items.length === 0) {
       // no items so this should be a noop
       return true;
     }
@@ -62,8 +62,8 @@ export class AccessibleVerticalList {
     return true;
   };
 
-  public updateItemList(newItemList: any[]) {
-    if (newItemList == null || newItemList.length === 0) {
+  public updateItemList(newItemList: unknown[]): void {
+    if (newItemList === undefined || newItemList.length === 0) {
       this.currentItemIndex(-1);
       this.items = [];
       return;
@@ -73,7 +73,7 @@ export class AccessibleVerticalList {
     this.items = newItemList;
   }
 
-  public updateCurrentItem(item: any) {
+  public updateCurrentItem(item: unknown): void {
     const updatedIndex: number = this.isItemListEmpty() ? -1 : _.indexOf(this.items, item);
     this.currentItemIndex(updatedIndex);
   }
@@ -118,6 +118,6 @@ export class AccessibleVerticalList {
   }
 
   private isItemListEmpty(): boolean {
-    return this.items == null || this.items.length === 0;
+    return this.items === undefined || this.items.length === 0;
   }
 }
