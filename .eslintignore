@@ -42,8 +42,6 @@ src/Explorer/Controls/Editor/EditorComponent.ts
 src/Explorer/Controls/JsonEditor/JsonEditorComponent.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.ts
-src/Explorer/DataSamples/DataSamplesUtil.test.ts
-src/Explorer/DataSamples/DataSamplesUtil.ts
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.ts
 src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.test.ts
@@ -54,8 +52,6 @@ src/Explorer/Graph/GraphExplorerComponent/GraphData.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.test.ts
-src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.ts
-src/Explorer/Menus/ContextMenu.ts
 src/Explorer/MostRecentActivity/MostRecentActivity.ts
 src/Explorer/Notebook/NotebookClientV2.ts
 src/Explorer/Notebook/NotebookComponent/NotebookContentProvider.ts
@@ -64,11 +60,8 @@ src/Explorer/Notebook/NotebookComponent/actions.ts
 src/Explorer/Notebook/NotebookComponent/epics.test.ts
 src/Explorer/Notebook/NotebookComponent/epics.ts
 src/Explorer/Notebook/NotebookComponent/loadTransform.ts
-src/Explorer/Notebook/NotebookComponent/reducers.ts
 src/Explorer/Notebook/NotebookComponent/store.ts
-src/Explorer/Notebook/NotebookComponent/types.ts
 src/Explorer/Notebook/NotebookContainerClient.ts
-src/Explorer/Notebook/NotebookContentClient.ts
 src/Explorer/Notebook/NotebookContentItem.ts
 src/Explorer/Notebook/NotebookUtil.ts
 src/Explorer/OpenActionsStubs.ts

@@ -228,11 +228,12 @@ export class NotebookContentClient {
 
   public async readFileContent(filePath: string): Promise<string> {
     const xhr = await this.contentProvider.get(this.getServerConfig(), filePath, { content: 1 }).toPromise();
+    //eslint-disable-next-line
     const content = (xhr.response as any).content;
     if (!content) {
       throw new Error("No content read");
     }
-
+    //eslint-disable-next-line
     const format = (xhr.response as any).format;
     switch (format) {
       case "text":
