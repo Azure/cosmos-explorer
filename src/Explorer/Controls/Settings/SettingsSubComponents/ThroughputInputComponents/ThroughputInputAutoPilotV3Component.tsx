@@ -38,6 +38,7 @@ import {
   PriceBreakdown,
   saveThroughputWarningMessage,
   titleAndInputStackProps,
+  transparentDetailsCostHeaderStyle,
   transparentDetailsHeaderStyle,
 } from "../../SettingsRenderUtils";
 import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
@@ -219,12 +220,12 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const estimatedSpendingColumns: IColumn[] = [
       {
         key: "costType",
-        name: "",
+        name: "Cost Type",
         fieldName: "costType",
         minWidth: 100,
         maxWidth: 200,
         isResizable: true,
-        styles: transparentDetailsHeaderStyle,
+        styles: transparentDetailsCostHeaderStyle,
       },
       {
         key: "minPerMonth",

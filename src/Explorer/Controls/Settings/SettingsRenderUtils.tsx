@@ -141,6 +141,19 @@ export const transparentDetailsHeaderStyle: Partial<IDetailsColumnStyles> = {
   },
 };
 
+export const transparentDetailsCostHeaderStyle: Partial<IDetailsColumnStyles> = {
+  root: {
+    selectors: {
+      ":hover": {
+        background: "transparent",
+      },
+      ".ms-DetailsHeader-cellTitle": {
+        visibility: "hidden",
+      },
+    },
+  },
+};
+
 export const customDetailsListStyles: Partial<IDetailsListStyles> = {
   root: {
     selectors: {
