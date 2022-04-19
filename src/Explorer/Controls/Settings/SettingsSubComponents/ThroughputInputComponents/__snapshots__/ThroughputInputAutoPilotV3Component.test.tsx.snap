@@ -262,6 +262,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       </StyledLinkBase>
     </Text>
     <StyledTextFieldBase
+      ariaLabel="Estimate your required throughput with capacity calculator"
       disabled={false}
       id="throughputInput"
       key="provisioned throughput input"
@@ -537,6 +538,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       </StyledLinkBase>
     </Text>
     <StyledTextFieldBase
+      ariaLabel="Estimate your required throughput with capacity calculator"
       disabled={false}
       id="throughputInput"
       key="provisioned throughput input"
