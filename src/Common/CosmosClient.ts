@@ -40,8 +40,16 @@ export const tokenProvider = async (requestInfo: RequestInfo) => {
 };
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
-  requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
-  requestContext.headers["x-ms-proxy-target"] = endpoint();
+  requestContext.endpoint = new URL(
+    configContext.PROXY_PATH ? configContext.PROXY_PATH : "",
+    window.location.href
+  ).href;
+  if (requestContext.headers !== undefined) {
+    const returnValue = endpoint();
+    if (returnValue !== undefined) {
+      requestContext.headers["x-ms-proxy-target"] = returnValue;
+    }
+  }
   return next(requestContext);
 };
 
@@ -61,7 +69,7 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-ms-encrypted-auth-token": userContext.accessToken,
+        "x-ms-encrypted-auth-token": userContext.accessToken ? userContext.accessToken : "",
       },
       body: JSON.stringify({
         verb,
