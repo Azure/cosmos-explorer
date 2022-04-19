@@ -8,7 +8,7 @@ import * as Utilities from "../Utilities";
  * @param{$dataTableElem} JQuery data table element
  * @param{$settings} Settings to use when creating the data table
  */
-export function createDataTable($dataTableElem: JQuery, settings: any): DataTables.DataTable {
+export function createDataTable($dataTableElem: JQuery, settings: DataTables.Settings): DataTables.DataTable {
   return $dataTableElem.DataTable(applyDefaultRendering(settings));
 }
 
@@ -18,8 +18,9 @@ export function createDataTable($dataTableElem: JQuery, settings: any): DataTabl
  * @param{settings} The settings to check
  * @return The given settings with all columns having a rendering function
  */
+//eslint-disable-next-line
 function applyDefaultRendering(settings: any): DataTables.SettingsLegacy {
-  var tableColumns: DataTables.ColumnLegacy[] = null;
+  let tableColumns: DataTables.ColumnLegacy[] = null;
 
   if (settings.aoColumns) {
     tableColumns = settings.aoColumns;
@@ -34,7 +35,7 @@ function applyDefaultRendering(settings: any): DataTables.SettingsLegacy {
     return settings;
   }
 
-  for (var i = 0; i < tableColumns.length; i++) {
+  for (let i = 0; i < tableColumns.length; i++) {
     // the column does not have a render function
     if (!tableColumns[i].mRender) {
       tableColumns[i].mRender = defaultDataRender;
@@ -47,6 +48,7 @@ function applyDefaultRendering(settings: any): DataTables.SettingsLegacy {
  * Default data render function, whatever is done to data in here
  * will be done to any data which we do not specify a render for.
  */
-function defaultDataRender(data: any, type: string, full: any) {
+//eslint-disable-next-line
+function defaultDataRender(data: any) {
   return Utilities.htmlEncode(data);
 }

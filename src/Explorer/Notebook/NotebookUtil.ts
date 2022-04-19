@@ -17,6 +17,7 @@ export enum NotebookContentProviderType {
   JupyterContentProviderType,
 }
 // Utilities for notebooks
+//eslint-disable-next-line
 export class NotebookUtil {
   public static UntrustedNotebookRunHint = "Please trust notebook first before running any code cells";
 
@@ -207,6 +208,7 @@ export class NotebookUtil {
     subSnapshots: SnapshotFragment[],
     downloadFilename?: string
   ): Promise<{ imageSrc: string | undefined }> => {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
         // target.scrollIntoView();
@@ -275,6 +277,7 @@ export class NotebookUtil {
     subSnapshots: SnapshotFragment[],
     downloadFilename?: string
   ): Promise<{ imageSrc?: string }> => {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // target.scrollIntoView();
       try {
