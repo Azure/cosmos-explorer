@@ -43,7 +43,7 @@ export interface TreeNode {
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
   isLoading?: boolean;
   isSelected?: () => boolean;
-  onClick?: (isExpanded: boolean) => void; // Only if a leaf, other click will expand/collapse
+  onClick?: (isExpanded?: boolean) => void; // Only if a leaf, other click will expand/collapse
   onExpanded?: () => void;
   onCollapsed?: () => void;
   onContextMenuOpen?: () => void;
@@ -73,7 +73,7 @@ interface TreeNodeComponentProps {
 }
 
 interface TreeNodeComponentState {
-  isExpanded: boolean;
+  isExpanded?: boolean;
   isMenuShowing: boolean;
 }
 export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, TreeNodeComponentState> {
@@ -82,7 +82,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   private static readonly transitionDurationMS = 200;
   private static readonly callbackDelayMS = 100; // avoid calling at the same time as transition to make it smoother
   private contextMenuRef = React.createRef<HTMLDivElement>();
-  private isExpanded: boolean;
+  private isExpanded?: boolean;
 
   constructor(props: TreeNodeComponentProps) {
     super(props);
@@ -93,7 +93,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     };
   }
 
-  componentDidUpdate(prevProps: TreeNodeComponentProps, prevState: TreeNodeComponentState) {
+  componentDidUpdate(_prevProps: TreeNodeComponentProps, prevState: TreeNodeComponentState) {
     // Only call when expand has actually changed
     if (this.state.isExpanded !== prevState.isExpanded) {
       if (this.state.isExpanded) {
@@ -103,7 +103,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
       }
     }
     if (this.props.node.isExpanded !== this.isExpanded) {
-      this.isExpanded = this.props.node.isExpanded;
+      this.isExpanded = this.props.node && this.props.node.isExpanded;
       this.setState({
         isExpanded: this.props.node.isExpanded,
       });
@@ -114,7 +114,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     return this.renderNode(this.props.node, this.props.generation);
   }
 
-  private static getSortedChildren(treeNode: TreeNode): TreeNode[] {
+  private static getSortedChildren(treeNode: TreeNode): TreeNode[] | undefined {
     if (!treeNode || !treeNode.children) {
       return undefined;
     }
@@ -195,7 +195,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
         {node.children && (
           <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
             <div className="nodeChildren" data-test={node.label}>
-              {TreeNodeComponent.getSortedChildren(node).map((childNode: TreeNode) => (
+              {TreeNodeComponent?.getSortedChildren(node)?.map((childNode: TreeNode) => (
                 <TreeNodeComponent
                   key={`${childNode.label}-${generation + 1}-${childNode.timestamp}`}
                   node={childNode}
@@ -214,15 +214,15 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
    * Recursive: is the node or any descendant selected
    * @param node
    */
+
   private static isAnyDescendantSelected(node: TreeNode): boolean {
-    return (
-      node.children &&
-      node.children.reduce(
-        (previous: boolean, child: TreeNode) =>
-          previous || (child.isSelected && child.isSelected()) || TreeNodeComponent.isAnyDescendantSelected(child),
-        false
-      )
-    );
+    return node.children
+      ? node.children.reduce(
+          (previous: boolean, child: TreeNode) =>
+            previous || (child.isSelected && child.isSelected()) || TreeNodeComponent.isAnyDescendantSelected(child),
+          false
+        )
+      : false;
   }
 
   private static createClickEvent(): MouseEvent {
@@ -230,7 +230,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   }
 
   private onRightClick = (): void => {
-    this.contextMenuRef.current.firstChild.dispatchEvent(TreeNodeComponent.createClickEvent());
+    this.contextMenuRef?.current?.firstChild?.dispatchEvent(TreeNodeComponent.createClickEvent());
   };
 
   private renderContextMenuButton(node: TreeNode): JSX.Element {
@@ -254,18 +254,18 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
             coverTarget: true,
             isBeakVisible: false,
             directionalHint: DirectionalHint.topAutoEdge,
-            onMenuOpened: (contextualMenu?: IContextualMenuProps) => {
+            onMenuOpened: (_contextualMenu?: IContextualMenuProps) => {
               this.setState({ isMenuShowing: true });
               node.onContextMenuOpen && node.onContextMenuOpen();
             },
-            onMenuDismissed: (contextualMenu?: IContextualMenuProps) => this.setState({ isMenuShowing: false }),
+            onMenuDismissed: (_contextualMenu?: IContextualMenuProps) => this.setState({ isMenuShowing: false }),
             contextualMenuItemAs: (props: IContextualMenuItemProps) => (
               <div
                 data-test={`treeComponentMenuItemContainer`}
                 className="treeComponentMenuItemContainer"
                 onContextMenu={(e) => e.target.dispatchEvent(TreeNodeComponent.createClickEvent())}
               >
-                {props.item.onRenderIcon()}
+                {props.item.onRenderIcon && props.item.onRenderIcon()}
                 <span
                   className={
                     "treeComponentMenuItemLabel" + (props.item.className ? ` ${props.item.className}Label` : "")
@@ -275,19 +275,21 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
                 </span>
               </div>
             ),
-            items: node.contextMenu.map((menuItem: TreeNodeMenuItem) => ({
-              key: menuItem.label,
-              text: menuItem.label,
-              disabled: menuItem.isDisabled,
-              className: menuItem.styleClass,
-              onClick: () => {
-                menuItem.onClick();
-                TelemetryProcessor.trace(Action.ClickResourceTreeNodeContextMenuItem, ActionModifiers.Mark, {
-                  label: menuItem.label,
-                });
-              },
-              onRenderIcon: (props: any) => <img src={menuItem.iconSrc} alt="" />,
-            })),
+            items: node.contextMenu
+              ? node.contextMenu.map((menuItem: TreeNodeMenuItem) => ({
+                  key: menuItem.label,
+                  text: menuItem.label,
+                  disabled: menuItem.isDisabled,
+                  className: menuItem.styleClass,
+                  onClick: () => {
+                    menuItem.onClick();
+                    TelemetryProcessor.trace(Action.ClickResourceTreeNodeContextMenuItem, ActionModifiers.Mark, {
+                      label: menuItem.label,
+                    });
+                  },
+                  onRenderIcon: (_props: any) => <img src={menuItem.iconSrc} alt="" />,
+                }))
+              : [],
           }}
           styles={buttonStyles}
         />
@@ -325,7 +327,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     this.props.node.onClick && this.props.node.onClick(this.state.isExpanded);
   };
 
-  private onNodeKeyPress = (event: React.KeyboardEvent<HTMLDivElement>, node: TreeNode): void => {
+  private onNodeKeyPress = (event: React.KeyboardEvent<HTMLDivElement>, _node: TreeNode): void => {
     if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
       event.stopPropagation();
       this.props.node.onClick && this.props.node.onClick(this.state.isExpanded);

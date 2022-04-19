@@ -2,7 +2,9 @@ import * as DataModels from "../Contracts/DataModels";
 import { userContext } from "../UserContext";
 
 export class DefaultExperienceUtility {
-  public static getApiKindFromDefaultExperience(defaultExperience: typeof userContext.apiType): DataModels.ApiKind {
+  public static getApiKindFromDefaultExperience(
+    defaultExperience: typeof userContext.apiType | null
+  ): DataModels.ApiKind {
     if (!defaultExperience) {
       return DataModels.ApiKind.SQL;
     }
