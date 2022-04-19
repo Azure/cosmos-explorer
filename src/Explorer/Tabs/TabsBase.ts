@@ -94,11 +94,11 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return true;
   }
 
-  public onKeyPressActivate = (source: any, event: KeyboardEvent): boolean => {
+  public onKeyPressActivate = (event: KeyboardEvent): boolean => {
     return this.onSpaceOrEnterKeyPress(event, () => this.onTabClick());
   };
 
-  public onKeyPressClose = (source: any, event: KeyboardEvent): boolean => {
+  public onKeyPressClose = (event: KeyboardEvent): boolean => {
     return this.onSpaceOrEnterKeyPress(event, () => this.onCloseTabButtonClick());
   };
 
@@ -120,22 +120,22 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     });
   }
 
-  public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
+  public onErrorDetailsClick = (): boolean => {
     useNotificationConsole.getState().expandConsole();
     useNotificationConsole.getState().expandConsole();
     return false;
   };
 
-  public onErrorDetailsKeyPress = (src: any, event: KeyboardEvent): boolean => {
+  public onErrorDetailsKeyPress = (event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onErrorDetailsClick(src, null);
+      this.onErrorDetailsClick();
       return false;
     }
 
     return true;
   };
 
-  public refresh() {
+  public refresh(): void {
     location.reload();
   }
 
@@ -144,6 +144,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
+  //eslint-disable-next-line
   public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return JSON.stringify(value, replacer, space);
   }

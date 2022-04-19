@@ -44,7 +44,7 @@ function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       onClick={() => tab.onTabClick()}
-      onKeyPress={({ nativeEvent: e }) => tab.onKeyPressActivate(undefined, e)}
+      onKeyPress={({ nativeEvent: e }) => tab.onKeyPressActivate(e)}
       className={active ? "active tabList" : "tabList"}
       title={useObservable(tab.tabPath)}
       aria-selected={active}
@@ -83,7 +83,7 @@ const CloseButton = ({ tab, active, hovering }: { tab: Tab; active: boolean; hov
     className="cancelButton"
     onClick={() => tab.onCloseTabButtonClick()}
     tabIndex={active ? 0 : undefined}
-    onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
+    onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(e)}
   >
     <span className="tabIcon close-Icon">
       <img src={errorIcon} title="Close" alt="Close" />
@@ -98,8 +98,8 @@ const ErrorIcon = ({ tab, active }: { tab: Tab; active: boolean }) => (
     title="Click to view more details"
     tabIndex={active ? 0 : undefined}
     className={active ? "actionsEnabled errorIconContainer" : "errorIconContainer"}
-    onClick={({ nativeEvent: e }) => tab.onErrorDetailsClick(undefined, e)}
-    onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(undefined, e)}
+    onClick={() => tab.onErrorDetailsClick()}
+    onKeyPress={({ nativeEvent: e }) => tab.onErrorDetailsKeyPress(e)}
   >
     <span className="errorIcon" />
   </div>

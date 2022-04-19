@@ -96,7 +96,7 @@ src/Explorer/Tabs/MongoDocumentsTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
 src/Explorer/Tabs/TabComponents.ts
-src/Explorer/Tabs/TabsBase.ts
+# src/Explorer/Tabs/TabsBase.ts
 src/Explorer/Tabs/TriggerTab.ts
 src/Explorer/Tabs/UserDefinedFunctionTab.ts
 src/Explorer/Tree/AccessibleVerticalList.ts
@@ -119,7 +119,7 @@ src/Shared/DefaultExperienceUtility.ts
 src/Shared/appInsights.ts
 src/SparkClusterManager/ArcadiaResourceManager.ts
 src/SparkClusterManager/SparkClusterManager.ts
-src/Terminal/JupyterLabAppFactory.ts
+# src/Terminal/JupyterLabAppFactory.ts
 src/Terminal/NotebookAppContracts.d.ts
 src/applyExplorerBindings.ts
 src/global.d.ts

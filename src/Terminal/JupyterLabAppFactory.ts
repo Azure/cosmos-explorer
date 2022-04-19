@@ -7,6 +7,7 @@ import { Terminal } from "@jupyterlab/terminal";
 import { Panel, Widget } from "@phosphor/widgets";
 import { userContext } from "UserContext";
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class JupyterLabAppFactory {
   private isShellStarted: boolean | undefined;
   private checkShellStarted: ((content: string | undefined) => void) | undefined;
@@ -67,8 +68,8 @@ export class JupyterLabAppFactory {
     term.title.closable = false;
     term.addClass("terminalWidget");
 
-    let panel = new Panel();
-    panel.addWidget(term as any);
+    const panel = new Panel();
+    panel.addWidget((term as unknown) as Widget);
     panel.id = "main";
 
     // Attach the widget to the dom.
