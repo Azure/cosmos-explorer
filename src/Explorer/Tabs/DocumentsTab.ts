@@ -91,7 +91,7 @@ export default class DocumentsTab extends TabsBase {
     this.documentIds = options.documentIds;
 
     this.partitionKeyPropertyHeaders = this.collection?.partitionKeyPropertyHeaders || this.partitionKey?.paths;
-    this.partitionKeyProperties = this.partitionKeyPropertyHeaders.map((partitionKeyPropertyHeader) =>
+    this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
       partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "")
     );
 
