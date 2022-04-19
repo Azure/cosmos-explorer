@@ -87,7 +87,6 @@ src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
 src/Explorer/Tables/TableDataClient.ts
 src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
-src/Explorer/Tabs/ConflictsTab.ts
 src/Explorer/Tabs/DatabaseSettingsTab.ts
 src/Explorer/Tabs/DocumentsTab.test.ts
 src/Explorer/Tabs/DocumentsTab.ts

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import { ConflictDefinition, FeedOptions, QueryIterator, Resource } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
@@ -69,13 +71,13 @@ export default class ConflictsTab extends TabsBase {
       ViewModels.DocumentExplorerState.noDocumentSelected
     );
     this.selectedConflictId = ko.observable<ConflictId>();
-    this.selectedConflictContent = editable.observable<any>("");
-    this.selectedConflictCurrent = editable.observable<any>("");
+    this.selectedConflictContent = editable.observable<string>("");
+    this.selectedConflictCurrent = editable.observable<string>("");
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
     this.conflictIds = options.conflictIds;
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
-    this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
+    this.partitionKeyProperty = this.partitionKeyPropertyHeader
       ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
       : null;
 
@@ -187,7 +189,7 @@ export default class ConflictsTab extends TabsBase {
     this.buildCommandBarOptions();
     this.shouldShowDiffEditor = ko.pureComputed<boolean>(() => {
       const documentHasContent: boolean =
-        this.selectedConflictContent() != null && this.selectedConflictContent().length > 0;
+        this.selectedConflictContent() !== null && this.selectedConflictContent().length > 0;
       const operationIsReplace: boolean = this.conflictOperation() === Constants.ConflictOperationType.Replace;
       const isLoadingData: boolean = this.loadingConflictData();
       return documentHasContent && operationIsReplace && !isLoadingData;
@@ -195,7 +197,7 @@ export default class ConflictsTab extends TabsBase {
 
     this.shouldShowEditor = ko.pureComputed<boolean>(() => {
       const documentHasContent: boolean =
-        this.selectedConflictContent() != null && this.selectedConflictContent().length > 0;
+        this.selectedConflictContent() !== null && this.selectedConflictContent().length > 0;
       const operationIsInsert: boolean = this.conflictOperation() === Constants.ConflictOperationType.Create;
       const operationIsDelete: boolean = this.conflictOperation() === Constants.ConflictOperationType.Delete;
       const isLoadingData: boolean = this.loadingConflictData();
@@ -242,7 +244,7 @@ export default class ConflictsTab extends TabsBase {
     return true;
   };
 
-  public onConflictIdClick(clickedDocumentId: ConflictId): Q.Promise<any> {
+  public onConflictIdClick(): Q.Promise<unknown> {
     if (this.editorState() !== ViewModels.DocumentExplorerState.noDocumentSelected) {
       return Q();
     }
@@ -405,19 +407,19 @@ export default class ConflictsTab extends TabsBase {
     }
   };
 
-  public onDiscardClick = (): Q.Promise<any> => {
+  public onDiscardClick = (): Q.Promise<unknown> => {
     this.selectedConflictContent(this.selectedConflictContent.getEditableOriginalValue());
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
 
     return Q();
   };
 
-  public onValidDocumentEdit(): Q.Promise<any> {
+  public onValidDocumentEdit(): Q.Promise<unknown> {
     this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid);
     return Q();
   }
 
-  public onInvalidDocumentEdit(): Q.Promise<any> {
+  public onInvalidDocumentEdit(): Q.Promise<unknown> {
     if (
       this.editorState() === ViewModels.DocumentExplorerState.exisitingDocumentNoEdits ||
       this.editorState() === ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid
@@ -442,7 +444,7 @@ export default class ConflictsTab extends TabsBase {
         this._documentsIterator = await this.createIterator();
         await this.loadNextPage();
       } catch (error) {
-        if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+        if (this.onLoadStartKey !== null && this.onLoadStartKey !== undefined) {
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
@@ -471,7 +473,7 @@ export default class ConflictsTab extends TabsBase {
     return queryConflicts(this.collection.databaseId, this.collection.id(), query, options as FeedOptions);
   }
 
-  public loadNextPage(): Q.Promise<any> {
+  public loadNextPage(): Q.Promise<unknown> {
     this.isExecuting(true);
     this.isExecutionError(false);
     return this._loadNextPageInternal()
@@ -491,7 +493,7 @@ export default class ConflictsTab extends TabsBase {
 
           const merged = currentConflicts.concat(nextConflictIds);
           this.conflictIds(merged);
-          if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+          if (this.onLoadStartKey !== null && this.onLoadStartKey !== undefined) {
             TelemetryProcessor.traceSuccess(
               Action.Tab,
               {
@@ -508,7 +510,7 @@ export default class ConflictsTab extends TabsBase {
         },
         (error) => {
           this.isExecutionError(true);
-          if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
+          if (this.onLoadStartKey !== null && this.onLoadStartKey !== undefined) {
             TelemetryProcessor.traceFailure(
               Action.Tab,
               {
@@ -541,18 +543,18 @@ export default class ConflictsTab extends TabsBase {
     return Q(this._documentsIterator.fetchNext().then((response) => response.resources));
   }
 
-  protected _onEditorContentChange(newContent: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected _onEditorContentChange(_newContent: string) {
     try {
-      const parsed: any = JSON.parse(newContent);
       this.onValidDocumentEdit();
     } catch (e) {
       this.onInvalidDocumentEdit();
     }
   }
 
-  public initDocumentEditorForCreate(documentId: ConflictId, documentToInsert: any): Q.Promise<any> {
+  public initDocumentEditorForCreate(documentId: ConflictId, documentToInsert: any): Q.Promise<unknown> {
     if (documentId) {
-      let parsedConflictContent: any = JSON.parse(documentToInsert);
+      const parsedConflictContent: any = JSON.parse(documentToInsert);
       const renderedConflictContent: string = this.renderObjectForEditor(parsedConflictContent, null, 4);
       this.selectedConflictContent.setBaseline(renderedConflictContent);
       this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
@@ -565,7 +567,7 @@ export default class ConflictsTab extends TabsBase {
     documentId: ConflictId,
     conflictContent: any,
     currentContent: any
-  ): Q.Promise<any> {
+  ): Q.Promise<unknown> {
     if (documentId) {
       currentContent = ConflictsTab.removeSystemProperties(currentContent);
       const renderedCurrentContent: string = this.renderObjectForEditor(currentContent, null, 4);
@@ -582,7 +584,7 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public initDocumentEditorForDelete(documentId: ConflictId, documentToDelete: any): Q.Promise<any> {
+  public initDocumentEditorForDelete(documentId: ConflictId, documentToDelete: any): Q.Promise<unknown> {
     if (documentId) {
       let parsedDocumentToDelete: any = JSON.parse(documentToDelete);
       parsedDocumentToDelete = ConflictsTab.removeSystemProperties(parsedDocumentToDelete);
@@ -594,7 +596,8 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public initDocumentEditorForNoOp(documentId: ConflictId): Q.Promise<any> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public initDocumentEditorForNoOp(_documentId: ConflictId): Q.Promise<unknown> {
     this.selectedConflictContent(null);
     this.selectedConflictCurrent(null);
     this.editorState(ViewModels.DocumentExplorerState.noDocumentSelected);
