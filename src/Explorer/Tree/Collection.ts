@@ -133,8 +133,10 @@ export default class Collection implements ViewModels.Collection {
         if (partitionKeyProperty.indexOf("$v") > -1) {
           // From $v.shard.$v.key.$v > shard.key
           partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
-          this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
+          this.partitionKeyPropertyHeaders[i] = partitionKeyProperty;
         }
+      } else {
+        this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
       }
 
       return partitionKeyProperty;
