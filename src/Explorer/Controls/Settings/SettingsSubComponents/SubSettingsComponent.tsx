@@ -66,7 +66,9 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     super(props);
     this.geospatialVisible = userContext.apiType === "SQL";
     this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
-    this.partitionKeyValue = this.getPartitionKeyValue();
+    this.partitionKeyValue = (this.props.collection.partitionKeyProperties || [])
+      .map((property) => "/" + property)
+      .join(", ");
   }
 
   componentDidMount(): void {
@@ -249,16 +251,6 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       )}
     </Stack>
   );
-
-  private getPartitionKeyValue = (): string => {
-    const partitionKeyValueProperties = this.props.collection.partitionKeyProperties;
-    if (!partitionKeyValueProperties || partitionKeyValueProperties.length === 0) {
-      return "";
-    }
-
-    // e.g. "/pk1, /pk2, /pk3"
-    return partitionKeyValueProperties.map((property) => "/" + property).join(", ");
-  };
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: GeospatialConfigType.Geography, text: "Geography" },
