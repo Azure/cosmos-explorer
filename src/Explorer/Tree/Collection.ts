@@ -135,8 +135,6 @@ export default class Collection implements ViewModels.Collection {
           partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
           this.partitionKeyPropertyHeaders[i] = partitionKeyProperty;
         }
-      } else {
-        this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
       }
 
       return partitionKeyProperty;
