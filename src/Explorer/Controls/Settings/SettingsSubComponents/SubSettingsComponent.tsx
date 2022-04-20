@@ -256,15 +256,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       return "";
     }
 
-    let partitionKeyValue = "/" + partitionKeyValueProperties[0];
-
-    if (partitionKeyValueProperties.length > 1) {
-      for (let i = 1; i < partitionKeyValueProperties.length; i++) {
-        partitionKeyValue += ", /" + partitionKeyValueProperties[i];
-      }
-    }
-
-    return partitionKeyValue;
+    // e.g. "/pk1, /pk2, /pk3"
+    return partitionKeyValueProperties.map((property) => "/" + property).join(", ");
   };
 
   private geoSpatialConfigTypeChoiceGroupOptions: IChoiceGroupOption[] = [
