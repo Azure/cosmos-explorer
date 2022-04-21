@@ -22,8 +22,8 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   public rid: string;
   public rawDataModel: DataModels.Collection;
   public partitionKey: DataModels.PartitionKey;
-  public partitionKeyProperty: string;
-  public partitionKeyPropertyHeader: string;
+  public partitionKeyProperties: string[];
+  public partitionKeyPropertyHeaders: string[];
   public id: ko.Observable<string>;
   public children: ko.ObservableArray<ViewModels.TreeNode>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;

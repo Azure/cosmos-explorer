@@ -1669,7 +1669,9 @@ exports[`SettingsComponent renders 1`] = `
                 "paths": Array [],
                 "version": 2,
               },
-              "partitionKeyProperty": "partitionKey",
+              "partitionKeyProperties": Array [
+                "partitionKey",
+              ],
               "readSettings": [Function],
               "uniqueKeyPolicy": Object {},
               "usageSizeInKB": [Function],
@@ -3348,7 +3350,9 @@ exports[`SettingsComponent renders 1`] = `
                 "paths": Array [],
                 "version": 2,
               },
-              "partitionKeyProperty": "partitionKey",
+              "partitionKeyProperties": Array [
+                "partitionKey",
+              ],
               "readSettings": [Function],
               "uniqueKeyPolicy": Object {},
               "usageSizeInKB": [Function],

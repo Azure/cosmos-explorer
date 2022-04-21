@@ -74,7 +74,7 @@ export default class ConflictsTab extends TabsBase {
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
     this.conflictIds = options.conflictIds;
     this.partitionKeyPropertyHeader =
-      (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
+      this.collection?.partitionKeyPropertyHeaders?.[0] || this._getPartitionKeyPropertyHeader();
     this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
       ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
       : null;

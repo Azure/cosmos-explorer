@@ -143,15 +143,17 @@
               <tr>
                 <th class="documentsGridHeader" data-bind="text: idHeader" tabindex="0"></th>
                 <!-- ko if: showPartitionKey -->
+                <!-- ko foreach: partitionKeyPropertyHeaders -->
                 <th
                   class="documentsGridHeader documentsGridPartition evenlySpacedHeader"
                   data-bind="
                                               attr: {
-                                                  title: partitionKeyPropertyHeader
+                                                  title: $data
                                               },
-                                              text: partitionKeyPropertyHeader"
+                                              text: $data"
                   tabindex="0"
                 ></th>
+                <!-- /ko -->
                 <!-- /ko -->
                 <th
                   class="refreshColHeader"
@@ -182,12 +184,12 @@
                 tabindex="0"
               >
                 <td class="tabdocumentsGridElement"><a data-bind="text: $data.id, attr: { title: $data.id }"></a></td>
-                <!-- ko if: $data.partitionKeyProperty -->
-                <td class="tabdocumentsGridElement" colspan="2">
-                  <a
-                    data-bind="text: $data.stringPartitionKeyValue, attr: { title: $data.stringPartitionKeyValue }"
-                  ></a>
+                <!-- ko if: $data.partitionKeyProperties -->
+                <!-- ko foreach: $data.stringPartitionKeyValues -->
+                <td class="tabdocumentsGridElement" data-bind="colspan: $parent.stringPartitionKeyValues.length + 1">
+                  <a data-bind="text: $data, attr: { title: $data }"></a>
                 </td>
+                <!-- /ko -->
                 <!-- /ko -->
               </tr>
               <!-- /ko -->
