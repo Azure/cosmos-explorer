@@ -21,7 +21,8 @@ export const readDocument = async (collection: CollectionBase, documentId: Docum
     const response = await client()
       .database(collection.databaseId)
       .container(collection.id())
-      .item(documentId.id(), documentId.partitionKeyValue)
+      // use undefined if the partitionKeyValue is empty
+      .item(documentId.id(), documentId.partitionKeyValue?.length === 0 ? undefined : documentId.partitionKeyValue)
       .read(options);
 
     return response?.resource;
