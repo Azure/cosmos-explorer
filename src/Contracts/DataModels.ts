@@ -433,7 +433,7 @@ export interface NotebookWorkspaceConnectionInfo {
 
 export interface ContainerInfo {
   durationLeftInMinutes: number;
-  notebookServerInfo: NotebookWorkspaceConnectionInfo;
+  phoenixServerInfo: NotebookWorkspaceConnectionInfo;
   status: ContainerStatusType;
 }
 
@@ -469,8 +469,8 @@ export interface IMaxUsersPerDbAccountExceeded extends IValidationError {
 }
 
 export interface IPhoenixConnectionInfoResult {
-  readonly notebookAuthToken?: string;
-  readonly notebookServerUrl?: string;
+  readonly authToken?: string;
+  readonly phoenixServiceUrl?: string;
   readonly forwardingId?: string;
 }
 
