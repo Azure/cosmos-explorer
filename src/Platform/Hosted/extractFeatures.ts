@@ -90,7 +90,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
-    enableNewQuickstart: "true" === get("enableNewQuickstart"),
+    enableNewQuickstart: "true" === get("enablenewquickstart"),
   };
 }
 
