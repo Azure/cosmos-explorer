@@ -14,7 +14,7 @@ import GreenCheckIcon from "../../../images/Green_check.svg";
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
-import LinkIcon from "../../../images/Link.svg";
+import LinkIcon from "../../../images/Link_blue.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebooksIcon from "../../../images/Notebooks.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
