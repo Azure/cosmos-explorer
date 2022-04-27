@@ -19,7 +19,6 @@ import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebooksIcon from "../../../images/Notebooks.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
-import ShellIcon from "../../../images/Shell.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
