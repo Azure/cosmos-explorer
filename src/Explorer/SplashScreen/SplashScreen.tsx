@@ -19,6 +19,7 @@ import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebooksIcon from "../../../images/Notebooks.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
+import ShellIcon from "../../../images/Shell.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
@@ -137,8 +138,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   {userContext.features.enableNewQuickstart ? this.top3Items() : this.getRecentItems()}
                 </div>
                 <div className="moreStuffColumn tipsContainer">
-                  <div className="title">{userContext.features.enableNewQuickstart ? "Learning modules" : "Tips"}</div>
-                  {userContext.features.enableNewQuickstart ? this.getLearningModuleItems() : this.getTipItems()}
+                  <div className="title">
+                    {userContext.features.enableNewQuickstart ? "Learning Resources" : "Tips"}
+                  </div>
+                  {userContext.features.enableNewQuickstart ? this.getLearningResourceItems() : this.getTipItems()}
                 </div>
               </div>
             </div>
@@ -426,30 +429,36 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       <Stack>
         <Stack style={{ marginBottom: 26 }}>
           <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link onClick={undefined} style={{ marginRight: 5 }}>
-              Data modeling
+            <Link href="https://aka.ms/msl-modeling-partitioning-2" target="_blank" style={{ marginRight: 5 }}>
+              Advanced Modeling Patterns
             </Link>
             <Image src={LinkIcon} />
           </Stack>
-          <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </Text>
+          <Text>
+            Learn advanced strategies for managing relationships between data entities to optimize your database.
+          </Text>
         </Stack>
         <Stack style={{ marginBottom: 26 }}>
           <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link onClick={undefined} style={{ marginRight: 5 }}>
-              Partitioning
+            <Link href="https://aka.ms/msl-modeling-partitioning-1" target="_blank" style={{ marginRight: 5 }}>
+              Partitioning Best Practices
             </Link>
             <Image src={LinkIcon} />
           </Stack>
-          <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </Text>
+          <Text>
+            Learn to apply data model and partitioning strategies to support an efficient and scalable NoSQL database.
+          </Text>
         </Stack>
         <Stack>
           <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link onClick={undefined} style={{ marginRight: 5 }}>
-              Query
+            <Link href="https://aka.ms/msl-resource-planning" target="_blank" style={{ marginRight: 5 }}>
+              Plan Your Resource Requirements
             </Link>
             <Image src={LinkIcon} />
           </Stack>
-          <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </Text>
+          <Text>
+            Familiarize yourself with the various configuration options for a new Azure Cosmos DB SQL API account.
+          </Text>
         </Stack>
       </Stack>
     );
@@ -478,35 +487,37 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     );
   }
 
-  private getLearningModuleItems(): JSX.Element {
+  private getLearningResourceItems(): JSX.Element {
     return (
       <Stack>
         <Stack style={{ marginBottom: 26 }}>
           <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link onClick={undefined} style={{ marginRight: 5 }}>
-              Resource planning
+            <Link href="https://aka.ms/msl-sdk-connect" target="_blank" style={{ marginRight: 5 }}>
+              Get Started using th SQL API with the SDK
             </Link>
             <Image src={LinkIcon} />
           </Stack>
-          <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </Text>
+          <Text>Learn about the Azure Cosmos DB SDK, then download and use in a .NET application.</Text>
         </Stack>
         <Stack style={{ marginBottom: 26 }}>
           <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link onClick={undefined} style={{ marginRight: 5 }}>
-              Move data
+            <Link href="https://aka.ms/msl-complex-queries" target="_blank" style={{ marginRight: 5 }}>
+              Master Complex Queries
             </Link>
             <Image src={LinkIcon} />
           </Stack>
-          <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </Text>
+          <Text>Learn how to author complex queries using cross-products and correlated subqueries.</Text>
         </Stack>
         <Stack>
           <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link onClick={undefined} style={{ marginRight: 5 }}>
-              Get certified
+            <Link href="https://aka.ms/msl-move-data" target="_blank" style={{ marginRight: 5 }}>
+              Migrate Your Data
             </Link>
             <Image src={LinkIcon} />
           </Stack>
-          <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </Text>
+          <Text>
+            Migrate data into and out of Azure Cosmos DB SQL API using Azure services and open-source solutions.
+          </Text>
         </Stack>
       </Stack>
     );
