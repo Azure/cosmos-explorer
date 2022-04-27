@@ -29,7 +29,6 @@ import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
 import { ResourceTreeContainer } from "./Common/ResourceTreeContainer";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
-import "./Explorer/Controls/CommandButton/CommandButtonComponent.less";
 import { Dialog } from "./Explorer/Controls/Dialog";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
