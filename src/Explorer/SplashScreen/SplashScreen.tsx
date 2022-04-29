@@ -1,7 +1,7 @@
 /**
  * Accordion top class
  */
-import { Image, Link, Stack, Text } from "@fluentui/react";
+import { Coachmark, DirectionalHint, Image, Link, Stack, TeachingBubbleContent, Text } from "@fluentui/react";
 import * as React from "react";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
@@ -39,6 +39,7 @@ import { useSelectedNode } from "../useSelectedNode";
 export interface SplashScreenItem {
   iconSrc: string;
   title: string;
+  id?: string;
   info?: string;
   description: string;
   onClick: () => void;
@@ -48,7 +49,11 @@ export interface SplashScreenProps {
   explorer: Explorer;
 }
 
-export class SplashScreen extends React.Component<SplashScreenProps> {
+export interface SplashScreenState {
+  showCoachmark: boolean;
+}
+
+export class SplashScreen extends React.Component<SplashScreenProps, SplashScreenState> {
   private static readonly seeMoreItemTitle: string = "See more Cosmos DB documentation";
   private static readonly seeMoreItemUrl: string = "https://aka.ms/cosmosdbdocument";
   private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
@@ -62,6 +67,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     super(props);
     this.container = props.explorer;
     this.subscriptions = [];
+
+    this.state = {
+      showCoachmark: true,
+    };
   }
 
   public componentWillUnmount() {
@@ -116,13 +125,41 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     </div>
                     <div className="legendContainer">
                       <div className="legend">{item.title}</div>
-                      <div className={userContext.features.enableNewQuickstart ? "newDescription" : "description"}>
+                      <div
+                        id={item.id}
+                        className={userContext.features.enableNewQuickstart ? "newDescription" : "description"}
+                      >
                         {item.description}
                       </div>
                     </div>
                   </Stack>
                 ))}
               </div>
+              {userContext.features.enableNewQuickstart && this.state.showCoachmark && (
+                <Coachmark
+                  target="#quickstartDescription"
+                  positioningContainerProps={{ directionalHint: DirectionalHint.rightTopEdge }}
+                  persistentBeak
+                >
+                  <TeachingBubbleContent
+                    headline={`Start with sample ${getCollectionName().toLocaleLowerCase()}`}
+                    hasCloseButton
+                    closeButtonAriaLabel="Close"
+                    primaryButtonProps={{
+                      text: "Next",
+                      onClick: () => {
+                        this.setState({ showCoachmark: false });
+                        this.container.onNewCollectionClicked({ isQuickstart: true, showTeachingBubble: true });
+                      },
+                    }}
+                    secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ showCoachmark: false }) }}
+                    onDismiss={() => this.setState({ showCoachmark: false })}
+                  >
+                    You will be guided to create a sample container with sample data, then we will give you a tour of
+                    data explorer You can also cancel launching this tour and explore yourself
+                  </TeachingBubbleContent>
+                </Coachmark>
+              )}
               <div className="moreStuffContainer">
                 <div className="moreStuffColumn commonTasks">
                   <div className="title">
@@ -165,11 +202,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
     if (userContext.features.enableNewQuickstart) {
       const launchQuickstartBtn = {
+        id: "quickstartDescription",
         iconSrc: QuickStartIcon,
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
-        // TODO: replace onClick function
-        onClick: () => 1,
+        onClick: () => this.container.onNewCollectionClicked({ isQuickstart: true }),
       };
 
       const newContainerBtn = {

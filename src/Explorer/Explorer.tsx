@@ -1131,7 +1131,13 @@ export default class Explorer {
     }
   }
 
-  public async onNewCollectionClicked(databaseId?: string): Promise<void> {
+  public async onNewCollectionClicked(
+    options: {
+      databaseId?: string;
+      isQuickstart?: boolean;
+      showTeachingBubble?: boolean;
+    } = {}
+  ): Promise<void> {
     if (userContext.apiType === "Cassandra") {
       useSidePanel
         .getState()
@@ -1146,7 +1152,7 @@ export default class Explorer {
         : await useDatabases.getState().loadDatabaseOffers();
       useSidePanel
         .getState()
-        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
+        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} {...options} />);
     }
   }
 
