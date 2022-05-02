@@ -29,6 +29,7 @@ export type Features = {
   readonly mongoProxyEndpoint?: string;
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
+  readonly enableNewQuickstart: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -89,6 +90,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
+    enableNewQuickstart: "true" === get("enablenewquickstart"),
   };
 }
 
