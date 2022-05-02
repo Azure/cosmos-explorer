@@ -31,7 +31,7 @@ const costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
-    href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
     textTKey: "MaterializedviewsBuilderPricing",
   },
 };
@@ -73,7 +73,7 @@ const onNumberOfInstancesChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
+          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
           textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
@@ -113,7 +113,7 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
+          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
           textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
@@ -182,7 +182,7 @@ const getInstancesMax = async (): Promise<number> => {
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: "ResizingDecisionText",
   link: {
-    href: "https://aka.ms/cosmos-db-materializedviewbuilders-size",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-size",
     textTKey: "ResizingDecisionLink",
   },
 };
@@ -190,7 +190,7 @@ const NumberOfInstancesDropdownInfo: Info = {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://aka.ms/cosmos-db-materializedviews-builder-pricing",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
     textTKey: "MaterializedviewsBuilderPricing",
   },
 };
