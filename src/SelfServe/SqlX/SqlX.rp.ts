@@ -157,10 +157,7 @@ export const getRegions = async (): Promise<Array<string>> => {
       method: "GET",
       apiVersion: "2021-04-01-preview",
     });
-
-    if (response.result.location !== undefined) {
-      regions.push(response.result.location.split(" ").join("").toLowerCase());
-    } else {
+    console.log(response.result);
       for (const location of response.result.locations) {
         regions.push(location.locationName.split(" ").join("").toLowerCase());
       }
@@ -168,7 +165,8 @@ export const getRegions = async (): Promise<Array<string>> => {
 
     selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
     return regions;
-  } catch (err) {
+  }
+  catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
     return new Array<string>();

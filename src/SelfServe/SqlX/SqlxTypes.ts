@@ -49,9 +49,9 @@ export type PriceItem = {
 
 export type RegionsResponse = {
   locations: Array<RegionItem>;
-  location: string;
 };
 
 export type RegionItem = {
   locationName: string;
+  isZoneRedundant: boolean;
 };
