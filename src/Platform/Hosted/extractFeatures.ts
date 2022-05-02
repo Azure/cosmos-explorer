@@ -37,6 +37,7 @@ export type Features = {
   phoenixNotebooks?: boolean;
   phoenixFeatures?: boolean;
   notebooksDownBanner: boolean;
+  publicGallery?: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {

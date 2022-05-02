@@ -21,6 +21,7 @@ import {
   Text,
 } from "@fluentui/react";
 import * as React from "react";
+import { userContext } from "UserContext";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
@@ -148,14 +149,17 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   public render(): JSX.Element {
     this.traceViewGallery();
 
-    const tabs: GalleryTabInfo[] = [
-      this.createPublicGalleryTab(
-        GalleryTab.PublicGallery,
-        this.state.publicNotebooks,
-        this.state.isCodeOfConductAccepted
-      ),
-      this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks),
-    ];
+    const tabs: GalleryTabInfo[] = [];
+    if (userContext.features.publicGallery) {
+      tabs.push(
+        this.createPublicGalleryTab(
+          GalleryTab.PublicGallery,
+          this.state.publicNotebooks,
+          this.state.isCodeOfConductAccepted
+        )
+      );
+    }
+    tabs.push(this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks));
 
     if (this.props.container) {
       tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
