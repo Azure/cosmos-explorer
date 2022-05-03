@@ -96,7 +96,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   containerStatus: {
     status: undefined,
     durationLeftInMinutes: undefined,
-    notebookServerInfo: undefined,
+    phoenixServerInfo: undefined,
   },
   isPhoenixNotebooks: undefined,
   isPhoenixFeatures: undefined,
@@ -296,7 +296,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     useNotebook.getState().setContainerStatus({
       status: undefined,
       durationLeftInMinutes: undefined,
-      notebookServerInfo: undefined,
+      phoenixServerInfo: undefined,
     });
   },
   setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
