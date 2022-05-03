@@ -208,7 +208,7 @@ const ApproximateCostDropDownInfo: Info = {
 
 let priceMap: Map<string, Map<string, number>>;
 let currencyCode: string;
-let regions: Array<string>;
+let regions: Array<RegionItem>;
 
 const calculateCost = (skuName: string, instanceCount: number): Description => {
   const telemetryData = {
@@ -221,8 +221,8 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
   try {
     let costPerHour = 0;
-    for (const region of regions) {
-      const incrementalCost = priceMap.get(region).get(skuName.replace("Cosmos.", ""));
+    for (const regionItem of regions) {
+      const incrementalCost = priceMap.get(regionItem.locationName).get(skuName.replace("Cosmos.", ""));
       if (incrementalCost === undefined) {
         throw new Error("Value not found in map.");
       }

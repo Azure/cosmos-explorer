@@ -139,7 +139,7 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
 };
 
-export const getRegions = async (): Promise<Array<string>> => {
+export const getRegions = async (): Promise<Array<RegionItem>> => {
   const telemetryData = {
     feature: "Calculate approximate cost",
     function: "getRegions",
@@ -149,7 +149,7 @@ export const getRegions = async (): Promise<Array<string>> => {
   const getRegionsTimestamp = selfServeTraceStart(telemetryData);
 
   try {
-    const regions = new Array<string>();
+    const regions = new Array<RegionItem>();
 
     const response = await armRequestWithoutPolling<RegionsResponse>({
       host: configContext.ARM_ENDPOINT,
@@ -158,9 +158,8 @@ export const getRegions = async (): Promise<Array<string>> => {
       apiVersion: "2021-04-01-preview",
     });
     console.log(response.result);
-      for (const location of response.result.locations) {
-        regions.push(location.locationName.split(" ").join("").toLowerCase());
-      }
+    for (const regionItem of response.result.locations) {
+      regionItem.locationName = regionItem.locationName.split(" ").join("").toLowerCase();
     }
 
     selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
@@ -169,7 +168,7 @@ export const getRegions = async (): Promise<Array<string>> => {
   catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
-    return new Array<string>();
+    return new Array<RegionItem>();
   }
 };
 
@@ -177,7 +176,7 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
   return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
 };
 
-export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promise<PriceMapAndCurrencyCode> => {
+export const getPriceMapAndCurrencyCode = async (regions: Array<RegionItem>): Promise<PriceMapAndCurrencyCode> => {
   const telemetryData = {
     feature: "Calculate approximate cost",
     function: "getPriceMapAndCurrencyCode",
@@ -189,7 +188,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
   try {
     const priceMap = new Map<string, Map<string, number>>();
     let currencyCode;
-    for (const region of regions) {
+    for (const regionItem of regions) {
       const regionPriceMap = new Map<string, number>();
 
       const response = await armRequestWithoutPolling<FetchPricesResponse>({
@@ -200,7 +199,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
         queryParams: {
           filter:
             "armRegionName eq '" +
-            region +
+            regionItem.locationName +
             "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
         },
       });
@@ -213,7 +212,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
         }
         regionPriceMap.set(item.skuName, item.retailPrice);
       }
-      priceMap.set(region, regionPriceMap);
+      priceMap.set(regionItem.locationName, regionPriceMap);
     }
 
     selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);
