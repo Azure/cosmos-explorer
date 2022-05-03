@@ -146,7 +146,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
                     hasCloseButton
                     closeButtonAriaLabel="Close"
                     primaryButtonProps={{
-                      text: "Next",
+                      text: "Get started",
                       onClick: () => {
                         this.setState({ showCoachmark: false });
                         this.container.onNewCollectionClicked({ isQuickstart: true, showTeachingBubble: true });

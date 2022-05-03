@@ -68,11 +68,10 @@ export class ContainerSampleGenerator {
     return database.findCollectionWithId(this.sampleDataFile.collectionId);
   }
 
-  private async populateContainerAsync(collection: ViewModels.Collection): Promise<void> {
+  public async populateContainerAsync(collection: ViewModels.Collection): Promise<void> {
     if (!collection) {
       throw new Error("No container to populate");
     }
-    const promises: Q.Promise<any>[] = [];
 
     if (userContext.apiType === "Gremlin") {
       // For Gremlin, all queries are executed sequentially, because some queries might be dependent on other queries

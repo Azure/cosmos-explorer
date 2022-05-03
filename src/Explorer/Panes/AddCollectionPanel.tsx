@@ -31,6 +31,7 @@ import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils"
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
+import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
 import { PanelFooterComponent } from "./PanelFooterComponent";
@@ -128,8 +129,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       showErrorDetails: false,
       isExecuting: false,
       isThroughputCapExceeded: false,
-      teachingBubbleStep: props.showTeachingBubble ? 1 : 0,
+      teachingBubbleStep: 0,
     };
+  }
+
+  componentDidMount(): void {
+    if (this.state.teachingBubbleStep === 0 && this.props.showTeachingBubble) {
+      this.setState({ teachingBubbleStep: 1 });
+    }
   }
 
   render(): JSX.Element {
@@ -153,6 +160,70 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             link={Constants.Urls.freeTierInformation}
             linkText="Learn more"
           />
+        )}
+
+        {this.state.teachingBubbleStep === 1 && (
+          <TeachingBubble
+            headline="Create sample database"
+            target={"#newDatabaseId"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ teachingBubbleStep: 0 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 1 of 4"
+          >
+            Database is the parent of a container, create a new database / use an existing one
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 2 && (
+          <TeachingBubble
+            headline="Setting throughput"
+            target={"#autoscaleRUValueField"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 1 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 2 of 4"
+          >
+            Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of
+            throughput based on the max RU/s set
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 3 && (
+          <TeachingBubble
+            headline="Naming container"
+            target={"#collectionId"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 4 }) }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 3 of 4"
+          >
+            Name your container
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 4 && (
+          <TeachingBubble
+            headline="Setting partition key"
+            target={"#addCollection-partitionKeyValue"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{
+              text: "Create container",
+              onClick: () => {
+                this.setState({ teachingBubbleStep: 0 });
+                this.submit();
+              },
+            }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 4 of 4"
+          >
+            Last step - you will need to define a partition key for your collection. /address was chosen for this
+            particular example. A good partition key should have a wide range of possible value
+          </TeachingBubble>
         )}
 
         <div className="panelMainContent">
@@ -201,20 +272,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <span className="panelRadioBtnLabel">Use existing</span>
             </Stack>
 
-            {this.state.teachingBubbleStep === 1 && (
-              <TeachingBubble
-                headline="Create sample database"
-                target={"#newDatabaseId"}
-                calloutProps={{ gapSpace: 16 }}
-                primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
-                secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ teachingBubbleStep: 0 }) }}
-                onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-                footerContent="Step 1 of 3"
-              >
-                Database is the parent of a container, create a new database / use an existing one
-              </TeachingBubble>
-            )}
-
             {this.state.createNewDatabase && (
               <Stack className="panelGroupSpacing">
                 <input
@@ -261,21 +318,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                     </TooltipHost>
                   </Stack>
-                )}
-
-                {this.state.teachingBubbleStep === 2 && (
-                  <TeachingBubble
-                    headline="Setting throughput"
-                    target={"#autoscaleRUValueField"}
-                    calloutProps={{ gapSpace: 16 }}
-                    primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
-                    secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 1 }) }}
-                    onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-                    footerContent="Step 2 of 3"
-                  >
-                    Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount
-                    of throughput based on the max RU/s set
-                  </TeachingBubble>
                 )}
 
                 {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
@@ -457,27 +499,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <Text variant="small" aria-label="pkDescription">
                 {this.getPartitionKeySubtext()}
               </Text>
-
-              {this.state.teachingBubbleStep === 3 && (
-                <TeachingBubble
-                  headline="Setting partition key"
-                  target={"#addCollection-partitionKeyValue"}
-                  calloutProps={{ gapSpace: 16 }}
-                  primaryButtonProps={{
-                    text: "Create container",
-                    onClick: () => {
-                      this.setState({ teachingBubbleStep: 0 });
-                      this.submit();
-                    },
-                  }}
-                  secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
-                  onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
-                  footerContent="Step 3 of 3    "
-                >
-                  Last step - you will need to define a partition key for your collection. /address was chosen for this
-                  particular example. A good partition key should have a wide range of possible value
-                </TeachingBubble>
-              )}
 
               <input
                 type="text"
@@ -1148,8 +1169,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     try {
       await createCollection(createCollectionParams);
+      await this.props.explorer.refreshAllDatabases();
+      if (this.props.isQuickstart) {
+        const database = useDatabases.getState().findDatabaseWithId("SampleDB");
+        if (database) {
+          await database.loadCollections();
+          const collection = database.findCollectionWithId("SampleContainer");
+          const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
+          sampleGenerator.populateContainerAsync(collection);
+        }
+      }
       this.setState({ isExecuting: false });
-      this.props.explorer.refreshAllDatabases();
       TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
       useSidePanel.getState().closeSidePanel();
     } catch (error) {
