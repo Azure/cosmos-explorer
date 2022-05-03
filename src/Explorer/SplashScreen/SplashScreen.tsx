@@ -69,17 +69,17 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
     this.subscriptions = [];
 
     this.state = {
-      showCoachmark: true,
+      showCoachmark: userContext.features.enableNewQuickstart,
     };
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     while (this.subscriptions.length) {
       this.subscriptions.pop().dispose();
     }
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     this.subscriptions.push(
       {
         dispose: useNotebook.subscribe(
@@ -135,7 +135,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
                   </Stack>
                 ))}
               </div>
-              {userContext.features.enableNewQuickstart && this.state.showCoachmark && (
+              {this.state.showCoachmark && (
                 <Coachmark
                   target="#quickstartDescription"
                   positioningContainerProps={{ directionalHint: DirectionalHint.rightTopEdge }}
