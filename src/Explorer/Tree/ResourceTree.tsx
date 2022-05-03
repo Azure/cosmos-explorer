@@ -299,7 +299,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
     ];
 
-    if (item.type === NotebookContentItemType.Notebook) {
+    if (item.type === NotebookContentItemType.Notebook && userContext.features.publicGallery) {
       items.push({
         label: "Publish to gallery",
         iconSrc: PublishIcon,

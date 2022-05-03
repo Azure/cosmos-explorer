@@ -1,6 +1,7 @@
 import { stringifyNotebook, toJS } from "@nteract/commutable";
 import * as ko from "knockout";
 import * as Q from "q";
+import { userContext } from "UserContext";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
 import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import CutIcon from "../../../images/notebook/Notebook-cut.svg";
@@ -129,14 +130,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
       });
     }
 
-    saveButtonChildren.push({
-      iconName: "PublishContent",
-      onCommandClick: async () => await this.publishToGallery(),
-      commandButtonLabel: publishLabel,
-      hasPopup: false,
-      disabled: false,
-      ariaLabel: publishLabel,
-    });
+    if (userContext.features.publicGallery) {
+      saveButtonChildren.push({
+        iconName: "PublishContent",
+        onCommandClick: async () => await this.publishToGallery(),
+        commandButtonLabel: publishLabel,
+        hasPopup: false,
+        disabled: false,
+        ariaLabel: publishLabel,
+      });
+    }
 
     let buttons: CommandButtonComponentProps[] = [
       {
