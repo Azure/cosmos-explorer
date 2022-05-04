@@ -1,9 +1,10 @@
+import { RegionItem } from "SelfServe/SqlX/SqlxTypes";
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import {
   selfServeTrace,
   selfServeTraceFailure,
   selfServeTraceStart,
-  selfServeTraceSuccess,
+  selfServeTraceSuccess
 } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
@@ -15,7 +16,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -24,7 +25,7 @@ import {
   getPriceMapAndCurrencyCode,
   getRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -221,19 +222,37 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
   try {
     let costPerHour = 0;
+    let costBreakdown = "";
+    let hasAzRegion = false;
     for (const regionItem of regions) {
       const incrementalCost = priceMap.get(regionItem.locationName).get(skuName.replace("Cosmos.", ""));
       if (incrementalCost === undefined) {
-        throw new Error("Value not found in map.");
+        throw new Error(`${regionItem.locationName} not found in price map.`);
       }
-      costPerHour += incrementalCost;
+      else if (incrementalCost === 0) {
+        throw new Error(`${regionItem.locationName} cost per hour = 0`);
+      }
+
+      let regionalInstanceCount = instanceCount;
+      if (regionItem.isZoneRedundant) {
+        regionalInstanceCount = Math.ceil(instanceCount * 1.5)
+        hasAzRegion = true;
+      }
+
+      const regionalCostPerHour = incrementalCost * regionalInstanceCount;
+      costBreakdown += `\n${regionItem.locationName} ${regionItem.isZoneRedundant ? "(AZ)" : ""} \n${regionalCostPerHour} ${currencyCode} (${regionalInstanceCount} instances * ${incrementalCost} ${currencyCode})\n`;
+
+      if (regionalCostPerHour === 0) {
+        throw new Error(`${regionItem.locationName} Cost per hour = 0`);
+      }
+
+      costPerHour += regionalCostPerHour;
     }
 
     if (costPerHour === 0) {
       throw new Error("Cost per hour = 0");
     }
 
-    costPerHour *= instanceCount;
     costPerHour = Math.round(costPerHour * 100) / 100;
 
     selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
