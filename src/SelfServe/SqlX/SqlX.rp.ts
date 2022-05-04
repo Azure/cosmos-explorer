@@ -6,10 +6,9 @@ import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
 import {
   FetchPricesResponse,
-  PriceMapAndCurrencyCode,
-  RegionsResponse,
+  PriceMapAndCurrencyCode, RegionItem, RegionsResponse,
   SqlxServiceResource,
-  UpdateDedicatedGatewayRequestParameters,
+  UpdateDedicatedGatewayRequestParameters
 } from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";
@@ -149,21 +148,15 @@ export const getRegions = async (): Promise<Array<RegionItem>> => {
   const getRegionsTimestamp = selfServeTraceStart(telemetryData);
 
   try {
-    const regions = new Array<RegionItem>();
-
     const response = await armRequestWithoutPolling<RegionsResponse>({
       host: configContext.ARM_ENDPOINT,
       path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
       method: "GET",
       apiVersion: "2021-04-01-preview",
     });
-    console.log(response.result);
-    for (const regionItem of response.result.locations) {
-      regionItem.locationName = regionItem.locationName.split(" ").join("").toLowerCase();
-    }
 
     selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
-    return regions;
+    return response.result.properties.locations;
   }
   catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
@@ -199,7 +192,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<RegionItem>): Pr
         queryParams: {
           filter:
             "armRegionName eq '" +
-            regionItem.locationName +
+            regionItem.locationName.split(" ").join("").toLowerCase() +
             "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
         },
       });

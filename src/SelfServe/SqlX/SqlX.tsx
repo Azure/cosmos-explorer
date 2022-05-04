@@ -240,7 +240,10 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
       }
 
       const regionalCostPerHour = incrementalCost * regionalInstanceCount;
-      costBreakdown += `\n${regionItem.locationName} ${regionItem.isZoneRedundant ? "(AZ)" : ""} \n${regionalCostPerHour} ${currencyCode} (${regionalInstanceCount} instances * ${incrementalCost} ${currencyCode})\n`;
+      costBreakdown += `\\
+      ${regionItem.locationName} ${regionItem.isZoneRedundant ? "(AZ)" : ""}\ 
+      ${regionalCostPerHour} ${currencyCode} (${regionalInstanceCount} instances * ${incrementalCost} ${currencyCode})\
+      `;
 
       if (regionalCostPerHour === 0) {
         throw new Error(`${regionItem.locationName} Cost per hour = 0`);
@@ -257,10 +260,11 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
     selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
     return {
-      textTKey: `${costPerHour} ${currencyCode}`,
+      textTKey: `${costPerHour} ${currencyCode} ${costBreakdown}`,
       type: DescriptionType.Text,
     };
   } catch (err) {
+    alert(err);
     const failureTelemetry = { err, regions, priceMap, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, calculateCostTimestamp);
 
