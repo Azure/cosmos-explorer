@@ -12,13 +12,13 @@
     margin: auto;
     padding-left: 21px;
     padding-right: 16px;
-    max-width: 1168px;;
+    max-width: 1168px;
 
-    >* {
+    > * {
       justify-content: space-between;
     }
 
-    >.title {
+    > .title {
       position: relative; // To attach FeaturePanelLauncher as absolute
       color: @BaseHigh;
       font-size: 48px;
@@ -27,7 +27,7 @@
       text-align: center;
     }
 
-    >.subtitle {
+    > .subtitle {
       color: @BaseHigh;
       font-size: 18px;
       padding-left: 0px;
@@ -41,18 +41,17 @@
       cursor: pointer;
       margin: 40px auto;
 
-      >.mainButton {
+      > .mainButton {
         min-width: 124px;
         max-width: 296px;
         padding: 32px 16px;
-        display: flex;
         background-color: @BaseLight;
         border: 1px solid #949494;
         box-sizing: border-box;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         border-radius: 4px;
 
-        >.legendContainer {
+        > .legendContainer {
           margin-left: 16px;
           text-align: left;
 
@@ -65,10 +64,14 @@
           .description {
             font-size: 10px;
           }
+
+          .newDescription {
+            font-size: 13px;
+          }
         }
       }
 
-      >:nth-child(n+2) {
+      > :nth-child(n + 2) {
         margin-left: 32px;
       }
     }
@@ -83,7 +86,7 @@
         min-width: 124px;
         max-width: 296px;
 
-        >.title {
+        > .title {
           font-size: 18px;
           font-family: @SemiboldFont;
           color: @BaseDark;
@@ -91,7 +94,7 @@
           margin-bottom: 16px;
         }
 
-        >ul {
+        > ul {
           list-style: none;
           padding-left: 0px;
           margin-bottom: 0px;
@@ -101,7 +104,7 @@
             .flex-display();
             align-items: flex-start;
 
-            >img {
+            > img {
               margin-right: @DefaultSpace;
               width: 24px;
               height: 24px;
@@ -133,12 +136,12 @@
           .flex-display();
           .flex-direction();
 
-          >.title {
+          > .title {
             color: @BaseDark;
             padding: 0px;
             font-size: 12px;
           }
-          >.description {
+          > .description {
             color: @BaseDark;
           }
 
@@ -167,11 +170,20 @@
       }
 
       &:focus {
-          .focus();
+        .focus();
       }
 
       &:active {
-          .active();
+        .active();
+      }
+    }
+
+    .notebookSplashScreenItem {
+      padding: 12px 0 12px 12px;
+
+      .itemText {
+        margin-left: 12px;
+        font-family: @SemiboldFont;
       }
     }
   }

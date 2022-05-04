@@ -1,4 +1,5 @@
 export type Features = {
+  // set only via feature flags
   readonly canExceedMaximumValue: boolean;
   readonly cosmosdb: boolean;
   readonly enableChangeFeedPolicy: boolean;
@@ -8,11 +9,6 @@ export type Features = {
   readonly enableReactPane: boolean;
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
-  autoscaleDefault: boolean;
-  partitionKeyDefault: boolean;
-  partitionKeyDefault2: boolean;
-  phoenix: boolean;
-  notebooksDownBanner: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -22,7 +18,6 @@ export type Features = {
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly phoenixEndpoint?: string;
-  readonly livyEndpoint?: string;
   readonly notebookBasePath?: string;
   readonly notebookServerToken?: string;
   readonly notebookServerUrl?: string;
@@ -34,11 +29,23 @@ export type Features = {
   readonly mongoProxyEndpoint?: string;
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
+  readonly enableNewQuickstart: boolean;
+
+  // can be set via both flight and feature flag
+  autoscaleDefault: boolean;
+  partitionKeyDefault: boolean;
+  partitionKeyDefault2: boolean;
+  phoenixNotebooks?: boolean;
+  phoenixFeatures?: boolean;
+  notebooksDownBanner: boolean;
+  publicGallery?: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
   const downcased = new URLSearchParams();
-  const set = (value: string, key: string) => downcased.set(key.toLowerCase(), value);
+  const set = (value: string, key: string) => {
+    downcased.set(key.toLowerCase(), value);
+  };
   const get = (key: string, defaultValue?: string) =>
     downcased.get("feature." + key) ?? downcased.get(key) ?? defaultValue;
 
@@ -71,7 +78,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     mongoProxyAPIs: get("mongoproxyapis"),
     junoEndpoint: get("junoendpoint"),
     phoenixEndpoint: get("phoenixendpoint"),
-    livyEndpoint: get("livyendpoint"),
     notebookBasePath: get("notebookbasepath"),
     notebookServerToken: get("notebookservertoken"),
     notebookServerUrl: get("notebookserverurl"),
@@ -83,9 +89,9 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     autoscaleDefault: "true" === get("autoscaledefault"),
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
-    phoenix: "true" === get("phoenix"),
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
+    enableNewQuickstart: "true" === get("enablenewquickstart"),
   };
 }
 

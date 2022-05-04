@@ -8,23 +8,23 @@ import { CassandraAddCollectionPane } from "../Panes/CassandraAddCollectionPane/
 import { SettingsPane } from "../Panes/SettingsPane/SettingsPane";
 import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 
-function generateQueryText(action: ActionContracts.OpenQueryTab, partitionKeyProperty: string): string {
+function generateQueryText(action: ActionContracts.OpenQueryTab, partitionKeyProperties: string[]): string {
   if (!action.query) {
     return "SELECT * FROM c";
   } else if (action.query.text) {
     return action.query.text;
-  } else if (!!action.query.partitionKeys && action.query.partitionKeys.length > 0) {
+  } else if (action.query.partitionKeys?.length > 0 && partitionKeyProperties?.length > 0) {
     let query = "SELECT * FROM c WHERE";
     for (let i = 0; i < action.query.partitionKeys.length; i++) {
       const partitionKey = action.query.partitionKeys[i];
       if (!partitionKey) {
         // null partition key case
-        query = query.concat(` c.${partitionKeyProperty} = ${action.query.partitionKeys[i]}`);
+        query = query.concat(` c.${partitionKeyProperties[i]} = ${action.query.partitionKeys[i]}`);
       } else if (typeof partitionKey !== "string") {
         // Undefined partition key case
-        query = query.concat(` NOT IS_DEFINED(c.${partitionKeyProperty})`);
+        query = query.concat(` NOT IS_DEFINED(c.${partitionKeyProperties[i]})`);
       } else {
-        query = query.concat(` c.${partitionKeyProperty} = "${action.query.partitionKeys[i]}"`);
+        query = query.concat(` c.${partitionKeyProperties[i]} = "${action.query.partitionKeys[i]}"`);
       }
       if (i !== action.query.partitionKeys.length - 1) {
         query = query.concat(" OR");
@@ -109,7 +109,7 @@ function openCollectionTab(
           collection.onNewQueryClick(
             collection,
             undefined,
-            generateQueryText(action as ActionContracts.OpenQueryTab, collection.partitionKeyProperty)
+            generateQueryText(action as ActionContracts.OpenQueryTab, collection.partitionKeyProperties)
           );
           break;
         }

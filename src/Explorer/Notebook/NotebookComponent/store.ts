@@ -1,12 +1,12 @@
-import { AppState, epics as coreEpics, reducers, IContentProvider } from "@nteract/core";
-import { compose, Store, AnyAction, Middleware, Dispatch, MiddlewareAPI } from "redux";
-import { Epic } from "redux-observable";
-import { allEpics } from "./epics";
-import { coreReducer, cdbReducer } from "./reducers";
-import { catchError } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { AppState, epics as coreEpics, IContentProvider, reducers } from "@nteract/core";
 import { configuration } from "@nteract/mythic-configuration";
 import { makeConfigureStore } from "@nteract/myths";
+import { AnyAction, compose, Dispatch, Middleware, MiddlewareAPI, Store } from "redux";
+import { Epic } from "redux-observable";
+import { Observable } from "rxjs";
+import { catchError } from "rxjs/operators";
+import { allEpics } from "./epics";
+import { cdbReducer, coreReducer } from "./reducers";
 import { CdbAppState } from "./types";
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -81,7 +81,6 @@ export const getCoreEpics = (autoStartKernelOnNotebookOpen: boolean): Epic[] => 
   // This list needs to be consistent and in sync with core.allEpics until we figure
   // out how to safely filter out the ones we are overriding here.
   const filteredCoreEpics = [
-    coreEpics.autoSaveCurrentContentEpic,
     coreEpics.executeCellEpic,
     coreEpics.executeFocusedCellEpic,
     coreEpics.executeCellAfterKernelLaunchEpic,

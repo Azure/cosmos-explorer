@@ -149,7 +149,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.offer = this.database?.offer();
     }
 
-    this.state = {
+    const initialState: SettingsComponentState = {
       throughput: undefined,
       throughputBaseline: undefined,
       autoPilotThroughput: undefined,
@@ -199,6 +199,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       selectedTab: SettingsV2TabTypes.ScaleTab,
     };
 
+    this.state = {
+      ...initialState,
+      ...this.getBaselineValues(),
+      ...this.getAutoscaleBaselineValues(),
+    };
+
     this.saveSettingsButton = {
       isEnabled: this.isSaveSettingsButtonEnabled,
       isVisible: () => {
@@ -225,7 +231,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.loadMongoIndexes();
     }
 
-    this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -286,17 +291,24 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
-  private setAutoPilotStates = (): void => {
+  private getAutoscaleBaselineValues = (): Partial<SettingsComponentState> => {
     const autoscaleMaxThroughput = this.offer?.autoscaleMaxThroughput;
 
     if (autoscaleMaxThroughput && AutoPilotUtils.isValidAutoPilotThroughput(autoscaleMaxThroughput)) {
-      this.setState({
+      return {
         isAutoPilotSelected: true,
         wasAutopilotOriginallySet: true,
         autoPilotThroughput: autoscaleMaxThroughput,
         autoPilotThroughputBaseline: autoscaleMaxThroughput,
-      });
+      };
     }
+
+    return {
+      isAutoPilotSelected: false,
+      wasAutopilotOriginallySet: false,
+      autoPilotThroughput: undefined,
+      autoPilotThroughputBaseline: undefined,
+    };
   };
 
   public hasProvisioningTypeChanged = (): boolean =>
@@ -561,21 +573,25 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public setBaseline = (): void => {
+    const baselineValues = this.getBaselineValues();
+    const autoscaleBaselineValues = this.getAutoscaleBaselineValues();
+    this.setState({ ...baselineValues, ...autoscaleBaselineValues } as SettingsComponentState);
+  };
+
+  private getBaselineValues = (): Partial<SettingsComponentState> => {
     const offerThroughput = this.offer?.manualThroughput;
 
     if (!this.isCollectionSettingsTab) {
-      this.setState({
+      return {
         throughput: offerThroughput,
         throughputBaseline: offerThroughput,
-      });
-
-      return;
+      };
     }
 
     const defaultTtl = this.collection.defaultTtl();
 
-    let timeToLive: TtlType = this.state.timeToLive;
-    let timeToLiveSeconds = this.state.timeToLiveSeconds;
+    let timeToLive: TtlType;
+    let timeToLiveSeconds: number;
     switch (defaultTtl) {
       case undefined:
       case 0:
@@ -620,7 +636,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       (this.collection.geospatialConfig && this.collection.geospatialConfig()?.type) || GeospatialConfigType.Geometry;
     const geoSpatialConfigType = GeospatialConfigType[geospatialConfigTypeString as keyof typeof GeospatialConfigType];
 
-    this.setState({
+    return {
       throughput: offerThroughput,
       throughputBaseline: offerThroughput,
       changeFeedPolicy: changeFeedPolicy,
@@ -643,7 +659,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       conflictResolutionPolicyProcedureBaseline: conflictResolutionPolicyProcedure,
       geospatialConfigType: geoSpatialConfigType,
       geospatialConfigTypeBaseline: geoSpatialConfigType,
-    });
+    };
   };
 
   private getTabsButtons = (): CommandButtonComponentProps[] => {

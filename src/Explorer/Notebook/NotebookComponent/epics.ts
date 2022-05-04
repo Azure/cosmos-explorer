@@ -12,11 +12,12 @@ import {
   ServerConfig as JupyterServerConfig,
 } from "@nteract/core";
 import { Channels, childOf, createMessage, JupyterMessage, message, ofMessageType } from "@nteract/messaging";
+import { defineConfigOption } from "@nteract/mythic-configuration";
 import { RecordOf } from "immutable";
-import { AnyAction } from "redux";
+import { Action, AnyAction } from "redux";
 import { ofType, StateObservable } from "redux-observable";
 import { kernels, sessions } from "rx-jupyter";
-import { concat, EMPTY, from, merge, Observable, Observer, of, Subject, Subscriber, timer } from "rxjs";
+import { concat, EMPTY, from, interval, merge, Observable, Observer, of, Subject, Subscriber, timer } from "rxjs";
 import {
   catchError,
   concatMap,
@@ -41,7 +42,7 @@ import { logConsoleError, logConsoleInfo } from "../../../Utils/NotificationCons
 import { useDialog } from "../../Controls/Dialog";
 import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
-import { NotebookUtil } from "../NotebookUtil";
+import { NotebookContentProviderType, NotebookUtil } from "../NotebookUtil";
 import * as CdbActions from "./actions";
 import * as TextFile from "./contents/file/text-file";
 import { CdbAppState } from "./types";
@@ -948,6 +949,54 @@ const resetCellStatusOnExecuteCanceledEpic = (
   );
 };
 
+const { selector: autoSaveInterval } = defineConfigOption({
+  key: "autoSaveInterval",
+  label: "Auto-save interval",
+  defaultValue: 120_000,
+});
+
+/**
+ * Override autoSaveCurrentContentEpic to disable auto save for notebooks under temporary workspace.
+ * @param action$
+ */
+export function autoSaveCurrentContentEpic(
+  action$: Observable<Action>,
+  state$: StateObservable<AppState>
+): Observable<actions.Save> {
+  return state$.pipe(
+    map((state) => autoSaveInterval(state)),
+    switchMap((time) => interval(time)),
+    mergeMap(() => {
+      const state = state$.value;
+      return from(
+        selectors
+          .contentByRef(state)
+          .filter(
+            /*
+             * Only save contents that are files or notebooks with
+             * a filepath already set.
+             */
+            (content) => (content.type === "file" || content.type === "notebook") && content.filepath !== ""
+          )
+          .keys()
+      );
+    }),
+    filter((contentRef: ContentRef) => {
+      const model = selectors.model(state$.value, { contentRef });
+      const content = selectors.content(state$.value, { contentRef });
+      if (
+        model &&
+        model.type === "notebook" &&
+        NotebookUtil.getContentProviderType(content.filepath) !== NotebookContentProviderType.JupyterContentProviderType
+      ) {
+        return selectors.notebook.isDirty(model);
+      }
+      return false;
+    }),
+    map((contentRef: ContentRef) => actions.save({ contentRef }))
+  );
+}
+
 export const allEpics = [
   addInitialCodeCellEpic,
   focusInitialCodeCellEpic,
@@ -965,4 +1014,5 @@ export const allEpics = [
   traceNotebookInfoEpic,
   traceNotebookKernelEpic,
   resetCellStatusOnExecuteCanceledEpic,
+  autoSaveCurrentContentEpic,
 ];

@@ -1,5 +1,6 @@
 import { ServerConnection } from "@jupyterlab/services";
 import "@jupyterlab/terminal/style/index.css";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import postRobot from "post-robot";
 import { HttpHeaders } from "../Common/Constants";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
@@ -54,11 +55,18 @@ const initTerminal = async (props: TerminalProps) => {
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
-    await JupyterLabAppFactory.createTerminalApp(serverSettings);
+    await new JupyterLabAppFactory(() => closeTab(props.tabId)).createTerminalApp(serverSettings);
     TelemetryProcessor.traceSuccess(Action.OpenTerminal, data, startTime);
   } catch (error) {
     TelemetryProcessor.traceFailure(Action.OpenTerminal, data, startTime);
   }
+};
+
+const closeTab = (tabId: string): void => {
+  window.parent.postMessage(
+    { type: MessageTypes.CloseTab, data: { tabId: tabId }, signature: "pcIframe" },
+    window.document.referrer
+  );
 };
 
 const main = async (): Promise<void> => {

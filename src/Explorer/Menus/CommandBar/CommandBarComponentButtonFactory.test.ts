@@ -31,27 +31,12 @@ describe("CommandBarComponentButtonFactory tests", () => {
       });
     });
 
-    it("Account is not serverless - button should be visible", () => {
+    it("Button should be visible", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
       );
       expect(enableAzureSynapseLinkBtn).toBeDefined();
-    });
-
-    it("Account is serverless - button should be hidden", () => {
-      updateUserContext({
-        databaseAccount: {
-          properties: {
-            capabilities: [{ name: "EnableServerless" }],
-          },
-        } as DatabaseAccount,
-      });
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
-      );
-      expect(enableAzureSynapseLinkBtn).toBeUndefined();
     });
   });
 

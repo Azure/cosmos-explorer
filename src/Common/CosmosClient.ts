@@ -1,5 +1,6 @@
 import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
+import { CosmosHeaders } from "@azure/cosmos/dist-esm";
 import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
@@ -77,10 +78,21 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
   }
 }
 
+// The Capability is a bitmap, which cosmosdb backend decodes as per the below enum
+enum SDKSupportedCapabilities {
+  None = 0,
+  PartitionMerge = 1 << 0,
+}
+
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
   if (_client) return _client;
+
+  let _defaultHeaders: CosmosHeaders = {};
+  _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
+    SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
+
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
@@ -89,6 +101,7 @@ export function client(): Cosmos.CosmosClient {
       enableEndpointDiscovery: false,
     },
     userAgentSuffix: "Azure Portal",
+    defaultHeaders: _defaultHeaders,
   };
 
   if (configContext.PROXY_PATH !== undefined) {

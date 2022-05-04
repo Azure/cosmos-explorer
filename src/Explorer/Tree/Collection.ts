@@ -50,8 +50,8 @@ export default class Collection implements ViewModels.Collection {
   public rid: string;
   public databaseId: string;
   public partitionKey: DataModels.PartitionKey;
-  public partitionKeyPropertyHeader: string;
-  public partitionKeyProperty: string;
+  public partitionKeyPropertyHeaders: string[];
+  public partitionKeyProperties: string[];
   public id: ko.Observable<string>;
   public defaultTtl: ko.Observable<number>;
   public indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
@@ -120,31 +120,25 @@ export default class Collection implements ViewModels.Collection {
     this.requestSchema = data.requestSchema;
     this.geospatialConfig = ko.observable(data.geospatialConfig);
 
-    // TODO fix this to only replace non-excaped single quotes
-    this.partitionKeyProperty =
-      (this.partitionKey &&
-        this.partitionKey.paths &&
-        this.partitionKey.paths.length &&
-        this.partitionKey.paths.length > 0 &&
-        this.partitionKey.paths[0].replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")) ||
-      null;
-    this.partitionKeyPropertyHeader =
-      (this.partitionKey &&
-        this.partitionKey.paths &&
-        this.partitionKey.paths.length > 0 &&
-        this.partitionKey.paths[0]) ||
-      null;
+    this.partitionKeyPropertyHeaders = this.partitionKey?.paths;
+    this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
+      // TODO fix this to only replace non-excaped single quotes
+      let partitionKeyProperty = partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "");
 
-    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
-      this.partitionKeyProperty = this.partitionKeyProperty.replace(/["]+/g, "");
-    }
+      if (userContext.apiType === "Mongo" && partitionKeyProperty) {
+        if (~partitionKeyProperty.indexOf(`"`)) {
+          partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
+        }
+        // TODO #10738269 : Add this logic in a derived class for Mongo
+        if (partitionKeyProperty.indexOf("$v") > -1) {
+          // From $v.shard.$v.key.$v > shard.key
+          partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
+          this.partitionKeyPropertyHeaders[i] = partitionKeyProperty;
+        }
+      }
 
-    // TODO #10738269 : Add this logic in a derived class for Mongo
-    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && this.partitionKeyProperty.indexOf("$v") > -1) {
-      // From $v.shard.$v.key.$v > shard.key
-      this.partitionKeyProperty = this.partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
-      this.partitionKeyPropertyHeader = "/" + this.partitionKeyProperty;
-    }
+      return partitionKeyProperty;
+    });
 
     this.documentIds = ko.observableArray<DocumentId>([]);
     this.isCollectionExpanded = ko.observable<boolean>(false);
@@ -308,7 +302,7 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
 
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Items",
+        tabTitle: this.rawDataModel.id + " - Items",
       });
       this.documentIds([]);
 
@@ -316,7 +310,7 @@ export default class Collection implements ViewModels.Collection {
         partitionKey: this.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
-        title: "Items",
+        title: this.rawDataModel.id + " - Items",
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
@@ -471,7 +465,7 @@ export default class Collection implements ViewModels.Collection {
 
         collection: this,
         masterKey: userContext.masterKey || "",
-        collectionPartitionKeyProperty: this.partitionKeyProperty,
+        collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
         collectionId: this.id(),
         databaseId: this.databaseId,
         isTabsContentExpanded: this.container.isTabsContentExpanded,
@@ -529,7 +523,7 @@ export default class Collection implements ViewModels.Collection {
   };
 
   public onSchemaAnalyzerClick = async () => {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixFeatures) {
       await this.container.allocateContainer();
     }
     useSelectedNode.getState().setSelectedNode(this);
@@ -710,7 +704,7 @@ export default class Collection implements ViewModels.Collection {
       tabPath: "",
       collection: this,
       masterKey: userContext.masterKey || "",
-      collectionPartitionKeyProperty: this.partitionKeyProperty,
+      collectionPartitionKeyProperty: this.partitionKeyProperties?.[0],
       collectionId: this.id(),
       databaseId: this.databaseId,
       isTabsContentExpanded: this.container.isTabsContentExpanded,

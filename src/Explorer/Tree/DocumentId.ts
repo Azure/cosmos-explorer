@@ -9,21 +9,21 @@ export default class DocumentId {
   public self: string;
   public ts: string;
   public id: ko.Observable<string>;
-  public partitionKeyProperty: string;
+  public partitionKeyProperties: string[];
   public partitionKey: DataModels.PartitionKey;
-  public partitionKeyValue: any;
-  public stringPartitionKeyValue: string;
+  public partitionKeyValue: any[];
+  public stringPartitionKeyValues: string[];
   public isDirty: ko.Observable<boolean>;
 
-  constructor(container: DocumentsTab, data: any, partitionKeyValue: any) {
+  constructor(container: DocumentsTab, data: any, partitionKeyValue: any[]) {
     this.container = container;
     this.self = data._self;
     this.rid = data._rid;
     this.ts = data._ts;
     this.partitionKeyValue = partitionKeyValue;
-    this.partitionKeyProperty = container && container.partitionKeyProperty;
+    this.partitionKeyProperties = container?.partitionKeyProperties;
     this.partitionKey = container && container.partitionKey;
-    this.stringPartitionKeyValue = this.getPartitionKeyValueAsString();
+    this.stringPartitionKeyValues = this.getPartitionKeyValueAsString();
     this.id = ko.observable(data.id);
     this.isDirty = ko.observable(false);
   }
@@ -46,34 +46,35 @@ export default class DocumentId {
   }
 
   public partitionKeyHeader(): Object {
-    if (!this.partitionKeyProperty) {
+    if (!this.partitionKeyProperties || this.partitionKeyProperties.length === 0) {
       return undefined;
     }
 
-    if (this.partitionKeyValue === undefined) {
+    if (!this.partitionKeyValue || this.partitionKeyValue.length === 0) {
       return [{}];
     }
 
     return [this.partitionKeyValue];
   }
 
-  public getPartitionKeyValueAsString(): string {
-    const partitionKeyValue: any = this.partitionKeyValue;
-    const typeOfPartitionKeyValue: string = typeof partitionKeyValue;
+  public getPartitionKeyValueAsString(): string[] {
+    return this.partitionKeyValue?.map((partitionKeyValue) => {
+      const typeOfPartitionKeyValue: string = typeof partitionKeyValue;
 
-    if (
-      typeOfPartitionKeyValue === "undefined" ||
-      typeOfPartitionKeyValue === "null" ||
-      typeOfPartitionKeyValue === "object"
-    ) {
-      return "";
-    }
+      if (
+        typeOfPartitionKeyValue === "undefined" ||
+        typeOfPartitionKeyValue === "null" ||
+        typeOfPartitionKeyValue === "object"
+      ) {
+        return "";
+      }
 
-    if (typeOfPartitionKeyValue === "string") {
-      return partitionKeyValue;
-    }
+      if (typeOfPartitionKeyValue === "string") {
+        return partitionKeyValue;
+      }
 
-    return JSON.stringify(partitionKeyValue);
+      return JSON.stringify(partitionKeyValue);
+    });
   }
 
   public async loadDocument(): Promise<void> {

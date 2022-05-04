@@ -147,7 +147,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     if (isAutoscaleSelected) {
       if (!AutoPilotUtils.isValidAutoPilotThroughput(throughput)) {
         setFormErrors(
-          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
+          `Please enter a value greater than ${AutoPilotUtils.autoPilotThroughput1K} for autopilot throughput`
         );
         return false;
       }
@@ -241,6 +241,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={true}
             isSharded={databaseCreateNewShared}
+            isFreeTier={isFreeTierAccount}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
             setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}

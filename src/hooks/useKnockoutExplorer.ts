@@ -1,3 +1,4 @@
+import { useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
@@ -43,6 +44,11 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     const effect = async () => {
       if (platform) {
+        //Updating phoenix feature flags for MPAC based of config context
+        if (configContext.isPhoenixEnabled === true) {
+          userContext.features.phoenixNotebooks = true;
+          userContext.features.phoenixFeatures = true;
+        }
         if (platform === Platform.Hosted) {
           const explorer = await configureHosted();
           setExplorer(explorer);
@@ -69,16 +75,38 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 
 async function configureHosted(): Promise<Explorer> {
   const win = (window as unknown) as HostedExplorerChildFrame;
+  let explorer: Explorer;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
-    return configureHostedWithEncryptedToken(win.hostedConfig);
+    explorer = configureHostedWithEncryptedToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
-    return configureHostedWithResourceToken(win.hostedConfig);
+    explorer = configureHostedWithResourceToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
-    return configureHostedWithConnectionString(win.hostedConfig);
+    explorer = configureHostedWithConnectionString(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.AAD) {
-    return configureHostedWithAAD(win.hostedConfig);
+    explorer = await configureHostedWithAAD(win.hostedConfig);
+  } else {
+    throw new Error(`Unknown hosted config: ${win.hostedConfig}`);
   }
-  throw new Error(`Unknown hosted config: ${win.hostedConfig}`);
+
+  window.addEventListener(
+    "message",
+    (event) => {
+      if (isInvalidParentFrameOrigin(event)) {
+        return;
+      }
+
+      if (!shouldProcessMessage(event)) {
+        return;
+      }
+
+      if (event.data?.type === MessageTypes.CloseTab) {
+        useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
+      }
+    },
+    false
+  );
+
+  return explorer;
 }
 
 async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
@@ -261,6 +289,8 @@ async function configurePortal(): Promise<Explorer> {
           }
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
+        } else if (event.data?.type === MessageTypes.CloseTab) {
+          useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
         }
       },
       false
@@ -339,11 +369,17 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.PKPartitionKeyTest) !== -1) {
       userContext.features.partitionKeyDefault2 = true;
     }
-    if (inputs.flights.indexOf(Flights.Phoenix) !== -1) {
-      userContext.features.phoenix = true;
+    if (inputs.flights.indexOf(Flights.PhoenixNotebooks) !== -1) {
+      userContext.features.phoenixNotebooks = true;
+    }
+    if (inputs.flights.indexOf(Flights.PhoenixFeatures) !== -1) {
+      userContext.features.phoenixFeatures = true;
     }
     if (inputs.flights.indexOf(Flights.NotebooksDownBanner) !== -1) {
       userContext.features.notebooksDownBanner = true;
+    }
+    if (inputs.flights.indexOf(Flights.PublicGallery) !== -1) {
+      userContext.features.publicGallery = true;
     }
   }
 }

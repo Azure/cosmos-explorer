@@ -39,7 +39,7 @@ export const collection = ({
     kind: "hash",
     version: 2,
   },
-  partitionKeyProperty: "partitionKey",
+  partitionKeyProperties: ["partitionKey"],
   readSettings: () => {
     return;
   },

@@ -12,7 +12,8 @@
         "--inspect-brk",
         "${workspaceRoot}/node_modules/jest/bin/jest.js",
         "--runInBand",
-        "--coverage", "false"
+        "--coverage",
+        "false"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -26,7 +27,8 @@
         "--inspect-brk",
         "${workspaceRoot}/node_modules/jest/bin/jest.js",
         "${fileBasenameNoExtension}",
-        "--coverage", "false",
+        "--coverage",
+        "false",
         // "--watch",
         // // --no-cache only used to make --watch work. Otherwise jest ignores the breakpoints.
         // // https://github.com/facebook/jest/issues/6683

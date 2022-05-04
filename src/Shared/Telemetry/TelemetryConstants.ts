@@ -84,6 +84,7 @@ export enum Action {
   PhoenixConnection,
   PhoenixHeartBeat,
   PhoenixResetWorkspace,
+  PhoenixDBAccountAllowed,
   DeleteCellFromMenu,
   OpenTerminal,
   CreateMongoCollectionWithWildcardIndex,

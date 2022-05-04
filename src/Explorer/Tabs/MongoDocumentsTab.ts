@@ -29,15 +29,19 @@ export default class MongoDocumentsTab extends DocumentsTab {
     super(options);
     this.lastFilterContents = ko.observableArray<string>(['{"id":"foo"}', "{ qty: { $gte: 20 } }"]);
 
-    if (this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
-      this.partitionKeyProperty = this.partitionKeyProperty.replace(/["]+/g, "");
-    }
+    this.partitionKeyProperties = this.partitionKeyProperties?.map((partitionKeyProperty, i) => {
+      if (partitionKeyProperty && ~partitionKeyProperty.indexOf(`"`)) {
+        partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
+      }
 
-    if (this.partitionKeyProperty && this.partitionKeyProperty.indexOf("$v") > -1) {
-      // From $v.shard.$v.key.$v > shard.key
-      this.partitionKeyProperty = this.partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
-      this.partitionKeyPropertyHeader = "/" + this.partitionKeyProperty;
-    }
+      if (partitionKeyProperty && partitionKeyProperty.indexOf("$v") > -1) {
+        // From $v.shard.$v.key.$v > shard.key
+        partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
+        this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
+      }
+
+      return partitionKeyProperty;
+    });
 
     this.isFilterExpanded = ko.observable<boolean>(true);
     super.buildCommandBarOptions.bind(this);
@@ -52,12 +56,9 @@ export default class MongoDocumentsTab extends DocumentsTab {
       tabTitle: this.tabTitle(),
     });
 
-    if (
-      this.partitionKeyProperty &&
-      this.partitionKeyProperty !== "_id" &&
-      !this._hasShardKeySpecified(documentContent)
-    ) {
-      const message = `The document is lacking the shard property: ${this.partitionKeyProperty}`;
+    const partitionKeyProperty = this.partitionKeyProperties?.[0];
+    if (partitionKeyProperty !== "_id" && !this._hasShardKeySpecified(documentContent)) {
+      const message = `The document is lacking the shard property: ${partitionKeyProperty}`;
       this.displayedError(message);
       let that = this;
       setTimeout(() => {
@@ -79,7 +80,12 @@ export default class MongoDocumentsTab extends DocumentsTab {
 
     this.isExecutionError(false);
     this.isExecuting(true);
-    return createDocument(this.collection.databaseId, this.collection, this.partitionKeyProperty, documentContent)
+    return createDocument(
+      this.collection.databaseId,
+      this.collection,
+      this.partitionKeyProperties?.[0],
+      documentContent
+    )
       .then(
         (savedDocument: any) => {
           let partitionKeyArray = extractPartitionKey(
@@ -87,9 +93,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
             this._getPartitionKeyDefinition() as PartitionKeyDefinition
           );
 
-          let partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
-
-          let id = new ObjectId(this, savedDocument, partitionKeyValue);
+          let id = new ObjectId(this, savedDocument, partitionKeyArray);
           let ids = this.documentIds();
           ids.push(id);
           delete savedDocument._self;
@@ -128,7 +132,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       .finally(() => this.isExecuting(false));
   };
 
-  public onSaveExisitingDocumentClick = (): Promise<any> => {
+  public onSaveExistingDocumentClick = (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = this.selectedDocumentContent();
     this.isExecutionError(false);
@@ -151,9 +155,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 this._getPartitionKeyDefinition() as PartitionKeyDefinition
               );
 
-              let partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
-
-              const id = new ObjectId(this, updatedDocument, partitionKeyValue);
+              const id = new ObjectId(this, updatedDocument, partitionKeyArray);
               documentId.id(id.id());
             }
           });
@@ -214,7 +216,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
             })
             .map((rawDocument: any) => {
               const partitionKeyValue = rawDocument._partitionKeyValue;
-              return new DocumentId(this, rawDocument, partitionKeyValue);
+              return new DocumentId(this, rawDocument, [partitionKeyValue]);
             });
 
           const merged = currentDocuments.concat(nextDocumentIds);
@@ -303,7 +305,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       // Convert BsonSchema2 to /path format
       partitionKey = {
         kind: partitionKey.kind,
-        paths: ["/" + this.partitionKeyProperty.replace(/\./g, "/")],
+        paths: ["/" + this.partitionKeyProperties?.[0].replace(/\./g, "/")],
         version: partitionKey.version,
       };
     }

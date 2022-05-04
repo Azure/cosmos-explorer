@@ -450,6 +450,24 @@ export interface IResponse<T> {
   data: T;
 }
 
+export interface IValidationError {
+  message: string;
+  type: string;
+}
+
+export interface IMaxAllocationTimeExceeded extends IValidationError {
+  earliestAllocationTimestamp: string;
+  maxAllocationTimePerDayPerUserInMinutes: string;
+}
+
+export interface IMaxDbAccountsPerUserExceeded extends IValidationError {
+  maxSimultaneousConnectionsPerUser: string;
+}
+
+export interface IMaxUsersPerDbAccountExceeded extends IValidationError {
+  maxSimultaneousUsersPerDbAccount: string;
+}
+
 export interface IPhoenixConnectionInfoResult {
   readonly notebookAuthToken?: string;
   readonly notebookServerUrl?: string;
@@ -530,4 +548,13 @@ export interface MemoryUsageInfo {
 export interface ContainerConnectionInfo {
   status: ConnectionStatusType;
   //need to add ram and rom info
+}
+
+export enum PhoenixErrorType {
+  MaxAllocationTimeExceeded = "MaxAllocationTimeExceeded",
+  MaxDbAccountsPerUserExceeded = "MaxDbAccountsPerUserExceeded",
+  MaxUsersPerDbAccountExceeded = "MaxUsersPerDbAccountExceeded",
+  AllocationValidationResult = "AllocationValidationResult",
+  RegionNotServicable = "RegionNotServicable",
+  SubscriptionNotAllowed = "SubscriptionNotAllowed",
 }

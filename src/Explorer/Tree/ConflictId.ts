@@ -150,7 +150,7 @@ export default class ConflictId {
       partitionKeyValueResolved
     );
 
-    documentId.partitionKeyProperty = this.partitionKeyProperty;
+    documentId.partitionKeyProperties = [this.partitionKeyProperty];
     documentId.partitionKey = this.partitionKey;
 
     return documentId;

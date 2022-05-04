@@ -1,5 +1,7 @@
+import { useDialog } from "Explorer/Controls/Dialog";
 import promiseRetry, { AbortError } from "p-retry";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
 import {
   Areas,
   ConnectionStatusType,
@@ -8,16 +10,21 @@ import {
   HttpStatusCodes,
   Notebook,
 } from "../Common/Constants";
-import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import {
   ContainerConnectionInfo,
   ContainerInfo,
   IContainerData,
+  IMaxAllocationTimeExceeded,
+  IMaxDbAccountsPerUserExceeded,
+  IMaxUsersPerDbAccountExceeded,
   IPhoenixConnectionInfoResult,
   IProvisionData,
   IResponse,
+  IValidationError,
+  PhoenixErrorType,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -44,23 +51,25 @@ export class PhoenixClient {
     provisionData: IProvisionData,
     operation: string
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    let response;
     try {
-      const response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections`, {
+      response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections`, {
         method: operation === "allocate" ? "POST" : "PATCH",
         headers: PhoenixClient.getHeaders(),
         body: JSON.stringify(provisionData),
       });
-
-      let data: IPhoenixConnectionInfoResult;
-      if (response.status === HttpStatusCodes.OK) {
-        data = await response.json();
+      const responseJson = await response?.json();
+      if (response.status === HttpStatusCodes.Forbidden) {
+        throw new Error(this.ConvertToForbiddenErrorString(responseJson));
       }
       return {
         status: response.status,
-        data,
+        data: responseJson,
       };
     } catch (error) {
-      console.error(error);
+      if (response.status === HttpStatusCodes.Forbidden) {
+        error.status = HttpStatusCodes.Forbidden;
+      }
       throw error;
     }
   }
@@ -107,6 +116,18 @@ export class PhoenixClient {
           });
           useNotebook.getState().resetContainerConnection(connectionStatus);
           useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+          useDialog
+            .getState()
+            .showOkModalDialog(
+              "Disconnected",
+              "Disconnected from temporary workspace. Please click on connect button to connect to temporary workspace."
+            );
+          throw new AbortError(response.statusText);
+        } else if (response?.status === HttpStatusCodes.Forbidden) {
+          const validationMessage = this.ConvertToForbiddenErrorString(await response.json());
+          if (validationMessage) {
+            useDialog.getState().showOkModalDialog("Connection Failed", `${validationMessage}`);
+          }
           throw new AbortError(response.statusText);
         }
         throw new Error(response.statusText);
@@ -139,13 +160,35 @@ export class PhoenixClient {
   }
 
   public async isDbAcountWhitelisted(): Promise<boolean> {
+    const startKey = TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
+      dataExplorerArea: Areas.Notebook,
+    });
     try {
       const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
       });
+      if (response.status !== HttpStatusCodes.OK) {
+        throw new Error(`Received status code: ${response?.status}`);
+      }
+      TelemetryProcessor.traceSuccess(
+        Action.PhoenixDBAccountAllowed,
+        {
+          dataExplorerArea: Areas.Notebook,
+        },
+        startKey
+      );
       return response.status === HttpStatusCodes.OK;
     } catch (error) {
+      TelemetryProcessor.traceFailure(
+        Action.PhoenixDBAccountAllowed,
+        {
+          dataExplorerArea: Areas.Notebook,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
       return false;
     }
@@ -154,7 +197,7 @@ export class PhoenixClient {
   public static getPhoenixEndpoint(): string {
     const phoenixEndpoint =
       userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (configContext.allowedJunoOrigins.indexOf(new URL(phoenixEndpoint).origin) === -1) {
+    if (!validateEndpoint(phoenixEndpoint, allowedJunoOrigins)) {
       const error = `${phoenixEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);
@@ -175,5 +218,49 @@ export class PhoenixClient {
       [authorizationHeader.header]: authorizationHeader.token,
       [HttpHeaders.contentType]: "application/json",
     };
+  }
+
+  public ConvertToForbiddenErrorString(jsonData: IValidationError): string {
+    const errInfo = jsonData;
+    switch (errInfo?.type) {
+      case PhoenixErrorType.MaxAllocationTimeExceeded: {
+        const maxAllocationTimeExceeded = errInfo as IMaxAllocationTimeExceeded;
+        const allocateAfterTimestamp = new Date(maxAllocationTimeExceeded?.earliestAllocationTimestamp);
+        allocateAfterTimestamp.setDate(allocateAfterTimestamp.getDate() + 1);
+        return (
+          `${errInfo.message}` +
+          " Max allocation time for a day to a user is " +
+          `${maxAllocationTimeExceeded.maxAllocationTimePerDayPerUserInMinutes}` +
+          ". Please try again after " +
+          `${allocateAfterTimestamp.toLocaleString()}`
+        );
+      }
+      case PhoenixErrorType.MaxDbAccountsPerUserExceeded: {
+        const maxDbAccountsPerUserExceeded = errInfo as IMaxDbAccountsPerUserExceeded;
+        return (
+          `${errInfo.message}` +
+          " Max simultaneous connections allowed per user is " +
+          `${maxDbAccountsPerUserExceeded.maxSimultaneousConnectionsPerUser}` +
+          "."
+        );
+      }
+      case PhoenixErrorType.MaxUsersPerDbAccountExceeded: {
+        const maxUsersPerDbAccountExceeded = errInfo as IMaxUsersPerDbAccountExceeded;
+        return (
+          `${errInfo.message}` +
+          " Max simultaneous users allowed per DbAccount is " +
+          `${maxUsersPerDbAccountExceeded.maxSimultaneousUsersPerDbAccount}` +
+          "."
+        );
+      }
+      case PhoenixErrorType.AllocationValidationResult:
+      case PhoenixErrorType.RegionNotServicable:
+      case PhoenixErrorType.SubscriptionNotAllowed: {
+        return `${errInfo.message}`;
+      }
+      default: {
+        return undefined;
+      }
+    }
   }
 }

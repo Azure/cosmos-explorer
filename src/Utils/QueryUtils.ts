@@ -3,15 +3,16 @@ import * as ViewModels from "../Contracts/ViewModels";
 
 export function buildDocumentsQuery(
   filter: string,
-  partitionKeyProperty: string,
+  partitionKeyProperties: string[],
   partitionKey: DataModels.PartitionKey
 ): string {
-  let query = partitionKeyProperty
-    ? `select c.id, c._self, c._rid, c._ts, ${buildDocumentsQueryPartitionProjections(
-        "c",
-        partitionKey
-      )} as _partitionKeyValue from c`
-    : `select c.id, c._self, c._rid, c._ts from c`;
+  let query =
+    partitionKeyProperties && partitionKeyProperties.length > 0
+      ? `select c.id, c._self, c._rid, c._ts, [${buildDocumentsQueryPartitionProjections(
+          "c",
+          partitionKey
+        )}] as _partitionKeyValue from c`
+      : `select c.id, c._self, c._rid, c._ts from c`;
 
   if (filter) {
     query += " " + filter;

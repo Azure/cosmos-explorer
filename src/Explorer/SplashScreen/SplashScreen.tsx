@@ -1,16 +1,23 @@
 /**
  * Accordion top class
  */
-import { Link } from "@fluentui/react";
+import { Image, Link, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
 import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
 import OpenQueryIcon from "../../../images/BrowseQuery.svg";
+import ConnectIcon from "../../../images/Connect_color.svg";
+import ContainersIcon from "../../../images/Containers.svg";
+import CostIcon from "../../../images/Cost.svg";
+import GreenCheckIcon from "../../../images/Green_check.svg";
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
+import LinkIcon from "../../../images/Link_blue.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import NotebooksIcon from "../../../images/Notebooks.svg";
+import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { AuthType } from "../../AuthType";
@@ -82,110 +89,63 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public render(): JSX.Element {
     const mainItems = this.createMainItems();
-    const commonTaskItems = this.createCommonTaskItems();
-    let recentItems = this.createRecentItems();
-    recentItems = recentItems.filter((item) => item.description !== "Notebook");
 
-    const tipsItems = this.createTipsItems();
-    const onClearRecent = this.clearMostRecent;
-
-    const formContainer = (jsx: JSX.Element) => (
+    return (
       <div className="connectExplorerContainer">
-        <form className="connectExplorerFormContainer">{jsx}</form>
-      </div>
-    );
-
-    return formContainer(
-      <div className="splashScreenContainer">
-        <div className="splashScreen">
-          <div className="title">
-            Welcome to Cosmos DB
-            <FeaturePanelLauncher />
-          </div>
-          <div className="subtitle">Globally distributed, multi-model database service for any scale</div>
-          <div className="mainButtonsContainer">
-            {mainItems.map((item) => (
-              <div
-                className="mainButton focusable"
-                key={`${item.title}`}
-                onClick={item.onClick}
-                onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-                tabIndex={0}
-                role="button"
-              >
-                <img src={item.iconSrc} alt="" />
-                <div className="legendContainer">
-                  <div className="legend">{item.title}</div>
-                  <div className="description">{item.description}</div>
-                </div>
+        <form className="connectExplorerFormContainer">
+          <div className="splashScreenContainer">
+            <div className="splashScreen">
+              <div className="title">
+                Welcome to Cosmos DB
+                <FeaturePanelLauncher />
               </div>
-            ))}
-          </div>
-          <div className="moreStuffContainer">
-            <div className="moreStuffColumn commonTasks">
-              <div className="title">Common Tasks</div>
-              <ul>
-                {commonTaskItems.map((item) => (
-                  <li
-                    className="focusable"
-                    key={`${item.title}${item.description}`}
+              <div className="subtitle">Globally distributed, multi-model database service for any scale</div>
+              <div className="mainButtonsContainer">
+                {mainItems.map((item) => (
+                  <Stack
+                    horizontal
+                    className="mainButton focusable"
+                    key={`${item.title}`}
                     onClick={item.onClick}
                     onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
                     tabIndex={0}
                     role="button"
                   >
-                    <img src={item.iconSrc} alt="" />
-                    <span className="oneLineContent" title={item.info}>
-                      {item.title}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="moreStuffColumn">
-              <div className="title">Recents</div>
-              <ul>
-                {recentItems.map((item, index) => (
-                  <li key={`${item.title}${item.description}${index}`}>
-                    <img src={item.iconSrc} alt="" />
-                    <span className="twoLineContent">
-                      <Link onClick={item.onClick} title={item.info}>
-                        {item.title}
-                      </Link>
-                      <div className="description">{item.description}</div>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              {recentItems.length > 0 && <Link onClick={() => onClearRecent()}>Clear Recents</Link>}
-            </div>
-            <div className="moreStuffColumn tipsContainer">
-              <div className="title">Tips</div>
-              <ul>
-                {tipsItems.map((item) => (
-                  <li
-                    className="tipContainer focusable"
-                    key={`${item.title}${item.description}`}
-                    onClick={item.onClick}
-                    onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-                    tabIndex={0}
-                    role="link"
-                  >
-                    <div className="title" title={item.info}>
-                      {item.title}
+                    <div>
+                      <img src={item.iconSrc} alt="" />
                     </div>
-                    <div className="description">{item.description}</div>
-                  </li>
+                    <div className="legendContainer">
+                      <div className="legend">{item.title}</div>
+                      <div className={userContext.features.enableNewQuickstart ? "newDescription" : "description"}>
+                        {item.description}
+                      </div>
+                    </div>
+                  </Stack>
                 ))}
-                <li>
-                  <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
-                    {SplashScreen.seeMoreItemTitle}
-                  </a>
-                </li>
-              </ul>
+              </div>
+              <div className="moreStuffContainer">
+                <div className="moreStuffColumn commonTasks">
+                  <div className="title">
+                    {userContext.features.enableNewQuickstart ? "Why Cosmos DB" : "Common Tasks"}
+                  </div>
+                  {userContext.features.enableNewQuickstart ? this.getNotebookItems() : this.getCommonTasksItems()}
+                </div>
+                <div className="moreStuffColumn">
+                  <div className="title">
+                    {userContext.features.enableNewQuickstart ? "Top 3 things you need to know" : "Recents"}
+                  </div>
+                  {userContext.features.enableNewQuickstart ? this.top3Items() : this.getRecentItems()}
+                </div>
+                <div className="moreStuffColumn tipsContainer">
+                  <div className="title">
+                    {userContext.features.enableNewQuickstart ? "Learning Resources" : "Tips"}
+                  </div>
+                  {userContext.features.enableNewQuickstart ? this.getLearningResourceItems() : this.getTipItems()}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     );
   }
@@ -202,35 +162,62 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
    */
   public createMainItems(): SplashScreenItem[] {
     const dataSampleUtil = this.createDataSampleUtil();
-    const heroes: SplashScreenItem[] = [
-      {
+
+    if (userContext.features.enableNewQuickstart) {
+      const launchQuickstartBtn = {
+        iconSrc: QuickStartIcon,
+        title: "Launch quick start",
+        description: "Launch a quick start tutorial to get started with sample data",
+        // TODO: replace onClick function
+        onClick: () => 1,
+      };
+
+      const newContainerBtn = {
+        iconSrc: ContainersIcon,
+        title: `New ${getCollectionName()}`,
+        description: "Create a new container for storage and throughput",
+        onClick: () => this.container.onNewCollectionClicked(),
+      };
+
+      const connectBtn = {
+        iconSrc: ConnectIcon,
+        title: "Connect",
+        description: "Prefer using your own choice of tooling? Find the connection string you need to connect",
+        // TODO: replace onClick function
+        onClick: () => 2,
+      };
+
+      return [launchQuickstartBtn, newContainerBtn, connectBtn];
+    } else {
+      const heroes: SplashScreenItem[] = [];
+
+      if (dataSampleUtil.isSampleContainerCreationSupported()) {
+        heroes.push({
+          iconSrc: SampleIcon,
+          title: "Start with Sample",
+          description: "Get started with a sample provided by Cosmos DB",
+          onClick: () => dataSampleUtil.createSampleContainerAsync(),
+        });
+      }
+
+      heroes.push({
         iconSrc: NewContainerIcon,
         title: `New ${getCollectionName()}`,
         description: "Create a new container for storage and throughput",
         onClick: () => this.container.onNewCollectionClicked(),
-      },
-    ];
-
-    if (dataSampleUtil.isSampleContainerCreationSupported()) {
-      // Insert at the front
-      heroes.unshift({
-        iconSrc: SampleIcon,
-        title: "Start with Sample",
-        description: "Get started with a sample provided by Cosmos DB",
-        onClick: () => dataSampleUtil.createSampleContainerAsync(),
       });
-    }
 
-    if (useNotebook.getState().isPhoenix) {
-      heroes.push({
-        iconSrc: NewNotebookIcon,
-        title: "New Notebook",
-        description: "Create a notebook to start querying, visualizing, and modeling your data",
-        onClick: () => this.container.onNewNotebookClicked(),
-      });
-    }
+      if (useNotebook.getState().isPhoenixNotebooks) {
+        heroes.push({
+          iconSrc: NewNotebookIcon,
+          title: "New Notebook",
+          description: "Create a notebook to start querying, visualizing, and modeling your data",
+          onClick: () => this.container.onNewNotebookClicked(),
+        });
+      }
 
-    return heroes;
+      return heroes;
+    }
   }
 
   private createCommonTaskItems(): SplashScreenItem[] {
@@ -392,5 +379,175 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       callback();
       event.stopPropagation();
     }
+  }
+
+  private getNotebookItems(): JSX.Element {
+    return (
+      <Stack>
+        <Stack className="notebookSplashScreenItem" horizontal style={{ marginBottom: 14 }}>
+          <Image src={NotebooksIcon} />
+          <Text className="itemText">Notebook - Easy to develop</Text>
+        </Stack>
+        <Stack className="notebookSplashScreenItem" horizontal style={{ marginBottom: 14 }}>
+          <Image src={GreenCheckIcon} />
+          <Text className="itemText">Notebook - Enterprise ready</Text>
+        </Stack>
+        <Stack className="notebookSplashScreenItem" horizontal style={{ marginBottom: 14 }}>
+          <Image src={CostIcon} />
+          <Text className="itemText">Notebook - Cost effective</Text>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  private getCommonTasksItems(): JSX.Element {
+    const commonTaskItems = this.createCommonTaskItems();
+    return (
+      <ul>
+        {commonTaskItems.map((item) => (
+          <li
+            className="focusable"
+            key={`${item.title}${item.description}`}
+            onClick={item.onClick}
+            onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+            tabIndex={0}
+            role="button"
+          >
+            <img src={item.iconSrc} alt="" />
+            <span className="oneLineContent" title={item.info}>
+              {item.title}
+            </span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  private top3Items(): JSX.Element {
+    return (
+      <Stack>
+        <Stack style={{ marginBottom: 26 }}>
+          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+            <Link href="https://aka.ms/msl-modeling-partitioning-2" target="_blank" style={{ marginRight: 5 }}>
+              Advanced Modeling Patterns
+            </Link>
+            <Image src={LinkIcon} />
+          </Stack>
+          <Text>
+            Learn advanced strategies for managing relationships between data entities to optimize your database.
+          </Text>
+        </Stack>
+        <Stack style={{ marginBottom: 26 }}>
+          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+            <Link href="https://aka.ms/msl-modeling-partitioning-1" target="_blank" style={{ marginRight: 5 }}>
+              Partitioning Best Practices
+            </Link>
+            <Image src={LinkIcon} />
+          </Stack>
+          <Text>
+            Learn to apply data model and partitioning strategies to support an efficient and scalable NoSQL database.
+          </Text>
+        </Stack>
+        <Stack>
+          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+            <Link href="https://aka.ms/msl-resource-planning" target="_blank" style={{ marginRight: 5 }}>
+              Plan Your Resource Requirements
+            </Link>
+            <Image src={LinkIcon} />
+          </Stack>
+          <Text>
+            Familiarize yourself with the various configuration options for a new Azure Cosmos DB SQL API account.
+          </Text>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  private getRecentItems(): JSX.Element {
+    const recentItems = this.createRecentItems()?.filter((item) => item.description !== "Notebook");
+
+    return (
+      <Stack>
+        <ul>
+          {recentItems.map((item, index) => (
+            <li key={`${item.title}${item.description}${index}`}>
+              <img src={item.iconSrc} alt="" />
+              <span className="twoLineContent">
+                <Link onClick={item.onClick} title={item.info}>
+                  {item.title}
+                </Link>
+                <div className="description">{item.description}</div>
+              </span>
+            </li>
+          ))}
+        </ul>
+        {recentItems.length > 0 && <Link onClick={() => this.clearMostRecent()}>Clear Recents</Link>}
+      </Stack>
+    );
+  }
+
+  private getLearningResourceItems(): JSX.Element {
+    return (
+      <Stack>
+        <Stack style={{ marginBottom: 26 }}>
+          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+            <Link href="https://aka.ms/msl-sdk-connect" target="_blank" style={{ marginRight: 5 }}>
+              Get Started using th SQL API with the SDK
+            </Link>
+            <Image src={LinkIcon} />
+          </Stack>
+          <Text>Learn about the Azure Cosmos DB SDK, then download and use in a .NET application.</Text>
+        </Stack>
+        <Stack style={{ marginBottom: 26 }}>
+          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+            <Link href="https://aka.ms/msl-complex-queries" target="_blank" style={{ marginRight: 5 }}>
+              Master Complex Queries
+            </Link>
+            <Image src={LinkIcon} />
+          </Stack>
+          <Text>Learn how to author complex queries using cross-products and correlated subqueries.</Text>
+        </Stack>
+        <Stack>
+          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+            <Link href="https://aka.ms/msl-move-data" target="_blank" style={{ marginRight: 5 }}>
+              Migrate Your Data
+            </Link>
+            <Image src={LinkIcon} />
+          </Stack>
+          <Text>
+            Migrate data into and out of Azure Cosmos DB SQL API using Azure services and open-source solutions.
+          </Text>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  private getTipItems(): JSX.Element {
+    const tipsItems = this.createTipsItems();
+
+    return (
+      <ul>
+        {tipsItems.map((item) => (
+          <li
+            className="tipContainer focusable"
+            key={`${item.title}${item.description}`}
+            onClick={item.onClick}
+            onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+            tabIndex={0}
+            role="link"
+          >
+            <div className="title" title={item.info}>
+              {item.title}
+            </div>
+            <div className="description">{item.description}</div>
+          </li>
+        ))}
+        <li>
+          <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
+            {SplashScreen.seeMoreItemTitle}
+          </a>
+        </li>
+      </ul>
+    );
   }
 }

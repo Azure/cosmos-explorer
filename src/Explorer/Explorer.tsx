@@ -1,8 +1,10 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
+import { IGalleryItem } from "Juno/JunoClient";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
+import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
@@ -24,7 +26,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
-import { IGalleryItem } from "../Juno/JunoClient";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -32,11 +33,7 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import {
-  get as getWorkspace,
-  listByDatabaseAccount, start
-} from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
-import { decryptJWTToken } from "../Utils/AuthorizationUtils";
+import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -50,13 +47,12 @@ import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
-import type { NotebookPaneContent } from "./Notebook/NotebookManager";
+import { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
-import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
@@ -188,7 +184,11 @@ export default class Explorer {
     this.resourceTree = new ResourceTreeAdapter(this);
 
     // Override notebook server parameters from URL parameters
-    if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
+    if (
+      userContext.features.notebookServerUrl &&
+      validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+      userContext.features.notebookServerToken
+    ) {
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl,
         authToken: userContext.features.notebookServerToken,
@@ -198,19 +198,6 @@ export default class Explorer {
 
     if (userContext.features.notebookBasePath) {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
-    }
-
-    if (userContext.features.livyEndpoint) {
-      useNotebook.getState().setSparkClusterConnectionInfo({
-        userName: undefined,
-        password: undefined,
-        endpoints: [
-          {
-            endpoint: userContext.features.livyEndpoint,
-            kind: DataModels.SparkClusterEndpointKind.Livy,
-          },
-        ],
-      });
     }
 
     this.refreshExplorer();
@@ -385,12 +372,13 @@ export default class Explorer {
         status: ConnectionStatusType.Connecting,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
+      let connectionInfo;
       try {
         TelemetryProcessor.traceStart(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
         useNotebook.getState().setIsAllocating(true);
-        const connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
+        connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         if (connectionInfo.status !== HttpStatusCodes.OK) {
           throw new Error(`Received status code: ${connectionInfo?.status}`);
         }
@@ -409,6 +397,16 @@ export default class Explorer {
         });
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetContainerConnection(connectionStatus);
+        if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+          useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+        } else {
+          useDialog
+            .getState()
+            .showOkModalDialog(
+              "Connection Failed",
+              "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket."
+            );
+        }
         throw error;
       } finally {
         useNotebook.getState().setIsAllocating(false);
@@ -432,7 +430,10 @@ export default class Explorer {
     connectionStatus.status = ConnectionStatusType.Connected;
     useNotebook.getState().setConnectionInfo(connectionStatus);
     useNotebook.getState().setNotebookServerInfo({
-      notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
+      notebookServerEndpoint:
+        (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
+          userContext.features.notebookServerUrl) ||
+        connectionInfo.data.notebookServerUrl,
       authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
       forwardingId: connectionInfo.data.forwardingId,
     });
@@ -449,7 +450,7 @@ export default class Explorer {
       );
       return;
     }
-    const dialogContent = useNotebook.getState().isPhoenix
+    const dialogContent = useNotebook.getState().isPhoenixNotebooks
       ? "Notebooks saved in the temporary workspace will be deleted. Do you want to proceed?"
       : "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?";
 
@@ -528,35 +529,6 @@ export default class Explorer {
     }
   }
 
-  private async ensureNotebookWorkspaceRunning() {
-    if (!userContext.databaseAccount) {
-      return;
-    }
-
-    let clearMessage;
-    try {
-      const notebookWorkspace = await getWorkspace(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
-        "default"
-      );
-      if (
-        notebookWorkspace &&
-        notebookWorkspace.properties &&
-        notebookWorkspace.properties.status &&
-        notebookWorkspace.properties.status.toLowerCase() === "stopped"
-      ) {
-        clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
-        await start(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
-      }
-    } catch (error) {
-      handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
-    } finally {
-      clearMessage && clearMessage();
-    }
-  }
-
   private _resetNotebookWorkspace = async () => {
     useDialog.getState().closeDialog();
     const clearInProgressMessage = logConsoleProgress("Resetting notebook workspace");
@@ -572,7 +544,7 @@ export default class Explorer {
       TelemetryProcessor.traceStart(Action.PhoenixResetWorkspace, {
         dataExplorerArea: Areas.Notebook,
       });
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         useTabs.getState().closeAllNotebookTabs(true);
         connectionStatus = {
           status: ConnectionStatusType.Connecting,
@@ -586,7 +558,7 @@ export default class Explorer {
       if (!connectionInfo?.data?.notebookServerUrl) {
         throw new Error(`Reset Workspace: NotebookServerUrl is invalid!`);
       }
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         await this.setNotebookInfo(connectionInfo, connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
@@ -601,7 +573,7 @@ export default class Explorer {
         error: getErrorMessage(error),
         errorStack: getErrorStack(error),
       });
-      if (useNotebook.getState().isPhoenix) {
+      if (useNotebook.getState().isPhoenixNotebooks) {
         connectionStatus = {
           status: ConnectionStatusType.Failed,
         };
@@ -799,7 +771,7 @@ export default class Explorer {
     if (!notebookContentItem || !notebookContentItem.path) {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
-    if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenix) {
+    if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenixNotebooks) {
       await this.allocateContainer();
     }
 
@@ -1023,7 +995,7 @@ export default class Explorer {
       handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
     }
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       if (isGithubTree) {
         await this.allocateContainer();
         parent = parent || this.resourceTree.myNotebooksContentRoot;
@@ -1112,7 +1084,7 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixFeatures) {
       await this.allocateContainer();
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
@@ -1152,7 +1124,7 @@ export default class Explorer {
 
     const terminalTabs: TerminalTab[] = useTabs
       .getState()
-      .getTabs(ViewModels.CollectionTabKind.Terminal, (tab) => tab.tabTitle() === title) as TerminalTab[];
+      .getTabs(ViewModels.CollectionTabKind.Terminal, (tab) => tab.tabTitle().startsWith(title)) as TerminalTab[];
 
     let index = 1;
     if (terminalTabs.length > 0) {
@@ -1243,20 +1215,12 @@ export default class Explorer {
     }
   }
 
-  private _openSetupNotebooksPaneForQuickstart(): void {
-    const title = "Enable Notebooks (Preview)";
-    const description =
-      "You have not yet created a notebooks workspace for this account. To proceed and start using notebooks, we'll need to create a default notebooks workspace in this account.";
-    useSidePanel
-      .getState()
-      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
-  }
-
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks === undefined) {
+      await useNotebook.getState().getPhoenixStatus();
+    }
+    if (useNotebook.getState().isPhoenixNotebooks) {
       await this.allocateContainer();
-    } else if (!(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
-      this._openSetupNotebooksPaneForQuickstart();
     }
 
     // We still use github urls like https://github.com/Azure-Samples/cosmos-notebooks/blob/master/CSharp_quickstarts/GettingStarted_CSharp.ipynb
@@ -1287,7 +1251,7 @@ export default class Explorer {
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       useDialog.getState().showOkCancelModalDialog(
         Notebook.newNotebookUploadModalTitle,
         undefined,
@@ -1317,7 +1281,7 @@ export default class Explorer {
   }
 
   public getDownloadModalConent(fileName: string): JSX.Element {
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       return (
         <>
           <p>{Notebook.galleryNotebookDownloadContent1}</p>
@@ -1341,16 +1305,21 @@ export default class Explorer {
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
-    const isNotebookEnabled = userContext.features.notebooksDownBanner || useNotebook.getState().isPhoenix;
+    const isNotebookEnabled =
+      userContext.features.notebooksDownBanner ||
+      useNotebook.getState().isPhoenixNotebooks ||
+      useNotebook.getState().isPhoenixFeatures;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
-    useNotebook.getState().setIsShellEnabled(useNotebook.getState().isPhoenix && isPublicInternetAccessAllowed());
+    useNotebook
+      .getState()
+      .setIsShellEnabled(useNotebook.getState().isPhoenixFeatures && isPublicInternetAccessAllowed());
 
     TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
       isNotebookEnabled,
       dataExplorerArea: Constants.Areas.Notebook,
     });
 
-    if (useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
     }
   }

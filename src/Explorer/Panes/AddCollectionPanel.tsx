@@ -249,6 +249,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
                     isDatabase={true}
                     isSharded={this.state.isSharded}
+                    isFreeTier={this.isFreeTierAccount()}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
                     setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
@@ -483,6 +484,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
               isSharded={this.state.isSharded}
+              isFreeTier={this.isFreeTierAccount()}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
               setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
@@ -667,7 +669,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
                 {userContext.apiType === "SQL" && (
                   <Checkbox
-                    label="My partition key is larger than 100 bytes"
+                    label="My partition key is larger than 101 bytes"
                     checked={this.state.useHashV2}
                     styles={{
                       text: { fontSize: 12 },
@@ -884,10 +886,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   private shouldShowAnalyticalStoreOptions(): boolean {
     if (configContext.platform === Platform.Emulator) {
-      return false;
-    }
-
-    if (isServerlessAccount()) {
       return false;
     }
 

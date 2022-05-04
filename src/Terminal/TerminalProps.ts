@@ -10,4 +10,5 @@ export interface TerminalProps {
   authType: AuthType;
   apiType: ApiType;
   subscriptionId: string;
+  tabId: string;
 }

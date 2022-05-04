@@ -65,8 +65,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   constructor(props: SubSettingsComponentProps) {
     super(props);
     this.geospatialVisible = userContext.apiType === "SQL";
-    this.partitionKeyValue = "/" + this.props.collection.partitionKeyProperty;
     this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
+    this.partitionKeyValue = this.getPartitionKeyValue();
   }
 
   componentDidMount(): void {
@@ -291,6 +291,14 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     );
   };
 
+  private getPartitionKeyValue = (): string => {
+    if (userContext.apiType === "Mongo") {
+      return this.props.collection.partitionKeyProperties?.[0] || "";
+    }
+
+    return (this.props.collection.partitionKeyProperties || []).map((property) => "/" + property).join(", ");
+  };
+
   private getPartitionKeyComponent = (): JSX.Element => (
     <Stack {...titleAndInputStackProps}>
       {this.getPartitionKeyVisible() && (
@@ -310,7 +318,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     if (
       userContext.apiType === "Cassandra" ||
       userContext.apiType === "Tables" ||
-      !this.props.collection.partitionKeyProperty ||
+      !this.props.collection.partitionKeyProperties ||
+      this.props.collection.partitionKeyProperties.length === 0 ||
       (userContext.apiType === "Mongo" && this.props.collection.partitionKey.systemKey)
     ) {
       return false;

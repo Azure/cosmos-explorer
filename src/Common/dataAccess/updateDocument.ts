@@ -1,10 +1,11 @@
+import { Item, RequestOptions } from "@azure/cosmos";
+import { HttpHeaders } from "Common/Constants";
 import { CollectionBase } from "../../Contracts/ViewModels";
-import { Item } from "@azure/cosmos";
+import DocumentId from "../../Explorer/Tree/DocumentId";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import DocumentId from "../../Explorer/Tree/DocumentId";
 
 export const updateDocument = async (
   collection: CollectionBase,
@@ -15,11 +16,17 @@ export const updateDocument = async (
   const clearMessage = logConsoleProgress(`Updating ${entityName} ${documentId.id()}`);
 
   try {
+    const options: RequestOptions =
+      documentId.partitionKey.kind === "MultiHash"
+        ? {
+            [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
+          }
+        : {};
     const response = await client()
       .database(collection.databaseId)
       .container(collection.id())
       .item(documentId.id(), documentId.partitionKeyValue)
-      .replace(newDocument);
+      .replace(newDocument, options);
 
     logConsoleInfo(`Successfully updated ${entityName} ${documentId.id()}`);
     return response?.resource;

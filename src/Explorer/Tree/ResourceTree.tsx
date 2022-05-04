@@ -121,7 +121,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       children: [],
     };
 
-    if (!useNotebook.getState().isPhoenix) {
+    if (!useNotebook.getState().isPhoenixNotebooks) {
       notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
     } else {
       if (galleryContentRoot) {
@@ -130,7 +130,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
       if (
         myNotebooksContentRoot &&
-        useNotebook.getState().isPhoenix &&
+        useNotebook.getState().isPhoenixNotebooks &&
         useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected
       ) {
         notebooksTree.children.push(buildMyNotebooksTree());
@@ -299,7 +299,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
     ];
 
-    if (item.type === NotebookContentItemType.Notebook) {
+    if (item.type === NotebookContentItemType.Notebook && userContext.features.publicGallery) {
       items.push({
         label: "Publish to gallery",
         iconSrc: PublishIcon,
@@ -516,7 +516,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       isNotebookEnabled &&
       userContext.apiType === "Mongo" &&
       isPublicInternetAccessAllowed() &&
-      useNotebook.getState().isPhoenix
+      useNotebook.getState().isPhoenixFeatures
     ) {
       children.push({
         label: "Schema (Preview)",

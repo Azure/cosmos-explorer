@@ -25,12 +25,12 @@ const fetchMock = () => {
   });
 };
 
-const partitionKeyProperty = "pk";
+const partitionKeyProperties = ["pk"];
 
 const collection = {
   id: () => "testCollection",
   rid: "testCollectionrid",
-  partitionKeyProperty,
+  partitionKeyProperties,
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
@@ -41,7 +41,7 @@ const collection = {
 const documentId = ({
   partitionKeyHeader: () => "[]",
   self: "db/testDB/db/testCollection/docs/testId",
-  partitionKeyProperty,
+  partitionKeyProperties,
   partitionKey: {
     paths: ["/pk"],
     kind: "Hash",
@@ -236,13 +236,12 @@ describe("MongoProxyClient", () => {
     });
 
     it("returns a production endpoint", () => {
-      const endpoint = getEndpoint();
+      const endpoint = getEndpoint("https://main.documentdb.ext.azure.com");
       expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/mongo/explorer");
     });
 
     it("returns a development endpoint", () => {
-      updateConfigContext({ MONGO_BACKEND_ENDPOINT: "https://localhost:1234" });
-      const endpoint = getEndpoint();
+      const endpoint = getEndpoint("https://localhost:1234");
       expect(endpoint).toEqual("https://localhost:1234/api/mongo/explorer");
     });
 
@@ -250,7 +249,7 @@ describe("MongoProxyClient", () => {
       updateUserContext({
         authType: AuthType.EncryptedToken,
       });
-      const endpoint = getEndpoint();
+      const endpoint = getEndpoint("https://main.documentdb.ext.azure.com");
       expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/guest/mongo/explorer");
     });
   });
