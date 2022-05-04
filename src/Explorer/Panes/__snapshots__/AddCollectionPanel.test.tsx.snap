@@ -1,0 +1,429 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddCollectionPanel should render Default properly 1`] = `
+<form
+  className="panelFormWrapper"
+  onSubmit={[Function]}
+>
+  <div
+    className="panelMainContent"
+  >
+    <Stack
+      hidden={false}
+    >
+      <Stack
+        horizontal={true}
+      >
+        <span
+          className="mandatoryStar"
+        >
+          * 
+        </span>
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Database 
+          id
+        </Text>
+        <StyledTooltipHostBase
+          content="A database is analogous to a namespace. It is the unit of management for a set of containers."
+          directionalHint={4}
+        >
+          <Icon
+            className="panelInfoIcon"
+            iconName="Info"
+            tabIndex={0}
+          />
+        </StyledTooltipHostBase>
+      </Stack>
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <input
+          aria-checked={true}
+          aria-label="Create new database"
+          checked={true}
+          className="panelRadioBtn"
+          id="databaseCreateNew"
+          name="databaseType"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <span
+          className="panelRadioBtnLabel"
+        >
+          Create new
+        </span>
+        <input
+          aria-checked={false}
+          aria-label="Use existing database"
+          checked={false}
+          className="panelRadioBtn"
+          name="databaseType"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <span
+          className="panelRadioBtnLabel"
+        >
+          Use existing
+        </span>
+      </Stack>
+      <Stack
+        className="panelGroupSpacing"
+      >
+        <input
+          aria-label="New database id"
+          aria-required={true}
+          autoComplete="off"
+          autoFocus={true}
+          className="panelTextField"
+          id="newDatabaseId"
+          name="newDatabaseId"
+          onChange={[Function]}
+          pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+          placeholder="Type a new database id"
+          required={true}
+          size={40}
+          tabIndex={0}
+          title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+          type="text"
+          value=""
+        />
+        <Stack
+          horizontal={true}
+        >
+          <StyledCheckboxBase
+            checked={true}
+            label="Share throughput across containers"
+            onChange={[Function]}
+            styles={
+              Object {
+                "checkbox": Object {
+                  "height": 12,
+                  "width": 12,
+                },
+                "label": Object {
+                  "alignItems": "center",
+                  "padding": 0,
+                },
+                "text": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          />
+          <StyledTooltipHostBase
+            content="Throughput configured at the database level will be shared across all containers within the database."
+            directionalHint={4}
+          >
+            <Icon
+              className="panelInfoIcon"
+              iconName="Info"
+              tabIndex={0}
+            />
+          </StyledTooltipHostBase>
+        </Stack>
+        <ThroughputInput
+          isDatabase={true}
+          isSharded={true}
+          onCostAcknowledgeChange={[Function]}
+          setIsAutoscale={[Function]}
+          setIsThroughputCapExceeded={[Function]}
+          setThroughputValue={[Function]}
+        />
+      </Stack>
+      <Separator
+        className="panelSeparator"
+      />
+    </Stack>
+    <Stack>
+      <Stack
+        horizontal={true}
+      >
+        <span
+          className="mandatoryStar"
+        >
+          * 
+        </span>
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Container id
+        </Text>
+        <StyledTooltipHostBase
+          content="Unique identifier for the container and used for id-based routing through REST and all SDKs."
+          directionalHint={4}
+        >
+          <Icon
+            className="panelInfoIcon"
+            iconName="Info"
+            tabIndex={0}
+          />
+        </StyledTooltipHostBase>
+      </Stack>
+      <input
+        aria-label="Container id"
+        aria-required={true}
+        autoComplete="off"
+        className="panelTextField"
+        id="collectionId"
+        name="collectionId"
+        onChange={[Function]}
+        pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+        placeholder="e.g., Container1"
+        required={true}
+        size={40}
+        title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+        type="text"
+        value=""
+      />
+    </Stack>
+    <Stack>
+      <Stack
+        horizontal={true}
+      >
+        <span
+          className="mandatoryStar"
+        >
+          * 
+        </span>
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Partition key
+        </Text>
+        <StyledTooltipHostBase
+          content="The partition key is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume. For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice."
+          directionalHint={4}
+        >
+          <Icon
+            className="panelInfoIcon"
+            iconName="Info"
+            tabIndex={0}
+          />
+        </StyledTooltipHostBase>
+      </Stack>
+      <Text
+        aria-label="pkDescription"
+        variant="small"
+      />
+      <input
+        aria-label="Partition key"
+        aria-required={true}
+        className="panelTextField"
+        id="addCollection-partitionKeyValue"
+        onChange={[Function]}
+        pattern=".*"
+        placeholder="e.g., /address/zipCode"
+        required={true}
+        size={40}
+        title=""
+        type="text"
+        value=""
+      />
+    </Stack>
+    <Stack>
+      <Stack
+        horizontal={true}
+      >
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Unique keys
+        </Text>
+        <StyledTooltipHostBase
+          content="Unique keys provide developers with the ability to add a layer of data integrity to their database. By
+ creating a unique key policy when a container is created, you ensure the uniqueness of one or more values
+ per partition key."
+          directionalHint={4}
+        >
+          <Icon
+            className="panelInfoIcon"
+            iconName="Info"
+            tabIndex={0}
+          />
+        </StyledTooltipHostBase>
+      </Stack>
+      <CustomizedActionButton
+        iconProps={
+          Object {
+            "iconName": "Add",
+          }
+        }
+        onClick={[Function]}
+        styles={
+          Object {
+            "label": Object {
+              "fontSize": 12,
+            },
+            "root": Object {
+              "padding": 0,
+            },
+          }
+        }
+      >
+        Add unique key
+      </CustomizedActionButton>
+    </Stack>
+    <Stack
+      className="panelGroupSpacing"
+    >
+      <Stack
+        horizontal={true}
+      >
+        <Text
+          className="panelTextBold"
+          variant="small"
+        >
+          Analytical store
+        </Text>
+        <StyledTooltipHostBase
+          content={
+            <Text
+              variant="small"
+            >
+              Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.
+               
+              <StyledLinkBase
+                href="https://aka.ms/analytical-store-overview"
+                target="_blank"
+              >
+                Learn more
+              </StyledLinkBase>
+            </Text>
+          }
+          directionalHint={4}
+        >
+          <Icon
+            className="panelInfoIcon"
+            iconName="Info"
+            tabIndex={0}
+          />
+        </StyledTooltipHostBase>
+      </Stack>
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <input
+          aria-checked={false}
+          aria-label="Enable analytical store"
+          checked={false}
+          className="panelRadioBtn"
+          disabled={true}
+          id="enableAnalyticalStoreBtn"
+          name="analyticalStore"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <span
+          className="panelRadioBtnLabel"
+        >
+          On
+        </span>
+        <input
+          aria-checked={true}
+          aria-label="Disable analytical store"
+          checked={true}
+          className="panelRadioBtn"
+          disabled={true}
+          id="disableAnalyticalStoreBtn"
+          name="analyticalStore"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <span
+          className="panelRadioBtnLabel"
+        >
+          Off
+        </span>
+      </Stack>
+      <Stack
+        className="panelGroupSpacing"
+      >
+        <Text
+          variant="small"
+        >
+          Azure Synapse Link is required for creating an analytical store
+           
+          container
+          . Enable Synapse Link for this Cosmos DB account.
+           
+          <StyledLinkBase
+            href="https://aka.ms/cosmosdb-synapselink"
+            target="_blank"
+          >
+            Learn more
+          </StyledLinkBase>
+        </Text>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+          style={
+            Object {
+              "height": 27,
+              "width": 80,
+            }
+          }
+          styles={
+            Object {
+              "label": Object {
+                "fontSize": 12,
+              },
+            }
+          }
+          text="Enable"
+        />
+      </Stack>
+    </Stack>
+    <CollapsibleSectionComponent
+      isExpandedByDefault={false}
+      onExpand={[Function]}
+      title="Advanced"
+    >
+      <Stack
+        className="panelGroupSpacing"
+        id="collapsibleSectionContent"
+      >
+        <StyledCheckboxBase
+          checked={false}
+          label="My partition key is larger than 101 bytes"
+          onChange={[Function]}
+          styles={
+            Object {
+              "checkbox": Object {
+                "height": 12,
+                "width": 12,
+              },
+              "label": Object {
+                "alignItems": "center",
+                "padding": 0,
+              },
+              "text": Object {
+                "fontSize": 12,
+              },
+            }
+          }
+        />
+      </Stack>
+    </CollapsibleSectionComponent>
+  </div>
+  <PanelFooterComponent
+    buttonLabel="OK"
+    isButtonDisabled={false}
+  />
+</form>
+`;
