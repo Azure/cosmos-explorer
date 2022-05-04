@@ -181,7 +181,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     const descriptionElement = (
       <Stack>
         {labelElement}
-        <Text id={`${dataFieldName}-text-display`} aria-labelledby={labelId}>
+        <Text id={`${dataFieldName}-text-display`} aria-labelledby={labelId} style={{ whiteSpace: "pre" }}>
           {this.props.getTranslation(description.textTKey)}{" "}
           {description.link && (
             <Link target="_blank" href={description.link.href}>
