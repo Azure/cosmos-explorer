@@ -10,6 +10,7 @@ import {
   Link,
   Separator,
   Stack,
+  TeachingBubble,
   Text,
   TooltipHost,
 } from "@fluentui/react";
@@ -30,6 +31,7 @@ import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils"
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
+import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
 import { PanelFooterComponent } from "./PanelFooterComponent";
@@ -39,6 +41,8 @@ import { PanelLoadingScreen } from "./PanelLoadingScreen";
 export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
+  isQuickstart?: boolean;
+  showTeachingBubble?: boolean;
 }
 
 const SharedDatabaseDefault: DataModels.IndexingPolicy = {
@@ -93,6 +97,7 @@ export interface AddCollectionPanelState {
   showErrorDetails: boolean;
   isExecuting: boolean;
   isThroughputCapExceeded: boolean;
+  teachingBubbleStep: number;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -107,11 +112,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     this.state = {
       createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
-      newDatabaseId: "",
+      newDatabaseId: props.isQuickstart ? "SampleDB" : "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
       selectedDatabaseId:
         userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : this.props.databaseId,
-      collectionId: "",
+      collectionId: props.isQuickstart ? `Sample${getCollectionName()}` : "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: this.getPartitionKey(),
@@ -124,7 +129,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       showErrorDetails: false,
       isExecuting: false,
       isThroughputCapExceeded: false,
+      teachingBubbleStep: 0,
     };
+  }
+
+  componentDidMount(): void {
+    if (this.state.teachingBubbleStep === 0 && this.props.showTeachingBubble) {
+      this.setState({ teachingBubbleStep: 1 });
+    }
   }
 
   render(): JSX.Element {
@@ -148,6 +160,70 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             link={Constants.Urls.freeTierInformation}
             linkText="Learn more"
           />
+        )}
+
+        {this.state.teachingBubbleStep === 1 && (
+          <TeachingBubble
+            headline="Create sample database"
+            target={"#newDatabaseId"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ teachingBubbleStep: 0 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 1 of 4"
+          >
+            Database is the parent of a container, create a new database / use an existing one
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 2 && (
+          <TeachingBubble
+            headline="Setting throughput"
+            target={"#autoscaleRUValueField"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 1 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 2 of 4"
+          >
+            Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of
+            throughput based on the max RU/s set
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 3 && (
+          <TeachingBubble
+            headline="Naming container"
+            target={"#collectionId"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 4 }) }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 3 of 4"
+          >
+            Name your container
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 4 && (
+          <TeachingBubble
+            headline="Setting partition key"
+            target={"#addCollection-partitionKeyValue"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{
+              text: "Create container",
+              onClick: () => {
+                this.setState({ teachingBubbleStep: 0 });
+                this.submit();
+              },
+            }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 4 of 4"
+          >
+            Last step - you will need to define a partition key for your collection. /address was chosen for this
+            particular example. A good partition key should have a wide range of possible value
+          </TeachingBubble>
         )}
 
         <div className="panelMainContent">
@@ -832,6 +908,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     if (userContext.features.partitionKeyDefault2) {
       return userContext.apiType === "SQL" ? "/pk" : "pk";
     }
+    if (this.props.isQuickstart) {
+      return userContext.apiType === "SQL" ? "/address" : "address";
+    }
     return "";
   }
 
@@ -899,8 +978,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private isSynapseLinkEnabled(): boolean {
-    const { properties } = userContext.databaseAccount;
+    if (!userContext.databaseAccount) {
+      return false;
+    }
 
+    const { properties } = userContext.databaseAccount;
     if (!properties) {
       return false;
     }
@@ -996,8 +1078,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     document.getElementById("collapsibleSectionContent")?.scrollIntoView();
   }
 
-  private async submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
+  private async submit(event?: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event?.preventDefault();
 
     if (!this.validateInputs()) {
       return;
@@ -1090,8 +1172,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     try {
       await createCollection(createCollectionParams);
+      await this.props.explorer.refreshAllDatabases();
+      if (this.props.isQuickstart) {
+        const database = useDatabases.getState().findDatabaseWithId("SampleDB");
+        if (database) {
+          await database.loadCollections();
+          const collection = database.findCollectionWithId("SampleContainer");
+          const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
+          sampleGenerator.populateContainerAsync(collection);
+        }
+      }
       this.setState({ isExecuting: false });
-      this.props.explorer.refreshAllDatabases();
       TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
       useSidePanel.getState().closeSidePanel();
     } catch (error) {

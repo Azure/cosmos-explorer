@@ -378,6 +378,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.NotebooksDownBanner) !== -1) {
       userContext.features.notebooksDownBanner = true;
     }
+    if (inputs.flights.indexOf(Flights.PublicGallery) !== -1) {
+      userContext.features.publicGallery = true;
+    }
   }
 }
 

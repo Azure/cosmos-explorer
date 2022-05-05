@@ -180,6 +180,15 @@ export default class SelfServeExample extends SelfServeBaseClass {
   description: string;
 
   @Values({
+    description: {
+      textTKey: `This UI can be used to dynamically change the throughput.
+This is an alternative to updating the throughput from the 'scale & settings' tab.`,
+      type: DescriptionType.Text,
+    },
+  })
+  multiLineDescription: string;
+
+  @Values({
     labelTKey: "Current Region",
     isDynamicDescription: true,
   })
