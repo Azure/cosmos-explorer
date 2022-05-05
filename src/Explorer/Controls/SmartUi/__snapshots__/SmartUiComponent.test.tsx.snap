@@ -27,6 +27,11 @@ exports[`SmartUiComponent disable all inputs 1`] = `
             <Text
               aria-labelledby="description-label"
               id="description-text-display"
+              style={
+                Object {
+                  "whiteSpace": "pre",
+                }
+              }
             >
               this is an example description text.
                
@@ -341,6 +346,11 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
             <Text
               aria-labelledby="description-label"
               id="description-text-display"
+              style={
+                Object {
+                  "whiteSpace": "pre",
+                }
+              }
             >
               this is an example description text.
                
