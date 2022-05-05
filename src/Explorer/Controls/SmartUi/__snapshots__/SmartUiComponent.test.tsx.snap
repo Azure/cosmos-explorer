@@ -29,7 +29,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
               id="description-text-display"
               style={
                 Object {
-                  "whiteSpace": "pre",
+                  "whiteSpace": "pre-line",
                 }
               }
             >
@@ -348,7 +348,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
               id="description-text-display"
               style={
                 Object {
-                  "whiteSpace": "pre",
+                  "whiteSpace": "pre-line",
                 }
               }
             >
