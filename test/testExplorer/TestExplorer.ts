@@ -8,7 +8,7 @@ import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/datab
 const resourceGroup = process.env.RESOURCE_GROUP || "";
 const subscriptionId = process.env.SUBSCRIPTION_ID || "";
 const urlSearchParams = new URLSearchParams(window.location.search);
-const accountName = urlSearchParams.get("accountName") || "portal-sql-runner";
+const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-wus";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
 
