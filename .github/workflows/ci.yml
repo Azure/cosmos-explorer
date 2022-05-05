@@ -92,11 +92,11 @@ jobs:
           name: dist
           path: dist/
       - name: Upload build to preview blob storage
-        run: az storage blob upload-batch --destination "$web" --source "dist" --account-name "cosmosexplorerpreview" --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --account-key="${PREVIEW_STORAGE_KEY}"
+        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name cosmosexplorerpreview --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --account-key="${PREVIEW_STORAGE_KEY}"
         env:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
       - name: Upload preview config to blob storage
-        run: az storage blob upload --container-name "$web" --file "./preview/config.json" --account-name "cosmosexplorerpreview" --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --account-key="${PREVIEW_STORAGE_KEY}"
+        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name cosmosexplorerpreview --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --account-key="${PREVIEW_STORAGE_KEY}"
         env:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
   endtoendemulator:
