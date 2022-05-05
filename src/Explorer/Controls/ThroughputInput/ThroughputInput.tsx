@@ -16,6 +16,7 @@ export interface ThroughputInputProps {
   isSharded: boolean;
   isFreeTier: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
+  isQuickstart?: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
   setIsThroughputCapExceeded: (isThroughputCapExceeded: boolean) => void;
@@ -226,6 +227,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           </Stack>
 
           <TextField
+            id="autoscaleRUValueField"
             type="number"
             styles={{
               fieldGroup: { width: 300, height: 27 },
