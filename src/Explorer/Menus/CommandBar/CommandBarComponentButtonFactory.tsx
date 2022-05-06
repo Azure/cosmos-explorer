@@ -196,7 +196,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
   const showOpenFullScreen =
     configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
 
-  if (userContext.authType === AuthType.AAD) {
+  if (userContext.authType === AuthType.AAD && userContext.features.enableChatbot) {
     const label = "Chat Assistant";
     const supportPaneButton: CommandButtonComponentProps = {
       iconName: "ChatBot",
