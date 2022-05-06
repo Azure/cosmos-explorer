@@ -611,7 +611,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             ]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(container, sp),
       })),
-      onClick: () => {
+      onClick: async () => {
+        await collection.loadStoredProcedures();
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
         refreshActiveTab(
           (tab: TabsBase) =>
@@ -635,7 +636,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             ]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(container, udf),
       })),
-      onClick: () => {
+      onClick: async () => {
+        await collection.loadUserDefinedFunctions();
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
         refreshActiveTab(
           (tab: TabsBase) =>
@@ -657,7 +659,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Triggers]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(container, trigger),
       })),
-      onClick: () => {
+      onClick: async () => {
+        await collection.loadTriggers();
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
         refreshActiveTab(
           (tab: TabsBase) =>
