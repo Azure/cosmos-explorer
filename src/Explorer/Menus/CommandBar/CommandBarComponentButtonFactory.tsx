@@ -217,27 +217,6 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
       disabled: false,
       className: "fonticoncustom"
     };
-
-    // const label = "Chat Assistant";
-    // const supportPaneButton: CommandButtonComponentProps = {
-    //   iconSrc: FeedbackPortalIcon,
-    //   iconAlt: label,
-    //   onCommandClick: () => {
-    //     useSidePanel.getState().openSidePanel("Chat Assistant (Beta)", <SupportPaneComponent
-    //       directLineToken={container.conversationToken()}
-    //       userToken={userContext.authorizationToken}
-    //       subId={userContext.subscriptionId}
-    //       rg={userContext.resourceGroup}
-    //       accName={userContext.databaseAccount.name}
-    //     />);
-    //   },
-    //   commandButtonLabel: undefined,
-    //   ariaLabel: label,
-    //   tooltipText: label,
-    //   hasPopup: false,
-    //   disabled: false,
-    //   className: "Chatbot",
-    // };
     buttons.push(supportPaneButton);
   }
 

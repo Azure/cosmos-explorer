@@ -18,7 +18,7 @@
     "workers/libs/**": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
     "source.organizeImports": true
