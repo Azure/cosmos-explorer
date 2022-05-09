@@ -9,7 +9,7 @@ import {
   allowedJunoOrigins,
   allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
-  validateEndpoint,
+  validateEndpoint
 } from "Utils/EndpointValidation";
 
 export enum Platform {
@@ -190,3 +190,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+

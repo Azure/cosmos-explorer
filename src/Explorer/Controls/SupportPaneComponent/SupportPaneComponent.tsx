@@ -30,13 +30,11 @@ export class SupportPaneComponent extends React.Component<SupportPaneComponentPr
     {
       ...directLine,
       postActivity: (activity: any) => {
-        // Add whatever needs to be added.                  
         activity.channelData.token = this.props.userToken;
         activity.channelData.subId = this.props.subId;
         activity.channelData.rg = this.props.rg;
         activity.channelData.accName = this.props.accName;
 
-        //activity.channelData.MyKey = "hello";
         return directLine.postActivity(activity)
       }
     }

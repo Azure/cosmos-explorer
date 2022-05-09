@@ -1,5 +1,6 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
+import { configContext } from "ConfigContext";
 import { IGalleryItem } from "Juno/JunoClient";
 import * as ko from "knockout";
 import React from "react";
@@ -34,6 +35,7 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -479,26 +481,24 @@ export default class Explorer {
         name = tokenPayload.name;
       }
     } catch (error) {
-      // ignore
+      console.error("Exception while decrypting token");
+      console.error(error);
     } finally {
       return name;
     }
   }
 
   private async generateConversationToken() {
-    const response = await fetch("https://directline.botframework.com/v3/directline/tokens/generate", {
-      method: "POST",
+    var url = `${configContext.JUNO_ENDPOINT}/api/chatbot/bot${userContext.databaseAccount.id}/conversationToken`;
+    const authorizationHeader = getAuthorizationHeader();
+
+    const response = await fetch(url, {
+      method: "GET",
       headers: {
-        [Constants.HttpHeaders.authorization]: "Bearer BSjLmJJHZRA.PxahjJGCNOKl7q9tiodWyVcqJOIzG894vAAqCme639o",
+        [Constants.HttpHeaders.authorization]: authorizationHeader.token,
         Accept: "application/json",
         [Constants.HttpHeaders.contentType]: "application/json"
       },
-      body: JSON.stringify({
-        "user": {
-          "id": `dl_${_.uniqueId()}`,
-          "name": this.getUserName()
-        }
-      })
     });
 
     if (!response.ok) {
