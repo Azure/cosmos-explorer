@@ -1,5 +1,5 @@
-import { DirectionalHint, Icon, IIconStyles, Stack, Text, TooltipHost } from "@fluentui/react";
 import * as React from "react";
+import { Stack, Text, IIconStyles, Icon, TooltipHost, DirectionalHint } from "@fluentui/react";
 import { toolTipLabelStackTokens } from "../SettingsRenderUtils";
 
 export interface ToolTipLabelComponentProps {
