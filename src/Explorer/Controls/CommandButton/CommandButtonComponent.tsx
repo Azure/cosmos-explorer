@@ -260,13 +260,18 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
           onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.commandClickCallback(e)}
         >
           <div className={contentClassName}>
-            if (this.props.iconName) {
+            if (this.props.iconName){" "}
+            {
               <div>
-                <Icon styles={iconButtonStyles} className="panelInfoIcon" iconName={this.props.iconName} ariaLabel="ChatBot" />
+                <Icon
+                  styles={iconButtonStyles}
+                  className="panelInfoIcon"
+                  iconName={this.props.iconName}
+                  ariaLabel="ChatBot"
+                />
               </div>
-            } else {
-              <img className="commandIcon" src={this.props.iconSrc} alt={this.props.iconAlt} />
-            }
+            }{" "}
+            else {<img className="commandIcon" src={this.props.iconSrc} alt={this.props.iconAlt} />}
             {CommandButtonComponent.renderLabel(this.props)}
           </div>
         </span>

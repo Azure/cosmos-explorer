@@ -202,20 +202,25 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
       iconName: "ChatBot",
       iconAlt: label,
       onCommandClick: () => {
-        useSidePanel.getState().openSidePanel("Chat Assistant (Beta)", <SupportPaneComponent
-          directLineToken={container.conversationToken()}
-          userToken={userContext.authorizationToken}
-          subId={userContext.subscriptionId}
-          rg={userContext.resourceGroup}
-          accName={userContext.databaseAccount.name}
-        />);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Chat Assistant (Beta)",
+            <SupportPaneComponent
+              directLineToken={container.conversationToken()}
+              userToken={userContext.authorizationToken}
+              subId={userContext.subscriptionId}
+              rg={userContext.resourceGroup}
+              accName={userContext.databaseAccount.name}
+            />
+          );
       },
       commandButtonLabel: null,
       ariaLabel: label,
       tooltipText: label,
       hasPopup: true,
       disabled: false,
-      className: "fonticoncustom"
+      className: "fonticoncustom",
     };
     buttons.push(supportPaneButton);
   }
