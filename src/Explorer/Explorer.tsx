@@ -468,28 +468,8 @@ export default class Explorer {
     useDialog.getState().openDialog(resetConfirmationDialogProps);
   }
 
-  private getUserName() {
-    const accessToken = userContext?.authorizationToken;
-    if (!accessToken) {
-      return "Cosmos DB User";
-    }
-
-    let name;
-    try {
-      const tokenPayload = decryptJWTToken(accessToken);
-      if (tokenPayload && tokenPayload.hasOwnProperty("name")) {
-        name = tokenPayload.name;
-      }
-    } catch (error) {
-      console.error("Exception while decrypting token");
-      console.error(error);
-    } finally {
-      return name;
-    }
-  }
-
   private async generateConversationToken() {
-    var url = `${configContext.JUNO_ENDPOINT}/api/chatbot/bot${userContext.databaseAccount.id}/conversationToken`;
+    const url = `${configContext.JUNO_ENDPOINT}/api/chatbot/bot${userContext.databaseAccount.id}/conversationToken`;
     const authorizationHeader = getAuthorizationHeader();
 
     const response = await fetch(url, {

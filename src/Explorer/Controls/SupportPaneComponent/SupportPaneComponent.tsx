@@ -1,3 +1,4 @@
+import { Activity } from "botframework-directlinejs";
 import ReactWebChat, { createDirectLine } from "botframework-webchat";
 import React from "react";
 import * as _ from "underscore";
@@ -29,7 +30,7 @@ export class SupportPaneComponent extends React.Component<SupportPaneComponentPr
     const dl =
     {
       ...directLine,
-      postActivity: (activity: any) => {
+      postActivity: (activity: Activity) => {
         activity.channelData.token = this.props.userToken;
         activity.channelData.subId = this.props.subId;
         activity.channelData.rg = this.props.rg;
@@ -39,7 +40,7 @@ export class SupportPaneComponent extends React.Component<SupportPaneComponentPr
       }
     }
 
-    return <ReactWebChat directLine={dl} userid={this.userId} styleOptions={styleOptions} />;
+    return <ReactWebChat directLine={dl} userID={this.userId} styleOptions={styleOptions} />;
 
   }
 }
