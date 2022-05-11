@@ -1,7 +1,9 @@
 import { Activity } from "botframework-directlinejs";
-import ReactWebChat, { createDirectLine } from "botframework-webchat";
+import ReactWebChat from "botframework-webchat";
 import React from "react";
 import * as _ from "underscore";
+
+const BotFramework = require('botframework-webchat');
 
 export interface SupportPaneComponentProps {
   directLineToken: string;
@@ -24,7 +26,7 @@ export class SupportPaneComponent extends React.Component<SupportPaneComponentPr
       bubbleFromUserBackground: "rgba(0, 255, 0, .1)",
     };
 
-    const directLine = createDirectLine({ token: this.props.directLineToken });
+    const directLine = BotFramework.createDirectLine({ token: this.props.directLineToken });
     const dl = {
       ...directLine,
       postActivity: (activity: Activity) => {
