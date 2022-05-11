@@ -1,13 +1,13 @@
 /**
  * React component for Command button component.
  */
+import { Icon, IIconStyles } from "@fluentui/react";
 import * as React from "react";
 import CollapseChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
 import { KeyCodes } from "../../../Common/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as StringUtils from "../../../Utils/StringUtils";
-
 /**
  * Options for this component
  */
@@ -243,6 +243,7 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
     if (this.props.children && this.props.children.length > 0) {
       contentClassName += " hasHiddenItems";
     }
+    const iconButtonStyles: Partial<IIconStyles> = { root: { marginBottom: -3 } };
 
     return (
       <div className="commandButtonReact">
@@ -259,7 +260,18 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
           onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.commandClickCallback(e)}
         >
           <div className={contentClassName}>
-            <img className="commandIcon" src={this.props.iconSrc} alt={this.props.iconAlt} />
+            if (this.props.iconName){" "}
+            {
+              <div>
+                <Icon
+                  styles={iconButtonStyles}
+                  className="panelInfoIcon"
+                  iconName={this.props.iconName}
+                  ariaLabel="ChatBot"
+                />
+              </div>
+            }{" "}
+            else {<img className="commandIcon" src={this.props.iconSrc} alt={this.props.iconAlt} />}
             {CommandButtonComponent.renderLabel(this.props)}
           </div>
         </span>
