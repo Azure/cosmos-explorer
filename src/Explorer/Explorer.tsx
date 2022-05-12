@@ -298,7 +298,7 @@ export default class Explorer {
         db1.id().localeCompare(db2.id())
       );
       useDatabases.setState({ databases: updatedDatabases });
-      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, currentDatabases);
+      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(

@@ -1,6 +1,7 @@
 // CSS Dependencies
 import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
+import { QuickstartTutorial } from "Explorer/Tutorials/QuickstartTutorial";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
@@ -115,6 +116,7 @@ const App: React.FunctionComponent = () => {
       </div>
       <SidePanel />
       <Dialog />
+      <QuickstartTutorial />
     </div>
   );
 };

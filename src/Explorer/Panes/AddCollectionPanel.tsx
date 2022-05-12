@@ -21,6 +21,7 @@ import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { SubscriptionType } from "Contracts/SubscriptionType";
 import { useSidePanel } from "hooks/useSidePanel";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -1176,10 +1177,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       if (this.props.isQuickstart) {
         const database = useDatabases.getState().findDatabaseWithId("SampleDB");
         if (database) {
+          // populate sample container with sample data
           await database.loadCollections();
           const collection = database.findCollectionWithId("SampleContainer");
           const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
-          sampleGenerator.populateContainerAsync(collection);
+          await sampleGenerator.populateContainerAsync(collection);
+          // auto-expand sample database + container and show teaching bubble
+          await database.expandDatabase();
+          collection.expandCollection();
+          useDatabases.getState().updateDatabase(database);
+          useTeachingBubble.getState().setIsSampleDBExpanded(true);
         }
       }
       this.setState({ isExecuting: false });
