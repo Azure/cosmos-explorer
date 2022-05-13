@@ -8,6 +8,7 @@ import {
   IconButton,
   IDropdownOption,
   Link,
+  ProgressIndicator,
   Separator,
   Stack,
   TeachingBubble,
@@ -214,7 +215,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             primaryButtonProps={{
               text: "Create container",
               onClick: () => {
-                this.setState({ teachingBubbleStep: 0 });
+                this.setState({ teachingBubbleStep: 5 });
                 this.submit();
               },
             }}
@@ -765,7 +766,27 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
 
-        {this.state.isExecuting && <PanelLoadingScreen />}
+        {this.state.isExecuting && <div></div>}
+        <PanelLoadingScreen />
+        {this.state.teachingBubbleStep === 5 && (
+          <TeachingBubble
+            headline="Creating sample container"
+            target={"#loadingScreen"}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent={
+              <ProgressIndicator
+                styles={{ itemName: { color: "rgb(255, 255, 255)" } }}
+                label="Adding sample data set"
+              />
+            }
+          >
+            A sample container is now being created and we are adding sample data for you. It should take about 1
+            minute.
+            <br />
+            <br />
+            Once the sample container is created, review your sample dataset and follow next steps
+          </TeachingBubble>
+        )}
       </form>
     );
   }
