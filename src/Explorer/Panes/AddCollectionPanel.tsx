@@ -44,7 +44,6 @@ export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
   isQuickstart?: boolean;
-  showTeachingBubble?: boolean;
 }
 
 const SharedDatabaseDefault: DataModels.IndexingPolicy = {
@@ -136,7 +135,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   componentDidMount(): void {
-    if (this.state.teachingBubbleStep === 0 && this.props.showTeachingBubble) {
+    if (this.state.teachingBubbleStep === 0 && this.props.isQuickstart) {
       this.setState({ teachingBubbleStep: 1 });
     }
   }

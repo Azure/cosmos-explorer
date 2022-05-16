@@ -1135,7 +1135,6 @@ export default class Explorer {
     options: {
       databaseId?: string;
       isQuickstart?: boolean;
-      showTeachingBubble?: boolean;
     } = {}
   ): Promise<void> {
     if (userContext.apiType === "Cassandra") {

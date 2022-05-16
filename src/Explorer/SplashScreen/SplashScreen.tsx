@@ -149,7 +149,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
                       text: "Get started",
                       onClick: () => {
                         this.setState({ showCoachmark: false });
-                        this.container.onNewCollectionClicked({ isQuickstart: true, showTeachingBubble: true });
+                        this.container.onNewCollectionClicked({ isQuickstart: true });
                       },
                     }}
                     secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ showCoachmark: false }) }}
