@@ -127,7 +127,6 @@
     "@types/react-notification-system": "0.2.39",
     "@types/react-redux": "7.1.7",
     "@types/react-splitter-layout": "3.0.1",
-    "@types/react-youtube": "7.10.0",
     "@types/sanitize-html": "1.27.2",
     "@types/sinon": "2.3.3",
     "@types/styled-components": "5.1.1",
