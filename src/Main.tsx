@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { QuickstartCarousel } from "Explorer/Tutorials/QuickstartCarousel";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import { userContext } from "UserContext";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -116,7 +117,7 @@ const App: React.FunctionComponent = () => {
       </div>
       <SidePanel />
       <Dialog />
-      <QuickstartCarousel isOpen={true} />
+      {userContext.features.enableNewQuickstart && <QuickstartCarousel isOpen={true} />}
     </div>
   );
 };
