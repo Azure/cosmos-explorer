@@ -2,14 +2,9 @@ import { TeachingBubble } from "@fluentui/react";
 import { useDatabases } from "Explorer/useDatabases";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
-import { userContext } from "UserContext";
 
 export const QuickstartTutorial: React.FC = (): JSX.Element => {
   const { step, isSampleDBExpanded, isDocumentsTabOpened, setStep } = useTeachingBubble();
-
-  if (!userContext.features.enableNewQuickstart) {
-    return <></>;
-  }
 
   switch (step) {
     case 1:
