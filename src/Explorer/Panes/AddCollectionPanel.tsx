@@ -8,6 +8,7 @@ import {
   IconButton,
   IDropdownOption,
   Link,
+  ProgressIndicator,
   Separator,
   Stack,
   TeachingBubble,
@@ -21,6 +22,7 @@ import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { SubscriptionType } from "Contracts/SubscriptionType";
 import { useSidePanel } from "hooks/useSidePanel";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -42,7 +44,6 @@ export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
   isQuickstart?: boolean;
-  showTeachingBubble?: boolean;
 }
 
 const SharedDatabaseDefault: DataModels.IndexingPolicy = {
@@ -134,7 +135,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   componentDidMount(): void {
-    if (this.state.teachingBubbleStep === 0 && this.props.showTeachingBubble) {
+    if (this.state.teachingBubbleStep === 0 && this.props.isQuickstart) {
       this.setState({ teachingBubbleStep: 1 });
     }
   }
@@ -213,7 +214,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             primaryButtonProps={{
               text: "Create container",
               onClick: () => {
-                this.setState({ teachingBubbleStep: 0 });
+                this.setState({ teachingBubbleStep: 5 });
                 this.submit();
               },
             }}
@@ -764,7 +765,30 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
 
-        {this.state.isExecuting && <PanelLoadingScreen />}
+        {this.state.isExecuting && (
+          <div>
+            <PanelLoadingScreen />
+            {this.state.teachingBubbleStep === 5 && (
+              <TeachingBubble
+                headline="Creating sample container"
+                target={"#loadingScreen"}
+                onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+                footerContent={
+                  <ProgressIndicator
+                    styles={{ itemName: { color: "rgb(255, 255, 255)" } }}
+                    label="Adding sample data set"
+                  />
+                }
+              >
+                A sample container is now being created and we are adding sample data for you. It should take about 1
+                minute.
+                <br />
+                <br />
+                Once the sample container is created, review your sample dataset and follow next steps
+              </TeachingBubble>
+            )}
+          </div>
+        )}
       </form>
     );
   }
@@ -1176,10 +1200,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       if (this.props.isQuickstart) {
         const database = useDatabases.getState().findDatabaseWithId("SampleDB");
         if (database) {
+          // populate sample container with sample data
           await database.loadCollections();
           const collection = database.findCollectionWithId("SampleContainer");
           const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
-          sampleGenerator.populateContainerAsync(collection);
+          await sampleGenerator.populateContainerAsync(collection);
+          // auto-expand sample database + container and show teaching bubble
+          await database.expandDatabase();
+          collection.expandCollection();
+          useDatabases.getState().updateDatabase(database);
+          useTeachingBubble.getState().setIsSampleDBExpanded(true);
         }
       }
       this.setState({ isExecuting: false });

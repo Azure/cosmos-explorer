@@ -2,6 +2,7 @@
 import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
 import { QuickstartCarousel } from "Explorer/Tutorials/QuickstartCarousel";
+import { QuickstartTutorial } from "Explorer/Tutorials/QuickstartTutorial";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { userContext } from "UserContext";
@@ -118,6 +119,7 @@ const App: React.FunctionComponent = () => {
       <SidePanel />
       <Dialog />
       {userContext.features.enableNewQuickstart && <QuickstartCarousel isOpen={true} />}
+      {userContext.features.enableNewQuickstart && <QuickstartTutorial />}
     </div>
   );
 };

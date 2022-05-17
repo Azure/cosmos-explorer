@@ -173,6 +173,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
         onClick={(event: React.MouseEvent<HTMLDivElement>) => this.onNodeClick(event, node)}
         onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) => this.onNodeKeyPress(event, node)}
         role="treeitem"
+        id={node.id}
       >
         <div
           className={`treeNodeHeader ${this.state.isMenuShowing ? "showingMenu" : ""}`}

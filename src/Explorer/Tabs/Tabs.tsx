@@ -1,3 +1,5 @@
+import { CollectionTabKind } from "Contracts/ViewModels";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
@@ -113,6 +115,14 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
   };
 
   useEffect((): (() => void) | void => {
+    if (
+      tab.tabKind === CollectionTabKind.Documents &&
+      tab.collection?.databaseId === "SampleDB" &&
+      tab.collection?.id() === "SampleContainer"
+    ) {
+      useTeachingBubble.getState().setIsDocumentsTabOpened(true);
+    }
+
     const { current: element } = ref;
     if (element) {
       ko.applyBindings(tab, element);
