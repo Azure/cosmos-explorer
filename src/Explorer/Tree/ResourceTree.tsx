@@ -1,4 +1,5 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import * as React from "react";
 import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
@@ -436,7 +437,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       const databaseNode: TreeNode = {
         label: database.id(),
         iconSrc: CosmosDBIcon,
-        isExpanded: false,
+        isExpanded: database.isDatabaseExpanded(),
         className: "databaseHeader",
         children: [],
         isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
@@ -461,6 +462,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
       if (database.isDatabaseShared()) {
         databaseNode.children.push({
+          id: database.id() === "SampleDB" ? "sampleScaleSettings" : "",
           label: "Scale",
           isSelected: () =>
             useSelectedNode
@@ -497,6 +499,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     const children: TreeNode[] = [];
     children.push({
       label: collection.getLabel(),
+      id: collection.databaseId === "SampleDB" && collection.id() === "SampleContainer" ? "sampleItems" : "",
       onClick: () => {
         collection.openTab();
         // push to most recent
@@ -530,6 +533,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
     if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
       children.push({
+        id:
+          collection.databaseId === "SampleDB" && collection.id() === "SampleContainer" && !database.isDatabaseShared()
+            ? "sampleScaleSettings"
+            : "",
         label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
         isSelected: () =>
@@ -572,7 +579,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     return {
       label: collection.id(),
       iconSrc: CollectionIcon,
-      isExpanded: false,
+      isExpanded: collection.isCollectionExpanded(),
       children: children,
       className: "collectionHeader",
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
@@ -586,6 +593,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         );
       },
       onExpanded: () => {
+        // TODO: For testing purpose only, remove after
+        if (collection.databaseId === "SampleDB" && collection.id() === "SampleContainer") {
+          useTeachingBubble.getState().setIsSampleDBExpanded(true);
+        }
         if (showScriptNodes) {
           collection.loadStoredProcedures();
           collection.loadUserDefinedFunctions();
