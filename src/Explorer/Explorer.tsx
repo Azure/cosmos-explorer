@@ -369,9 +369,6 @@ export default class Explorer {
         });
         useNotebook.getState().setIsAllocating(true);
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        if (connectionInfo.status !== HttpStatusCodes.OK) {
-          throw new Error(`Received status code: ${connectionInfo?.status}`);
-        }
         if (!connectionInfo?.data?.notebookServerUrl) {
           throw new Error(`NotebookServerUrl is invalid!`);
         }
@@ -382,6 +379,7 @@ export default class Explorer {
       } catch (error) {
         TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
+          status: error.status,
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         });

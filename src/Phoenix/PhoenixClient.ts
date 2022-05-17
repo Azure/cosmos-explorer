@@ -21,9 +21,9 @@ import {
   IMaxDbAccountsPerUserExceeded,
   IMaxUsersPerDbAccountExceeded,
   IPhoenixConnectionInfoResult,
+  IPhoenixError,
   IProvisionData,
   IResponse,
-  IValidationError,
   PhoenixErrorType,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
@@ -59,17 +59,19 @@ export class PhoenixClient {
         body: JSON.stringify(provisionData),
       });
       const responseJson = await response?.json();
-      if (response.status === HttpStatusCodes.Forbidden) {
-        throw new Error(this.ConvertToForbiddenErrorString(responseJson));
+      if (response.ok) {
+        return {
+          status: response.status,
+          data: responseJson,
+        };
       }
-      return {
-        status: response.status,
-        data: responseJson,
-      };
+      const phoenixError = responseJson as IPhoenixError;
+      if (response.status === HttpStatusCodes.Forbidden) {
+        throw new Error(this.ConvertToForbiddenErrorString(phoenixError));
+      }
+      throw new Error(phoenixError.message);
     } catch (error) {
-      if (response.status === HttpStatusCodes.Forbidden) {
-        error.status = HttpStatusCodes.Forbidden;
-      }
+      error.status = response?.status;
       throw error;
     }
   }
@@ -220,7 +222,7 @@ export class PhoenixClient {
     };
   }
 
-  public ConvertToForbiddenErrorString(jsonData: IValidationError): string {
+  public ConvertToForbiddenErrorString(jsonData: IPhoenixError): string {
     const errInfo = jsonData;
     switch (errInfo?.type) {
       case PhoenixErrorType.MaxAllocationTimeExceeded: {
