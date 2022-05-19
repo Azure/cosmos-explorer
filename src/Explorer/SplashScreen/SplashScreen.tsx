@@ -9,14 +9,11 @@ import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
 import OpenQueryIcon from "../../../images/BrowseQuery.svg";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
-import CostIcon from "../../../images/Cost.svg";
-import GreenCheckIcon from "../../../images/Green_check.svg";
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
-import NotebooksIcon from "../../../images/Notebooks.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
@@ -162,10 +159,8 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
               )}
               <div className="moreStuffContainer">
                 <div className="moreStuffColumn commonTasks">
-                  <div className="title">
-                    {userContext.features.enableNewQuickstart ? "Why Cosmos DB" : "Common Tasks"}
-                  </div>
-                  {userContext.features.enableNewQuickstart ? this.getNotebookItems() : this.getCommonTasksItems()}
+                  <div className="title">{userContext.features.enableNewQuickstart ? "Recents" : "Common Tasks"}</div>
+                  {userContext.features.enableNewQuickstart ? this.getRecentItems() : this.getCommonTasksItems()}
                 </div>
                 <div className="moreStuffColumn">
                   <div className="title">
@@ -349,9 +344,9 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
 
   private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
     return {
-      iconSrc: NotebookIcon,
+      iconSrc: CollectionIcon,
       title: collectionId,
-      description: "Data",
+      description: getCollectionName(),
       onClick: () => {
         const collection = useDatabases.getState().findCollection(databaseId, collectionId);
         collection?.openTab();
@@ -362,7 +357,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
   private decorateOpenNotebookActivity({ name, path }: MostRecentActivity.OpenNotebookItem) {
     return {
       info: path,
-      iconSrc: CollectionIcon,
+      iconSrc: NotebookIcon,
       title: name,
       description: "Notebook",
       onClick: () => {
@@ -416,25 +411,6 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
       callback();
       event.stopPropagation();
     }
-  }
-
-  private getNotebookItems(): JSX.Element {
-    return (
-      <Stack>
-        <Stack className="notebookSplashScreenItem" horizontal style={{ marginBottom: 14 }}>
-          <Image src={NotebooksIcon} />
-          <Text className="itemText">Notebook - Easy to develop</Text>
-        </Stack>
-        <Stack className="notebookSplashScreenItem" horizontal style={{ marginBottom: 14 }}>
-          <Image src={GreenCheckIcon} />
-          <Text className="itemText">Notebook - Enterprise ready</Text>
-        </Stack>
-        <Stack className="notebookSplashScreenItem" horizontal style={{ marginBottom: 14 }}>
-          <Image src={CostIcon} />
-          <Text className="itemText">Notebook - Cost effective</Text>
-        </Stack>
-      </Stack>
-    );
   }
 
   private getCommonTasksItems(): JSX.Element {
@@ -508,13 +484,15 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
         <ul>
           {recentItems.map((item, index) => (
             <li key={`${item.title}${item.description}${index}`}>
-              <img src={item.iconSrc} alt="" />
-              <span className="twoLineContent">
-                <Link onClick={item.onClick} title={item.info}>
-                  {item.title}
-                </Link>
-                <div className="description">{item.description}</div>
-              </span>
+              <Stack style={{ marginBottom: 26 }}>
+                <Stack horizontal style={{ marginBottom: 4 }}>
+                  <Image style={{ marginRight: 8 }} src={item.iconSrc} />
+                  <Link style={{ fontSize: 14 }} onClick={item.onClick} title={item.info}>
+                    {item.title}
+                  </Link>
+                </Stack>
+                <Text style={{ color: "#605E5C" }}>{item.description}</Text>
+              </Stack>
             </li>
           ))}
         </ul>
