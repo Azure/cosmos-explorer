@@ -25,7 +25,7 @@ export const updateDocument = async (
     const response = await client()
       .database(collection.databaseId)
       .container(collection.id())
-      .item(documentId.id(), documentId.partitionKeyValue)
+      .item(documentId.id(), documentId.partitionKeyValue?.length === 0 ? undefined : documentId.partitionKeyValue)
       .replace(newDocument, options);
 
     logConsoleInfo(`Successfully updated ${entityName} ${documentId.id()}`);
