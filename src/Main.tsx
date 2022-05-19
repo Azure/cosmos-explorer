@@ -60,6 +60,7 @@ initializeIcons();
 const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const openedTabs = useTabs((state) => state.openedTabs);
+  const isConnectTabOpen = useTabs((state) => state.isConnectTabOpen);
 
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform);
@@ -103,7 +104,7 @@ const App: React.FunctionComponent = () => {
             </div>
           </div>
           {/* Collections Tree - End */}
-          {openedTabs.length === 0 && <SplashScreen explorer={explorer} />}
+          {openedTabs.length === 0 && !isConnectTabOpen && <SplashScreen explorer={explorer} />}
           <Tabs />
         </div>
         {/* Collections Tree and Tabs - End */}

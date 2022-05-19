@@ -2,6 +2,7 @@
  * Accordion top class
  */
 import { Coachmark, DirectionalHint, Image, Link, Stack, TeachingBubbleContent, Text } from "@fluentui/react";
+import { useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
@@ -220,8 +221,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
         iconSrc: ConnectIcon,
         title: "Connect",
         description: "Prefer using your own choice of tooling? Find the connection string you need to connect",
-        // TODO: replace onClick function
-        onClick: () => 2,
+        onClick: () => useTabs.getState().openAndActivateConnectTab(),
       };
 
       return [launchQuickstartBtn, newContainerBtn, connectBtn];

@@ -1,5 +1,6 @@
 import { TeachingBubble } from "@fluentui/react";
 import { useDatabases } from "Explorer/useDatabases";
+import { useTabs } from "hooks/useTabs";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
 
@@ -140,7 +141,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
           hasCloseButton
           primaryButtonProps={{
             text: "Launch connect",
-            //onClick: () => setStep(7),
+            onClick: () => useTabs.getState().openAndActivateConnectTab(),
           }}
           secondaryButtonProps={{
             text: "Previous",
