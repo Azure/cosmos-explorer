@@ -1,4 +1,5 @@
 import { IconButton, ITextFieldStyles, Link, Pivot, PivotItem, Stack, Text, TextField } from "@fluentui/react";
+import { handleError } from "Common/ErrorHandlingUtils";
 import React, { useEffect, useState } from "react";
 import { userContext } from "UserContext";
 import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
@@ -22,12 +23,17 @@ export const ConnectTab: React.FC = (): JSX.Element => {
   }, [keys]);
 
   const fetchKeys = async (): Promise<void> => {
-    const listKeysResult = await listKeys(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name
-    );
-    setKeys(listKeysResult);
+    try {
+      const listKeysResult = await listKeys(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name
+      );
+      setKeys(listKeysResult);
+    } catch (error) {
+      handleError(error, "listKeys", "listKeys request has failed: ");
+      throw error;
+    }
   };
 
   const onCopyBtnClicked = (selector: string): void => {
