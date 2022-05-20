@@ -1,5 +1,17 @@
-import { IconButton, ITextFieldStyles, Link, Pivot, PivotItem, Stack, Text, TextField } from "@fluentui/react";
+import {
+  IconButton,
+  ITextFieldStyles,
+  Link,
+  Pivot,
+  PivotItem,
+  PrimaryButton,
+  Stack,
+  Text,
+  TextField,
+} from "@fluentui/react";
 import { handleError } from "Common/ErrorHandlingUtils";
+import { sendMessage } from "Common/MessageHandler";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import React, { useEffect, useState } from "react";
 import { userContext } from "UserContext";
 import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
@@ -179,6 +191,23 @@ export const ConnectTab: React.FC = (): JSX.Element => {
           </Stack>
         </PivotItem>
       </Pivot>
+
+      <Stack style={{ margin: 10 }}>
+        <Text style={{ fontWeight: 600, marginBottom: 8 }}>Download sample app</Text>
+        <Text style={{ marginBottom: 8 }}>
+          Don’t have an app ready? No worries, download one of our sample app with a platform of your choice. Connection
+          string is already included in the app.
+        </Text>
+        <PrimaryButton
+          style={{ width: 185 }}
+          onClick={() =>
+            sendMessage({
+              type: MessageTypes.OpenQuickstartBlade,
+            })
+          }
+          text="Download sample app"
+        />
+      </Stack>
     </div>
   );
 };
