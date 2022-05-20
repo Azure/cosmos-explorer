@@ -1,7 +1,8 @@
 import { DefaultButton, IconButton, Image, Modal, PrimaryButton, Stack, Text } from "@fluentui/react";
 import React, { useState } from "react";
 import Youtube from "react-youtube";
-import Placeholder from "../../../images/Placeholder.svg";
+import Image1 from "../../../images/CarouselImage1.svg";
+import Image2 from "../../../images/CarouselImage2.svg";
 
 interface QuickstartCarouselProps {
   isOpen: boolean;
@@ -55,9 +56,9 @@ const getContent = (page: number): JSX.Element => {
     case 1:
       return <Youtube videoId="Jvgh64rvdXU" />;
     case 2:
-      return <Image style={{ width: 640 }} src={Placeholder} />;
+      return <Image style={{ width: 640 }} src={Image1} />;
     case 3:
-      return <Image style={{ width: 640 }} src={Placeholder} />;
+      return <Image style={{ width: 640 }} src={Image2} />;
     default:
       return <></>;
   }
