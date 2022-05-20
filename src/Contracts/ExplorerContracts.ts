@@ -34,6 +34,7 @@ export enum MessageTypes {
   CreateSparkPool,
   RefreshDatabaseAccount,
   CloseTab,
+  OpenQuickstartBlade,
 }
 
 export { Versions, ActionContracts, Diagnostics };
