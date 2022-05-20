@@ -13,6 +13,7 @@ import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
+import NotebookColorIcon from "../../../images/Notebook.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
@@ -39,6 +40,7 @@ export interface SplashScreenItem {
   id?: string;
   info?: string;
   description: string;
+  showLinkIcon?: boolean;
   onClick: () => void;
 }
 
@@ -121,7 +123,11 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
                       <img src={item.iconSrc} alt="" />
                     </div>
                     <div className="legendContainer">
-                      <div className="legend">{item.title}</div>
+                      <Stack horizontal verticalAlign="center" style={{ marginBottom: 8 }}>
+                        <div className="legend">{item.title}</div>
+                        {item.showLinkIcon && <Image style={{ marginLeft: 8, width: 16 }} src={LinkIcon} />}
+                      </Stack>
+
                       <div
                         id={item.id}
                         className={userContext.features.enableNewQuickstart ? "newDescription" : "description"}
@@ -193,16 +199,31 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
    * public for testing purposes
    */
   public createMainItems(): SplashScreenItem[] {
-    const dataSampleUtil = this.createDataSampleUtil();
+    const heroes: SplashScreenItem[] = [];
 
     if (userContext.features.enableNewQuickstart) {
-      const launchQuickstartBtn = {
-        id: "quickstartDescription",
-        iconSrc: QuickStartIcon,
-        title: "Launch quick start",
-        description: "Launch a quick start tutorial to get started with sample data",
-        onClick: () => this.container.onNewCollectionClicked({ isQuickstart: true }),
-      };
+      if (userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+        const launchQuickstartBtn = {
+          id: "quickstartDescription",
+          iconSrc: QuickStartIcon,
+          title: "Launch quick start",
+          description: "Launch a quick start tutorial to get started with sample data",
+          showLinkIcon: userContext.apiType === "Mongo",
+          onClick: () =>
+            userContext.apiType === "Mongo"
+              ? window.open("http://aka.ms/mongodbquickstart", "_blank")
+              : this.container.onNewCollectionClicked({ isQuickstart: true }),
+        };
+        heroes.push(launchQuickstartBtn);
+      } else if (useNotebook.getState().isPhoenixNotebooks) {
+        const newNotebookBtn = {
+          iconSrc: NotebookColorIcon,
+          title: "New notebook",
+          description: "Visualize your data stored in Azure Cosmos DB",
+          onClick: () => this.container.onNewNotebookClicked(),
+        };
+        heroes.push(newNotebookBtn);
+      }
 
       const newContainerBtn = {
         iconSrc: ContainersIcon,
@@ -210,6 +231,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
         description: "Create a new container for storage and throughput",
         onClick: () => this.container.onNewCollectionClicked(),
       };
+      heroes.push(newContainerBtn);
 
       const connectBtn = {
         iconSrc: ConnectIcon,
@@ -218,11 +240,9 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
         // TODO: replace onClick function
         onClick: () => 2,
       };
-
-      return [launchQuickstartBtn, newContainerBtn, connectBtn];
+      heroes.push(connectBtn);
     } else {
-      const heroes: SplashScreenItem[] = [];
-
+      const dataSampleUtil = this.createDataSampleUtil();
       if (dataSampleUtil.isSampleContainerCreationSupported()) {
         heroes.push({
           iconSrc: SampleIcon,
@@ -247,9 +267,9 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
           onClick: () => this.container.onNewNotebookClicked(),
         });
       }
-
-      return heroes;
     }
+
+    return heroes;
   }
 
   private createCommonTaskItems(): SplashScreenItem[] {
@@ -437,41 +457,121 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
   }
 
   private top3Items(): JSX.Element {
+    let items: { link: string; title: string; description: string }[];
+    switch (userContext.apiType) {
+      case "SQL":
+        items = [
+          {
+            link: "https://aka.ms/msl-modeling-partitioning-2",
+            title: "Advanced Modeling Patterns",
+            description:
+              "Learn advanced strategies for managing relationships between data entities to optimize your database.",
+          },
+          {
+            link: "https://aka.ms/msl-modeling-partitioning-1",
+            title: "Partitioning Best Practices",
+            description:
+              "Learn to apply data model and partitioning strategies to support an efficient and scalable NoSQL database.",
+          },
+          {
+            link: "https://aka.ms/msl-resource-planning",
+            title: "Plan Your Resource Requirements",
+            description:
+              "Familiarize yourself with the various configuration options for a new Azure Cosmos DB SQL API account.",
+          },
+        ];
+        break;
+      case "Mongo":
+        items = [
+          {
+            link: "https://aka.ms/mongodbintro",
+            title: "Introduction to Azure Cosmos DB API for MongoDB",
+            description: "Understand the Cosmos DB API for MongoDB and it's offerings",
+          },
+          {
+            link: "https://aka.ms/mongodbfeaturesupport",
+            title: "Supported Features and Syntax",
+            description: "Learn about the benefits and features of Cosmos DB API for MongoDB",
+          },
+          {
+            link: "https://aka.ms/mongodbpremigration",
+            title: "Migrate your data",
+            description: "Pre-migration steps for data migration to Azure Cosmos DB's API for MongoDB",
+          },
+        ];
+        break;
+      case "Cassandra":
+        items = [
+          {
+            link: "https://aka.ms/cassandrajava",
+            title: "Build a Java App",
+            description: "Use a Cassandra API account in Azure Cosmos DB to store the key/value data.",
+          },
+          {
+            link: "https://aka.ms/cassandrapartitioning",
+            title: "Partitioning Best Practices",
+            description: "Learn how partitioning works",
+          },
+          {
+            link: "https://aka.ms/cassandraRu",
+            title: "Understanding Request Units (RUs)",
+            description:
+              "Understanding how and where to retrieve information when programmatically talking to Cassandra API",
+          },
+        ];
+        break;
+      case "Gremlin":
+        items = [
+          {
+            link: "https://aka.ms/Graphdatamodeling",
+            title: "Data Modeling",
+            description: "Graph data modeling recommendations",
+          },
+          {
+            link: "https://aka.ms/graphpartitioning",
+            title: "Partitioning Best Practices",
+            description: "Using a partitioned graph",
+          },
+          {
+            link: "https://aka.ms/graphapiquery",
+            title: "Query Data",
+            description: "Querying data with Gremlin",
+          },
+        ];
+        break;
+      case "Tables":
+        items = [
+          {
+            link: "https://aka.ms/tableintro",
+            title: "Introduction to Azure Cosmos DB: Table API",
+            description: "Understand the Table API in Cosmos DB and it's offerings",
+          },
+          {
+            link: "https://aka.ms/tableimport",
+            title: "Migrate your data",
+            description: "Learn how to migrate your data to an Azure Cosmos DB Table API account",
+          },
+          {
+            link: "https://aka.ms/tablefaq",
+            title: "Azure Cosmos DB: Table API FAQs",
+            description: "Frequently asked questions about the Table API in Azure Cosmos DB",
+          },
+        ];
+        break;
+    }
     return (
       <Stack>
-        <Stack style={{ marginBottom: 26 }}>
-          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link href="https://aka.ms/msl-modeling-partitioning-2" target="_blank" style={{ marginRight: 5 }}>
-              Advanced Modeling Patterns
-            </Link>
-            <Image src={LinkIcon} />
+        {items.map((item, i) => (
+          <Stack key={`top${i}`} style={{ marginBottom: 26 }}>
+            <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+                {item.title}
+              </Link>
+              <Image src={LinkIcon} />
+            </Stack>
+            <Text>{item.description}</Text>
           </Stack>
-          <Text>
-            Learn advanced strategies for managing relationships between data entities to optimize your database.
-          </Text>
-        </Stack>
-        <Stack style={{ marginBottom: 26 }}>
-          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link href="https://aka.ms/msl-modeling-partitioning-1" target="_blank" style={{ marginRight: 5 }}>
-              Partitioning Best Practices
-            </Link>
-            <Image src={LinkIcon} />
-          </Stack>
-          <Text>
-            Learn to apply data model and partitioning strategies to support an efficient and scalable NoSQL database.
-          </Text>
-        </Stack>
-        <Stack>
-          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link href="https://aka.ms/msl-resource-planning" target="_blank" style={{ marginRight: 5 }}>
-              Plan Your Resource Requirements
-            </Link>
-            <Image src={LinkIcon} />
-          </Stack>
-          <Text>
-            Familiarize yourself with the various configuration options for a new Azure Cosmos DB SQL API account.
-          </Text>
-        </Stack>
+        ))}
       </Stack>
     );
   }
@@ -485,7 +585,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
           {recentItems.map((item, index) => (
             <li key={`${item.title}${item.description}${index}`}>
               <Stack style={{ marginBottom: 26 }}>
-                <Stack horizontal style={{ marginBottom: 4 }}>
+                <Stack horizontal>
                   <Image style={{ marginRight: 8 }} src={item.iconSrc} />
                   <Link style={{ fontSize: 14 }} onClick={item.onClick} title={item.info}>
                     {item.title}
@@ -502,37 +602,119 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
   }
 
   private getLearningResourceItems(): JSX.Element {
+    let items: { link: string; title: string; description: string }[];
+    switch (userContext.apiType) {
+      case "SQL":
+        items = [
+          {
+            link: "https://aka.ms/msl-sdk-connect",
+            title: "Get Started using th SQL API with the SDK",
+            description: "Learn about the Azure Cosmos DB SDK, then download and use in a .NET application.",
+          },
+          {
+            link: "https://aka.ms/msl-complex-queries",
+            title: "Master Complex Queries",
+            description: "Learn how to author complex queries using cross-products and correlated subqueries.",
+          },
+          {
+            link: "https://aka.ms/msl-move-data",
+            title: "Migrate Your Data",
+            description:
+              "Migrate data into and out of Azure Cosmos DB SQL API using Azure services and open-source solutions.",
+          },
+        ];
+        break;
+      case "Mongo":
+        items = [
+          {
+            link: "https://aka.ms/mongonodejs",
+            title: "Build an app with Node.js",
+            description: "Build a Node.js app with Azure Cosmos DB's API for MongoDB",
+          },
+          {
+            link: "https://aka.ms/mongopython",
+            title: "Use Azure Cosmos DB API for MongoDB and Python",
+            description:
+              "Learn how to create an API for MongoDB account, a database and a collection, and perform CRUD operations.",
+          },
+          {
+            link: "http://aka.ms/mongodotnet",
+            title: "Build a web API using .NET SDK",
+            description: "Build a web API using Azure Cosmos DB's API for MongoDB and .NET SDK",
+          },
+        ];
+        break;
+      case "Cassandra":
+        items = [
+          {
+            link: "https://aka.ms/cassandracontainer",
+            title: "Create a Container",
+            description: "Learn the different ways to create a container",
+          },
+          {
+            link: "https://aka.ms/cassandraserverdiagnostics",
+            title: "Run Server Diagnostics",
+            description: "Server diagnostics for Azure Cosmos DB Cassandra API",
+          },
+          {
+            link: "https://aka.ms/Cassandrathroughput",
+            title: "ProvisionThroughput",
+            description: "How to provision throughput in Azure Cosmos DB Cassandra API",
+          },
+        ];
+        break;
+      case "Gremlin":
+        items = [
+          {
+            link: "https://aka.ms/graphquickstart",
+            title: "Quickstart",
+            description: "Create, query, and traverse an Azure Cosmos DB graph database using the Gremlin console",
+          },
+          {
+            link: "https://aka.ms/graphimport",
+            title: "Import Graph Data",
+            description: "Learn Bulk ingestion in Azure Cosmos DB Gremlin API using BulkExecutor",
+          },
+          {
+            link: "https://aka.ms/graphoptimize",
+            title: "Optimize your Queries",
+            description: "How to use the execution profile step to evaluate your Gremlin queries",
+          },
+        ];
+        break;
+      case "Tables":
+        items = [
+          {
+            link: "https://aka.ms/tabledotnet",
+            title: "Build an app with a .NET SDK",
+            description: "Build a Table API app with .NET SDK and Azure Cosmos DB",
+          },
+          {
+            link: "https://aka.ms/Tablejava",
+            title: "Build an app with a Java SDK",
+            description: "Build a Table API app with Java SDK and Azure Cosmos DB",
+          },
+          {
+            link: "https://aka.ms/tablenodejs",
+            title: "Build an app with Node.js",
+            description: "Build a Table API app with Node.js and Azure Cosmos DB",
+          },
+        ];
+        break;
+    }
     return (
       <Stack>
-        <Stack style={{ marginBottom: 26 }}>
-          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link href="https://aka.ms/msl-sdk-connect" target="_blank" style={{ marginRight: 5 }}>
-              Get Started using th SQL API with the SDK
-            </Link>
-            <Image src={LinkIcon} />
+        {items.map((item, i) => (
+          <Stack key={`learningResource${i}`} style={{ marginBottom: 26 }}>
+            <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+                {item.title}
+              </Link>
+              <Image src={LinkIcon} />
+            </Stack>
+            <Text>{item.description}</Text>
           </Stack>
-          <Text>Learn about the Azure Cosmos DB SDK, then download and use in a .NET application.</Text>
-        </Stack>
-        <Stack style={{ marginBottom: 26 }}>
-          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link href="https://aka.ms/msl-complex-queries" target="_blank" style={{ marginRight: 5 }}>
-              Master Complex Queries
-            </Link>
-            <Image src={LinkIcon} />
-          </Stack>
-          <Text>Learn how to author complex queries using cross-products and correlated subqueries.</Text>
-        </Stack>
-        <Stack>
-          <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-            <Link href="https://aka.ms/msl-move-data" target="_blank" style={{ marginRight: 5 }}>
-              Migrate Your Data
-            </Link>
-            <Image src={LinkIcon} />
-          </Stack>
-          <Text>
-            Migrate data into and out of Azure Cosmos DB SQL API using Azure services and open-source solutions.
-          </Text>
-        </Stack>
+        ))}
       </Stack>
     );
   }
