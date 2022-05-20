@@ -14,34 +14,48 @@ import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import React, { useEffect, useState } from "react";
 import { userContext } from "UserContext";
-import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { DatabaseAccountListKeysResult } from "Utils/arm/generatedClients/cosmos/types";
+import { listKeys, listReadOnlyKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import {
+  DatabaseAccountListKeysResult,
+  DatabaseAccountListReadOnlyKeysResult,
+} from "Utils/arm/generatedClients/cosmos/types";
 
 export const ConnectTab: React.FC = (): JSX.Element => {
-  const [keys, setKeys] = useState<DatabaseAccountListKeysResult>({
-    primaryMasterKey: "",
-    secondaryMasterKey: "",
-    primaryReadonlyMasterKey: "",
-    secondaryReadonlyMasterKey: "",
-  });
+  const [primaryMasterKey, setPrimaryMasterKey] = useState<string>("");
+  const [secondaryMasterKey, setSecondaryMasterKey] = useState<string>("");
+  const [primaryReadonlyMasterKey, setPrimaryReadonlyMasterKey] = useState<string>("");
+  const [secondaryReadonlyMasterKey, setSecondaryReadonlyMasterKey] = useState<string>("");
   const uri: string = userContext.databaseAccount.properties?.documentEndpoint;
-  const primaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${keys.primaryMasterKey}`;
-  const secondaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${keys.secondaryMasterKey}`;
-  const primaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${keys.primaryReadonlyMasterKey}`;
-  const secondaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${keys.secondaryReadonlyMasterKey}`;
+  const primaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${primaryMasterKey}`;
+  const secondaryConnectionStr = `AccountEndpoint=${uri};AccountKey=${secondaryMasterKey}`;
+  const primaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${primaryReadonlyMasterKey}`;
+  const secondaryReadonlyConnectionStr = `AccountEndpoint=${uri};AccountKey=${secondaryReadonlyMasterKey}`;
 
   useEffect(() => {
     fetchKeys();
-  }, [keys]);
+  }, []);
 
   const fetchKeys = async (): Promise<void> => {
     try {
-      const listKeysResult = await listKeys(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name
-      );
-      setKeys(listKeysResult);
+      if (userContext.hasWriteAccess) {
+        const listKeysResult: DatabaseAccountListKeysResult = await listKeys(
+          userContext.subscriptionId,
+          userContext.resourceGroup,
+          userContext.databaseAccount.name
+        );
+        setPrimaryMasterKey(listKeysResult.primaryMasterKey);
+        setSecondaryMasterKey(listKeysResult.secondaryMasterKey);
+        setPrimaryReadonlyMasterKey(listKeysResult.primaryReadonlyMasterKey);
+        setSecondaryReadonlyMasterKey(listKeysResult.secondaryReadonlyMasterKey);
+      } else {
+        const listReadonlyKeysResult: DatabaseAccountListReadOnlyKeysResult = await listReadOnlyKeys(
+          userContext.subscriptionId,
+          userContext.resourceGroup,
+          userContext.databaseAccount.name
+        );
+        setPrimaryReadonlyMasterKey(listReadonlyKeysResult.primaryReadonlyMasterKey);
+        setSecondaryReadonlyMasterKey(listReadonlyKeysResult.secondaryReadonlyMasterKey);
+      }
     } catch (error) {
       handleError(error, "listKeys", "listKeys request has failed: ");
       throw error;
@@ -73,63 +87,68 @@ export const ConnectTab: React.FC = (): JSX.Element => {
       </Stack>
 
       <Pivot>
-        <PivotItem headerText="Read-write Keys">
-          <Stack style={{ margin: 10 }}>
-            <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
-              <TextField label="URI" id="uriTextfield" readOnly value={uri} styles={textfieldStyles} />
-              <IconButton iconProps={{ iconName: "Copy" }} onClick={() => onCopyBtnClicked("#uriTextfield")} />
-            </Stack>
+        {userContext.hasWriteAccess && (
+          <PivotItem headerText="Read-write Keys">
+            <Stack style={{ margin: 10 }}>
+              <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
+                <TextField label="URI" id="uriTextfield" readOnly value={uri} styles={textfieldStyles} />
+                <IconButton iconProps={{ iconName: "Copy" }} onClick={() => onCopyBtnClicked("#uriTextfield")} />
+              </Stack>
 
-            <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
-              <TextField
-                label="PRIMARY KEY"
-                id="primaryKeyTextfield"
-                readOnly
-                value={keys.primaryMasterKey}
-                styles={textfieldStyles}
-              />
-              <IconButton iconProps={{ iconName: "Copy" }} onClick={() => onCopyBtnClicked("#primaryKeyTextfield")} />
-            </Stack>
+              <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
+                <TextField
+                  label="PRIMARY KEY"
+                  id="primaryKeyTextfield"
+                  readOnly
+                  value={primaryMasterKey}
+                  styles={textfieldStyles}
+                />
+                <IconButton iconProps={{ iconName: "Copy" }} onClick={() => onCopyBtnClicked("#primaryKeyTextfield")} />
+              </Stack>
 
-            <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
-              <TextField
-                label="SECONDARY KEY"
-                id="secondaryKeyTextfield"
-                readOnly
-                value={keys.secondaryMasterKey}
-                styles={textfieldStyles}
-              />
-              <IconButton iconProps={{ iconName: "Copy" }} onClick={() => onCopyBtnClicked("#secondaryKeyTextfield")} />
-            </Stack>
+              <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
+                <TextField
+                  label="SECONDARY KEY"
+                  id="secondaryKeyTextfield"
+                  readOnly
+                  value={secondaryMasterKey}
+                  styles={textfieldStyles}
+                />
+                <IconButton
+                  iconProps={{ iconName: "Copy" }}
+                  onClick={() => onCopyBtnClicked("#secondaryKeyTextfield")}
+                />
+              </Stack>
 
-            <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
-              <TextField
-                label="PRIMARY CONNECTION STRING"
-                id="primaryConStrTextfield"
-                readOnly
-                value={primaryConnectionStr}
-                styles={textfieldStyles}
-              />
-              <IconButton
-                iconProps={{ iconName: "Copy" }}
-                onClick={() => onCopyBtnClicked("#primaryConStrTextfield")}
-              />
+              <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
+                <TextField
+                  label="PRIMARY CONNECTION STRING"
+                  id="primaryConStrTextfield"
+                  readOnly
+                  value={primaryConnectionStr}
+                  styles={textfieldStyles}
+                />
+                <IconButton
+                  iconProps={{ iconName: "Copy" }}
+                  onClick={() => onCopyBtnClicked("#primaryConStrTextfield")}
+                />
+              </Stack>
+              <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
+                <TextField
+                  label="SECONDARY CONNECTION STRING"
+                  id="secondaryConStrTextfield"
+                  readOnly
+                  value={secondaryConnectionStr}
+                  styles={textfieldStyles}
+                />
+                <IconButton
+                  iconProps={{ iconName: "Copy" }}
+                  onClick={() => onCopyBtnClicked("#secondaryConStrTextfield")}
+                />
+              </Stack>
             </Stack>
-            <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
-              <TextField
-                label="SECONDARY CONNECTION STRING"
-                id="secondaryConStrTextfield"
-                readOnly
-                value={secondaryConnectionStr}
-                styles={textfieldStyles}
-              />
-              <IconButton
-                iconProps={{ iconName: "Copy" }}
-                onClick={() => onCopyBtnClicked("#secondaryConStrTextfield")}
-              />
-            </Stack>
-          </Stack>
-        </PivotItem>
+          </PivotItem>
+        )}
         <PivotItem headerText="Read-only Keys">
           <Stack style={{ margin: 10 }}>
             <Stack horizontal verticalAlign="end" style={{ marginBottom: 8 }}>
@@ -141,7 +160,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
                 label="PRIMARY READ-ONLY KEY"
                 id="primaryReadonlyKeyTextfield"
                 readOnly
-                value={keys.primaryReadonlyMasterKey}
+                value={primaryReadonlyMasterKey}
                 styles={textfieldStyles}
               />
               <IconButton
@@ -154,7 +173,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
                 label="SECONDARY READ-ONLY KEY"
                 id="secondaryReadonlyKeyTextfield"
                 readOnly
-                value={keys.secondaryReadonlyMasterKey}
+                value={secondaryReadonlyMasterKey}
                 styles={textfieldStyles}
               />
               <IconButton
