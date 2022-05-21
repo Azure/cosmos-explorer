@@ -15,7 +15,11 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
 }: QuickstartCarouselProps): JSX.Element => {
   const [page, setPage] = useState<number>(1);
   return (
-    <Modal styles={{ main: { width: 640 } }} isOpen={isOpen && page < 4}>
+    <Modal
+      styles={{ main: { width: 640 } }}
+      isOpen={isOpen && page < 4}
+      onDismissed={() => userContext.apiType === "SQL" && useCarousel.getState().setShowCoachMark(true)}
+    >
       <Stack>
         <Stack horizontal horizontalAlign="space-between" style={{ padding: 16 }}>
           <Text variant="xLarge">{getHeaderText(page)}</Text>
