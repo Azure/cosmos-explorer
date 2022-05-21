@@ -1,6 +1,8 @@
 import { DefaultButton, IconButton, Image, Modal, PrimaryButton, Stack, Text } from "@fluentui/react";
+import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import Youtube from "react-youtube";
+import { userContext } from "UserContext";
 import Image1 from "../../../images/CarouselImage1.svg";
 import Image2 from "../../../images/CarouselImage2.svg";
 
@@ -30,7 +32,12 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
           <PrimaryButton
             style={{ margin: "16px 16px 16px 0" }}
             text={page === 3 ? "Finish" : "Next"}
-            onClick={() => setPage(page + 1)}
+            onClick={() => {
+              if (page === 3 && userContext.apiType === "SQL") {
+                useCarousel.getState().setShowCoachMark(true);
+              }
+              setPage(page + 1);
+            }}
           />
         </Stack>
       </Stack>

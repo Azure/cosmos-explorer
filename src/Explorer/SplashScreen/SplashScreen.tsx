@@ -2,6 +2,7 @@
  * Accordion top class
  */
 import { Coachmark, DirectionalHint, Image, Link, Stack, TeachingBubbleContent, Text } from "@fluentui/react";
+import { useCarousel } from "hooks/useCarousel";
 import { useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
@@ -49,11 +50,7 @@ export interface SplashScreenProps {
   explorer: Explorer;
 }
 
-export interface SplashScreenState {
-  showCoachmark: boolean;
-}
-
-export class SplashScreen extends React.Component<SplashScreenProps, SplashScreenState> {
+export class SplashScreen extends React.Component<SplashScreenProps> {
   private static readonly seeMoreItemTitle: string = "See more Cosmos DB documentation";
   private static readonly seeMoreItemUrl: string = "https://aka.ms/cosmosdbdocument";
   private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
@@ -67,10 +64,6 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
     super(props);
     this.container = props.explorer;
     this.subscriptions = [];
-
-    this.state = {
-      showCoachmark: userContext.features.enableNewQuickstart,
-    };
   }
 
   public componentWillUnmount(): void {
@@ -87,7 +80,13 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
           (state) => state.isNotebookEnabled
         ),
       },
-      { dispose: useSelectedNode.subscribe(() => this.setState({})) }
+      { dispose: useSelectedNode.subscribe(() => this.setState({})) },
+      {
+        dispose: useCarousel.subscribe(
+          () => this.setState({}),
+          (state) => state.showCoachMark
+        ),
+      }
     );
   }
 
@@ -139,7 +138,7 @@ export class SplashScreen extends React.Component<SplashScreenProps, SplashScree
                   </Stack>
                 ))}
               </div>
-              {this.state.showCoachmark && (
+              {useCarousel.getState().showCoachMark && (
                 <Coachmark
                   target="#quickstartDescription"
                   positioningContainerProps={{ directionalHint: DirectionalHint.rightTopEdge }}

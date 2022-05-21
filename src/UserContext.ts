@@ -1,3 +1,4 @@
+import { useCarousel } from "hooks/useCarousel";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
@@ -73,6 +74,10 @@ const userContext: UserContext = {
 function updateUserContext(newContext: Partial<UserContext>): void {
   if (newContext.databaseAccount) {
     newContext.apiType = apiType(newContext.databaseAccount);
+    if (!localStorage.getItem(newContext.databaseAccount.id)) {
+      useCarousel.getState().setShouldOpen(true);
+      localStorage.setItem(newContext.databaseAccount.id, "true");
+    }
   }
   Object.assign(userContext, newContext);
 }
