@@ -381,6 +381,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.PublicGallery) !== -1) {
       userContext.features.publicGallery = true;
     }
+    if (inputs.flights.indexOf(Flights.MongoSchemaAnalyzer) !== -1) {
+      userContext.features.mongoSchemaAnalyzer = true;
+    }
   }
 }
 

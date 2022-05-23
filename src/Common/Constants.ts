@@ -100,6 +100,7 @@ export class Flights {
   public static readonly PhoenixFeatures = "phoenixfeatures";
   public static readonly NotebooksDownBanner = "notebooksdownbanner";
   public static readonly PublicGallery = "publicgallery";
+  public static readonly MongoSchemaAnalyzer = "mongoschemaanalyzer";
 }
 
 export class AfecFeatures {
