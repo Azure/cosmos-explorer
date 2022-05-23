@@ -450,21 +450,21 @@ export interface IResponse<T> {
   data: T;
 }
 
-export interface IValidationError {
+export interface IPhoenixError {
   message: string;
   type: string;
 }
 
-export interface IMaxAllocationTimeExceeded extends IValidationError {
+export interface IMaxAllocationTimeExceeded extends IPhoenixError {
   earliestAllocationTimestamp: string;
   maxAllocationTimePerDayPerUserInMinutes: string;
 }
 
-export interface IMaxDbAccountsPerUserExceeded extends IValidationError {
+export interface IMaxDbAccountsPerUserExceeded extends IPhoenixError {
   maxSimultaneousConnectionsPerUser: string;
 }
 
-export interface IMaxUsersPerDbAccountExceeded extends IValidationError {
+export interface IMaxUsersPerDbAccountExceeded extends IPhoenixError {
   maxSimultaneousUsersPerDbAccount: string;
 }
 
@@ -557,4 +557,5 @@ export enum PhoenixErrorType {
   AllocationValidationResult = "AllocationValidationResult",
   RegionNotServicable = "RegionNotServicable",
   SubscriptionNotAllowed = "SubscriptionNotAllowed",
+  UnknownError = "UnknownError",
 }
