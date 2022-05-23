@@ -516,7 +516,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       isNotebookEnabled &&
       userContext.apiType === "Mongo" &&
       isPublicInternetAccessAllowed() &&
-      useNotebook.getState().isPhoenixFeatures
+      useNotebook.getState().isPhoenixFeatures &&
+      userContext.features.mongoSchemaAnalyzer
     ) {
       children.push({
         label: "Schema (Preview)",
