@@ -39,6 +39,7 @@ export type Features = {
   phoenixFeatures?: boolean;
   notebooksDownBanner: boolean;
   publicGallery?: boolean;
+  mongoSchemaAnalyzer: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -92,6 +93,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
     enableNewQuickstart: "true" === get("enablenewquickstart"),
+    mongoSchemaAnalyzer: "true" === get("mongoschemaanalyzer"),
   };
 }
 
