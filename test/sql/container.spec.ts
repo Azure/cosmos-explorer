@@ -11,6 +11,9 @@ test("SQL CRUD", async () => {
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-sql-runner-west-us");
   const explorer = await waitForExplorer();
+  await explorer.click("#carouselNextBtn");
+  await explorer.click("#carouselNextBtn");
+  await explorer.click("#carouselNextBtn");
   await explorer.click('[data-test="New Container"]');
   await explorer.fill('[aria-label="New database id"]', databaseId);
   await explorer.fill('[aria-label="Container id"]', containerId);

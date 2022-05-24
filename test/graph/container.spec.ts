@@ -11,6 +11,8 @@ test("Graph CRUD", async () => {
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-gremlin-runner");
   const explorer = await waitForExplorer();
+  await explorer.click("#carouselNextBtn");
+  await explorer.click("#carouselNextBtn");
 
   // Create new database and graph
   await explorer.click('[data-test="New Graph"]');

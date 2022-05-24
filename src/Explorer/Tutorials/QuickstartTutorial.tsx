@@ -153,7 +153,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
               You have finished the tour in data explorer. For next steps, you may want to launch connect and start
               connecting with your current app.
             </Text>
-            <Link style={{ color: "white", fontWeight: 600 }} target="_blank" href="https://aka.ms/teachingbubbleRU">
+            <Link style={{ color: "white", fontWeight: 600 }} target="_blank" href="https://aka.ms/cosmosdbsurvey">
               Share your feedback
             </Link>
           </Stack>

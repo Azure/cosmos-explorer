@@ -12,7 +12,8 @@ test("Cassandra keyspace and table CRUD", async () => {
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-cassandra-runner");
   await page.waitForSelector("iframe");
   const explorer = await waitForExplorer();
-
+  await explorer.click("#carouselNextBtn");
+  await explorer.click("#carouselNextBtn");
   await explorer.click('[data-test="New Table"]');
   await explorer.click('[aria-label="Keyspace id"]');
   await explorer.fill('[aria-label="Keyspace id"]', keyspaceId);

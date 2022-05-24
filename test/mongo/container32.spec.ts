@@ -11,6 +11,9 @@ test("Mongo CRUD", async () => {
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-mongo32-runner");
   const explorer = await waitForExplorer();
+  await explorer.click("#carouselNextBtn");
+  await explorer.click("#carouselNextBtn");
+  await explorer.click("#carouselNextBtn");
 
   // Create new database and collection
   await explorer.click('[data-test="New Collection"]');

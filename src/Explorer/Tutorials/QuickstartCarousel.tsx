@@ -34,6 +34,7 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
             <DefaultButton text="Previous" style={{ margin: "16px 8px 16px 0" }} onClick={() => setPage(page - 1)} />
           )}
           <PrimaryButton
+            id="carouselNextBtn"
             style={{ margin: "16px 16px 16px 0" }}
             text={page === 3 ? "Finish" : "Next"}
             onClick={() => {
