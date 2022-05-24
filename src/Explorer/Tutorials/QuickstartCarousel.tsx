@@ -37,10 +37,18 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
             style={{ margin: "16px 16px 16px 0" }}
             text={page === 3 ? "Finish" : "Next"}
             onClick={() => {
-              if (page === 3 && userContext.apiType === "SQL") {
-                useCarousel.getState().setShowCoachMark(true);
+              if (
+                userContext.apiType === "Cassandra" ||
+                userContext.apiType === "Tables" ||
+                userContext.apiType === "Gremlin"
+              ) {
+                setPage(page + 2);
+              } else {
+                if (page === 3 && userContext.apiType === "SQL") {
+                  useCarousel.getState().setShowCoachMark(true);
+                }
+                setPage(page + 1);
               }
-              setPage(page + 1);
             }}
           />
         </Stack>

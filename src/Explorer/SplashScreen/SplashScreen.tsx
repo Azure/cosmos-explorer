@@ -11,9 +11,6 @@ import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
 import OpenQueryIcon from "../../../images/BrowseQuery.svg";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
-import NewContainerIcon from "../../../images/Hero-new-container.svg";
-import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
-import SampleIcon from "../../../images/Hero-sample.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebookColorIcon from "../../../images/Notebooks.svg";
@@ -128,10 +125,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                         {item.showLinkIcon && <Image style={{ marginLeft: 8, width: 16 }} src={LinkIcon} />}
                       </Stack>
 
-                      <div
-                        id={item.id}
-                        className={userContext.features.enableNewQuickstart ? "newDescription" : "description"}
-                      >
+                      <div id={item.id} className="newDescription">
                         {item.description}
                       </div>
                     </div>
@@ -159,26 +153,22 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     onDismiss={() => this.setState({ showCoachmark: false })}
                   >
                     You will be guided to create a sample container with sample data, then we will give you a tour of
-                    data explorer You can also cancel launching this tour and explore yourself
+                    data explorer. You can also cancel launching this tour and explore yourself
                   </TeachingBubbleContent>
                 </Coachmark>
               )}
               <div className="moreStuffContainer">
                 <div className="moreStuffColumn commonTasks">
-                  <div className="title">{userContext.features.enableNewQuickstart ? "Recents" : "Common Tasks"}</div>
-                  {userContext.features.enableNewQuickstart ? this.getRecentItems() : this.getCommonTasksItems()}
+                  <div className="title">Recents</div>
+                  {this.getRecentItems()}
                 </div>
                 <div className="moreStuffColumn">
-                  <div className="title">
-                    {userContext.features.enableNewQuickstart ? "Top 3 things you need to know" : "Recents"}
-                  </div>
-                  {userContext.features.enableNewQuickstart ? this.top3Items() : this.getRecentItems()}
+                  <div className="title">Top 3 things you need to know</div>
+                  {this.top3Items()}
                 </div>
                 <div className="moreStuffColumn tipsContainer">
-                  <div className="title">
-                    {userContext.features.enableNewQuickstart ? "Learning Resources" : "Tips"}
-                  </div>
-                  {userContext.features.enableNewQuickstart ? this.getLearningResourceItems() : this.getTipItems()}
+                  <div className="title">Learning Resources</div>
+                  {this.getLearningResourceItems()}
                 </div>
               </div>
             </div>
@@ -201,72 +191,44 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public createMainItems(): SplashScreenItem[] {
     const heroes: SplashScreenItem[] = [];
 
-    if (userContext.features.enableNewQuickstart) {
-      if (userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
-        const launchQuickstartBtn = {
-          id: "quickstartDescription",
-          iconSrc: QuickStartIcon,
-          title: "Launch quick start",
-          description: "Launch a quick start tutorial to get started with sample data",
-          showLinkIcon: userContext.apiType === "Mongo",
-          onClick: () =>
-            userContext.apiType === "Mongo"
-              ? window.open("http://aka.ms/mongodbquickstart", "_blank")
-              : this.container.onNewCollectionClicked({ isQuickstart: true }),
-        };
-        heroes.push(launchQuickstartBtn);
-      } else if (useNotebook.getState().isPhoenixNotebooks) {
-        const newNotebookBtn = {
-          iconSrc: NotebookColorIcon,
-          title: "New notebook",
-          description: "Visualize your data stored in Azure Cosmos DB",
-          onClick: () => this.container.onNewNotebookClicked(),
-        };
-        heroes.push(newNotebookBtn);
-      }
-
-      const newContainerBtn = {
-        iconSrc: ContainersIcon,
-        title: `New ${getCollectionName()}`,
-        description: "Create a new container for storage and throughput",
-        onClick: () => this.container.onNewCollectionClicked(),
+    if (userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+      const launchQuickstartBtn = {
+        id: "quickstartDescription",
+        iconSrc: QuickStartIcon,
+        title: "Launch quick start",
+        description: "Launch a quick start tutorial to get started with sample data",
+        showLinkIcon: userContext.apiType === "Mongo",
+        onClick: () =>
+          userContext.apiType === "Mongo"
+            ? window.open("http://aka.ms/mongodbquickstart", "_blank")
+            : this.container.onNewCollectionClicked({ isQuickstart: true }),
       };
-      heroes.push(newContainerBtn);
-
-      const connectBtn = {
-        iconSrc: ConnectIcon,
-        title: "Connect",
-        description: "Prefer using your own choice of tooling? Find the connection string you need to connect",
-        onClick: () => useTabs.getState().openAndActivateConnectTab(),
+      heroes.push(launchQuickstartBtn);
+    } else if (useNotebook.getState().isPhoenixNotebooks) {
+      const newNotebookBtn = {
+        iconSrc: NotebookColorIcon,
+        title: "New notebook",
+        description: "Visualize your data stored in Azure Cosmos DB",
+        onClick: () => this.container.onNewNotebookClicked(),
       };
-      heroes.push(connectBtn);
-    } else {
-      const dataSampleUtil = this.createDataSampleUtil();
-      if (dataSampleUtil.isSampleContainerCreationSupported()) {
-        heroes.push({
-          iconSrc: SampleIcon,
-          title: "Start with Sample",
-          description: "Get started with a sample provided by Cosmos DB",
-          onClick: () => dataSampleUtil.createSampleContainerAsync(),
-        });
-      }
-
-      heroes.push({
-        iconSrc: NewContainerIcon,
-        title: `New ${getCollectionName()}`,
-        description: "Create a new container for storage and throughput",
-        onClick: () => this.container.onNewCollectionClicked(),
-      });
-
-      if (useNotebook.getState().isPhoenixNotebooks) {
-        heroes.push({
-          iconSrc: NewNotebookIcon,
-          title: "New Notebook",
-          description: "Create a notebook to start querying, visualizing, and modeling your data",
-          onClick: () => this.container.onNewNotebookClicked(),
-        });
-      }
+      heroes.push(newNotebookBtn);
     }
+
+    const newContainerBtn = {
+      iconSrc: ContainersIcon,
+      title: `New ${getCollectionName()}`,
+      description: "Create a new container for storage and throughput",
+      onClick: () => this.container.onNewCollectionClicked(),
+    };
+    heroes.push(newContainerBtn);
+
+    const connectBtn = {
+      iconSrc: ConnectIcon,
+      title: "Connect",
+      description: "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      onClick: () => useTabs.getState().openAndActivateConnectTab(),
+    };
+    heroes.push(connectBtn);
 
     return heroes;
   }

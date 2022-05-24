@@ -37,6 +37,7 @@ export default class Database implements ViewModels.Database {
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public junoClient: JunoClient;
+  public isSampleDB: boolean;
   private isOfferRead: boolean;
 
   constructor(container: Explorer, data: DataModels.Database) {
@@ -54,6 +55,7 @@ export default class Database implements ViewModels.Database {
       return this.offer && !!this.offer();
     });
     this.junoClient = new JunoClient();
+    this.isSampleDB = false;
     this.isOfferRead = false;
   }
 

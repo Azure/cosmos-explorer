@@ -1,14 +1,4 @@
-import {
-  IconButton,
-  ITextFieldStyles,
-  Link,
-  Pivot,
-  PivotItem,
-  PrimaryButton,
-  Stack,
-  Text,
-  TextField,
-} from "@fluentui/react";
+import { IconButton, ITextFieldStyles, Pivot, PivotItem, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -76,16 +66,6 @@ export const ConnectTab: React.FC = (): JSX.Element => {
 
   return (
     <div style={{ width: "100%", padding: 16 }}>
-      <Stack style={{ marginLeft: 10 }}>
-        <Text variant="medium">
-          Ensure you have the right networking / access configuration before you establish the connection with your app
-          or 3rd party tool.
-        </Text>
-        <Link style={{ fontSize: 14 }} target="_blank" href="">
-          Configure networking in Azure portal
-        </Link>
-      </Stack>
-
       <Pivot>
         {userContext.hasWriteAccess && (
           <PivotItem headerText="Read-write Keys">

@@ -86,6 +86,7 @@ export interface Database extends TreeNode {
   offer: ko.Observable<DataModels.Offer>;
   isDatabaseExpanded: ko.Observable<boolean>;
   isDatabaseShared: ko.Computed<boolean>;
+  isSampleDB: boolean;
 
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
 
@@ -112,6 +113,7 @@ export interface CollectionBase extends TreeNode {
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
   children: ko.ObservableArray<TreeNode>;
   isCollectionExpanded: ko.Observable<boolean>;
+  isSampleCollection: boolean;
 
   onDocumentDBDocumentsClick(): void;
   onNewQueryClick(source: any, event?: MouseEvent, queryText?: string): void;

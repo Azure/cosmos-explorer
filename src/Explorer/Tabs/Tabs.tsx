@@ -121,11 +121,7 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
   };
 
   useEffect((): (() => void) | void => {
-    if (
-      tab.tabKind === CollectionTabKind.Documents &&
-      tab.collection?.databaseId === "SampleDB" &&
-      tab.collection?.id() === "SampleContainer"
-    ) {
+    if (tab.tabKind === CollectionTabKind.Documents && tab.collection?.isSampleCollection) {
       useTeachingBubble.getState().setIsDocumentsTabOpened(true);
     }
 
