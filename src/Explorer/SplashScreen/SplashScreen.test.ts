@@ -9,31 +9,6 @@ const createExplorer = () => {
 };
 
 describe("SplashScreen", () => {
-  it("allows sample collection creation for supported api's", () => {
-    const explorer = createExplorer();
-    const dataSampleUtil = new DataSamplesUtil(explorer);
-    const createStub = jest
-      .spyOn(dataSampleUtil, "createGeneratorAsync")
-      .mockImplementation(() => Promise.reject(undefined));
-
-    // Sample is supported
-    jest.spyOn(dataSampleUtil, "isSampleContainerCreationSupported").mockImplementation(() => true);
-
-    const splashScreen = new SplashScreen({ explorer });
-    jest.spyOn(splashScreen, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
-    const mainButtons = splashScreen.createMainItems();
-
-    // Press all buttons and make sure create gets called
-    mainButtons.forEach((button) => {
-      try {
-        button.onClick();
-      } catch (e) {
-        // noop
-      }
-    });
-    expect(createStub).toHaveBeenCalled();
-  });
-
   it("does not allow sample collection creation for non-supported api's", () => {
     const explorerStub = createExplorer();
     const dataSampleUtil = new DataSamplesUtil(explorerStub);

@@ -3,9 +3,9 @@ import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
 import { QuickstartCarousel } from "Explorer/Tutorials/QuickstartCarousel";
 import { QuickstartTutorial } from "Explorer/Tutorials/QuickstartTutorial";
+import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { userContext } from "UserContext";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -61,6 +61,7 @@ const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const openedTabs = useTabs((state) => state.openedTabs);
   const isConnectTabOpen = useTabs((state) => state.isConnectTabOpen);
+  const isCarouselOpen = useCarousel((state) => state.shouldOpen);
 
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform);
@@ -119,8 +120,8 @@ const App: React.FunctionComponent = () => {
       </div>
       <SidePanel />
       <Dialog />
-      {userContext.features.enableNewQuickstart && <QuickstartCarousel isOpen={true} />}
-      {userContext.features.enableNewQuickstart && <QuickstartTutorial />}
+      {<QuickstartCarousel isOpen={isCarouselOpen} />}
+      {<QuickstartTutorial />}
     </div>
   );
 };

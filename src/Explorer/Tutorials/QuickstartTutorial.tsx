@@ -1,11 +1,10 @@
-import { TeachingBubble } from "@fluentui/react";
-import { useDatabases } from "Explorer/useDatabases";
+import { Link, Stack, TeachingBubble, Text } from "@fluentui/react";
 import { useTabs } from "hooks/useTabs";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
 
 export const QuickstartTutorial: React.FC = (): JSX.Element => {
-  const { step, isSampleDBExpanded, isDocumentsTabOpened, setStep } = useTeachingBubble();
+  const { step, isSampleDBExpanded, isDocumentsTabOpened, sampleCollection, setStep } = useTeachingBubble();
 
   switch (step) {
     case 1:
@@ -17,8 +16,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
           primaryButtonProps={{
             text: "Open Items",
             onClick: () => {
-              const sampleContainer = useDatabases.getState().findCollection("SampleDB", "SampleContainer");
-              sampleContainer.openTab();
+              sampleCollection.openTab();
               setStep(2);
             },
           }}
@@ -70,7 +68,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
           onDismiss={() => setStep(0)}
           footerContent="Step 3 of 7"
         >
-          Add new item by copy / pasting jsons; or uploading a json
+          Add new item by copy / pasting JSON; or uploading a JSON
         </TeachingBubble>
       );
     case 4:
@@ -120,7 +118,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
           target={"#newNotebookBtn"}
           hasCloseButton
           primaryButtonProps={{
-            text: "Finish",
+            text: "Next",
             onClick: () => setStep(7),
           }}
           secondaryButtonProps={{
@@ -150,8 +148,15 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
           onDismiss={() => setStep(0)}
           footerContent="Step 7 of 7"
         >
-          You have finished the tour in data explorer. For next steps, you may want to launch connect and start
-          connecting with your current app
+          <Stack>
+            <Text style={{ color: "white" }}>
+              You have finished the tour in data explorer. For next steps, you may want to launch connect and start
+              connecting with your current app.
+            </Text>
+            <Link style={{ color: "white", fontWeight: 600 }} target="_blank" href="https://aka.ms/cosmosdbsurvey">
+              Share your feedback
+            </Link>
+          </Stack>
         </TeachingBubble>
       );
     default:

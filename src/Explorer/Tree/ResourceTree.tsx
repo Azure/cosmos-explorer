@@ -1,5 +1,4 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
-import { useTeachingBubble } from "hooks/useTeachingBubble";
 import * as React from "react";
 import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
@@ -462,7 +461,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
       if (database.isDatabaseShared()) {
         databaseNode.children.push({
-          id: database.id() === "SampleDB" ? "sampleScaleSettings" : "",
+          id: database.isSampleDB ? "sampleScaleSettings" : "",
           label: "Scale",
           isSelected: () =>
             useSelectedNode
@@ -499,7 +498,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     const children: TreeNode[] = [];
     children.push({
       label: collection.getLabel(),
-      id: collection.databaseId === "SampleDB" && collection.id() === "SampleContainer" ? "sampleItems" : "",
+      id: collection.isSampleCollection ? "sampleItems" : "",
       onClick: () => {
         collection.openTab();
         // push to most recent
@@ -533,10 +532,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
     if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
       children.push({
-        id:
-          collection.databaseId === "SampleDB" && collection.id() === "SampleContainer" && !database.isDatabaseShared()
-            ? "sampleScaleSettings"
-            : "",
+        id: collection.isSampleCollection && !database.isDatabaseShared() ? "sampleScaleSettings" : "",
         label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
         isSelected: () =>
@@ -593,10 +589,6 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         );
       },
       onExpanded: () => {
-        // TODO: For testing purpose only, remove after
-        if (collection.databaseId === "SampleDB" && collection.id() === "SampleContainer") {
-          useTeachingBubble.getState().setIsSampleDBExpanded(true);
-        }
         if (showScriptNodes) {
           collection.loadStoredProcedures();
           collection.loadUserDefinedFunctions();

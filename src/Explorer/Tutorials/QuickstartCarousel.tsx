@@ -1,6 +1,8 @@
 import { DefaultButton, IconButton, Image, Modal, PrimaryButton, Stack, Text } from "@fluentui/react";
+import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import Youtube from "react-youtube";
+import { userContext } from "UserContext";
 import Image1 from "../../../images/CarouselImage1.svg";
 import Image2 from "../../../images/CarouselImage2.svg";
 
@@ -13,7 +15,11 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
 }: QuickstartCarouselProps): JSX.Element => {
   const [page, setPage] = useState<number>(1);
   return (
-    <Modal styles={{ main: { width: 640 } }} isOpen={isOpen && page < 4}>
+    <Modal
+      styles={{ main: { width: 640 } }}
+      isOpen={isOpen && page < 4}
+      onDismissed={() => userContext.apiType === "SQL" && useCarousel.getState().setShowCoachMark(true)}
+    >
       <Stack>
         <Stack horizontal horizontalAlign="space-between" style={{ padding: 16 }}>
           <Text variant="xLarge">{getHeaderText(page)}</Text>
@@ -28,9 +34,23 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
             <DefaultButton text="Previous" style={{ margin: "16px 8px 16px 0" }} onClick={() => setPage(page - 1)} />
           )}
           <PrimaryButton
+            id="carouselNextBtn"
             style={{ margin: "16px 16px 16px 0" }}
             text={page === 3 ? "Finish" : "Next"}
-            onClick={() => setPage(page + 1)}
+            onClick={() => {
+              if (
+                userContext.apiType === "Cassandra" ||
+                userContext.apiType === "Tables" ||
+                userContext.apiType === "Gremlin"
+              ) {
+                setPage(page + 2);
+              } else {
+                if (page === 3 && userContext.apiType === "SQL") {
+                  useCarousel.getState().setShowCoachMark(true);
+                }
+                setPage(page + 1);
+              }
+            }}
           />
         </Stack>
       </Stack>

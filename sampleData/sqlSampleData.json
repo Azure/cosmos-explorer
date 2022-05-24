@@ -1,26 +1,25 @@
 {
-  "databaseId": "SampleDB",
-  "offerThroughput": 400,
-  "databaseLevelThroughput": false,
-  "collectionId": "Persons",
-  "createNewDatabase": true,
-  "partitionKey": { "kind": "Hash", "paths": ["/firstname"], "version": 1 },
   "data": [
-    {
-      "firstname": "Eva",
-      "age": 44
-    },
-    {
-      "firstname": "Véronique",
-      "age": 50
-    },
-    {
-      "firstname": "亜妃子",
-      "age": 5
-    },
-    {
-      "firstname": "John",
-      "age": 23
-    }
+    { "address": "2007, NE 37TH PL" },
+    { "address": "11635, SE MAY CREEK PARK DR" },
+    { "address": "8923, 133RD AVE SE" },
+    { "address": "1124, N 33RD ST" },
+    { "address": "4288, 131ST PL SE" },
+    { "address": "10900, SE 66TH ST" },
+    { "address": "6260, 139TH AVE NE" },
+    { "address": "13427, NE SPRING BLVD" },
+    { "address": "13812, NE SPRING BLVD" },
+    { "address": "5029, 159TH PL SE" },
+    { "address": "8604, 117TH AVE SE" },
+    { "address": "1561, 139TH LN NE" },
+    { "address": "1575, 139TH CT NE" },
+    { "address": "13901, NE 15TH CT" },
+    { "address": "16365, NE 12TH PL" },
+    { "address": "12226, NE 37TH ST" },
+    { "address": "4021, 129TH CT SE" },
+    { "address": "1455, 159TH PL NE" },
+    { "address": "15825, NE 14TH RD" },
+    { "address": "1418, 157TH CT NE" },
+    { "address": "889, 131ST PL NE" }
   ]
 }
