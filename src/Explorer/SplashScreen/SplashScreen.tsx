@@ -145,12 +145,15 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     primaryButtonProps={{
                       text: "Get started",
                       onClick: () => {
-                        this.setState({ showCoachmark: false });
+                        useCarousel.getState().setShowCoachMark(false);
                         this.container.onNewCollectionClicked({ isQuickstart: true });
                       },
                     }}
-                    secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ showCoachmark: false }) }}
-                    onDismiss={() => this.setState({ showCoachmark: false })}
+                    secondaryButtonProps={{
+                      text: "Cancel",
+                      onClick: () => useCarousel.getState().setShowCoachMark(false),
+                    }}
+                    onDismiss={() => useCarousel.getState().setShowCoachMark(false)}
                   >
                     You will be guided to create a sample container with sample data, then we will give you a tour of
                     data explorer. You can also cancel launching this tour and explore yourself
