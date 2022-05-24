@@ -11,6 +11,8 @@ test("Mongo CRUD", async () => {
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-mongo32-runner");
   const explorer = await waitForExplorer();
+
+  // Click through quick start carousel
   await explorer.click("#carouselNextBtn");
   await explorer.click("#carouselNextBtn");
   await explorer.click("#carouselNextBtn");
