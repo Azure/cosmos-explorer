@@ -2,6 +2,7 @@ import { initializeIcons, Link, Text } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { userContext } from "UserContext";
 import { initializeConfiguration } from "../ConfigContext";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import {
@@ -25,7 +26,9 @@ const onInit = async () => {
 
   const props: GalleryAndNotebookViewerComponentProps = {
     junoClient: new JunoClient(),
-    selectedTab: galleryViewerProps.selectedTab || GalleryTab.PublicGallery,
+    selectedTab:
+      galleryViewerProps.selectedTab ||
+      (userContext.features.publicGallery ? GalleryTab.PublicGallery : GalleryTab.OfficialSamples),
     sortBy: galleryViewerProps.sortBy || SortBy.MostRecent,
     searchText: galleryViewerProps.searchText,
   };
