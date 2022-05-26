@@ -162,7 +162,7 @@
     "jest-playwright-preset": "1.5.1",
     "jest-trx-results-processor": "0.0.7",
     "less": "3.8.1",
-    "less-loader": "4.1.0",
+    "less-loader": "11.0.0",
     "less-vars-loader": "1.1.0",
     "mini-css-extract-plugin": "2.1.0",
     "monaco-editor-webpack-plugin": "1.7.0",
