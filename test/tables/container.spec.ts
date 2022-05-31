@@ -12,10 +12,6 @@ test("Tables CRUD", async () => {
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-tables-runner");
   const explorer = await waitForExplorer();
 
-  // Click through quick start carousel
-  await explorer.click("#carouselNextBtn");
-  await explorer.click("#carouselNextBtn");
-
   await page.waitForSelector('text="Querying databases"', { state: "detached" });
   await explorer.click('[data-test="New Table"]');
   await explorer.fill('[aria-label="Table id"]', tableId);

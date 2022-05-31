@@ -13,10 +13,6 @@ test("Cassandra keyspace and table CRUD", async () => {
   await page.waitForSelector("iframe");
   const explorer = await waitForExplorer();
 
-  // Click through quick start carousel
-  await explorer.click("#carouselNextBtn");
-  await explorer.click("#carouselNextBtn");
-
   await explorer.click('[data-test="New Table"]');
   await explorer.click('[aria-label="Keyspace id"]');
   await explorer.fill('[aria-label="Keyspace id"]', keyspaceId);
