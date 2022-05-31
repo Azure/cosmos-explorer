@@ -8,12 +8,12 @@ import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constan
 interface ThroughputDefaults {
   fixed: number;
   unlimited:
-  | number
-  | {
-    collectionThreshold: number;
-    lessThanOrEqualToThreshold: number;
-    greatThanThreshold: number;
-  };
+    | number
+    | {
+        collectionThreshold: number;
+        lessThanOrEqualToThreshold: number;
+        greatThanThreshold: number;
+      };
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;
@@ -56,6 +56,8 @@ interface UserContext {
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
+const ONE_WEEK_IN_MS = 604800000;
+
 const features = extractFeatures();
 const { enableSDKoperations: useSDKOperations } = features;
 
@@ -71,7 +73,7 @@ const userContext: UserContext = {
   collectionCreationDefaults: CollectionCreationDefaults,
 };
 
-function isAccountNewerThanThresholdInMs(createdAt: string, millisecs_1_week: number = 604800000) {
+function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
   let createdAtMs: number = Date.parse(createdAt);
   if (isNaN(createdAtMs)) {
     createdAtMs = 0;
@@ -79,15 +81,17 @@ function isAccountNewerThanThresholdInMs(createdAt: string, millisecs_1_week: nu
 
   const nowMs: number = Date.now();
   const millisecsSinceAccountCreation = nowMs - createdAtMs;
-  return millisecs_1_week > millisecsSinceAccountCreation;
+  return threshold > millisecsSinceAccountCreation;
 }
 
 function updateUserContext(newContext: Partial<UserContext>): void {
   if (newContext.databaseAccount) {
     newContext.apiType = apiType(newContext.databaseAccount);
 
-    const oneWeekInMs = 604800000;
-    const isNewAccount = isAccountNewerThanThresholdInMs(newContext.databaseAccount?.systemData?.createdAt, oneWeekInMs);
+    const isNewAccount = isAccountNewerThanThresholdInMs(
+      newContext.databaseAccount?.systemData?.createdAt,
+      ONE_WEEK_IN_MS
+    );
 
     // TODO: always show the first time for Try Cosmos DB accounts, regardless of account age
     if (!localStorage.getItem(newContext.databaseAccount.id) && isNewAccount) {
@@ -124,4 +128,3 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { userContext, updateUserContext };
-
