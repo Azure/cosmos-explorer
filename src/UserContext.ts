@@ -89,7 +89,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
     newContext.apiType = apiType(newContext.databaseAccount);
 
     const isNewAccount = isAccountNewerThanThresholdInMs(
-      newContext.databaseAccount?.systemData?.createdAt,
+      newContext.databaseAccount?.systemData?.createdAt || "",
       ONE_WEEK_IN_MS
     );
 
