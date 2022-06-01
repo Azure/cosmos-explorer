@@ -1193,6 +1193,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       subscriptionQuotaId: userContext.quotaId,
       dataExplorerArea: Constants.Areas.ContextualPane,
       useIndexingForSharedThroughput: this.state.enableIndexing,
+      isQuickstart: !!this.props.isQuickstart,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, telemetryData);
 
@@ -1254,6 +1255,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           collection.expandCollection();
           useDatabases.getState().updateDatabase(database);
           useTeachingBubble.getState().setIsSampleDBExpanded(true);
+          TelemetryProcessor.traceOpen(Action.LaunchUITour);
         }
       }
       this.setState({ isExecuting: false });

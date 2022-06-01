@@ -1,4 +1,6 @@
 import { useCarousel } from "hooks/useCarousel";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
@@ -77,6 +79,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
     if (!localStorage.getItem(newContext.databaseAccount.id)) {
       useCarousel.getState().setShouldOpen(true);
       localStorage.setItem(newContext.databaseAccount.id, "true");
+      traceOpen(Action.OpenCarousel);
     }
   }
   Object.assign(userContext, newContext);

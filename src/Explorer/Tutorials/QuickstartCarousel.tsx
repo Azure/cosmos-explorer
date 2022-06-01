@@ -2,6 +2,8 @@ import { DefaultButton, IconButton, Image, Modal, PrimaryButton, Stack, Text } f
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import Youtube from "react-youtube";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import Image1 from "../../../images/CarouselImage1.svg";
 import Image2 from "../../../images/CarouselImage2.svg";
@@ -34,7 +36,6 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
             <DefaultButton text="Previous" style={{ margin: "16px 8px 16px 0" }} onClick={() => setPage(page - 1)} />
           )}
           <PrimaryButton
-            id="carouselNextBtn"
             style={{ margin: "16px 16px 16px 0" }}
             text={page === 3 ? "Finish" : "Next"}
             onClick={() => {
@@ -49,6 +50,10 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
                   useCarousel.getState().setShowCoachMark(true);
                 }
                 setPage(page + 1);
+              }
+
+              if (page === 3) {
+                traceSuccess(Action.CompleteCarousel);
               }
             }}
           />
@@ -74,7 +79,7 @@ const getHeaderText = (page: number): string => {
 const getContent = (page: number): JSX.Element => {
   switch (page) {
     case 1:
-      return <Youtube videoId="Jvgh64rvdXU" />;
+      return <Youtube videoId="Jvgh64rvdXU" onPlay={() => traceSuccess(Action.PlayCarouselVideo)} />;
     case 2:
       return <Image style={{ width: 640 }} src={Image1} />;
     case 3:
