@@ -56,6 +56,8 @@ interface UserContext {
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
+const ONE_WEEK_IN_MS = 604800000;
+
 const features = extractFeatures();
 const { enableSDKoperations: useSDKOperations } = features;
 
@@ -71,10 +73,30 @@ const userContext: UserContext = {
   collectionCreationDefaults: CollectionCreationDefaults,
 };
 
+function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
+  let createdAtMs: number = Date.parse(createdAt);
+  if (isNaN(createdAtMs)) {
+    createdAtMs = 0;
+  }
+
+  const nowMs: number = Date.now();
+  const millisecsSinceAccountCreation = nowMs - createdAtMs;
+  return threshold > millisecsSinceAccountCreation;
+}
+
 function updateUserContext(newContext: Partial<UserContext>): void {
   if (newContext.databaseAccount) {
     newContext.apiType = apiType(newContext.databaseAccount);
-    if (!localStorage.getItem(newContext.databaseAccount.id)) {
+
+    const isNewAccount = isAccountNewerThanThresholdInMs(
+      newContext.databaseAccount?.systemData?.createdAt || "",
+      ONE_WEEK_IN_MS
+    );
+
+    if (
+      !localStorage.getItem(newContext.databaseAccount.id) &&
+      (userContext.isTryCosmosDBSubscription || isNewAccount)
+    ) {
       useCarousel.getState().setShouldOpen(true);
       localStorage.setItem(newContext.databaseAccount.id, "true");
     }

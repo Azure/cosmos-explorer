@@ -7,6 +7,11 @@ export interface DatabaseAccount {
   type: string;
   kind: string;
   properties: DatabaseAccountExtendedProperties;
+  systemData?: DatabaseAccountSystemData;
+}
+
+export interface DatabaseAccountSystemData {
+  createdAt: string;
 }
 
 export interface DatabaseAccountExtendedProperties {
