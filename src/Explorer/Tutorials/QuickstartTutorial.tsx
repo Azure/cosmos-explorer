@@ -2,9 +2,16 @@ import { Link, Stack, TeachingBubble, Text } from "@fluentui/react";
 import { useTabs } from "hooks/useTabs";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceCancel } from "Shared/Telemetry/TelemetryProcessor";
 
 export const QuickstartTutorial: React.FC = (): JSX.Element => {
   const { step, isSampleDBExpanded, isDocumentsTabOpened, sampleCollection, setStep } = useTeachingBubble();
+
+  const onDimissTeachingBubble = (): void => {
+    setStep(0);
+    traceCancel(Action.CancelUITour, { step });
+  };
 
   switch (step) {
     case 1:
@@ -20,7 +27,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
               setStep(2);
             },
           }}
-          onDismiss={() => setStep(0)}
+          onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 1 of 7"
         >
           Start viewing and working with your data by opening Items under Data
@@ -42,7 +49,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             text: "Previous",
             onClick: () => setStep(1),
           }}
-          onDismiss={() => setStep(0)}
+          onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 2 of 7"
         >
           View item here using the items window. Additionally you can also filter items to be reviewed with the filter
@@ -65,7 +72,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             text: "Previous",
             onClick: () => setStep(2),
           }}
-          onDismiss={() => setStep(0)}
+          onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 3 of 7"
         >
           Add new item by copy / pasting JSON; or uploading a JSON
@@ -85,7 +92,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             text: "Previous",
             onClick: () => setStep(3),
           }}
-          onDismiss={() => setStep(0)}
+          onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 4 of 7"
         >
           Query your data using either the filter function or new query.
@@ -105,7 +112,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             text: "Previous",
             onClick: () => setStep(4),
           }}
-          onDismiss={() => setStep(0)}
+          onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 5 of 7"
         >
           Change throughput provisioned to your container according to your needs
@@ -125,7 +132,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             text: "Previous",
             onClick: () => setStep(5),
           }}
-          onDismiss={() => setStep(0)}
+          onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 6 of 7"
         >
           Visualize your data, store queries in an interactive document
@@ -145,7 +152,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             text: "Previous",
             onClick: () => setStep(6),
           }}
-          onDismiss={() => setStep(0)}
+          onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 7 of 7"
         >
           <Stack>

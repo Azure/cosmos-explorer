@@ -5,6 +5,8 @@ import { Coachmark, DirectionalHint, Image, Link, Stack, TeachingBubbleContent, 
 import { useCarousel } from "hooks/useCarousel";
 import { useTabs } from "hooks/useTabs";
 import * as React from "react";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
 import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
@@ -201,10 +203,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
         showLinkIcon: userContext.apiType === "Mongo",
-        onClick: () =>
+        onClick: () => {
           userContext.apiType === "Mongo"
             ? window.open("http://aka.ms/mongodbquickstart", "_blank")
-            : this.container.onNewCollectionClicked({ isQuickstart: true }),
+            : this.container.onNewCollectionClicked({ isQuickstart: true });
+          traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
+        },
       };
       heroes.push(launchQuickstartBtn);
     } else if (useNotebook.getState().isPhoenixNotebooks) {
@@ -221,7 +225,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       iconSrc: ContainersIcon,
       title: `New ${getCollectionName()}`,
       description: "Create a new container for storage and throughput",
-      onClick: () => this.container.onNewCollectionClicked(),
+      onClick: () => {
+        this.container.onNewCollectionClicked();
+        traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+      },
     };
     heroes.push(newContainerBtn);
 
@@ -397,29 +404,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     }
   }
 
-  private getCommonTasksItems(): JSX.Element {
-    const commonTaskItems = this.createCommonTaskItems();
-    return (
-      <ul>
-        {commonTaskItems.map((item) => (
-          <li
-            className="focusable"
-            key={`${item.title}${item.description}`}
-            onClick={item.onClick}
-            onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-            tabIndex={0}
-            role="button"
-          >
-            <img src={item.iconSrc} alt="" />
-            <span className="oneLineContent" title={item.info}>
-              {item.title}
-            </span>
-          </li>
-        ))}
-      </ul>
-    );
-  }
-
   private top3Items(): JSX.Element {
     let items: { link: string; title: string; description: string }[];
     switch (userContext.apiType) {
@@ -524,7 +508,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         {items.map((item, i) => (
           <Stack key={`top${i}`} style={{ marginBottom: 26 }}>
             <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+              <Link
+                onClick={() => traceOpen(Action.Top3ItemsClicked, { item: i + 1, apiType: userContext.apiType })}
+                href={item.link}
+                target="_blank"
+                style={{ marginRight: 5 }}
+              >
                 {item.title}
               </Link>
               <Image src={LinkIcon} />
@@ -665,7 +654,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         {items.map((item, i) => (
           <Stack key={`learningResource${i}`} style={{ marginBottom: 26 }}>
             <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
-              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+              <Link
+                onClick={() =>
+                  traceOpen(Action.LearningResourcesClicked, { item: i + 1, apiType: userContext.apiType })
+                }
+                href={item.link}
+                target="_blank"
+                style={{ marginRight: 5 }}
+              >
                 {item.title}
               </Link>
               <Image src={LinkIcon} />
@@ -674,35 +670,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           </Stack>
         ))}
       </Stack>
-    );
-  }
-
-  private getTipItems(): JSX.Element {
-    const tipsItems = this.createTipsItems();
-
-    return (
-      <ul>
-        {tipsItems.map((item) => (
-          <li
-            className="tipContainer focusable"
-            key={`${item.title}${item.description}`}
-            onClick={item.onClick}
-            onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-            tabIndex={0}
-            role="link"
-          >
-            <div className="title" title={item.info}>
-              {item.title}
-            </div>
-            <div className="description">{item.description}</div>
-          </li>
-        ))}
-        <li>
-          <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
-            {SplashScreen.seeMoreItemTitle}
-          </a>
-        </li>
-      </ul>
     );
   }
 }
