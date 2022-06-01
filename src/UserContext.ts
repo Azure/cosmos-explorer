@@ -93,8 +93,10 @@ function updateUserContext(newContext: Partial<UserContext>): void {
       ONE_WEEK_IN_MS
     );
 
-    // TODO: always show the first time for Try Cosmos DB accounts, regardless of account age
-    if (!localStorage.getItem(newContext.databaseAccount.id) && isNewAccount) {
+    if (
+      !localStorage.getItem(newContext.databaseAccount.id) &&
+      (userContext.isTryCosmosDBSubscription || isNewAccount)
+    ) {
       useCarousel.getState().setShouldOpen(true);
       localStorage.setItem(newContext.databaseAccount.id, "true");
     }
