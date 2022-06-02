@@ -6,9 +6,11 @@ import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
 import {
   FetchPricesResponse,
-  PriceMapAndCurrencyCode, RegionItem, RegionsResponse,
+  PriceMapAndCurrencyCode,
+  RegionItem,
+  RegionsResponse,
   SqlxServiceResource,
-  UpdateDedicatedGatewayRequestParameters
+  UpdateDedicatedGatewayRequestParameters,
 } from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";
@@ -157,8 +159,7 @@ export const getRegions = async (): Promise<Array<RegionItem>> => {
 
     selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
     return response.result.properties.locations;
-  }
-  catch (err) {
+  } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
     return new Array<RegionItem>();

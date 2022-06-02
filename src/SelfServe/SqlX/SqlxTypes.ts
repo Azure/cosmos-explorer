@@ -48,12 +48,12 @@ export type PriceItem = {
 };
 
 export type RegionsResponse = {
-  properties: RegionsProperties
+  properties: RegionsProperties;
 };
 
 export type RegionsProperties = {
   locations: Array<RegionItem>;
-}
+};
 
 export type RegionItem = {
   locationName: string;

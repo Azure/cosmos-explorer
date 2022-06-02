@@ -4,7 +4,7 @@ import {
   selfServeTrace,
   selfServeTraceFailure,
   selfServeTraceStart,
-  selfServeTraceSuccess
+  selfServeTraceSuccess,
 } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
@@ -16,7 +16,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -25,7 +25,7 @@ import {
   getPriceMapAndCurrencyCode,
   getRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -223,20 +223,17 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
   try {
     let costPerHour = 0;
     let costBreakdown = "";
-    let hasAzRegion = false;
     for (const regionItem of regions) {
       const incrementalCost = priceMap.get(regionItem.locationName).get(skuName.replace("Cosmos.", ""));
       if (incrementalCost === undefined) {
         throw new Error(`${regionItem.locationName} not found in price map.`);
-      }
-      else if (incrementalCost === 0) {
+      } else if (incrementalCost === 0) {
         throw new Error(`${regionItem.locationName} cost per hour = 0`);
       }
 
       let regionalInstanceCount = instanceCount;
       if (regionItem.isZoneRedundant) {
-        regionalInstanceCount = Math.ceil(instanceCount * 1.5)
-        hasAzRegion = true;
+        regionalInstanceCount = Math.ceil(instanceCount * 1.5);
       }
 
       const regionalCostPerHour = incrementalCost * regionalInstanceCount;
