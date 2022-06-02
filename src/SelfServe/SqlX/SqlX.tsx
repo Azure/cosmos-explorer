@@ -240,8 +240,8 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
       }
 
       const regionalCostPerHour = incrementalCost * regionalInstanceCount;
-      costBreakdown += `\\
-      ${regionItem.locationName} ${regionItem.isZoneRedundant ? "(AZ)" : ""}\ 
+      costBreakdown += `
+      ${regionItem.locationName} ${regionItem.isZoneRedundant ? "(AZ)" : ""}
       ${regionalCostPerHour} ${currencyCode} (${regionalInstanceCount} instances * ${incrementalCost} ${currencyCode})\
       `;
 
@@ -260,7 +260,8 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
     selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
     return {
-      textTKey: `${costPerHour} ${currencyCode} ${costBreakdown}`,
+      textTKey: `${costPerHour} ${currencyCode}
+      ${costBreakdown}`,
       type: DescriptionType.Text,
     };
   } catch (err) {
