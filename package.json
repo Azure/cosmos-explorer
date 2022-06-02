@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@azure/arm-cosmosdb": "9.1.0",
-    "@azure/cosmos": "3.16.0",
+    "@azure/cosmos": "3.16.1",
     "@azure/cosmos-language-service": "0.0.5",
     "@azure/identity": "1.2.1",
     "@azure/ms-rest-nodeauth": "3.0.7",
@@ -191,7 +191,7 @@
     "start": "webpack serve --mode development",
     "dev": "echo \"WARNING: npm run dev has been deprecated\" && npm run build",
     "build:dataExplorer:ci": "npm run build:ci",
-    "build": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers",
+    "build": "npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers",
     "build:ci": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:fast",
     "pack:prod": "webpack  --mode production",
     "pack:fast": "webpack  --mode development --progress",
