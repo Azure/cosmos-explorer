@@ -50,8 +50,6 @@ export interface SplashScreenProps {
 }
 
 export class SplashScreen extends React.Component<SplashScreenProps> {
-  private static readonly seeMoreItemTitle: string = "See more Cosmos DB documentation";
-  private static readonly seeMoreItemUrl: string = "https://aka.ms/cosmosdbdocument";
   private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
   private static readonly throughputEstimatorUrl = "https://cosmos.azure.com/capacitycalculator";
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
