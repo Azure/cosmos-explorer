@@ -298,7 +298,7 @@ export default class Explorer {
         db1.id().localeCompare(db2.id())
       );
       useDatabases.setState({ databases: updatedDatabases });
-      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, currentDatabases);
+      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
@@ -369,9 +369,6 @@ export default class Explorer {
         });
         useNotebook.getState().setIsAllocating(true);
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        if (connectionInfo.status !== HttpStatusCodes.OK) {
-          throw new Error(`Received status code: ${connectionInfo?.status}`);
-        }
         if (!connectionInfo?.data?.notebookServerUrl) {
           throw new Error(`NotebookServerUrl is invalid!`);
         }
@@ -382,6 +379,7 @@ export default class Explorer {
       } catch (error) {
         TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
+          status: error.status,
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         });
@@ -1135,7 +1133,6 @@ export default class Explorer {
     options: {
       databaseId?: string;
       isQuickstart?: boolean;
-      showTeachingBubble?: boolean;
     } = {}
   ): Promise<void> {
     if (userContext.apiType === "Cassandra") {

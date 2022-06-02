@@ -909,6 +909,7 @@ export default class DocumentsTab extends TabsBase {
   public static _createUploadButton(container: Explorer): CommandButtonComponentProps {
     const label = "Upload Item";
     return {
+      id: "uploadItemBtn",
       iconSrc: UploadIcon,
       iconAlt: label,
       onCommandClick: () => {

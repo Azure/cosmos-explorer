@@ -97,6 +97,7 @@ export default class Collection implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
+  public isSampleCollection: boolean;
   private isOfferRead: boolean;
 
   constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
@@ -133,7 +134,7 @@ export default class Collection implements ViewModels.Collection {
         if (partitionKeyProperty.indexOf("$v") > -1) {
           // From $v.shard.$v.key.$v > shard.key
           partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
-          this.partitionKeyPropertyHeaders[i] = partitionKeyProperty;
+          this.partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
         }
       }
 
@@ -216,6 +217,7 @@ export default class Collection implements ViewModels.Collection {
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);
     this.isUserDefinedFunctionsExpanded = ko.observable<boolean>(false);
     this.isTriggersExpanded = ko.observable<boolean>(false);
+    this.isSampleCollection = false;
     this.isOfferRead = false;
   }
 

@@ -1,3 +1,6 @@
+import { CollectionTabKind } from "Contracts/ViewModels";
+import { ConnectTab } from "Explorer/Tabs/ConnectTab";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
@@ -10,17 +13,21 @@ type Tab = TabsBase | (TabsBase & { render: () => JSX.Element });
 
 export const Tabs = (): JSX.Element => {
   const { openedTabs, activeTab } = useTabs();
+  const isConnectTabOpen = useTabs((state) => state.isConnectTabOpen);
+  const isConnectTabActive = useTabs((state) => state.isConnectTabActive);
   return (
     <div className="tabsManagerContainer">
       <div id="content" className="flexContainer hideOverflows">
         <div className="nav-tabs-margin">
           <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
+            {isConnectTabOpen && <TabNav key="connect" tab={undefined} active={isConnectTabActive} />}
             {openedTabs.map((tab) => (
               <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
             ))}
           </ul>
         </div>
         <div className="tabPanesContainer">
+          {isConnectTabActive && <ConnectTab />}
           {openedTabs.map((tab) => (
             <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
           ))}
@@ -33,6 +40,7 @@ export const Tabs = (): JSX.Element => {
 function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
   const [hovering, setHovering] = useState(false);
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
+  const tabId = tab ? tab.tabId : "connect";
 
   useEffect(() => {
     if (active && focusTab.current) {
@@ -43,27 +51,27 @@ function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
     <li
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      onClick={() => tab.onTabClick()}
-      onKeyPress={({ nativeEvent: e }) => tab.onKeyPressActivate(undefined, e)}
+      onClick={() => (tab ? tab.onTabClick() : useTabs.getState().activateConnectTab())}
+      onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressActivate(undefined, e) : onKeyPressConnectTab(e))}
       className={active ? "active tabList" : "tabList"}
-      title={useObservable(tab.tabPath)}
+      title={useObservable(tab?.tabPath || ko.observable(""))}
       aria-selected={active}
       aria-expanded={active}
-      aria-controls={tab.tabId}
+      aria-controls={tabId}
       tabIndex={0}
       role="tab"
       ref={focusTab}
     >
       <span className="tabNavContentContainer">
-        <a data-toggle="tab" href={"#" + tab.tabId} tabIndex={-1}>
+        <a data-toggle="tab" href={"#" + tabId} tabIndex={-1}>
           <div className="tab_Content">
             <span className="statusIconContainer">
-              {useObservable(tab.isExecutionError) && <ErrorIcon tab={tab} active={active} />}
-              {useObservable(tab.isExecuting) && (
+              {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
+              {useObservable(tab?.isExecuting || ko.observable(false)) && (
                 <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
               )}
             </span>
-            <span className="tabNavText">{useObservable(tab.tabTitle)}</span>
+            <span className="tabNavText">{useObservable(tab?.tabTitle || ko.observable("Connect"))}</span>
             <span className="tabIconSection">
               <CloseButton tab={tab} active={active} hovering={hovering} />
             </span>
@@ -81,7 +89,7 @@ const CloseButton = ({ tab, active, hovering }: { tab: Tab; active: boolean; hov
     role="button"
     aria-label="Close Tab"
     className="cancelButton"
-    onClick={() => tab.onCloseTabButtonClick()}
+    onClick={() => (tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeConnectTab())}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
   >
@@ -113,6 +121,10 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
   };
 
   useEffect((): (() => void) | void => {
+    if (tab.tabKind === CollectionTabKind.Documents && tab.collection?.isSampleCollection) {
+      useTeachingBubble.getState().setIsDocumentsTabOpened(true);
+    }
+
     const { current: element } = ref;
     if (element) {
       ko.applyBindings(tab, element);
@@ -123,9 +135,18 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
     }
   }, [ref, tab]);
 
-  if ("render" in tab) {
-    return <div {...attrs}>{tab.render()}</div>;
+  if (tab) {
+    if ("render" in tab) {
+      return <div {...attrs}>{tab.render()}</div>;
+    }
   }
 
   return <div {...attrs} ref={ref} data-bind="html:html" />;
 }
+
+const onKeyPressConnectTab = (e: KeyboardEvent): void => {
+  if (e.key === "Enter" || e.key === "Space") {
+    useTabs.getState().activateConnectTab();
+    e.stopPropagation();
+  }
+};
