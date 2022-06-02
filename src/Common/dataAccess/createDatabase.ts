@@ -1,5 +1,4 @@
-import { DatabaseResponse } from "@azure/cosmos";
-import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
+import { DatabaseRequest, DatabaseResponse } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { useDatabases } from "../../Explorer/useDatabases";
