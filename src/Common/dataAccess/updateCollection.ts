@@ -1,5 +1,4 @@
-import { ContainerDefinition } from "@azure/cosmos";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { ContainerDefinition, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
