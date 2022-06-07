@@ -9,7 +9,7 @@ import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
+import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
@@ -357,6 +357,7 @@ export default class Explorer {
     ) {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        poolId: PoolIdType.DefaultPoolId,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
