@@ -48,10 +48,14 @@ export type PriceItem = {
 };
 
 export type RegionsResponse = {
+  properties: RegionsProperties;
+};
+
+export type RegionsProperties = {
   locations: Array<RegionItem>;
-  location: string;
 };
 
 export type RegionItem = {
   locationName: string;
+  isZoneRedundant: boolean;
 };
