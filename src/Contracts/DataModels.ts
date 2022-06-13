@@ -469,6 +469,14 @@ export interface IMaxUsersPerDbAccountExceeded extends IValidationError {
 }
 
 export interface IPhoenixConnectionInfoResult {
+  /**
+   * @deprecated This attribute will be removed in a future change, use authToken
+   */
+  readonly notebookAuthToken?: string;
+  /**
+   * @deprecated This attribute will be removed in a future change, use phoenixServiceUrl
+   */
+  readonly notebookServerUrl?: string;
   readonly authToken?: string;
   readonly phoenixServiceUrl?: string;
   readonly forwardingId?: string;
