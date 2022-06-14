@@ -303,14 +303,13 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   getPhoenixStatus: async () => {
     if (get().isPhoenixNotebooks === undefined || get().isPhoenixFeatures === undefined) {
-      let isPhoenix = false;
-      if (userContext.features.phoenixNotebooks || userContext.features.phoenixFeatures) {
-        const phoenixClient = new PhoenixClient();
-        isPhoenix = isPublicInternetAccessAllowed() && (await phoenixClient.isDbAcountWhitelisted());
-      }
+      const phoenixClient = new PhoenixClient();
+      const isDbAcountAllowed = await phoenixClient.isDbAcountWhitelisted();
 
-      const isPhoenixNotebooks = userContext.features.phoenixNotebooks && isPhoenix;
-      const isPhoenixFeatures = userContext.features.phoenixFeatures && isPhoenix;
+      const isPhoenixNotebooks =
+        isPublicInternetAccessAllowed() && (userContext.features.phoenixNotebooks || isDbAcountAllowed);
+      const isPhoenixFeatures =
+        isPublicInternetAccessAllowed() && (userContext.features.phoenixFeatures || isDbAcountAllowed);
 
       set({ isPhoenixNotebooks: isPhoenixNotebooks });
       set({ isPhoenixFeatures: isPhoenixFeatures });
