@@ -17,6 +17,7 @@ import {
   ContainerConnectionInfo,
   ContainerInfo,
   IContainerData,
+  IDbAccountAllow,
   IMaxAllocationTimeExceeded,
   IMaxDbAccountsPerUserExceeded,
   IMaxUsersPerDbAccountExceeded,
@@ -161,15 +162,17 @@ export class PhoenixClient {
     }
   }
 
-  public async isDbAcountWhitelisted(): Promise<boolean> {
+  public async getDbAccountAllowedStatus(): Promise<IDbAccountAllow> {
     const startKey = TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
       dataExplorerArea: Areas.Notebook,
     });
+    let responseJson;
     try {
       const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
       });
+      responseJson = await response?.json();
       if (response.status !== HttpStatusCodes.OK) {
         throw new Error(`Received status code: ${response?.status}`);
       }
@@ -180,7 +183,11 @@ export class PhoenixClient {
         },
         startKey
       );
-      return response.status === HttpStatusCodes.OK;
+      return {
+        status: response.status,
+        message: responseJson?.message,
+        type: responseJson?.type,
+      };
     } catch (error) {
       TelemetryProcessor.traceFailure(
         Action.PhoenixDBAccountAllowed,
@@ -192,7 +199,11 @@ export class PhoenixClient {
         startKey
       );
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
-      return false;
+      return {
+        status: HttpStatusCodes.Forbidden,
+        message: responseJson?.message,
+        type: responseJson?.type,
+      };
     }
   }
 

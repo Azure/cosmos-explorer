@@ -4,12 +4,12 @@ import { PhoenixClient } from "Phoenix/PhoenixClient";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
-import { ConnectionStatusType } from "../../Common/Constants";
+import { ConnectionStatusType, HttpStatusCodes } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { ContainerConnectionInfo, ContainerInfo } from "../../Contracts/DataModels";
+import { ContainerConnectionInfo, ContainerInfo, PhoenixErrorType } from "../../Contracts/DataModels";
 import { useTabs } from "../../hooks/useTabs";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -303,15 +303,23 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   getPhoenixStatus: async () => {
     if (get().isPhoenixNotebooks === undefined || get().isPhoenixFeatures === undefined) {
-      let isPhoenix = false;
-      if (userContext.features.phoenixNotebooks || userContext.features.phoenixFeatures) {
-        const phoenixClient = new PhoenixClient();
-        isPhoenix = isPublicInternetAccessAllowed() && (await phoenixClient.isDbAcountWhitelisted());
+      let isPhoenixNotebooks = false;
+      let isPhoenixFeatures = false;
+
+      const isPublicInternetAllowed = isPublicInternetAccessAllowed();
+      const phoenixClient = new PhoenixClient();
+      const dbAccountAllowedInfo = await phoenixClient.getDbAccountAllowedStatus();
+
+      if (dbAccountAllowedInfo.status === HttpStatusCodes.OK) {
+        if (dbAccountAllowedInfo?.type === PhoenixErrorType.PhoenixFlightFallback) {
+          isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks;
+          isPhoenixFeatures = isPublicInternetAllowed && userContext.features.phoenixFeatures;
+        } else {
+          isPhoenixNotebooks = isPhoenixFeatures = isPublicInternetAllowed;
+        }
+      } else {
+        isPhoenixNotebooks = isPhoenixFeatures = false;
       }
-
-      const isPhoenixNotebooks = userContext.features.phoenixNotebooks && isPhoenix;
-      const isPhoenixFeatures = userContext.features.phoenixFeatures && isPhoenix;
-
       set({ isPhoenixNotebooks: isPhoenixNotebooks });
       set({ isPhoenixFeatures: isPhoenixFeatures });
     }
