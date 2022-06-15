@@ -450,6 +450,12 @@ export interface IContainerData {
   forwardingId: string;
 }
 
+export interface IDbAccountAllow {
+  status: number;
+  message?: string;
+  type?: string;
+}
+
 export interface IResponse<T> {
   status: number;
   data: T;
@@ -563,4 +569,5 @@ export enum PhoenixErrorType {
   RegionNotServicable = "RegionNotServicable",
   SubscriptionNotAllowed = "SubscriptionNotAllowed",
   UnknownError = "UnknownError",
+  PhoenixFlightFallback = "PhoenixFlightFallback",
 }
