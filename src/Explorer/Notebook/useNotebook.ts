@@ -311,7 +311,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       const dbAccountAllowedInfo = await phoenixClient.getDbAccountAllowedStatus();
 
       if (dbAccountAllowedInfo.status === HttpStatusCodes.OK) {
-        if (dbAccountAllowedInfo?.type && dbAccountAllowedInfo.type === PhoenixErrorType.PhoenixFlightFallback) {
+        if (dbAccountAllowedInfo?.type === PhoenixErrorType.PhoenixFlightFallback) {
           isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks;
           isPhoenixFeatures = isPublicInternetAllowed && userContext.features.phoenixFeatures;
         } else {
