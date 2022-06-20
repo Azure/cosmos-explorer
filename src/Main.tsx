@@ -1,6 +1,7 @@
 // CSS Dependencies
 import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
+import { ChatButtonAction } from "Explorer/Controls/ChatButton/ChatButtonComponent";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
@@ -14,6 +15,7 @@ import "../externals/jquery.typeahead.min.js";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import "../images/favicon.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
+import "../less/chat.less";
 import "../less/documentDB.less";
 import "../less/forms.less";
 import "../less/infobox.less";
@@ -104,6 +106,9 @@ const App: React.FunctionComponent = () => {
           <Tabs />
         </div>
         {/* Collections Tree and Tabs - End */}
+        <div className="chat">
+          <ChatButtonAction container={explorer} />
+        </div>
         <div
           className="dataExplorerErrorConsoleContainer"
           role="contentinfo"
@@ -112,6 +117,7 @@ const App: React.FunctionComponent = () => {
         >
           <NotificationConsole />
         </div>
+
       </div>
       <SidePanel />
       <Dialog />
