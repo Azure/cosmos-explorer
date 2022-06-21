@@ -104,7 +104,7 @@ export class PhoenixClient {
           const containerStatus = await response.json();
           return {
             durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
-            notebookServerInfo: containerStatus?.notebookServerInfo,
+            phoenixServerInfo: containerStatus?.phoenixServerInfo,
             status: ContainerStatusType.Active,
           };
         } else if (response.status === HttpStatusCodes.NotFound) {
@@ -148,7 +148,7 @@ export class PhoenixClient {
       useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       return {
         durationLeftInMinutes: undefined,
-        notebookServerInfo: undefined,
+        phoenixServerInfo: undefined,
         status: ContainerStatusType.Disconnected,
       };
     }

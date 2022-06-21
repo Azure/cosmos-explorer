@@ -370,8 +370,8 @@ export default class Explorer {
         });
         useNotebook.getState().setIsAllocating(true);
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        if (!connectionInfo?.data?.notebookServerUrl) {
-          throw new Error(`NotebookServerUrl is invalid!`);
+        if (!connectionInfo?.data?.phoenixServiceUrl) {
+          throw new Error(`PhoenixServiceUrl is invalid!`);
         }
         await this.setNotebookInfo(connectionInfo, connectionStatus);
         TelemetryProcessor.traceSuccess(Action.PhoenixConnection, {
@@ -422,8 +422,8 @@ export default class Explorer {
       notebookServerEndpoint:
         (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
           userContext.features.notebookServerUrl) ||
-        connectionInfo.data.notebookServerUrl,
-      authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
+        connectionInfo.data.phoenixServiceUrl,
+      authToken: userContext.features.notebookServerToken || connectionInfo.data.authToken,
       forwardingId: connectionInfo.data.forwardingId,
     });
     this.notebookManager?.notebookClient
@@ -498,8 +498,8 @@ export default class Explorer {
       if (connectionInfo?.status !== HttpStatusCodes.OK) {
         throw new Error(`Reset Workspace: Received status code- ${connectionInfo?.status}`);
       }
-      if (!connectionInfo?.data?.notebookServerUrl) {
-        throw new Error(`Reset Workspace: NotebookServerUrl is invalid!`);
+      if (!connectionInfo?.data?.phoenixServiceUrl) {
+        throw new Error(`Reset Workspace: PhoenixServiceUrl is invalid!`);
       }
       if (useNotebook.getState().isPhoenixNotebooks) {
         await this.setNotebookInfo(connectionInfo, connectionStatus);
