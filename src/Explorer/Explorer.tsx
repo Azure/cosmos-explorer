@@ -370,9 +370,6 @@ export default class Explorer {
         });
         useNotebook.getState().setIsAllocating(true);
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        if (connectionInfo.status !== HttpStatusCodes.OK) {
-          throw new Error(`Received status code: ${connectionInfo?.status}`);
-        }
         if (!connectionInfo?.data?.phoenixServiceUrl) {
           throw new Error(`PhoenixServiceUrl is invalid!`);
         }
