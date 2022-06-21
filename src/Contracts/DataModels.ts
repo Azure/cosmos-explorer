@@ -444,6 +444,7 @@ export interface ContainerInfo {
 
 export interface IProvisionData {
   cosmosEndpoint: string;
+  poolId: string;
 }
 
 export interface IContainerData {
