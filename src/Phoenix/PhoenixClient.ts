@@ -104,9 +104,7 @@ export class PhoenixClient {
           const containerStatus = await response.json();
           return {
             durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
-            phoenixServerInfo: containerStatus?.phoenixServerInfo
-              ? containerStatus?.phoenixServerInfo
-              : containerStatus?.notebookServerInfo,
+            phoenixServerInfo: containerStatus?.phoenixServerInfo,
             status: ContainerStatusType.Active,
           };
         } else if (response.status === HttpStatusCodes.NotFound) {
