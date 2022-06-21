@@ -7,6 +7,7 @@ import SqlX from "./SqlX";
 import {
   FetchPricesResponse,
   PriceMapAndCurrencyCode,
+  RegionItem,
   RegionsResponse,
   SqlxServiceResource,
   UpdateDedicatedGatewayRequestParameters,
@@ -139,7 +140,7 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
 };
 
-export const getRegions = async (): Promise<Array<string>> => {
+export const getRegions = async (): Promise<Array<RegionItem>> => {
   const telemetryData = {
     feature: "Calculate approximate cost",
     function: "getRegions",
@@ -149,8 +150,6 @@ export const getRegions = async (): Promise<Array<string>> => {
   const getRegionsTimestamp = selfServeTraceStart(telemetryData);
 
   try {
-    const regions = new Array<string>();
-
     const response = await armRequestWithoutPolling<RegionsResponse>({
       host: configContext.ARM_ENDPOINT,
       path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
@@ -158,20 +157,12 @@ export const getRegions = async (): Promise<Array<string>> => {
       apiVersion: "2021-04-01-preview",
     });
 
-    if (response.result.location !== undefined) {
-      regions.push(response.result.location.split(" ").join("").toLowerCase());
-    } else {
-      for (const location of response.result.locations) {
-        regions.push(location.locationName.split(" ").join("").toLowerCase());
-      }
-    }
-
     selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
-    return regions;
+    return response.result.properties.locations;
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
-    return new Array<string>();
+    return new Array<RegionItem>();
   }
 };
 
@@ -179,7 +170,7 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
   return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
 };
 
-export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promise<PriceMapAndCurrencyCode> => {
+export const getPriceMapAndCurrencyCode = async (regions: Array<RegionItem>): Promise<PriceMapAndCurrencyCode> => {
   const telemetryData = {
     feature: "Calculate approximate cost",
     function: "getPriceMapAndCurrencyCode",
@@ -191,7 +182,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
   try {
     const priceMap = new Map<string, Map<string, number>>();
     let currencyCode;
-    for (const region of regions) {
+    for (const regionItem of regions) {
       const regionPriceMap = new Map<string, number>();
 
       const response = await armRequestWithoutPolling<FetchPricesResponse>({
@@ -202,7 +193,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
         queryParams: {
           filter:
             "armRegionName eq '" +
-            region +
+            regionItem.locationName.split(" ").join("").toLowerCase() +
             "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
         },
       });
@@ -215,7 +206,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
         }
         regionPriceMap.set(item.skuName, item.retailPrice);
       }
-      priceMap.set(region, regionPriceMap);
+      priceMap.set(regionItem.locationName, regionPriceMap);
     }
 
     selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);

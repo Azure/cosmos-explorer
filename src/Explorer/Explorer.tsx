@@ -9,7 +9,7 @@ import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
+import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
@@ -298,7 +298,7 @@ export default class Explorer {
         db1.id().localeCompare(db2.id())
       );
       useDatabases.setState({ databases: updatedDatabases });
-      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, currentDatabases);
+      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
@@ -357,6 +357,7 @@ export default class Explorer {
     ) {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        poolId: PoolIdType.DefaultPoolId,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
@@ -382,6 +383,7 @@ export default class Explorer {
       } catch (error) {
         TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
+          status: error.status,
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         });
@@ -1136,7 +1138,12 @@ export default class Explorer {
     }
   }
 
-  public async onNewCollectionClicked(databaseId?: string): Promise<void> {
+  public async onNewCollectionClicked(
+    options: {
+      databaseId?: string;
+      isQuickstart?: boolean;
+    } = {}
+  ): Promise<void> {
     if (userContext.apiType === "Cassandra") {
       useSidePanel
         .getState()
@@ -1151,7 +1158,7 @@ export default class Explorer {
         : await useDatabases.getState().loadDatabaseOffers();
       useSidePanel
         .getState()
-        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
+        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} {...options} />);
     }
   }
 

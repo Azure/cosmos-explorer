@@ -8,8 +8,10 @@ import {
   IconButton,
   IDropdownOption,
   Link,
+  ProgressIndicator,
   Separator,
   Stack,
+  TeachingBubble,
   Text,
   TooltipHost,
 } from "@fluentui/react";
@@ -20,6 +22,7 @@ import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { SubscriptionType } from "Contracts/SubscriptionType";
 import { useSidePanel } from "hooks/useSidePanel";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -30,6 +33,7 @@ import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils"
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
+import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
 import { PanelFooterComponent } from "./PanelFooterComponent";
@@ -39,6 +43,7 @@ import { PanelLoadingScreen } from "./PanelLoadingScreen";
 export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
+  isQuickstart?: boolean;
 }
 
 const SharedDatabaseDefault: DataModels.IndexingPolicy = {
@@ -93,6 +98,7 @@ export interface AddCollectionPanelState {
   showErrorDetails: boolean;
   isExecuting: boolean;
   isThroughputCapExceeded: boolean;
+  teachingBubbleStep: number;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -107,11 +113,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     this.state = {
       createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
-      newDatabaseId: "",
+      newDatabaseId: props.isQuickstart ? this.getSampleDBName() : "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
       selectedDatabaseId:
         userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : this.props.databaseId,
-      collectionId: "",
+      collectionId: props.isQuickstart ? `Sample${getCollectionName()}` : "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: this.getPartitionKey(),
@@ -124,7 +130,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       showErrorDetails: false,
       isExecuting: false,
       isThroughputCapExceeded: false,
+      teachingBubbleStep: 0,
     };
+  }
+
+  componentDidMount(): void {
+    if (this.state.teachingBubbleStep === 0 && this.props.isQuickstart) {
+      this.setState({ teachingBubbleStep: 1 });
+    }
   }
 
   render(): JSX.Element {
@@ -148,6 +161,89 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             link={Constants.Urls.freeTierInformation}
             linkText="Learn more"
           />
+        )}
+
+        {this.state.teachingBubbleStep === 1 && (
+          <TeachingBubble
+            headline="Create sample database"
+            target={"#newDatabaseId"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            secondaryButtonProps={{ text: "Cancel", onClick: () => this.setState({ teachingBubbleStep: 0 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 1 of 4"
+          >
+            <Stack>
+              <Text style={{ color: "white" }}>
+                Database is the parent of a container. You can create a new database or use an existing one. In this
+                tutorial we are creating a new database named SampleDB.
+              </Text>
+              <Link
+                style={{ color: "white", fontWeight: 600 }}
+                target="_blank"
+                href="https://aka.ms/TeachingbubbleResources"
+              >
+                Learn more about resources.
+              </Link>
+            </Stack>
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 2 && (
+          <TeachingBubble
+            headline="Setting throughput"
+            target={"#autoscaleRUValueField"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 3 }) }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 1 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 2 of 4"
+          >
+            <Stack>
+              <Text style={{ color: "white" }}>
+                Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of
+                throughput based on the max RU/s set (Request Units).
+              </Text>
+              <Link style={{ color: "white", fontWeight: 600 }} target="_blank" href="https://aka.ms/teachingbubbleRU">
+                Learn more about RU/s.
+              </Link>
+            </Stack>
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 3 && (
+          <TeachingBubble
+            headline="Naming container"
+            target={"#collectionId"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{ text: "Next", onClick: () => this.setState({ teachingBubbleStep: 4 }) }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 3 of 4"
+          >
+            Name your container
+          </TeachingBubble>
+        )}
+
+        {this.state.teachingBubbleStep === 4 && (
+          <TeachingBubble
+            headline="Setting partition key"
+            target={"#addCollection-partitionKeyValue"}
+            calloutProps={{ gapSpace: 16 }}
+            primaryButtonProps={{
+              text: "Create container",
+              onClick: () => {
+                this.setState({ teachingBubbleStep: 5 });
+                this.submit();
+              },
+            }}
+            secondaryButtonProps={{ text: "Previous", onClick: () => this.setState({ teachingBubbleStep: 2 }) }}
+            onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+            footerContent="Step 4 of 4"
+          >
+            Last step - you will need to define a partition key for your collection. /address was chosen for this
+            particular example. A good partition key should have a wide range of possible value
+          </TeachingBubble>
         )}
 
         <div className="panelMainContent">
@@ -688,7 +784,35 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
 
-        {this.state.isExecuting && <PanelLoadingScreen />}
+        {this.state.isExecuting && (
+          <div>
+            <PanelLoadingScreen />
+            {this.state.teachingBubbleStep === 5 && (
+              <TeachingBubble
+                headline="Creating sample container"
+                target={"#loadingScreen"}
+                onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+                styles={{ footer: { width: "100%" } }}
+              >
+                A sample container is now being created and we are adding sample data for you. It should take about 1
+                minute.
+                <br />
+                <br />
+                Once the sample container is created, review your sample dataset and follow next steps
+                <br />
+                <br />
+                <ProgressIndicator
+                  styles={{
+                    itemName: { color: "white" },
+                    progressTrack: { backgroundColor: "#A6A6A6" },
+                    progressBar: { background: "white" },
+                  }}
+                  label="Adding sample data set"
+                />
+              </TeachingBubble>
+            )}
+          </div>
+        )}
       </form>
     );
   }
@@ -832,6 +956,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     if (userContext.features.partitionKeyDefault2) {
       return userContext.apiType === "SQL" ? "/pk" : "pk";
     }
+    if (this.props.isQuickstart) {
+      return userContext.apiType === "SQL" ? "/address" : "address";
+    }
     return "";
   }
 
@@ -899,8 +1026,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private isSynapseLinkEnabled(): boolean {
-    const { properties } = userContext.databaseAccount;
+    if (!userContext.databaseAccount) {
+      return false;
+    }
 
+    const { properties } = userContext.databaseAccount;
     if (!properties) {
       return false;
     }
@@ -996,8 +1126,25 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     document.getElementById("collapsibleSectionContent")?.scrollIntoView();
   }
 
-  private async submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
+  private getSampleDBName(): string {
+    const existingSampleDBs = useDatabases
+      .getState()
+      .databases?.filter((database) => database.id().startsWith("SampleDB"));
+    const existingSampleDBNames = existingSampleDBs?.map((database) => database.id());
+    if (!existingSampleDBNames || existingSampleDBNames.length === 0) {
+      return "SampleDB";
+    }
+
+    let i = 1;
+    while (existingSampleDBNames.indexOf(`SampleDB${i}`) !== -1) {
+      i++;
+    }
+
+    return `SampleDB${i}`;
+  }
+
+  private async submit(event?: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event?.preventDefault();
 
     if (!this.validateInputs()) {
       return;
@@ -1046,6 +1193,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       subscriptionQuotaId: userContext.quotaId,
       dataExplorerArea: Constants.Areas.ContextualPane,
       useIndexingForSharedThroughput: this.state.enableIndexing,
+      isQuickstart: !!this.props.isQuickstart,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, telemetryData);
 
@@ -1090,8 +1238,27 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     try {
       await createCollection(createCollectionParams);
+      await this.props.explorer.refreshAllDatabases();
+      if (this.props.isQuickstart) {
+        const database = useDatabases.getState().findDatabaseWithId(databaseId);
+        if (database) {
+          database.isSampleDB = true;
+          // populate sample container with sample data
+          await database.loadCollections();
+          const collection = database.findCollectionWithId(collectionId);
+          collection.isSampleCollection = true;
+          useTeachingBubble.getState().setSampleCollection(collection);
+          const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
+          await sampleGenerator.populateContainerAsync(collection);
+          // auto-expand sample database + container and show teaching bubble
+          await database.expandDatabase();
+          collection.expandCollection();
+          useDatabases.getState().updateDatabase(database);
+          useTeachingBubble.getState().setIsSampleDBExpanded(true);
+          TelemetryProcessor.traceOpen(Action.LaunchUITour);
+        }
+      }
       this.setState({ isExecuting: false });
-      this.props.explorer.refreshAllDatabases();
       TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
       useSidePanel.getState().closeSidePanel();
     } catch (error) {

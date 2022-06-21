@@ -99,6 +99,7 @@ export class Flights {
   public static readonly PhoenixNotebooks = "phoenixnotebooks";
   public static readonly PhoenixFeatures = "phoenixfeatures";
   public static readonly NotebooksDownBanner = "notebooksdownbanner";
+  public static readonly PublicGallery = "publicgallery";
 }
 
 export class AfecFeatures {
@@ -351,6 +352,10 @@ export enum ConnectionStatusType {
 export enum ContainerStatusType {
   Active = "Active",
   Disconnected = "Disconnected",
+}
+
+export enum PoolIdType {
+  DefaultPoolId = "default",
 }
 
 export const EmulatorMasterKey =

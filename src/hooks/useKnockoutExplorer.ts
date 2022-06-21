@@ -352,6 +352,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     hasWriteAccess: inputs.hasWriteAccess ?? true,
     addCollectionFlight: inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
+    isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
   });
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
@@ -377,6 +378,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
     if (inputs.flights.indexOf(Flights.NotebooksDownBanner) !== -1) {
       userContext.features.notebooksDownBanner = true;
+    }
+    if (inputs.flights.indexOf(Flights.PublicGallery) !== -1) {
+      userContext.features.publicGallery = true;
     }
   }
 }

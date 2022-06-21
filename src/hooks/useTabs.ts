@@ -7,6 +7,8 @@ import TabsBase from "../Explorer/Tabs/TabsBase";
 interface TabsState {
   openedTabs: TabsBase[];
   activeTab: TabsBase;
+  isConnectTabOpen: boolean;
+  isConnectTabActive: boolean;
   activateTab: (tab: TabsBase) => void;
   activateNewTab: (tab: TabsBase) => void;
   updateTab: (tab: TabsBase) => void;
@@ -15,19 +17,24 @@ interface TabsState {
   closeTabsByComparator: (comparator: (tab: TabsBase) => boolean) => void;
   closeTab: (tab: TabsBase) => void;
   closeAllNotebookTabs: (hardClose: boolean) => void;
+  activateConnectTab: () => void;
+  openAndActivateConnectTab: () => void;
+  closeConnectTab: () => void;
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedTabs: [],
   activeTab: undefined,
+  isConnectTabOpen: false,
+  isConnectTabActive: false,
   activateTab: (tab: TabsBase): void => {
     if (get().openedTabs.some((openedTab) => openedTab.tabId === tab.tabId)) {
-      set({ activeTab: tab });
+      set({ activeTab: tab, isConnectTabActive: false });
       tab.onActivate();
     }
   },
   activateNewTab: (tab: TabsBase): void => {
-    set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab }));
+    set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, isConnectTabActive: false }));
     tab.onActivate();
   },
   updateTab: (tab: TabsBase) => {
@@ -66,7 +73,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       return true;
     });
     if (updatedTabs.length === 0) {
-      set({ activeTab: undefined });
+      set({ activeTab: undefined, isConnectTabActive: get().isConnectTabOpen });
     }
 
     if (tab.tabId === activeTab.tabId && tabIndex !== -1) {
@@ -104,8 +111,21 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       });
 
       if (get().openedTabs.length === 0) {
-        set({ activeTab: undefined });
+        set({ activeTab: undefined, isConnectTabActive: get().isConnectTabOpen });
       }
     }
+  },
+  activateConnectTab: () => {
+    if (get().isConnectTabOpen) {
+      set({ isConnectTabActive: true, activeTab: undefined });
+    }
+  },
+  openAndActivateConnectTab: () => set({ isConnectTabActive: true, isConnectTabOpen: true, activeTab: undefined }),
+  closeConnectTab: () => {
+    const { isConnectTabActive, openedTabs } = get();
+    if (isConnectTabActive && openedTabs?.length > 0) {
+      set({ activeTab: openedTabs[0] });
+    }
+    set({ isConnectTabActive: false, isConnectTabOpen: false });
   },
 }));

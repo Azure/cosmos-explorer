@@ -1,3 +1,4 @@
+import { RegionItem } from "SelfServe/SqlX/SqlxTypes";
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import {
   selfServeTrace,
@@ -208,7 +209,7 @@ const ApproximateCostDropDownInfo: Info = {
 
 let priceMap: Map<string, Map<string, number>>;
 let currencyCode: string;
-let regions: Array<string>;
+let regions: Array<RegionItem>;
 
 const calculateCost = (skuName: string, instanceCount: number): Description => {
   const telemetryData = {
@@ -221,27 +222,47 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
   try {
     let costPerHour = 0;
-    for (const region of regions) {
-      const incrementalCost = priceMap.get(region).get(skuName.replace("Cosmos.", ""));
+    let costBreakdown = "";
+    for (const regionItem of regions) {
+      const incrementalCost = priceMap.get(regionItem.locationName).get(skuName.replace("Cosmos.", ""));
       if (incrementalCost === undefined) {
-        throw new Error("Value not found in map.");
+        throw new Error(`${regionItem.locationName} not found in price map.`);
+      } else if (incrementalCost === 0) {
+        throw new Error(`${regionItem.locationName} cost per hour = 0`);
       }
-      costPerHour += incrementalCost;
+
+      let regionalInstanceCount = instanceCount;
+      if (regionItem.isZoneRedundant) {
+        regionalInstanceCount = Math.ceil(instanceCount * 1.5);
+      }
+
+      const regionalCostPerHour = incrementalCost * regionalInstanceCount;
+      costBreakdown += `
+      ${regionItem.locationName} ${regionItem.isZoneRedundant ? "(AZ)" : ""}
+      ${regionalCostPerHour} ${currencyCode} (${regionalInstanceCount} instances * ${incrementalCost} ${currencyCode})\
+      `;
+
+      if (regionalCostPerHour === 0) {
+        throw new Error(`${regionItem.locationName} Cost per hour = 0`);
+      }
+
+      costPerHour += regionalCostPerHour;
     }
 
     if (costPerHour === 0) {
       throw new Error("Cost per hour = 0");
     }
 
-    costPerHour *= instanceCount;
     costPerHour = Math.round(costPerHour * 100) / 100;
 
     selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
     return {
-      textTKey: `${costPerHour} ${currencyCode}`,
+      textTKey: `${costPerHour} ${currencyCode}
+      ${costBreakdown}`,
       type: DescriptionType.Text,
     };
   } catch (err) {
+    alert(err);
     const failureTelemetry = { err, regions, priceMap, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, calculateCostTimestamp);
 

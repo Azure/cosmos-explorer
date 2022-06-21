@@ -7,7 +7,7 @@
     "RegionsAndAccountNameValidationError": "Regions and account name should not be empty.",
     "DbThroughputValidationError": "Please update throughput for database.",
     "DescriptionLabel": "Description",
-    "DescriptionText": "This class sets collection and database throughput.",
+    "DescriptionText": "This class sets collection and database throughput.\nTo know more -",
     "DecriptionLinkText": "Click here for more information",
     "Regions": "Regions",
     "RegionsPlaceholder": "Select a region",

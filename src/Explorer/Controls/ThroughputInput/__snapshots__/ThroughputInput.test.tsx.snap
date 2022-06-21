@@ -1637,6 +1637,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         <StyledTextFieldBase
           aria-label="Max request units per second"
           errorMessage=""
+          id="autoscaleRUValueField"
           key=".0:$.2"
           min={1000}
           onChange={[Function]}
@@ -1660,6 +1661,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             aria-label="Max request units per second"
             deferredValidationTime={200}
             errorMessage=""
+            id="autoscaleRUValueField"
             min={1000}
             onChange={[Function]}
             required={true}
@@ -1955,7 +1957,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   <input
                     aria-invalid={false}
                     className="ms-TextField-field field-64"
-                    id="TextField2"
+                    id="autoscaleRUValueField"
                     min={1000}
                     onBlur={[Function]}
                     onChange={[Function]}
