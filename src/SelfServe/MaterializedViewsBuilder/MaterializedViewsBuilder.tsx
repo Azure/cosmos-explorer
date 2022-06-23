@@ -1,4 +1,3 @@
-import { RegionItem } from "SelfServe/SqlX/SqlxTypes";
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import {
   selfServeTrace,
@@ -20,29 +19,20 @@ import {
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
-  deleteDedicatedGatewayResource,
+  deleteMaterializedViewsBuilderResource,
   getCurrentProvisioningState,
   getPriceMapAndCurrencyCode,
   getRegions,
-  refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
-} from "./SqlX.rp";
+  refreshMaterializedViewsBuilderProvisioning,
+  updateMaterializedViewsBuilderResource,
+} from "./MaterializedViewsBuilder.rp";
 
 const costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-    textTKey: "DedicatedGatewayPricing",
-  },
-};
-
-const connectionStringValue: Description = {
-  textTKey: "ConnectionStringText",
-  type: DescriptionType.Text,
-  link: {
-    href: generateBladeLink(BladeType.SqlKeys),
-    textTKey: "KeysBlade",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    textTKey: "MaterializedviewsBuilderPricing",
   },
 };
 
@@ -55,6 +45,7 @@ const metricsStringValue: Description = {
   },
 };
 
+const CosmosD2s = "Cosmos.D2s";
 const CosmosD4s = "Cosmos.D4s";
 const CosmosD8s = "Cosmos.D8s";
 const CosmosD16s = "Cosmos.D16s";
@@ -74,15 +65,16 @@ const onNumberOfInstancesChange = (
   baselineValues: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
-  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+  const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
+    ?.value as boolean;
   const baselineInstances = baselineValues.get("instances")?.value as number;
-  if (!dedicatedGatewayOriginallyEnabled || baselineInstances !== newValue) {
+  if (!MaterializedViewsBuilderOriginallyEnabled || baselineInstances !== newValue) {
     currentValues.set("warningBanner", {
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
-          textTKey: "DedicatedGatewayPricing",
+          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -98,19 +90,19 @@ const onNumberOfInstancesChange = (
   return currentValues;
 };
 
-const onEnableDedicatedGatewayChange = (
+const onEnableMaterializedViewsBuilderChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
-  currentValues.set("enableDedicatedGateway", { value: newValue });
-  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
-  if (dedicatedGatewayOriginallyEnabled === newValue) {
+  currentValues.set("enableMaterializedViewsBuilder", { value: newValue });
+  const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
+    ?.value as boolean;
+  if (MaterializedViewsBuilderOriginallyEnabled === newValue) {
     currentValues.set("sku", baselineValues.get("sku"));
     currentValues.set("instances", baselineValues.get("instances"));
     currentValues.set("costPerHour", baselineValues.get("costPerHour"));
     currentValues.set("warningBanner", baselineValues.get("warningBanner"));
-    currentValues.set("connectionString", baselineValues.get("connectionString"));
     currentValues.set("metricsString", baselineValues.get("metricsString"));
     return currentValues;
   }
@@ -121,8 +113,8 @@ const onEnableDedicatedGatewayChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-          textTKey: "DedicatedGatewayPricing",
+          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          textTKey: "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -137,7 +129,7 @@ const onEnableDedicatedGatewayChange = (
       value: {
         textTKey: "WarningBannerOnDelete",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
+          href: "https://aka.ms/cosmos-db-materializedviews",
           textTKey: "DeprovisioningDetailsText",
         },
       } as Description,
@@ -152,28 +144,24 @@ const onEnableDedicatedGatewayChange = (
   currentValues.set("sku", {
     value: sku.value,
     hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
+    disabled: MaterializedViewsBuilderOriginallyEnabled,
   });
   currentValues.set("instances", {
     value: instances.value,
     hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
-  });
-
-  currentValues.set("connectionString", {
-    value: connectionStringValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+    disabled: MaterializedViewsBuilderOriginallyEnabled,
   });
 
   currentValues.set("metricsString", {
     value: metricsStringValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+    hidden: !newValue || !MaterializedViewsBuilderOriginallyEnabled,
   });
 
   return currentValues;
 };
 
 const skuDropDownItems: ChoiceItem[] = [
+  { labelTKey: "CosmosD2s", key: CosmosD2s },
   { labelTKey: "CosmosD4s", key: CosmosD4s },
   { labelTKey: "CosmosD8s", key: CosmosD8s },
   { labelTKey: "CosmosD16s", key: CosmosD16s },
@@ -194,7 +182,7 @@ const getInstancesMax = async (): Promise<number> => {
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: "ResizingDecisionText",
   link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-size",
     textTKey: "ResizingDecisionLink",
   },
 };
@@ -202,68 +190,48 @@ const NumberOfInstancesDropdownInfo: Info = {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-    textTKey: "DedicatedGatewayPricing",
+    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    textTKey: "MaterializedviewsBuilderPricing",
   },
 };
 
 let priceMap: Map<string, Map<string, number>>;
 let currencyCode: string;
-let regions: Array<RegionItem>;
+let regions: Array<string>;
 
 const calculateCost = (skuName: string, instanceCount: number): Description => {
   const telemetryData = {
     feature: "Calculate approximate cost",
     function: "calculateCost",
     description: "performs final calculation",
-    selfServeClassName: SqlX.name,
+    selfServeClassName: MaterializedViewsBuilder.name,
   };
   const calculateCostTimestamp = selfServeTraceStart(telemetryData);
 
   try {
     let costPerHour = 0;
-    let costBreakdown = "";
-    for (const regionItem of regions) {
-      const incrementalCost = priceMap.get(regionItem.locationName).get(skuName.replace("Cosmos.", ""));
+    for (const region of regions) {
+      const incrementalCost = priceMap.get(region).get(skuName.replace("Cosmos.", ""));
       if (incrementalCost === undefined) {
-        throw new Error(`${regionItem.locationName} not found in price map.`);
-      } else if (incrementalCost === 0) {
-        throw new Error(`${regionItem.locationName} cost per hour = 0`);
+        throw new Error("Value not found in map.");
       }
-
-      let regionalInstanceCount = instanceCount;
-      if (regionItem.isZoneRedundant) {
-        regionalInstanceCount = Math.ceil(instanceCount * 1.5);
-      }
-
-      const regionalCostPerHour = incrementalCost * regionalInstanceCount;
-      costBreakdown += `
-      ${regionItem.locationName} ${regionItem.isZoneRedundant ? "(AZ)" : ""}
-      ${regionalCostPerHour} ${currencyCode} (${regionalInstanceCount} instances * ${incrementalCost} ${currencyCode})\
-      `;
-
-      if (regionalCostPerHour === 0) {
-        throw new Error(`${regionItem.locationName} Cost per hour = 0`);
-      }
-
-      costPerHour += regionalCostPerHour;
+      costPerHour += incrementalCost;
     }
 
     if (costPerHour === 0) {
       throw new Error("Cost per hour = 0");
     }
 
+    costPerHour *= instanceCount;
     costPerHour = Math.round(costPerHour * 100) / 100;
 
     selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
     return {
-      textTKey: `${costPerHour} ${currencyCode}
-      ${costBreakdown}`,
+      textTKey: `${costPerHour} ${currencyCode}`,
       type: DescriptionType.Text,
     };
   } catch (err) {
-    alert(err);
-    const failureTelemetry = { err, regions, priceMap, selfServeClassName: SqlX.name };
+    const failureTelemetry = { err, regions, priceMap, selfServeClassName: MaterializedViewsBuilder.name };
     selfServeTraceFailure(failureTelemetry, calculateCostTimestamp);
 
     return costPerHourDefaultValue;
@@ -272,25 +240,27 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
 @IsDisplayable()
 @RefreshOptions({ retryIntervalInMs: 20000 })
-export default class SqlX extends SelfServeBaseClass {
+export default class MaterializedViewsBuilder extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
-    return await refreshDedicatedGatewayProvisioning();
+    return await refreshMaterializedViewsBuilderProvisioning();
   };
 
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
-    selfServeTrace({ selfServeClassName: SqlX.name });
+    selfServeTrace({ selfServeClassName: MaterializedViewsBuilder.name });
 
-    const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
-    const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+    const MaterializedViewsBuilderCurrentlyEnabled = currentValues.get("enableMaterializedViewsBuilder")
+      ?.value as boolean;
+    const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
+      ?.value as boolean;
 
     currentValues.set("warningBanner", undefined);
 
-    if (dedicatedGatewayOriginallyEnabled) {
-      if (!dedicatedGatewayCurrentlyEnabled) {
-        const operationStatusUrl = await deleteDedicatedGatewayResource();
+    if (MaterializedViewsBuilderOriginallyEnabled) {
+      if (!MaterializedViewsBuilderCurrentlyEnabled) {
+        const operationStatusUrl = await deleteMaterializedViewsBuilderResource();
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
@@ -311,7 +281,7 @@ export default class SqlX extends SelfServeBaseClass {
       } else {
         const sku = currentValues.get("sku")?.value as string;
         const instances = currentValues.get("instances").value as number;
-        const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+        const operationStatusUrl = await updateMaterializedViewsBuilderResource(sku, instances);
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
@@ -333,7 +303,7 @@ export default class SqlX extends SelfServeBaseClass {
     } else {
       const sku = currentValues.get("sku")?.value as string;
       const instances = currentValues.get("instances").value as number;
-      const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+      const operationStatusUrl = await updateMaterializedViewsBuilderResource(sku, instances);
       return {
         operationStatusUrl: operationStatusUrl,
         portalNotification: {
@@ -355,13 +325,12 @@ export default class SqlX extends SelfServeBaseClass {
   };
 
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-    // Based on the RP call enableDedicatedGateway will be true if it has not yet been enabled and false if it has.
+    // Based on the RP call enableMaterializedViewsBuilder will be true if it has not yet been enabled and false if it has.
     const defaults = new Map<string, SmartUiInput>();
-    defaults.set("enableDedicatedGateway", { value: false });
-    defaults.set("sku", { value: CosmosD4s, hidden: true });
+    defaults.set("enableMaterializedViewsBuilder", { value: false });
+    defaults.set("sku", { value: CosmosD2s, hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
     defaults.set("costPerHour", undefined);
-    defaults.set("connectionString", undefined);
     defaults.set("metricsString", {
       value: undefined,
       hidden: true,
@@ -374,14 +343,10 @@ export default class SqlX extends SelfServeBaseClass {
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
-      defaults.set("enableDedicatedGateway", { value: true });
+      defaults.set("enableMaterializedViewsBuilder", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: false });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
-      defaults.set("connectionString", {
-        value: connectionStringValue,
-        hidden: false,
-      });
 
       defaults.set("metricsString", {
         value: metricsStringValue,
@@ -399,23 +364,23 @@ export default class SqlX extends SelfServeBaseClass {
 
   @Values({
     description: {
-      textTKey: "DedicatedGatewayDescription",
+      textTKey: "MaterializedViewsBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
-        textTKey: "LearnAboutDedicatedGateway",
+        href: "https://aka.ms/cosmos-db-materializedviews",
+        textTKey: "LearnAboutMaterializedViews",
       },
     },
   })
   description: string;
 
-  @OnChange(onEnableDedicatedGatewayChange)
+  @OnChange(onEnableMaterializedViewsBuilderChange)
   @Values({
-    labelTKey: "DedicatedGateway",
+    labelTKey: "MaterializedViewsBuilder",
     trueLabelTKey: "Provisioned",
     falseLabelTKey: "Deprovisioned",
   })
-  enableDedicatedGateway: boolean;
+  enableMaterializedViewsBuilder: boolean;
 
   @OnChange(onSKUChange)
   @Values({
@@ -442,12 +407,6 @@ export default class SqlX extends SelfServeBaseClass {
     isDynamicDescription: true,
   })
   costPerHour: string;
-
-  @Values({
-    labelTKey: "ConnectionString",
-    isDynamicDescription: true,
-  })
-  connectionString: string;
 
   @Values({
     labelTKey: "MonitorUsage",

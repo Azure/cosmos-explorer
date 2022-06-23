@@ -339,6 +339,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
   if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
     const label = "New SQL Query";
     return {
+      id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
@@ -353,6 +354,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
   } else if (userContext.apiType === "Mongo") {
     const label = "New Query";
     return {
+      id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
@@ -439,6 +441,7 @@ function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentP
 function createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
   const label = "New Notebook";
   return {
+    id: "newNotebookBtn",
     iconSrc: NewNotebookIcon,
     iconAlt: label,
     onCommandClick: () => container.onNewNotebookClicked(),

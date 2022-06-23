@@ -1,6 +1,4 @@
 import * as Cosmos from "@azure/cosmos";
-import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
-import { CosmosHeaders } from "@azure/cosmos/dist-esm";
 import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
@@ -9,7 +7,7 @@ import { getErrorMessage } from "./ErrorHandlingUtils";
 
 const _global = typeof self === "undefined" ? window : self;
 
-export const tokenProvider = async (requestInfo: RequestInfo) => {
+export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
   if (userContext.features.enableAadDataPlane && userContext.aadToken) {
@@ -20,13 +18,13 @@ export const tokenProvider = async (requestInfo: RequestInfo) => {
 
   if (configContext.platform === Platform.Emulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-    await setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
+    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
     return decodeURIComponent(headers.authorization);
   }
 
   if (userContext.masterKey) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-    await setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
+    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
     return decodeURIComponent(headers.authorization);
   }
 
@@ -89,7 +87,7 @@ let _client: Cosmos.CosmosClient;
 export function client(): Cosmos.CosmosClient {
   if (_client) return _client;
 
-  let _defaultHeaders: CosmosHeaders = {};
+  let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
 

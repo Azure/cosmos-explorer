@@ -10,7 +10,7 @@ import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
+import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
@@ -310,7 +310,7 @@ export default class Explorer {
         db1.id().localeCompare(db2.id())
       );
       useDatabases.setState({ databases: updatedDatabases });
-      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, currentDatabases);
+      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
@@ -369,6 +369,7 @@ export default class Explorer {
     ) {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        poolId: PoolIdType.DefaultPoolId,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
@@ -381,11 +382,8 @@ export default class Explorer {
         });
         useNotebook.getState().setIsAllocating(true);
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        if (connectionInfo.status !== HttpStatusCodes.OK) {
-          throw new Error(`Received status code: ${connectionInfo?.status}`);
-        }
-        if (!connectionInfo?.data?.notebookServerUrl) {
-          throw new Error(`NotebookServerUrl is invalid!`);
+        if (!connectionInfo?.data?.phoenixServiceUrl) {
+          throw new Error(`PhoenixServiceUrl is invalid!`);
         }
         await this.setNotebookInfo(connectionInfo, connectionStatus);
         TelemetryProcessor.traceSuccess(Action.PhoenixConnection, {
@@ -394,6 +392,7 @@ export default class Explorer {
       } catch (error) {
         TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
+          status: error.status,
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         });
@@ -435,8 +434,8 @@ export default class Explorer {
       notebookServerEndpoint:
         (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
           userContext.features.notebookServerUrl) ||
-        connectionInfo.data.notebookServerUrl,
-      authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
+        connectionInfo.data.phoenixServiceUrl,
+      authToken: userContext.features.notebookServerToken || connectionInfo.data.authToken,
       forwardingId: connectionInfo.data.forwardingId,
     });
     this.notebookManager?.notebookClient
@@ -535,8 +534,8 @@ export default class Explorer {
       if (connectionInfo?.status !== HttpStatusCodes.OK) {
         throw new Error(`Reset Workspace: Received status code- ${connectionInfo?.status}`);
       }
-      if (!connectionInfo?.data?.notebookServerUrl) {
-        throw new Error(`Reset Workspace: NotebookServerUrl is invalid!`);
+      if (!connectionInfo?.data?.phoenixServiceUrl) {
+        throw new Error(`Reset Workspace: PhoenixServiceUrl is invalid!`);
       }
       if (useNotebook.getState().isPhoenixNotebooks) {
         await this.setNotebookInfo(connectionInfo, connectionStatus);
@@ -1167,7 +1166,12 @@ export default class Explorer {
     }
   }
 
-  public async onNewCollectionClicked(databaseId?: string): Promise<void> {
+  public async onNewCollectionClicked(
+    options: {
+      databaseId?: string;
+      isQuickstart?: boolean;
+    } = {}
+  ): Promise<void> {
     if (userContext.apiType === "Cassandra") {
       useSidePanel
         .getState()
@@ -1182,7 +1186,7 @@ export default class Explorer {
         : await useDatabases.getState().loadDatabaseOffers();
       useSidePanel
         .getState()
-        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
+        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} {...options} />);
     }
   }
 

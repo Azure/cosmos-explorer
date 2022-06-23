@@ -1,5 +1,4 @@
-import { OfferDefinition } from "@azure/cosmos";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { OfferDefinition, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";

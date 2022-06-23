@@ -11,7 +11,7 @@ const fileToUpload = `GettingStarted-ignore${Math.floor(Math.random() * 100000)}
 fs.copyFileSync(path.join(__dirname, filename), path.join(__dirname, fileToUpload));
 
 test("Notebooks", async () => {
-  await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-sql-runner");
+  await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-sql-runner-west-us");
   const explorer = await waitForExplorer();
   // Upload and Delete Notebook
   await explorer.click('[data-test="My Notebooks"] [aria-label="More"]');

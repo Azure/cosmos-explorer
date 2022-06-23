@@ -39,7 +39,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
   const items: TreeNodeMenuItem[] = [
     {
       iconSrc: AddCollectionIcon,
-      onClick: () => container.onNewCollectionClicked(databaseId),
+      onClick: () => container.onNewCollectionClicked({ databaseId }),
       label: `New ${getCollectionName()}`,
     },
   ];

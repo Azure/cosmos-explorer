@@ -32,6 +32,7 @@ export enum SelfServeType {
   example = "example",
   sqlx = "sqlx",
   graphapicompute = "graphapicompute",
+  materializedviewsbuilder = "materializedviewsbuilder",
 }
 
 /**

@@ -5,6 +5,7 @@ import Immutable from "immutable";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import * as Logger from "../../../Common/Logger";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import loadTransform from "../NotebookComponent/loadTransform";
@@ -100,6 +101,7 @@ export class SchemaAnalyzer extends React.Component<SchemaAnalyzerProps, SchemaA
     // Only in cases where CosmosMongoKernel runs into an error we get a single output
     if (outputs.size === 1) {
       traceFailure(Action.SchemaAnalyzerClickAnalyze, data, this.clickAnalyzeTelemetryStartKey);
+      Logger.logError(`Failed to analyze schema: ${JSON.stringify(data)}`, "SchemaAnalyzer/traceClickAnalyzeComplete");
     } else {
       traceSuccess(Action.SchemaAnalyzerClickAnalyze, data, this.clickAnalyzeTelemetryStartKey);
     }
