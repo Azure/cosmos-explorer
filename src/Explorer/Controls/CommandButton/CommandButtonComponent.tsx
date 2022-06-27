@@ -1,6 +1,7 @@
 /**
  * React component for Command button component.
  */
+import { Icon } from "@fluentui/react";
 import * as React from "react";
 import CollapseChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
 import { KeyCodes } from "../../../Common/Constants";
@@ -259,7 +260,18 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
           onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.commandClickCallback(e)}
         >
           <div className={contentClassName}>
-            <img className="commandIcon" src={this.props.iconSrc} alt={this.props.iconAlt} />
+          if (this.props.iconName){" "}
+            {
+              <div>
+                <Icon
+                  styles={ { root: { marginBottom: -3 } }}
+                  className="panelInfoIcon"
+                  iconName={this.props.iconName}
+                  ariaLabel="ChatBot"
+                />
+              </div>
+            }{" "}
+            else {<img className="commandIcon" src={this.props.iconSrc} alt={this.props.iconAlt} />}
             {CommandButtonComponent.renderLabel(this.props)}
           </div>
         </span>
