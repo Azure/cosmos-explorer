@@ -30,7 +30,7 @@ export type Features = {
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
   readonly enableChatbot?: boolean;
-  
+
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;

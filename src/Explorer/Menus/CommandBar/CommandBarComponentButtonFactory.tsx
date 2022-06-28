@@ -196,35 +196,35 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
   const showOpenFullScreen =
     configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
 
-    if (userContext.authType === AuthType.AAD && userContext.features.enableChatbot) {
-      const label = "Chat Assistant";
-      const supportPaneButton: CommandButtonComponentProps = {
-        iconName: "ChatBot",
-        iconAlt: label,
-        onCommandClick: () => {
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Chat Assistant (Beta)",
-              <SupportPaneComponent
-                directLineToken={container.conversationToken()}
-                userToken={userContext.authorizationToken}
-                subId={userContext.subscriptionId}
-                rg={userContext.resourceGroup}
-                accName={userContext.databaseAccount.name}
-              />
-            );
-        },
-        commandButtonLabel: null,
-        ariaLabel: label,
-        tooltipText: label,
-        hasPopup: true,
-        disabled: false,
-        className: "fonticoncustom",
-      };
-      buttons.push(supportPaneButton);
-    }
-  
+  if (userContext.authType === AuthType.AAD && userContext.features.enableChatbot) {
+    const label = "Chat Assistant";
+    const supportPaneButton: CommandButtonComponentProps = {
+      iconName: "ChatBot",
+      iconAlt: label,
+      onCommandClick: () => {
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Chat Assistant (Beta)",
+            <SupportPaneComponent
+              directLineToken={container.conversationToken()}
+              userToken={userContext.authorizationToken}
+              subId={userContext.subscriptionId}
+              rg={userContext.resourceGroup}
+              accName={userContext.databaseAccount.name}
+            />
+          );
+      },
+      commandButtonLabel: null,
+      ariaLabel: label,
+      tooltipText: label,
+      hasPopup: true,
+      disabled: false,
+      className: "fonticoncustom",
+    };
+    buttons.push(supportPaneButton);
+  }
+
   if (showOpenFullScreen) {
     const label = "Open Full Screen";
     const fullScreenButton: CommandButtonComponentProps = {

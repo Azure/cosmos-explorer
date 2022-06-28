@@ -260,11 +260,11 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
           onClick={(e: React.MouseEvent<HTMLSpanElement>) => this.commandClickCallback(e)}
         >
           <div className={contentClassName}>
-          if (this.props.iconName){" "}
+            if (this.props.iconName){" "}
             {
               <div>
                 <Icon
-                  styles={ { root: { marginBottom: -3 } }}
+                  styles={{ root: { marginBottom: -3 } }}
                   className="panelInfoIcon"
                   iconName={this.props.iconName}
                   ariaLabel="ChatBot"

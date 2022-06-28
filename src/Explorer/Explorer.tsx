@@ -92,7 +92,7 @@ export default class Explorer {
   public subId: ko.Observable<string>;
   public rg: ko.Observable<string>;
   public accName: ko.Observable<string>;
-  
+
   private _isInitializingNotebooks: boolean;
   private notebookToImport: {
     name: string;
@@ -113,7 +113,7 @@ export default class Explorer {
     );
 
     this.queriesClient = new QueriesClient(this);
-    
+
     this.conversationToken = ko.observable<string>();
 
     this.generateConversationToken();
@@ -490,7 +490,7 @@ export default class Explorer {
       setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
     }
   }
-  
+
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
     if (!databaseAccount) {
       return false;
