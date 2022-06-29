@@ -21,7 +21,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
