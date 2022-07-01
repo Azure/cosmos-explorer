@@ -20,7 +20,11 @@ export async function createStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating stored procedure ${storedProcedure.id}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       try {
         const getResponse = await getSqlStoredProcedure(
           userContext.subscriptionId,

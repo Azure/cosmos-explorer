@@ -36,7 +36,6 @@ interface UserContext {
   readonly accessToken?: string;
   readonly authorizationToken?: string;
   readonly resourceToken?: string;
-  readonly useSDKOperations: boolean;
   readonly subscriptionType?: SubscriptionType;
   readonly quotaId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
@@ -61,7 +60,6 @@ export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "
 const ONE_WEEK_IN_MS = 604800000;
 
 const features = extractFeatures();
-const { enableSDKoperations: useSDKOperations } = features;
 
 const userContext: UserContext = {
   apiType: "SQL",
@@ -69,7 +67,6 @@ const userContext: UserContext = {
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
   features,
-  useSDKOperations,
   addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
   collectionCreationDefaults: CollectionCreationDefaults,

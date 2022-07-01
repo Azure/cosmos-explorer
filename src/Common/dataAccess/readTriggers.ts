@@ -13,7 +13,11 @@ export async function readTriggers(
 ): Promise<SqlTriggerResource[] | TriggerDefinition[]> {
   const clearMessage = logConsoleProgress(`Querying triggers for container ${collectionId}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       const rpResponse = await listSqlTriggers(
         userContext.subscriptionId,
         userContext.resourceGroup,

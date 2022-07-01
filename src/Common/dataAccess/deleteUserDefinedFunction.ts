@@ -8,7 +8,11 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function deleteUserDefinedFunction(databaseId: string, collectionId: string, id: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting user defined function ${id}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       await deleteSqlUserDefinedFunction(
         userContext.subscriptionId,
         userContext.resourceGroup,
