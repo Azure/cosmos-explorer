@@ -14,7 +14,11 @@ export async function createTrigger(
 ): Promise<TriggerDefinition | SqlTriggerResource> {
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       try {
         const getResponse = await getSqlTrigger(
           userContext.subscriptionId,

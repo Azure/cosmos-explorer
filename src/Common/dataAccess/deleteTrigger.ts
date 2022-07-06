@@ -8,7 +8,11 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function deleteTrigger(databaseId: string, collectionId: string, triggerId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting trigger ${triggerId}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       await deleteSqlTrigger(
         userContext.subscriptionId,
         userContext.resourceGroup,

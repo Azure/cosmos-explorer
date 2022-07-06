@@ -13,9 +13,9 @@ export async function updateTrigger(
   trigger: SqlTriggerResource
 ): Promise<SqlTriggerResource | TriggerDefinition> {
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
-  const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const { authType, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
-    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
+    if (authType === AuthType.AAD && !userContext.features.enableSDKoperations && apiType === "SQL") {
       const getResponse = await getSqlTrigger(
         subscriptionId,
         resourceGroup,

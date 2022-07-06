@@ -14,7 +14,11 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
   const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
 
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType !== "Tables"
+    ) {
       return await readCollectionOfferWithARM(params.databaseId, params.collectionId);
     }
 
