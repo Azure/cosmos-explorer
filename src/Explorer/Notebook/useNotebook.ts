@@ -40,6 +40,7 @@ interface NotebookState {
   containerStatus: ContainerInfo;
   isPhoenixNotebooks: boolean;
   isPhoenixFeatures: boolean;
+  isPhoenixDisabled: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -64,6 +65,7 @@ interface NotebookState {
   getPhoenixStatus: () => Promise<void>;
   setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => void;
   setIsPhoenixFeatures: (isPhoenixFeatures: boolean) => void;
+  setIsPhoenixDisabled: (isPhoenixDisabled: boolean) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -100,6 +102,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   isPhoenixNotebooks: undefined,
   isPhoenixFeatures: undefined,
+  isPhoenixDisabled: undefined,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -305,6 +308,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     if (get().isPhoenixNotebooks === undefined || get().isPhoenixFeatures === undefined) {
       let isPhoenixNotebooks = false;
       let isPhoenixFeatures = false;
+      let isPhoenixDisabled = false;
 
       const isPublicInternetAllowed = isPublicInternetAccessAllowed();
       const phoenixClient = new PhoenixClient();
@@ -312,18 +316,30 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
 
       if (dbAccountAllowedInfo.status === HttpStatusCodes.OK) {
         if (dbAccountAllowedInfo?.type === PhoenixErrorType.PhoenixFlightFallback) {
-          isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks;
-          isPhoenixFeatures = isPublicInternetAllowed && userContext.features.phoenixFeatures;
+          isPhoenixNotebooks = userContext.features.phoenixNotebooks;
+          isPhoenixFeatures = userContext.features.phoenixFeatures;
+          isPhoenixDisabled = !isPublicInternetAllowed && (isPhoenixNotebooks || isPhoenixFeatures);
         } else {
           isPhoenixNotebooks = isPhoenixFeatures = isPublicInternetAllowed;
+          isPhoenixDisabled = !isPublicInternetAllowed;
         }
+      } else if (
+        dbAccountAllowedInfo.status === HttpStatusCodes.Forbidden &&
+        (userContext.features.phoenixNotebooks || userContext.features.phoenixFeatures)
+      ) {
+        isPhoenixNotebooks = userContext.features.phoenixNotebooks;
+        isPhoenixFeatures = userContext.features.phoenixFeatures;
+        isPhoenixDisabled = true;
       } else {
         isPhoenixNotebooks = isPhoenixFeatures = false;
       }
+
       set({ isPhoenixNotebooks: isPhoenixNotebooks });
       set({ isPhoenixFeatures: isPhoenixFeatures });
+      set({ isPhoenixDisabled: isPhoenixDisabled });
     }
   },
   setIsPhoenixNotebooks: (isPhoenixNotebooks: boolean) => set({ isPhoenixNotebooks: isPhoenixNotebooks }),
   setIsPhoenixFeatures: (isPhoenixFeatures: boolean) => set({ isPhoenixFeatures: isPhoenixFeatures }),
+  setIsPhoenixDisabled: (isPhoenixDisabled: boolean) => set({ isPhoenixDisabled: isPhoenixDisabled }),
 }));

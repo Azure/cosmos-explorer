@@ -398,6 +398,10 @@ export class Notebook {
   public static cosmosNotebookHomePageUrl = "https://aka.ms/cosmos-notebooks-limits";
   public static cosmosNotebookGitDocumentationUrl = "https://aka.ms/cosmos-notebooks-github";
   public static learnMore = "Learn more.";
+  public static notebookDisabledText =
+    "This feature is disabled for this user, this can happen because of region restriction, key permissions etc..";
+  public static newShellDisabledText =
+    "This feature is disabled for this user, this is for users with region restriction, key permissions etc..";
 }
 
 export class SparkLibrary {

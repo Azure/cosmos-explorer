@@ -23,6 +23,8 @@ interface Props {
 }
 export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Element => {
   const connectionInfo = useNotebook((state) => state.connectionInfo);
+  const isPhoenixDisabled = useNotebook((state) => state.isPhoenixDisabled);
+
   const [second, setSecond] = React.useState("00");
   const [minute, setMinute] = React.useState("00");
   const [isActive, setIsActive] = React.useState(false);
@@ -77,6 +79,12 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     }
   }, [connectionInfo.status]);
 
+  React.useEffect(() => {
+    if (isPhoenixDisabled) {
+      setToolTipContent(Notebook.notebookDisabledText);
+    }
+  }, [isPhoenixDisabled]);
+
   const stopTimer = () => {
     setIsActive(false);
     setCounter(0);
@@ -93,11 +101,18 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     (connectionInfo.status === ConnectionStatusType.Connect || connectionInfo.status === ConnectionStatusType.Reconnect)
   ) {
     return (
-      <ActionButton className="commandReactBtn" onClick={() => container.allocateContainer()}>
+      <ActionButton
+        className={isPhoenixDisabled ? "disableText commandReactBtn" : "commandReactBtn"}
+        disabled={isPhoenixDisabled}
+        onClick={() => !isPhoenixDisabled && container.allocateContainer()}
+      >
         <TooltipHost content={toolTipContent}>
           <Stack className="connectionStatusContainer" horizontal>
-            <Icon iconName="ConnectVirtualMachine" className="connectIcon" />
-            <span>{connectionInfo.status}</span>
+            <Icon
+              iconName="ConnectVirtualMachine"
+              className={isPhoenixDisabled ? "connectIcon disableText" : "connectIcon"}
+            />
+            <span className={isPhoenixDisabled ? "disableText" : ""}>{connectionInfo.status}</span>
           </Stack>
         </TooltipHost>
       </ActionButton>

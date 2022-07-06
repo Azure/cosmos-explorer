@@ -121,7 +121,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       children: [],
     };
 
-    if (!useNotebook.getState().isPhoenixNotebooks) {
+    if (!useNotebook.getState().isPhoenixNotebooks && !useNotebook.getState().isPhoenixDisabled) {
       notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
     } else {
       if (galleryContentRoot) {
@@ -156,8 +156,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       label: "Gallery",
       iconSrc: GalleryIcon,
       className: "notebookHeader galleryHeader",
+      toolTip: useNotebook.getState().isPhoenixDisabled ? Notebook.notebookDisabledText : undefined,
       onClick: () => container.openGallery(),
       isSelected: () => activeTab?.tabKind === ViewModels.CollectionTabKind.Gallery,
+      isDisabled: useNotebook.getState().isPhoenixDisabled,
     };
   };
 
@@ -523,6 +525,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),
+        toolTip: useNotebook.getState().isPhoenixDisabled ? Notebook.notebookDisabledText : undefined,
+        isDisabled: useNotebook.getState().isPhoenixDisabled,
         isSelected: () =>
           useSelectedNode
             .getState()

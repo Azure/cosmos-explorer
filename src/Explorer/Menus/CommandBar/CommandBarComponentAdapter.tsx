@@ -53,7 +53,11 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, backgroundColor);
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
-  if (useNotebook.getState().isPhoenixNotebooks || useNotebook.getState().isPhoenixFeatures) {
+  if (
+    useNotebook.getState().isPhoenixNotebooks ||
+    useNotebook.getState().isPhoenixFeatures ||
+    useNotebook.getState().isPhoenixDisabled
+  ) {
     uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
   }
 
