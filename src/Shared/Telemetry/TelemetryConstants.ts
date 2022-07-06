@@ -130,6 +130,7 @@ export enum Action {
   CompleteCarousel,
   LaunchUITour,
   CancelUITour,
+  CompleteUITour,
 }
 
 export const ActionModifiers = {

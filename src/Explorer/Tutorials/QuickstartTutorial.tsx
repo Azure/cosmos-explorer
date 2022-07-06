@@ -1,9 +1,9 @@
 import { Link, Stack, TeachingBubble, Text } from "@fluentui/react";
-import { useTabs } from "hooks/useTabs";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { traceCancel } from "Shared/Telemetry/TelemetryProcessor";
+import { traceCancel, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 
 export const QuickstartTutorial: React.FC = (): JSX.Element => {
   const { step, isSampleDBExpanded, isDocumentsTabOpened, sampleCollection, setStep } = useTeachingBubble();
@@ -146,7 +146,10 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
           hasCloseButton
           primaryButtonProps={{
             text: "Launch connect",
-            onClick: () => useTabs.getState().openAndActivateConnectTab(),
+            onClick: () => {
+              traceSuccess(Action.CompleteUITour);
+              useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+            },
           }}
           secondaryButtonProps={{
             text: "Previous",
