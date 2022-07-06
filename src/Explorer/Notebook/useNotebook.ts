@@ -320,7 +320,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           isPhoenixFeatures = userContext.features.phoenixFeatures;
           isPhoenixDisabled = !isPublicInternetAllowed && (isPhoenixNotebooks || isPhoenixFeatures);
         } else {
-          isPhoenixNotebooks = isPhoenixFeatures = isPublicInternetAllowed;
+          isPhoenixNotebooks = isPhoenixFeatures = true;
           isPhoenixDisabled = !isPublicInternetAllowed;
         }
       } else if (

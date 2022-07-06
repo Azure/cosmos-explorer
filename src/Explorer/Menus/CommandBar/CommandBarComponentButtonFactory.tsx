@@ -86,7 +86,9 @@ export function createStaticCommandBarButtons(
       notebookButtons.push(createNotebookWorkspaceResetButton(container));
     }
     if (
-      (userContext.apiType === "Mongo" && selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
+      (userContext.apiType === "Mongo" &&
+        selectedNodeState.isDatabaseNodeOrNoneSelected() &&
+        useNotebook.getState().isShellEnabled) ||
       userContext.apiType === "Cassandra"
     ) {
       notebookButtons.push(createDivider());
@@ -98,19 +100,23 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
+      const isPhoenixFeaturesDownMsg =
+        (!useNotebook.getState().isPhoenixFeatures && !useNotebook.getState().isPhoenixDisabled) ||
+        (!useNotebook.getState().isPhoenixFeatures && useNotebook.getState().isPhoenixDisabled);
+
       if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures && !useNotebook.getState().isPhoenixDisabled) {
+        if (isPhoenixFeaturesDownMsg) {
           applyNotebooksStyleProps(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
         } else if (useNotebook.getState().isPhoenixDisabled) {
           applyNotebooksStyleProps(btn, Constants.Notebook.notebookDisabledText);
         }
       } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures && !useNotebook.getState().isPhoenixDisabled) {
+        if (isPhoenixFeaturesDownMsg) {
           applyNotebooksStyleProps(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
         } else if (useNotebook.getState().isPhoenixDisabled) {
           applyNotebooksStyleProps(btn, Constants.Notebook.notebookDisabledText);
         }
-      } else if (!useNotebook.getState().isPhoenixNotebooks && !useNotebook.getState().isPhoenixDisabled) {
+      } else if (isPhoenixFeaturesDownMsg) {
         applyNotebooksStyleProps(btn, Constants.Notebook.temporarilyDownMsg);
       } else if (useNotebook.getState().isPhoenixDisabled) {
         applyNotebooksStyleProps(btn, Constants.Notebook.notebookDisabledText);
@@ -177,23 +183,23 @@ export function createContextCommandBarButtons(
       tooltipText: isPhoenixShellDisabled ? Constants.Notebook.notebookDisabledText : undefined,
     };
     buttons.push(phoenixMongoShellBtn);
-
-    const label = "New Shell";
-    const isNewMongoShellDisabled = useNotebook.getState().isShellEnabled && !useNotebook.getState().isPhoenixDisabled;
-    const newMongoShellBtn: CommandButtonComponentProps = {
-      iconSrc: HostedTerminalIcon,
-      iconAlt: label,
-      onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewMongoShellClick();
-      },
-      commandButtonLabel: label,
-      ariaLabel: label,
-      hasPopup: true,
-      disabled: isNewMongoShellDisabled,
-      tooltipText: isNewMongoShellDisabled ? Constants.Notebook.newShellDisabledText : undefined,
-    };
-    buttons.push(newMongoShellBtn);
+    if (!useNotebook.getState().isShellEnabled) {
+      const label = "New Shell";
+      const newMongoShellBtn: CommandButtonComponentProps = {
+        iconSrc: HostedTerminalIcon,
+        iconAlt: label,
+        onCommandClick: () => {
+          const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
+          selectedCollection && selectedCollection.onNewMongoShellClick();
+        },
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: true,
+        disabled: false,
+        tooltipText: label,
+      };
+      buttons.push(newMongoShellBtn);
+    }
   }
 
   return buttons;

@@ -204,14 +204,14 @@ describe("CommandBarComponentButtonFactory tests", () => {
       //expect(openMongoShellBtn.tooltipText).toBe("");
     });
 
-    it("Notebooks is enabled and is available, terminal is unavailable due to ipRules - button should be in disable state", () => {
+    it("Notebooks is enabled and is available, terminal is unavailable due to ipRules - button should be hidden", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
       useNotebook.getState().setIsShellEnabled(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
-      expect(openMongoShellBtn.disabled).toBe(true);
+      expect(openMongoShellBtn).toBeUndefined();
     });
   });
 
