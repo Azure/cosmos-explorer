@@ -600,56 +600,43 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     metricsMap.forEach((queryMetrics) => {
       if (queryMetrics) {
         aggregatedMetrics.documentLoadTime =
-          queryMetrics.documentLoadTime &&
           this._normalize(queryMetrics.documentLoadTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.documentLoadTime);
+          this._normalize(aggregatedMetrics.documentLoadTime);
         aggregatedMetrics.documentWriteTime =
-          queryMetrics.documentWriteTime &&
           this._normalize(queryMetrics.documentWriteTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.documentWriteTime);
+          this._normalize(aggregatedMetrics.documentWriteTime);
         aggregatedMetrics.indexHitDocumentCount =
-          queryMetrics.indexHitDocumentCount &&
           this._normalize(queryMetrics.indexHitDocumentCount) +
-            this._normalize(aggregatedMetrics.indexHitDocumentCount);
+          this._normalize(aggregatedMetrics.indexHitDocumentCount);
         aggregatedMetrics.outputDocumentCount =
-          queryMetrics.outputDocumentCount &&
           this._normalize(queryMetrics.outputDocumentCount) + this._normalize(aggregatedMetrics.outputDocumentCount);
         aggregatedMetrics.outputDocumentSize =
-          queryMetrics.outputDocumentSize &&
           this._normalize(queryMetrics.outputDocumentSize) + this._normalize(aggregatedMetrics.outputDocumentSize);
         aggregatedMetrics.indexLookupTime =
-          queryMetrics.indexLookupTime &&
           this._normalize(queryMetrics.indexLookupTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.indexLookupTime);
+          this._normalize(aggregatedMetrics.indexLookupTime);
         aggregatedMetrics.retrievedDocumentCount =
-          queryMetrics.retrievedDocumentCount &&
           this._normalize(queryMetrics.retrievedDocumentCount) +
-            this._normalize(aggregatedMetrics.retrievedDocumentCount);
+          this._normalize(aggregatedMetrics.retrievedDocumentCount);
         aggregatedMetrics.retrievedDocumentSize =
-          queryMetrics.retrievedDocumentSize &&
           this._normalize(queryMetrics.retrievedDocumentSize) +
-            this._normalize(aggregatedMetrics.retrievedDocumentSize);
+          this._normalize(aggregatedMetrics.retrievedDocumentSize);
         aggregatedMetrics.vmExecutionTime =
-          queryMetrics.vmExecutionTime &&
           this._normalize(queryMetrics.vmExecutionTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.vmExecutionTime);
+          this._normalize(aggregatedMetrics.vmExecutionTime);
         aggregatedMetrics.totalQueryExecutionTime =
-          queryMetrics.totalQueryExecutionTime &&
           this._normalize(queryMetrics.totalQueryExecutionTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.totalQueryExecutionTime);
+          this._normalize(aggregatedMetrics.totalQueryExecutionTime);
 
         aggregatedMetrics.runtimeExecutionTimes.queryEngineExecutionTime =
-          aggregatedMetrics.runtimeExecutionTimes &&
           this._normalize(queryMetrics.runtimeExecutionTimes.queryEngineExecutionTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.runtimeExecutionTimes.queryEngineExecutionTime);
+          this._normalize(aggregatedMetrics.runtimeExecutionTimes.queryEngineExecutionTime);
         aggregatedMetrics.runtimeExecutionTimes.systemFunctionExecutionTime =
-          aggregatedMetrics.runtimeExecutionTimes &&
           this._normalize(queryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.runtimeExecutionTimes.systemFunctionExecutionTime);
+          this._normalize(aggregatedMetrics.runtimeExecutionTimes.systemFunctionExecutionTime);
         aggregatedMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime =
-          aggregatedMetrics.runtimeExecutionTimes &&
           this._normalize(queryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime.totalMilliseconds()) +
-            this._normalize(aggregatedMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime);
+          this._normalize(aggregatedMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime);
       }
     });
 
