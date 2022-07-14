@@ -1,5 +1,5 @@
 import { IIconProps } from '@fluentui/react';
-import { ActionButton } from '@fluentui/react/lib/Button';
+import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { AuthType } from 'AuthType';
 import { SupportPaneComponent } from 'Explorer/Controls/SupportPaneComponent/SupportPaneComponent';
 import Explorer from 'Explorer/Explorer';
@@ -11,7 +11,7 @@ export interface ChatButtonProps {
     container: Explorer;
 }
 
-const chatIcon: IIconProps = { iconName: 'ChatSolid' };
+const chatIcon: IIconProps = { iconName: 'ChatSolid', style: { marginRight: 10 } };
 
 
 
@@ -20,7 +20,7 @@ export const ChatButtonAction: React.FunctionComponent<ChatButtonProps> = props 
     const { container } = props;
     if (userContext.authType === AuthType.AAD && userContext.features.enableChatbot) {
         return (
-            <ActionButton className={"chatButton"} primary={true} iconProps={chatIcon} onClick={() => {
+            <PrimaryButton className={"chatButton"} iconProps={chatIcon} onClick={() => {
                 useSidePanel
                     .getState()
                     .openSidePanel(
@@ -34,8 +34,9 @@ export const ChatButtonAction: React.FunctionComponent<ChatButtonProps> = props 
                         />
                     );
             }}>
-                <span> Help </span>
-            </ActionButton>
+                <span> Help? </span>
+            </PrimaryButton>
         );
     }
+    return <div></div>
 };
