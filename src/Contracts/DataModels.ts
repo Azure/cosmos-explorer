@@ -563,6 +563,7 @@ export interface ContainerConnectionInfo {
 }
 
 export enum PhoenixErrorType {
+  UserMissingPermissionsError = "UserMissingPermissionsError",
   MaxAllocationTimeExceeded = "MaxAllocationTimeExceeded",
   MaxDbAccountsPerUserExceeded = "MaxDbAccountsPerUserExceeded",
   MaxUsersPerDbAccountExceeded = "MaxUsersPerDbAccountExceeded",
