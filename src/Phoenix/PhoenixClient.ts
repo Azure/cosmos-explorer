@@ -266,6 +266,7 @@ export class PhoenixClient {
           "."
         );
       }
+      case PhoenixErrorType.UserMissingPermissionsError:
       case PhoenixErrorType.AllocationValidationResult:
       case PhoenixErrorType.RegionNotServicable:
       case PhoenixErrorType.SubscriptionNotAllowed: {
