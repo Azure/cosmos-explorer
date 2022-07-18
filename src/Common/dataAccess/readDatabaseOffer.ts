@@ -13,7 +13,11 @@ export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promis
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
 
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType !== "Tables"
+    ) {
       return await readDatabaseOfferWithARM(params.databaseId);
     }
 

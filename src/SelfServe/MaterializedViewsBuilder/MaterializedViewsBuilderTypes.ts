@@ -1,30 +1,30 @@
-export type SqlxServiceResource = {
+export type MaterializedViewsBuilderServiceResource = {
   id: string;
   name: string;
   type: string;
-  properties: SqlxServiceProps;
-  locations: SqlxServiceLocations;
+  properties: MaterializedViewsBuilderServiceProps;
+  locations: MaterializedViewsBuilderServiceLocations;
 };
-export type SqlxServiceProps = {
+export type MaterializedViewsBuilderServiceProps = {
   serviceType: string;
   creationTime: string;
   status: string;
   instanceSize: string;
   instanceCount: number;
-  sqlxEndPoint: string;
+  MaterializedViewsBuilderEndPoint: string;
 };
 
-export type SqlxServiceLocations = {
+export type MaterializedViewsBuilderServiceLocations = {
   location: string;
   status: string;
-  sqlxEndpoint: string;
+  MaterializedViewsBuilderEndpoint: string;
 };
 
-export type UpdateDedicatedGatewayRequestParameters = {
-  properties: UpdateDedicatedGatewayRequestProperties;
+export type UpdateMaterializedViewsBuilderRequestParameters = {
+  properties: UpdateMaterializedViewsBuilderRequestProperties;
 };
 
-export type UpdateDedicatedGatewayRequestProperties = {
+export type UpdateMaterializedViewsBuilderRequestProperties = {
   instanceSize: string;
   instanceCount: number;
   serviceType: string;
@@ -48,14 +48,10 @@ export type PriceItem = {
 };
 
 export type RegionsResponse = {
-  properties: RegionsProperties;
-};
-
-export type RegionsProperties = {
   locations: Array<RegionItem>;
+  location: string;
 };
 
 export type RegionItem = {
   locationName: string;
-  isZoneRedundant: boolean;
 };

@@ -121,6 +121,16 @@ export enum Action {
   ExpandAddCollectionPaneAdvancedSection,
   SchemaAnalyzerClickAnalyze,
   SelfServeComponent,
+  LaunchQuickstart,
+  NewContainerHomepage,
+  Top3ItemsClicked,
+  LearningResourcesClicked,
+  PlayCarouselVideo,
+  OpenCarousel,
+  CompleteCarousel,
+  LaunchUITour,
+  CancelUITour,
+  CompleteUITour,
 }
 
 export const ActionModifiers = {

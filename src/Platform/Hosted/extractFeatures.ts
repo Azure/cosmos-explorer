@@ -32,6 +32,7 @@ export type Features = {
   readonly enableNewQuickstart: boolean;
   readonly enableChatbot?: boolean;
 
+
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;

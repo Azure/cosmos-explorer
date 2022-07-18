@@ -1,7 +1,4 @@
-import { ContainerResponse, DatabaseResponse } from "@azure/cosmos";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
-import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
+import { ContainerRequest, ContainerResponse, DatabaseRequest, DatabaseResponse, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { useDatabases } from "../../Explorer/useDatabases";
@@ -27,7 +24,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
   );
   try {
     let collection: DataModels.Collection;
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
       if (params.createNewDatabase) {
         const createDatabaseParams: DataModels.CreateDatabaseParams = {
           autoPilotMaxThroughput: params.autoPilotMaxThroughput,

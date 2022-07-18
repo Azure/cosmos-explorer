@@ -17,13 +17,14 @@ import {
   ContainerConnectionInfo,
   ContainerInfo,
   IContainerData,
+  IDbAccountAllow,
   IMaxAllocationTimeExceeded,
   IMaxDbAccountsPerUserExceeded,
   IMaxUsersPerDbAccountExceeded,
   IPhoenixConnectionInfoResult,
+  IPhoenixError,
   IProvisionData,
   IResponse,
-  IValidationError,
   PhoenixErrorType,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
@@ -59,17 +60,19 @@ export class PhoenixClient {
         body: JSON.stringify(provisionData),
       });
       const responseJson = await response?.json();
-      if (response.status === HttpStatusCodes.Forbidden) {
-        throw new Error(this.ConvertToForbiddenErrorString(responseJson));
+      if (response.ok) {
+        return {
+          status: response.status,
+          data: responseJson,
+        };
       }
-      return {
-        status: response.status,
-        data: responseJson,
-      };
+      const phoenixError = responseJson as IPhoenixError;
+      if (response.status === HttpStatusCodes.Forbidden) {
+        throw new Error(this.ConvertToForbiddenErrorString(phoenixError));
+      }
+      throw new Error(phoenixError.message);
     } catch (error) {
-      if (response.status === HttpStatusCodes.Forbidden) {
-        error.status = HttpStatusCodes.Forbidden;
-      }
+      error.status = response?.status;
       throw error;
     }
   }
@@ -101,7 +104,7 @@ export class PhoenixClient {
           const containerStatus = await response.json();
           return {
             durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
-            notebookServerInfo: containerStatus?.notebookServerInfo,
+            phoenixServerInfo: containerStatus?.phoenixServerInfo,
             status: ContainerStatusType.Active,
           };
         } else if (response.status === HttpStatusCodes.NotFound) {
@@ -145,7 +148,7 @@ export class PhoenixClient {
       useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       return {
         durationLeftInMinutes: undefined,
-        notebookServerInfo: undefined,
+        phoenixServerInfo: undefined,
         status: ContainerStatusType.Disconnected,
       };
     }
@@ -159,15 +162,17 @@ export class PhoenixClient {
     }
   }
 
-  public async isDbAcountWhitelisted(): Promise<boolean> {
+  public async getDbAccountAllowedStatus(): Promise<IDbAccountAllow> {
     const startKey = TelemetryProcessor.traceStart(Action.PhoenixDBAccountAllowed, {
       dataExplorerArea: Areas.Notebook,
     });
+    let responseJson;
     try {
       const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
       });
+      responseJson = await response?.json();
       if (response.status !== HttpStatusCodes.OK) {
         throw new Error(`Received status code: ${response?.status}`);
       }
@@ -178,7 +183,11 @@ export class PhoenixClient {
         },
         startKey
       );
-      return response.status === HttpStatusCodes.OK;
+      return {
+        status: response.status,
+        message: responseJson?.message,
+        type: responseJson?.type,
+      };
     } catch (error) {
       TelemetryProcessor.traceFailure(
         Action.PhoenixDBAccountAllowed,
@@ -190,7 +199,11 @@ export class PhoenixClient {
         startKey
       );
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
-      return false;
+      return {
+        status: HttpStatusCodes.Forbidden,
+        message: responseJson?.message,
+        type: responseJson?.type,
+      };
     }
   }
 
@@ -220,7 +233,7 @@ export class PhoenixClient {
     };
   }
 
-  public ConvertToForbiddenErrorString(jsonData: IValidationError): string {
+  public ConvertToForbiddenErrorString(jsonData: IPhoenixError): string {
     const errInfo = jsonData;
     switch (errInfo?.type) {
       case PhoenixErrorType.MaxAllocationTimeExceeded: {

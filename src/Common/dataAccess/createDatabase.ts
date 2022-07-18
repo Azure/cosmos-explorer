@@ -1,5 +1,4 @@
-import { DatabaseResponse } from "@azure/cosmos";
-import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
+import { DatabaseRequest, DatabaseResponse } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { useDatabases } from "../../Explorer/useDatabases";
@@ -26,7 +25,8 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
     if (userContext.apiType === "Tables") {
       throw new Error("Creating database resources is not allowed for tables accounts");
     }
-    const database: DataModels.Database = await (userContext.authType === AuthType.AAD && !userContext.useSDKOperations
+    const database: DataModels.Database = await (userContext.authType === AuthType.AAD &&
+    !userContext.features.enableSDKoperations
       ? createDatabaseWithARM(params)
       : createDatabaseWithSDK(params));
 

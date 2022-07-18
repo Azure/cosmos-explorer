@@ -14,4 +14,5 @@ export enum StorageKey {
   MostRecentActivity,
   SetPartitionKeyUndefined,
   GalleryCalloutDismissed,
+  VisitedAccounts,
 }

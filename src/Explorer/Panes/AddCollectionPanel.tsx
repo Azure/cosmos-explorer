@@ -8,6 +8,7 @@ import {
   IconButton,
   IDropdownOption,
   Link,
+  ProgressIndicator,
   Separator,
   Stack,
   TeachingBubble,
@@ -21,6 +22,7 @@ import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { SubscriptionType } from "Contracts/SubscriptionType";
 import { useSidePanel } from "hooks/useSidePanel";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
 import { CollectionCreation } from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -42,7 +44,6 @@ export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
   isQuickstart?: boolean;
-  showTeachingBubble?: boolean;
 }
 
 const SharedDatabaseDefault: DataModels.IndexingPolicy = {
@@ -112,7 +113,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     this.state = {
       createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
-      newDatabaseId: props.isQuickstart ? "SampleDB" : "",
+      newDatabaseId: props.isQuickstart ? this.getSampleDBName() : "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
       selectedDatabaseId:
         userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : this.props.databaseId,
@@ -134,7 +135,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   componentDidMount(): void {
-    if (this.state.teachingBubbleStep === 0 && this.props.showTeachingBubble) {
+    if (this.state.teachingBubbleStep === 0 && this.props.isQuickstart) {
       this.setState({ teachingBubbleStep: 1 });
     }
   }
@@ -172,7 +173,19 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
             footerContent="Step 1 of 4"
           >
-            Database is the parent of a container, create a new database / use an existing one
+            <Stack>
+              <Text style={{ color: "white" }}>
+                Database is the parent of a container. You can create a new database or use an existing one. In this
+                tutorial we are creating a new database named SampleDB.
+              </Text>
+              <Link
+                style={{ color: "white", fontWeight: 600 }}
+                target="_blank"
+                href="https://aka.ms/TeachingbubbleResources"
+              >
+                Learn more about resources.
+              </Link>
+            </Stack>
           </TeachingBubble>
         )}
 
@@ -186,8 +199,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
             footerContent="Step 2 of 4"
           >
-            Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of
-            throughput based on the max RU/s set
+            <Stack>
+              <Text style={{ color: "white" }}>
+                Cosmos DB recommends sharing throughput across database. Autoscale will give you a flexible amount of
+                throughput based on the max RU/s set (Request Units).
+              </Text>
+              <Link style={{ color: "white", fontWeight: 600 }} target="_blank" href="https://aka.ms/teachingbubbleRU">
+                Learn more about RU/s.
+              </Link>
+            </Stack>
           </TeachingBubble>
         )}
 
@@ -213,7 +233,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             primaryButtonProps={{
               text: "Create container",
               onClick: () => {
-                this.setState({ teachingBubbleStep: 0 });
+                this.setState({ teachingBubbleStep: 5 });
                 this.submit();
               },
             }}
@@ -764,7 +784,35 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
 
-        {this.state.isExecuting && <PanelLoadingScreen />}
+        {this.state.isExecuting && (
+          <div>
+            <PanelLoadingScreen />
+            {this.state.teachingBubbleStep === 5 && (
+              <TeachingBubble
+                headline="Creating sample container"
+                target={"#loadingScreen"}
+                onDismiss={() => this.setState({ teachingBubbleStep: 0 })}
+                styles={{ footer: { width: "100%" } }}
+              >
+                A sample container is now being created and we are adding sample data for you. It should take about 1
+                minute.
+                <br />
+                <br />
+                Once the sample container is created, review your sample dataset and follow next steps
+                <br />
+                <br />
+                <ProgressIndicator
+                  styles={{
+                    itemName: { color: "white" },
+                    progressTrack: { backgroundColor: "#A6A6A6" },
+                    progressBar: { background: "white" },
+                  }}
+                  label="Adding sample data set"
+                />
+              </TeachingBubble>
+            )}
+          </div>
+        )}
       </form>
     );
   }
@@ -1078,6 +1126,23 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     document.getElementById("collapsibleSectionContent")?.scrollIntoView();
   }
 
+  private getSampleDBName(): string {
+    const existingSampleDBs = useDatabases
+      .getState()
+      .databases?.filter((database) => database.id().startsWith("SampleDB"));
+    const existingSampleDBNames = existingSampleDBs?.map((database) => database.id());
+    if (!existingSampleDBNames || existingSampleDBNames.length === 0) {
+      return "SampleDB";
+    }
+
+    let i = 1;
+    while (existingSampleDBNames.indexOf(`SampleDB${i}`) !== -1) {
+      i++;
+    }
+
+    return `SampleDB${i}`;
+  }
+
   private async submit(event?: React.FormEvent<HTMLFormElement>): Promise<void> {
     event?.preventDefault();
 
@@ -1128,6 +1193,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       subscriptionQuotaId: userContext.quotaId,
       dataExplorerArea: Constants.Areas.ContextualPane,
       useIndexingForSharedThroughput: this.state.enableIndexing,
+      isQuickstart: !!this.props.isQuickstart,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, telemetryData);
 
@@ -1174,12 +1240,22 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       await createCollection(createCollectionParams);
       await this.props.explorer.refreshAllDatabases();
       if (this.props.isQuickstart) {
-        const database = useDatabases.getState().findDatabaseWithId("SampleDB");
+        const database = useDatabases.getState().findDatabaseWithId(databaseId);
         if (database) {
+          database.isSampleDB = true;
+          // populate sample container with sample data
           await database.loadCollections();
-          const collection = database.findCollectionWithId("SampleContainer");
+          const collection = database.findCollectionWithId(collectionId);
+          collection.isSampleCollection = true;
+          useTeachingBubble.getState().setSampleCollection(collection);
           const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
-          sampleGenerator.populateContainerAsync(collection);
+          await sampleGenerator.populateContainerAsync(collection);
+          // auto-expand sample database + container and show teaching bubble
+          await database.expandDatabase();
+          collection.expandCollection();
+          useDatabases.getState().updateDatabase(database);
+          useTeachingBubble.getState().setIsSampleDBExpanded(true);
+          TelemetryProcessor.traceOpen(Action.LaunchUITour);
         }
       }
       this.setState({ isExecuting: false });

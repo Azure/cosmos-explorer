@@ -7,6 +7,11 @@ export interface DatabaseAccount {
   type: string;
   kind: string;
   properties: DatabaseAccountExtendedProperties;
+  systemData?: DatabaseAccountSystemData;
+}
+
+export interface DatabaseAccountSystemData {
+  createdAt: string;
 }
 
 export interface DatabaseAccountExtendedProperties {
@@ -433,16 +438,23 @@ export interface NotebookWorkspaceConnectionInfo {
 
 export interface ContainerInfo {
   durationLeftInMinutes: number;
-  notebookServerInfo: NotebookWorkspaceConnectionInfo;
+  phoenixServerInfo: NotebookWorkspaceConnectionInfo;
   status: ContainerStatusType;
 }
 
 export interface IProvisionData {
   cosmosEndpoint: string;
+  poolId: string;
 }
 
 export interface IContainerData {
   forwardingId: string;
+}
+
+export interface IDbAccountAllow {
+  status: number;
+  message?: string;
+  type?: string;
 }
 
 export interface IResponse<T> {
@@ -450,27 +462,27 @@ export interface IResponse<T> {
   data: T;
 }
 
-export interface IValidationError {
+export interface IPhoenixError {
   message: string;
   type: string;
 }
 
-export interface IMaxAllocationTimeExceeded extends IValidationError {
+export interface IMaxAllocationTimeExceeded extends IPhoenixError {
   earliestAllocationTimestamp: string;
   maxAllocationTimePerDayPerUserInMinutes: string;
 }
 
-export interface IMaxDbAccountsPerUserExceeded extends IValidationError {
+export interface IMaxDbAccountsPerUserExceeded extends IPhoenixError {
   maxSimultaneousConnectionsPerUser: string;
 }
 
-export interface IMaxUsersPerDbAccountExceeded extends IValidationError {
+export interface IMaxUsersPerDbAccountExceeded extends IPhoenixError {
   maxSimultaneousUsersPerDbAccount: string;
 }
 
 export interface IPhoenixConnectionInfoResult {
-  readonly notebookAuthToken?: string;
-  readonly notebookServerUrl?: string;
+  readonly authToken?: string;
+  readonly phoenixServiceUrl?: string;
   readonly forwardingId?: string;
 }
 
@@ -557,4 +569,6 @@ export enum PhoenixErrorType {
   AllocationValidationResult = "AllocationValidationResult",
   RegionNotServicable = "RegionNotServicable",
   SubscriptionNotAllowed = "SubscriptionNotAllowed",
+  UnknownError = "UnknownError",
+  PhoenixFlightFallback = "PhoenixFlightFallback",
 }

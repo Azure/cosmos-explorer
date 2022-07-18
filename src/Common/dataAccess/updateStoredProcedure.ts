@@ -20,9 +20,9 @@ export async function updateStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
-    const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
+    const { authType, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
 
-    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
+    if (authType === AuthType.AAD && !userContext.features.enableSDKoperations && apiType === "SQL") {
       const getResponse = await getSqlStoredProcedure(
         subscriptionId,
         resourceGroup,

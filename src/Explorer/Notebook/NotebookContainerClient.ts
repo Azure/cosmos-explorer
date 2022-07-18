@@ -5,7 +5,7 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import promiseRetry, { AbortError } from "p-retry";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import * as Constants from "../../Common/Constants";
-import { ConnectionStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../../Common/Constants";
+import { ConnectionStatusType, HttpHeaders, HttpStatusCodes, Notebook, PoolIdType } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
@@ -154,6 +154,7 @@ export class NotebookContainerClient {
       if (useNotebook.getState().isPhoenixNotebooks) {
         const provisionData: IProvisionData = {
           cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+          poolId: PoolIdType.DefaultPoolId,
         };
         return await this.phoenixClient.resetContainer(provisionData);
       }

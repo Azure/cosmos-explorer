@@ -6,30 +6,43 @@ import TabsBase from "../Explorer/Tabs/TabsBase";
 
 interface TabsState {
   openedTabs: TabsBase[];
+  openedReactTabs: ReactTabKind[];
   activeTab: TabsBase;
+  activeReactTab: ReactTabKind;
   activateTab: (tab: TabsBase) => void;
   activateNewTab: (tab: TabsBase) => void;
+  activateReactTab: (tabkind: ReactTabKind) => void;
   updateTab: (tab: TabsBase) => void;
   getTabs: (tabKind: ViewModels.CollectionTabKind, comparator?: (tab: TabsBase) => boolean) => TabsBase[];
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void;
   closeTabsByComparator: (comparator: (tab: TabsBase) => boolean) => void;
   closeTab: (tab: TabsBase) => void;
   closeAllNotebookTabs: (hardClose: boolean) => void;
+  openAndActivateReactTab: (tabKind: ReactTabKind) => void;
+  closeReactTab: (tabKind: ReactTabKind) => void;
+}
+
+export enum ReactTabKind {
+  Connect,
+  Home,
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedTabs: [],
+  openedReactTabs: [ReactTabKind.Home],
   activeTab: undefined,
+  activeReactTab: ReactTabKind.Home,
   activateTab: (tab: TabsBase): void => {
     if (get().openedTabs.some((openedTab) => openedTab.tabId === tab.tabId)) {
-      set({ activeTab: tab });
+      set({ activeTab: tab, activeReactTab: undefined });
       tab.onActivate();
     }
   },
   activateNewTab: (tab: TabsBase): void => {
-    set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab }));
+    set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, activeReactTab: undefined }));
     tab.onActivate();
   },
+  activateReactTab: (tabKind: ReactTabKind): void => set({ activeTab: undefined, activeReactTab: tabKind }),
   updateTab: (tab: TabsBase) => {
     if (get().activeTab?.tabId === tab.tabId) {
       set({ activeTab: tab });
@@ -66,7 +79,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       return true;
     });
     if (updatedTabs.length === 0) {
-      set({ activeTab: undefined });
+      set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
     }
 
     if (tab.tabId === activeTab.tabId && tabIndex !== -1) {
@@ -104,8 +117,27 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       });
 
       if (get().openedTabs.length === 0) {
-        set({ activeTab: undefined });
+        set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
       }
     }
+  },
+  openAndActivateReactTab: (tabKind: ReactTabKind) => {
+    if (get().openedReactTabs.indexOf(tabKind) === -1) {
+      set((state) => ({
+        openedReactTabs: [...state.openedReactTabs, tabKind],
+      }));
+    }
+
+    set({ activeTab: undefined, activeReactTab: tabKind });
+  },
+  closeReactTab: (tabKind: ReactTabKind) => {
+    const { activeReactTab, openedTabs, openedReactTabs } = get();
+    if (activeReactTab === tabKind) {
+      openedTabs?.length > 0
+        ? set({ activeTab: openedTabs[0], activeReactTab: undefined })
+        : set({ activeTab: undefined, activeReactTab: openedReactTabs[0] });
+    }
+
+    set({ openedReactTabs: openedReactTabs.filter((tab: ReactTabKind) => tabKind !== tab) });
   },
 }));

@@ -44,7 +44,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
     },
   ];
 
-  if (userContext.apiType !== "Tables") {
+  if (userContext.apiType !== "Tables" || userContext.features.enableSDKoperations) {
     items.push({
       iconSrc: DeleteDatabaseIcon,
       onClick: () =>

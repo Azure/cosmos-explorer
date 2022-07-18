@@ -2,6 +2,9 @@
 import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
 import { ChatButtonAction } from "Explorer/Controls/ChatButton/ChatButtonComponent";
+import { QuickstartCarousel } from "Explorer/Tutorials/QuickstartCarousel";
+import { QuickstartTutorial } from "Explorer/Tutorials/QuickstartTutorial";
+import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
@@ -45,12 +48,10 @@ import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
-import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
-import { useTabs } from "./hooks/useTabs";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 
@@ -58,7 +59,7 @@ initializeIcons();
 
 const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
-  const openedTabs = useTabs((state) => state.openedTabs);
+  const isCarouselOpen = useCarousel((state) => state.shouldOpen);
 
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform);
@@ -101,9 +102,7 @@ const App: React.FunctionComponent = () => {
               {/* Collections Tree Collapsed - End */}
             </div>
           </div>
-          {/* Collections Tree - End */}
-          {openedTabs.length === 0 && <SplashScreen explorer={explorer} />}
-          <Tabs />
+          <Tabs explorer={explorer} />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div className="chat">
@@ -121,6 +120,8 @@ const App: React.FunctionComponent = () => {
       </div>
       <SidePanel />
       <Dialog />
+      {<QuickstartCarousel isOpen={isCarouselOpen} />}
+      {<QuickstartTutorial />}
     </div>
   );
 };

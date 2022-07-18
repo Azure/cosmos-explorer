@@ -1,5 +1,4 @@
-import { OfferDefinition } from "@azure/cosmos";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { OfferDefinition, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -57,7 +56,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
   const clearMessage = logConsoleProgress(`Updating offer for ${offerResourceText}`);
 
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
       if (params.collectionId) {
         updatedOffer = await updateCollectionOfferWithARM(params);
       } else if (userContext.apiType === "Tables") {

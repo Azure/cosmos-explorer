@@ -1,5 +1,4 @@
-import { ContainerDefinition } from "@azure/cosmos";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { ContainerDefinition, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -34,7 +33,11 @@ export async function updateCollection(
   const clearMessage = logConsoleProgress(`Updating container ${collectionId}`);
 
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType !== "Tables"
+    ) {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {
       const sdkResponse = await client()

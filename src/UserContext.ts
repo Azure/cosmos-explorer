@@ -1,3 +1,6 @@
+import { useCarousel } from "hooks/useCarousel";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
@@ -33,7 +36,6 @@ interface UserContext {
   readonly accessToken?: string;
   readonly authorizationToken?: string;
   readonly resourceToken?: string;
-  readonly useSDKOperations: boolean;
   readonly subscriptionType?: SubscriptionType;
   readonly quotaId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
@@ -55,8 +57,9 @@ interface UserContext {
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
+const ONE_WEEK_IN_MS = 604800000;
+
 const features = extractFeatures();
-const { enableSDKoperations: useSDKOperations } = features;
 
 const userContext: UserContext = {
   apiType: "SQL",
@@ -64,15 +67,39 @@ const userContext: UserContext = {
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
   features,
-  useSDKOperations,
   addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
   collectionCreationDefaults: CollectionCreationDefaults,
 };
 
+function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
+  let createdAtMs: number = Date.parse(createdAt);
+  if (isNaN(createdAtMs)) {
+    createdAtMs = 0;
+  }
+
+  const nowMs: number = Date.now();
+  const millisecsSinceAccountCreation = nowMs - createdAtMs;
+  return threshold > millisecsSinceAccountCreation;
+}
+
 function updateUserContext(newContext: Partial<UserContext>): void {
   if (newContext.databaseAccount) {
     newContext.apiType = apiType(newContext.databaseAccount);
+
+    const isNewAccount = isAccountNewerThanThresholdInMs(
+      newContext.databaseAccount?.systemData?.createdAt || "",
+      ONE_WEEK_IN_MS
+    );
+
+    if (
+      !localStorage.getItem(newContext.databaseAccount.id) &&
+      (userContext.isTryCosmosDBSubscription || isNewAccount)
+    ) {
+      useCarousel.getState().setShouldOpen(true);
+      localStorage.setItem(newContext.databaseAccount.id, "true");
+      traceOpen(Action.OpenCarousel);
+    }
   }
   Object.assign(userContext, newContext);
 }
