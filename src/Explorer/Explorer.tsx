@@ -1,5 +1,6 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
+import { configContext } from "ConfigContext";
 import { IGalleryItem } from "Juno/JunoClient";
 import * as ko from "knockout";
 import React from "react";
@@ -34,6 +35,7 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -85,6 +87,12 @@ export default class Explorer {
   // Notebooks
   public notebookManager?: NotebookManager;
 
+  public conversationToken: ko.Observable<string>;
+  public userToken: ko.Observable<string>;
+  public subId: ko.Observable<string>;
+  public rg: ko.Observable<string>;
+  public accName: ko.Observable<string>;
+
   private _isInitializingNotebooks: boolean;
   private notebookToImport: {
     name: string;
@@ -105,6 +113,10 @@ export default class Explorer {
     );
 
     this.queriesClient = new QueriesClient(this);
+
+    this.conversationToken = ko.observable<string>();
+
+    this.generateConversationToken();
 
     useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
@@ -453,6 +465,30 @@ export default class Explorer {
       onSecondaryButtonClick: () => useDialog.getState().closeDialog(),
     };
     useDialog.getState().openDialog(resetConfirmationDialogProps);
+  }
+
+  private async generateConversationToken() {
+    const url = `${configContext.JUNO_ENDPOINT}/api/chatbot/bot${userContext.databaseAccount.id}/conversationToken`;
+    const authorizationHeader = getAuthorizationHeader();
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        [Constants.HttpHeaders.authorization]: authorizationHeader.token,
+        Accept: "application/json",
+        [Constants.HttpHeaders.contentType]: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+
+    const tokenResponse: { conversationId: string; token: string; expires_in: number } = await response.json();
+    this.conversationToken(tokenResponse?.token);
+    if (tokenResponse?.expires_in) {
+      setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
+    }
   }
 
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {

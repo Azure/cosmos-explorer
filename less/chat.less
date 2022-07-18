@@ -1,0 +1,23 @@
+@import "./Common/Constants";
+
+.chat {
+    display: grid;
+    justify-content: right;
+    padding: 10px;
+
+    .chatButton {
+        margin: 0 45px 15px 0;
+        border: 10px;
+        min-height: 44px;
+
+        &:focus {
+            outline: 0px;
+        }
+
+        >span {
+            font-size: 17px;
+            font-family: @DataExplorerFont;
+            color: @AccentLow;
+        }
+    }
+}
