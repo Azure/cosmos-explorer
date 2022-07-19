@@ -12,7 +12,11 @@ export async function deleteStoredProcedure(
 ): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting stored procedure ${storedProcedureId}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       await deleteSqlStoredProcedure(
         userContext.subscriptionId,
         userContext.resourceGroup,

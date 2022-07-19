@@ -3,35 +3,25 @@
  */
 import { Coachmark, DirectionalHint, Image, Link, Stack, TeachingBubbleContent, Text } from "@fluentui/react";
 import { useCarousel } from "hooks/useCarousel";
-import { useTabs } from "hooks/useTabs";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
-import AddDatabaseIcon from "../../../images/AddDatabase.svg";
-import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
-import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
-import OpenQueryIcon from "../../../images/BrowseQuery.svg";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebookColorIcon from "../../../images/Notebooks.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
-import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
-import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { useSidePanel } from "../../hooks/useSidePanel";
 import { userContext } from "../../UserContext";
-import { getCollectionName, getDatabaseName } from "../../Utils/APITypeUtils";
+import { getCollectionName } from "../../Utils/APITypeUtils";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
-import { AddDatabasePanel } from "../Panes/AddDatabasePanel/AddDatabasePanel";
-import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -234,101 +224,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       iconSrc: ConnectIcon,
       title: "Connect",
       description: "Prefer using your own choice of tooling? Find the connection string you need to connect",
-      onClick: () => useTabs.getState().openAndActivateConnectTab(),
+      onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
     };
     heroes.push(connectBtn);
 
     return heroes;
-  }
-
-  private createCommonTaskItems(): SplashScreenItem[] {
-    const items: SplashScreenItem[] = [];
-
-    if (userContext.authType === AuthType.ResourceToken) {
-      return items;
-    }
-
-    if (!useSelectedNode.getState().isDatabaseNodeOrNoneSelected()) {
-      if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
-        items.push({
-          iconSrc: NewQueryIcon,
-          onClick: () => {
-            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined);
-          },
-          title: "New SQL Query",
-          description: undefined,
-        });
-      } else if (userContext.apiType === "Mongo") {
-        items.push({
-          iconSrc: NewQueryIcon,
-          onClick: () => {
-            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
-          },
-          title: "New Query",
-          description: undefined,
-        });
-      }
-
-      if (userContext.apiType === "SQL") {
-        items.push({
-          iconSrc: OpenQueryIcon,
-          title: "Open Query",
-          description: undefined,
-          onClick: () =>
-            useSidePanel
-              .getState()
-              .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.container} />),
-        });
-      }
-
-      if (userContext.apiType !== "Cassandra") {
-        items.push({
-          iconSrc: NewStoredProcedureIcon,
-          title: "New Stored Procedure",
-          description: undefined,
-          onClick: () => {
-            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
-          },
-        });
-      }
-
-      /* Scale & Settings */
-      const isShared = useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
-
-      const label = isShared ? "Settings" : "Scale & Settings";
-      items.push({
-        iconSrc: ScaleAndSettingsIcon,
-        title: label,
-        description: undefined,
-        onClick: () => {
-          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-          selectedCollection && selectedCollection.onSettingsClick();
-        },
-      });
-    } else {
-      items.push({
-        iconSrc: AddDatabaseIcon,
-        title: "New " + getDatabaseName(),
-        description: undefined,
-        onClick: async () => {
-          const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
-          if (throughputCap && throughputCap !== -1) {
-            await useDatabases.getState().loadAllOffers();
-          }
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "New " + getDatabaseName(),
-              <AddDatabasePanel explorer={this.container} buttonElement={document.activeElement as HTMLElement} />
-            );
-        },
-      });
-    }
-
-    return items;
   }
 
   private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
@@ -370,29 +270,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           return this.decorateOpenCollectionActivity(activity);
       }
     });
-  }
-
-  private createTipsItems(): SplashScreenItem[] {
-    return [
-      {
-        iconSrc: undefined,
-        title: "Data Modeling",
-        description: "Learn more about modeling",
-        onClick: () => window.open(SplashScreen.dataModelingUrl),
-      },
-      {
-        iconSrc: undefined,
-        title: "Cost & Throughput Calculation",
-        description: "Learn more about cost calculation",
-        onClick: () => window.open(SplashScreen.throughputEstimatorUrl),
-      },
-      {
-        iconSrc: undefined,
-        title: "Configure automatic failover",
-        description: "Learn more about Cosmos DB high-availability",
-        onClick: () => window.open(SplashScreen.failoverUrl),
-      },
-    ];
   }
 
   private onSplashScreenItemKeyPress(event: React.KeyboardEvent, callback: () => void) {

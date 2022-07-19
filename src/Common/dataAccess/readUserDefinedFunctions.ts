@@ -11,9 +11,9 @@ export async function readUserDefinedFunctions(
   collectionId: string
 ): Promise<(UserDefinedFunctionDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying user defined functions for container ${collectionId}`);
-  const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const { authType, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
-    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
+    if (authType === AuthType.AAD && !userContext.features.enableSDKoperations && apiType === "SQL") {
       const rpResponse = await listSqlUserDefinedFunctions(
         subscriptionId,
         resourceGroup,

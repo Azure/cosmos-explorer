@@ -12,7 +12,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function deleteCollection(databaseId: string, collectionId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting container ${collectionId}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
       await deleteCollectionWithARM(databaseId, collectionId);
     } else {
       await client().database(databaseId).container(collectionId).delete();

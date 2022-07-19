@@ -6,37 +6,43 @@ import TabsBase from "../Explorer/Tabs/TabsBase";
 
 interface TabsState {
   openedTabs: TabsBase[];
+  openedReactTabs: ReactTabKind[];
   activeTab: TabsBase;
-  isConnectTabOpen: boolean;
-  isConnectTabActive: boolean;
+  activeReactTab: ReactTabKind;
   activateTab: (tab: TabsBase) => void;
   activateNewTab: (tab: TabsBase) => void;
+  activateReactTab: (tabkind: ReactTabKind) => void;
   updateTab: (tab: TabsBase) => void;
   getTabs: (tabKind: ViewModels.CollectionTabKind, comparator?: (tab: TabsBase) => boolean) => TabsBase[];
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void;
   closeTabsByComparator: (comparator: (tab: TabsBase) => boolean) => void;
   closeTab: (tab: TabsBase) => void;
   closeAllNotebookTabs: (hardClose: boolean) => void;
-  activateConnectTab: () => void;
-  openAndActivateConnectTab: () => void;
-  closeConnectTab: () => void;
+  openAndActivateReactTab: (tabKind: ReactTabKind) => void;
+  closeReactTab: (tabKind: ReactTabKind) => void;
+}
+
+export enum ReactTabKind {
+  Connect,
+  Home,
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedTabs: [],
+  openedReactTabs: [ReactTabKind.Home],
   activeTab: undefined,
-  isConnectTabOpen: false,
-  isConnectTabActive: false,
+  activeReactTab: ReactTabKind.Home,
   activateTab: (tab: TabsBase): void => {
     if (get().openedTabs.some((openedTab) => openedTab.tabId === tab.tabId)) {
-      set({ activeTab: tab, isConnectTabActive: false });
+      set({ activeTab: tab, activeReactTab: undefined });
       tab.onActivate();
     }
   },
   activateNewTab: (tab: TabsBase): void => {
-    set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, isConnectTabActive: false }));
+    set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, activeReactTab: undefined }));
     tab.onActivate();
   },
+  activateReactTab: (tabKind: ReactTabKind): void => set({ activeTab: undefined, activeReactTab: tabKind }),
   updateTab: (tab: TabsBase) => {
     if (get().activeTab?.tabId === tab.tabId) {
       set({ activeTab: tab });
@@ -73,7 +79,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       return true;
     });
     if (updatedTabs.length === 0) {
-      set({ activeTab: undefined, isConnectTabActive: get().isConnectTabOpen });
+      set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
     }
 
     if (tab.tabId === activeTab.tabId && tabIndex !== -1) {
@@ -111,21 +117,27 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       });
 
       if (get().openedTabs.length === 0) {
-        set({ activeTab: undefined, isConnectTabActive: get().isConnectTabOpen });
+        set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
       }
     }
   },
-  activateConnectTab: () => {
-    if (get().isConnectTabOpen) {
-      set({ isConnectTabActive: true, activeTab: undefined });
+  openAndActivateReactTab: (tabKind: ReactTabKind) => {
+    if (get().openedReactTabs.indexOf(tabKind) === -1) {
+      set((state) => ({
+        openedReactTabs: [...state.openedReactTabs, tabKind],
+      }));
     }
+
+    set({ activeTab: undefined, activeReactTab: tabKind });
   },
-  openAndActivateConnectTab: () => set({ isConnectTabActive: true, isConnectTabOpen: true, activeTab: undefined }),
-  closeConnectTab: () => {
-    const { isConnectTabActive, openedTabs } = get();
-    if (isConnectTabActive && openedTabs?.length > 0) {
-      set({ activeTab: openedTabs[0] });
+  closeReactTab: (tabKind: ReactTabKind) => {
+    const { activeReactTab, openedTabs, openedReactTabs } = get();
+    if (activeReactTab === tabKind) {
+      openedTabs?.length > 0
+        ? set({ activeTab: openedTabs[0], activeReactTab: undefined })
+        : set({ activeTab: undefined, activeReactTab: openedReactTabs[0] });
     }
-    set({ isConnectTabActive: false, isConnectTabOpen: false });
+
+    set({ openedReactTabs: openedReactTabs.filter((tab: ReactTabKind) => tabKind !== tab) });
   },
 }));

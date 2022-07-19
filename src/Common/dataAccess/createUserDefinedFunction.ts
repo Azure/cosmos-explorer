@@ -20,7 +20,11 @@ export async function createUserDefinedFunction(
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating user defined function ${userDefinedFunction.id}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       try {
         const getResponse = await getSqlUserDefinedFunction(
           userContext.subscriptionId,

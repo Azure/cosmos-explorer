@@ -13,7 +13,11 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType !== "Tables"
+    ) {
       databases = await readDatabasesWithARM();
     } else {
       const sdkResponse = await client().databases.readAll().fetchAll();

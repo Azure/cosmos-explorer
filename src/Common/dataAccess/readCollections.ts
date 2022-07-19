@@ -13,7 +13,11 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType !== "Tables"
+    ) {
       return await readCollectionsWithARM(databaseId);
     }
 

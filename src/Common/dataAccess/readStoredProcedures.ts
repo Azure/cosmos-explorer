@@ -12,7 +12,11 @@ export async function readStoredProcedures(
 ): Promise<(StoredProcedureDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying stored procedures for container ${collectionId}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations &&
+      userContext.apiType === "SQL"
+    ) {
       const rpResponse = await listSqlStoredProcedures(
         userContext.subscriptionId,
         userContext.resourceGroup,
