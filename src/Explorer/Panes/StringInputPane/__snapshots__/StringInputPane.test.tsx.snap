@@ -9,6 +9,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
     Explorer {
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
+      "conversationToken": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isTabsContentExpanded": [Function],
       "onRefreshDatabasesKeyPress": [Function],
