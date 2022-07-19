@@ -21,7 +21,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse,
+  IResponse
 } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
@@ -468,26 +468,35 @@ export default class Explorer {
   }
 
   private async generateConversationToken() {
+    if (!userContext.databaseAccount || !userContext.databaseAccount.id) {
+      console.error("Database account undefined");
+      return;
+    }
     const url = `${configContext.JUNO_ENDPOINT}/api/chatbot/bot${userContext.databaseAccount.id}/conversationToken`;
     const authorizationHeader = getAuthorizationHeader();
+    
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          [Constants.HttpHeaders.authorization]: authorizationHeader.token,
+          Accept: "application/json",
+          [Constants.HttpHeaders.contentType]: "application/json",
+        },
+      });
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        [Constants.HttpHeaders.authorization]: authorizationHeader.token,
-        Accept: "application/json",
-        [Constants.HttpHeaders.contentType]: "application/json",
-      },
-    });
+      if (!response.ok) {
+        throw new Error(await response.json());
+      }
 
-    if (!response.ok) {
-      throw new Error(await response.json());
-    }
-
-    const tokenResponse: { conversationId: string; token: string; expires_in: number } = await response.json();
-    this.conversationToken(tokenResponse?.token);
-    if (tokenResponse?.expires_in) {
-      setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
+      const tokenResponse: { conversationId: string; token: string; expires_in: number } = await response.json();
+      this.conversationToken(tokenResponse?.token);
+      if (tokenResponse?.expires_in) {
+        setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
+      }
+    } catch (error) {
+      console.error("Error fetching conversation token");
+      console.error(error);
     }
   }
 
