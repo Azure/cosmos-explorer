@@ -19,6 +19,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
           "container": Explorer {
             "_isInitializingNotebooks": false,
             "_resetNotebookWorkspace": [Function],
+            "chatbotClient": ChatbotClient {},
             "conversationToken": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isTabsContentExpanded": [Function],

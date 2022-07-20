@@ -1,6 +1,5 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
-import { configContext } from "ConfigContext";
 import { IGalleryItem } from "Juno/JunoClient";
 import * as ko from "knockout";
 import React from "react";
@@ -9,6 +8,7 @@ import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValid
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
+import { ChatbotClient } from "../Chatbot/ChatbotClient";
 import * as Constants from "../Common/Constants";
 import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
@@ -21,7 +21,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
@@ -35,7 +35,6 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -101,12 +100,14 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
   private phoenixClient: PhoenixClient;
+  private chatbotClient: ChatbotClient;
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this._isInitializingNotebooks = false;
     this.phoenixClient = new PhoenixClient();
+    this.chatbotClient = new ChatbotClient();
     useNotebook.subscribe(
       () => this.refreshCommandBarButtons(),
       (state) => state.isNotebooksEnabledForAccount
@@ -468,33 +469,14 @@ export default class Explorer {
   }
 
   private async generateConversationToken() {
-    if (!userContext.databaseAccount || !userContext.databaseAccount.id) {
-      return;
-    }
-    const url = `${configContext.JUNO_ENDPOINT}/api/chatbot/bot${userContext.databaseAccount.id}/conversationToken`;
-    const authorizationHeader = getAuthorizationHeader();
-
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          [Constants.HttpHeaders.authorization]: authorizationHeader.token,
-          Accept: "application/json",
-          [Constants.HttpHeaders.contentType]: "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(await response.json());
-      }
-
-      const tokenResponse: { conversationId: string; token: string; expires_in: number } = await response.json();
+      const tokenResponse = await this.chatbotClient.getConversationToken();
       this.conversationToken(tokenResponse?.token);
       if (tokenResponse?.expires_in) {
         setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
       }
     } catch (error) {
-      console.error("Error fetching conversation token");
+      console.error("Exception while getting conversation token");
       console.error(error);
     }
   }

@@ -30,6 +30,7 @@ exports[`SettingsComponent renders 1`] = `
               "container": Explorer {
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
+                "chatbotClient": ChatbotClient {},
                 "conversationToken": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
@@ -107,6 +108,7 @@ exports[`SettingsComponent renders 1`] = `
               "container": Explorer {
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
+                "chatbotClient": ChatbotClient {},
                 "conversationToken": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
