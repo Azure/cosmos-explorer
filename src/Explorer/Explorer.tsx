@@ -117,8 +117,6 @@ export default class Explorer {
 
     this.conversationToken = ko.observable<string>();
 
-    this.generateConversationToken();
-
     useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
       this.isTabsContentExpanded(false);
@@ -1298,6 +1296,9 @@ export default class Explorer {
 
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
+    }
+    if (userContext.features.enableChatbot) {
+      this.generateConversationToken();
     }
   }
 }
