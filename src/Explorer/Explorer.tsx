@@ -469,6 +469,10 @@ export default class Explorer {
   }
 
   private async generateConversationToken() {
+    if (userContext.databaseAccount === undefined || !userContext.databaseAccount.id === undefined) {
+      console.error("Database account not set");
+      return;
+    }
     try {
       const tokenResponse = await this.chatbotClient.getConversationToken();
       this.conversationToken(tokenResponse?.token);
