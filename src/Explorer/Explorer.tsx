@@ -469,12 +469,11 @@ export default class Explorer {
 
   private async generateConversationToken() {
     if (!userContext.databaseAccount || !userContext.databaseAccount.id) {
-      console.error("Database account undefined");
       return;
     }
     const url = `${configContext.JUNO_ENDPOINT}/api/chatbot/bot${userContext.databaseAccount.id}/conversationToken`;
     const authorizationHeader = getAuthorizationHeader();
-    
+
     try {
       const response = await fetch(url, {
         method: "GET",
