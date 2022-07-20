@@ -469,8 +469,7 @@ export default class Explorer {
   }
 
   private async generateConversationToken() {
-    if (userContext.databaseAccount === undefined || !userContext.databaseAccount.id === undefined) {
-      console.error("Database account not set");
+    if (userContext.databaseAccount === undefined || userContext.databaseAccount.id === undefined) {
       return;
     }
     try {
