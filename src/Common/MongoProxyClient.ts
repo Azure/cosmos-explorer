@@ -2,7 +2,6 @@ import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import queryString from "querystring";
 import { allowedMongoProxyEndpoints, validateEndpoint } from "Utils/EndpointValidation";
 import { AuthType } from "../AuthType";
-import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
@@ -299,7 +298,7 @@ export function createMongoCollectionWithProxy(
     db: params.databaseId,
     coll: params.collectionId,
     pk: shardKey,
-    offerThroughput: params.offerThroughput,
+    offerThroughput: params.autoPilotMaxThroughput || params.offerThroughput,
     cd: params.createNewDatabase,
     st: params.databaseLevelThroughput,
     is: !!shardKey,
@@ -309,7 +308,6 @@ export function createMongoCollectionWithProxy(
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     isAutoPilot: !!params.autoPilotMaxThroughput,
-    autoPilotThroughput: params.autoPilotMaxThroughput?.toString(),
   };
 
   const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");
