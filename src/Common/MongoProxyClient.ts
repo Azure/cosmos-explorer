@@ -2,6 +2,7 @@ import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import queryString from "querystring";
 import { allowedMongoProxyEndpoints, validateEndpoint } from "Utils/EndpointValidation";
 import { AuthType } from "../AuthType";
+import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
