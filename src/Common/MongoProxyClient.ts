@@ -299,7 +299,7 @@ export function createMongoCollectionWithProxy(
     db: params.databaseId,
     coll: params.collectionId,
     pk: shardKey,
-    offerThroughput: params.offerThroughput,
+    offerThroughput: params.autoPilotMaxThroughput || params.offerThroughput,
     cd: params.createNewDatabase,
     st: params.databaseLevelThroughput,
     is: !!shardKey,
@@ -309,7 +309,6 @@ export function createMongoCollectionWithProxy(
     rg: userContext.resourceGroup,
     dba: databaseAccount.name,
     isAutoPilot: !!params.autoPilotMaxThroughput,
-    autoPilotThroughput: params.autoPilotMaxThroughput?.toString(),
   };
 
   const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");
