@@ -26,6 +26,7 @@ import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { SupportPaneComponent } from "../../Controls/SupportPaneComponent/SupportPaneComponent";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
@@ -194,6 +195,35 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
 
   const showOpenFullScreen =
     configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
+
+  if (userContext.authType === AuthType.AAD && userContext.features.enableChatbot) {
+    const label = "Chat Assistant";
+    const supportPaneButton: CommandButtonComponentProps = {
+      iconName: "ChatBot",
+      iconAlt: label,
+      onCommandClick: () => {
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Chat Assistant (Beta)",
+            <SupportPaneComponent
+              directLineToken={container.conversationToken()}
+              userToken={userContext.authorizationToken}
+              subId={userContext.subscriptionId}
+              rg={userContext.resourceGroup}
+              accName={userContext.databaseAccount.name}
+            />
+          );
+      },
+      commandButtonLabel: null,
+      ariaLabel: label,
+      tooltipText: label,
+      hasPopup: true,
+      disabled: false,
+      className: "fonticoncustom",
+    };
+    buttons.push(supportPaneButton);
+  }
 
   if (showOpenFullScreen) {
     const label = "Open Full Screen";

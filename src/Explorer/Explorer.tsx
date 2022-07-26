@@ -8,6 +8,7 @@ import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValid
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
+import { ChatbotClient } from "../Chatbot/ChatbotClient";
 import * as Constants from "../Common/Constants";
 import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
@@ -85,6 +86,12 @@ export default class Explorer {
   // Notebooks
   public notebookManager?: NotebookManager;
 
+  public conversationToken: ko.Observable<string>;
+  public userToken: ko.Observable<string>;
+  public subId: ko.Observable<string>;
+  public rg: ko.Observable<string>;
+  public accName: ko.Observable<string>;
+
   private _isInitializingNotebooks: boolean;
   private notebookToImport: {
     name: string;
@@ -93,18 +100,22 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
   private phoenixClient: PhoenixClient;
+  private chatbotClient: ChatbotClient;
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this._isInitializingNotebooks = false;
     this.phoenixClient = new PhoenixClient();
+    this.chatbotClient = new ChatbotClient();
     useNotebook.subscribe(
       () => this.refreshCommandBarButtons(),
       (state) => state.isNotebooksEnabledForAccount
     );
 
     this.queriesClient = new QueriesClient(this);
+
+    this.conversationToken = ko.observable<string>();
 
     useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
@@ -453,6 +464,22 @@ export default class Explorer {
       onSecondaryButtonClick: () => useDialog.getState().closeDialog(),
     };
     useDialog.getState().openDialog(resetConfirmationDialogProps);
+  }
+
+  private async generateConversationToken() {
+    if (userContext.databaseAccount === undefined || userContext.databaseAccount.id === undefined) {
+      return;
+    }
+    try {
+      const tokenResponse = await this.chatbotClient.getConversationToken();
+      this.conversationToken(tokenResponse?.token);
+      if (tokenResponse?.expires_in) {
+        setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
+      }
+    } catch (error) {
+      console.error("Exception while getting conversation token");
+      console.error(error);
+    }
   }
 
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
@@ -1269,6 +1296,9 @@ export default class Explorer {
 
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
+    }
+    if (userContext.features.enableChatbot) {
+      this.generateConversationToken();
     }
   }
 }
