@@ -19,8 +19,6 @@ import {
   IContainerData,
   IDbAccountAllow,
   IMaxAllocationTimeExceeded,
-  IMaxDbAccountsPerUserExceeded,
-  IMaxUsersPerDbAccountExceeded,
   IPhoenixConnectionInfoResult,
   IPhoenixError,
   IProvisionData,
@@ -240,34 +238,13 @@ export class PhoenixClient {
         const maxAllocationTimeExceeded = errInfo as IMaxAllocationTimeExceeded;
         const allocateAfterTimestamp = new Date(maxAllocationTimeExceeded?.earliestAllocationTimestamp);
         allocateAfterTimestamp.setDate(allocateAfterTimestamp.getDate() + 1);
-        return (
-          `${errInfo.message}` +
-          " Max allocation time for a day to a user is " +
-          `${maxAllocationTimeExceeded.maxAllocationTimePerDayPerUserInMinutes}` +
-          ". Please try again after " +
-          `${allocateAfterTimestamp.toLocaleString()}`
-        );
+        return `${errInfo.message}` + ". Please try again after " + `${allocateAfterTimestamp.toLocaleString()}`;
       }
-      case PhoenixErrorType.MaxDbAccountsPerUserExceeded: {
-        const maxDbAccountsPerUserExceeded = errInfo as IMaxDbAccountsPerUserExceeded;
-        return (
-          `${errInfo.message}` +
-          " Max simultaneous connections allowed per user is " +
-          `${maxDbAccountsPerUserExceeded.maxSimultaneousConnectionsPerUser}` +
-          "."
-        );
-      }
-      case PhoenixErrorType.MaxUsersPerDbAccountExceeded: {
-        const maxUsersPerDbAccountExceeded = errInfo as IMaxUsersPerDbAccountExceeded;
-        return (
-          `${errInfo.message}` +
-          " Max simultaneous users allowed per DbAccount is " +
-          `${maxUsersPerDbAccountExceeded.maxSimultaneousUsersPerDbAccount}` +
-          "."
-        );
-      }
+      case PhoenixErrorType.MaxDbAccountsPerUserExceeded:
+      case PhoenixErrorType.MaxUsersPerDbAccountExceeded:
       case PhoenixErrorType.AllocationValidationResult:
       case PhoenixErrorType.RegionNotServicable:
+      case PhoenixErrorType.UserMissingPermissionsError:
       case PhoenixErrorType.SubscriptionNotAllowed: {
         return `${errInfo.message}`;
       }

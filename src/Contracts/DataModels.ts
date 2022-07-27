@@ -571,4 +571,5 @@ export enum PhoenixErrorType {
   SubscriptionNotAllowed = "SubscriptionNotAllowed",
   UnknownError = "UnknownError",
   PhoenixFlightFallback = "PhoenixFlightFallback",
+  UserMissingPermissionsError = "UserMissingPermissionsError",
 }
