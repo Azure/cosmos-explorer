@@ -25,6 +25,7 @@ export class SupportPaneComponent extends React.Component<SupportPaneComponentPr
       bubbleBackground: "rgba(0, 0, 255, .1)",
       bubbleFromUserBackground: "rgba(0, 255, 0, .1)",
       suggestedActionLayout: 'flow',
+      markdownRespectCRLF: true,
     };
 
     const directLine = BotFramework.createDirectLine({ token: this.props.directLineToken });
@@ -33,7 +34,7 @@ export class SupportPaneComponent extends React.Component<SupportPaneComponentPr
       postActivity: (activity: Activity) => {
         activity.channelData.token = this.props.userToken;
         activity.channelData.subId = this.props.subId;
-        activity.channelData.rg = this.props.rg; // resource group
+        activity.channelData.rg = this.props.rg;
         activity.channelData.accName = this.props.accName;
 
         return directLine.postActivity(activity);
