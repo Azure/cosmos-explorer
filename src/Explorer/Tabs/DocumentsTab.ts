@@ -811,6 +811,7 @@ export default class DocumentsTab extends TabsBase {
         ariaLabel: label,
         hasPopup: false,
         disabled: !this.newDocumentButton.enabled(),
+        id: "mongoNewDocumentBtn",
       });
     }
 

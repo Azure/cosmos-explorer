@@ -6,7 +6,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceCancel, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 
-export const QuickstartTutorial: React.FC = (): JSX.Element => {
+export const MongoQuickstartTutorial: React.FC = (): JSX.Element => {
   const { step, isSampleDBExpanded, isDocumentsTabOpened, sampleCollection, setStep } = useTeachingBubble();
 
   const onDimissTeachingBubble = (): void => {
@@ -14,7 +14,7 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
     traceCancel(Action.CancelUITour, { step });
   };
 
-  if (userContext.apiType !== "SQL") {
+  if (userContext.apiType !== "Mongo") {
     return <></>;
   }
 
@@ -33,9 +33,9 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             },
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 1 of 7"
+          footerContent="Step 1 of 8"
         >
-          Start viewing and working with your data by opening Items under Data
+          Start viewing and working with your data by opening Documents under Data
         </TeachingBubble>
       ) : (
         <></>
@@ -43,8 +43,8 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
     case 2:
       return isDocumentsTabOpened ? (
         <TeachingBubble
-          headline="View item"
-          target={".queryButton"}
+          headline="View Documents"
+          target={".documentsGridHeaderContainer"}
           hasCloseButton
           primaryButtonProps={{
             text: "Next",
@@ -55,10 +55,10 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(1),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 2 of 7"
+          footerContent="Step 2 of 8"
         >
-          View item here using the items window. Additionally you can also filter items to be reviewed with the filter
-          function
+          View documents here using the documents window. You can also use your favorite MongoDB tools and drivers to do
+          so.
         </TeachingBubble>
       ) : (
         <></>
@@ -66,8 +66,8 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
     case 3:
       return (
         <TeachingBubble
-          headline="Add new item"
-          target={"#uploadItemBtn"}
+          headline="Add new document"
+          target={"#mongoNewDocumentBtn"}
           hasCloseButton
           primaryButtonProps={{
             text: "Next",
@@ -78,16 +78,17 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(2),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 3 of 7"
+          footerContent="Step 3 of 8"
         >
-          Add new item by copy / pasting JSON; or uploading a JSON
+          Add new document by copy / pasting JSON or uploading a JSON. You can also use your favorite MongoDB tools and
+          drivers to do so.
         </TeachingBubble>
       );
     case 4:
       return (
         <TeachingBubble
           headline="Run a query"
-          target={"#newQueryBtn"}
+          target={".querydropdown"}
           hasCloseButton
           primaryButtonProps={{
             text: "Next",
@@ -98,9 +99,10 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(3),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 4 of 7"
+          footerContent="Step 4 of 8"
         >
-          Query your data using either the filter function or new query.
+          Query your data using the filter function. Azure Cosmos DB API for MongoDB provides comprehensive support for
+          MongoDB query language constructs. You can also use your favorite MongoDB tools and drivers to do so.
         </TeachingBubble>
       );
     case 5:
@@ -118,16 +120,16 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(4),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 5 of 7"
+          footerContent="Step 5 of 8"
         >
-          Change throughput provisioned to your container according to your needs
+          Change throughput provisioned to your collection according to your needs
         </TeachingBubble>
       );
     case 6:
       return (
         <TeachingBubble
-          headline="Create notebook"
-          target={"#newNotebookBtn"}
+          headline="Indexing Policy"
+          target={"#sampleSettings"}
           hasCloseButton
           primaryButtonProps={{
             text: "Next",
@@ -138,12 +140,32 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(5),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 6 of 7"
+          footerContent="Step 6 of 8"
+        >
+          Use the indexing policy editor to create and edit your indexes.
+        </TeachingBubble>
+      );
+    case 7:
+      return (
+        <TeachingBubble
+          headline="Create notebook"
+          target={"#newNotebookBtn"}
+          hasCloseButton
+          primaryButtonProps={{
+            text: "Next",
+            onClick: () => setStep(8),
+          }}
+          secondaryButtonProps={{
+            text: "Previous",
+            onClick: () => setStep(6),
+          }}
+          onDismiss={() => onDimissTeachingBubble()}
+          footerContent="Step 7 of 8"
         >
           Visualize your data, store queries in an interactive document
         </TeachingBubble>
       );
-    case 7:
+    case 8:
       return (
         <TeachingBubble
           headline="Congratulations!"
@@ -158,10 +180,10 @@ export const QuickstartTutorial: React.FC = (): JSX.Element => {
           }}
           secondaryButtonProps={{
             text: "Previous",
-            onClick: () => setStep(6),
+            onClick: () => setStep(7),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 7 of 7"
+          footerContent="Step 8 of 8"
         >
           <Stack>
             <Text style={{ color: "white" }}>

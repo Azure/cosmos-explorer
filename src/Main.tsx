@@ -1,6 +1,7 @@
 // CSS Dependencies
 import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
+import { MongoQuickstartTutorial } from "Explorer/Tutorials/MongoQuickstartTutorial";
 import { QuickstartCarousel } from "Explorer/Tutorials/QuickstartCarousel";
 import { QuickstartTutorial } from "Explorer/Tutorials/QuickstartTutorial";
 import { useCarousel } from "hooks/useCarousel";
@@ -116,6 +117,7 @@ const App: React.FunctionComponent = () => {
       <Dialog />
       {<QuickstartCarousel isOpen={isCarouselOpen} />}
       {<QuickstartTutorial />}
+      {<MongoQuickstartTutorial />}
     </div>
   );
 };
