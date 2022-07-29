@@ -42,9 +42,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, activeReactTab: undefined }));
     tab.onActivate();
   },
-  activateReactTab: (tabKind: ReactTabKind): void => {
-    set({ activeTab: undefined, activeReactTab: tabKind });
-  },
+  activateReactTab: (tabKind: ReactTabKind): void => set({ activeTab: undefined, activeReactTab: tabKind }),
   updateTab: (tab: TabsBase) => {
     if (get().activeTab?.tabId === tab.tabId) {
       set({ activeTab: tab });
