@@ -531,8 +531,13 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     }
 
     if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
+      let id = "";
+      if (collection.isSampleCollection) {
+        id = database.isDatabaseShared() ? "sampleSettings" : "sampleScaleSettings";
+      }
+
       children.push({
-        id: collection.isSampleCollection && !database.isDatabaseShared() ? "sampleScaleSettings" : "",
+        id,
         label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
         isSelected: () =>

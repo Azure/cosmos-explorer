@@ -28,6 +28,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   isSharded,
   isFreeTier,
   showFreeTierExceedThroughputTooltip,
+  isQuickstart,
   setThroughputValue,
   setIsAutoscale,
   setIsThroughputCapExceeded,
@@ -35,7 +36,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 }: ThroughputInputProps) => {
   const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
   const [throughput, setThroughput] = useState<number>(
-    isFreeTier ? AutoPilotUtils.autoPilotThroughput1K : AutoPilotUtils.autoPilotThroughput4K
+    isFreeTier || isQuickstart ? AutoPilotUtils.autoPilotThroughput1K : AutoPilotUtils.autoPilotThroughput4K
   );
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
   const [throughputError, setThroughputError] = useState<string>("");

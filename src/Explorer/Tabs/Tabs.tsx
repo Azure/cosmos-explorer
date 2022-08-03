@@ -120,7 +120,10 @@ const CloseButton = ({
     role="button"
     aria-label="Close Tab"
     className="cancelButton"
-    onClick={() => (tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind))}
+    onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+      event.stopPropagation();
+      tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+    }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
   >

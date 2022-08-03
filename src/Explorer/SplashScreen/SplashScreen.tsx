@@ -190,11 +190,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: QuickStartIcon,
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
-        showLinkIcon: userContext.apiType === "Mongo",
         onClick: () => {
-          userContext.apiType === "Mongo"
-            ? window.open("http://aka.ms/mongodbquickstart", "_blank")
-            : this.container.onNewCollectionClicked({ isQuickstart: true });
+          this.container.onNewCollectionClicked({ isQuickstart: true });
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
       };
