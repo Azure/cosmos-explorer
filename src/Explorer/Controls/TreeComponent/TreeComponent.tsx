@@ -42,6 +42,8 @@ export interface TreeNode {
   timestamp?: number;
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
   isLoading?: boolean;
+  isDisabled?: boolean;
+  toolTip?: string;
   isSelected?: () => boolean;
   onClick?: (isExpanded: boolean) => void; // Only if a leaf, other click will expand/collapse
   onExpanded?: () => void;
@@ -169,9 +171,15 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
 
     return (
       <div
-        className={`${this.props.node.className || ""} main${generation} nodeItem ${showSelected ? "selected" : ""}`}
-        onClick={(event: React.MouseEvent<HTMLDivElement>) => this.onNodeClick(event, node)}
-        onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) => this.onNodeKeyPress(event, node)}
+        className={`${this.props.node.className || ""} main${generation} nodeItem ${showSelected ? "selected" : ""} ${
+          this.props.node.isDisabled ? "disable" : ""
+        }`}
+        onClick={(event: React.MouseEvent<HTMLDivElement>) =>
+          !this.props.node.isDisabled && this.onNodeClick(event, node)
+        }
+        onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) =>
+          !this.props.node.isDisabled && this.onNodeKeyPress(event, node)
+        }
         role="treeitem"
         id={node.id}
       >
@@ -184,7 +192,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
           {this.renderCollapseExpandIcon(node)}
           {node.iconSrc && <img className="nodeIcon" src={node.iconSrc} alt="" />}
           {node.label && (
-            <span className="nodeLabel" title={node.label}>
+            <span className="nodeLabel" title={`${node.toolTip ? node.toolTip : node.label}`}>
               {node.label}
             </span>
           )}
@@ -195,7 +203,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
         </div>
         {node.children && (
           <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
-            <div className="nodeChildren" data-test={node.label}>
+            <div className="nodeChildren" data-test={node.label} aria-disabled={node.isDisabled}>
               {TreeNodeComponent.getSortedChildren(node).map((childNode: TreeNode) => (
                 <TreeNodeComponent
                   key={`${childNode.label}-${generation + 1}-${childNode.timestamp}`}

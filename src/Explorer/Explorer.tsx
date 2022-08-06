@@ -1027,7 +1027,7 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (useNotebook.getState().isPhoenixFeatures) {
+    if (useNotebook.getState().isPhoenixFeatures && !useNotebook.getState().isPhoenixDisabled) {
       await this.allocateContainer();
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
