@@ -96,12 +96,18 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (btn.commandButtonLabel.indexOf("Cassandra") !== -1 && !useNotebook.getState().isPhoenixFeatures) {
-        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
-      } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1 && !useNotebook.getState().isPhoenixFeatures) {
-        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
-      } else if (btn.commandButtonLabel.indexOf("Open Terminal") !== -1 && !useNotebook.getState().isPhoenixFeatures) {
-        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
+      if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
+        }
+      } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
+        }
+      } else if (btn.commandButtonLabel.indexOf("Open Terminal") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
+        }
       } else if (!useNotebook.getState().isPhoenixNotebooks) {
         applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
       }
