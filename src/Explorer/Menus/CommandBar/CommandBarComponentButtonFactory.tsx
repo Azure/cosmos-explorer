@@ -104,6 +104,10 @@ export function createStaticCommandBarButtons(
         if (!useNotebook.getState().isPhoenixFeatures) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
         }
+      } else if (btn.commandButtonLabel.indexOf("Open Terminal") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
+        }
       } else if (!useNotebook.getState().isPhoenixNotebooks) {
         applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
       }
