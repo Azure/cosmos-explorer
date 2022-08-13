@@ -1,3 +1,8 @@
+/**
+ * [Todo] disable any type of file.
+ */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as _ from "underscore";
 import Q from "q";
 import * as Entities from "./Entities";
@@ -8,11 +13,11 @@ import * as Constants from "./Constants";
  * Generates a pseudo-random GUID.
  */
 export function guid() {
-  function s4() {
+  const s4 = () => {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
-  }
+  };
   return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
 }
 
@@ -39,7 +44,7 @@ export function ensureBetweenBounds(value: number, minimum: number, maximum: num
  * If supplied, the original error will be added as "details".
  */
 export function getErrorMessage(error: any, simpleMessage?: string): string {
-  var detailsMessage: string;
+  let detailsMessage: string;
   if (typeof error === "string" || error instanceof String) {
     detailsMessage = error.toString();
   } else {
@@ -59,7 +64,7 @@ export function getErrorMessage(error: any, simpleMessage?: string): string {
  * Get the environment's new line characters
  */
 export function getEnvironmentNewLine(): string {
-  var platform = navigator.platform.toUpperCase();
+  const platform = navigator.platform.toUpperCase();
 
   if (platform.indexOf("WIN") >= 0) {
     return "\r\n";
@@ -73,7 +78,7 @@ export function getEnvironmentNewLine(): string {
  * Tests whether two arrays have same elements in the same sequence.
  */
 export function isEqual<T>(a: T[], b: T[]): boolean {
-  var isEqual: boolean = false;
+  let isEqual = false;
   if (!!a && !!b && a.length === b.length) {
     isEqual = _.every(a, (value: T, index: number) => value === b[index]);
   }
@@ -85,12 +90,13 @@ export function isEqual<T>(a: T[], b: T[]): boolean {
  */
 export function jQuerySelectorEscape(value: string): string {
   value = value || "";
-  return value.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
+  // removed Unnecessary escape character: \/.eslintno-useless-escape
+  return value.replace(/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~]/g, "\\$&");
 }
 
 export function copyTableQuery(query: Entities.ITableQuery): Entities.ITableQuery {
   if (!query) {
-    return null;
+    return undefined;
   }
 
   return {
@@ -104,7 +110,7 @@ export function copyTableQuery(query: Entities.ITableQuery): Entities.ITableQuer
  * Html encode
  */
 export function htmlEncode(value: string): string {
-  var _divElem: JQuery = $("<div/>");
+  const _divElem: JQuery = $("<div/>");
   return _divElem.text(value).html();
 }
 
@@ -117,22 +123,22 @@ export function onKey(
   event: any,
   eventKeyCode: number,
   action: ($sourceElement: JQuery) => void,
-  metaKey: boolean = null,
-  shiftKey: boolean = null,
-  altKey: boolean = null
+  metaKey?: boolean,
+  shiftKey?: boolean,
+  altKey?: boolean
 ): boolean {
-  var source: any = event.target || event.srcElement,
+  const source: unknown = event.target || event.srcElement,
     keyCode: number = event.keyCode,
-    $sourceElement = $(source),
-    handled: boolean = false;
+    $sourceElement = $(source);
+  let handled = false;
 
   if (
     $sourceElement.length &&
     keyCode === eventKeyCode &&
     $.isFunction(action) &&
-    (metaKey === null || metaKey === event.metaKey) &&
-    (shiftKey === null || shiftKey === event.shiftKey) &&
-    (altKey === null || altKey === event.altKey)
+    (metaKey === undefined || metaKey === event.metaKey) &&
+    (shiftKey === undefined || shiftKey === event.shiftKey) &&
+    (altKey === undefined || altKey === event.altKey)
   ) {
     action($sourceElement);
     handled = true;
@@ -147,9 +153,9 @@ export function onKey(
 export function onEnter(
   event: any,
   action: ($sourceElement: JQuery) => void,
-  metaKey: boolean = null,
-  shiftKey: boolean = null,
-  altKey: boolean = null
+  metaKey?: boolean,
+  shiftKey?: boolean,
+  altKey?: boolean
 ): boolean {
   return onKey(event, Constants.keyCodes.Enter, action, metaKey, shiftKey, altKey);
 }
@@ -160,9 +166,9 @@ export function onEnter(
 export function onTab(
   event: any,
   action: ($sourceElement: JQuery) => void,
-  metaKey: boolean = null,
-  shiftKey: boolean = null,
-  altKey: boolean = null
+  metaKey?: boolean,
+  shiftKey?: boolean,
+  altKey?: boolean
 ): boolean {
   return onKey(event, Constants.keyCodes.Tab, action, metaKey, shiftKey, altKey);
 }
@@ -173,9 +179,9 @@ export function onTab(
 export function onEsc(
   event: any,
   action: ($sourceElement: JQuery) => void,
-  metaKey: boolean = null,
-  shiftKey: boolean = null,
-  altKey: boolean = null
+  metaKey?: boolean,
+  shiftKey?: boolean,
+  altKey?: boolean
 ): boolean {
   return onKey(event, Constants.keyCodes.Esc, action, metaKey, shiftKey, altKey);
 }
@@ -200,21 +206,21 @@ export function isEnvironmentAltPressed(event: JQueryEventObject): boolean {
  * Returns whether the current platform is MacOS.
  */
 export function isMac(): boolean {
-  var platform = navigator.platform.toUpperCase();
+  const platform = navigator.platform.toUpperCase();
   return platform.indexOf("MAC") >= 0;
 }
 
 // MAX_SAFE_INTEGER and MIN_SAFE_INTEGER will be provided by ECMAScript 6's Number
-export var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
-export var MIN_SAFE_INTEGER = -MAX_SAFE_INTEGER;
+export const MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
+export const MIN_SAFE_INTEGER = -MAX_SAFE_INTEGER;
 
 /**
  * Tests whether a value a safe integer.
  * A safe integer is an integer that can be exactly represented as an IEEE-754 double precision number (all integers from (2^53 - 1) to -(2^53 - 1))
  * Note: Function and constants will be provided by ECMAScript 6's Number.
  */
-export function isSafeInteger(value: any): boolean {
-  var n: number = typeof value !== "number" ? Number(value) : value;
+export function isSafeInteger(value: number | string): boolean {
+  const n: number = typeof value !== "number" ? Number(value) : value;
 
   return Math.round(n) === n && MIN_SAFE_INTEGER <= n && n <= MAX_SAFE_INTEGER;
 }
@@ -240,7 +246,7 @@ export function getInputTypeFromDisplayedName(displayedName: string): string {
 }
 
 export function padLongWithZeros(value: string): string {
-  var s = "0000000000000000000" + value;
+  const s = "0000000000000000000" + value;
   return s.substr(s.length - 20);
 }
 
@@ -249,13 +255,13 @@ export function padLongWithZeros(value: string): string {
  * Notice: Not every header will have a data type since some headers don't even exist in entities.
  */
 export function getDataTypesFromEntities(headers: string[], entities: Entities.ITableEntity[]): any {
-  var currentHeaders: string[] = _.clone(headers);
-  var dataTypes: any = {};
+  let currentHeaders: string[] = _.clone(headers);
+  const dataTypes: any = {};
   entities = entities || [];
-  entities.forEach((entity: Entities.ITableEntity, index: number) => {
+  entities.forEach((entity: Entities.ITableEntity) => {
     if (currentHeaders.length) {
-      var keys: string[] = _.keys(entity);
-      var headersToProcess: string[] = _.intersection(currentHeaders, keys);
+      const keys: string[] = _.keys(entity);
+      const headersToProcess: string[] = _.intersection(currentHeaders, keys);
       headersToProcess &&
         headersToProcess.forEach((propertyName: string) => {
           dataTypes[propertyName] = entity[propertyName].$ || Constants.TableType.String;
@@ -270,9 +276,9 @@ export function getDataTypesFromEntities(headers: string[], entities: Entities.I
  * Set a data type for each header. The data type is inferred from Cassandra Schema.
  */
 export function getDataTypesFromCassandraSchema(schema: CassandraTableKey[]): any {
-  var dataTypes: any = {};
+  const dataTypes: any = {};
   schema &&
-    schema.forEach((schemaItem: CassandraTableKey, index: number) => {
+    schema.forEach((schemaItem: CassandraTableKey) => {
       dataTypes[schemaItem.property] = schemaItem.type;
     });
   return dataTypes;
