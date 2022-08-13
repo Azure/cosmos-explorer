@@ -42,7 +42,7 @@ interface UserContext {
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
   apiType: ApiType;
   readonly isTryCosmosDBSubscription?: boolean;
-  readonly portalEnv?: PortalEnv;
+  readonly portalEnv: PortalEnv;
   readonly features: Features;
   readonly addCollectionFlight: string;
   readonly hasWriteAccess: boolean;

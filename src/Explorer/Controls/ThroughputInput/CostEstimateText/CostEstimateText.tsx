@@ -29,8 +29,9 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
   }
 
   const serverId: string = userContext.portalEnv;
+  const { enableMultipleWriteLocations } = databaseAccount.properties;
   const numberOfRegions: number = databaseAccount.properties.readLocations?.length || 1;
-  const multimasterEnabled: boolean = databaseAccount.properties.enableMultipleWriteLocations;
+  const multimasterEnabled: boolean = enableMultipleWriteLocations ? enableMultipleWriteLocations : false;
   const hourlyPrice: number = computeRUUsagePriceHourly({
     serverId,
     requestUnits,
