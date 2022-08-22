@@ -56,10 +56,8 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const connectionInfo = useNotebook((state) => state.connectionInfo);
 
   if (
-    useNotebook.getState().isPhoenixNotebooks ||
-    (useNotebook.getState().isPhoenixFeatures &&
-      connectionInfo?.status !== ConnectionStatusType.Connect &&
-      connectionInfo?.status !== ConnectionStatusType.Reconnect)
+    (useNotebook.getState().isPhoenixNotebooks || useNotebook.getState().isPhoenixFeatures) &&
+    connectionInfo?.status !== ConnectionStatusType.Connect
   ) {
     uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
   }
