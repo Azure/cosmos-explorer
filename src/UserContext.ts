@@ -1,4 +1,5 @@
 import { useCarousel } from "hooks/useCarousel";
+import { useTeachingBubble } from "hooks/useTeachingBubble";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { AuthType } from "./AuthType";
@@ -54,7 +55,7 @@ interface UserContext {
   collectionCreationDefaults: CollectionCreationDefaults;
 }
 
-export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
+export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgre";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
 const ONE_WEEK_IN_MS = 604800000;
@@ -92,13 +93,15 @@ function updateUserContext(newContext: Partial<UserContext>): void {
       ONE_WEEK_IN_MS
     );
 
-    if (
-      !localStorage.getItem(newContext.databaseAccount.id) &&
-      (userContext.isTryCosmosDBSubscription || isNewAccount)
-    ) {
-      useCarousel.getState().setShouldOpen(true);
-      localStorage.setItem(newContext.databaseAccount.id, "true");
-      traceOpen(Action.OpenCarousel);
+    if (!localStorage.getItem(newContext.databaseAccount.id)) {
+      if (newContext.apiType === "Postgre") {
+        useTeachingBubble.getState().setShowPostgreTeachingBubble(true);
+        localStorage.setItem(newContext.databaseAccount.id, "true");
+      } else if (userContext.isTryCosmosDBSubscription || isNewAccount) {
+        useCarousel.getState().setShouldOpen(true);
+        localStorage.setItem(newContext.databaseAccount.id, "true");
+        traceOpen(Action.OpenCarousel);
+      }
     }
   }
   Object.assign(userContext, newContext);
@@ -108,25 +111,27 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
   if (!account) {
     return "SQL";
   }
-  const capabilities = account.properties?.capabilities;
-  if (capabilities) {
-    if (capabilities.find((c) => c.name === "EnableCassandra")) {
-      return "Cassandra";
-    }
-    if (capabilities.find((c) => c.name === "EnableGremlin")) {
-      return "Gremlin";
-    }
-    if (capabilities.find((c) => c.name === "EnableMongo")) {
-      return "Mongo";
-    }
-    if (capabilities.find((c) => c.name === "EnableTable")) {
-      return "Tables";
-    }
-  }
-  if (account.kind === "MongoDB" || account.kind === "Parse") {
-    return "Mongo";
-  }
-  return "SQL";
+
+  return "Postgre";
+  // const capabilities = account.properties?.capabilities;
+  // if (capabilities) {
+  //   if (capabilities.find((c) => c.name === "EnableCassandra")) {
+  //     return "Cassandra";
+  //   }
+  //   if (capabilities.find((c) => c.name === "EnableGremlin")) {
+  //     return "Gremlin";
+  //   }
+  //   if (capabilities.find((c) => c.name === "EnableMongo")) {
+  //     return "Mongo";
+  //   }
+  //   if (capabilities.find((c) => c.name === "EnableTable")) {
+  //     return "Tables";
+  //   }
+  // }
+  // if (account.kind === "MongoDB" || account.kind === "Parse") {
+  //   return "Mongo";
+  // }
+  // return "SQL";
 }
 
 export { userContext, updateUserContext };

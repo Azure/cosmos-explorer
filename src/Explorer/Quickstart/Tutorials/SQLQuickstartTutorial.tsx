@@ -6,7 +6,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceCancel, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 
-export const QuickstartTutorial: React.FC = (): JSX.Element => {
+export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
   const { step, isSampleDBExpanded, isDocumentsTabOpened, sampleCollection, setStep } = useTeachingBubble();
 
   const onDimissTeachingBubble = (): void => {

@@ -25,6 +25,7 @@ interface TabsState {
 export enum ReactTabKind {
   Connect,
   Home,
+  Quickstart,
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({

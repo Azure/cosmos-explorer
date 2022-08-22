@@ -6,6 +6,7 @@
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import * as React from "react";
+import { userContext } from "UserContext";
 import create, { UseStore } from "zustand";
 import { ConnectionStatusType, StyleConstants } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
@@ -32,6 +33,22 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const selectedNodeState = useSelectedNode();
   const buttons = useCommandBar((state) => state.contextButtons);
   const backgroundColor = StyleConstants.BaseLight;
+
+  if (userContext.apiType === "Postgre") {
+    const buttons = CommandBarComponentButtonFactory.createPostgreButtons(container);
+    return (
+      <div className="commandBarContainer">
+        <FluentCommandBar
+          ariaLabel="Use left and right arrow keys to navigate between commands"
+          items={CommandBarUtil.convertButton(buttons, backgroundColor)}
+          styles={{
+            root: { backgroundColor: backgroundColor },
+          }}
+          overflowButtonProps={{ ariaLabel: "More commands" }}
+        />
+      </div>
+    );
+  }
 
   const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
   const contextButtons = (buttons || []).concat(

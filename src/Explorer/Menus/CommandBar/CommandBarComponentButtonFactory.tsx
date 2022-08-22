@@ -14,6 +14,7 @@ import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
+import ConnectIcon from "../../../../images/PostgreConnect.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
 import { AuthType } from "../../../AuthType";
@@ -584,4 +585,30 @@ function createStaticCommandBarButtonsForResourceToken(
   }
 
   return [newSqlQueryBtn, openQueryBtn];
+}
+
+export function createPostgreButtons(container: Explorer): CommandButtonComponentProps[] {
+  const postgreShellLabel = "Open PostgreSQL Shell";
+  const openPostgreShellBtn = {
+    iconSrc: HostedTerminalIcon,
+    iconAlt: postgreShellLabel,
+    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Mongo),
+    commandButtonLabel: postgreShellLabel,
+    hasPopup: false,
+    disabled: false,
+    ariaLabel: postgreShellLabel,
+  };
+
+  const connectLabel = "Connect";
+  const connectBtn = {
+    iconSrc: ConnectIcon,
+    iconAlt: connectLabel,
+    onCommandClick: () => 2,
+    commandButtonLabel: connectLabel,
+    hasPopup: false,
+    disabled: false,
+    ariaLabel: connectLabel,
+  };
+
+  return [openPostgreShellBtn, connectBtn];
 }
