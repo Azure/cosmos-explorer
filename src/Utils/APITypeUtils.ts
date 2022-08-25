@@ -18,7 +18,7 @@ export const getCollectionName = (isPlural?: boolean): string => {
       collectionName = "Graph";
       break;
     case "Postgre":
-      return undefined;
+      return "";
     default:
       unknownApiType = userContext.apiType;
       throw new Error(`Unknown API type: ${unknownApiType}`);
