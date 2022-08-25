@@ -11,6 +11,7 @@ import {
   TeachingBubbleContent,
   Text,
 } from "@fluentui/react";
+import { TerminalKind } from "Contracts/ViewModels";
 import { useCarousel } from "hooks/useCarousel";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -284,7 +285,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: PowerShellIcon,
         title: "PostgreSQL Shell",
         description: "Create table and interact with data using PostgreSQL’s shell interface",
-        onClick: () => 1,
+        onClick: () => this.container.openNotebookTerminal(TerminalKind.Mongo),
       };
       heroes.push(postgreShellBtn);
     } else {
