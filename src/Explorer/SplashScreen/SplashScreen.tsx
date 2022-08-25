@@ -189,20 +189,49 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </TeachingBubbleContent>
                 </Coachmark>
               )}
-              <div className="moreStuffContainer">
-                <div className="moreStuffColumn commonTasks">
-                  <div className="title">Recents</div>
-                  {this.getRecentItems()}
+              {userContext.apiType === "Postgre" ? (
+                <Stack horizontal style={{ margin: "0 auto" }} tokens={{ childrenGap: "15%" }}>
+                  <Stack>
+                    <Text
+                      variant="large"
+                      style={{
+                        marginBottom: 16,
+                        fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
+                      }}
+                    >
+                      Next steps
+                    </Text>
+                    {this.getNextStepItems()}
+                  </Stack>
+                  <Stack>
+                    <Text
+                      variant="large"
+                      style={{
+                        marginBottom: 16,
+                        fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
+                      }}
+                    >
+                      Tips & learn more
+                    </Text>
+                    {this.getTipsAndLearnMoreItems()}
+                  </Stack>
+                </Stack>
+              ) : (
+                <div className="moreStuffContainer">
+                  <div className="moreStuffColumn commonTasks">
+                    <div className="title">Recents</div>
+                    {this.getRecentItems()}
+                  </div>
+                  <div className="moreStuffColumn">
+                    <div className="title">Top 3 things you need to know</div>
+                    {this.top3Items()}
+                  </div>
+                  <div className="moreStuffColumn tipsContainer">
+                    <div className="title">Learning Resources</div>
+                    {this.getLearningResourceItems()}
+                  </div>
                 </div>
-                <div className="moreStuffColumn">
-                  <div className="title">Top 3 things you need to know</div>
-                  {this.top3Items()}
-                </div>
-                <div className="moreStuffColumn tipsContainer">
-                  <div className="title">Learning Resources</div>
-                  {this.getLearningResourceItems()}
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </form>
@@ -593,6 +622,78 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 target="_blank"
                 style={{ marginRight: 5 }}
               >
+                {item.title}
+              </Link>
+              <Image src={LinkIcon} />
+            </Stack>
+            <Text>{item.description}</Text>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  }
+
+  private getNextStepItems(): JSX.Element {
+    const items: { link: string; title: string; description: string }[] = [
+      {
+        link: "",
+        title: "Performance tuning",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "Join Citus community",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "Useful diagnostic queries",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+    ];
+
+    return (
+      <Stack>
+        {items.map((item, i) => (
+          <Stack key={`nextStep${i}`} style={{ marginBottom: 26 }}>
+            <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+                {item.title}
+              </Link>
+              <Image src={LinkIcon} />
+            </Stack>
+            <Text>{item.description}</Text>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  }
+
+  private getTipsAndLearnMoreItems(): JSX.Element {
+    const items: { link: string; title: string; description: string }[] = [
+      {
+        link: "",
+        title: "Data modeling",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "How to choose a distribution Column",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "Build apps with Python/ Java/ Django",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+    ];
+
+    return (
+      <Stack>
+        {items.map((item, i) => (
+          <Stack key={`tips${i}`} style={{ marginBottom: 26 }}>
+            <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
                 {item.title}
               </Link>
               <Image src={LinkIcon} />
