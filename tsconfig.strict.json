@@ -105,7 +105,6 @@
     "./src/Shared/StringUtility.test.ts",
     "./src/Shared/StringUtility.ts",
     "./src/Shared/appInsights.ts",
-    "./src/UserContext.ts",
     "./src/Utils/APITypeUtils.ts",
     "./src/Utils/AutoPilotUtils.ts",
     "./src/Utils/Base64Utils.test.ts",
@@ -136,7 +135,6 @@
     "./src/i18n.ts",
     "./src/quickstart.ts",
     "./src/setupTests.ts",
-    "./src/userContext.test.ts",
     "src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
     "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
