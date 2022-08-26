@@ -190,7 +190,9 @@ export default class Explorer {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
     }
 
-    this.refreshExplorer();
+    if (userContext.apiType !== "Postgre") {
+      this.refreshExplorer();
+    }
   }
 
   public async initiateAndRefreshNotebookList(): Promise<void> {
