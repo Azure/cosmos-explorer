@@ -13,8 +13,8 @@ import {
 } from "@fluentui/react";
 import { TerminalKind } from "Contracts/ViewModels";
 import { useCarousel } from "hooks/useCarousel";
+import { usePostgre } from "hooks/usePostgre";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
-import { useTeachingBubble } from "hooks/useTeachingBubble";
 import * as React from "react";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -87,7 +87,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         ),
       },
       {
-        dispose: useTeachingBubble.subscribe(
+        dispose: usePostgre.subscribe(
           () => this.setState({}),
           (state) => state.showPostgreTeachingBubble
         ),
@@ -118,17 +118,17 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   : "Globally distributed, multi-model database service for any scale"}
               </div>
               <div className="mainButtonsContainer">
-                {useTeachingBubble.getState().showPostgreTeachingBubble && (
+                {usePostgre.getState().showPostgreTeachingBubble && (
                   <TeachingBubble
                     headline="New to Cosmos DB PGSQL?"
                     target={"#quickstartDescription"}
                     hasCloseButton
-                    onDismiss={() => useTeachingBubble.getState().setShowPostgreTeachingBubble(false)}
+                    onDismiss={() => usePostgre.getState().setShowPostgreTeachingBubble(false)}
                     primaryButtonProps={{
                       text: "Get started",
                       onClick: () => {
                         useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-                        useTeachingBubble.getState().setShowPostgreTeachingBubble(false);
+                        usePostgre.getState().setShowPostgreTeachingBubble(false);
                       },
                     }}
                   >

@@ -1,5 +1,5 @@
 import { useCarousel } from "hooks/useCarousel";
-import { useTeachingBubble } from "hooks/useTeachingBubble";
+import { usePostgre } from "hooks/usePostgre";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { AuthType } from "./AuthType";
@@ -95,7 +95,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
 
     if (!localStorage.getItem(newContext.databaseAccount.id)) {
       if (newContext.apiType === "Postgre") {
-        useTeachingBubble.getState().setShowPostgreTeachingBubble(true);
+        usePostgre.getState().setShowPostgreTeachingBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
       } else if (userContext.isTryCosmosDBSubscription || isNewAccount) {
         useCarousel.getState().setShouldOpen(true);

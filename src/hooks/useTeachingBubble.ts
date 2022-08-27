@@ -6,12 +6,10 @@ interface TeachingBubbleState {
   isSampleDBExpanded: boolean;
   isDocumentsTabOpened: boolean;
   sampleCollection: Collection;
-  showPostgreTeachingBubble: boolean;
   setStep: (step: number) => void;
   setIsSampleDBExpanded: (isReady: boolean) => void;
   setIsDocumentsTabOpened: (isOpened: boolean) => void;
   setSampleCollection: (sampleCollection: Collection) => void;
-  setShowPostgreTeachingBubble: (showPostgreTeachingBubble: boolean) => void;
 }
 
 export const useTeachingBubble: UseStore<TeachingBubbleState> = create((set) => ({
@@ -19,10 +17,8 @@ export const useTeachingBubble: UseStore<TeachingBubbleState> = create((set) => 
   isSampleDBExpanded: false,
   isDocumentsTabOpened: false,
   sampleCollection: undefined,
-  showPostgreTeachingBubble: false,
   setStep: (step: number) => set({ step }),
   setIsSampleDBExpanded: (isSampleDBExpanded: boolean) => set({ isSampleDBExpanded }),
   setIsDocumentsTabOpened: (isDocumentsTabOpened: boolean) => set({ isDocumentsTabOpened }),
   setSampleCollection: (sampleCollection: Collection) => set({ sampleCollection }),
-  setShowPostgreTeachingBubble: (showPostgreTeachingBubble: boolean) => set({ showPostgreTeachingBubble }),
 }));
