@@ -21,6 +21,7 @@ import {
   IMaxAllocationTimeExceeded,
   IPhoenixConnectionInfoResult,
   IPhoenixError,
+  IPhoenixServiceInfo,
   IProvisionData,
   IResponse,
   PhoenixErrorType,
@@ -38,30 +39,38 @@ export class PhoenixClient {
     minTimeout: Notebook.retryAttemptDelayMs,
   };
 
-  public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixServiceInfo>> {
     return this.executeContainerAssignmentOperation(provisionData, "allocate");
   }
 
-  public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixServiceInfo>> {
     return this.executeContainerAssignmentOperation(provisionData, "reset");
   }
 
   private async executeContainerAssignmentOperation(
     provisionData: IProvisionData,
     operation: string
-  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  ): Promise<IResponse<IPhoenixServiceInfo>> {
     let response;
     try {
-      response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections`, {
+      response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections/multicontainer`, {
         method: operation === "allocate" ? "POST" : "PATCH",
         headers: PhoenixClient.getHeaders(),
         body: JSON.stringify(provisionData),
       });
       const responseJson = await response?.json();
       if (response.ok) {
+        const phoenixConnectionInfoResult = responseJson as IPhoenixConnectionInfoResult[];
+        if (
+          !phoenixConnectionInfoResult ||
+          phoenixConnectionInfoResult.length === 0 ||
+          !phoenixConnectionInfoResult[0]
+        ) {
+          throw new Error("Received invalid phoenix connection response.");
+        }
         return {
           status: response.status,
-          data: responseJson,
+          data: phoenixConnectionInfoResult[0].phoenixServiceInfo,
         };
       }
       const phoenixError = responseJson as IPhoenixError;

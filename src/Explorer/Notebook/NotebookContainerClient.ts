@@ -9,7 +9,7 @@ import { ConnectionStatusType, HttpHeaders, HttpStatusCodes, Notebook, PoolIdTyp
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
-import { IPhoenixConnectionInfoResult, IProvisionData, IResponse } from "../../Contracts/DataModels";
+import { IPhoenixServiceInfo, IProvisionData, IResponse } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -129,9 +129,9 @@ export class NotebookContainerClient {
     );
   }
 
-  public async resetWorkspace(): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  public async resetWorkspace(): Promise<IResponse<IPhoenixServiceInfo>> {
     this.isResettingWorkspace = true;
-    let response: IResponse<IPhoenixConnectionInfoResult>;
+    let response: IResponse<IPhoenixServiceInfo>;
     try {
       response = await this._resetWorkspace();
     } catch (error) {
@@ -142,7 +142,7 @@ export class NotebookContainerClient {
     return response;
   }
 
-  private async _resetWorkspace(): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+  private async _resetWorkspace(): Promise<IResponse<IPhoenixServiceInfo>> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";

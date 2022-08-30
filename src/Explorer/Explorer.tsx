@@ -16,12 +16,7 @@ import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHand
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
 import * as DataModels from "../Contracts/DataModels";
-import {
-  ContainerConnectionInfo,
-  IPhoenixConnectionInfoResult,
-  IProvisionData,
-  IResponse,
-} from "../Contracts/DataModels";
+import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
@@ -407,7 +402,7 @@ export default class Explorer {
   }
 
   private async setNotebookInfo(
-    connectionInfo: IResponse<IPhoenixConnectionInfoResult>,
+    connectionInfo: IResponse<IPhoenixServiceInfo>,
     connectionStatus: DataModels.ContainerConnectionInfo
   ) {
     const containerData = {
