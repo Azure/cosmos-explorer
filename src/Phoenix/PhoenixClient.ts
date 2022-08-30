@@ -60,10 +60,10 @@ export class PhoenixClient {
       });
       const responseJson = await response?.json();
       if (response.ok) {
-        let phoenixConnectionInfoResult = responseJson as IPhoenixConnectionInfoResult[];
+        const phoenixConnectionInfoResult = responseJson as IPhoenixConnectionInfoResult[];
         if (
           !phoenixConnectionInfoResult ||
-          phoenixConnectionInfoResult.length == 0 ||
+          phoenixConnectionInfoResult.length === 0 ||
           !phoenixConnectionInfoResult[0]
         ) {
           throw new Error("Received invalid phoenix connection response.");
