@@ -118,7 +118,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   : "Globally distributed, multi-model database service for any scale"}
               </div>
               <div className="mainButtonsContainer">
-                {usePostgre.getState().showPostgreTeachingBubble && (
+                {userContext.apiType === "Postgre" && usePostgre.getState().showPostgreTeachingBubble && (
                   <TeachingBubble
                     headline="New to Cosmos DB PGSQL?"
                     target={"#quickstartDescription"}
@@ -260,12 +260,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
         onClick: () => {
-          if (userContext.apiType === "Postgre") {
-            useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-          } else {
-            this.container.onNewCollectionClicked({ isQuickstart: true });
-          }
-
+          userContext.apiType === "Postgre"
+            ? useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart)
+            : this.container.onNewCollectionClicked({ isQuickstart: true });
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
       };
