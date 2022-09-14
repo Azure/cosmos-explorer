@@ -7,8 +7,8 @@ import TabsBase from "../Explorer/Tabs/TabsBase";
 interface TabsState {
   openedTabs: TabsBase[];
   openedReactTabs: ReactTabKind[];
-  activeTab: TabsBase;
-  activeReactTab: ReactTabKind;
+  activeTab: TabsBase | undefined;
+  activeReactTab: ReactTabKind | undefined;
   activateTab: (tab: TabsBase) => void;
   activateNewTab: (tab: TabsBase) => void;
   activateReactTab: (tabkind: ReactTabKind) => void;
@@ -25,6 +25,7 @@ interface TabsState {
 export enum ReactTabKind {
   Connect,
   Home,
+  Quickstart,
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({

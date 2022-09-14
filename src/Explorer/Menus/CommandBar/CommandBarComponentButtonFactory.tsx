@@ -585,3 +585,18 @@ function createStaticCommandBarButtonsForResourceToken(
 
   return [newSqlQueryBtn, openQueryBtn];
 }
+
+export function createPostgreButtons(container: Explorer): CommandButtonComponentProps[] {
+  const postgreShellLabel = "Open PostgreSQL Shell";
+  const openPostgreShellBtn = {
+    iconSrc: HostedTerminalIcon,
+    iconAlt: postgreShellLabel,
+    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Mongo),
+    commandButtonLabel: postgreShellLabel,
+    hasPopup: false,
+    disabled: false,
+    ariaLabel: postgreShellLabel,
+  };
+
+  return [openPostgreShellBtn];
+}
