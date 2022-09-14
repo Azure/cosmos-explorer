@@ -13,7 +13,7 @@ import {
 } from "@fluentui/react";
 import { TerminalKind } from "Contracts/ViewModels";
 import { useCarousel } from "hooks/useCarousel";
-import { usePostgre } from "hooks/usePostgre";
+import { usePostgres } from "hooks/usePostgres";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -87,7 +87,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         ),
       },
       {
-        dispose: usePostgre.subscribe(
+        dispose: usePostgres.subscribe(
           () => this.setState({}),
           (state) => state.showPostgreTeachingBubble
         ),
@@ -109,26 +109,26 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           <div className="splashScreenContainer">
             <div className="splashScreen">
               <div className="title">
-                {userContext.apiType === "Postgre" ? "Welcome to Cosmos DB - PostgreSQL" : "Welcome to Cosmos DB"}
+                {userContext.apiType === "Postgres" ? "Welcome to Cosmos DB - PostgreSQL" : "Welcome to Cosmos DB"}
                 <FeaturePanelLauncher />
               </div>
               <div className="subtitle">
-                {userContext.apiType === "Postgre"
+                {userContext.apiType === "Postgres"
                   ? "Get started with our sample datasets, documentation, and additional tools."
                   : "Globally distributed, multi-model database service for any scale"}
               </div>
               <div className="mainButtonsContainer">
-                {userContext.apiType === "Postgre" && usePostgre.getState().showPostgreTeachingBubble && (
+                {userContext.apiType === "Postgres" && usePostgres.getState().showPostgreTeachingBubble && (
                   <TeachingBubble
                     headline="New to Cosmos DB PGSQL?"
                     target={"#quickstartDescription"}
                     hasCloseButton
-                    onDismiss={() => usePostgre.getState().setShowPostgreTeachingBubble(false)}
+                    onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
                     primaryButtonProps={{
                       text: "Get started",
                       onClick: () => {
                         useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-                        usePostgre.getState().setShowPostgreTeachingBubble(false);
+                        usePostgres.getState().setShowPostgreTeachingBubble(false);
                       },
                     }}
                   >
@@ -190,7 +190,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </TeachingBubbleContent>
                 </Coachmark>
               )}
-              {userContext.apiType === "Postgre" ? (
+              {userContext.apiType === "Postgres" ? (
                 <Stack horizontal style={{ margin: "0 auto" }} tokens={{ childrenGap: "15%" }}>
                   <Stack>
                     <Text
@@ -253,14 +253,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public createMainItems(): SplashScreenItem[] {
     const heroes: SplashScreenItem[] = [];
 
-    if (userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Postgre") {
+    if (userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Postgres") {
       const launchQuickstartBtn = {
         id: "quickstartDescription",
         iconSrc: QuickStartIcon,
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
         onClick: () => {
-          userContext.apiType === "Postgre"
+          userContext.apiType === "Postgres"
             ? useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart)
             : this.container.onNewCollectionClicked({ isQuickstart: true });
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
@@ -277,7 +277,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       heroes.push(newNotebookBtn);
     }
 
-    if (userContext.apiType === "Postgre") {
+    if (userContext.apiType === "Postgres") {
       const postgreShellBtn = {
         iconSrc: PowerShellIcon,
         title: "PostgreSQL Shell",
@@ -300,9 +300,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
     const connectBtn = {
       iconSrc: ConnectIcon,
-      title: userContext.apiType === "Postgre" ? "Connect with PG Admin" : "Connect",
+      title: userContext.apiType === "Postgres" ? "Connect with PG Admin" : "Connect",
       description:
-        userContext.apiType === "Postgre"
+        userContext.apiType === "Postgres"
           ? "Prefer using your own choice of tooling? Find the connection string you need to connect"
           : "Prefer PGadmin? Find your connection strings here",
       onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
@@ -364,7 +364,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     let items: { link: string; title: string; description: string }[];
     switch (userContext.apiType) {
       case "SQL":
-      case "Postgre":
+      case "Postgres":
         items = [
           {
             link: "https://aka.ms/msl-modeling-partitioning-2",
@@ -511,7 +511,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     let items: { link: string; title: string; description: string }[];
     switch (userContext.apiType) {
       case "SQL":
-      case "Postgre":
+      case "Postgres":
         items = [
           {
             link: "https://aka.ms/msl-sdk-connect",

@@ -61,10 +61,6 @@ WHERE user_id = 3861633;`;
   };
 
   const getPivotHeaderIcon = (step: number): string => {
-    if (step === 0) {
-      return Pivot1SelectedIcon;
-    }
-
     switch (step) {
       case 0:
         return Pivot1SelectedIcon;

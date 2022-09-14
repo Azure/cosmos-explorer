@@ -5,7 +5,7 @@ interface TeachingBubbleState {
   setShowPostgreTeachingBubble: (showPostgreTeachingBubble: boolean) => void;
 }
 
-export const usePostgre: UseStore<TeachingBubbleState> = create((set) => ({
+export const usePostgres: UseStore<TeachingBubbleState> = create((set) => ({
   showPostgreTeachingBubble: false,
   setShowPostgreTeachingBubble: (showPostgreTeachingBubble: boolean) => set({ showPostgreTeachingBubble }),
 }));

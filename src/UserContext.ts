@@ -1,5 +1,5 @@
 import { useCarousel } from "hooks/useCarousel";
-import { usePostgre } from "hooks/usePostgre";
+import { usePostgres } from "hooks/usePostgres";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { AuthType } from "./AuthType";
@@ -55,7 +55,7 @@ interface UserContext {
   collectionCreationDefaults: CollectionCreationDefaults;
 }
 
-export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgre";
+export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
 const ONE_WEEK_IN_MS = 604800000;
@@ -94,8 +94,8 @@ function updateUserContext(newContext: Partial<UserContext>): void {
     );
 
     if (!localStorage.getItem(newContext.databaseAccount.id)) {
-      if (newContext.apiType === "Postgre") {
-        usePostgre.getState().setShowPostgreTeachingBubble(true);
+      if (newContext.apiType === "Postgres") {
+        usePostgres.getState().setShowPostgreTeachingBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
       } else if (userContext.isTryCosmosDBSubscription || isNewAccount) {
         useCarousel.getState().setShouldOpen(true);
@@ -113,7 +113,7 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
   }
 
   if (features.enablePGQuickstart) {
-    return "Postgre";
+    return "Postgres";
   }
 
   const capabilities = account.properties?.capabilities;

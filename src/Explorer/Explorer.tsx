@@ -185,7 +185,7 @@ export default class Explorer {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
     }
 
-    if (!userContext.features.enablePGQuickstart || userContext.apiType !== "Postgre") {
+    if (!userContext.features.enablePGQuickstart || userContext.apiType !== "Postgres") {
       this.refreshExplorer();
     }
   }

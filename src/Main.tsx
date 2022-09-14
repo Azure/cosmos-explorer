@@ -85,7 +85,7 @@ const App: React.FunctionComponent = () => {
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
           {/* Collections Tree - Start */}
-          {userContext.apiType !== "Postgre" && (
+          {userContext.apiType !== "Postgres" && (
             <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
               <div className="collectionsTreeWithSplitter">
                 {/* Collections Tree Expanded - Start */}
