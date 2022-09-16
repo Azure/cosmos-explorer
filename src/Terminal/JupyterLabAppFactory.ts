@@ -17,7 +17,7 @@ export class JupyterLabAppFactory {
   }
 
   private isMongoShellStarted(content: string | undefined) {
-    this.isShellStarted = content?.includes("MongoDB shell version");
+    this.isShellStarted = content?.includes("MongoDB shell version") || content?.includes("citus=>");
   }
 
   private isCassandraShellStarted(content: string | undefined) {

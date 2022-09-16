@@ -8,7 +8,7 @@ import {
   ProgressIndicator,
   Stack,
   Text,
-  TooltipHost,
+  TooltipHost
 } from "@fluentui/react";
 import { useId } from "@fluentui/react-hooks";
 import { ActionButton, DefaultButton } from "@fluentui/react/lib/Button";
@@ -124,8 +124,8 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
         content={
           containerInfo?.status === ContainerStatusType.Active
             ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
-                containerInfo.durationLeftInMinutes
-              )} minutes.`
+              containerInfo.durationLeftInMinutes
+            )} minutes.`
             : toolTipContent
         }
       >
@@ -153,9 +153,9 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
             )}
           </Stack>
           {!isBarDismissed &&
-          containerInfo.status &&
-          containerInfo.status === ContainerStatusType.Active &&
-          Math.round(containerInfo.durationLeftInMinutes) <= Notebook.remainingTimeForAlert ? (
+            containerInfo.status &&
+            containerInfo.status === ContainerStatusType.Active &&
+            Math.round(containerInfo.durationLeftInMinutes) <= Notebook.remainingTimeForAlert ? (
             <FocusTrapCallout
               role="alertdialog"
               className={styles.callout}

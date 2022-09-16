@@ -95,12 +95,18 @@ export function createStaticCommandBarButtons(
       }
     }
 
+    notebookButtons.push(createOpenPsqlTerminalButton(container));
+
     notebookButtons.forEach((btn) => {
       if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
         if (!useNotebook.getState().isPhoenixFeatures) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
         }
       } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
+        }
+      } else if (btn.commandButtonLabel.indexOf("PSQL") !== -1) {
         if (!useNotebook.getState().isPhoenixFeatures) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
         }
@@ -516,6 +522,28 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
     disabled: disableButton,
     ariaLabel: label,
     tooltipText: !disableButton ? "" : tooltip,
+  };
+}
+
+function createOpenPsqlTerminalButton(container: Explorer): CommandButtonComponentProps {
+  const label = "Open PSQL Shell";
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
+  return {
+    iconSrc: HostedTerminalIcon,
+    iconAlt: label,
+    onCommandClick: () => {
+      if (useNotebook.getState().isNotebookEnabled) {
+        container.openNotebookTerminal(ViewModels.TerminalKind.PostgreSQL);
+      }
+    },
+    commandButtonLabel: label,
+    hasPopup: false,
+    disabled: disableButton,
+    ariaLabel: label,
+    tooltipText: !disableButton
+      ? ""
+      : "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.",
   };
 }
 

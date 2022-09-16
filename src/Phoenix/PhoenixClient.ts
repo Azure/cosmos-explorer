@@ -8,7 +8,7 @@ import {
   ContainerStatusType,
   HttpHeaders,
   HttpStatusCodes,
-  Notebook,
+  Notebook
 } from "../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
@@ -23,7 +23,7 @@ import {
   IPhoenixError,
   IProvisionData,
   IResponse,
-  PhoenixErrorType,
+  PhoenixErrorType
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -31,12 +31,17 @@ import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
+  private armResourceId: string;
   private containerHealthHandler: NodeJS.Timeout;
   private retryOptions: promiseRetry.Options = {
     retries: Notebook.retryAttempts,
     maxTimeout: Notebook.retryAttemptDelayMs,
     minTimeout: Notebook.retryAttemptDelayMs,
   };
+
+  constructor(armResourceId: string) {
+    this.armResourceId = armResourceId;
+  }
 
   public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     return this.executeContainerAssignmentOperation(provisionData, "allocate");
@@ -205,22 +210,17 @@ export class PhoenixClient {
     }
   }
 
-  public static getPhoenixEndpoint(): string {
-    const phoenixEndpoint =
+  public getPhoenixControlPlanePathPrefix(): string {
+    const toolsEndpoint =
       userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (!validateEndpoint(phoenixEndpoint, allowedJunoOrigins)) {
-      const error = `${phoenixEndpoint} not allowed as juno endpoint`;
+
+    if (!validateEndpoint(toolsEndpoint, allowedJunoOrigins)) {
+      const error = `${toolsEndpoint} not allowed as tools endpoint`;
       console.error(error);
       throw new Error(error);
     }
 
-    return phoenixEndpoint;
-  }
-
-  public getPhoenixControlPlanePathPrefix(): string {
-    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts${
-      userContext.databaseAccount.id
-    }`;
+    return `${toolsEndpoint}/api/controlplane/toolscontainer/cosmosaccounts${this.armResourceId}`;
   }
 
   private static getHeaders(): HeadersInit {
