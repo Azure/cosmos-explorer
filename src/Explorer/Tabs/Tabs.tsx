@@ -2,6 +2,7 @@ import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
+import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -120,7 +121,10 @@ const CloseButton = ({
     role="button"
     aria-label="Close Tab"
     className="cancelButton"
-    onClick={() => (tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind))}
+    onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+      event.stopPropagation();
+      tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+    }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
   >
@@ -188,6 +192,8 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
       return <ConnectTab />;
     case ReactTabKind.Home:
       return <SplashScreen explorer={explorer} />;
+    case ReactTabKind.Quickstart:
+      return <QuickstartTab explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

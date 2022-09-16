@@ -1,8 +1,19 @@
 /**
  * Accordion top class
  */
-import { Coachmark, DirectionalHint, Image, Link, Stack, TeachingBubbleContent, Text } from "@fluentui/react";
+import {
+  Coachmark,
+  DirectionalHint,
+  Image,
+  Link,
+  Stack,
+  TeachingBubble,
+  TeachingBubbleContent,
+  Text,
+} from "@fluentui/react";
+import { TerminalKind } from "Contracts/ViewModels";
 import { useCarousel } from "hooks/useCarousel";
+import { usePostgres } from "hooks/usePostgres";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -12,6 +23,7 @@ import ContainersIcon from "../../../images/Containers.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebookColorIcon from "../../../images/Notebooks.svg";
+import PowerShellIcon from "../../../images/PowerShell.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
@@ -73,6 +85,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           () => this.setState({}),
           (state) => state.showCoachMark
         ),
+      },
+      {
+        dispose: usePostgres.subscribe(
+          () => this.setState({}),
+          (state) => state.showPostgreTeachingBubble
+        ),
       }
     );
   }
@@ -91,11 +109,33 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           <div className="splashScreenContainer">
             <div className="splashScreen">
               <div className="title">
-                Welcome to Cosmos DB
+                {userContext.apiType === "Postgres" ? "Welcome to Cosmos DB - PostgreSQL" : "Welcome to Cosmos DB"}
                 <FeaturePanelLauncher />
               </div>
-              <div className="subtitle">Globally distributed, multi-model database service for any scale</div>
+              <div className="subtitle">
+                {userContext.apiType === "Postgres"
+                  ? "Get started with our sample datasets, documentation, and additional tools."
+                  : "Globally distributed, multi-model database service for any scale"}
+              </div>
               <div className="mainButtonsContainer">
+                {userContext.apiType === "Postgres" && usePostgres.getState().showPostgreTeachingBubble && (
+                  <TeachingBubble
+                    headline="New to Cosmos DB PGSQL?"
+                    target={"#quickstartDescription"}
+                    hasCloseButton
+                    onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
+                    primaryButtonProps={{
+                      text: "Get started",
+                      onClick: () => {
+                        useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+                        usePostgres.getState().setShowPostgreTeachingBubble(false);
+                      },
+                    }}
+                  >
+                    Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can
+                    find sample data, query.
+                  </TeachingBubble>
+                )}
                 {mainItems.map((item) => (
                   <Stack
                     horizontal
@@ -150,20 +190,49 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </TeachingBubbleContent>
                 </Coachmark>
               )}
-              <div className="moreStuffContainer">
-                <div className="moreStuffColumn commonTasks">
-                  <div className="title">Recents</div>
-                  {this.getRecentItems()}
+              {userContext.apiType === "Postgres" ? (
+                <Stack horizontal style={{ margin: "0 auto" }} tokens={{ childrenGap: "15%" }}>
+                  <Stack>
+                    <Text
+                      variant="large"
+                      style={{
+                        marginBottom: 16,
+                        fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
+                      }}
+                    >
+                      Next steps
+                    </Text>
+                    {this.getNextStepItems()}
+                  </Stack>
+                  <Stack>
+                    <Text
+                      variant="large"
+                      style={{
+                        marginBottom: 16,
+                        fontFamily: '"Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif',
+                      }}
+                    >
+                      Tips & learn more
+                    </Text>
+                    {this.getTipsAndLearnMoreItems()}
+                  </Stack>
+                </Stack>
+              ) : (
+                <div className="moreStuffContainer">
+                  <div className="moreStuffColumn commonTasks">
+                    <div className="title">Recents</div>
+                    {this.getRecentItems()}
+                  </div>
+                  <div className="moreStuffColumn">
+                    <div className="title">Top 3 things you need to know</div>
+                    {this.top3Items()}
+                  </div>
+                  <div className="moreStuffColumn tipsContainer">
+                    <div className="title">Learning Resources</div>
+                    {this.getLearningResourceItems()}
+                  </div>
                 </div>
-                <div className="moreStuffColumn">
-                  <div className="title">Top 3 things you need to know</div>
-                  {this.top3Items()}
-                </div>
-                <div className="moreStuffColumn tipsContainer">
-                  <div className="title">Learning Resources</div>
-                  {this.getLearningResourceItems()}
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </form>
@@ -184,16 +253,15 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public createMainItems(): SplashScreenItem[] {
     const heroes: SplashScreenItem[] = [];
 
-    if (userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+    if (userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Postgres") {
       const launchQuickstartBtn = {
         id: "quickstartDescription",
         iconSrc: QuickStartIcon,
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
-        showLinkIcon: userContext.apiType === "Mongo",
         onClick: () => {
-          userContext.apiType === "Mongo"
-            ? window.open("http://aka.ms/mongodbquickstart", "_blank")
+          userContext.apiType === "Postgres"
+            ? useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart)
             : this.container.onNewCollectionClicked({ isQuickstart: true });
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
@@ -209,21 +277,34 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       heroes.push(newNotebookBtn);
     }
 
-    const newContainerBtn = {
-      iconSrc: ContainersIcon,
-      title: `New ${getCollectionName()}`,
-      description: "Create a new container for storage and throughput",
-      onClick: () => {
-        this.container.onNewCollectionClicked();
-        traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
-      },
-    };
-    heroes.push(newContainerBtn);
+    if (userContext.apiType === "Postgres") {
+      const postgreShellBtn = {
+        iconSrc: PowerShellIcon,
+        title: "PostgreSQL Shell",
+        description: "Create table and interact with data using PostgreSQL’s shell interface",
+        onClick: () => this.container.openNotebookTerminal(TerminalKind.Mongo),
+      };
+      heroes.push(postgreShellBtn);
+    } else {
+      const newContainerBtn = {
+        iconSrc: ContainersIcon,
+        title: `New ${getCollectionName()}`,
+        description: "Create a new container for storage and throughput",
+        onClick: () => {
+          this.container.onNewCollectionClicked();
+          traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+        },
+      };
+      heroes.push(newContainerBtn);
+    }
 
     const connectBtn = {
       iconSrc: ConnectIcon,
-      title: "Connect",
-      description: "Prefer using your own choice of tooling? Find the connection string you need to connect",
+      title: userContext.apiType === "Postgres" ? "Connect with PG Admin" : "Connect",
+      description:
+        userContext.apiType === "Postgres"
+          ? "Prefer using your own choice of tooling? Find the connection string you need to connect"
+          : "Prefer PGadmin? Find your connection strings here",
       onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
     };
     heroes.push(connectBtn);
@@ -283,6 +364,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     let items: { link: string; title: string; description: string }[];
     switch (userContext.apiType) {
       case "SQL":
+      case "Postgres":
         items = [
           {
             link: "https://aka.ms/msl-modeling-partitioning-2",
@@ -429,6 +511,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     let items: { link: string; title: string; description: string }[];
     switch (userContext.apiType) {
       case "SQL":
+      case "Postgres":
         items = [
           {
             link: "https://aka.ms/msl-sdk-connect",
@@ -537,6 +620,78 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 target="_blank"
                 style={{ marginRight: 5 }}
               >
+                {item.title}
+              </Link>
+              <Image src={LinkIcon} />
+            </Stack>
+            <Text>{item.description}</Text>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  }
+
+  private getNextStepItems(): JSX.Element {
+    const items: { link: string; title: string; description: string }[] = [
+      {
+        link: "",
+        title: "Performance tuning",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "Join Citus community",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "Useful diagnostic queries",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+    ];
+
+    return (
+      <Stack>
+        {items.map((item, i) => (
+          <Stack key={`nextStep${i}`} style={{ marginBottom: 26 }}>
+            <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
+                {item.title}
+              </Link>
+              <Image src={LinkIcon} />
+            </Stack>
+            <Text>{item.description}</Text>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  }
+
+  private getTipsAndLearnMoreItems(): JSX.Element {
+    const items: { link: string; title: string; description: string }[] = [
+      {
+        link: "",
+        title: "Data modeling",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "How to choose a distribution Column",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        link: "",
+        title: "Build apps with Python/ Java/ Django",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+    ];
+
+    return (
+      <Stack>
+        {items.map((item, i) => (
+          <Stack key={`tips${i}`} style={{ marginBottom: 26 }}>
+            <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
+              <Link href={item.link} target="_blank" style={{ marginRight: 5 }}>
                 {item.title}
               </Link>
               <Image src={LinkIcon} />

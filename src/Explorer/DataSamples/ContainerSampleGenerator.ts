@@ -1,5 +1,6 @@
 import { createCollection } from "../../Common/dataAccess/createCollection";
 import { createDocument } from "../../Common/dataAccess/createDocument";
+import { createDocument as createMongoDocument } from "../../Common/MongoProxyClient";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
@@ -28,7 +29,7 @@ export class ContainerSampleGenerator {
       dataFileContent = await import(
         /* webpackChunkName: "gremlinSampleJsonData" */ "../../../sampleData/gremlinSampleData.json"
       );
-    } else if (userContext.apiType === "SQL") {
+    } else if (userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
       dataFileContent = await import(
         /* webpackChunkName: "sqlSampleJsonData" */ "../../../sampleData/sqlSampleData.json"
       );
@@ -68,7 +69,7 @@ export class ContainerSampleGenerator {
     return database.findCollectionWithId(this.sampleDataFile.collectionId);
   }
 
-  public async populateContainerAsync(collection: ViewModels.Collection): Promise<void> {
+  public async populateContainerAsync(collection: ViewModels.Collection, shardKey?: string): Promise<void> {
     if (!collection) {
       throw new Error("No container to populate");
     }
@@ -99,7 +100,9 @@ export class ContainerSampleGenerator {
       await Promise.all(
         this.sampleDataFile.data.map(async (doc) => {
           try {
-            await createDocument(collection, doc);
+            userContext.apiType === "Mongo"
+              ? await createMongoDocument(collection.databaseId, collection, shardKey, doc)
+              : await createDocument(collection, doc);
           } catch (error) {
             NotificationConsoleUtils.logConsoleError(error);
           }

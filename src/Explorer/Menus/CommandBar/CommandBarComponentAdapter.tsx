@@ -6,8 +6,9 @@
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import * as React from "react";
+import { userContext } from "UserContext";
 import create, { UseStore } from "zustand";
-import { StyleConstants } from "../../../Common/Constants";
+import { ConnectionStatusType, StyleConstants } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -33,6 +34,22 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const buttons = useCommandBar((state) => state.contextButtons);
   const backgroundColor = StyleConstants.BaseLight;
 
+  if (userContext.features.enablePGQuickstart && userContext.apiType === "Postgres") {
+    const buttons = CommandBarComponentButtonFactory.createPostgreButtons(container);
+    return (
+      <div className="commandBarContainer">
+        <FluentCommandBar
+          ariaLabel="Use left and right arrow keys to navigate between commands"
+          items={CommandBarUtil.convertButton(buttons, backgroundColor)}
+          styles={{
+            root: { backgroundColor: backgroundColor },
+          }}
+          overflowButtonProps={{ ariaLabel: "More commands" }}
+        />
+      </div>
+    );
+  }
+
   const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
   const contextButtons = (buttons || []).concat(
     CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState)
@@ -53,7 +70,12 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, backgroundColor);
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
-  if (useNotebook.getState().isPhoenixNotebooks || useNotebook.getState().isPhoenixFeatures) {
+  const connectionInfo = useNotebook((state) => state.connectionInfo);
+
+  if (
+    (useNotebook.getState().isPhoenixNotebooks || useNotebook.getState().isPhoenixFeatures) &&
+    connectionInfo?.status !== ConnectionStatusType.Connect
+  ) {
     uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
   }
 

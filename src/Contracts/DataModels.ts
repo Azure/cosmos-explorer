@@ -481,6 +481,10 @@ export interface IMaxUsersPerDbAccountExceeded extends IPhoenixError {
 }
 
 export interface IPhoenixConnectionInfoResult {
+  readonly phoenixServiceInfo?: IPhoenixServiceInfo;
+}
+
+export interface IPhoenixServiceInfo {
   readonly authToken?: string;
   readonly phoenixServiceUrl?: string;
   readonly forwardingId?: string;

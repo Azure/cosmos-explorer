@@ -346,6 +346,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     isDatabase={true}
                     isSharded={this.state.isSharded}
                     isFreeTier={this.isFreeTierAccount()}
+                    isQuickstart={this.props.isQuickstart}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
                     setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
@@ -581,6 +582,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               isDatabase={false}
               isSharded={this.state.isSharded}
               isFreeTier={this.isFreeTierAccount()}
+              isQuickstart={this.props.isQuickstart}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
               setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
@@ -1249,7 +1251,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           collection.isSampleCollection = true;
           useTeachingBubble.getState().setSampleCollection(collection);
           const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
-          await sampleGenerator.populateContainerAsync(collection);
+          await sampleGenerator.populateContainerAsync(collection, partitionKeyString);
           // auto-expand sample database + container and show teaching bubble
           await database.expandDatabase();
           collection.expandCollection();

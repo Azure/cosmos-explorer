@@ -1,11 +1,13 @@
 // CSS Dependencies
 import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
-import { QuickstartCarousel } from "Explorer/Tutorials/QuickstartCarousel";
-import { QuickstartTutorial } from "Explorer/Tutorials/QuickstartTutorial";
+import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
+import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
+import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
 import { useCarousel } from "hooks/useCarousel";
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import { userContext } from "UserContext";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -28,6 +30,8 @@ import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
+import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
+import { ResourceTreeContainer } from "./Common/ResourceTreeContainer";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog } from "./Explorer/Controls/Dialog";
@@ -54,10 +58,20 @@ import "./Shared/appInsights";
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
+  const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
 
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform);
+
+  const toggleLeftPaneExpanded = () => {
+    setIsLeftPaneExpanded(!isLeftPaneExpanded);
+    if (isLeftPaneExpanded) {
+      document.getElementById("expandToggleLeftPaneButton").focus();
+    } else {
+      document.getElementById("collapseToggleLeftPaneButton").focus();
+    }
+  };
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -70,6 +84,26 @@ const App: React.FunctionComponent = () => {
         <CommandBar container={explorer} />
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
+          {/* Collections Tree - Start */}
+          {userContext.apiType !== "Postgres" && (
+            <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
+              <div className="collectionsTreeWithSplitter">
+                {/* Collections Tree Expanded - Start */}
+                <ResourceTreeContainer
+                  container={explorer}
+                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                  isLeftPaneExpanded={isLeftPaneExpanded}
+                />
+                {/* Collections Tree Expanded - End */}
+                {/* Collections Tree Collapsed - Start */}
+                <CollapsedResourceTree
+                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                  isLeftPaneExpanded={isLeftPaneExpanded}
+                />
+                {/* Collections Tree Collapsed - End */}
+              </div>
+            </div>
+          )}
           <Tabs explorer={explorer} />
         </div>
         {/* Collections Tree and Tabs - End */}
@@ -85,7 +119,8 @@ const App: React.FunctionComponent = () => {
       <SidePanel />
       <Dialog />
       {<QuickstartCarousel isOpen={isCarouselOpen} />}
-      {<QuickstartTutorial />}
+      {<SQLQuickstartTutorial />}
+      {<MongoQuickstartTutorial />}
     </div>
   );
 };
