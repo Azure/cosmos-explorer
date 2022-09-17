@@ -119,7 +119,7 @@ WHERE user_id = 3861633;`;
                   <br /> Before you can interact with your data using PGShell, you will need to login - please follow
                   instructions on the right to enter your password
                 </Text>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "60%" }} />
+                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "80%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
