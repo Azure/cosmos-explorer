@@ -24,6 +24,10 @@ export class JupyterLabAppFactory {
     this.isShellStarted = content?.includes("Connected to") && content?.includes("cqlsh");
   }
 
+  private isPostgresShellStarted(content: string | undefined) {
+    this.isShellStarted = content?.includes("cqlsh");
+  }
+
   constructor(closeTab: () => void) {
     this.onShellExited = closeTab;
     this.isShellStarted = false;
@@ -35,6 +39,9 @@ export class JupyterLabAppFactory {
         break;
       case "Cassandra":
         this.checkShellStarted = this.isCassandraShellStarted;
+        break;
+      case "Postgres":
+        this.checkShellStarted = this.isPostgresShellStarted;
         break;
     }
   }
