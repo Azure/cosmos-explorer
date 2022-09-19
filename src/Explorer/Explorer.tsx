@@ -1059,7 +1059,7 @@ export default class Explorer {
         title = "Cassandra Shell";
         break;
 
-      case ViewModels.TerminalKind.PostgreSQL:
+      case ViewModels.TerminalKind.Postgres:
         title = "PSQL Shell";
         break;
 

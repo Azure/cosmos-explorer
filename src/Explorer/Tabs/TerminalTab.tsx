@@ -95,7 +95,7 @@ export default class TerminalTab extends TabsBase {
         endpointSuffix = "cassandra";
         break;
 
-      case ViewModels.TerminalKind.PostgreSQL:
+      case ViewModels.TerminalKind.Postgres:
         endpointSuffix = "postgresql";
         break;
 

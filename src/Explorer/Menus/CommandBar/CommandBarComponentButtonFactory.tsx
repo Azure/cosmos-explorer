@@ -538,7 +538,7 @@ function createOpenPsqlTerminalButton(container: Explorer): CommandButtonCompone
     iconAlt: label,
     onCommandClick: () => {
       if (useNotebook.getState().isNotebookEnabled) {
-        container.openNotebookTerminal(ViewModels.TerminalKind.PostgreSQL);
+        container.openNotebookTerminal(ViewModels.TerminalKind.Postgres);
       }
     },
     commandButtonLabel: label,

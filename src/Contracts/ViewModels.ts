@@ -372,7 +372,7 @@ export enum TerminalKind {
   Default = 0,
   Mongo = 1,
   Cassandra = 2,
-  PostgreSQL = 3,
+  Postgres = 3,
 }
 
 export interface DataExplorerInputsFrame {
