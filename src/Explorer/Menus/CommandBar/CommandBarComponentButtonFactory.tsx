@@ -109,15 +109,15 @@ export function createStaticCommandBarButtons(
       } else if (btn.commandButtonLabel.indexOf("PSQL") !== -1) {
         if (!useNotebook.getState().isPhoenixFeatures) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
-        } else if (btn.commandButtonLabel.indexOf("Open Terminal") !== -1) {
-          if (!useNotebook.getState().isPhoenixFeatures) {
-            applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
-          }
-        } else if (!useNotebook.getState().isPhoenixNotebooks) {
+        }
+      } else if (btn.commandButtonLabel.indexOf("Open Terminal") !== -1) {
+        if (!useNotebook.getState().isPhoenixFeatures) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
         }
-        buttons.push(btn);
+      } else if (!useNotebook.getState().isPhoenixNotebooks) {
+        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
       }
+      buttons.push(btn);
     });
   }
 

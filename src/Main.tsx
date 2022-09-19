@@ -7,7 +7,6 @@ import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuicksta
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { userContext } from "UserContext";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -30,8 +29,6 @@ import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
-import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
-import { ResourceTreeContainer } from "./Common/ResourceTreeContainer";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog } from "./Explorer/Controls/Dialog";
@@ -84,26 +81,6 @@ const App: React.FunctionComponent = () => {
         <CommandBar container={explorer} />
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
-          {/* Collections Tree - Start */}
-          {userContext.apiType !== "Postgres" && (
-            <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
-              <div className="collectionsTreeWithSplitter">
-                {/* Collections Tree Expanded - Start */}
-                <ResourceTreeContainer
-                  container={explorer}
-                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                  isLeftPaneExpanded={isLeftPaneExpanded}
-                />
-                {/* Collections Tree Expanded - End */}
-                {/* Collections Tree Collapsed - Start */}
-                <CollapsedResourceTree
-                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                  isLeftPaneExpanded={isLeftPaneExpanded}
-                />
-                {/* Collections Tree Collapsed - End */}
-              </div>
-            </div>
-          )}
           <Tabs explorer={explorer} />
         </div>
         {/* Collections Tree and Tabs - End */}
