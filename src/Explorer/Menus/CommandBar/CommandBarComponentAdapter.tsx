@@ -34,7 +34,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const buttons = useCommandBar((state) => state.contextButtons);
   const backgroundColor = StyleConstants.BaseLight;
 
-  if (userContext.features.enablePGQuickstart && userContext.apiType === "Postgres") {
+  if (userContext.apiType === "Postgres") {
     const buttons = CommandBarComponentButtonFactory.createPostgreButtons(container);
     return (
       <div className="commandBarContainer">

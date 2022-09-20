@@ -395,6 +395,7 @@ export interface DataExplorerInputsFrame {
   sharedThroughputDefault?: number;
   dataExplorerVersion?: string;
   defaultCollectionThroughput?: CollectionCreationDefaults;
+  isPostgresAccount?: boolean;
   flights?: readonly string[];
   features?: {
     [key: string]: string;
