@@ -85,11 +85,14 @@ export function createStaticCommandBarButtons(
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
         selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
-      userContext.apiType === "Cassandra"
+      userContext.apiType === "Cassandra" ||
+      userContext.apiType === "Postgres"
     ) {
       notebookButtons.push(createDivider());
       if (userContext.apiType === "Cassandra") {
         notebookButtons.push(createOpenCassandraTerminalButton(container));
+      } else if (userContext.apiType === "Postgres") {
+        notebookButtons.push(createOpenPsqlTerminalButton(container));
       } else {
         notebookButtons.push(createOpenMongoTerminalButton(container));
       }
