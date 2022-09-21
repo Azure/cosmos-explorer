@@ -94,7 +94,7 @@ export default class Explorer {
     });
     this._isInitializingNotebooks = false;
 
-    this.phoenixClient = new PhoenixClient(userContext.databaseAccount.id);
+    this.phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
     useNotebook.subscribe(
       () => this.refreshCommandBarButtons(),
       (state) => state.isNotebooksEnabledForAccount

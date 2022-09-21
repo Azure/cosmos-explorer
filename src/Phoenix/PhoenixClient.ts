@@ -219,7 +219,11 @@ export class PhoenixClient {
     }
   }
 
-  public getPhoenixControlPlanePathPrefix(): string {
+  private getPhoenixControlPlanePathPrefix(): string {
+    if (!this.armResourceId) {
+      throw new Error("The Phoenix client was not initialized properly: missing ARM resourcce id");
+    }
+
     const toolsEndpoint =
       userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
 
