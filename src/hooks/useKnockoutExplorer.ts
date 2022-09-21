@@ -354,9 +354,15 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
   });
+
+  if (inputs.isPostgresAccount) {
+    updateUserContext({ apiType: "Postgres" });
+  }
+
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
   }
+
   if (inputs.flights) {
     if (inputs.flights.indexOf(Flights.AutoscaleTest) !== -1) {
       userContext.features.autoscaleDefault;

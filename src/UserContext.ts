@@ -112,10 +112,6 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
     return "SQL";
   }
 
-  if (features.enablePGQuickstart) {
-    return "Postgres";
-  }
-
   const capabilities = account.properties?.capabilities;
   if (capabilities) {
     if (capabilities.find((c) => c.name === "EnableCassandra")) {
