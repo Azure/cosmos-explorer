@@ -191,6 +191,7 @@ jobs:
           path: "*.nupkg"
   nugetmpac:
     name: Publish Nuget MPAC
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [build]
     runs-on: ubuntu-latest
     env:
