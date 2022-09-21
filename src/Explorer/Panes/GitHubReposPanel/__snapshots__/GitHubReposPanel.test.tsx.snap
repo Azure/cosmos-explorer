@@ -24,6 +24,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "onRefreshDatabasesKeyPress": [Function],
             "onRefreshResourcesClick": [Function],
             "phoenixClient": PhoenixClient {
+              "armResourceId": undefined,
               "retryOptions": Object {
                 "maxTimeout": 5000,
                 "minTimeout": 5000,

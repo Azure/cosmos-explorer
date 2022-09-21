@@ -14,6 +14,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
       "phoenixClient": PhoenixClient {
+        "armResourceId": undefined,
         "retryOptions": Object {
           "maxTimeout": 5000,
           "minTimeout": 5000,
