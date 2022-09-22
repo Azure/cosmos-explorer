@@ -25,7 +25,7 @@ export class JupyterLabAppFactory {
   }
 
   private isPostgresShellStarted(content: string | undefined) {
-    this.isShellStarted = content?.includes("cqlsh");
+    this.isShellStarted = content?.includes("citus=>");
   }
 
   constructor(closeTab: () => void) {
