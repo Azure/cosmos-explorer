@@ -85,11 +85,14 @@ export function createStaticCommandBarButtons(
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
         selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
-      userContext.apiType === "Cassandra"
+      userContext.apiType === "Cassandra" ||
+      userContext.apiType === "Postgres"
     ) {
       notebookButtons.push(createDivider());
       if (userContext.apiType === "Cassandra") {
         notebookButtons.push(createOpenCassandraTerminalButton(container));
+      } else if (userContext.apiType === "Postgres") {
+        notebookButtons.push(createOpenPsqlTerminalButton(container));
       } else {
         notebookButtons.push(createOpenMongoTerminalButton(container));
       }
@@ -520,6 +523,28 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
     disabled: disableButton,
     ariaLabel: label,
     tooltipText: !disableButton ? "" : tooltip,
+  };
+}
+
+function createOpenPsqlTerminalButton(container: Explorer): CommandButtonComponentProps {
+  const label = "Open PSQL Shell";
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
+  return {
+    iconSrc: HostedTerminalIcon,
+    iconAlt: label,
+    onCommandClick: () => {
+      if (useNotebook.getState().isNotebookEnabled) {
+        container.openNotebookTerminal(ViewModels.TerminalKind.Postgres);
+      }
+    },
+    commandButtonLabel: label,
+    hasPopup: false,
+    disabled: disableButton,
+    ariaLabel: label,
+    tooltipText: !disableButton
+      ? ""
+      : "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.",
   };
 }
 

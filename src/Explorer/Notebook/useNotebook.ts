@@ -307,7 +307,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       let isPhoenixFeatures = false;
 
       const isPublicInternetAllowed = isPublicInternetAccessAllowed();
-      const phoenixClient = new PhoenixClient();
+      const phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
       const dbAccountAllowedInfo = await phoenixClient.getDbAccountAllowedStatus();
 
       if (dbAccountAllowedInfo.status === HttpStatusCodes.OK) {

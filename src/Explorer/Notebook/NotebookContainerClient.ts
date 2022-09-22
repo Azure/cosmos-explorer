@@ -23,7 +23,7 @@ export class NotebookContainerClient {
   private scheduleTimerId: NodeJS.Timeout;
 
   constructor(private onConnectionLost: () => void) {
-    this.phoenixClient = new PhoenixClient();
+    this.phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
     this.retryOptions = {
       retries: Notebook.retryAttempts,
       maxTimeout: Notebook.retryAttemptDelayMs,

@@ -93,7 +93,8 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this._isInitializingNotebooks = false;
-    this.phoenixClient = new PhoenixClient();
+
+    this.phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
     useNotebook.subscribe(
       () => this.refreshCommandBarButtons(),
       (state) => state.isNotebooksEnabledForAccount
@@ -353,7 +354,7 @@ export default class Explorer {
         (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined))
     ) {
       const provisionData: IProvisionData = {
-        cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
         poolId: PoolIdType.DefaultPoolId,
       };
       const connectionStatus: ContainerConnectionInfo = {
@@ -1056,6 +1057,10 @@ export default class Explorer {
 
       case ViewModels.TerminalKind.Cassandra:
         title = "Cassandra Shell";
+        break;
+
+      case ViewModels.TerminalKind.Postgres:
+        title = "PSQL Shell";
         break;
 
       default:
