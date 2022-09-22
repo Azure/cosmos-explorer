@@ -637,17 +637,17 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2208312",
         title: "Data Modeling",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        description: "",
       },
       {
         link: " https://go.microsoft.com/fwlink/?linkid=2206941 ",
         title: "How to choose a Distribution Column",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        description: "",
       },
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2207425",
         title: "Build apps with Python/Java/Django",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        description: "",
       },
     ];
 
@@ -673,17 +673,17 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2207226",
         title: "Performance Tuning",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        description: "",
       },
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2208037",
         title: "Useful Diagnostic Queries",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        description: "",
       },
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2205270",
         title: "Distributed SQL Reference",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        description: "",
       },
     ];
 

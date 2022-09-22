@@ -40,24 +40,24 @@ CREATE SCHEMA cosmosdb_tutorial;
 SET search_path to cosmosdb_tutorial; -- using schema created for tutorial 
 CREATE TABLE github_users 
 ( 
-user_id bigint, 
-url text, 
-login text, 
-avatar_url text, 
-gravatar_id text, 
-display_login text 
+  user_id bigint, 
+  url text, 
+  login text, 
+  avatar_url text, 
+  gravatar_id text, 
+  display_login text 
 ); 
 CREATE TABLE github_events 
 ( 
-event_id bigint,
-event_type text,
-event_public boolean,
-repo_id bigint, 
-payload jsonb, 
-repo jsonb, 
-user_id bigint, 
-org jsonb, 
-created_at timestamp
+  event_id bigint,
+  event_type text,
+  event_public boolean,
+  repo_id bigint, 
+  payload jsonb, 
+  repo jsonb, 
+  user_id bigint, 
+  org jsonb, 
+  created_at timestamp
 );
 CREATE INDEX event_type_index ON github_events (event_type); 
 CREATE INDEX payload_index ON github_events USING GIN (payload jsonb_path_ops); `;
@@ -156,7 +156,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>Let’s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
-                <DefaultButton style={{ marginTop: 16, width: 110 }}>New table</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 110 }}>Create new table</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="newTableCommand"
@@ -196,7 +196,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                   <br />
                   We are choosing “user_id” as the distribution column for our sample dataset.
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 150 }}>Distribute table</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 150 }}>Create distributed table</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="distributeTableCommand"
@@ -268,7 +268,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                 <Text>
                   Congratulations on creating and distributing your tables. Now, it&apos;s time to run your first query!
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 110 }}>Try query</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 110 }}>Try queries</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="queryCommand"
