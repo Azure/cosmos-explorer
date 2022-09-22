@@ -191,8 +191,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 </Coachmark>
               )}
               {userContext.apiType === "Postgres" ? (
-                <Stack horizontal style={{ margin: "0 auto" }} tokens={{ childrenGap: "15%" }}>
-                  <Stack>
+                <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 32 }}>
+                  <Stack style={{ width: "33%" }}>
                     <Text
                       variant="large"
                       style={{
@@ -204,7 +204,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     </Text>
                     {this.getNextStepItems()}
                   </Stack>
-                  <Stack>
+                  <Stack style={{ width: "33%" }}>
                     <Text
                       variant="large"
                       style={{
@@ -216,6 +216,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     </Text>
                     {this.getTipsAndLearnMoreItems()}
                   </Stack>
+                  <Stack style={{ width: "33%" }}></Stack>
                 </Stack>
               ) : (
                 <div className="moreStuffContainer">
@@ -634,24 +635,24 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private getNextStepItems(): JSX.Element {
     const items: { link: string; title: string; description: string }[] = [
       {
-        link: "",
-        title: "Performance tuning",
+        link: "https://go.microsoft.com/fwlink/?linkid=2208312",
+        title: "Data Modeling",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       },
       {
-        link: "",
-        title: "Join Citus community",
+        link: " https://go.microsoft.com/fwlink/?linkid=2206941 ",
+        title: "How to choose a Distribution Column",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       },
       {
-        link: "",
-        title: "Useful diagnostic queries",
+        link: "https://go.microsoft.com/fwlink/?linkid=2207425",
+        title: "Build apps with Python/Java/Django",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       },
     ];
 
     return (
-      <Stack>
+      <Stack style={{ minWidth: 124, maxWidth: 296 }}>
         {items.map((item, i) => (
           <Stack key={`nextStep${i}`} style={{ marginBottom: 26 }}>
             <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
@@ -670,24 +671,24 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private getTipsAndLearnMoreItems(): JSX.Element {
     const items: { link: string; title: string; description: string }[] = [
       {
-        link: "",
-        title: "Data modeling",
+        link: "https://go.microsoft.com/fwlink/?linkid=2207226",
+        title: "Performance Tuning",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       },
       {
-        link: "",
-        title: "How to choose a distribution Column",
+        link: "https://go.microsoft.com/fwlink/?linkid=2208037",
+        title: "Useful Diagnostic Queries",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       },
       {
-        link: "",
-        title: "Build apps with Python/ Java/ Django",
+        link: "https://go.microsoft.com/fwlink/?linkid=2205270",
+        title: "Distributed SQL Reference",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       },
     ];
 
     return (
-      <Stack>
+      <Stack style={{ minWidth: 124, maxWidth: 296 }}>
         {items.map((item, i) => (
           <Stack key={`tips${i}`} style={{ marginBottom: 26 }}>
             <Stack horizontal verticalAlign="center" style={{ fontSize: 14 }}>
