@@ -36,9 +36,12 @@ enum GuideSteps {
 export const QuickstartGuide: React.FC = (): JSX.Element => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const newTableCommand = `DROP SCHEMA IF EXISTS cosmosdb_tutorial CASCADE; 
-CREATE SCHEMA cosmosdb_tutorial; 
-SET search_path to cosmosdb_tutorial; -- using schema created for tutorial 
-CREATE TABLE github_users 
+CREATE SCHEMA cosmosdb_tutorial;
+
+-- Using schema created for tutorial
+SET search_path to cosmosdb_tutorial;
+
+CREATE TABLE github_users
 ( 
   user_id bigint, 
   url text, 
@@ -46,7 +49,8 @@ CREATE TABLE github_users
   avatar_url text, 
   gravatar_id text, 
   display_login text 
-); 
+);
+
 CREATE TABLE github_events 
 ( 
   event_id bigint,
@@ -59,25 +63,35 @@ CREATE TABLE github_events
   org jsonb, 
   created_at timestamp
 );
+
+--Create indexes on events table 
 CREATE INDEX event_type_index ON github_events (event_type); 
 CREATE INDEX payload_index ON github_events USING GIN (payload jsonb_path_ops); `;
 
-  const distributeTableCommand = `SET search_path to cosmosdb_tutorial; -- using schema created for tutorial 
+  const distributeTableCommand = `-- Using schema created for the tutorial
+SET search_path to cosmosdb_tutorial;
+
 SELECT create_distributed_table('github_users', 'user_id'); 
 SELECT create_distributed_table('github_events', 'user_id'); `;
 
-  const loadDataCommand = `SET search_path to cosmosdb_tutorial;  -- using schema created for tutorial 
+  const loadDataCommand = `-- Using schema created for the tutorial
+SET search_path to cosmosdb_tutorial;
+
 -- download users and store in table 
 \\COPY github_users FROM PROGRAM 'curl https://examples.citusdata.com/users.csv' WITH (FORMAT CSV) 
 \\COPY github_events FROM PROGRAM 'curl https://examples.citusdata.com/events.csv' WITH (FORMAT CSV) `;
 
-  const queryCommand = `SET search_path to cosmosdb_tutorial; 
--- count all rows (across shards)  
-SELECT count(*) FROM github_users; 
+  const queryCommand = `-- Using schema created for the tutorial
+SET search_path to cosmosdb_tutorial; 
+
+-- count all rows (across shards) 
+SELECT count(*) FROM github_users;
+
 -- Find all events for a single user. 
 SELECT created_at, event_type, repo->>'name' AS repo_name 
 FROM github_events 
-WHERE user_id = 3861633; 
+WHERE user_id = 3861633;
+
 -- Find the number of commits on the master branch per hour 
 SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::int) AS num_commits FROM github_events WHERE event_type = 'PushEvent' AND payload @> '{"ref":"refs/heads/master"}' GROUP BY hour ORDER BY hour; `;
 
@@ -156,12 +170,12 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>Let’s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
-                <DefaultButton style={{ marginTop: 16, width: 110 }}>Create new table</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 150 }}>Create new table</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="newTableCommand"
                     multiline
-                    rows={6}
+                    rows={5}
                     readOnly
                     defaultValue={newTableCommand}
                     styles={{
@@ -196,12 +210,12 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                   <br />
                   We are choosing “user_id” as the distribution column for our sample dataset.
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 150 }}>Create distributed table</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 200 }}>Create distributed table</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="distributeTableCommand"
                     multiline
-                    rows={3}
+                    rows={5}
                     readOnly
                     defaultValue={distributeTableCommand}
                     styles={{
@@ -236,7 +250,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                   <TextField
                     id="loadDataCommand"
                     multiline
-                    rows={6}
+                    rows={5}
                     readOnly
                     defaultValue={loadDataCommand}
                     styles={{
@@ -268,12 +282,12 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                 <Text>
                   Congratulations on creating and distributing your tables. Now, it&apos;s time to run your first query!
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 110 }}>Try queries</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 115 }}>Try queries</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="queryCommand"
                     multiline
-                    rows={6}
+                    rows={5}
                     readOnly
                     defaultValue={queryCommand}
                     styles={{
