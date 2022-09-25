@@ -139,7 +139,11 @@
     "./src/userContext.test.ts",
     "src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
-    "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
+    "./src/Platform/Hosted/Components/SwitchSubscription.tsx",
+    "./src/Utils/NotebookConfigurationUtils.ts",
+    "./src/Index.tsx",
+    "./src/Platform/Hosted/Helpers/ConnectionStringParser.ts",
+    "./src/Explorer/Panes/SettingsPane/SettingsPane.tsx"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",

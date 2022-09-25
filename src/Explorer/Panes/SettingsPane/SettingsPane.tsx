@@ -26,7 +26,8 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
       : true
   );
-  const [graphAutoVizDisabled, setGraphAutoVizDisabled] = useState<string>(
+  //eslint-disable-next-line
+  const [graphAutoVizDisabled, setGraphAutoVizDisabled] = useState<string | null>(
     LocalStorageUtility.hasItem(StorageKey.IsGraphAutoVizDisabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false"
@@ -42,7 +43,7 @@ export const SettingsPane: FunctionComponent = () => {
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
 
-  const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+  const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement> | undefined) => {
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
@@ -83,22 +84,27 @@ export const SettingsPane: FunctionComponent = () => {
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`
     );
     closeSidePanel();
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
   };
 
   const isCustomPageOptionSelected = () => {
     return pageOption === Constants.Queries.CustomPageOption;
   };
 
-  const handleOnGremlinChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
-    setGraphAutoVizDisabled(option.key);
+  const handleOnGremlinChange = (
+    _: React.FormEvent<HTMLElement | HTMLInputElement> | undefined,
+    option: IChoiceGroupOption | undefined
+  ): void => {
+    setGraphAutoVizDisabled(option ? option.key : "");
   };
 
   const genericPaneProps: RightPaneFormProps = {
     formError: "",
     isExecuting,
     submitButtonText: "Apply",
-    onSubmit: () => handlerOnSubmit(undefined),
+    onSubmit: (e?: MouseEvent<HTMLButtonElement> | undefined) => handlerOnSubmit(e),
   };
   const pageOptionList: IChoiceGroupOption[] = [
     { key: Constants.Queries.CustomPageOption, text: "Custom" },
@@ -110,8 +116,11 @@ export const SettingsPane: FunctionComponent = () => {
     { key: "true", text: "JSON" },
   ];
 
-  const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
-    setPageOption(option.key);
+  const handleOnPageOptionChange = (
+    _: React.FormEvent<HTMLElement | HTMLInputElement> | undefined,
+    option: IChoiceGroupOption | undefined
+  ): void => {
+    setPageOption(option ? option.key : "");
   };
 
   const choiceButtonStyles = {
@@ -247,7 +256,7 @@ export const SettingsPane: FunctionComponent = () => {
               </div>
 
               <ChoiceGroup
-                selectedKey={graphAutoVizDisabled}
+                selectedKey={graphAutoVizDisabled ? graphAutoVizDisabled : undefined}
                 options={graphAutoOptionList}
                 onChange={handleOnGremlinChange}
                 aria-label="Graph Auto-visualization"
