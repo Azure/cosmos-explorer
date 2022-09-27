@@ -35,24 +35,65 @@ enum GuideSteps {
 
 export const QuickstartGuide: React.FC = (): JSX.Element => {
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const newTableCommand = `CREATE TABLE github_users
-(
-user_id bigint,
-url text,
-login text,
-  .....`;
-  const distributeTableCommand = `SELECT create_distributed_table('github_users', 'user_id');
-SELECT create_distributed_table('github_events', 'user_id');`;
-  const loadDataCommand = `-- download users and store in table
+  const newTableCommand = `DROP SCHEMA IF EXISTS cosmosdb_tutorial CASCADE; 
+CREATE SCHEMA cosmosdb_tutorial;
 
-COPY github_users FROM PROGRAM 'curl https://examples.citusdata.com/
-users.csv' WITH (FORMAT CSV)`;
-  const queryCommand = `-- Find all events for a single user.
--- (A common transactional/operational query)
+-- Using schema created for tutorial
+SET search_path to cosmosdb_tutorial;
 
-SELECT created_at, event_type, repo->>'name' AS repo_name
-FROM github_events
-WHERE user_id = 3861633;`;
+CREATE TABLE github_users
+( 
+  user_id bigint, 
+  url text, 
+  login text, 
+  avatar_url text, 
+  gravatar_id text, 
+  display_login text 
+);
+
+CREATE TABLE github_events 
+( 
+  event_id bigint,
+  event_type text,
+  event_public boolean,
+  repo_id bigint, 
+  payload jsonb, 
+  repo jsonb, 
+  user_id bigint, 
+  org jsonb, 
+  created_at timestamp
+);
+
+--Create indexes on events table 
+CREATE INDEX event_type_index ON github_events (event_type); 
+CREATE INDEX payload_index ON github_events USING GIN (payload jsonb_path_ops); `;
+
+  const distributeTableCommand = `-- Using schema created for the tutorial
+SET search_path to cosmosdb_tutorial;
+
+SELECT create_distributed_table('github_users', 'user_id'); 
+SELECT create_distributed_table('github_events', 'user_id'); `;
+
+  const loadDataCommand = `-- Using schema created for the tutorial
+SET search_path to cosmosdb_tutorial;
+
+-- download users and store in table 
+\\COPY github_users FROM PROGRAM 'curl https://examples.citusdata.com/users.csv' WITH (FORMAT CSV) 
+\\COPY github_events FROM PROGRAM 'curl https://examples.citusdata.com/events.csv' WITH (FORMAT CSV) `;
+
+  const queryCommand = `-- Using schema created for the tutorial
+SET search_path to cosmosdb_tutorial; 
+
+-- count all rows (across shards) 
+SELECT count(*) FROM github_users;
+
+-- Find all events for a single user. 
+SELECT created_at, event_type, repo->>'name' AS repo_name 
+FROM github_events 
+WHERE user_id = 3861633;
+
+-- Find the number of commits on the master branch per hour 
+SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::int) AS num_commits FROM github_events WHERE event_type = 'PushEvent' AND payload @> '{"ref":"refs/heads/master"}' GROUP BY hour ORDER BY hour; `;
 
   const onCopyBtnClicked = (selector: string): void => {
     const textfield: HTMLInputElement = document.querySelector(selector);
@@ -113,13 +154,12 @@ WHERE user_id = 3861633;`;
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>
-                  This tutorial walks you through the most essential Cosmos DB PostgreSQL statements that will be used
-                  in the PostgreSQL shell (on the right). You can also choose to go through this quick start by
-                  connecting to PGAdmin or other tooling of your choice. <br />
-                  <br /> Before you can interact with your data using PGShell, you will need to login - please follow
-                  instructions on the right to enter your password
+                  This tutorial guides you to create and query distributed tables using a sample dataset.
+                  <br />
+                  <br />
+                  To begin, please enter the cluster&apos;s password in the PostgreSQL terminal.
                 </Text>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "60%" }} />
+                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -129,19 +169,23 @@ WHERE user_id = 3861633;`;
               onClick={() => setCurrentStep(1)}
             >
               <Stack style={{ marginTop: 20 }}>
-                <Text>
-                  After logging in, let’s create some new tables for storing data. We will start with two sample tables
-                  - one for storing github users and one for storing github events
-                </Text>
-                <DefaultButton style={{ marginTop: 16, width: 110 }}>New table</DefaultButton>
+                <Text>Let’s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
+                <DefaultButton style={{ marginTop: 16, width: 150 }}>Create new table</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="newTableCommand"
                     multiline
-                    rows={6}
+                    rows={5}
                     readOnly
                     defaultValue={newTableCommand}
-                    styles={{ root: { width: "90%" } }}
+                    styles={{
+                      root: { width: "90%" },
+                      field: {
+                        backgroundColor: "#EEEEEE",
+                        fontFamily:
+                          "Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New",
+                      },
+                    }}
                   />
                   <IconButton
                     iconProps={{
@@ -150,7 +194,7 @@ WHERE user_id = 3861633;`;
                     onClick={() => onCopyBtnClicked("#newTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "60%" }} />
+                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -161,21 +205,27 @@ WHERE user_id = 3861633;`;
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>
-                  Congratulations, you have now created your first 2 tables.
+                  Let’s distribute the two tables using the create_distributed_table() function.
                   <br />
                   <br />
-                  Your table needs to be sharded on the worker nodes. You need to distribute table before you load any
-                  data or run any queries
+                  We are choosing “user_id” as the distribution column for our sample dataset.
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 150 }}>Distribute table</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 200 }}>Create distributed table</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="distributeTableCommand"
                     multiline
-                    rows={2}
+                    rows={5}
                     readOnly
                     defaultValue={distributeTableCommand}
-                    styles={{ root: { width: "90%" } }}
+                    styles={{
+                      root: { width: "90%" },
+                      field: {
+                        backgroundColor: "#EEEEEE",
+                        fontFamily:
+                          "Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New",
+                      },
+                    }}
                   />
                   <IconButton
                     iconProps={{
@@ -184,7 +234,7 @@ WHERE user_id = 3861633;`;
                     onClick={() => onCopyBtnClicked("#distributeTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "60%" }} />
+                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -194,22 +244,23 @@ WHERE user_id = 3861633;`;
               onClick={() => setCurrentStep(3)}
             >
               <Stack style={{ marginTop: 20 }}>
-                <Text>
-                  We&apos;re ready to fill the tables with sample data.
-                  <br />
-                  <br />
-                  For this quick start, we&apos;ll use a dataset previously captured from the GitHub API. Run the
-                  command below to load the data
-                </Text>
+                <Text>Let&apos;s load the two tables with a sample dataset generated from the GitHub API.</Text>
                 <DefaultButton style={{ marginTop: 16, width: 110 }}>Load data</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="loadDataCommand"
                     multiline
-                    rows={4}
+                    rows={5}
                     readOnly
                     defaultValue={loadDataCommand}
-                    styles={{ root: { width: "90%" } }}
+                    styles={{
+                      root: { width: "90%" },
+                      field: {
+                        backgroundColor: "#EEEEEE",
+                        fontFamily:
+                          "Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New",
+                      },
+                    }}
                   />
                   <IconButton
                     iconProps={{
@@ -218,7 +269,7 @@ WHERE user_id = 3861633;`;
                     onClick={() => onCopyBtnClicked("#loadDataCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "60%" }} />
+                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -229,19 +280,24 @@ WHERE user_id = 3861633;`;
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>
-                  github_users is a distributed table, meaning its data is divided between multiple shards. Hyperscale
-                  (Citus) automatically runs the count on all shards in parallel, and combines the results. Let’s try a
-                  query.
+                  Congratulations on creating and distributing your tables. Now, it&apos;s time to run your first query!
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 110 }}>Try query</DefaultButton>
+                <DefaultButton style={{ marginTop: 16, width: 115 }}>Try queries</DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="queryCommand"
                     multiline
-                    rows={6}
+                    rows={5}
                     readOnly
                     defaultValue={queryCommand}
-                    styles={{ root: { width: "90%" } }}
+                    styles={{
+                      root: { width: "90%" },
+                      field: {
+                        backgroundColor: "#EEEEEE",
+                        fontFamily:
+                          "Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New",
+                      },
+                    }}
                   />
                   <IconButton
                     iconProps={{
@@ -250,7 +306,7 @@ WHERE user_id = 3861633;`;
                     onClick={() => onCopyBtnClicked("#queryCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "60%" }} />
+                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
           </Pivot>
@@ -258,7 +314,7 @@ WHERE user_id = 3861633;`;
         {currentStep === 5 && (
           <Stack style={{ margin: "auto" }} horizontalAlign="center">
             <Image src={CompleteIcon} />
-            <Text variant="mediumPlus" style={{ fontWeight: 600, marginTop: 7 }}>
+            <Text variant="mediumPlus" style={{ fontWeight: 900, marginTop: 7 }}>
               You are all set!
             </Text>
             <Text variant="mediumPlus" style={{ marginTop: 8 }}>
