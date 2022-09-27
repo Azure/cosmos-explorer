@@ -646,7 +646,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       },
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2207425",
-        title: "Build apps with Python/Java/Django",
+        title: "Build Apps with Python/Java/Django",
         description: "",
       },
     ];
