@@ -9,7 +9,7 @@ import {
   Stack,
   TeachingBubble,
   TeachingBubbleContent,
-  Text,
+  Text
 } from "@fluentui/react";
 import { TerminalKind } from "Contracts/ViewModels";
 import { useCarousel } from "hooks/useCarousel";
@@ -389,7 +389,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           {
             link: "https://aka.ms/mongodbintro",
             title: "What is the MongoDB API?",
-            description: "Understand the Cosmos DB API for MongoDB and its features.",
+            description: "Understand Azure Cosmos DB for MongoDB and its features.",
           },
           {
             link: "https://aka.ms/mongodbfeaturesupport",
@@ -446,7 +446,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           {
             link: "https://aka.ms/tableintro",
             title: "What is the Table API?",
-            description: "Understand the Table API in Cosmos DB and its features",
+            description: "Understand Azure Cosmos DB for Table and its features",
           },
           {
             link: "https://aka.ms/tableimport",
@@ -455,8 +455,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           },
           {
             link: "https://aka.ms/tablefaq",
-            title: "Table API FAQs",
-            description: "Common questions about the Table API",
+            title: "Azure Cosmos DB for Table FAQs",
+            description: "Common questions about Azure Cosmos DB for Table",
           },
         ];
         break;
@@ -593,17 +593,17 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           {
             link: "https://aka.ms/tabledotnet",
             title: "Build a .NET App",
-            description: "How to access Table API from a .NET app.",
+            description: "How to access Azure Cosmos DB for Table from a .NET app.",
           },
           {
             link: "https://aka.ms/Tablejava",
             title: "Build a Java App",
-            description: "Create a Table API app with Java SDK ",
+            description: "Create a Azure Cosmos DB for Table app with Java SDK ",
           },
           {
             link: "https://aka.ms/tablenodejs",
             title: "Build a Node.js App",
-            description: "Create a Table API app with Node.js SDK",
+            description: "Create a Azure Cosmos DB for Table app with Node.js SDK",
           },
         ];
         break;
