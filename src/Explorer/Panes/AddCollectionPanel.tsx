@@ -13,7 +13,7 @@ import {
   Stack,
   TeachingBubble,
   Text,
-  TooltipHost,
+  TooltipHost
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
@@ -122,7 +122,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: this.getPartitionKey(),
       enableDedicatedThroughput: false,
-      createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
+      createMongoWildCardIndex: isCapabilityEnabled("EnableMongo") && !(isCapabilityEnabled("EnableMongo16MBDocumentSupport")),
       useHashV2: false,
       enableAnalyticalStore: false,
       uniqueKeys: [],
@@ -735,7 +735,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               }}
             >
               <Stack className="panelGroupSpacing" id="collapsibleSectionContent">
-                {isCapabilityEnabled("EnableMongo") && (
+                {isCapabilityEnabled("EnableMongo") && !(isCapabilityEnabled("EnableMongo16MBDocumentSupport")) && (
                   <Stack className="panelGroupSpacing">
                     <Stack horizontal>
                       <span className="mandatoryStar">*&nbsp;</span>
