@@ -109,7 +109,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           <div className="splashScreenContainer">
             <div className="splashScreen">
               <div className="title">
-                {userContext.apiType === "Postgres" ? "Welcome to Cosmos DB - PostgreSQL" : "Welcome to Cosmos DB"}
+                {userContext.apiType === "Postgres" ? "Welcome to Azure Cosmos DB for PostgreSQL" : "Welcome to Azure Cosmos DB"}
                 <FeaturePanelLauncher />
               </div>
               <div className="subtitle">
@@ -304,8 +304,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       title: userContext.apiType === "Postgres" ? "Connect with PG Admin" : "Connect",
       description:
         userContext.apiType === "Postgres"
-          ? "Prefer using your own choice of tooling? Find the connection string you need to connect"
-          : "Prefer PGadmin? Find your connection strings here",
+          ? "Prefer PGadmin? Find your connection strings here"
+          : "Prefer using your own choice of tooling? Find the connection string you need to connect",
       onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
     };
     heroes.push(connectBtn);

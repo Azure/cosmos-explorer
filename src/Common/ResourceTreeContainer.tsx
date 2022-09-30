@@ -6,6 +6,7 @@ import Explorer from "../Explorer/Explorer";
 import { ResourceTokenTree } from "../Explorer/Tree/ResourceTokenTree";
 import { ResourceTree } from "../Explorer/Tree/ResourceTree";
 import { userContext } from "../UserContext";
+import { getApiShortDisplayName } from "../Utils/APITypeUtils";
 import { NormalizedEventKey } from "./Constants";
 
 export interface ResourceTreeContainerProps {
@@ -42,7 +43,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
         {/* Collections Window Title/Command Bar - Start */}
         <div className="collectiontitle">
           <div className="coltitle">
-            <span className="titlepadcol">{userContext.apiType} API</span>
+            <span className="titlepadcol">{getApiShortDisplayName()}</span>
             <div className="float-right">
               <span
                 className="padimgcolrefresh"
