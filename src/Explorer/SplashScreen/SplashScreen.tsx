@@ -1,7 +1,7 @@
 /**
  * Accordion top class
  */
- import {
+import {
   Coachmark,
   DirectionalHint,
   Image,
@@ -9,7 +9,7 @@
   Stack,
   TeachingBubble,
   TeachingBubbleContent,
-  Text
+  Text,
 } from "@fluentui/react";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -126,31 +126,33 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   : "Globally distributed, multi-model database service for any scale"}
               </div>
               <div className="mainButtonsContainer">
-                {userContext.apiType === "Postgres" && usePostgres.getState().showPostgreTeachingBubble && (
-                  <TeachingBubble
-                    headline="New to Cosmos DB PGSQL?"
-                    target={"#mainButton-quickstartDescription"}
-                    hasCloseButton
-                    onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
-                    calloutProps={{
-                      directionalHint: DirectionalHint.rightCenter,
-                      directionalHintFixed: true,
-                      preventDismissOnLostFocus: true,
-                      preventDismissOnResize: true,
-                      preventDismissOnScroll: true,
-                    }}
-                    primaryButtonProps={{
-                      text: "Get started",
-                      onClick: () => {
-                        useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-                        usePostgres.getState().setShowPostgreTeachingBubble(false);
-                      },
-                    }}
-                  >
-                    Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can
-                    find sample data, query.
-                  </TeachingBubble>
-                )}
+                {userContext.apiType === "Postgres" &&
+                  usePostgres.getState().showPostgreTeachingBubble &&
+                  !usePostgres.getState().showResetPasswordBubble && (
+                    <TeachingBubble
+                      headline="New to Cosmos DB PGSQL?"
+                      target={"#mainButton-quickstartDescription"}
+                      hasCloseButton
+                      onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
+                      calloutProps={{
+                        directionalHint: DirectionalHint.rightCenter,
+                        directionalHintFixed: true,
+                        preventDismissOnLostFocus: true,
+                        preventDismissOnResize: true,
+                        preventDismissOnScroll: true,
+                      }}
+                      primaryButtonProps={{
+                        text: "Get started",
+                        onClick: () => {
+                          useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+                          usePostgres.getState().setShowPostgreTeachingBubble(false);
+                        },
+                      }}
+                    >
+                      Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you
+                      can find sample data, query.
+                    </TeachingBubble>
+                  )}
                 {mainItems.map((item) => (
                   <Stack
                     id={`mainButton-${item.id}`}
@@ -179,7 +181,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 ))}
                 {userContext.apiType === "Postgres" && usePostgres.getState().showResetPasswordBubble && (
                   <TeachingBubble
-                    headline="Reset your password"
+                    headline="Create your password"
                     target={"#mainButton-quickstartDescription"}
                     hasCloseButton
                     onDismiss={() => usePostgres.getState().setShowResetPasswordBubble(false)}
@@ -191,16 +193,16 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                       preventDismissOnScroll: true,
                     }}
                     primaryButtonProps={{
-                      text: "Reset",
+                      text: "Create",
                       onClick: () => {
                         sendMessage({
                           type: MessageTypes.OpenQuickstartBlade,
                         });
+                        usePostgres.getState().setShowResetPasswordBubble(false);
                       },
                     }}
                   >
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere, nulla, ipsum? Molestiae quis
-                    aliquam magni harum non?
+                    This password will be used to connect to the database.
                   </TeachingBubble>
                 )}
               </div>
