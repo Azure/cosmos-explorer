@@ -1,4 +1,4 @@
-import { useTabs } from "hooks/useTabs";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
@@ -100,7 +100,11 @@ async function configureHosted(): Promise<Explorer> {
       }
 
       if (event.data?.type === MessageTypes.CloseTab) {
-        useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
+        if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+          useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
+        } else {
+          useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
+        }
       }
     },
     false
@@ -290,7 +294,11 @@ async function configurePortal(): Promise<Explorer> {
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         } else if (event.data?.type === MessageTypes.CloseTab) {
-          useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
+          if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+            useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
+          } else {
+            useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
+          }
         }
       },
       false

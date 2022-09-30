@@ -32,7 +32,7 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
           <NotebookTerminalComponent
             notebookServerInfo={getNotebookServerInfo()}
             databaseAccount={userContext.databaseAccount}
-            tabId="EmbbedTerminal"
+            tabId="QuickstartPSQLShell"
           />
         )}
         {!notebookServerInfo?.notebookServerEndpoint && (
