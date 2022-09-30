@@ -1,7 +1,7 @@
 /**
  * Accordion top class
  */
-import {
+ import {
   Coachmark,
   DirectionalHint,
   Image,
@@ -9,8 +9,10 @@ import {
   Stack,
   TeachingBubble,
   TeachingBubbleContent,
-  Text,
+  Text
 } from "@fluentui/react";
+import { sendMessage } from "Common/MessageHandler";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
@@ -91,6 +93,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           () => this.setState({}),
           (state) => state.showPostgreTeachingBubble
         ),
+      },
+      {
+        dispose: usePostgres.subscribe(
+          () => this.setState({}),
+          (state) => state.showResetPasswordBubble
+        ),
       }
     );
   }
@@ -121,9 +129,16 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 {userContext.apiType === "Postgres" && usePostgres.getState().showPostgreTeachingBubble && (
                   <TeachingBubble
                     headline="New to Cosmos DB PGSQL?"
-                    target={"#quickstartDescription"}
+                    target={"#mainButton-quickstartDescription"}
                     hasCloseButton
                     onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
+                    calloutProps={{
+                      directionalHint: DirectionalHint.rightCenter,
+                      directionalHintFixed: true,
+                      preventDismissOnLostFocus: true,
+                      preventDismissOnResize: true,
+                      preventDismissOnScroll: true,
+                    }}
                     primaryButtonProps={{
                       text: "Get started",
                       onClick: () => {
@@ -138,6 +153,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 )}
                 {mainItems.map((item) => (
                   <Stack
+                    id={`mainButton-${item.id}`}
                     horizontal
                     className="mainButton focusable"
                     key={`${item.title}`}
@@ -161,6 +177,32 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     </div>
                   </Stack>
                 ))}
+                {userContext.apiType === "Postgres" && usePostgres.getState().showResetPasswordBubble && (
+                  <TeachingBubble
+                    headline="Reset your password"
+                    target={"#mainButton-quickstartDescription"}
+                    hasCloseButton
+                    onDismiss={() => usePostgres.getState().setShowResetPasswordBubble(false)}
+                    calloutProps={{
+                      directionalHint: DirectionalHint.bottomRightEdge,
+                      directionalHintFixed: true,
+                      preventDismissOnLostFocus: true,
+                      preventDismissOnResize: true,
+                      preventDismissOnScroll: true,
+                    }}
+                    primaryButtonProps={{
+                      text: "Reset",
+                      onClick: () => {
+                        sendMessage({
+                          type: MessageTypes.OpenQuickstartBlade,
+                        });
+                      },
+                    }}
+                  >
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere, nulla, ipsum? Molestiae quis
+                    aliquam magni harum non?
+                  </TeachingBubble>
+                )}
               </div>
               {useCarousel.getState().showCoachMark && (
                 <Coachmark
