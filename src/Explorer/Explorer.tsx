@@ -186,9 +186,7 @@ export default class Explorer {
       useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
     }
 
-    if (userContext.apiType !== "Postgres") {
-      this.refreshExplorer();
-    }
+    this.refreshExplorer();
   }
 
   public async initiateAndRefreshNotebookList(): Promise<void> {
@@ -1249,9 +1247,11 @@ export default class Explorer {
   }
 
   public async refreshExplorer(): Promise<void> {
-    userContext.authType === AuthType.ResourceToken
-      ? this.refreshDatabaseForResourceToken()
-      : this.refreshAllDatabases();
+    if (userContext.apiType !== "Postgres") {
+      userContext.authType === AuthType.ResourceToken
+        ? this.refreshDatabaseForResourceToken()
+        : this.refreshAllDatabases();
+    }
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount

@@ -2,6 +2,7 @@
  * Wrapper around Notebook server terminal
  */
 
+import { useTerminal } from "hooks/useTerminal";
 import postRobot from "post-robot";
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -40,6 +41,7 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
 
   handleFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {
     this.terminalWindow = (event.target as HTMLIFrameElement).contentWindow;
+    useTerminal.getState().setTerminal(this.terminalWindow);
     this.sendPropsToTerminalFrame();
   }
 
@@ -75,7 +77,7 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
     } else if (StringUtils.endsWith(notebookServerEndpoint, "cassandra")) {
       terminalEndpoint = this.props.databaseAccount?.properties.cassandraEndpoint;
     } else if (StringUtils.endsWith(notebookServerEndpoint, "postgresql")) {
-      return (this.props.databaseAccount?.properties as any).postgresqlEndpoint;
+      return "c.vimeng-postgre-citus.postgres.database.azure.com";
     }
 
     if (terminalEndpoint) {

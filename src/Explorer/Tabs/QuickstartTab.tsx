@@ -18,7 +18,7 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
   }, []);
   const getNotebookServerInfo = (): NotebookWorkspaceConnectionInfo => ({
     authToken: notebookServerInfo.authToken,
-    notebookServerEndpoint: `${notebookServerInfo.notebookServerEndpoint?.replace(/\/+$/, "")}/mongo`,
+    notebookServerEndpoint: `${notebookServerInfo.notebookServerEndpoint?.replace(/\/+$/, "")}/postgresql`,
     forwardingId: notebookServerInfo.forwardingId,
   });
 

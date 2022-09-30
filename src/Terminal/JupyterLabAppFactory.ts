@@ -2,7 +2,7 @@
  * JupyterLab applications based on jupyterLab components
  */
 import { ServerConnection, TerminalManager } from "@jupyterlab/services";
-import { IMessage } from "@jupyterlab/services/lib/terminal/terminal";
+import { IMessage, ITerminalConnection } from "@jupyterlab/services/lib/terminal/terminal";
 import { Terminal } from "@jupyterlab/terminal";
 import { Panel, Widget } from "@phosphor/widgets";
 import { userContext } from "UserContext";
@@ -46,7 +46,7 @@ export class JupyterLabAppFactory {
     }
   }
 
-  public async createTerminalApp(serverSettings: ServerConnection.ISettings) {
+  public async createTerminalApp(serverSettings: ServerConnection.ISettings): Promise<ITerminalConnection> {
     const manager = new TerminalManager({
       serverSettings: serverSettings,
     });
@@ -68,7 +68,7 @@ export class JupyterLabAppFactory {
 
     if (!term) {
       console.error("Failed starting terminal");
-      return;
+      return undefined;
     }
 
     term.title.closable = false;
@@ -90,5 +90,7 @@ export class JupyterLabAppFactory {
     window.addEventListener("unload", () => {
       panel.dispose();
     });
+
+    return session;
   }
 }
