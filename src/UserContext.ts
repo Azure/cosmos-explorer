@@ -97,8 +97,10 @@ function updateUserContext(newContext: Partial<UserContext>): void {
       if (newContext.apiType === "Postgres") {
         usePostgres.getState().setShowPostgreTeachingBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
-      } else if (userContext.isTryCosmosDBSubscription || isNewAccount) {
+      }
+      if (userContext.isTryCosmosDBSubscription || isNewAccount) {
         useCarousel.getState().setShouldOpen(true);
+        usePostgres.getState().setShowResetPasswordBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
         traceOpen(Action.OpenCarousel);
       }
@@ -129,6 +131,9 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
   }
   if (account.kind === "MongoDB" || account.kind === "Parse") {
     return "Mongo";
+  }
+  if (account.kind === "Postgres") {
+    return "Postgres";
   }
   return "SQL";
 }
