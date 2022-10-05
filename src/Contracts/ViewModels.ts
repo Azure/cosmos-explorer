@@ -397,6 +397,8 @@ export interface DataExplorerInputsFrame {
   dataExplorerVersion?: string;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   isPostgresAccount?: boolean;
+  // TODO: Update this param in the OSS extension to remove isFreeTier, isMarlinServerGroup, and make nodes a flat array instead of an nested array
+  connectionStringParams?: any;
   flights?: readonly string[];
   features?: {
     [key: string]: string;
