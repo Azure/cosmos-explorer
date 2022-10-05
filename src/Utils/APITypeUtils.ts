@@ -73,4 +73,4 @@ export const getApiShortDisplayName = (): string => {
     case "Tables":
       return "Table API";
   }
-}
+};

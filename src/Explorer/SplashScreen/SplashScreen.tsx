@@ -9,7 +9,7 @@ import {
   Stack,
   TeachingBubble,
   TeachingBubbleContent,
-  Text
+  Text,
 } from "@fluentui/react";
 import { TerminalKind } from "Contracts/ViewModels";
 import { useCarousel } from "hooks/useCarousel";
@@ -109,7 +109,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           <div className="splashScreenContainer">
             <div className="splashScreen">
               <div className="title">
-                {userContext.apiType === "Postgres" ? "Welcome to Azure Cosmos DB for PostgreSQL" : "Welcome to Azure Cosmos DB"}
+                {userContext.apiType === "Postgres"
+                  ? "Welcome to Azure Cosmos DB for PostgreSQL"
+                  : "Welcome to Azure Cosmos DB"}
                 <FeaturePanelLauncher />
               </div>
               <div className="subtitle">
