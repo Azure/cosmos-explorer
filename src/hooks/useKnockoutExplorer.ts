@@ -28,7 +28,7 @@ import {
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { PortalEnv, updateUserContext, userContext } from "../UserContext";
+import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
 import { getMsalInstance } from "../Utils/AuthorizationUtils";
@@ -365,6 +365,20 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   if (inputs.isPostgresAccount) {
     updateUserContext({ apiType: "Postgres" });
+
+    if (inputs.connectionStringParams) {
+      // TODO: Remove after the nodes param has been updated to be a flat array in the OSS extension
+      let flattenedNodesArray: Node[] = [];
+      inputs.connectionStringParams.nodes?.forEach((node: Node | Node[]) => {
+        if (Array.isArray(node)) {
+          flattenedNodesArray = [...flattenedNodesArray, ...node];
+        } else {
+          flattenedNodesArray.push(node);
+        }
+      });
+      inputs.connectionStringParams.nodes = flattenedNodesArray;
+      updateUserContext({ postgresConnectionStrParams: inputs.connectionStringParams });
+    }
   }
 
   if (inputs.features) {

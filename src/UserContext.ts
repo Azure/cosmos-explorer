@@ -26,6 +26,20 @@ export interface CollectionCreationDefaults {
   throughput: ThroughputDefaults;
 }
 
+export interface Node {
+  text: string;
+  value: string;
+  ariaLabel: string;
+}
+
+export interface PostgresConnectionStrParams {
+  adminLogin: string;
+  enablePublicIpAccess: boolean;
+  nodes: Node[];
+  isMarlinServerGroup: boolean;
+  isFreeTier: boolean;
+}
+
 interface UserContext {
   readonly authType?: AuthType;
   readonly masterKey?: string;
@@ -52,6 +66,7 @@ interface UserContext {
     collectionId: string;
     partitionKey?: string;
   };
+  readonly postgresConnectionStrParams?: PostgresConnectionStrParams;
   collectionCreationDefaults: CollectionCreationDefaults;
 }
 
@@ -97,8 +112,10 @@ function updateUserContext(newContext: Partial<UserContext>): void {
       if (newContext.apiType === "Postgres") {
         usePostgres.getState().setShowPostgreTeachingBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
-      } else if (userContext.isTryCosmosDBSubscription || isNewAccount) {
+      }
+      if (userContext.isTryCosmosDBSubscription || isNewAccount) {
         useCarousel.getState().setShouldOpen(true);
+        usePostgres.getState().setShowResetPasswordBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
         traceOpen(Action.OpenCarousel);
       }
@@ -112,27 +129,28 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
     return "SQL";
   }
 
-  return "Postgres";
-
-  // const capabilities = account.properties?.capabilities;
-  // if (capabilities) {
-  //   if (capabilities.find((c) => c.name === "EnableCassandra")) {
-  //     return "Cassandra";
-  //   }
-  //   if (capabilities.find((c) => c.name === "EnableGremlin")) {
-  //     return "Gremlin";
-  //   }
-  //   if (capabilities.find((c) => c.name === "EnableMongo")) {
-  //     return "Mongo";
-  //   }
-  //   if (capabilities.find((c) => c.name === "EnableTable")) {
-  //     return "Tables";
-  //   }
-  // }
-  // if (account.kind === "MongoDB" || account.kind === "Parse") {
-  //   return "Mongo";
-  // }
-  // return "SQL";
+  const capabilities = account.properties?.capabilities;
+  if (capabilities) {
+    if (capabilities.find((c) => c.name === "EnableCassandra")) {
+      return "Cassandra";
+    }
+    if (capabilities.find((c) => c.name === "EnableGremlin")) {
+      return "Gremlin";
+    }
+    if (capabilities.find((c) => c.name === "EnableMongo")) {
+      return "Mongo";
+    }
+    if (capabilities.find((c) => c.name === "EnableTable")) {
+      return "Tables";
+    }
+  }
+  if (account.kind === "MongoDB" || account.kind === "Parse") {
+    return "Mongo";
+  }
+  if (account.kind === "Postgres") {
+    return "Postgres";
+  }
+  return "SQL";
 }
 
 export { userContext, updateUserContext };
