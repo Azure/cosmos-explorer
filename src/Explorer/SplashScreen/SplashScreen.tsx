@@ -117,7 +117,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           <div className="splashScreenContainer">
             <div className="splashScreen">
               <div className="title">
-                {userContext.apiType === "Postgres" ? "Welcome to Cosmos DB - PostgreSQL" : "Welcome to Cosmos DB"}
+                {userContext.apiType === "Postgres"
+                  ? "Welcome to Azure Cosmos DB for PostgreSQL"
+                  : "Welcome to Cosmos DB"}
                 <FeaturePanelLauncher />
               </div>
               <div className="subtitle">
@@ -327,7 +329,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: PowerShellIcon,
         title: "PostgreSQL Shell",
         description: "Create table and interact with data using PostgreSQL’s shell interface",
-        onClick: () => this.container.openNotebookTerminal(TerminalKind.Mongo),
+        onClick: () => this.container.openNotebookTerminal(TerminalKind.Postgres),
       };
       heroes.push(postgreShellBtn);
     } else {

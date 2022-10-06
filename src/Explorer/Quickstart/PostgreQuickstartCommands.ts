@@ -71,16 +71,16 @@ SELECT create_distributed_table('github_users', 'user_id');
 SELECT create_distributed_table('github_events', 'user_id');`;
 
 export const loadDataCommand = `SET search_path to cosmosdb_tutorial;
-\\COPY github_users FROM PROGRAM 'curl https://examples.citusdata.com/users.csv' WITH (FORMAT CSV)
-\\COPY github_events FROM PROGRAM 'curl https://examples.citusdata.com/events.csv' WITH (FORMAT CSV)
+\\COPY github_users FROM PROGRAM 'wget -q -O - "$@" "https://examples.citusdata.com/users.csv"' WITH (FORMAT CSV);
+\\COPY github_events FROM PROGRAM 'wget -q -O - "$@" "https://examples.citusdata.com/events.csv"' WITH (FORMAT CSV);
 `;
 
 export const loadDataCommandForDisplay = `-- Using schema created for the tutorial
 SET search_path to cosmosdb_tutorial;
 
 -- download users and store in table
-\\COPY github_users FROM PROGRAM 'curl https://examples.citusdata.com/users.csv' WITH (FORMAT CSV)
-\\COPY github_events FROM PROGRAM 'curl https://examples.citusdata.com/events.csv' WITH (FORMAT CSV)`;
+\\COPY github_users FROM PROGRAM 'wget -q -O - "$@" "https://examples.citusdata.com/users.csv"' WITH (FORMAT CSV);
+\\COPY github_events FROM PROGRAM 'wget -q -O - "$@" "https://examples.citusdata.com/events.csv"' WITH (FORMAT CSV);`;
 
 export const queryCommand = `SET search_path to cosmosdb_tutorial;
 SELECT count(*) FROM github_users;

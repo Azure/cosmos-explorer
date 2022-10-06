@@ -95,7 +95,6 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
     <Stack style={{ paddingTop: 8, height: "100%", width: "100%" }}>
       <Stack style={{ flexGrow: 1, padding: "0 20px", overflow: "auto" }}>
         <Text variant="xxLarge">Quick start guide</Text>
-        <Text variant="medium">Gettings started in Cosmos DB</Text>
         {currentStep < 5 && (
           <Pivot style={{ marginTop: 10, width: "100%" }} selectedKey={GuideSteps[currentStep]}>
             <PivotItem
@@ -111,7 +110,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                   <br />
                   To begin, please enter the cluster&apos;s password in the PostgreSQL terminal.
                 </Text>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="UaBDXHMQAUw" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -151,7 +150,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#newTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="VJqupvSQ-mw" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -196,7 +195,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#distributeTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="Q-AW7q1GLDY" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -236,7 +235,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#loadDataCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="h15fvLKXzRo" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -278,7 +277,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#queryCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="p46nRnE4b8Y" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
           </Pivot>
