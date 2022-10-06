@@ -73,7 +73,7 @@ const closeTab = (tabId: string): void => {
 };
 
 const main = async (): Promise<void> => {
-  let session: ITerminalConnection;
+  let session: ITerminalConnection | undefined;
   postRobot.on(
     "props",
     {
