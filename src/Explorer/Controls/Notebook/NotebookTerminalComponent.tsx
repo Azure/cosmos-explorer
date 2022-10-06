@@ -77,7 +77,7 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
     } else if (StringUtils.endsWith(notebookServerEndpoint, "cassandra")) {
       terminalEndpoint = this.props.databaseAccount?.properties.cassandraEndpoint;
     } else if (StringUtils.endsWith(notebookServerEndpoint, "postgresql")) {
-      return this.props.databaseAccount?.properties.postgresqlEndpoint;
+      return "c.vimeng-postgre-citus.postgres.database.azure.com";
     }
 
     if (terminalEndpoint) {
