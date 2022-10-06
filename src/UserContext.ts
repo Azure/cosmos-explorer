@@ -129,28 +129,30 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
     return "SQL";
   }
 
-  const capabilities = account.properties?.capabilities;
-  if (capabilities) {
-    if (capabilities.find((c) => c.name === "EnableCassandra")) {
-      return "Cassandra";
-    }
-    if (capabilities.find((c) => c.name === "EnableGremlin")) {
-      return "Gremlin";
-    }
-    if (capabilities.find((c) => c.name === "EnableMongo")) {
-      return "Mongo";
-    }
-    if (capabilities.find((c) => c.name === "EnableTable")) {
-      return "Tables";
-    }
-  }
-  if (account.kind === "MongoDB" || account.kind === "Parse") {
-    return "Mongo";
-  }
-  if (account.kind === "Postgres") {
-    return "Postgres";
-  }
-  return "SQL";
+  return "Postgres";
+
+  // const capabilities = account.properties?.capabilities;
+  // if (capabilities) {
+  //   if (capabilities.find((c) => c.name === "EnableCassandra")) {
+  //     return "Cassandra";
+  //   }
+  //   if (capabilities.find((c) => c.name === "EnableGremlin")) {
+  //     return "Gremlin";
+  //   }
+  //   if (capabilities.find((c) => c.name === "EnableMongo")) {
+  //     return "Mongo";
+  //   }
+  //   if (capabilities.find((c) => c.name === "EnableTable")) {
+  //     return "Tables";
+  //   }
+  // }
+  // if (account.kind === "MongoDB" || account.kind === "Parse") {
+  //   return "Mongo";
+  // }
+  // if (account.kind === "Postgres") {
+  //   return "Postgres";
+  // }
+  // return "SQL";
 }
 
 export { userContext, updateUserContext };
