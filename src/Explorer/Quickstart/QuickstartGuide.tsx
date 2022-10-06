@@ -11,6 +11,17 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
+import {
+  distributeTableCommand,
+  distributeTableCommandForDisplay,
+  loadDataCommand,
+  loadDataCommandForDisplay,
+  newTableCommand,
+  newTableCommandForDisplay,
+  queryCommand,
+  queryCommandForDisplay,
+} from "Explorer/Quickstart/PostgreQuickstartCommands";
+import { useTerminal } from "hooks/useTerminal";
 import React, { useState } from "react";
 import Youtube from "react-youtube";
 import Pivot1SelectedIcon from "../../../images/Pivot1_selected.svg";
@@ -35,65 +46,6 @@ enum GuideSteps {
 
 export const QuickstartGuide: React.FC = (): JSX.Element => {
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const newTableCommand = `DROP SCHEMA IF EXISTS cosmosdb_tutorial CASCADE; 
-CREATE SCHEMA cosmosdb_tutorial;
-
--- Using schema created for tutorial
-SET search_path to cosmosdb_tutorial;
-
-CREATE TABLE github_users
-( 
-  user_id bigint, 
-  url text, 
-  login text, 
-  avatar_url text, 
-  gravatar_id text, 
-  display_login text 
-);
-
-CREATE TABLE github_events 
-( 
-  event_id bigint,
-  event_type text,
-  event_public boolean,
-  repo_id bigint, 
-  payload jsonb, 
-  repo jsonb, 
-  user_id bigint, 
-  org jsonb, 
-  created_at timestamp
-);
-
---Create indexes on events table 
-CREATE INDEX event_type_index ON github_events (event_type); 
-CREATE INDEX payload_index ON github_events USING GIN (payload jsonb_path_ops); `;
-
-  const distributeTableCommand = `-- Using schema created for the tutorial
-SET search_path to cosmosdb_tutorial;
-
-SELECT create_distributed_table('github_users', 'user_id'); 
-SELECT create_distributed_table('github_events', 'user_id'); `;
-
-  const loadDataCommand = `-- Using schema created for the tutorial
-SET search_path to cosmosdb_tutorial;
-
--- download users and store in table 
-\\COPY github_users FROM PROGRAM 'curl https://examples.citusdata.com/users.csv' WITH (FORMAT CSV) 
-\\COPY github_events FROM PROGRAM 'curl https://examples.citusdata.com/events.csv' WITH (FORMAT CSV) `;
-
-  const queryCommand = `-- Using schema created for the tutorial
-SET search_path to cosmosdb_tutorial; 
-
--- count all rows (across shards) 
-SELECT count(*) FROM github_users;
-
--- Find all events for a single user. 
-SELECT created_at, event_type, repo->>'name' AS repo_name 
-FROM github_events 
-WHERE user_id = 3861633;
-
--- Find the number of commits on the master branch per hour 
-SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::int) AS num_commits FROM github_events WHERE event_type = 'PushEvent' AND payload @> '{"ref":"refs/heads/master"}' GROUP BY hour ORDER BY hour; `;
 
   const onCopyBtnClicked = (selector: string): void => {
     const textfield: HTMLInputElement = document.querySelector(selector);
@@ -143,7 +95,6 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
     <Stack style={{ paddingTop: 8, height: "100%", width: "100%" }}>
       <Stack style={{ flexGrow: 1, padding: "0 20px", overflow: "auto" }}>
         <Text variant="xxLarge">Quick start guide</Text>
-        <Text variant="medium">Gettings started in Cosmos DB</Text>
         {currentStep < 5 && (
           <Pivot style={{ marginTop: 10, width: "100%" }} selectedKey={GuideSteps[currentStep]}>
             <PivotItem
@@ -159,7 +110,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                   <br />
                   To begin, please enter the cluster&apos;s password in the PostgreSQL terminal.
                 </Text>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="UaBDXHMQAUw" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -170,14 +121,19 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>Let’s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
-                <DefaultButton style={{ marginTop: 16, width: 150 }}>Create new table</DefaultButton>
+                <DefaultButton
+                  style={{ marginTop: 16, width: 150 }}
+                  onClick={() => useTerminal.getState().sendMessage(newTableCommand)}
+                >
+                  Create new table
+                </DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="newTableCommand"
                     multiline
                     rows={5}
                     readOnly
-                    defaultValue={newTableCommand}
+                    defaultValue={newTableCommandForDisplay}
                     styles={{
                       root: { width: "90%" },
                       field: {
@@ -194,7 +150,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                     onClick={() => onCopyBtnClicked("#newTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="VJqupvSQ-mw" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -210,14 +166,19 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                   <br />
                   We are choosing “user_id” as the distribution column for our sample dataset.
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 200 }}>Create distributed table</DefaultButton>
+                <DefaultButton
+                  style={{ marginTop: 16, width: 200 }}
+                  onClick={() => useTerminal.getState().sendMessage(distributeTableCommand)}
+                >
+                  Create distributed table
+                </DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="distributeTableCommand"
                     multiline
                     rows={5}
                     readOnly
-                    defaultValue={distributeTableCommand}
+                    defaultValue={distributeTableCommandForDisplay}
                     styles={{
                       root: { width: "90%" },
                       field: {
@@ -234,7 +195,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                     onClick={() => onCopyBtnClicked("#distributeTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="Q-AW7q1GLDY" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -245,14 +206,19 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>Let&apos;s load the two tables with a sample dataset generated from the GitHub API.</Text>
-                <DefaultButton style={{ marginTop: 16, width: 110 }}>Load data</DefaultButton>
+                <DefaultButton
+                  style={{ marginTop: 16, width: 110 }}
+                  onClick={() => useTerminal.getState().sendMessage(loadDataCommand)}
+                >
+                  Load data
+                </DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="loadDataCommand"
                     multiline
                     rows={5}
                     readOnly
-                    defaultValue={loadDataCommand}
+                    defaultValue={loadDataCommandForDisplay}
                     styles={{
                       root: { width: "90%" },
                       field: {
@@ -269,7 +235,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                     onClick={() => onCopyBtnClicked("#loadDataCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="h15fvLKXzRo" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -282,14 +248,19 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                 <Text>
                   Congratulations on creating and distributing your tables. Now, it&apos;s time to run your first query!
                 </Text>
-                <DefaultButton style={{ marginTop: 16, width: 115 }}>Try queries</DefaultButton>
+                <DefaultButton
+                  style={{ marginTop: 16, width: 115 }}
+                  onClick={() => useTerminal.getState().sendMessage(queryCommand)}
+                >
+                  Try queries
+                </DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
                     id="queryCommand"
                     multiline
                     rows={5}
                     readOnly
-                    defaultValue={queryCommand}
+                    defaultValue={queryCommandForDisplay}
                     styles={{
                       root: { width: "90%" },
                       field: {
@@ -306,7 +277,7 @@ SELECT date_trunc('hour', created_at) AS hour, sum((payload->>'distinct_size')::
                     onClick={() => onCopyBtnClicked("#queryCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Jvgh64rvdXU" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="p46nRnE4b8Y" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
           </Pivot>

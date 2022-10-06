@@ -329,7 +329,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: PowerShellIcon,
         title: "PostgreSQL Shell",
         description: "Create table and interact with data using PostgreSQL’s shell interface",
-        onClick: () => this.container.openNotebookTerminal(TerminalKind.Mongo),
+        onClick: () => this.container.openNotebookTerminal(TerminalKind.Postgres),
       };
       heroes.push(postgreShellBtn);
     } else {

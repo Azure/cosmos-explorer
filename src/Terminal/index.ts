@@ -1,4 +1,5 @@
 import { ServerConnection } from "@jupyterlab/services";
+import { IMessage, ITerminalConnection } from "@jupyterlab/services/lib/terminal/terminal";
 import "@jupyterlab/terminal/style/index.css";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import postRobot from "post-robot";
@@ -41,7 +42,7 @@ const createServerSettings = (props: TerminalProps): ServerConnection.ISettings 
   return ServerConnection.makeSettings(options);
 };
 
-const initTerminal = async (props: TerminalProps) => {
+const initTerminal = async (props: TerminalProps): Promise<ITerminalConnection | undefined> => {
   // Initialize userContext (only properties which are needed by TelemetryProcessor)
   updateUserContext({
     subscriptionId: props.subscriptionId,
@@ -55,10 +56,12 @@ const initTerminal = async (props: TerminalProps) => {
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
-    await new JupyterLabAppFactory(() => closeTab(props.tabId)).createTerminalApp(serverSettings);
+    const session = await new JupyterLabAppFactory(() => closeTab(props.tabId)).createTerminalApp(serverSettings);
     TelemetryProcessor.traceSuccess(Action.OpenTerminal, data, startTime);
+    return session;
   } catch (error) {
     TelemetryProcessor.traceFailure(Action.OpenTerminal, data, startTime);
+    return undefined;
   }
 };
 
@@ -70,6 +73,7 @@ const closeTab = (tabId: string): void => {
 };
 
 const main = async (): Promise<void> => {
+  let session: ITerminalConnection | undefined;
   postRobot.on(
     "props",
     {
@@ -80,7 +84,22 @@ const main = async (): Promise<void> => {
       // Typescript definition for event is wrong. So read props by casting to <any>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const props = (event as any).data as TerminalProps;
-      await initTerminal(props);
+      session = await initTerminal(props);
+    }
+  );
+
+  postRobot.on(
+    "sendMessage",
+    {
+      window: window.parent,
+      domain: window.location.origin,
+    },
+    async (event) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const message = (event as any).data as IMessage;
+      if (session) {
+        session.send(message);
+      }
     }
   );
 };

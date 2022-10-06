@@ -85,14 +85,11 @@ export function createStaticCommandBarButtons(
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
         selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
-      userContext.apiType === "Cassandra" ||
-      userContext.apiType === "Postgres"
+      userContext.apiType === "Cassandra"
     ) {
       notebookButtons.push(createDivider());
       if (userContext.apiType === "Cassandra") {
         notebookButtons.push(createOpenCassandraTerminalButton(container));
-      } else if (userContext.apiType === "Postgres") {
-        notebookButtons.push(createOpenPsqlTerminalButton(container));
       } else {
         notebookButtons.push(createOpenMongoTerminalButton(container));
       }
@@ -612,16 +609,7 @@ function createStaticCommandBarButtonsForResourceToken(
 }
 
 export function createPostgreButtons(container: Explorer): CommandButtonComponentProps[] {
-  const postgreShellLabel = "Open PostgreSQL Shell";
-  const openPostgreShellBtn = {
-    iconSrc: HostedTerminalIcon,
-    iconAlt: postgreShellLabel,
-    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Mongo),
-    commandButtonLabel: postgreShellLabel,
-    hasPopup: false,
-    disabled: false,
-    ariaLabel: postgreShellLabel,
-  };
+  const openPostgreShellBtn = createOpenPsqlTerminalButton(container);
 
   return [openPostgreShellBtn];
 }

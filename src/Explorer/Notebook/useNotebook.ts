@@ -124,8 +124,9 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     }
 
     const firstWriteLocation =
-      databaseAccount?.properties?.writeLocations &&
-      databaseAccount?.properties?.writeLocations[0]?.locationName.toLowerCase();
+      userContext.apiType === "Postgres"
+        ? databaseAccount?.location
+        : databaseAccount?.properties?.writeLocations?.[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
@@ -313,7 +314,10 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       if (dbAccountAllowedInfo.status === HttpStatusCodes.OK) {
         if (dbAccountAllowedInfo?.type === PhoenixErrorType.PhoenixFlightFallback) {
           isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks === true;
-          isPhoenixFeatures = isPublicInternetAllowed && userContext.features.phoenixFeatures === true;
+          isPhoenixFeatures =
+            isPublicInternetAllowed &&
+            // phoenix needs to be enabled for Postgres accounts since the PSQL shell requires phoenix containers
+            (userContext.features.phoenixFeatures === true || userContext.apiType === "Postgres");
         } else {
           isPhoenixNotebooks = isPhoenixFeatures = isPublicInternetAllowed;
         }
