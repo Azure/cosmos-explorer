@@ -42,7 +42,7 @@ const createServerSettings = (props: TerminalProps): ServerConnection.ISettings 
   return ServerConnection.makeSettings(options);
 };
 
-const initTerminal = async (props: TerminalProps): Promise<ITerminalConnection> => {
+const initTerminal = async (props: TerminalProps): Promise<ITerminalConnection | undefined> => {
   // Initialize userContext (only properties which are needed by TelemetryProcessor)
   updateUserContext({
     subscriptionId: props.subscriptionId,
