@@ -1,6 +1,6 @@
 import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
-import { userContext } from "../UserContext";
+import { getApiShortDisplayName } from "../Utils/APITypeUtils";
 import { NormalizedEventKey } from "./Constants";
 
 export interface CollapsedResourceTreeProps {
@@ -45,7 +45,7 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
               <img className="arrowCollapsed" src={arrowLeftImg} alt="Expand" />
             </span>
             <span className="collectionCollapsed">
-              <span>{userContext.apiType} API</span>
+              <span>{getApiShortDisplayName()}</span>
             </span>
           </li>
         </ul>
