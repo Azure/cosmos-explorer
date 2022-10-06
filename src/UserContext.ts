@@ -26,6 +26,20 @@ export interface CollectionCreationDefaults {
   throughput: ThroughputDefaults;
 }
 
+export interface Node {
+  text: string;
+  value: string;
+  ariaLabel: string;
+}
+
+export interface PostgresConnectionStrParams {
+  adminLogin: string;
+  enablePublicIpAccess: boolean;
+  nodes: Node[];
+  isMarlinServerGroup: boolean;
+  isFreeTier: boolean;
+}
+
 interface UserContext {
   readonly authType?: AuthType;
   readonly masterKey?: string;
@@ -52,6 +66,7 @@ interface UserContext {
     collectionId: string;
     partitionKey?: string;
   };
+  readonly postgresConnectionStrParams?: PostgresConnectionStrParams;
   collectionCreationDefaults: CollectionCreationDefaults;
 }
 

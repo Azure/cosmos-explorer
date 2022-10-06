@@ -2,10 +2,12 @@ import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
+import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import { userContext } from "UserContext";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
 import { useObservable } from "../../hooks/useObservable";
@@ -189,7 +191,7 @@ const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
   switch (activeReactTab) {
     case ReactTabKind.Connect:
-      return <ConnectTab />;
+      return userContext.apiType === "Postgres" ? <PostgresConnectTab /> : <ConnectTab />;
     case ReactTabKind.Home:
       return <SplashScreen explorer={explorer} />;
     case ReactTabKind.Quickstart:
