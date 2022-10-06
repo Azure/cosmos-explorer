@@ -36,6 +36,7 @@ export enum MessageTypes {
   CloseTab,
   OpenQuickstartBlade,
   OpenPostgreSQLPasswordReset,
+  OpenPostgresNetworkingBlade,
 }
 
 export { Versions, ActionContracts, Diagnostics };
