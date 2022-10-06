@@ -57,3 +57,20 @@ export const getUploadName = (): string => {
       return "Items";
   }
 };
+
+export const getApiShortDisplayName = (): string => {
+  switch (userContext.apiType) {
+    case "Cassandra":
+      return "Apache Cassandra API";
+    case "Gremlin":
+      return "Apache Gremlin API";
+    case "Mongo":
+      return "MongoDB API";
+    case "Postgres":
+      return "PostgreSQL API";
+    case "SQL":
+      return "NoSQL API";
+    case "Tables":
+      return "Table API";
+  }
+};

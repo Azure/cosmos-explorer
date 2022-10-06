@@ -101,7 +101,7 @@ export const MongoQuickstartTutorial: React.FC = (): JSX.Element => {
           onDismiss={() => onDimissTeachingBubble()}
           footerContent="Step 4 of 8"
         >
-          Query your data using the filter function. Azure Cosmos DB API for MongoDB provides comprehensive support for
+          Query your data using the filter function. Azure Cosmos DB for MongoDB provides comprehensive support for
           MongoDB query language constructs. You can also use your favorite MongoDB tools and drivers to do so.
         </TeachingBubble>
       );

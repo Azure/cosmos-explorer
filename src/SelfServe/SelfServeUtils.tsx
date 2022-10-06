@@ -40,23 +40,23 @@ export enum SelfServeType {
  */
 export enum BladeType {
   /**
-   * Keys blade of a SQL API account.
+   * Keys blade of a Azure Cosmos DB for NoSQL account.
    */
   SqlKeys = "keys",
   /**
-   * Keys blade of a Mongo API account.
+   * Keys blade of a Azure Cosmos DB for MongoDB account.
    */
   MongoKeys = "mongoDbKeys",
   /**
-   * Keys blade of a Cassandra API account.
+   * Keys blade of a Azure Cosmos DB for Apache Cassandra account.
    */
   CassandraKeys = "cassandraDbKeys",
   /**
-   * Keys blade of a Gremlin API account.
+   * Keys blade of a Azure Cosmos DB for Apache Gremlin account.
    */
   GremlinKeys = "keys",
   /**
-   * Keys blade of a Table API account.
+   * Keys blade of a Azure Cosmos DB for Table account.
    */
   TableKeys = "tableKeys",
   /**
