@@ -46,7 +46,7 @@ export class JupyterLabAppFactory {
     }
   }
 
-  public async createTerminalApp(serverSettings: ServerConnection.ISettings): Promise<ITerminalConnection> {
+  public async createTerminalApp(serverSettings: ServerConnection.ISettings): Promise<ITerminalConnection | undefined> {
     const manager = new TerminalManager({
       serverSettings: serverSettings,
     });
