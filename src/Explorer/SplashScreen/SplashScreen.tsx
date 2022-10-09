@@ -198,7 +198,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                       text: "Create",
                       onClick: () => {
                         sendMessage({
-                          type: MessageTypes.OpenQuickstartBlade,
+                          type: MessageTypes.OpenPostgreSQLPasswordReset,
                         });
                         usePostgres.getState().setShowResetPasswordBubble(false);
                       },
