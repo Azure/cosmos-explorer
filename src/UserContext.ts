@@ -113,7 +113,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
         usePostgres.getState().setShowPostgreTeachingBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
       }
-      if (userContext.isTryCosmosDBSubscription || isNewAccount) {
+      if (newContext.isTryCosmosDBSubscription || isNewAccount) {
         useCarousel.getState().setShouldOpen(true);
         usePostgres.getState().setShowResetPasswordBubble(true);
         localStorage.setItem(newContext.databaseAccount.id, "true");
