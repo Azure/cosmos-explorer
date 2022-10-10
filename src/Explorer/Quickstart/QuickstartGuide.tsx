@@ -109,6 +109,10 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                   <br />
                   <br />
                   To begin, please enter the cluster&apos;s password in the PostgreSQL terminal.
+                  <br />
+                  <br />
+                  Note: If you navigate out of the Quick Start tab (PostgreSQL Shell), the session will be closed and
+                  all ongoing commands might be interrupted.
                 </Text>
                 <Youtube videoId="nT64dFSfiUo" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
@@ -120,7 +124,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
               onClick={() => setCurrentStep(1)}
             >
               <Stack style={{ marginTop: 20 }}>
-                <Text>Let’s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
+                <Text>Let&apos;s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
                 <DefaultButton
                   style={{ marginTop: 16, width: 150 }}
                   onClick={() => useTerminal.getState().sendMessage(newTableCommand)}

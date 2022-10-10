@@ -1,28 +1,18 @@
-import { Image, PrimaryButton, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
-import { sendMessage } from "Common/MessageHandler";
+import { Spinner, SpinnerSize, Stack } from "@fluentui/react";
 import { configContext } from "ConfigContext";
-import { NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
-import { MessageTypes } from "Contracts/ExplorerContracts";
+import { NotebookWorkspaceConnectionInfo, PostgresFirewallRule } from "Contracts/DataModels";
 import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
 import { QuickstartGuide } from "Explorer/Quickstart/QuickstartGuide";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React, { useEffect, useState } from "react";
 import { userContext } from "UserContext";
 import { armRequest } from "Utils/arm/request";
 
 interface QuickstartTabProps {
   explorer: Explorer;
-}
-
-interface FirewallRule {
-  id: string;
-  name: string;
-  type: string;
-  properties: {
-    startIpAddress: string;
-    endIpAddress: string;
-  };
 }
 
 export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: QuickstartTabProps): JSX.Element => {
@@ -44,15 +34,15 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
       method: "GET",
       apiVersion: "2020-10-05-privatepreview",
     });
-    const firewallRules: FirewallRule[] = response?.data?.value || response?.value || [];
+    const firewallRules: PostgresFirewallRule[] = response?.data?.value || response?.value || [];
     const isEnabled = firewallRules.some(
       (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"
     );
     setIsAllPublicIPAddressEnabled(isEnabled);
 
     // If the firewall rule is not added, check every 30 seconds to see if the user has added the rule
-    if (!isEnabled) {
-      setTimeout(checkFirewallRules, 3000);
+    if (!isEnabled && useTabs.getState().activeReactTab === ReactTabKind.Quickstart) {
+      setTimeout(checkFirewallRules, 30000);
     }
   };
 
@@ -70,22 +60,7 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
         <QuickstartGuide />
       </Stack>
       <Stack style={{ width: "50%", borderLeft: "black solid 1px" }}>
-        {!isAllPublicIPAddressEnabled && (
-          <Stack style={{ padding: "16px 20px" }}>
-            <Text block>
-              To use the PostgreSQL shell, you need to add a firewall rule to allow access from all IP addresses
-              (0.0.0.0-255.255.255).
-            </Text>
-            <Text block>We strongly recommend removing this rule once you finish using the PostgreSQL shell.</Text>
-            <Image style={{ margin: "20px 0" }} src="../../../images/firewallRule.png" />
-            <PrimaryButton
-              style={{ width: 150 }}
-              onClick={() => sendMessage({ type: MessageTypes.OpenPostgresNetworkingBlade })}
-            >
-              Add firewall rule
-            </PrimaryButton>
-          </Stack>
-        )}
+        {!isAllPublicIPAddressEnabled && <QuickstartFirewallNotification />}
         {isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
           <NotebookTerminalComponent
             notebookServerInfo={getNotebookServerInfo()}
