@@ -109,18 +109,18 @@ function updateUserContext(newContext: Partial<UserContext>): void {
     );
 
     if (!localStorage.getItem(newContext.databaseAccount.id)) {
-      if (newContext.apiType === "Postgres") {
-        usePostgres.getState().setShowPostgreTeachingBubble(true);
-        localStorage.setItem(newContext.databaseAccount.id, "true");
-      }
       if (newContext.isTryCosmosDBSubscription || isNewAccount) {
         if (newContext.apiType === "Postgres") {
           usePostgres.getState().setShowResetPasswordBubble(true);
+          usePostgres.getState().setShowPostgreTeachingBubble(true);
         } else {
           useCarousel.getState().setShouldOpen(true);
           localStorage.setItem(newContext.databaseAccount.id, "true");
           traceOpen(Action.OpenCarousel);
         }
+      } else if (newContext.apiType === "Postgres") {
+        usePostgres.getState().setShowPostgreTeachingBubble(true);
+        localStorage.setItem(newContext.databaseAccount.id, "true");
       }
     }
   }
