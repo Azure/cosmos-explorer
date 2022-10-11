@@ -186,7 +186,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     headline="Create your password"
                     target={"#mainButton-quickstartDescription"}
                     hasCloseButton
-                    onDismiss={() => usePostgres.getState().setShowResetPasswordBubble(false)}
+                    onDismiss={() => {
+                      localStorage.setItem(userContext.databaseAccount.id, "true");
+                      usePostgres.getState().setShowResetPasswordBubble(false);
+                    }}
                     calloutProps={{
                       directionalHint: DirectionalHint.bottomRightEdge,
                       directionalHintFixed: true,
@@ -197,6 +200,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                     primaryButtonProps={{
                       text: "Create",
                       onClick: () => {
+                        localStorage.setItem(userContext.databaseAccount.id, "true");
                         sendMessage({
                           type: MessageTypes.OpenPostgreSQLPasswordReset,
                         });
@@ -204,7 +208,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                       },
                     }}
                   >
-                    This password will be used to connect to the database.
+                    If you haven&apos;t changed your password yet, change it now.
                   </TeachingBubble>
                 )}
               </div>
