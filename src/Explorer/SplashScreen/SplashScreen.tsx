@@ -347,10 +347,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
     const connectBtn = {
       iconSrc: ConnectIcon,
-      title: userContext.apiType === "Postgres" ? "Connect with PG Admin" : "Connect",
+      title: userContext.apiType === "Postgres" ? "Connect with pgAdmin" : "Connect",
       description:
         userContext.apiType === "Postgres"
-          ? "Prefer PGadmin? Find your connection strings here"
+          ? "Prefer pgAdmin? Find your connection strings here"
           : "Prefer using your own choice of tooling? Find the connection string you need to connect",
       onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
     };

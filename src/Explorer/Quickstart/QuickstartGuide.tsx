@@ -109,8 +109,12 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                   <br />
                   <br />
                   To begin, please enter the cluster&apos;s password in the PostgreSQL terminal.
+                  <br />
+                  <br />
+                  Note: If you navigate out of the Quick Start tab (PostgreSQL Shell), the session will be closed and
+                  all ongoing commands might be interrupted.
                 </Text>
-                <Youtube videoId="UaBDXHMQAUw" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="nT64dFSfiUo" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -120,7 +124,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
               onClick={() => setCurrentStep(1)}
             >
               <Stack style={{ marginTop: 20 }}>
-                <Text>Let’s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
+                <Text>Let&apos;s create two tables github_users and github_events in “cosmosdb_tutorial” schema.</Text>
                 <DefaultButton
                   style={{ marginTop: 16, width: 150 }}
                   onClick={() => useTerminal.getState().sendMessage(newTableCommand)}
@@ -150,7 +154,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#newTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="VJqupvSQ-mw" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="il_sA6U1WcY" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -195,7 +199,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#distributeTableCommand")}
                   />
                 </Stack>
-                <Youtube videoId="Q-AW7q1GLDY" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="kCCDRRrN1r0" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -235,7 +239,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#loadDataCommand")}
                   />
                 </Stack>
-                <Youtube videoId="h15fvLKXzRo" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="XSMEE2tujEk" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
             <PivotItem
@@ -277,7 +281,7 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
                     onClick={() => onCopyBtnClicked("#queryCommand")}
                   />
                 </Stack>
-                <Youtube videoId="p46nRnE4b8Y" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
+                <Youtube videoId="k_EanjMtaPg" style={{ margin: "20px 0" }} opts={{ width: "90%" }} />
               </Stack>
             </PivotItem>
           </Pivot>

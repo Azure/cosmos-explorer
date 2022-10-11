@@ -567,6 +567,16 @@ export interface ContainerConnectionInfo {
   //need to add ram and rom info
 }
 
+export interface PostgresFirewallRule {
+  id: string;
+  name: string;
+  type: string;
+  properties: {
+    startIpAddress: string;
+    endIpAddress: string;
+  };
+}
+
 export enum PhoenixErrorType {
   MaxAllocationTimeExceeded = "MaxAllocationTimeExceeded",
   MaxDbAccountsPerUserExceeded = "MaxDbAccountsPerUserExceeded",

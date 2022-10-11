@@ -120,13 +120,25 @@ You can enable or disable public IP addresses on the worker nodes on 'Networking
       </Stack>
 
       <Label>Secure connections</Label>
-      <Text>
+      <Text style={{ marginBottom: 8 }}>
         Only secure connections are supported. For production use cases, we recommend using the &apos;verify-full&apos;
         mode to enforce TLS certificate verification. You will need to download the Hyperscale (Citus) certificate, and
         provide it when connecting to the database.{" "}
         <Link href="https://go.microsoft.com/fwlink/?linkid=2155061" target="_blank">
           Learn more
         </Link>
+      </Text>
+
+      <Label>Connect with pgAdmin</Label>
+      <Text>
+        Refer to our{" "}
+        <Link
+          href="https://learn.microsoft.com/en-us/azure/postgresql/hyperscale/howto-connect?tabs=pgadmin"
+          target="_blank"
+        >
+          guide
+        </Link>{" "}
+        to help you connect via pgAdmin.
       </Text>
     </div>
   );
