@@ -1,6 +1,5 @@
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { cloneDeep } from "lodash";
-import promiseRetry from "p-retry";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
@@ -310,11 +309,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
 
       const isPublicInternetAllowed = isPublicInternetAccessAllowed();
       const phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
-      const dbAccountAllowedInfo = await promiseRetry(() => phoenixClient.getDbAccountAllowedStatus(), {
-        retries: 10,
-        maxTimeout: 5000,
-        minTimeout: 5000,
-      });
+      const dbAccountAllowedInfo = await phoenixClient.getDbAccountAllowedStatus();
 
       if (dbAccountAllowedInfo.status === HttpStatusCodes.OK) {
         if (dbAccountAllowedInfo?.type === PhoenixErrorType.PhoenixFlightFallback) {
