@@ -364,7 +364,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   });
 
   if (inputs.isPostgresAccount) {
-    updateUserContext({ apiType: "Postgres" });
+    updateUserContext({ apiType: "Postgres", isReplica: !!inputs.isReplica });
 
     if (inputs.connectionStringParams) {
       // TODO: Remove after the nodes param has been updated to be a flat array in the OSS extension

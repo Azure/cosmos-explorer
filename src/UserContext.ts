@@ -67,6 +67,7 @@ interface UserContext {
     partitionKey?: string;
   };
   readonly postgresConnectionStrParams?: PostgresConnectionStrParams;
+  readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
 }
 
@@ -110,7 +111,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
 
     if (!localStorage.getItem(newContext.databaseAccount.id)) {
       if (newContext.isTryCosmosDBSubscription || isNewAccount) {
-        if (newContext.apiType === "Postgres") {
+        if (newContext.apiType === "Postgres" && !newContext.isReplica) {
           usePostgres.getState().setShowResetPasswordBubble(true);
           usePostgres.getState().setShowPostgreTeachingBubble(true);
         } else {

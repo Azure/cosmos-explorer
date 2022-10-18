@@ -304,7 +304,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public createMainItems(): SplashScreenItem[] {
     const heroes: SplashScreenItem[] = [];
 
-    if (userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Postgres") {
+    if (
+      userContext.apiType === "SQL" ||
+      userContext.apiType === "Mongo" ||
+      (userContext.apiType === "Postgres" && !userContext.isReplica)
+    ) {
       const launchQuickstartBtn = {
         id: "quickstartDescription",
         iconSrc: QuickStartIcon,
