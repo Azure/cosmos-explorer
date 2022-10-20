@@ -49,7 +49,6 @@
     "bootstrap": "3.4.1",
     "canvas": "file:./canvas",
     "clean-webpack-plugin": "3.0.0",
-    "clipboard-copy": "4.0.1",
     "copy-webpack-plugin": "9.0.1",
     "crossroads": "0.12.2",
     "css-element-queries": "1.1.1",
