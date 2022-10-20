@@ -45,7 +45,11 @@ export class PhoenixClient {
   }
 
   public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixServiceInfo>> {
-    return this.executeContainerAssignmentOperation(provisionData, "allocate");
+    return promiseRetry(() => this.executeContainerAssignmentOperation(provisionData, "allocate"), {
+      retries: 4,
+      maxTimeout: 20000,
+      minTimeout: 20000,
+    });
   }
 
   public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixServiceInfo>> {
@@ -80,9 +84,12 @@ export class PhoenixClient {
       }
       const phoenixError = responseJson as IPhoenixError;
       if (response.status === HttpStatusCodes.Forbidden) {
-        throw new Error(this.ConvertToForbiddenErrorString(phoenixError));
+        if (phoenixError.message === "Sequence contains no elements") {
+          throw Error("Phoenix container allocation failed, please try again later.");
+        }
+        throw new AbortError(this.ConvertToForbiddenErrorString(phoenixError));
       }
-      throw new Error(phoenixError.message);
+      throw new AbortError(phoenixError.message);
     } catch (error) {
       error.status = response?.status;
       throw error;

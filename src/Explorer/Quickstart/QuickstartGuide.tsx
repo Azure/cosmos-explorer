@@ -96,12 +96,18 @@ export const QuickstartGuide: React.FC = (): JSX.Element => {
       <Stack style={{ flexGrow: 1, padding: "0 20px", overflow: "auto" }}>
         <Text variant="xxLarge">Quick start guide</Text>
         {currentStep < 5 && (
-          <Pivot style={{ marginTop: 10, width: "100%" }} selectedKey={GuideSteps[currentStep]}>
+          <Pivot
+            style={{ marginTop: 10, width: "100%" }}
+            selectedKey={GuideSteps[currentStep]}
+            onLinkClick={(item?: PivotItem) => setCurrentStep(Object.values(GuideSteps).indexOf(item.props.itemKey))}
+          >
             <PivotItem
               headerText="Login"
               onRenderItemLink={(props, defaultRenderer) => customPivotHeaderRenderer(props, defaultRenderer, 0)}
               itemKey={GuideSteps[0]}
-              onClick={() => setCurrentStep(0)}
+              onClick={() => {
+                setCurrentStep(0);
+              }}
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>

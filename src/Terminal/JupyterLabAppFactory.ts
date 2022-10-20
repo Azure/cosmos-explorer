@@ -81,6 +81,9 @@ export class JupyterLabAppFactory {
     // Attach the widget to the dom.
     Widget.attach(panel, document.body);
 
+    // Switch focus to the terminal
+    term.activate();
+
     // Handle resize events.
     window.addEventListener("resize", () => {
       panel.update();

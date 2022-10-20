@@ -1,4 +1,4 @@
-import { Spinner, SpinnerSize, Stack } from "@fluentui/react";
+import { Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import { configContext } from "ConfigContext";
 import { NotebookWorkspaceConnectionInfo, PostgresFirewallRule } from "Contracts/DataModels";
 import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTerminalComponent";
@@ -69,7 +69,15 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
           />
         )}
         {isAllPublicIPAddressEnabled && !notebookServerInfo?.notebookServerEndpoint && (
-          <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
+          <Stack style={{ margin: "auto 0" }}>
+            <Text block style={{ margin: "auto" }}>
+              Connecting to the PostgreSQL shell.
+            </Text>
+            <Text block style={{ margin: "auto" }}>
+              If the cluster was just created, this could take up to a minute.
+            </Text>
+            <Spinner styles={{ root: { marginTop: 16 } }} size={SpinnerSize.large}></Spinner>
+          </Stack>
         )}
       </Stack>
     </Stack>
