@@ -94,7 +94,7 @@ const getDescriptionText = (page: number): string => {
     case 1:
       return "Azure Cosmos DB is a fully managed NoSQL database service for modern app development. ";
     case 2:
-      return "Launch the quickstart for a tutotrial to learn how to create a database, add sample data, connect to a sample app and more.";
+      return "Launch the quickstart for a tutorial to learn how to create a database, add sample data, connect to a sample app and more.";
     case 3:
       return "Already have an existing app? Connect your database to an app, or tooling of your choice from Data Explorer.";
     default:
