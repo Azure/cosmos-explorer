@@ -1,5 +1,6 @@
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
+import { doNetworkSettingsAllowDataExplorerAccess } from "Utils/NetworkUtility";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
@@ -380,6 +381,8 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
       updateUserContext({ postgresConnectionStrParams: inputs.connectionStringParams });
     }
   }
+
+  useTabs.getState().setShowNetworkSettingsWarning(!doNetworkSettingsAllowDataExplorerAccess());
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));

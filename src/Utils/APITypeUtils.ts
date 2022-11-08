@@ -74,3 +74,18 @@ export const getApiShortDisplayName = (): string => {
       return "Table API";
   }
 };
+
+export const getItemName = (): string => {
+  switch (userContext.apiType) {
+    case "Tables":
+      return "Entities";
+    case "Cassandra":
+      return "Rows";
+    case "Gremlin":
+      return "Graph";
+    case "Mongo":
+      return "Documents";
+    default:
+      return "Items";
+  }
+};

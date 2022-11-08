@@ -186,7 +186,6 @@ export interface Collection extends CollectionBase {
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
   uploadFiles(fileList: FileList): Promise<{ data: UploadDetailsRecord[] }>;
 
-  getLabel(): string;
   getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
 }
 

@@ -1,3 +1,6 @@
+import { MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { sendMessage } from "Common/MessageHandler";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
@@ -8,6 +11,7 @@ import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { userContext } from "UserContext";
+import { getItemName } from "Utils/APITypeUtils";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
 import { useObservable } from "../../hooks/useObservable";
@@ -21,10 +25,25 @@ interface TabsProps {
 }
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
-  const { openedTabs, openedReactTabs, activeTab, activeReactTab } = useTabs();
+  const { openedTabs, openedReactTabs, activeTab, activeReactTab, showNetworkSettingsWarning } = useTabs();
 
   return (
     <div className="tabsManagerContainer">
+      {showNetworkSettingsWarning && (
+        <MessageBar
+          messageBarType={MessageBarType.warning}
+          actions={
+            <MessageBarButton onClick={() => sendMessage({ type: MessageTypes.OpenCosmosDBNetworkingBlade })}>
+              Change network settings
+            </MessageBarButton>
+          }
+          messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+        >
+          The current network settings does not allow data explorer to access your {getItemName().toLocaleLowerCase()}.
+          Please either enable public access for all networks or make sure &quot;Allow access from Azure Portal&quot; is
+          selected.
+        </MessageBar>
+      )}
       <div id="content" className="flexContainer hideOverflows">
         <div className="nav-tabs-margin">
           <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">

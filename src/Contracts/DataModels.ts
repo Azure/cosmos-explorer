@@ -34,6 +34,7 @@ export interface DatabaseAccountExtendedProperties {
   capacity?: { totalThroughputLimit: number };
   locations?: DatabaseAccountResponseLocation[];
   postgresqlEndpoint?: string;
+  publicNetworkAccess?: string;
 }
 
 export interface DatabaseAccountResponseLocation {
