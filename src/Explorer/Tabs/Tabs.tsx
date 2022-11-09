@@ -11,7 +11,6 @@ import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { userContext } from "UserContext";
-import { getItemName } from "Utils/APITypeUtils";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
 import { useObservable } from "../../hooks/useObservable";
@@ -39,9 +38,8 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           }
           messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
         >
-          The current network settings does not allow data explorer to access your {getItemName().toLocaleLowerCase()}.
-          Please either enable public access for all networks or make sure &quot;Allow access from Azure Portal&quot; is
-          selected.
+          The Network settings for this account are preventing access from Data Explorer. Please allow access from Azure
+          Portal to proceed.
         </MessageBar>
       )}
       <div id="content" className="flexContainer hideOverflows">
