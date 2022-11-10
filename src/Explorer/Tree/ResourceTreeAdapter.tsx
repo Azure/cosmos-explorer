@@ -1,6 +1,7 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as ko from "knockout";
 import * as React from "react";
+import { getItemName } from "Utils/APITypeUtils";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
@@ -254,7 +255,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): TreeNode {
     const children: TreeNode[] = [];
     children.push({
-      label: collection.getLabel(),
+      label: getItemName(),
       onClick: () => {
         collection.openTab();
         // push to most recent

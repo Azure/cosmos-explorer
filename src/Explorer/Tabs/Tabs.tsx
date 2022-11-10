@@ -1,3 +1,6 @@
+import { MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { sendMessage } from "Common/MessageHandler";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
@@ -21,10 +24,24 @@ interface TabsProps {
 }
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
-  const { openedTabs, openedReactTabs, activeTab, activeReactTab } = useTabs();
+  const { openedTabs, openedReactTabs, activeTab, activeReactTab, showNetworkSettingsWarning } = useTabs();
 
   return (
     <div className="tabsManagerContainer">
+      {showNetworkSettingsWarning && (
+        <MessageBar
+          messageBarType={MessageBarType.warning}
+          actions={
+            <MessageBarButton onClick={() => sendMessage({ type: MessageTypes.OpenCosmosDBNetworkingBlade })}>
+              Change network settings
+            </MessageBarButton>
+          }
+          messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+        >
+          The Network settings for this account are preventing access from Data Explorer. Please allow access from Azure
+          Portal to proceed.
+        </MessageBar>
+      )}
       <div id="content" className="flexContainer hideOverflows">
         <div className="nav-tabs-margin">
           <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">

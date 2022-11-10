@@ -1,5 +1,6 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as React from "react";
+import { getItemName } from "Utils/APITypeUtils";
 import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -497,7 +498,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const buildCollectionNode = (database: ViewModels.Database, collection: ViewModels.Collection): TreeNode => {
     const children: TreeNode[] = [];
     children.push({
-      label: collection.getLabel(),
+      label: getItemName(),
       id: collection.isSampleCollection ? "sampleItems" : "",
       onClick: () => {
         collection.openTab();

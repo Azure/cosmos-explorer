@@ -37,6 +37,7 @@ export enum MessageTypes {
   OpenQuickstartBlade,
   OpenPostgreSQLPasswordReset,
   OpenPostgresNetworkingBlade,
+  OpenCosmosDBNetworkingBlade,
 }
 
 export { Versions, ActionContracts, Diagnostics };

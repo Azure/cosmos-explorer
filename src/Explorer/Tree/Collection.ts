@@ -1160,23 +1160,6 @@ export default class Collection implements ViewModels.Collection {
     this.onDocumentDBDocumentsClick();
   }
 
-  /**
-   * Get correct collection label depending on account API
-   */
-  public getLabel(): string {
-    if (userContext.apiType === "Tables") {
-      return "Entities";
-    } else if (userContext.apiType === "Cassandra") {
-      return "Rows";
-    } else if (userContext.apiType === "Gremlin") {
-      return "Graph";
-    } else if (userContext.apiType === "Mongo") {
-      return "Documents";
-    }
-
-    return "Items";
-  }
-
   public getDatabase(): ViewModels.Database {
     return useDatabases.getState().findDatabaseWithId(this.databaseId);
   }
