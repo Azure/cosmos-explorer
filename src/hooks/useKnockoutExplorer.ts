@@ -382,7 +382,8 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  useTabs.getState().setShowNetworkSettingsWarning(!doNetworkSettingsAllowDataExplorerAccess());
+  const isDataExplorerAccessAllowed = doNetworkSettingsAllowDataExplorerAccess();
+  useTabs.getState().setShowNetworkSettingsWarning(!isDataExplorerAccessAllowed);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
