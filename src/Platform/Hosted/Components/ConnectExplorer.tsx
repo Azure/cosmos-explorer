@@ -5,13 +5,13 @@ import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import { AuthType } from "../../../AuthType";
 import { HttpHeaders } from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
-import { GenerateTokenResponse } from "../../../Contracts/DataModels";
+import { EncryptedAccessToken, GenerateTokenResponse, GenerateTokenResponse2 } from "../../../Contracts/DataModels";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 
 interface Props {
   connectionString: string;
   login: () => void;
-  setEncryptedToken: (token: string) => void;
+  setEncryptedToken: (token: EncryptedAccessToken) => void;
   setConnectionString: (connectionString: string) => void;
   setAuthType: (authType: AuthType) => void;
 }
@@ -52,8 +52,15 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   throw response;
                 }
                 // This API has a quirk where it must be parsed twice
-                const result: GenerateTokenResponse = JSON.parse(await response.json());
-                setEncryptedToken(decodeURIComponent(result.readWrite || result.read));
+                const result: GenerateTokenResponse | GenerateTokenResponse2 = JSON.parse(await response.json());
+                if ("readWrite" in result) {
+                  // V1 Token encryption (to be deprecated)
+                  setEncryptedToken({version: 1, primaryToken: decodeURIComponent(result.readWrite || result.read), secondaryToken: ""});
+                }
+                else {
+                  // V2 Token encryption
+                  setEncryptedToken({version: 2, primaryToken: result.readWritePrimary, secondaryToken: result.readWriteSecondary});
+                }
                 setAuthType(AuthType.ConnectionString);
               }}
             >
