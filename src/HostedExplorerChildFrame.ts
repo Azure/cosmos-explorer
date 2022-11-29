@@ -1,5 +1,5 @@
 import { AuthType } from "./AuthType";
-import { AccessInputMetadata, DatabaseAccount } from "./Contracts/DataModels";
+import { AccessInputMetadata, DatabaseAccount, EncryptedAccessToken } from "./Contracts/DataModels";
 
 type HostedConfig = AAD | ConnectionString | EncryptedToken | ResourceToken;
 export interface HostedExplorerChildFrame extends Window {
@@ -15,7 +15,7 @@ export interface AAD {
 export interface ConnectionString {
   authType: AuthType.ConnectionString;
   // Connection string uses still use encrypted token for Cassandra/Mongo APIs as they us the portal backend proxy
-  encryptedToken: string;
+  encryptedToken: EncryptedAccessToken;
   encryptedTokenMetadata: AccessInputMetadata;
   // Master key is currently only used by Graph API. All other APIs use encrypted tokens and proxy with connection string
   masterKey?: string;

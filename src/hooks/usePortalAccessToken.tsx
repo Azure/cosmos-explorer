@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { ApiEndpoints } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
-import { AccessInputMetadata } from "../Contracts/DataModels";
+import { AccessInputMetadata, EncryptedAccessToken } from "../Contracts/DataModels";
 
 const url = `${configContext.BACKEND_ENDPOINT}${ApiEndpoints.guestRuntimeProxy}/accessinputmetadata?_=1609359229955`;
 
-export async function fetchAccessData(portalToken: string): Promise<AccessInputMetadata> {
+export async function fetchAccessData(portalToken: EncryptedAccessToken): Promise<AccessInputMetadata> {
   const headers = new Headers();
   // Portal encrypted token API quirk: The token header must be URL encoded
-  headers.append("x-ms-encrypted-auth-token", encodeURIComponent(portalToken));
+  if (portalToken.version === 1) {
+    headers.append("x-ms-encrypted-auth-token", encodeURIComponent(portalToken.primaryToken));
+  }
+  else {
+    headers.append("x-ms-cosmos-auth-token-primary", portalToken.primaryToken);
+    headers.append("x-ms-cosmos-auth-token-secondary", portalToken.secondaryToken);
+  }
 
   const options = {
     method: "GET",

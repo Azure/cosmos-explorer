@@ -78,8 +78,19 @@ export enum ApiKind {
 }
 
 export interface GenerateTokenResponse {
+  readWritePrimary: string;
+  readWriteSecondary: string;
+}
+
+export interface GenerateTokenResponse2 {
   readWrite: string;
   read: string;
+}
+
+export interface EncryptedAccessToken {
+  version: 1 | 2;
+  primaryToken: string;
+  secondaryToken: string;
 }
 
 export interface Subscription {
