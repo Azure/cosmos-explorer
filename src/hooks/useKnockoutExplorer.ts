@@ -18,14 +18,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken,
+  ResourceToken
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata,
+  getDatabaseAccountPropertiesFromMetadata
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -175,7 +175,7 @@ function configureHostedWithConnectionString(config: ConnectionString): Explorer
   updateUserContext({
     // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
     authType: AuthType.EncryptedToken,
-    accessToken: encodeURIComponent(config.encryptedToken),
+    accessToken: encodeURIComponent(config.encryptedToken.primaryToken),
     databaseAccount,
     masterKey: config.masterKey,
   });
@@ -212,7 +212,7 @@ function configureHostedWithEncryptedToken(config: EncryptedToken): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   updateUserContext({
     authType: AuthType.EncryptedToken,
-    accessToken: encodeURIComponent(config.encryptedToken),
+    accessToken: encodeURIComponent(config.encryptedToken.primaryToken),
     databaseAccount: {
       id: "",
       location: "",

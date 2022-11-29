@@ -5,7 +5,7 @@ import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
-import { DatabaseAccount } from "./Contracts/DataModels";
+import { DatabaseAccount, EncryptedAccessToken } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
@@ -25,8 +25,7 @@ initializeIcons();
 
 const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter
-  const params = new URLSearchParams(window.location.search);
-  const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
+  const [encryptedToken, setEncryptedToken] = React.useState<EncryptedAccessToken>();
   const encryptedTokenMetadata = useTokenMetadata(encryptedToken);
 
   // For showing/hiding panel

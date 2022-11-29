@@ -10,8 +10,7 @@ export async function fetchAccessData(portalToken: EncryptedAccessToken): Promis
   // Portal encrypted token API quirk: The token header must be URL encoded
   if (portalToken.version === 1) {
     headers.append("x-ms-encrypted-auth-token", encodeURIComponent(portalToken.primaryToken));
-  }
-  else {
+  } else {
     headers.append("x-ms-cosmos-auth-token-primary", portalToken.primaryToken);
     headers.append("x-ms-cosmos-auth-token-secondary", portalToken.secondaryToken);
   }
@@ -30,7 +29,7 @@ export async function fetchAccessData(portalToken: EncryptedAccessToken): Promis
   );
 }
 
-export function useTokenMetadata(token: string): AccessInputMetadata | undefined {
+export function useTokenMetadata(token: EncryptedAccessToken): AccessInputMetadata | undefined {
   const [state, setState] = useState<AccessInputMetadata | undefined>();
 
   useEffect(() => {
