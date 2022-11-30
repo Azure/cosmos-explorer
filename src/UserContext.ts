@@ -3,7 +3,7 @@ import { usePostgres } from "hooks/usePostgres";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { AuthType } from "./AuthType";
-import { DatabaseAccount } from "./Contracts/DataModels";
+import { DatabaseAccount, EncryptedAccessToken } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
 import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constants";
@@ -48,7 +48,7 @@ interface UserContext {
   readonly databaseAccount?: DatabaseAccount;
   readonly endpoint?: string;
   readonly aadToken?: string;
-  readonly accessToken?: string;
+  readonly accessToken?: EncryptedAccessToken;
   readonly authorizationToken?: string;
   readonly resourceToken?: string;
   readonly subscriptionType?: SubscriptionType;

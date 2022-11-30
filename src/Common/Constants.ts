@@ -203,6 +203,8 @@ export class HttpHeaders {
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
+  public static authTokenPrimary: string = "x-ms-cosmos-auth-token-primary";
+  public static authTokenSecondary: string = "x-ms-cosmos-auth-token-secondary";
 }
 
 export class ApiType {

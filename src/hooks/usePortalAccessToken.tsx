@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getAccessTokenAuthorizationHeaders } from "Utils/AuthorizationUtils";
 import { ApiEndpoints } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import { AccessInputMetadata, EncryptedAccessToken } from "../Contracts/DataModels";
@@ -6,16 +7,7 @@ import { AccessInputMetadata, EncryptedAccessToken } from "../Contracts/DataMode
 const url = `${configContext.BACKEND_ENDPOINT}${ApiEndpoints.guestRuntimeProxy}/accessinputmetadata?_=1609359229955`;
 
 export async function fetchAccessData(portalToken: EncryptedAccessToken): Promise<AccessInputMetadata> {
-  const headers = new Headers();
-  // Portal encrypted token API quirk: The token header must be URL encoded
-  if (portalToken.version === 1) {
-    headers.append("x-ms-encrypted-auth-token", encodeURIComponent(portalToken.primaryToken));
-  }
-  else {
-    headers.append("x-ms-cosmos-auth-token-primary", portalToken.primaryToken);
-    headers.append("x-ms-cosmos-auth-token-secondary", portalToken.secondaryToken);
-  }
-
+  const headers = getAccessTokenAuthorizationHeaders(portalToken);
   const options = {
     method: "GET",
     headers: headers,
@@ -30,7 +22,7 @@ export async function fetchAccessData(portalToken: EncryptedAccessToken): Promis
   );
 }
 
-export function useTokenMetadata(token: string): AccessInputMetadata | undefined {
+export function useTokenMetadata(token: EncryptedAccessToken): AccessInputMetadata | undefined {
   const [state, setState] = useState<AccessInputMetadata | undefined>();
 
   useEffect(() => {

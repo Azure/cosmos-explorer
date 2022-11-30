@@ -1,5 +1,6 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import queryString from "querystring";
+import { getAccessTokenAuthorizationHeaders } from "Utils/AuthorizationUtils";
 import { allowedMongoProxyEndpoints, validateEndpoint } from "Utils/EndpointValidation";
 import { AuthType } from "../AuthType";
 import { configContext } from "../ConfigContext";
@@ -22,7 +23,10 @@ const defaultHeaders = {
 
 function authHeaders() {
   if (userContext.authType === AuthType.EncryptedToken) {
-    return { [HttpHeaders.guestAccessToken]: userContext.accessToken };
+    const accessTokenHeaders: Headers = getAccessTokenAuthorizationHeaders(userContext.accessToken);
+    const headers: { [key: string]: string } = {};
+    accessTokenHeaders.forEach((value, key) => (headers[key] = value));
+    return headers;
   } else {
     return { [HttpHeaders.authorization]: userContext.authorizationToken };
   }

@@ -29,7 +29,7 @@ import {
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { getAuthorizationHeaders } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
   private armResourceId: string;
@@ -244,11 +244,9 @@ export class PhoenixClient {
   }
 
   private static getHeaders(): HeadersInit {
-    const authorizationHeader = getAuthorizationHeader();
-    return {
-      [authorizationHeader.header]: authorizationHeader.token,
-      [HttpHeaders.contentType]: "application/json",
-    };
+    const headers = getAuthorizationHeaders();
+    headers.append(HttpHeaders.contentType, "application/json");
+    return headers;
   }
 
   public ConvertToForbiddenErrorString(jsonData: IPhoenixError): string {

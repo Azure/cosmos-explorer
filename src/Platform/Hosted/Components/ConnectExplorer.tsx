@@ -55,11 +55,18 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 const result: GenerateTokenResponse | GenerateTokenResponse2 = JSON.parse(await response.json());
                 if ("readWrite" in result) {
                   // V1 Token encryption (to be deprecated)
-                  setEncryptedToken({version: 1, primaryToken: decodeURIComponent(result.readWrite || result.read), secondaryToken: ""});
-                }
-                else {
+                  setEncryptedToken({
+                    version: 1,
+                    primaryToken: decodeURIComponent(result.readWrite || result.read),
+                    secondaryToken: "",
+                  });
+                } else {
                   // V2 Token encryption
-                  setEncryptedToken({version: 2, primaryToken: result.readWritePrimary, secondaryToken: result.readWriteSecondary});
+                  setEncryptedToken({
+                    version: 2,
+                    primaryToken: result.readWritePrimary,
+                    secondaryToken: result.readWriteSecondary,
+                  });
                 }
                 setAuthType(AuthType.ConnectionString);
               }}

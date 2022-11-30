@@ -8,7 +8,7 @@ import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeA
 import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
 import { userContext } from "../UserContext";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { getAuthorizationHeaders } from "../Utils/AuthorizationUtils";
 
 export interface IJunoResponse<T> {
   status: number;
@@ -515,11 +515,9 @@ export class JunoClient {
   }
 
   private static getHeaders(): HeadersInit {
-    const authorizationHeader = getAuthorizationHeader();
-    return {
-      [authorizationHeader.header]: authorizationHeader.token,
-      [HttpHeaders.contentType]: "application/json",
-    };
+    const headers: Headers = getAuthorizationHeaders();
+    headers.append(HttpHeaders.contentType, "application/json");
+    return headers;
   }
 
   private static getGitHubClientParams(): URLSearchParams {

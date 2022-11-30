@@ -23,7 +23,7 @@ export interface ConnectionString {
 
 export interface EncryptedToken {
   authType: AuthType.EncryptedToken;
-  encryptedToken: string;
+  encryptedToken: EncryptedAccessToken;
   encryptedTokenMetadata: AccessInputMetadata;
 }
 

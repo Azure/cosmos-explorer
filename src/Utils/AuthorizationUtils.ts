@@ -1,22 +1,28 @@
 import * as msal from "@azure/msal-browser";
+import { EncryptedAccessToken } from "Contracts/DataModels";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
+import { HttpHeaders } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
-import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 
-export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
+export function getAuthorizationHeaders(): Headers {
   if (userContext.authType === AuthType.EncryptedToken) {
-    return {
-      header: Constants.HttpHeaders.guestAccessToken,
-      token: userContext.accessToken,
-    };
+    return userContext.accessToken ? getAccessTokenAuthorizationHeaders(userContext.accessToken) : new Headers();
   } else {
-    return {
-      header: Constants.HttpHeaders.authorization,
-      token: userContext.authorizationToken || "",
-    };
+    return new Headers([[Constants.HttpHeaders.authorization, userContext.authorizationToken || ""]]);
+  }
+}
+
+export function getAccessTokenAuthorizationHeaders(token: EncryptedAccessToken): Headers {
+  if (token.version === 1) {
+    return new Headers([[HttpHeaders.guestAccessToken, encodeURIComponent(token.primaryToken)]]);
+  } else {
+    return new Headers([
+      [HttpHeaders.authTokenPrimary, token.primaryToken],
+      [HttpHeaders.authTokenSecondary, token.secondaryToken],
+    ]);
   }
 }
 

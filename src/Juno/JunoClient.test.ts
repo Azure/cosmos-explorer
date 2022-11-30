@@ -1,7 +1,7 @@
+import { getAuthorizationHeaders } from "Utils/AuthorizationUtils";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { updateUserContext, userContext } from "../UserContext";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { IPinnedRepo, IPublishNotebookRequest, JunoClient } from "./JunoClient";
 
 const sampleSubscriptionId = "subscriptionId";
@@ -225,7 +225,9 @@ describe("Gallery", () => {
 
     const response = await junoClient.increaseNotebookDownloadCount(id);
 
-    const authorizationHeader = getAuthorizationHeader();
+    const expectedHeaders = getAuthorizationHeaders();
+    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
       `${JunoClient.getJunoEndpoint()}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${
@@ -233,10 +235,7 @@ describe("Gallery", () => {
       }/gallery/${id}/downloads`,
       {
         method: "PATCH",
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+        headers: expectedHeaders,
       }
     );
   });
@@ -250,7 +249,9 @@ describe("Gallery", () => {
 
     const response = await junoClient.favoriteNotebook(id);
 
-    const authorizationHeader = getAuthorizationHeader();
+    const expectedHeaders = getAuthorizationHeaders();
+    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
       `${JunoClient.getJunoEndpoint()}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${
@@ -258,10 +259,7 @@ describe("Gallery", () => {
       }/gallery/${id}/favorite`,
       {
         method: "PATCH",
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+        headers: expectedHeaders,
       }
     );
   });
@@ -275,7 +273,9 @@ describe("Gallery", () => {
 
     const response = await junoClient.unfavoriteNotebook(id);
 
-    const authorizationHeader = getAuthorizationHeader();
+    const expectedHeaders = getAuthorizationHeaders();
+    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
       `${JunoClient.getJunoEndpoint()}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${
@@ -283,10 +283,7 @@ describe("Gallery", () => {
       }/gallery/${id}/unfavorite`,
       {
         method: "PATCH",
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+        headers: expectedHeaders,
       }
     );
   });
@@ -299,17 +296,16 @@ describe("Gallery", () => {
 
     const response = await junoClient.getFavoriteNotebooks();
 
-    const authorizationHeader = getAuthorizationHeader();
+    const expectedHeaders = getAuthorizationHeaders();
+    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
       `${JunoClient.getJunoEndpoint()}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${
         sampleDatabaseAccount.name
       }/gallery/favorites`,
       {
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+        headers: expectedHeaders,
       }
     );
   });
@@ -322,17 +318,16 @@ describe("Gallery", () => {
 
     const response = await junoClient.getPublishedNotebooks();
 
-    const authorizationHeader = getAuthorizationHeader();
+    const expectedHeaders = getAuthorizationHeaders();
+    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
       `${JunoClient.getJunoEndpoint()}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${
         sampleDatabaseAccount.name
       }/gallery/published`,
       {
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+        headers: expectedHeaders,
       }
     );
   });
@@ -346,7 +341,9 @@ describe("Gallery", () => {
 
     const response = await junoClient.deleteNotebook(id);
 
-    const authorizationHeader = getAuthorizationHeader();
+    const expectedHeaders = getAuthorizationHeaders();
+    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
       `${JunoClient.getJunoEndpoint()}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${
@@ -354,10 +351,7 @@ describe("Gallery", () => {
       }/gallery/${id}`,
       {
         method: "DELETE",
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+        headers: expectedHeaders,
       }
     );
   });
@@ -376,7 +370,9 @@ describe("Gallery", () => {
 
     const response = await junoClient.publishNotebook(name, description, tags, thumbnailUrl, content);
 
-    const authorizationHeader = getAuthorizationHeader();
+    const expectedHeaders = getAuthorizationHeaders();
+    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
       `${JunoClient.getJunoEndpoint()}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${
@@ -384,10 +380,7 @@ describe("Gallery", () => {
       }/gallery`,
       {
         method: "PUT",
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [HttpHeaders.contentType]: "application/json",
-        },
+        headers: expectedHeaders,
         body: JSON.stringify({
           name,
           description,

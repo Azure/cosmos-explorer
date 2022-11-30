@@ -1,8 +1,17 @@
-import * as Constants from "../Common/Constants";
-import * as AuthorizationUtils from "./AuthorizationUtils";
 import { AuthType } from "../AuthType";
+import * as Constants from "../Common/Constants";
 import { updateUserContext } from "../UserContext";
+import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
+
+function headersToArray(headers: Headers): [string, string][] {
+  const headersArray: [string, string][] = [];
+  headers.forEach((key, value) => {
+    headersArray.push([key, value]);
+  });
+
+  return headersArray;
+}
 
 describe("AuthorizationUtils", () => {
   describe("getAuthorizationHeader()", () => {
@@ -12,18 +21,36 @@ describe("AuthorizationUtils", () => {
         authorizationToken: "some-token",
       });
 
-      expect(AuthorizationUtils.getAuthorizationHeader().header).toBe(Constants.HttpHeaders.authorization);
-      expect(AuthorizationUtils.getAuthorizationHeader().token).toBe("some-token");
+      const authHeaders: [string, string][] = headersToArray(AuthorizationUtils.getAuthorizationHeaders());
+      expect(authHeaders.length).toBe(1);
+      expect(authHeaders[0][0]).toBe(Constants.HttpHeaders.authorization);
+      expect(authHeaders[0][1]).toBe("some-token");
     });
 
-    it("should return guest access header if authentication type is EncryptedToken", () => {
+    it("should return guest access header if authentication type is EncryptedToken (V1)", () => {
       updateUserContext({
         authType: AuthType.EncryptedToken,
-        accessToken: "some-token",
+        accessToken: { version: 1, primaryToken: "some-token", secondaryToken: "" },
       });
 
-      expect(AuthorizationUtils.getAuthorizationHeader().header).toBe(Constants.HttpHeaders.guestAccessToken);
-      expect(AuthorizationUtils.getAuthorizationHeader().token).toBe("some-token");
+      const authHeaders: [string, string][] = headersToArray(AuthorizationUtils.getAuthorizationHeaders());
+      expect(authHeaders.length).toBe(1);
+      expect(authHeaders[0][0]).toBe(Constants.HttpHeaders.guestAccessToken);
+      expect(authHeaders[0][1]).toBe("some-token");
+    });
+
+    it("should return guest access header if authentication type is EncryptedToken (V2)", () => {
+      updateUserContext({
+        authType: AuthType.EncryptedToken,
+        accessToken: { version: 2, primaryToken: "some-token", secondaryToken: "some-other-token" },
+      });
+
+      const authHeaders: [string, string][] = headersToArray(AuthorizationUtils.getAuthorizationHeaders());
+      expect(authHeaders.length).toBe(2);
+      expect(authHeaders[0][0]).toBe(Constants.HttpHeaders.authTokenPrimary);
+      expect(authHeaders[0][1]).toBe("some-token");
+      expect(authHeaders[1][0]).toBe(Constants.HttpHeaders.authTokenSecondary);
+      expect(authHeaders[1][1]).toBe("some-other-token");
     });
   });
 

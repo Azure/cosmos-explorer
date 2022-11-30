@@ -175,7 +175,7 @@ function configureHostedWithConnectionString(config: ConnectionString): Explorer
   updateUserContext({
     // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
     authType: AuthType.EncryptedToken,
-    accessToken: encodeURIComponent(config.encryptedToken),
+    accessToken: config.encryptedToken,
     databaseAccount,
     masterKey: config.masterKey,
   });
@@ -212,7 +212,7 @@ function configureHostedWithEncryptedToken(config: EncryptedToken): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   updateUserContext({
     authType: AuthType.EncryptedToken,
-    accessToken: encodeURIComponent(config.encryptedToken),
+    accessToken: config.encryptedToken,
     databaseAccount: {
       id: "",
       location: "",

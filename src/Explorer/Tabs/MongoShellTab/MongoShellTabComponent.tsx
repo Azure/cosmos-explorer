@@ -1,3 +1,4 @@
+import { EncryptedAccessToken } from "Contracts/DataModels";
 import React, { Component } from "react";
 import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
@@ -135,7 +136,7 @@ export default class MongoShellTabComponent extends Component<
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();
     const apiEndpoint = configContext.BACKEND_ENDPOINT;
-    const encryptedAuthToken: string = userContext.accessToken;
+    const encryptedAuthToken: EncryptedAccessToken = userContext.accessToken;
 
     shellIframe.contentWindow.postMessage(
       {

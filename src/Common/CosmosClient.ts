@@ -1,4 +1,5 @@
 import * as Cosmos from "@azure/cosmos";
+import { getAuthorizationHeaders } from "Utils/AuthorizationUtils";
 import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
@@ -55,12 +56,12 @@ export const endpoint = () => {
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
   try {
     const host = configContext.BACKEND_ENDPOINT;
+    const authorizationHeaders = getAuthorizationHeaders();
+    authorizationHeaders.append(HttpHeaders.contentType, "application/json");
+
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-ms-encrypted-auth-token": userContext.accessToken,
-      },
+      headers: authorizationHeaders,
       body: JSON.stringify({
         verb,
         resourceType,

@@ -12,7 +12,7 @@ import * as HeadersUtility from "../../Common/HeadersUtility";
 import { configContext } from "../../ConfigContext";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
-import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import { getAuthorizationHeaders } from "../../Utils/AuthorizationUtils";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
@@ -523,8 +523,10 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   private setAuthorizationHeader: (xhr: XMLHttpRequest) => boolean = (xhr: XMLHttpRequest): boolean => {
-    const authorizationHeaderMetadata: ViewModels.AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
-    xhr.setRequestHeader(authorizationHeaderMetadata.header, authorizationHeaderMetadata.token);
+    const authorizationHeaderMetadata: Headers = getAuthorizationHeaders();
+    authorizationHeaderMetadata.forEach((value, key) => {
+      xhr.setRequestHeader(key, value);
+    });
 
     return true;
   };

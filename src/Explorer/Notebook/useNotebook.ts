@@ -15,7 +15,7 @@ import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import { getAuthorizationHeaders } from "../../Utils/AuthorizationUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
@@ -128,17 +128,16 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
         ? databaseAccount?.location
         : databaseAccount?.properties?.writeLocations?.[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
-    const authorizationHeader = getAuthorizationHeader();
+    const authorizationHeaders = getAuthorizationHeaders();
+    authorizationHeaders.append(Constants.HttpHeaders.contentType, "application/json");
+
     try {
       const response = await fetch(disallowedLocationsUri, {
         method: "POST",
         body: JSON.stringify({
           resourceTypes: [Constants.ArmResourceTypes.notebookWorkspaces],
         }),
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [Constants.HttpHeaders.contentType]: "application/json",
-        },
+        headers: authorizationHeaders,
       });
 
       if (!response.ok) {

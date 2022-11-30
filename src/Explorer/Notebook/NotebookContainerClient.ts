@@ -11,7 +11,7 @@ import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import { IPhoenixServiceInfo, IProvisionData, IResponse } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import { getAuthorizationHeaders } from "../../Utils/AuthorizationUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { useNotebook } from "./useNotebook";
 
@@ -185,11 +185,9 @@ export class NotebookContainerClient {
     };
   }
 
-  private getHeaders(): HeadersInit {
-    const authorizationHeader = getAuthorizationHeader();
-    return {
-      [authorizationHeader.header]: authorizationHeader.token,
-      [HttpHeaders.contentType]: "application/json",
-    };
+  private getHeaders(): Headers {
+    const headers: Headers = getAuthorizationHeaders();
+    headers.append(HttpHeaders.contentType, "application/json");
+    return headers;
   }
 }
