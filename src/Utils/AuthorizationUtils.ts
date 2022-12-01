@@ -7,22 +7,22 @@ import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import { userContext } from "../UserContext";
 
-export function getAuthorizationHeaders(): Headers {
+export function getAuthorizationHeaders() {
   if (userContext.authType === AuthType.EncryptedToken) {
-    return userContext.accessToken ? getAccessTokenAuthorizationHeaders(userContext.accessToken) : new Headers();
+    return userContext.accessToken ? getAccessTokenAuthorizationHeaders(userContext.accessToken) : {};
   } else {
-    return new Headers([[Constants.HttpHeaders.authorization, userContext.authorizationToken || ""]]);
+    return { [Constants.HttpHeaders.authorization]: userContext.authorizationToken || "" };
   }
 }
 
-export function getAccessTokenAuthorizationHeaders(token: EncryptedAccessToken): Headers {
+export function getAccessTokenAuthorizationHeaders(token: EncryptedAccessToken) {
   if (token.version === 1) {
-    return new Headers([[HttpHeaders.guestAccessToken, encodeURIComponent(token.primaryToken)]]);
+    return { [HttpHeaders.guestAccessToken]: encodeURIComponent(token.primaryToken) };
   } else {
-    return new Headers([
-      [HttpHeaders.authTokenPrimary, token.primaryToken],
-      [HttpHeaders.authTokenSecondary, token.secondaryToken],
-    ]);
+    return {
+      [HttpHeaders.authTokenPrimary]: token.primaryToken,
+      [HttpHeaders.authTokenSecondary]: token.secondaryToken,
+    };
   }
 }
 

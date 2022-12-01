@@ -245,7 +245,7 @@ export class PhoenixClient {
 
   private static getHeaders(): HeadersInit {
     const headers = getAuthorizationHeaders();
-    headers.append(HttpHeaders.contentType, "application/json");
+    headers[HttpHeaders.contentType] = "application/json";
     return headers;
   }
 

@@ -5,13 +5,12 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import promiseRetry, { AbortError } from "p-retry";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import * as Constants from "../../Common/Constants";
-import { ConnectionStatusType, HttpHeaders, HttpStatusCodes, Notebook, PoolIdType } from "../../Common/Constants";
+import { ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import { IPhoenixServiceInfo, IProvisionData, IResponse } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { getAuthorizationHeaders } from "../../Utils/AuthorizationUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { useNotebook } from "./useNotebook";
 
@@ -183,11 +182,5 @@ export class NotebookContainerClient {
       notebookServerEndpoint: notebookServerInfo.notebookServerEndpoint,
       authToken,
     };
-  }
-
-  private getHeaders(): Headers {
-    const headers: Headers = getAuthorizationHeaders();
-    headers.append(HttpHeaders.contentType, "application/json");
-    return headers;
   }
 }

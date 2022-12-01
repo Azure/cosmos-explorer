@@ -23,10 +23,7 @@ const defaultHeaders = {
 
 function authHeaders() {
   if (userContext.authType === AuthType.EncryptedToken) {
-    const accessTokenHeaders: Headers = getAccessTokenAuthorizationHeaders(userContext.accessToken);
-    const headers: { [key: string]: string } = {};
-    accessTokenHeaders.forEach((value, key) => (headers[key] = value));
-    return headers;
+    return getAccessTokenAuthorizationHeaders(userContext.accessToken);
   } else {
     return { [HttpHeaders.authorization]: userContext.authorizationToken };
   }

@@ -129,7 +129,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
         : databaseAccount?.properties?.writeLocations?.[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeaders = getAuthorizationHeaders();
-    authorizationHeaders.append(Constants.HttpHeaders.contentType, "application/json");
+    authorizationHeaders[Constants.HttpHeaders.contentType] = "application/json";
 
     try {
       const response = await fetch(disallowedLocationsUri, {

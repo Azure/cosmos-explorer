@@ -226,7 +226,7 @@ describe("Gallery", () => {
     const response = await junoClient.increaseNotebookDownloadCount(id);
 
     const expectedHeaders = getAuthorizationHeaders();
-    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+    expectedHeaders[HttpHeaders.contentType] = "application/json";
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
@@ -250,7 +250,7 @@ describe("Gallery", () => {
     const response = await junoClient.favoriteNotebook(id);
 
     const expectedHeaders = getAuthorizationHeaders();
-    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+    expectedHeaders[HttpHeaders.contentType] = "application/json";
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
@@ -274,7 +274,7 @@ describe("Gallery", () => {
     const response = await junoClient.unfavoriteNotebook(id);
 
     const expectedHeaders = getAuthorizationHeaders();
-    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+    expectedHeaders[HttpHeaders.contentType] = "application/json";
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
@@ -297,7 +297,7 @@ describe("Gallery", () => {
     const response = await junoClient.getFavoriteNotebooks();
 
     const expectedHeaders = getAuthorizationHeaders();
-    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+    expectedHeaders[HttpHeaders.contentType] = "application/json";
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
@@ -319,7 +319,7 @@ describe("Gallery", () => {
     const response = await junoClient.getPublishedNotebooks();
 
     const expectedHeaders = getAuthorizationHeaders();
-    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+    expectedHeaders[HttpHeaders.contentType] = "application/json";
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
@@ -342,7 +342,7 @@ describe("Gallery", () => {
     const response = await junoClient.deleteNotebook(id);
 
     const expectedHeaders = getAuthorizationHeaders();
-    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+    expectedHeaders[HttpHeaders.contentType] = "application/json";
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
@@ -371,7 +371,7 @@ describe("Gallery", () => {
     const response = await junoClient.publishNotebook(name, description, tags, thumbnailUrl, content);
 
     const expectedHeaders = getAuthorizationHeaders();
-    expectedHeaders.append(HttpHeaders.contentType, "application/json");
+    expectedHeaders[HttpHeaders.contentType] = "application/json";
 
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(

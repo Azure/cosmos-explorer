@@ -4,15 +4,6 @@ import { updateUserContext } from "../UserContext";
 import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
 
-function headersToArray(headers: Headers): [string, string][] {
-  const headersArray: [string, string][] = [];
-  headers.forEach((key, value) => {
-    headersArray.push([key, value]);
-  });
-
-  return headersArray;
-}
-
 describe("AuthorizationUtils", () => {
   describe("getAuthorizationHeader()", () => {
     it("should return authorization header if authentication type is AAD", () => {
@@ -21,7 +12,7 @@ describe("AuthorizationUtils", () => {
         authorizationToken: "some-token",
       });
 
-      const authHeaders: [string, string][] = headersToArray(AuthorizationUtils.getAuthorizationHeaders());
+      const authHeaders = Object.entries(AuthorizationUtils.getAuthorizationHeaders());
       expect(authHeaders.length).toBe(1);
       expect(authHeaders[0][0]).toBe(Constants.HttpHeaders.authorization);
       expect(authHeaders[0][1]).toBe("some-token");
@@ -33,7 +24,7 @@ describe("AuthorizationUtils", () => {
         accessToken: { version: 1, primaryToken: "some-token", secondaryToken: "" },
       });
 
-      const authHeaders: [string, string][] = headersToArray(AuthorizationUtils.getAuthorizationHeaders());
+      const authHeaders = Object.entries(AuthorizationUtils.getAuthorizationHeaders());
       expect(authHeaders.length).toBe(1);
       expect(authHeaders[0][0]).toBe(Constants.HttpHeaders.guestAccessToken);
       expect(authHeaders[0][1]).toBe("some-token");
@@ -45,7 +36,7 @@ describe("AuthorizationUtils", () => {
         accessToken: { version: 2, primaryToken: "some-token", secondaryToken: "some-other-token" },
       });
 
-      const authHeaders: [string, string][] = headersToArray(AuthorizationUtils.getAuthorizationHeaders());
+      const authHeaders = Object.entries(AuthorizationUtils.getAuthorizationHeaders());
       expect(authHeaders.length).toBe(2);
       expect(authHeaders[0][0]).toBe(Constants.HttpHeaders.authTokenPrimary);
       expect(authHeaders[0][1]).toBe("some-token");

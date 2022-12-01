@@ -23,8 +23,8 @@ export const fetchPortalNotifications = async (): Promise<DataModels.Notificatio
   const url = `${configContext.BACKEND_ENDPOINT}${notificationsPath()}?accountName=${
     databaseAccount.name
   }&subscriptionId=${subscriptionId}&resourceGroup=${resourceGroup}`;
-  const headers: Headers = getAuthorizationHeaders();
 
+  const headers = getAuthorizationHeaders();
   const response = await window.fetch(url, {
     headers,
   });

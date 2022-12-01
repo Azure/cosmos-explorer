@@ -56,12 +56,12 @@ export const endpoint = () => {
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
   try {
     const host = configContext.BACKEND_ENDPOINT;
-    const authorizationHeaders = getAuthorizationHeaders();
-    authorizationHeaders.append(HttpHeaders.contentType, "application/json");
+    const headers = getAuthorizationHeaders();
+    headers[HttpHeaders.contentType] = "application/json";
 
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
       method: "POST",
-      headers: authorizationHeaders,
+      headers: headers,
       body: JSON.stringify({
         verb,
         resourceType,

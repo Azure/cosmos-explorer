@@ -523,9 +523,9 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   private setAuthorizationHeader: (xhr: XMLHttpRequest) => boolean = (xhr: XMLHttpRequest): boolean => {
-    const authorizationHeaderMetadata: Headers = getAuthorizationHeaders();
-    authorizationHeaderMetadata.forEach((value, key) => {
-      xhr.setRequestHeader(key, value);
+    const authorizationHeaderMetadata = getAuthorizationHeaders();
+    Object.entries(authorizationHeaderMetadata).forEach((value, index, array) => {
+      xhr.setRequestHeader(value[0], value[1]);
     });
 
     return true;

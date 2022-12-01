@@ -515,8 +515,8 @@ export class JunoClient {
   }
 
   private static getHeaders(): HeadersInit {
-    const headers: Headers = getAuthorizationHeaders();
-    headers.append(HttpHeaders.contentType, "application/json");
+    const headers = getAuthorizationHeaders();
+    headers[HttpHeaders.contentType] = "application/json";
     return headers;
   }
 
