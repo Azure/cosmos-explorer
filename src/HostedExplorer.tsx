@@ -33,7 +33,7 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
-  const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
+  const [authType, setAuthType] = React.useState<AuthType>();
   const [connectionString, setConnectionString] = React.useState<string>();
 
   const ref = React.useRef<HTMLIFrameElement>();
