@@ -166,11 +166,11 @@ export function createContextCommandBarButtons(
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
-        } else {
-          selectedCollection && selectedCollection.onNewMongoShellClick();
-        }
+        //    if (useNotebook.getState().isShellEnabled) {
+        //      container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+        //    } else {
+        selectedCollection && selectedCollection.onNewMongoShellClick();
+        //    }
       },
       commandButtonLabel: label,
       ariaLabel: label,
