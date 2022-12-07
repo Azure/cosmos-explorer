@@ -16,7 +16,6 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
-import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import StoredProcedure from "./Tree/StoredProcedure";
@@ -91,7 +90,7 @@ export const createCollectionContextMenuButton = (
         selectedCollection && selectedCollection.onNewMongoShellClick();
         // }
       },
-      label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
+      label: "Old Mongo Shell",
     });
   }
 

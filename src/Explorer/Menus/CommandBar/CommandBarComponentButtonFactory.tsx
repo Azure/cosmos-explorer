@@ -160,7 +160,8 @@ export function createContextCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
+    // const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
+    const label = "Old Mongo Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
