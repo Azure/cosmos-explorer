@@ -32,7 +32,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
         <MessageBar
           messageBarType={MessageBarType.warning}
           actions={
-            <MessageBarButton onClick={() => sendMessage({ type: MessageTypes.OpenCosmosDBNetworkingBlade })}>
+            <MessageBarButton onClick={() => sendMessage({ type: MessageTypes.OpenPostgresNetworkingBlade })}>
               Change network settings
             </MessageBarButton>
           }
