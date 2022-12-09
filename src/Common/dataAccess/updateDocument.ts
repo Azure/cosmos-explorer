@@ -19,8 +19,8 @@ export const updateDocument = async (
     const options: RequestOptions =
       documentId.partitionKey.kind === "MultiHash"
         ? {
-          [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
-        }
+            [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
+          }
         : {};
     const response = await client()
       .database(collection.databaseId)
