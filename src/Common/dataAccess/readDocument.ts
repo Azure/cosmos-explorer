@@ -15,21 +15,13 @@ export const readDocument = async (collection: CollectionBase, documentId: Docum
     const options: RequestOptions =
       documentId.partitionKey.kind === "MultiHash"
         ? {
-            [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
-          }
+          [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
+        }
         : {};
     const response = await client()
       .database(collection.databaseId)
       .container(collection.id())
-      // use undefined if the partitionKeyValue is empty
-      .item(
-        documentId.id(),
-        documentId.partitionKeyValue === undefined
-          ? undefined
-          : documentId.partitionKeyValue.length === 0
-          ? ""
-          : documentId.partitionKeyValue
-      )
+      .item(documentId.id(), documentId.partitionKeyValue?.length === 0 ? "" : documentId.partitionKeyValue)
       .read(options);
 
     return response?.resource;

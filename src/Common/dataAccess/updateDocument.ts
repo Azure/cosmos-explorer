@@ -19,20 +19,13 @@ export const updateDocument = async (
     const options: RequestOptions =
       documentId.partitionKey.kind === "MultiHash"
         ? {
-            [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
-          }
+          [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
+        }
         : {};
     const response = await client()
       .database(collection.databaseId)
       .container(collection.id())
-      .item(
-        documentId.id(),
-        documentId.partitionKeyValue === undefined
-          ? undefined
-          : documentId.partitionKeyValue.length === 0
-          ? ""
-          : documentId.partitionKeyValue
-      )
+      .item(documentId.id(), documentId.partitionKeyValue?.length === 0 ? "" : documentId.partitionKeyValue)
       .replace(newDocument, options);
 
     logConsoleInfo(`Successfully updated ${entityName} ${documentId.id()}`);
