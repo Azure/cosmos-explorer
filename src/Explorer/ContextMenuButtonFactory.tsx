@@ -85,11 +85,7 @@ export const createCollectionContextMenuButton = (
       iconSrc: HostedTerminalIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
-        } else {
-          selectedCollection && selectedCollection.onNewMongoShellClick();
-        }
+        selectedCollection && selectedCollection.onNewMongoShellClick();
       },
       label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
     });
