@@ -6,6 +6,7 @@ import { HttpHeaders } from "../Constants";
 import { client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
+import { getPartitionKeyValue } from "./getPartitionKeyValue";
 
 export const readDocument = async (collection: CollectionBase, documentId: DocumentId): Promise<Item> => {
   const entityName = getEntityName();
@@ -21,7 +22,7 @@ export const readDocument = async (collection: CollectionBase, documentId: Docum
     const response = await client()
       .database(collection.databaseId)
       .container(collection.id())
-      .item(documentId.id(), documentId.partitionKeyValue?.length === 0 ? "" : documentId.partitionKeyValue)
+      .item(documentId.id(), getPartitionKeyValue(documentId))
       .read(options);
 
     return response?.resource;
