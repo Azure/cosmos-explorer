@@ -1,6 +1,6 @@
 import DocumentId from "../../Explorer/Tree/DocumentId";
 
-export const getPartitionKeyValue = (documentId: DocumentId): any => {
+export const getPartitionKeyValue = (documentId: DocumentId) => {
     if (documentId.partitionKeyProperties === undefined && documentId.partitionKeyValue?.length === 0) {
         return "";
     }
