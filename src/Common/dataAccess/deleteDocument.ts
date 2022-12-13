@@ -4,6 +4,7 @@ import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationCons
 import { client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
+import { getPartitionKeyValue } from "./getPartitionKeyValue";
 
 export const deleteDocument = async (collection: CollectionBase, documentId: DocumentId): Promise<void> => {
   const entityName: string = getEntityName();
@@ -13,7 +14,7 @@ export const deleteDocument = async (collection: CollectionBase, documentId: Doc
     await client()
       .database(collection.databaseId)
       .container(collection.id())
-      .item(documentId.id(), documentId.partitionKeyValue?.length === 0 ? "" : documentId.partitionKeyValue)
+      .item(documentId.id(), getPartitionKeyValue(documentId))
       .delete();
     logConsoleInfo(`Successfully deleted ${entityName} ${documentId.id()}`);
   } catch (error) {
