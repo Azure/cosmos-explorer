@@ -9,7 +9,7 @@ import {
   MessageBar,
   Stack,
   Text,
-  TextField,
+  TextField
 } from "@fluentui/react";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
@@ -38,7 +38,7 @@ import {
   PriceBreakdown,
   saveThroughputWarningMessage,
   titleAndInputStackProps,
-  transparentDetailsHeaderStyle,
+  transparentDetailsHeaderStyle
 } from "../../SettingsRenderUtils";
 import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
@@ -574,6 +574,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
         disabled={this.overrideWithAutoPilotSettings()}
         step={this.step}
+        tabIndex={0}
         value={
           this.overrideWithAutoPilotSettings()
             ? this.props.maxAutoPilotThroughputBaseline?.toString()

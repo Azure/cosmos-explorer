@@ -504,6 +504,7 @@ export default class QueryBuilderViewModel {
   // adds a new clause to the end of the array
   public addNewClause = (): void => {
     this.addClauseIndex(this.clauseArray().length);
+    console.log('addnewcause')
   };
 
   public onAddClauseKeyDown = (index: number, event: KeyboardEvent): boolean => {
@@ -516,7 +517,7 @@ export default class QueryBuilderViewModel {
   };
 
   public onAddNewClauseKeyDown = (event: KeyboardEvent): boolean => {
-    if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
+    if (event.key === 'Enter' || event.key === 'Space') {
       this.addClauseIndex(this.clauseArray().length - 1);
       event.stopPropagation();
       return false;
