@@ -7,7 +7,7 @@ import {
   IStackTokens,
   Stack,
   TextField,
-  TooltipHost
+  TooltipHost,
 } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import DeleteIcon from "../../images/delete.svg";

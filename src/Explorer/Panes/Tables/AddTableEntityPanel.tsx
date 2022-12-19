@@ -31,7 +31,7 @@ import {
   getDefaultEntities,
   getEntityValuePlaceholder,
   imageProps,
-  options
+  options,
 } from "./Validators/EntityTableHelper";
 
 interface AddTableEntityPanelProps {
