@@ -574,7 +574,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
         disabled={this.overrideWithAutoPilotSettings()}
         step={this.step}
-        tabIndex={0}
         value={
           this.overrideWithAutoPilotSettings()
             ? this.props.maxAutoPilotThroughputBaseline?.toString()
