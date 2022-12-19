@@ -70,13 +70,11 @@
             <tbody data-bind="template: { name: 'queryClause-template', foreach: clauseArray, as: 'clause' }"></tbody>
           </table>
         </div>
-        <button data-bind="click: addNewClause, event: { keydown: onAddNewClauseKeyDown }" style="border:none;background:none">
         <div
           class="addClause"
-          
-          data-bind=" "
-          
-
+          role="button"
+          data-bind="click: addNewClause, event: { keydown: onAddNewClauseKeyDown }, attr: { title: addNewClauseLine }"
+          tabindex="0"
         >
           <div class="addClause-heading">
             <span class="clause-table addClause-title">
@@ -84,14 +82,12 @@
                 class="addclauseProperty-Img"
                 style="margin-bottom: 5px"
                 src="/Add-property.svg"
-                
+                alt="Add new clause"
               />
               <span style="margin-left: 5px" data-bind="text: addNewClauseLine"></span>
             </span>
           </div>
         </div>
-      </button>
-      
       </div>
     </div>
     <!-- Tables Query Tab Query Helper - End-->
@@ -172,26 +168,22 @@
 <script type="text/html" id="queryClause-template">
   <tr class="clause-table-row">
     <td class="clause-table-cell action-column">
-      <button data-bind="click: $parent.addClauseIndex.bind($data, $index()), event: { keydown: $parent.onAddClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.insertNewFilterLine}">
       <span
         class="entity-Add-Cancel"
         role="button"
-        
-        
+        tabindex="0"
+        data-bind="click: $parent.addClauseIndex.bind($data, $index()), event: { keydown: $parent.onAddClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.insertNewFilterLine}"
       >
         <img class="querybuilder-addpropertyImg" src="/Add-property.svg" alt="Add clause" />
       </span>
-    </button>
-    <button data-bind="hasFocus: isDeleteButtonFocused, click: $parent.deleteClause.bind($data, $index()), event: { keydown: $parent.onDeleteClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.removeThisFilterLine}">
-      <span 
+      <span
         class="entity-Add-Cancel"
         role="button"
-        
-       
+        tabindex="0"
+        data-bind="hasFocus: isDeleteButtonFocused, click: $parent.deleteClause.bind($data, $index()), event: { keydown: $parent.onDeleteClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.removeThisFilterLine}"
       >
         <img class="querybuilder-cancelImg" src="/Entity_cancel.svg" alt="Delete clause" />
       </span>
-    </button>
     </td>
     <td class="clause-table-cell group-control-column">
       <input type="checkbox" aria-label="And/Or" data-bind="checked: checkedForGrouping" />

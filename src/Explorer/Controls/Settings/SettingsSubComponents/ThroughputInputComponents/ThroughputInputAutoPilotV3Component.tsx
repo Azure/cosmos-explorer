@@ -9,7 +9,7 @@ import {
   MessageBar,
   Stack,
   Text,
-  TextField
+  TextField,
 } from "@fluentui/react";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
@@ -38,7 +38,7 @@ import {
   PriceBreakdown,
   saveThroughputWarningMessage,
   titleAndInputStackProps,
-  transparentDetailsHeaderStyle
+  transparentDetailsHeaderStyle,
 } from "../../SettingsRenderUtils";
 import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
