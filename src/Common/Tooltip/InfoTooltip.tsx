@@ -9,7 +9,7 @@ export const InfoTooltip: React.FunctionComponent<TooltipProps> = ({ children }:
   return (
     <span>
       <TooltipHost content={children}>
-        <Icon iconName="Info" ariaLabel="Info" className="panelInfoIcon" tabIndex={0} />
+        <Icon iconName="Info" ariaLabel={children} className="panelInfoIcon" tabIndex={0} />
       </TooltipHost>
     </span>
   );
