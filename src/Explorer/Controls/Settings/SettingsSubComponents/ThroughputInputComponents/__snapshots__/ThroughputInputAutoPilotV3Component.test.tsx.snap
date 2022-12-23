@@ -8,14 +8,15 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     }
   }
 >
-  <StyledMessageBar
-    messageBarIconProps={
-      Object {
-        "className": "messageBarWarningIcon",
-        "iconName": "WarningSolid",
-      }
-    }
+  <div
+    aria-atomic="true"
+    className="warningonmanual"
+    role="alert"
   >
+    <Icon
+      className="orange-53"
+      iconName="WarningSolid"
+    />
     <Text
       styles={
         Object {
@@ -28,7 +29,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     >
       Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below before saving your changes
     </Text>
-  </StyledMessageBar>
+  </div>
   <Stack>
     <StyledLabelBase
       id="settingsV2RadioButtonLabelId"
