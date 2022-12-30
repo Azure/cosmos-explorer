@@ -82,7 +82,6 @@ interface ThroughputInputAutoPilotV3State {
   spendAckChecked: boolean;
   exceedFreeTierThroughput: boolean;
 }
-
 export class ThroughputInputAutoPilotV3Component extends React.Component<
   ThroughputInputAutoPilotV3Props,
   ThroughputInputAutoPilotV3State
