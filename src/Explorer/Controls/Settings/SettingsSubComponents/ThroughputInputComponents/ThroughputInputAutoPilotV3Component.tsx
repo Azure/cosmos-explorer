@@ -5,8 +5,6 @@ import {
   FontIcon,
   IChoiceGroupOption,
   IColumn,
-  Icon,
-  initializeIcons,
   Label,
   Link,
   MessageBar,
@@ -85,7 +83,6 @@ interface ThroughputInputAutoPilotV3State {
   spendAckChecked: boolean;
   exceedFreeTierThroughput: boolean;
 }
-initializeIcons();
 export class ThroughputInputAutoPilotV3Component extends React.Component<
   ThroughputInputAutoPilotV3Props,
   ThroughputInputAutoPilotV3State
@@ -623,20 +620,14 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     if (this.IsComponentDirty().isDiscardable) {
       warningMessage = saveThroughputWarningMessage;
     }
-    const classNames = mergeStyleSets({
-      orange: [{ color: "orange" }],
-    });
 
     return (
       <>
         {warningMessage && (
-          // <MessageBar messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}>
-          //   {warningMessage}
-          // </MessageBar>
-          <div className="warningonmanual" role="alert" aria-atomic="true">
-            <Icon iconName="WarningSolid" className={classNames.orange} />
-            {warningMessage}
-          </div>
+           <MessageBar messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }} role="alert">
+             {warningMessage}
+           </MessageBar>
+         
         )}
       </>
     );
