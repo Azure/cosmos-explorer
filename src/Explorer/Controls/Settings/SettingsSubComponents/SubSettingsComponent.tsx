@@ -310,7 +310,9 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         />
       )}
 
-      {this.isLargePartitionKeyEnabled() && <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled</Text>}
+      {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (
+        <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled</Text>
+      )}
     </Stack>
   );
 
