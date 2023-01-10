@@ -15,6 +15,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         "iconName": "WarningSolid",
       }
     }
+    role="alert"
   >
     <Text
       styles={

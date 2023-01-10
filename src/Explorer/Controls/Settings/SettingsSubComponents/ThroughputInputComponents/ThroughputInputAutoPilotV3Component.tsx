@@ -82,7 +82,6 @@ interface ThroughputInputAutoPilotV3State {
   spendAckChecked: boolean;
   exceedFreeTierThroughput: boolean;
 }
-
 export class ThroughputInputAutoPilotV3Component extends React.Component<
   ThroughputInputAutoPilotV3Props,
   ThroughputInputAutoPilotV3State
@@ -624,7 +623,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     return (
       <>
         {warningMessage && (
-          <MessageBar messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}>
+          <MessageBar
+            messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+            role="alert"
+          >
             {warningMessage}
           </MessageBar>
         )}

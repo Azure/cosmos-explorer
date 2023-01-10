@@ -48,7 +48,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
           )}
         </Text>
         {showErrorDetails && (
-          <a className="paneErrorLink" role="link" onClick={expandConsole}>
+          <a className="paneErrorLink" role="link" onClick={expandConsole} tabIndex={0} onKeyPress={expandConsole}>
             More details
           </a>
         )}

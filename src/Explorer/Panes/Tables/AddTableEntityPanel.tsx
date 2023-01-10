@@ -242,6 +242,11 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     submitButtonText: getButtonLabel(userContext.apiType),
     onSubmit,
   };
+  const handlekeypressaddentity = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Enter" || event.key === "Space") {
+      addNewEntity();
+    }
+  };
 
   return (
     <RightPaneForm {...props}>
@@ -284,7 +289,13 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
           );
         })}
         {userContext.apiType !== "Cassandra" && (
-          <Stack horizontal onClick={addNewEntity} className="addButtonEntiy">
+          <Stack
+            horizontal
+            onClick={addNewEntity}
+            className="addButtonEntiy"
+            tabIndex={0}
+            onKeyPress={handlekeypressaddentity}
+          >
             <Image {...imageProps} src={AddPropertyIcon} alt="Add Entity" />
             <Text className="addNewParamStyle">{getAddButtonLabel(userContext.apiType)}</Text>
           </Stack>

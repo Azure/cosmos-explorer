@@ -516,7 +516,7 @@ export default class QueryBuilderViewModel {
   };
 
   public onAddNewClauseKeyDown = (event: KeyboardEvent): boolean => {
-    if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
+    if (event.key === "Enter" || event.key === "Space") {
       this.addClauseIndex(this.clauseArray().length - 1);
       event.stopPropagation();
       return false;
