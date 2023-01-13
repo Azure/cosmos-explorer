@@ -89,8 +89,8 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       }
     } catch (error) {
       setLoadingFalse();
-      setFormError(error);
       const errorMessage = getErrorMessage(error);
+      setFormError(errorMessage);
       TelemetryProcessor.traceFailure(
         Action.DeleteDatabase,
         {
