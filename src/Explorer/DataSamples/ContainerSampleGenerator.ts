@@ -69,7 +69,7 @@ export class ContainerSampleGenerator {
     return database.findCollectionWithId(this.sampleDataFile.collectionId);
   }
 
-  public async populateContainerAsync(collection: ViewModels.Collection, shardKey?: string): Promise<void> {
+  public async populateContainerAsync(collection: ViewModels.Collection, shardKeys?: string[]): Promise<void> {
     if (!collection) {
       throw new Error("No container to populate");
     }
@@ -101,7 +101,7 @@ export class ContainerSampleGenerator {
         this.sampleDataFile.data.map(async (doc) => {
           try {
             userContext.apiType === "Mongo"
-              ? await createMongoDocument(collection.databaseId, collection, shardKey, doc)
+              ? await createMongoDocument(collection.databaseId, collection, shardKeys[0], doc)
               : await createDocument(collection, doc);
           } catch (error) {
             NotificationConsoleUtils.logConsoleError(error);

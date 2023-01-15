@@ -45,6 +45,8 @@ export class ArmResourceTypes {
 
 export class BackendDefaults {
   public static partitionKeyKind = "Hash";
+  public static partitionKeyMultiHash = "MultiHash";
+  public static maxNumMultiHashPartition = 3;
   public static singlePartitionStorageInGb: string = "10";
   public static multiPartitionStorageInGb: string = "100";
   public static maxChangeFeedRetentionDuration: number = 10;
