@@ -546,6 +546,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       size={40}
                       tabIndex={index > 0 ? 1 : 0}
                       className="panelTextField"
+                      autoComplete="off"
                       placeholder={this.getPartitionKeyPlaceHolder(index)}
                       aria-label={this.getPartitionKeyName()}
                       pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
