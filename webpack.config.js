@@ -150,6 +150,11 @@ module.exports = function (_env = {}, argv = {}) {
       chunks: ["hostedExplorer"],
     }),
     new HtmlWebpackPlugin({
+      filename: "vercelIntegration.html",
+      template: "src/vercelIntegration.html",
+      chunks: ["vercelIntegration"],
+    }),
+    new HtmlWebpackPlugin({
       filename: "testExplorer.html",
       template: "test/testExplorer/testExplorer.html",
       chunks: ["testExplorer"],
@@ -209,6 +214,7 @@ module.exports = function (_env = {}, argv = {}) {
       testExplorer: "./test/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
+      vercelIntegration: "./src/VercelIntegration.tsx",
       cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
       galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
@@ -297,6 +303,13 @@ module.exports = function (_env = {}, argv = {}) {
         },
         "/_explorer": {
           target: process.env.EMULATOR_ENDPOINT || "https://localhost:8081/",
+          changeOrigin: true,
+          secure: false,
+          logLevel: "debug",
+        },
+        "/vercel": {
+          target: "http://localhost:3000/",
+          pathRewrite: { "^/vercel": "" },
           changeOrigin: true,
           secure: false,
           logLevel: "debug",

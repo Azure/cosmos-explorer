@@ -44,6 +44,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 
   useEffect(() => {
     const effect = async () => {
+      console.log(`inside effect: ${platform}`);
       if (platform) {
         //Updating phoenix feature flags for MPAC based of config context
         if (configContext.isPhoenixEnabled === true) {
@@ -51,6 +52,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           userContext.features.phoenixFeatures = true;
         }
         if (platform === Platform.Hosted) {
+          console.log(`inside platform: ${platform}`);
           const explorer = await configureHosted();
           setExplorer(explorer);
         } else if (platform === Platform.Emulator) {
@@ -76,6 +78,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 
 async function configureHosted(): Promise<Explorer> {
   const win = (window as unknown) as HostedExplorerChildFrame;
+  console.log(`win.hostedConfig.authType: ${JSON.stringify(win.hostedConfig)}`);
   let explorer: Explorer;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
     explorer = configureHostedWithEncryptedToken(win.hostedConfig);
