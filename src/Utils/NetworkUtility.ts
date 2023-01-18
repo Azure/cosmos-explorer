@@ -40,5 +40,5 @@ export const doNetworkSettingsAllowDataExplorerAccess = (): boolean => {
     return numberOfMatches === portalIPs.length;
   }
 
-  return false;
+  return true;
 };
