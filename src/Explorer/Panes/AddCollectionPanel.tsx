@@ -589,7 +589,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   </Stack>
                 );
               })}
-              {userContext.apiType === "SQL" && (
+              {userContext.apiType === "SQL" && userContext.features.enableHierarchicalKeys && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
                     styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}

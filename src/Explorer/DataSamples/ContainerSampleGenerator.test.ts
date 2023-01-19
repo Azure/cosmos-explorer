@@ -123,8 +123,7 @@ describe("ContainerSampleGenerator", () => {
     await generator.createSampleContainerAsync();
   });
 
-  it("should not create any sample for Mongo API account", async () => {
-    const experience = "Sample generation not supported for this API Mongo";
+  it("should create sample for Mongo API account", async () => {
     updateUserContext({
       databaseAccount: {
         properties: {
@@ -133,8 +132,7 @@ describe("ContainerSampleGenerator", () => {
       } as DatabaseAccount,
     });
 
-    // Rejects with error that contains experience
-    expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
+    expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).resolves.toBeTruthy();
   });
 
   it("should not create any sample for Table API account", async () => {
