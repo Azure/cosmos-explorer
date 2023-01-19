@@ -604,7 +604,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
                       partition your data with up to three levels of keys for better data distribution. Requires preview
                       version of .NET V3 or Java V4 SDK.{" "}
-                      <Link href="" target="_blank">
+                      <Link href="https://aka.ms/cosmos-hierarchical-partitioning" target="_blank">
                         Learn more
                       </Link>
                     </Text>
@@ -848,9 +848,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <Text variant="small">
                       <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> To ensure compatibility with
                       older SDKs, the created container will use a legacy partitioning scheme that supports partition
-                      key values of size only up to 100 bytes. If this is enabled, you will not be able to use
+                      key values of size only up to 101 bytes. If this is enabled, you will not be able to use
                       hierarchical partition keys.{" "}
-                      <Link href="" target="_blank">
+                      <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
                         Learn more
                       </Link>
                     </Text>
