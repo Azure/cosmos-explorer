@@ -668,9 +668,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </Text>
                 <TooltipHost
                   directionalHint={DirectionalHint.bottomLeftEdge}
-                  content="Unique keys provide developers with the ability to add a layer of data integrity to their database. By
-                      creating a unique key policy when a container is created, you ensure the uniqueness of one or more values
-                      per partition key."
+                  content={
+                    "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
+                  }
                 >
                   <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                 </TooltipHost>

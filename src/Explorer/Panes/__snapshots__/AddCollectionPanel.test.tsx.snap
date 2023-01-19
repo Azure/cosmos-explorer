@@ -255,9 +255,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           Unique keys
         </Text>
         <StyledTooltipHostBase
-          content="Unique keys provide developers with the ability to add a layer of data integrity to their database. By
- creating a unique key policy when a container is created, you ensure the uniqueness of one or more values
- per partition key."
+          content="Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
           directionalHint={4}
         >
           <Icon
