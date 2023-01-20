@@ -216,33 +216,20 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         aria-label="pkDescription"
         variant="small"
       />
-      <Stack
-        horizontal={true}
-        key="uniqueKey0"
-        style={
-          Object {
-            "marginBottom": 8,
-          }
-        }
-      >
-        <input
-          aria-label="Partition key"
-          aria-required={true}
-          autoComplete="off"
-          className="panelTextField"
-          id="addCollection-partitionKeyValue"
-          key="addCollection-partitionKeyValue_0"
-          onChange={[Function]}
-          pattern=".*"
-          placeholder="Required - first partition key e.g., /TenantId"
-          required={true}
-          size={40}
-          tabIndex={0}
-          title=""
-          type="text"
-          value=""
-        />
-      </Stack>
+      <input
+        aria-label="Partition key"
+        aria-required={true}
+        className="panelTextField"
+        id="addCollection-partitionKeyValue"
+        onChange={[Function]}
+        pattern=".*"
+        placeholder="Required - first partition key e.g., /TenantId"
+        required={true}
+        size={40}
+        title=""
+        type="text"
+        value=""
+      />
     </Stack>
     <Stack>
       <Stack

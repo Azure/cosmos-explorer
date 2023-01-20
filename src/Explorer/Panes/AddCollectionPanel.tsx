@@ -88,7 +88,8 @@ export interface AddCollectionPanelState {
   collectionId: string;
   enableIndexing: boolean;
   isSharded: boolean;
-  partitionKeys: string[];
+  partitionKey: string;
+  subPartitionKeys: string[];
   enableDedicatedThroughput: boolean;
   createMongoWildCardIndex: boolean;
   useHashV1: boolean;
@@ -120,7 +121,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: props.isQuickstart ? `Sample${getCollectionName()}` : "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKeys: this.getPartitionKey(),
+      partitionKey: this.getPartitionKey(),
+      subPartitionKeys: [],
       enableDedicatedThroughput: false,
       createMongoWildCardIndex:
         isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport"),
@@ -522,10 +524,34 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 {this.getPartitionKeySubtext()}
               </Text>
 
-              {this.state.partitionKeys.map((partitionKey: string, index: number) => {
-                return (
-                  <Stack style={{ marginBottom: 8 }} key={`uniqueKey${index}`} horizontal>
-                    {index > 0 ? (
+              <input
+                type="text"
+                id="addCollection-partitionKeyValue"
+                aria-required
+                required
+                size={40}
+                className="panelTextField"
+                placeholder={this.getPartitionKeyPlaceHolder()}
+                aria-label={this.getPartitionKeyName()}
+                pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
+                title={userContext.apiType === "Gremlin" ? "May not use composite partition key" : ""}
+                value={this.state.partitionKey}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (
+                    userContext.apiType !== "Mongo" &&
+                    !this.state.partitionKey &&
+                    !event.target.value.startsWith("/")
+                  ) {
+                    this.setState({ partitionKey: "/" + event.target.value });
+                  } else {
+                    this.setState({ partitionKey: event.target.value });
+                  }
+                }}
+              />
+              {userContext.apiType === "SQL" &&
+                this.state.subPartitionKeys.map((subPartitionKey: string, index: number) => {
+                  return (
+                    <Stack style={{ marginBottom: 8 }} key={`uniqueKey${index}`} horizontal>
                       <div
                         style={{
                           width: "20px",
@@ -534,72 +560,67 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                           marginRight: "5px",
                         }}
                       ></div>
-                    ) : (
-                      <></>
-                    )}
-                    <input
-                      type="text"
-                      id="addCollection-partitionKeyValue"
-                      key={`addCollection-partitionKeyValue_${index}`}
-                      aria-required
-                      required
-                      size={40}
-                      tabIndex={index > 0 ? 1 : 0}
-                      className="panelTextField"
-                      autoComplete="off"
-                      placeholder={this.getPartitionKeyPlaceHolder(index)}
-                      aria-label={this.getPartitionKeyName()}
-                      pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
-                      title={userContext.apiType === "Gremlin" ? "May not use composite partition key" : ""}
-                      value={partitionKey}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        if (
-                          userContext.apiType !== "Mongo" &&
-                          !this.state.partitionKeys[index] &&
-                          !event.target.value.startsWith("/")
-                        ) {
-                          const partitionKeys = this.state.partitionKeys.map((partitionKey: string, j: number) => {
-                            if (index === j) {
-                              return "/" + event.target.value.trim();
-                            }
-                            return partitionKey;
-                          });
-                          this.setState({ partitionKeys });
-                        } else {
-                          const partitionKeys = this.state.partitionKeys.map((partitionKey: string, j: number) => {
-                            if (index === j) {
-                              return event.target.value.trim();
-                            }
-                            return partitionKey;
-                          });
-                          this.setState({ partitionKeys });
-                        }
-                      }}
-                    />
-                    {index > 0 && (
+                      <input
+                        type="text"
+                        id="addCollection-partitionKeyValue"
+                        key={`addCollection-partitionKeyValue_${index}`}
+                        aria-required
+                        required
+                        size={40}
+                        tabIndex={index > 0 ? 1 : 0}
+                        className="panelTextField"
+                        autoComplete="off"
+                        placeholder={this.getPartitionKeyPlaceHolder(index)}
+                        aria-label={this.getPartitionKeyName()}
+                        pattern={".*"}
+                        title={""}
+                        value={subPartitionKey}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          if (!this.state.subPartitionKeys[index] && !event.target.value.startsWith("/")) {
+                            const subPartitionKeys = this.state.subPartitionKeys.map(
+                              (subPartitionKey: string, j: number) => {
+                                if (index === j) {
+                                  return "/" + event.target.value.trim();
+                                }
+                                return subPartitionKey;
+                              }
+                            );
+                            this.setState({ subPartitionKeys });
+                          } else {
+                            const subPartitionKeys = this.state.subPartitionKeys.map(
+                              (partitionKey: string, j: number) => {
+                                if (index === j) {
+                                  return event.target.value.trim();
+                                }
+                                return partitionKey;
+                              }
+                            );
+                            this.setState({ subPartitionKeys });
+                          }
+                        }}
+                      />
                       <IconButton
                         iconProps={{ iconName: "Delete" }}
                         style={{ height: 27 }}
                         onClick={() => {
-                          const partitionKeys = this.state.partitionKeys.filter((uniqueKey, j) => index !== j);
-                          this.setState({ partitionKeys });
+                          const subPartitionKeys = this.state.subPartitionKeys.filter((uniqueKey, j) => index !== j);
+                          this.setState({ subPartitionKeys });
                         }}
                       />
-                    )}
-                  </Stack>
-                );
-              })}
+                    </Stack>
+                  );
+                })}
               {userContext.apiType === "SQL" && userContext.features.enableHierarchicalKeys && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
                     styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
                     hidden={this.state.useHashV1}
-                    disabled={this.state.partitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
-                    onClick={() => this.setState({ partitionKeys: [...this.state.partitionKeys, ""] })}
+                    disabled={this.state.subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
+                    onClick={() => this.setState({ subPartitionKeys: [...this.state.subPartitionKeys, ""] })}
                   >
                     Add hierarchical partition key
                   </DefaultButton>
-                  {this.state.partitionKeys.length > 1 && (
+                  {this.state.subPartitionKeys.length > 0 && (
                     <Text variant="small">
                       <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
                       partition your data with up to three levels of keys for better data distribution. Requires preview
@@ -842,7 +863,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         label: { padding: 0, alignItems: "center", wordWrap: "break-word", whiteSpace: "break-spaces" },
                       }}
                       onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                        this.setState({ useHashV1: isChecked, partitionKeys: [this.state.partitionKeys[0]] })
+                        this.setState({ useHashV1: isChecked, subPartitionKeys: [] })
                       }
                     />
                     <Text variant="small">
@@ -917,12 +938,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         return "e.g., /address";
       case "SQL":
         return `${
-          index === 0
-            ? "Required - first partition key e.g.,"
-            : index === 1
-            ? "second partition key e.g.,"
-            : "third partition key e.g.,"
-        } ${index === 0 ? "/TenantId" : index === 1 ? "/UserId" : "/SessionId"}`;
+          index === undefined
+            ? "Required - first partition key e.g., /TenantId"
+            : index === 0
+            ? "second partition key e.g., /UserId"
+            : "third partition key e.g., /SessionId"
+        }`;
       default:
         return "e.g., /address/zipCode";
     }
@@ -1033,20 +1054,20 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return tooltipText;
   }
 
-  private getPartitionKey(): string[] {
+  private getPartitionKey(): string {
     if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
-      return [""];
+      return "";
     }
     if (userContext.features.partitionKeyDefault) {
-      return userContext.apiType === "SQL" ? ["/id"] : ["_id"];
+      return userContext.apiType === "SQL" ? "/id" : "_id";
     }
     if (userContext.features.partitionKeyDefault2) {
-      return userContext.apiType === "SQL" ? ["/pk"] : ["pk"];
+      return userContext.apiType === "SQL" ? "/pk" : "pk";
     }
     if (this.props.isQuickstart) {
-      return userContext.apiType === "SQL" ? ["/address"] : ["address"];
+      return userContext.apiType === "SQL" ? "/address" : "address";
     }
-    return [""];
+    return "";
   }
 
   private getPartitionKeySubtext(): string {
@@ -1181,7 +1202,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     if (
       userContext.apiType === "Gremlin" &&
-      (this.state.partitionKeys[0] === "/id" || this.state.partitionKeys[0] === "/label")
+      (this.state.partitionKey === "/id" || this.state.partitionKey === "/label")
     ) {
       this.setState({ errorMessage: "/id and /label as partition keys are not allowed for graph." });
       return false;
@@ -1239,20 +1260,25 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     const collectionId: string = this.state.collectionId.trim();
     let databaseId = this.state.createNewDatabase ? this.state.newDatabaseId.trim() : this.state.selectedDatabaseId;
-    let partitionKeyPaths = this.state.isSharded ? this.state.partitionKeys : undefined;
+    let partitionKeyString = this.state.isSharded ? this.state.partitionKey.trim() : undefined;
 
     if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
       databaseId = CollectionCreation.TablesAPIDefaultDatabase;
-      partitionKeyPaths = ["/'$pk'"];
+      partitionKeyString = "/'$pk'";
     }
 
     const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = this.parseUniqueKeys();
     const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
-    const partitionKey: DataModels.PartitionKey = partitionKeyPaths
+    const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
-          paths: partitionKeyPaths,
-          kind: userContext.apiType === "SQL" && partitionKeyPaths.length > 1 ? "MultiHash" : "Hash",
+          paths: [
+            partitionKeyString,
+            ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
+              ? this.state.subPartitionKeys
+              : []),
+          ],
+          kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
           version: partitionKeyVersion,
         }
       : undefined;
@@ -1336,7 +1362,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           collection.isSampleCollection = true;
           useTeachingBubble.getState().setSampleCollection(collection);
           const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(this.props.explorer);
-          await sampleGenerator.populateContainerAsync(collection, partitionKeyPaths);
+          await sampleGenerator.populateContainerAsync(collection, partitionKeyString);
           // auto-expand sample database + container and show teaching bubble
           await database.expandDatabase();
           collection.expandCollection();
