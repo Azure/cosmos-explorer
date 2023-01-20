@@ -576,25 +576,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         title={""}
                         value={subPartitionKey}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          const subPartitionKeys = [...this.state.subPartitionKeys];
                           if (!this.state.subPartitionKeys[index] && !event.target.value.startsWith("/")) {
-                            const subPartitionKeys = this.state.subPartitionKeys.map(
-                              (subPartitionKey: string, j: number) => {
-                                if (index === j) {
-                                  return "/" + event.target.value.trim();
-                                }
-                                return subPartitionKey;
-                              }
-                            );
+                            subPartitionKeys[index] = "/" + event.target.value.trim();
                             this.setState({ subPartitionKeys });
                           } else {
-                            const subPartitionKeys = this.state.subPartitionKeys.map(
-                              (partitionKey: string, j: number) => {
-                                if (index === j) {
-                                  return event.target.value.trim();
-                                }
-                                return partitionKey;
-                              }
-                            );
+                            subPartitionKeys[index] = event.target.value.trim();
                             this.setState({ subPartitionKeys });
                           }
                         }}
