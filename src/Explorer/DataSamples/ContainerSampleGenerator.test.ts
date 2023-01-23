@@ -133,7 +133,6 @@ describe("ContainerSampleGenerator", () => {
       } as DatabaseAccount,
     });
 
-    // Rejects with error that contains experience
     expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });
 

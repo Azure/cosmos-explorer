@@ -89,9 +89,10 @@ export interface AddCollectionPanelState {
   enableIndexing: boolean;
   isSharded: boolean;
   partitionKey: string;
+  subPartitionKeys: string[];
   enableDedicatedThroughput: boolean;
   createMongoWildCardIndex: boolean;
-  useHashV2: boolean;
+  useHashV1: boolean;
   enableAnalyticalStore: boolean;
   uniqueKeys: string[];
   errorMessage: string;
@@ -121,10 +122,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: this.getPartitionKey(),
+      subPartitionKeys: [],
       enableDedicatedThroughput: false,
       createMongoWildCardIndex:
         isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport"),
-      useHashV2: false,
+      useHashV1: false,
       enableAnalyticalStore: false,
       uniqueKeys: [],
       errorMessage: "",
@@ -546,6 +548,77 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   }
                 }}
               />
+              {userContext.apiType === "SQL" &&
+                this.state.subPartitionKeys.map((subPartitionKey: string, index: number) => {
+                  return (
+                    <Stack style={{ marginBottom: 8 }} key={`uniqueKey${index}`} horizontal>
+                      <div
+                        style={{
+                          width: "20px",
+                          border: "solid",
+                          borderWidth: "0px 0px 1px 1px",
+                          marginRight: "5px",
+                        }}
+                      ></div>
+                      <input
+                        type="text"
+                        id="addCollection-partitionKeyValue"
+                        key={`addCollection-partitionKeyValue_${index}`}
+                        aria-required
+                        required
+                        size={40}
+                        tabIndex={index > 0 ? 1 : 0}
+                        className="panelTextField"
+                        autoComplete="off"
+                        placeholder={this.getPartitionKeyPlaceHolder(index)}
+                        aria-label={this.getPartitionKeyName()}
+                        pattern={".*"}
+                        title={""}
+                        value={subPartitionKey}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          const subPartitionKeys = [...this.state.subPartitionKeys];
+                          if (!this.state.subPartitionKeys[index] && !event.target.value.startsWith("/")) {
+                            subPartitionKeys[index] = "/" + event.target.value.trim();
+                            this.setState({ subPartitionKeys });
+                          } else {
+                            subPartitionKeys[index] = event.target.value.trim();
+                            this.setState({ subPartitionKeys });
+                          }
+                        }}
+                      />
+                      <IconButton
+                        iconProps={{ iconName: "Delete" }}
+                        style={{ height: 27 }}
+                        onClick={() => {
+                          const subPartitionKeys = this.state.subPartitionKeys.filter((uniqueKey, j) => index !== j);
+                          this.setState({ subPartitionKeys });
+                        }}
+                      />
+                    </Stack>
+                  );
+                })}
+              {userContext.apiType === "SQL" && userContext.features.enableHierarchicalKeys && (
+                <Stack className="panelGroupSpacing">
+                  <DefaultButton
+                    styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
+                    hidden={this.state.useHashV1}
+                    disabled={this.state.subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
+                    onClick={() => this.setState({ subPartitionKeys: [...this.state.subPartitionKeys, ""] })}
+                  >
+                    Add hierarchical partition key
+                  </DefaultButton>
+                  {this.state.subPartitionKeys.length > 0 && (
+                    <Text variant="small">
+                      <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
+                      partition your data with up to three levels of keys for better data distribution. Requires preview
+                      version of .NET V3 or Java V4 SDK.{" "}
+                      <Link href="https://aka.ms/cosmos-hierarchical-partitioning" target="_blank">
+                        Learn more
+                      </Link>
+                    </Text>
+                  )}
+                </Stack>
+              )}
             </Stack>
           )}
 
@@ -603,9 +676,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </Text>
                 <TooltipHost
                   directionalHint={DirectionalHint.bottomLeftEdge}
-                  content="Unique keys provide developers with the ability to add a layer of data integrity to their database. By
-                      creating a unique key policy when a container is created, you ensure the uniqueness of one or more values
-                      per partition key."
+                  content={
+                    "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
+                  }
                 >
                   <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                 </TooltipHost>
@@ -767,18 +840,29 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 )}
 
                 {userContext.apiType === "SQL" && (
-                  <Checkbox
-                    label="My partition key is larger than 101 bytes"
-                    checked={this.state.useHashV2}
-                    styles={{
-                      text: { fontSize: 12 },
-                      checkbox: { width: 12, height: 12 },
-                      label: { padding: 0, alignItems: "center" },
-                    }}
-                    onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                      this.setState({ useHashV2: isChecked })
-                    }
-                  />
+                  <Stack className="panelGroupSpacing">
+                    <Checkbox
+                      label="My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)"
+                      checked={this.state.useHashV1}
+                      styles={{
+                        text: { fontSize: 12 },
+                        checkbox: { width: 12, height: 12 },
+                        label: { padding: 0, alignItems: "center", wordWrap: "break-word", whiteSpace: "break-spaces" },
+                      }}
+                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                        this.setState({ useHashV1: isChecked, subPartitionKeys: [] })
+                      }
+                    />
+                    <Text variant="small">
+                      <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> To ensure compatibility with
+                      older SDKs, the created container will use a legacy partitioning scheme that supports partition
+                      key values of size only up to 101 bytes. If this is enabled, you will not be able to use
+                      hierarchical partition keys.{" "}
+                      <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
+                        Learn more
+                      </Link>
+                    </Text>
+                  </Stack>
                 )}
               </Stack>
             </CollapsibleSectionComponent>
@@ -833,12 +917,20 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
   }
 
-  private getPartitionKeyPlaceHolder(): string {
+  private getPartitionKeyPlaceHolder(index?: number): string {
     switch (userContext.apiType) {
       case "Mongo":
         return "e.g., address.zipCode";
       case "Gremlin":
         return "e.g., /address";
+      case "SQL":
+        return `${
+          index === undefined
+            ? "Required - first partition key e.g., /TenantId"
+            : index === 0
+            ? "second partition key e.g., /UserId"
+            : "third partition key e.g., /SessionId"
+        }`;
       default:
         return "e.g., /address/zipCode";
     }
@@ -1164,11 +1256,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = this.parseUniqueKeys();
-    const partitionKeyVersion = this.state.useHashV2 ? 2 : undefined;
+    const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
-          paths: [partitionKeyString],
-          kind: "Hash",
+          paths: [
+            partitionKeyString,
+            ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
+              ? this.state.subPartitionKeys
+              : []),
+          ],
+          kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
           version: partitionKeyVersion,
         }
       : undefined;

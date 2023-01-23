@@ -223,7 +223,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         id="addCollection-partitionKeyValue"
         onChange={[Function]}
         pattern=".*"
-        placeholder="e.g., /address/zipCode"
+        placeholder="Required - first partition key e.g., /TenantId"
         required={true}
         size={40}
         title=""
@@ -396,26 +396,49 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         className="panelGroupSpacing"
         id="collapsibleSectionContent"
       >
-        <StyledCheckboxBase
-          checked={false}
-          label="My partition key is larger than 101 bytes"
-          onChange={[Function]}
-          styles={
-            Object {
-              "checkbox": Object {
-                "height": 12,
-                "width": 12,
-              },
-              "label": Object {
-                "alignItems": "center",
-                "padding": 0,
-              },
-              "text": Object {
-                "fontSize": 12,
-              },
+        <Stack
+          className="panelGroupSpacing"
+        >
+          <StyledCheckboxBase
+            checked={false}
+            label="My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)"
+            onChange={[Function]}
+            styles={
+              Object {
+                "checkbox": Object {
+                  "height": 12,
+                  "width": 12,
+                },
+                "label": Object {
+                  "alignItems": "center",
+                  "padding": 0,
+                  "whiteSpace": "break-spaces",
+                  "wordWrap": "break-word",
+                },
+                "text": Object {
+                  "fontSize": 12,
+                },
+              }
             }
-          }
-        />
+          />
+          <Text
+            variant="small"
+          >
+            <Icon
+              className="removeIcon"
+              iconName="InfoSolid"
+              tabIndex={0}
+            />
+             To ensure compatibility with older SDKs, the created container will use a legacy partitioning scheme that supports partition key values of size only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.
+             
+            <StyledLinkBase
+              href="https://aka.ms/cosmos-large-pk"
+              target="_blank"
+            >
+              Learn more
+            </StyledLinkBase>
+          </Text>
+        </Stack>
       </Stack>
     </CollapsibleSectionComponent>
   </div>
