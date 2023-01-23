@@ -1,6 +1,6 @@
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
-import { doNetworkSettingsAllowDataExplorerAccess } from "Utils/NetworkUtility";
+import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
@@ -382,8 +382,8 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  const isDataExplorerAccessAllowed = doNetworkSettingsAllowDataExplorerAccess();
-  useTabs.getState().setShowNetworkSettingsWarning(!isDataExplorerAccessAllowed);
+  const warningMessage = getNetworkSettingsWarningMessage(inputs.clientIpAddress);
+  useTabs.getState().setNetworkSettingsWarning(warningMessage);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));

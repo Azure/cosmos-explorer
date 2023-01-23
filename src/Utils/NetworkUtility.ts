@@ -10,25 +10,25 @@ const PortalIPs: { [key: string]: string[] } = {
   usnat: ["7.28.202.68"],
 };
 
-export const doNetworkSettingsAllowDataExplorerAccess = (): boolean => {
+export const getNetworkSettingsWarningMessage = (clientIpAddress: string): string => {
+  const accountProperties = userContext.databaseAccount?.properties;
+
+  if (!accountProperties) {
+    return "";
+  }
+
+  // public network access is disabled
+  if (accountProperties.publicNetworkAccess !== "Enabled") {
+    return "The Network settings for this account are preventing access from Data Explorer. Please enable public access to proceed.";
+  }
+
+  const ipRules = accountProperties.ipRules;
+  // public network access is set to "All networks"
+  if (ipRules.length === 0) {
+    return "";
+  }
+
   if (userContext.apiType === "Cassandra" || userContext.apiType === "Mongo") {
-    const accountProperties = userContext.databaseAccount?.properties;
-
-    if (!accountProperties) {
-      return false;
-    }
-
-    // public network access is disabled
-    if (accountProperties.publicNetworkAccess !== "Enabled") {
-      return false;
-    }
-
-    const ipRules = accountProperties.ipRules;
-    // public network access is set to "All networks"
-    if (ipRules.length === 0) {
-      return true;
-    }
-
     const portalIPs = PortalIPs[userContext.portalEnv];
     let numberOfMatches = 0;
     ipRules.forEach((ipRule) => {
@@ -37,8 +37,16 @@ export const doNetworkSettingsAllowDataExplorerAccess = (): boolean => {
       }
     });
 
-    return numberOfMatches === portalIPs.length;
-  }
+    if (numberOfMatches !== portalIPs.length) {
+      return "The Network settings for this account are preventing access from Data Explorer. Please allow access from Azure Portal to proceed.";
+    }
 
-  return true;
+    return "";
+  } else {
+    if (!clientIpAddress || ipRules.some((ipRule) => ipRule.ipAddressOrRange === clientIpAddress)) {
+      return "";
+    }
+
+    return "The Network settings for this account are preventing access from Data Explorer. Please add your current IP to the firewall rules to proceed.";
+  }
 };
