@@ -9,7 +9,7 @@ interface TabsState {
   openedReactTabs: ReactTabKind[];
   activeTab: TabsBase | undefined;
   activeReactTab: ReactTabKind | undefined;
-  showNetworkSettingsWarning: boolean;
+  networkSettingsWarning: string;
   activateTab: (tab: TabsBase) => void;
   activateNewTab: (tab: TabsBase) => void;
   activateReactTab: (tabkind: ReactTabKind) => void;
@@ -21,7 +21,7 @@ interface TabsState {
   closeAllNotebookTabs: (hardClose: boolean) => void;
   openAndActivateReactTab: (tabKind: ReactTabKind) => void;
   closeReactTab: (tabKind: ReactTabKind) => void;
-  setShowNetworkSettingsWarning: (showWarning: boolean) => void;
+  setNetworkSettingsWarning: (warningMessage: string) => void;
 }
 
 export enum ReactTabKind {
@@ -35,7 +35,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedReactTabs: [ReactTabKind.Home],
   activeTab: undefined,
   activeReactTab: ReactTabKind.Home,
-  showNetworkSettingsWarning: false,
+  networkSettingsWarning: "",
   activateTab: (tab: TabsBase): void => {
     if (get().openedTabs.some((openedTab) => openedTab.tabId === tab.tabId)) {
       set({ activeTab: tab, activeReactTab: undefined });
@@ -145,5 +145,5 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     set({ openedReactTabs: updatedOpenedReactTabs });
   },
-  setShowNetworkSettingsWarning: (showWarning: boolean) => set({ showNetworkSettingsWarning: showWarning }),
+  setNetworkSettingsWarning: (warningMessage: string) => set({ networkSettingsWarning: warningMessage }),
 }));

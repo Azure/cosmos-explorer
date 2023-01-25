@@ -24,11 +24,11 @@ interface TabsProps {
 }
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
-  const { openedTabs, openedReactTabs, activeTab, activeReactTab, showNetworkSettingsWarning } = useTabs();
+  const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
 
   return (
     <div className="tabsManagerContainer">
-      {showNetworkSettingsWarning && (
+      {networkSettingsWarning && (
         <MessageBar
           messageBarType={MessageBarType.warning}
           actions={
@@ -38,8 +38,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           }
           messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
         >
-          The Network settings for this account are preventing access from Data Explorer. Please allow access from Azure
-          Portal to proceed.
+          {networkSettingsWarning}
         </MessageBar>
       )}
       <div id="content" className="flexContainer hideOverflows">
