@@ -1,0 +1,111 @@
+.connectExplorerContainer {
+    height: 100%;
+    width: 100%;
+  }
+  .connectExplorerContainer .connectExplorerFormContainer {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -ms-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+  .connectExplorerContainer .connectExplorer {
+    text-align: center;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -ms-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    margin-bottom: 60px;
+  }
+  .connectExplorerContainer .connectExplorer .welcomeText {
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #393939;
+    margin: 8px 8px 16px 8px;
+  }
+  .connectExplorerContainer .connectExplorer .confirmationText {
+    font-size: 10px;
+    color: #aba0a0;
+    margin: 8px 8px 16px 8px;
+    font-family: sans-serif;
+  }
+  .connectExplorerContainer .connectExplorer .switchConnectTypeText {
+    margin: 8px;
+    font-size: 12px;
+    font-family: sans-serif;
+    color: #0058ad;
+    cursor: pointer;
+  }
+  .connectExplorerContainer .connectExplorer .connectStringText {
+    font-family: sans-serif;
+    font-size: 12px;
+    color: #393939;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent {
+    margin: 8px;
+    color: #393939;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent .inputToken {
+    width: 300px;
+    padding: 0px 4px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent .inputToken::placeholder {
+    font-style: italic;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip {
+    position: relative;
+    display: inline-block;
+    padding-left: 4px;
+    vertical-align: top;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip:hover .errorDetails {
+    visibility: visible;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorDetails {
+    bottom: 24px;
+    width: 145px;
+    visibility: hidden;
+    background-color: #393939;
+    color: #ffffff;
+    position: absolute;
+    z-index: 1;
+    left: -10px;
+    padding: 6px;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorDetails:after {
+    border-width: 10px 10px 0px 10px;
+    bottom: -8px;
+    content: "";
+    position: absolute;
+    right: 100%;
+    border-style: solid;
+    left: 12px;
+    width: 0;
+    height: 0;
+    border-color: #3b3b3b transparent;
+  }
+  .connectExplorerContainer .connectExplorer .connectExplorerContent .errorDetailsInfoTooltip .errorImg {
+    height: 14px;
+    width: 14px;
+  }
+  
+  .filterbtnstyle {
+    background: #0058ad;
+    width: 80px;
+    height: 40px;
+    color: white;
+    border: solid 1px;
+  }
+  
