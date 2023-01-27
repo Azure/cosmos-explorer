@@ -6,7 +6,7 @@ import {
   IDropdownStyles,
   ITextFieldStyles,
   Stack,
-  TextField
+  TextField,
 } from "@fluentui/react";
 import * as React from "react";
 import "./FeaturePanelComponent.less";

@@ -36,7 +36,7 @@ const App: React.FunctionComponent = () => {
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
-  
+
   const ref = React.useRef<HTMLIFrameElement>();
 
   React.useEffect(() => {

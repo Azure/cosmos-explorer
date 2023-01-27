@@ -1,4 +1,3 @@
-import { PrimaryButton } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import { AuthType } from "AuthType";
 import { configContext } from "ConfigContext";
@@ -17,8 +16,7 @@ import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "Utils/arm/generatedClients/cosmos/types";
 import { getMsalInstance } from "Utils/AuthorizationUtils";
 import { VercelSubmit, VercelToken } from "VercelSubmit";
-import ConnectImage from "../images/HdeConnectCosmosDB.svg";
-import "../less/vercelSubmit.less";
+
 const Vercel: React.FunctionComponent = () => {
   const params = new URLSearchParams(window.location.search);
   const [encryptedToken, setEncryptedToken] = React.useState<string>(params && params.get("key"));
@@ -138,43 +136,37 @@ const Vercel: React.FunctionComponent = () => {
   };
 
   return isFinished ? (
-    <VercelSubmit data={data}/>
+    <VercelSubmit data={data} />
   ) : (
-    <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
-    <div className="connectExplorerFormContainer">
-      <div className="connectExplorer">
-        
-        {isLoggedIn && (
-          
+    <div>
+      <h1>Vercel Integration {JSON.stringify(account)}</h1>
+      {isLoggedIn && (
         <span className="accountSwitchComponentContainer">
-          <p className="connectExplorerContent">
-          <img src={ConnectImage} alt="Azure Cosmos DB" />
-        </p>
-          <p className="welcomeText">Select a Cosmos DB account to Connect with your Vercel Project</p>
-          <br/>
           <AccountSwitcher armToken={armToken} setDatabaseAccount={setDatabaseAccount} />
-          <br/>
         </span>
       )}
       {!isLoggedIn && !encryptedTokenMetadata && (
         <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
       )}
       {isLoggedIn && <DirectoryPickerPanel {...{ isOpen, dismissPanel, armToken, tenantId, switchTenant }} />}
-      {  
-       isLoggedIn && <div id="connectWithAad">
-        <br/>
-          <PrimaryButton
-          className="filterbtnstyle"
-          onClick={() =>
-            setUpEnvironmentVariables()
-          }
-          text="Submit"
-        />
-          </div>
-      } 
-      </div>
+      <button onClick={setUpEnvironmentVariables}>Connect</button>
+      {/* {showExplorer && (
+        // Ideally we would import and render data explorer like any other React component, however
+        // because it still has a significant amount of Knockout code, this would lead to memory leaks.
+        // Knockout does not have a way to tear down all of its binding and listeners with a single method.
+        // It's possible this can be changed once all knockout code has been removed.
+        <iframe
+          // Setting key is needed so React will re-render this element on any account change
+          key={databaseAccount?.id || encryptedTokenMetadata?.accountName || authType}
+          ref={ref}
+          id="explorerMenu"
+          name="explorer"
+          className="iframe"
+          title="explorer"
+          src="explorer.html?v=1.0.1&platform=Hosted"
+        ></iframe>
+      )} */}
     </div>
-  </div>
   );
 };
 
