@@ -262,7 +262,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   true
                 ).toLocaleLowerCase()}.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                <Icon
+                  iconName="Info"
+                  className="panelInfoIcon"
+                  tabIndex={0}
+                  ariaLabel={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+                    true
+                  ).toLocaleLowerCase()}.`}
+                />
               </TooltipHost>
             </Stack>
 
@@ -338,7 +345,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         true
                       ).toLocaleLowerCase()} within the database.`}
                     >
-                      <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                      <Icon
+                        iconName="Info"
+                        className="panelInfoIcon"
+                        tabIndex={0}
+                        ariaLabel={`Throughput configured at the database level will be shared across all ${getCollectionName(
+                          true
+                        ).toLocaleLowerCase()} within the database.`}
+                      />
                     </TooltipHost>
                   </Stack>
                 )}
@@ -386,7 +400,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                <Icon
+                  iconName="Info"
+                  className="panelInfoIcon"
+                  tabIndex={0}
+                  ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
+                />
               </TooltipHost>
             </Stack>
 
@@ -469,7 +488,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
                     }
                   >
-                    <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                    <Icon
+                      iconName="Info"
+                      className="panelInfoIcon"
+                      tabIndex={0}
+                      ariaLabel={
+                        "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
+                      }
+                    />
                   </TooltipHost>
                 </Stack>
 
@@ -516,7 +542,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   directionalHint={DirectionalHint.bottomLeftEdge}
                   content={this.getPartitionKeyTooltipText()}
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
+                    tabIndex={0}
+                    ariaLabel={this.getPartitionKeyTooltipText()}
+                  />
                 </TooltipHost>
               </Stack>
 
@@ -645,7 +676,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                <Icon
+                  iconName="Info"
+                  className="panelInfoIcon"
+                  tabIndex={0}
+                  ariaLabel={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
+                provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
+                  true
+                ).toLocaleLowerCase()} in the database and
+                does not count towards the throughput you provisioned for the database. This throughput amount will be
+                billed in addition to the throughput amount you provisioned at the database level.`}
+                />
               </TooltipHost>
             </Stack>
           )}
@@ -680,7 +721,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
                   }
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
+                    tabIndex={0}
+                    ariaLabel={
+                      "Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
+                    }
+                  />
                 </TooltipHost>
               </Stack>
 
@@ -743,7 +791,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   directionalHint={DirectionalHint.bottomLeftEdge}
                   content={this.getAnalyticalStorageTooltipContent()}
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                  <Icon
+                    iconName="Info"
+                    className="panelInfoIcon"
+                    tabIndex={0}
+                    ariaLabel='Enable analytical store capability to perform near real-time analytics on your operational data, without
+        impacting the performance of transactional workloads.{" "}'
+                  />
                 </TooltipHost>
               </Stack>
 
@@ -820,7 +874,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         directionalHint={DirectionalHint.bottomLeftEdge}
                         content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
                       >
-                        <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                        <Icon
+                          iconName="Info"
+                          className="panelInfoIcon"
+                          tabIndex={0}
+                          ariaLabel="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
+                        />
                       </TooltipHost>
                     </Stack>
 
