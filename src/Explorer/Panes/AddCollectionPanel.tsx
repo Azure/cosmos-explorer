@@ -597,15 +597,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     </Stack>
                   );
                 })}
-              {userContext.apiType === "SQL" && userContext.features.enableHierarchicalKeys && (
+              {userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
-                    styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
+                    styles={{ root: { padding: 0, width: 250, height: 30 }, label: { fontSize: 12 } }}
                     hidden={this.state.useHashV1}
                     disabled={this.state.subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
                     onClick={() => this.setState({ subPartitionKeys: [...this.state.subPartitionKeys, ""] })}
                   >
-                    Add hierarchical partition key
+                    Add hierarchical partition key (preview)
                   </DefaultButton>
                   {this.state.subPartitionKeys.length > 0 && (
                     <Text variant="small">
