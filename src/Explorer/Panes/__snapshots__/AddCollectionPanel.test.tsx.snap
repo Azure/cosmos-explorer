@@ -31,6 +31,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           directionalHint={4}
         >
           <Icon
+            ariaLabel="A database is analogous to a namespace. It is the unit of management for a set of containers."
             className="panelInfoIcon"
             iconName="Info"
             tabIndex={0}
@@ -124,6 +125,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             directionalHint={4}
           >
             <Icon
+              ariaLabel="Throughput configured at the database level will be shared across all containers within the database."
               className="panelInfoIcon"
               iconName="Info"
               tabIndex={0}
@@ -163,6 +165,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           directionalHint={4}
         >
           <Icon
+            ariaLabel="Unique identifier for the container and used for id-based routing through REST and all SDKs."
             className="panelInfoIcon"
             iconName="Info"
             tabIndex={0}
@@ -206,6 +209,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           directionalHint={4}
         >
           <Icon
+            ariaLabel="The partition key is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume. For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice."
             className="panelInfoIcon"
             iconName="Info"
             tabIndex={0}
@@ -246,6 +250,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           directionalHint={4}
         >
           <Icon
+            ariaLabel="Unique keys provide developers with the ability to add a layer of data integrity to their database. By creating a unique key policy when a container is created, you ensure the uniqueness of one or more values per partition key."
             className="panelInfoIcon"
             iconName="Info"
             tabIndex={0}
@@ -303,6 +308,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           directionalHint={4}
         >
           <Icon
+            ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.{\\" \\"}"
             className="panelInfoIcon"
             iconName="Info"
             tabIndex={0}
