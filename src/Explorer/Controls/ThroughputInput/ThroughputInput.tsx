@@ -69,8 +69,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
     if (throughputCap && throughputCap !== -1 && throughputCap - totalThroughput < throughput) {
       setThroughputError(
-        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-          totalThroughput + throughput * numberOfRegions
+        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${totalThroughput + throughput * numberOfRegions
         } RU/s. Change total throughput limit in cost management.`
       );
 
@@ -81,8 +80,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   const checkThroughputCap = (newThroughput: number): boolean => {
     if (throughputCap && throughputCap !== -1 && throughputCap - totalThroughputUsed < newThroughput) {
       setThroughputError(
-        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-          totalThroughputUsed + newThroughput * numberOfRegions
+        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${totalThroughputUsed + newThroughput * numberOfRegions
         } RU/s. Change total throughput limit in cost management.`
       );
       setIsThroughputCapExceeded(true);
@@ -266,9 +264,9 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       {!isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small" aria-label="ruDescription">
+          <Text variant="small" aria-label="capacity calculator of azure cosmos db">
             Estimate your required RU/s with&nbsp;
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="capacityLink">
+            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="capacity calculator Link">
               capacity calculator
             </Link>
             .
