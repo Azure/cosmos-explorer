@@ -40,8 +40,6 @@ export const getNetworkSettingsWarningMessage = (): string => {
     if (numberOfMatches !== portalIPs.length) {
       return "The Network settings for this account are preventing access from Data Explorer. Please allow access from Azure Portal to proceed.";
     }
-
-    return "";
   }
 
   return "";
