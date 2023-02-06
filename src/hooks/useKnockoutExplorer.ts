@@ -382,7 +382,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  const warningMessage = getNetworkSettingsWarningMessage(inputs.clientIpAddress);
+  const warningMessage = getNetworkSettingsWarningMessage();
   useTabs.getState().setNetworkSettingsWarning(warningMessage);
 
   if (inputs.features) {
