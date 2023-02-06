@@ -333,6 +333,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           <Icon
             ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without
  impacting the performance of transactional workloads.{\\" \\"}"
+
             className="panelInfoIcon"
             iconName="Info"
             tabIndex={0}

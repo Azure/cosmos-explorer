@@ -659,35 +659,39 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           aria-required={true}
           checked={true}
           className="throughputInputRadioBtn"
+          id="Autoscale-input"
           key=".0:$.0"
           onChange={[Function]}
           role="radio"
           tabIndex={0}
           type="radio"
         />
-        <span
+        <label
           className="throughputInputRadioBtnLabel"
+          htmlFor="Autoscale-input"
           key=".0:$.1"
         >
           Autoscale
-        </span>
+        </label>
         <input
           aria-label="Manual mode"
           aria-required={true}
           checked={false}
           className="throughputInputRadioBtn"
+          id="Manual-input"
           key=".0:$.2"
           onChange={[Function]}
           role="radio"
           tabIndex={0}
           type="radio"
         />
-        <span
+        <label
           className="throughputInputRadioBtnLabel"
+          htmlFor="Manual-input"
           key=".0:$.3"
         >
           Manual
-        </span>
+        </label>
       </div>
     </Stack>
     <Stack
@@ -697,23 +701,23 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         className="ms-Stack throughputInputSpacing css-59"
       >
         <Text
-          aria-label="ruDescription"
+          aria-label="capacity calculator of azure cosmos db"
           key=".0:$.0"
           variant="small"
         >
           <span
-            aria-label="ruDescription"
+            aria-label="capacity calculator of azure cosmos db"
             className="css-54"
           >
             Estimate your required RU/s with
              
             <StyledLinkBase
-              aria-label="ruDescription"
+              aria-label="capacity calculator of azure cosmos db"
               href="https://cosmos.azure.com/capacitycalculator/"
               target="_blank"
             >
               <LinkBase
-                aria-label="ruDescription"
+                aria-label="capacity calculator of azure cosmos db"
                 href="https://cosmos.azure.com/capacitycalculator/"
                 styles={[Function]}
                 target="_blank"
@@ -992,7 +996,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 }
               >
                 <a
-                  aria-label="ruDescription"
+                  aria-label="capacity calculator of azure cosmos db"
                   className="ms-Link root-60"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}

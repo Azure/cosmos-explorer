@@ -186,6 +186,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       <Stack horizontal verticalAlign="center">
         <input
+          id="Autoscale-input"
           className="throughputInputRadioBtn"
           aria-label="Autoscale mode"
           aria-required={true}
@@ -195,9 +196,12 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           tabIndex={0}
           onChange={(e) => handleOnChangeMode(e, "Autoscale")}
         />
-        <span className="throughputInputRadioBtnLabel">Autoscale</span>
+        <label htmlFor="Autoscale-input" className="throughputInputRadioBtnLabel">
+          Autoscale
+        </label>
 
         <input
+          id="Manual-input"
           className="throughputInputRadioBtn"
           aria-label="Manual mode"
           checked={!isAutoscaleSelected}
@@ -207,14 +211,20 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           tabIndex={0}
           onChange={(e) => handleOnChangeMode(e, "Manual")}
         />
-        <span className="throughputInputRadioBtnLabel">Manual</span>
+        <label className="throughputInputRadioBtnLabel" htmlFor="Manual-input">
+          Manual
+        </label>
       </Stack>
 
       {isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small" aria-label="ruDescription">
+          <Text variant="small" aria-label="capacity calculator of azure cosmos db">
             Estimate your required RU/s with{" "}
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="ruDescription">
+            <Link
+              target="_blank"
+              href="https://cosmos.azure.com/capacitycalculator/"
+              aria-label="capacity calculator of azure cosmos db"
+            >
               capacity calculator
             </Link>
             .
