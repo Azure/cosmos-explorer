@@ -10,7 +10,7 @@ const PortalIPs: { [key: string]: string[] } = {
   usnat: ["7.28.202.68"],
 };
 
-export const getNetworkSettingsWarningMessage = (clientIpAddress: string): string => {
+export const getNetworkSettingsWarningMessage = (): string => {
   const accountProperties = userContext.databaseAccount?.properties;
 
   if (!accountProperties) {
@@ -42,11 +42,7 @@ export const getNetworkSettingsWarningMessage = (clientIpAddress: string): strin
     }
 
     return "";
-  } else {
-    if (!clientIpAddress || ipRules.some((ipRule) => ipRule.ipAddressOrRange === clientIpAddress)) {
-      return "";
-    }
-
-    return "The Network settings for this account are preventing access from Data Explorer. Please add your current IP to the firewall rules to proceed.";
   }
+
+  return "";
 };
