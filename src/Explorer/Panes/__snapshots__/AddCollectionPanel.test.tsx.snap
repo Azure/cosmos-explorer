@@ -234,6 +234,29 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         type="text"
         value=""
       />
+      <Stack
+        className="panelGroupSpacing"
+      >
+        <CustomizedDefaultButton
+          disabled={false}
+          hidden={false}
+          onClick={[Function]}
+          styles={
+            Object {
+              "label": Object {
+                "fontSize": 12,
+              },
+              "root": Object {
+                "height": 30,
+                "padding": 0,
+                "width": 250,
+              },
+            }
+          }
+        >
+          Add hierarchical partition key (preview)
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
     <Stack>
       <Stack
