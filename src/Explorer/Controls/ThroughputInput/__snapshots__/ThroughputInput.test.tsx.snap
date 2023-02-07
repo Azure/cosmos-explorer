@@ -655,7 +655,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         className="ms-Stack css-58"
       >
         <input
-          aria-label="Autoscale mode"
+          aria-label="Autoscale database throughput"
           aria-required={true}
           checked={true}
           className="throughputInputRadioBtn"
@@ -674,7 +674,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           Autoscale
         </label>
         <input
-          aria-label="Manual mode"
+          aria-label="Manual database throughput"
           aria-required={true}
           checked={false}
           className="throughputInputRadioBtn"
