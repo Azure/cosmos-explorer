@@ -726,7 +726,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const items: { link: string; title: string; description: string }[] = [
       {
         link: "https://developer.azurecosmosdb.com/tv",
-        title: "Learn the Fundamentals with Azure Cosmos DB TV",
+        title: "Learn with Azure Cosmos DB TV",
         description: "",
       },
       {
