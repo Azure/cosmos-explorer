@@ -9,7 +9,7 @@ import {
   Stack,
   TeachingBubble,
   TeachingBubbleContent,
-  Text,
+  Text
 } from "@fluentui/react";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -574,9 +574,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             description: "Learn about the Azure Cosmos DB SDK.",
           },
           {
-            link: "https://aka.ms/msl-complex-queries",
-            title: "Master Complex Queries",
-            description: "Learn how to author complex queries.",
+            link: "https://developer.azurecosmosdb.com/tv",
+            title: "Learn the Fundamentals",
+            description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
           },
           {
             link: "https://aka.ms/msl-move-data",
@@ -598,9 +598,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             description: "Learn the basics to get started.",
           },
           {
-            link: "http://aka.ms/mongodotnet",
-            title: "Build a web API",
-            description: "Create a web API with the.NET SDK.",
+            link: "https://developer.azurecosmosdb.com/tv",
+            title: "Learn the Fundamentals",
+            description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
           },
         ];
         break;
@@ -612,9 +612,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             description: "Get to know the create a container options.",
           },
           {
-            link: "https://aka.ms/cassandraserverdiagnostics",
-            title: "Run Server Diagnostics",
-            description: "Learn how to run server diagnostics.",
+            link: "https://developer.azurecosmosdb.com/tv",
+            title: "Learn the Fundamentals",
+            description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
           },
           {
             link: "https://aka.ms/Cassandrathroughput",
@@ -636,9 +636,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             description: "Learn Bulk ingestion data using BulkExecutor",
           },
           {
-            link: "https://aka.ms/graphoptimize",
-            title: "Optimize your Queries",
-            description: "Learn how to evaluate your Gremlin queries",
+            link: "https://developer.azurecosmosdb.com/tv",
+            title: "Learn the Fundamentals",
+            description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
           },
         ];
         break;
@@ -655,9 +655,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             description: "Create a Azure Cosmos DB for Table app with Java SDK ",
           },
           {
-            link: "https://aka.ms/tablenodejs",
-            title: "Build a Node.js App",
-            description: "Create a Azure Cosmos DB for Table app with Node.js SDK",
+            link: "https://developer.azurecosmosdb.com/tv",
+            title: "Learn the Fundamentals",
+            description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
           },
         ];
         break;
