@@ -699,14 +699,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         description: "",
       },
       {
-        link: "https://go.microsoft.com/fwlink/?linkid=2207425",
-        title: "Build Apps with Python/Java/Django",
+        link: "https://developer.azurecosmosdb.com/tv",
+        title: "Learn the Fundamentals with Azure Cosmos DB TV",
         description: "",
       },
       {
-        link: "https://developer.azurecosmosdb.com/tv",
-        title: "Learn the Fundamentals",
-        description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
+        link: "https://go.microsoft.com/fwlink/?linkid=2207425",
+        title: "Build Apps with Python/Java/Django",
+        description: "",
       },
     ];
 
