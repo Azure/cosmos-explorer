@@ -725,11 +725,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private getTipsAndLearnMoreItems(): JSX.Element {
     const items: { link: string; title: string; description: string }[] = [
       {
-        link: "https://developer.azurecosmosdb.com/tv",
-        title: "Learn with Azure Cosmos DB TV",
-        description: "",
-      },
-      {
         link: "https://go.microsoft.com/fwlink/?linkid=2207226",
         title: "Performance Tuning",
         description: "",
