@@ -563,12 +563,16 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private getLearningResourceItems(): JSX.Element {
-    interface item { link: string; title: string; description: string };
+    interface item {
+      link: string;
+      title: string;
+      description: string;
+    }
     const cdbLiveTv: item = {
       link: "https://developer.azurecosmosdb.com/tv",
       title: "Learn the Fundamentals",
       description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
-    }
+    };
     let items: item[];
     switch (userContext.apiType) {
       case "SQL":
