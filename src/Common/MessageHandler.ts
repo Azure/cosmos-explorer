@@ -1,6 +1,9 @@
+import Explorer from "Explorer/Explorer";
+import { PortalMessage } from "hooks/useKnockoutExplorer";
 import Q from "q";
 import * as _ from "underscore";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
+import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { getDataExplorerWindow } from "../Utils/WindowUtils";
 import * as Constants from "./Constants";
 
@@ -11,6 +14,34 @@ export interface CachedDataPromise<T> {
 }
 
 export const RequestMap: Record<string, CachedDataPromise<any>> = {};
+
+export function addExplorerMessageHandlers(explorer: Explorer) {
+  window.addEventListener(
+    "message",
+    (event) => {
+      if (isInvalidParentFrameOrigin(event)) {
+        return;
+      }
+
+      if (!shouldProcessMessage(event)) {
+        return;
+      }
+      explorer = new Explorer();
+      // Check for init message
+      const message: PortalMessage = event.data?.data;
+      const type = message?.type;
+      switch (type) {
+        case MessageTypes.RefreshResources:
+          handleRefreshResources(message, explorer);
+      }
+    },
+    false
+  );
+}
+
+export function handleRefreshResources(message: any, explorer: Explorer): void {
+  explorer.onRefreshResourcesClick();
+}
 
 export function handleCachedDataMessage(message: any): void {
   const messageContent = message && message.message;

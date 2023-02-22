@@ -1,6 +1,9 @@
+import { MessageTypes } from "Contracts/ExplorerContracts";
+import Explorer from "Explorer/Explorer";
+import { PortalMessage } from "hooks/useKnockoutExplorer";
 import Q from "q";
+import * as MessageValidation from "Utils/MessageValidation";
 import * as MessageHandler from "./MessageHandler";
-
 describe("Message Handler", () => {
   it("should handle cached message", async () => {
     let mockPromise = {
@@ -25,4 +28,29 @@ describe("Message Handler", () => {
     MessageHandler.runGarbageCollector();
     expect(MessageHandler.RequestMap["123"]).toBeUndefined();
   });
-});
+
+  it("should handle messages", async () => {
+    const events = {
+      isTrusted: true,
+      data: {
+        signature: "pcIframe",
+        data: {
+          type: MessageTypes.TelemetryInfo
+        },
+      },
+      origin: "https://ms.portal.azure.com",
+      lastEventId: ""
+    } as MessageEvent;
+    const explorer = new Explorer();
+    window.addEventListener = jest
+      .fn()
+      .mockImplementationOnce((event, callback) => {
+        callback(events);
+      });
+
+    jest.spyOn(MessageValidation, "isInvalidParentFrameOrigin").mockImplementation(() => false);
+    jest.spyOn(MessageValidation, "shouldProcessMessage").mockImplementation(() => true);
+    MessageHandler.addExplorerMessageHandlers(explorer);
+    expect(MessageHandler.handleRefreshResources).toBeCalled;
+  });
+})
