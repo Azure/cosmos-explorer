@@ -35,22 +35,20 @@ describe("Message Handler", () => {
       data: {
         signature: "pcIframe",
         data: {
-          type: MessageTypes.TelemetryInfo
+          type: MessageTypes.TelemetryInfo,
         },
       },
       origin: "https://ms.portal.azure.com",
-      lastEventId: ""
+      lastEventId: "",
     } as MessageEvent;
     const explorer = new Explorer();
-    window.addEventListener = jest
-      .fn()
-      .mockImplementationOnce((event, callback) => {
-        callback(events);
-      });
+    window.addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
+      callback(events);
+    });
 
     jest.spyOn(MessageValidation, "isInvalidParentFrameOrigin").mockImplementation(() => false);
     jest.spyOn(MessageValidation, "shouldProcessMessage").mockImplementation(() => true);
     MessageHandler.addExplorerMessageHandlers(explorer);
     expect(MessageHandler.handleRefreshResources).toBeCalled;
   });
-})
+});

@@ -32,7 +32,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               variant="small"
             >
               <span
-                className="css-151"
+                className="css-53"
               >
                 Confirm by typing the 
                 container
@@ -338,19 +338,19 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                 value=""
               >
                 <div
-                  className="ms-TextField root-153"
+                  className="ms-TextField root-55"
                 >
                   <div
                     className="ms-TextField-wrapper"
                   >
                     <div
-                      className="ms-TextField-fieldGroup fieldGroup-154"
+                      className="ms-TextField-fieldGroup fieldGroup-56"
                     >
                       <input
                         aria-invalid={false}
                         aria-label="Confirm by typing the container id"
                         autoFocus={true}
-                        className="ms-TextField-field field-155"
+                        className="ms-TextField-field field-57"
                         id="confirmCollectionId"
                         onBlur={[Function]}
                         onChange={[Function]}
@@ -2083,7 +2083,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   >
                     <button
                       aria-label="OK"
-                      className="ms-Button ms-Button--primary root-164"
+                      className="ms-Button ms-Button--primary root-66"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2095,14 +2095,14 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-165"
+                        className="ms-Button-flexContainer flexContainer-67"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-166"
+                          className="ms-Button-textContainer textContainer-68"
                         >
                           <span
-                            className="ms-Button-label label-168"
+                            className="ms-Button-label label-70"
                             id="id__3"
                             key="id__3"
                           >

@@ -25,7 +25,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
           verticalAlign="center"
         >
           <div
-            className="ms-Stack panelInfoErrorContainer css-151"
+            className="ms-Stack panelInfoErrorContainer css-53"
           >
             <StyledIconBase
               aria-label="warning"
@@ -314,7 +314,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               >
                 <i
                   aria-label="warning"
-                  className="panelWarningIcon root-153"
+                  className="panelWarningIcon root-55"
                   data-icon-name="WarningSolid"
                   role="img"
                 >
@@ -336,7 +336,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                 <span
                   aria-label="Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources."
                   aria-live="assertive"
-                  className="panelWarningErrorMessage css-154"
+                  className="panelWarningErrorMessage css-56"
                   role="alert"
                 >
                   Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
@@ -361,7 +361,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             variant="small"
           >
             <span
-              className="css-154"
+              className="css-56"
             >
               Confirm by typing the database id
             </span>
@@ -663,19 +663,19 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               validateOnLoad={true}
             >
               <div
-                className="ms-TextField root-156"
+                className="ms-TextField root-58"
               >
                 <div
                   className="ms-TextField-wrapper"
                 >
                   <div
-                    className="ms-TextField-fieldGroup fieldGroup-157"
+                    className="ms-TextField-fieldGroup fieldGroup-59"
                   >
                     <input
                       aria-invalid={false}
                       aria-label="Confirm by typing the database id"
                       autoFocus={true}
-                      className="ms-TextField-field field-158"
+                      className="ms-TextField-field field-60"
                       id="confirmDatabaseId"
                       onBlur={[Function]}
                       onChange={[Function]}
@@ -698,7 +698,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             variant="small"
           >
             <span
-              className="css-167"
+              className="css-69"
             >
               Help us improve Azure Cosmos DB!
             </span>
@@ -708,7 +708,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             variant="small"
           >
             <span
-              className="css-167"
+              className="css-69"
             >
               What is the reason why you are deleting this database?
             </span>
@@ -1012,18 +1012,18 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               validateOnLoad={true}
             >
               <div
-                className="ms-TextField ms-TextField--multiline root-156"
+                className="ms-TextField ms-TextField--multiline root-58"
               >
                 <div
                   className="ms-TextField-wrapper"
                 >
                   <div
-                    className="ms-TextField-fieldGroup fieldGroup-168"
+                    className="ms-TextField-fieldGroup fieldGroup-70"
                   >
                     <textarea
                       aria-invalid={false}
                       aria-label="Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?"
-                      className="ms-TextField-field field-169"
+                      className="ms-TextField-field field-71"
                       id="deleteDatabaseFeedbackInput"
                       onBlur={[Function]}
                       onChange={[Function]}
@@ -2755,7 +2755,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                   >
                     <button
                       aria-label="OK"
-                      className="ms-Button ms-Button--primary root-171"
+                      className="ms-Button ms-Button--primary root-73"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2767,14 +2767,14 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-172"
+                        className="ms-Button-flexContainer flexContainer-74"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-173"
+                          className="ms-Button-textContainer textContainer-75"
                         >
                           <span
-                            className="ms-Button-label label-175"
+                            className="ms-Button-label label-77"
                             id="id__6"
                             key="id__6"
                           >

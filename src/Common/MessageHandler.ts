@@ -26,8 +26,6 @@ export function addExplorerMessageHandlers(explorer: Explorer) {
       if (!shouldProcessMessage(event)) {
         return;
       }
-      explorer = new Explorer();
-      // Check for init message
       const message: PortalMessage = event.data?.data;
       const type = message?.type;
       switch (type) {

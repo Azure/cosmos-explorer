@@ -18,14 +18,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken
+  ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata
+  getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -240,7 +240,6 @@ async function configurePortal(): Promise<Explorer> {
     authType: AuthType.AAD,
   });
   return new Promise((resolve) => {
-    let explorer: Explorer;
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
     if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
@@ -252,7 +251,7 @@ async function configurePortal(): Promise<Explorer> {
         );
         console.dir(message);
         updateContextsFromPortalMessage(message);
-        explorer = new Explorer();
+        const explorer = new Explorer();
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
