@@ -1,5 +1,6 @@
+import { ActionType, DataExplorerAction } from "Contracts/ActionContracts";
+import { DataExplorerInputsFrame } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
-import { PortalMessage } from "hooks/useKnockoutExplorer";
 import Q from "q";
 import * as _ from "underscore";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -11,6 +12,12 @@ export interface CachedDataPromise<T> {
   deferred: Q.Deferred<T>;
   startTime: Date;
   id: string;
+}
+interface PortalMessage {
+  openAction?: DataExplorerAction;
+  actionType?: ActionType;
+  type?: MessageTypes;
+  inputs?: DataExplorerInputsFrame;
 }
 
 export const RequestMap: Record<string, CachedDataPromise<any>> = {};
@@ -30,14 +37,14 @@ export function addExplorerMessageHandlers(explorer: Explorer) {
       const type = message?.type;
       switch (type) {
         case MessageTypes.RefreshResources:
-          handleRefreshResources(message, explorer);
+          handleRefreshResources(explorer);
       }
     },
     false
   );
 }
 
-export function handleRefreshResources(message: any, explorer: Explorer): void {
+export function handleRefreshResources(explorer: Explorer): void {
   explorer.onRefreshResourcesClick();
 }
 

@@ -1,6 +1,5 @@
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import Explorer from "Explorer/Explorer";
-import { PortalMessage } from "hooks/useKnockoutExplorer";
 import Q from "q";
 import * as MessageValidation from "Utils/MessageValidation";
 import * as MessageHandler from "./MessageHandler";
@@ -35,7 +34,7 @@ describe("Message Handler", () => {
       data: {
         signature: "pcIframe",
         data: {
-          type: MessageTypes.TelemetryInfo,
+          type: MessageTypes.RefreshResources,
         },
       },
       origin: "https://ms.portal.azure.com",
