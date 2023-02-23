@@ -1,5 +1,6 @@
 import Q from "q";
 import * as MessageHandler from "./MessageHandler";
+
 describe("Message Handler", () => {
   it("should handle cached message", async () => {
     let mockPromise = {

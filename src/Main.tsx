@@ -63,6 +63,7 @@ const App: React.FunctionComponent = () => {
 
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform);
+  
   const toggleLeftPaneExpanded = () => {
     setIsLeftPaneExpanded(!isLeftPaneExpanded);
     if (isLeftPaneExpanded) {
