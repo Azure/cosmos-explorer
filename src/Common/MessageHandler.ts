@@ -13,6 +13,7 @@ export interface CachedDataPromise<T> {
   startTime: Date;
   id: string;
 }
+
 interface PortalMessage {
   openAction?: DataExplorerAction;
   actionType?: ActionType;

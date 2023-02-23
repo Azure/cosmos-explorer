@@ -1,3 +1,4 @@
+import Explorer from "Explorer/Explorer";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -10,7 +11,6 @@ import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
-import Explorer from "../Explorer/Explorer";
 import { handleOpenAction } from "../Explorer/OpenActions/OpenActions";
 import { useDatabases } from "../Explorer/useDatabases";
 import {
@@ -400,7 +400,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   }
 }
 
-export interface PortalMessage {
+interface PortalMessage {
   openAction?: DataExplorerAction;
   actionType?: ActionType;
   type?: MessageTypes;

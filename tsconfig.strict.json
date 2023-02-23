@@ -19,8 +19,6 @@
     "./src/Common/HeadersUtility.test.ts",
     "./src/Common/HeadersUtility.ts",
     "./src/Common/Logger.ts",
-    "./src/Common/MessageHandler.test.ts",
-    "./src/Common/MessageHandler.ts",
     "./src/Common/MongoUtility.ts",
     "./src/Common/ObjectCache.test.ts",
     "./src/Common/ObjectCache.ts",
