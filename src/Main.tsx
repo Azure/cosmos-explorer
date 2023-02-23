@@ -16,7 +16,6 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { addExplorerMessageHandlers } from "Common/MessageHandler";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import "../images/favicon.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -64,7 +63,6 @@ const App: React.FunctionComponent = () => {
 
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform);
-  addExplorerMessageHandlers(explorer);
   const toggleLeftPaneExpanded = () => {
     setIsLeftPaneExpanded(!isLeftPaneExpanded);
     if (isLeftPaneExpanded) {

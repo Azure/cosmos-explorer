@@ -106,6 +106,8 @@ async function configureHosted(): Promise<Explorer> {
         } else {
           useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
         }
+      } else if (event.data?.type === MessageTypes.RefreshResources) {
+        explorer.onRefreshResourcesClick();
       }
     },
     false
@@ -239,6 +241,7 @@ async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
+  let explorer: Explorer;
   return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
@@ -251,7 +254,7 @@ async function configurePortal(): Promise<Explorer> {
         );
         console.dir(message);
         updateContextsFromPortalMessage(message);
-        const explorer = new Explorer();
+        explorer = new Explorer();
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
@@ -287,7 +290,7 @@ async function configurePortal(): Promise<Explorer> {
           }
 
           updateContextsFromPortalMessage(inputs);
-          const explorer = new Explorer();
+          explorer = new Explorer();
           resolve(explorer);
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
@@ -300,6 +303,8 @@ async function configurePortal(): Promise<Explorer> {
           } else {
             useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
           }
+        } else if (message?.type === MessageTypes.RefreshResources) {
+          explorer.onRefreshResourcesClick();
         }
       },
       false

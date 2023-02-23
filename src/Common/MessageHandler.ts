@@ -1,10 +1,6 @@
-import { ActionType, DataExplorerAction } from "Contracts/ActionContracts";
-import { DataExplorerInputsFrame } from "Contracts/ViewModels";
-import Explorer from "Explorer/Explorer";
 import Q from "q";
 import * as _ from "underscore";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { getDataExplorerWindow } from "../Utils/WindowUtils";
 import * as Constants from "./Constants";
 
@@ -14,40 +10,7 @@ export interface CachedDataPromise<T> {
   id: string;
 }
 
-interface PortalMessage {
-  openAction?: DataExplorerAction;
-  actionType?: ActionType;
-  type?: MessageTypes;
-  inputs?: DataExplorerInputsFrame;
-}
-
 export const RequestMap: Record<string, CachedDataPromise<any>> = {};
-
-export function addExplorerMessageHandlers(explorer: Explorer) {
-  window.addEventListener(
-    "message",
-    (event) => {
-      if (isInvalidParentFrameOrigin(event)) {
-        return;
-      }
-
-      if (!shouldProcessMessage(event)) {
-        return;
-      }
-      const message: PortalMessage = event.data?.data;
-      const type = message?.type;
-      switch (type) {
-        case MessageTypes.RefreshResources:
-          handleRefreshResources(explorer);
-      }
-    },
-    false
-  );
-}
-
-export function handleRefreshResources(explorer: Explorer): void {
-  explorer.onRefreshResourcesClick();
-}
 
 export function handleCachedDataMessage(message: any): void {
   const messageContent = message && message.message;
