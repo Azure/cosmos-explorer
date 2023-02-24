@@ -78,7 +78,7 @@ export default class NotebookManager {
     this.notebookContentProvider = new NotebookContentProvider(
       this.inMemoryContentProvider,
       this.gitHubContentProvider,
-      contents.JupyterContentProvider
+      contents?.JupyterContentProvider
     );
 
     this.notebookClient = new NotebookContainerClient(() =>

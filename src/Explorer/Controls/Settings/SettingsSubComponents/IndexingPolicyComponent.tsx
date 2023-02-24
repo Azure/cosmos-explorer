@@ -88,16 +88,18 @@ export class IndexingPolicyComponent extends React.Component<
   private async createIndexingPolicyEditor(): Promise<void> {
     const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
     const monaco = await loadMonaco();
-    this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
-      value: value,
-      language: "json",
-      readOnly: isIndexTransforming(this.props.indexTransformationProgress),
-      ariaLabel: "Indexing Policy",
-    });
-    if (this.indexingPolicyEditor) {
-      const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
-      indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
-      this.props.logIndexingPolicySuccessMessage();
+    if (monaco.editor) {
+      this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
+        value: value,
+        language: "json",
+        readOnly: isIndexTransforming(this.props.indexTransformationProgress),
+        ariaLabel: "Indexing Policy",
+      });
+      if (this.indexingPolicyEditor) {
+        const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();
+        indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
+        this.props.logIndexingPolicySuccessMessage();
+      }
     }
   }
 
