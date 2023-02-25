@@ -9,7 +9,7 @@ import {
   Stack,
   TeachingBubble,
   TeachingBubbleContent,
-  Text,
+  Text
 } from "@fluentui/react";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -528,7 +528,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               >
                 {item.title}
               </Link>
-              <Image src={LinkIcon} />
+              <Image src={LinkIcon} alt=" " />
             </Stack>
             <Text>{item.description}</Text>
           </Stack>
