@@ -1,5 +1,5 @@
-import { HoverCard, HoverCardType, Icon, Label, Link, Stack } from "@fluentui/react";
 import * as React from "react";
+import { Icon, Label, Stack, HoverCard, HoverCardType, Link } from "@fluentui/react";
 import { CodeOfConductEndpoints } from "../../../../Common/Constants";
 import "./InfoComponent.less";
 
@@ -41,7 +41,7 @@ export class InfoComponent extends React.Component<InfoComponentProps> {
   public render(): JSX.Element {
     return (
       <HoverCard plainCardProps={{ onRenderPlainCard: this.onHover }} instantOpenOnClick type={HoverCardType.plain}>
-        <div className="infoPanelMain" tabIndex={0}>
+        <div className="infoPanelMain">
           <Icon className="infoIconMain" iconName="Help" styles={{ root: { verticalAlign: "middle" } }} />
           <Label className="infoLabelMain">Help</Label>
         </div>
