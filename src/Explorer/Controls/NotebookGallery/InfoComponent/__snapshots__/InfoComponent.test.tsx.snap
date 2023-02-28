@@ -12,6 +12,7 @@ exports[`InfoComponent renders 1`] = `
 >
   <div
     className="infoPanelMain"
+    tabIndex={0}
   >
     <Icon
       className="infoIconMain"

@@ -528,7 +528,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               >
                 {item.title}
               </Link>
-              <Image src={LinkIcon} />
+              <Image src={LinkIcon} alt=" " />
             </Stack>
             <Text>{item.description}</Text>
           </Stack>
