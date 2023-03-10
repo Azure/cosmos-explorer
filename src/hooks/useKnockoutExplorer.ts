@@ -1,3 +1,4 @@
+import Explorer from "Explorer/Explorer";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -10,7 +11,6 @@ import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
-import Explorer from "../Explorer/Explorer";
 import { handleOpenAction } from "../Explorer/OpenActions/OpenActions";
 import { useDatabases } from "../Explorer/useDatabases";
 import {
@@ -33,7 +33,7 @@ import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext"
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
 import { getMsalInstance } from "../Utils/AuthorizationUtils";
-import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
+import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -239,6 +239,7 @@ async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
+  let explorer: Explorer;
   return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
@@ -251,7 +252,7 @@ async function configurePortal(): Promise<Explorer> {
         );
         console.dir(message);
         updateContextsFromPortalMessage(message);
-        const explorer = new Explorer();
+        explorer = new Explorer();
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
@@ -287,7 +288,7 @@ async function configurePortal(): Promise<Explorer> {
           }
 
           updateContextsFromPortalMessage(inputs);
-          const explorer = new Explorer();
+          explorer = new Explorer();
           resolve(explorer);
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
@@ -300,6 +301,8 @@ async function configurePortal(): Promise<Explorer> {
           } else {
             useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
           }
+        } else if (message?.type === MessageTypes.RefreshResources) {
+          explorer.onRefreshResourcesClick();
         }
       },
       false
@@ -312,23 +315,6 @@ async function configurePortal(): Promise<Explorer> {
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
   // Only allow forwarding messages from the same origin
   return messageOrigin === window.document.location.origin && message.type === MessageTypes.TelemetryInfo;
-}
-
-function shouldProcessMessage(event: MessageEvent): boolean {
-  if (typeof event.data !== "object") {
-    return false;
-  }
-  if (event.data["signature"] !== "pcIframe") {
-    return false;
-  }
-  if (!("data" in event.data)) {
-    return false;
-  }
-  if (typeof event.data["data"] !== "object") {
-    return false;
-  }
-
-  return true;
 }
 
 function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
@@ -382,7 +368,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  const warningMessage = getNetworkSettingsWarningMessage(inputs.clientIpAddress);
+  const warningMessage = getNetworkSettingsWarningMessage();
   useTabs.getState().setNetworkSettingsWarning(warningMessage);
 
   if (inputs.features) {

@@ -565,7 +565,17 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private getLearningResourceItems(): JSX.Element {
-    let items: { link: string; title: string; description: string }[];
+    interface item {
+      link: string;
+      title: string;
+      description: string;
+    }
+    const cdbLiveTv: item = {
+      link: "https://developer.azurecosmosdb.com/tv",
+      title: "Learn the Fundamentals",
+      description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
+    };
+    let items: item[];
     switch (userContext.apiType) {
       case "SQL":
       case "Postgres":
@@ -575,11 +585,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             title: "Get Started using an SDK",
             description: "Learn about the Azure Cosmos DB SDK.",
           },
-          {
-            link: "https://aka.ms/msl-complex-queries",
-            title: "Master Complex Queries",
-            description: "Learn how to author complex queries.",
-          },
+          cdbLiveTv,
           {
             link: "https://aka.ms/msl-move-data",
             title: "Migrate Your Data",
@@ -599,11 +605,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             title: "Getting Started Guide",
             description: "Learn the basics to get started.",
           },
-          {
-            link: "http://aka.ms/mongodotnet",
-            title: "Build a web API",
-            description: "Create a web API with the.NET SDK.",
-          },
+          cdbLiveTv,
         ];
         break;
       case "Cassandra":
@@ -613,11 +615,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             title: "Create a Container",
             description: "Get to know the create a container options.",
           },
-          {
-            link: "https://aka.ms/cassandraserverdiagnostics",
-            title: "Run Server Diagnostics",
-            description: "Learn how to run server diagnostics.",
-          },
+          cdbLiveTv,
           {
             link: "https://aka.ms/Cassandrathroughput",
             title: "Provision Throughput",
@@ -637,11 +635,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             title: "Import Graph Data",
             description: "Learn Bulk ingestion data using BulkExecutor",
           },
-          {
-            link: "https://aka.ms/graphoptimize",
-            title: "Optimize your Queries",
-            description: "Learn how to evaluate your Gremlin queries",
-          },
+          cdbLiveTv,
         ];
         break;
       case "Tables":
@@ -656,11 +650,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             title: "Build a Java App",
             description: "Create a Azure Cosmos DB for Table app with Java SDK ",
           },
-          {
-            link: "https://aka.ms/tablenodejs",
-            title: "Build a Node.js App",
-            description: "Create a Azure Cosmos DB for Table app with Node.js SDK",
-          },
+          cdbLiveTv,
         ];
         break;
     }
