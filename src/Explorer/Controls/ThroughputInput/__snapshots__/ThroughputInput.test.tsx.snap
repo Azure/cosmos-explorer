@@ -347,12 +347,14 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     ariaLabel="Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage."
                     className="panelInfoIcon"
                     iconName="Info"
+                    role="tooltip"
                     tabIndex={0}
                   >
                     <IconBase
                       ariaLabel="Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage."
                       className="panelInfoIcon"
                       iconName="Info"
+                      role="tooltip"
                       styles={[Function]}
                       tabIndex={0}
                       theme={
@@ -633,7 +635,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         aria-label="Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage."
                         className="panelInfoIcon root-57"
                         data-icon-name="Info"
-                        role="img"
+                        role="tooltip"
                         tabIndex={0}
                       >
                         
@@ -654,44 +656,45 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       <div
         className="ms-Stack css-58"
       >
-        <input
-          aria-label="Autoscale database throughput"
-          aria-required={true}
-          checked={true}
-          className="throughputInputRadioBtn"
-          id="Autoscale-input"
+        <div
           key=".0:$.0"
-          onChange={[Function]}
-          role="radio"
-          tabIndex={0}
-          type="radio"
-        />
-        <label
-          className="throughputInputRadioBtnLabel"
-          htmlFor="Autoscale-input"
-          key=".0:$.1"
+          role="radiogroup"
         >
-          Autoscale
-        </label>
-        <input
-          aria-label="Manual database throughput"
-          aria-required={true}
-          checked={false}
-          className="throughputInputRadioBtn"
-          id="Manual-input"
-          key=".0:$.2"
-          onChange={[Function]}
-          role="radio"
-          tabIndex={0}
-          type="radio"
-        />
-        <label
-          className="throughputInputRadioBtnLabel"
-          htmlFor="Manual-input"
-          key=".0:$.3"
-        >
-          Manual
-        </label>
+          <input
+            aria-label="Autoscale database throughput"
+            aria-required={true}
+            checked={true}
+            className="throughputInputRadioBtn"
+            id="Autoscale-input"
+            onChange={[Function]}
+            role="radio"
+            tabIndex={0}
+            type="radio"
+          />
+          <label
+            className="throughputInputRadioBtnLabel"
+            htmlFor="Autoscale-input"
+          >
+            Autoscale
+          </label>
+          <input
+            aria-label="Manual database throughput"
+            aria-required={true}
+            checked={false}
+            className="throughputInputRadioBtn"
+            id="Manual-input"
+            onChange={[Function]}
+            role="radio"
+            tabIndex={0}
+            type="radio"
+          />
+          <label
+            className="throughputInputRadioBtnLabel"
+            htmlFor="Manual-input"
+          >
+            Manual
+          </label>
+        </div>
       </div>
     </Stack>
     <Stack
@@ -1338,12 +1341,14 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         ariaLabel="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
                         className="panelInfoIcon"
                         iconName="Info"
+                        role="tooltip"
                         tabIndex={0}
                       >
                         <IconBase
                           ariaLabel="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
                           className="panelInfoIcon"
                           iconName="Info"
+                          role="tooltip"
                           styles={[Function]}
                           tabIndex={0}
                           theme={
@@ -1624,7 +1629,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             aria-label="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
                             className="panelInfoIcon root-57"
                             data-icon-name="Info"
-                            role="img"
+                            role="tooltip"
                             tabIndex={0}
                           >
                             

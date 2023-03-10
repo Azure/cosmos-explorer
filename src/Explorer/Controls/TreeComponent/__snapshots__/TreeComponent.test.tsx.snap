@@ -40,30 +40,32 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
   onKeyPress={[Function]}
   role="treeitem"
 >
-  <div
-    className="treeNodeHeader "
-    data-test="label"
-    style={
-      Object {
-        "paddingLeft": 9,
+  <div>
+    <div
+      className="treeNodeHeader "
+      data-test="label"
+      style={
+        Object {
+          "paddingLeft": 9,
+        }
       }
-    }
-    tabIndex={-1}
-  >
-    <img
-      alt="label branch is collapsed"
-      className="expandCollapseIcon"
-      onKeyPress={[Function]}
-      role="button"
-      src=""
-      tabIndex={0}
-    />
-    <span
-      className="nodeLabel"
-      title="label"
+      tabIndex={-1}
     >
-      label
-    </span>
+      <img
+        alt="label branch is collapsed"
+        className="expandCollapseIcon"
+        onKeyPress={[Function]}
+        role="button"
+        src=""
+        tabIndex={0}
+      />
+      <span
+        className="nodeLabel"
+        title="label"
+      >
+        label
+      </span>
+    </div>
   </div>
   <div
     className="loadingIconContainer"
@@ -100,6 +102,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={3}
@@ -142,78 +145,80 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
   onKeyPress={[Function]}
   role="treeitem"
 >
-  <div
-    className="treeNodeHeader "
-    data-test="label"
-    style={
-      Object {
-        "paddingLeft": 23,
-      }
-    }
-    tabIndex={-1}
-  >
-    <img
-      alt="label branch is expanded"
-      className="expandCollapseIcon"
-      onKeyPress={[Function]}
-      role="button"
-      src=""
-      tabIndex={0}
-    />
-    <span
-      className="nodeLabel"
-      title="label"
-    >
-      label
-    </span>
+  <div>
     <div
-      onContextMenu={[Function]}
-      onKeyPress={[Function]}
+      className="treeNodeHeader "
+      data-test="label"
+      style={
+        Object {
+          "paddingLeft": 23,
+        }
+      }
+      tabIndex={-1}
     >
-      <CustomizedIconButton
-        ariaLabel="More"
-        className="treeMenuEllipsis"
-        menuIconProps={
-          Object {
-            "iconName": "More",
-            "styles": Object {
-              "root": Object {
-                "fontSize": "18px",
-                "fontWeight": "bold",
-              },
-            },
-          }
-        }
-        menuProps={
-          Object {
-            "contextualMenuItemAs": [Function],
-            "coverTarget": true,
-            "directionalHint": 3,
-            "isBeakVisible": false,
-            "items": Array [
-              Object {
-                "className": undefined,
-                "disabled": true,
-                "key": "menuLabel",
-                "onClick": [Function],
-                "onRenderIcon": [Function],
-                "text": "menuLabel",
-              },
-            ],
-            "onMenuDismissed": [Function],
-            "onMenuOpened": [Function],
-          }
-        }
-        name="More"
-        styles={
-          Object {
-            "rootFocused": Object {
-              "outline": "1px dashed undefined",
-            },
-          }
-        }
-        title="More"
+      <img
+        alt="label branch is expanded"
+        className="expandCollapseIcon"
+        onKeyPress={[Function]}
+        role="button"
+        src=""
+        tabIndex={0}
       />
+      <span
+        className="nodeLabel"
+        title="label"
+      >
+        label
+      </span>
+      <div
+        onContextMenu={[Function]}
+        onKeyPress={[Function]}
+      >
+        <CustomizedIconButton
+          ariaLabel="More"
+          className="treeMenuEllipsis"
+          menuIconProps={
+            Object {
+              "iconName": "More",
+              "styles": Object {
+                "root": Object {
+                  "fontSize": "18px",
+                  "fontWeight": "bold",
+                },
+              },
+            }
+          }
+          menuProps={
+            Object {
+              "contextualMenuItemAs": [Function],
+              "coverTarget": true,
+              "directionalHint": 3,
+              "isBeakVisible": false,
+              "items": Array [
+                Object {
+                  "className": undefined,
+                  "disabled": true,
+                  "key": "menuLabel",
+                  "onClick": [Function],
+                  "onRenderIcon": [Function],
+                  "text": "menuLabel",
+                },
+              ],
+              "onMenuDismissed": [Function],
+              "onMenuOpened": [Function],
+            }
+          }
+          name="More"
+          styles={
+            Object {
+              "rootFocused": Object {
+                "outline": "1px dashed undefined",
+              },
+            }
+          }
+          title="More"
+        />
+      </div>
     </div>
   </div>
   <div
@@ -251,6 +256,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={13}
@@ -292,142 +298,31 @@ exports[`TreeNodeComponent renders loading icon 1`] = `
   onKeyPress={[Function]}
   role="treeitem"
 >
-  <div
-    className="treeNodeHeader "
-    data-test="label"
-    style={
-      Object {
-        "paddingLeft": 9,
-      }
-    }
-    tabIndex={-1}
-  >
-    <img
-      alt="label branch is expanded"
-      className="expandCollapseIcon"
-      onKeyPress={[Function]}
-      role="button"
-      src=""
-      tabIndex={0}
-    />
-    <span
-      className="nodeLabel"
-      title="label"
-    >
-      label
-    </span>
-  </div>
-  <div
-    className="loadingIconContainer"
-  >
-    <img
-      className="loadingIcon"
-      hidden={true}
-      src=""
-    />
-  </div>
-  <AnimateHeight
-    animateOpacity={false}
-    animationStateClasses={
-      Object {
-        "animating": "rah-animating",
-        "animatingDown": "rah-animating--down",
-        "animatingToHeightAuto": "rah-animating--to-height-auto",
-        "animatingToHeightSpecific": "rah-animating--to-height-specific",
-        "animatingToHeightZero": "rah-animating--to-height-zero",
-        "animatingUp": "rah-animating--up",
-        "static": "rah-static",
-        "staticHeightAuto": "rah-static--height-auto",
-        "staticHeightSpecific": "rah-static--height-specific",
-        "staticHeightZero": "rah-static--height-zero",
-      }
-    }
-    applyInlineTransitions={true}
-    delay={0}
-    duration={200}
-    easing="ease"
-    height="auto"
-    style={Object {}}
-  >
+  <div>
     <div
-      className="nodeChildren"
+      className="treeNodeHeader "
       data-test="label"
-    />
-  </AnimateHeight>
-</div>
-`;
-
-exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents separated 1`] = `
-<div
-  className="nodeClassname main12 nodeItem "
-  id="id"
-  onClick={[Function]}
-  onKeyPress={[Function]}
-  role="treeitem"
->
-  <div
-    className="treeNodeHeader "
-    data-test="label"
-    style={
-      Object {
-        "paddingLeft": 23,
+      style={
+        Object {
+          "paddingLeft": 9,
+        }
       }
-    }
-    tabIndex={-1}
-  >
-    <img
-      alt="label branch is expanded"
-      className="expandCollapseIcon"
-      onKeyPress={[Function]}
-      role="button"
-      src=""
-      tabIndex={0}
-    />
-    <span
-      className="nodeLabel"
-      title="label"
+      tabIndex={-1}
     >
-      label
-    </span>
-    <div
-      onContextMenu={[Function]}
-      onKeyPress={[Function]}
-    >
-      <CustomizedIconButton
-        ariaLabel="More"
-        className="treeMenuEllipsis"
-        menuIconProps={
-          Object {
-            "iconName": "More",
-            "styles": Object {
-              "root": Object {
-                "fontSize": "18px",
-                "fontWeight": "bold",
-              },
-            },
-          }
-        }
-        menuProps={
-          Object {
-            "contextualMenuItemAs": [Function],
-            "coverTarget": true,
-            "directionalHint": 3,
-            "isBeakVisible": false,
-            "items": Array [],
-            "onMenuDismissed": [Function],
-            "onMenuOpened": [Function],
-          }
-        }
-        name="More"
-        styles={
-          Object {
-            "rootFocused": Object {
-              "outline": "1px dashed undefined",
-            },
-          }
-        }
-        title="More"
+      <img
+        alt="label branch is expanded"
+        className="expandCollapseIcon"
+        onKeyPress={[Function]}
+        role="button"
+        src=""
+        tabIndex={0}
       />
+      <span
+        className="nodeLabel"
+        title="label"
+      >
+        label
+      </span>
     </div>
   </div>
   <div
@@ -465,6 +360,123 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
+    />
+  </AnimateHeight>
+</div>
+`;
+
+exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents separated 1`] = `
+<div
+  className="nodeClassname main12 nodeItem "
+  id="id"
+  onClick={[Function]}
+  onKeyPress={[Function]}
+  role="treeitem"
+>
+  <div>
+    <div
+      className="treeNodeHeader "
+      data-test="label"
+      style={
+        Object {
+          "paddingLeft": 23,
+        }
+      }
+      tabIndex={-1}
+    >
+      <img
+        alt="label branch is expanded"
+        className="expandCollapseIcon"
+        onKeyPress={[Function]}
+        role="button"
+        src=""
+        tabIndex={0}
+      />
+      <span
+        className="nodeLabel"
+        title="label"
+      >
+        label
+      </span>
+      <div
+        onContextMenu={[Function]}
+        onKeyPress={[Function]}
+      >
+        <CustomizedIconButton
+          ariaLabel="More"
+          className="treeMenuEllipsis"
+          menuIconProps={
+            Object {
+              "iconName": "More",
+              "styles": Object {
+                "root": Object {
+                  "fontSize": "18px",
+                  "fontWeight": "bold",
+                },
+              },
+            }
+          }
+          menuProps={
+            Object {
+              "contextualMenuItemAs": [Function],
+              "coverTarget": true,
+              "directionalHint": 3,
+              "isBeakVisible": false,
+              "items": Array [],
+              "onMenuDismissed": [Function],
+              "onMenuOpened": [Function],
+            }
+          }
+          name="More"
+          styles={
+            Object {
+              "rootFocused": Object {
+                "outline": "1px dashed undefined",
+              },
+            }
+          }
+          title="More"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height="auto"
+    style={Object {}}
+  >
+    <div
+      className="nodeChildren"
+      data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={13}
@@ -534,30 +546,32 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
   onKeyPress={[Function]}
   role="treeitem"
 >
-  <div
-    className="treeNodeHeader "
-    data-test="label"
-    style={
-      Object {
-        "paddingLeft": 9,
+  <div>
+    <div
+      className="treeNodeHeader "
+      data-test="label"
+      style={
+        Object {
+          "paddingLeft": 9,
+        }
       }
-    }
-    tabIndex={-1}
-  >
-    <img
-      alt="label branch is expanded"
-      className="expandCollapseIcon"
-      onKeyPress={[Function]}
-      role="button"
-      src=""
-      tabIndex={0}
-    />
-    <span
-      className="nodeLabel"
-      title="label"
+      tabIndex={-1}
     >
-      label
-    </span>
+      <img
+        alt="label branch is expanded"
+        className="expandCollapseIcon"
+        onKeyPress={[Function]}
+        role="button"
+        src=""
+        tabIndex={0}
+      />
+      <span
+        className="nodeLabel"
+        title="label"
+      >
+        label
+      </span>
+    </div>
   </div>
   <div
     className="loadingIconContainer"
@@ -594,6 +608,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={3}

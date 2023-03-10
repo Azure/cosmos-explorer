@@ -7,7 +7,7 @@ import {
   IStackTokens,
   Stack,
   TextField,
-  TooltipHost,
+  TooltipHost
 } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import DeleteIcon from "../../images/delete.svg";
@@ -136,17 +136,20 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onEntityTimeValueChange={onEntityTimeValueChange}
         />
         {!isEntityValueDisable && (
+          
           <TooltipHost content="Edit property" id="editTooltip">
+            <div tabIndex={0}>
             <Image
               {...imageProps}
               src={EditIcon}
               alt="editEntity"
               id="editEntity"
               onClick={onEditEntity}
-              tabIndex={0}
               onKeyPress={handleKeyPress}
             />
+            </div>
           </TooltipHost>
+          
         )}
         {isDeleteOptionVisible && userContext.apiType !== "Cassandra" && (
           <TooltipHost content="Delete property" id="deleteTooltip">

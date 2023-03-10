@@ -185,6 +185,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       </Stack>
 
       <Stack horizontal verticalAlign="center">
+        <div role="radiogroup">
         <input
           id="Autoscale-input"
           className="throughputInputRadioBtn"
@@ -214,6 +215,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         <label className="throughputInputRadioBtnLabel" htmlFor="Manual-input">
           Manual
         </label>
+        </div>
       </Stack>
 
       {isAutoscaleSelected && (

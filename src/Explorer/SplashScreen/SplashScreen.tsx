@@ -9,7 +9,7 @@ import {
   Stack,
   TeachingBubble,
   TeachingBubbleContent,
-  Text,
+  Text
 } from "@fluentui/react";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -116,7 +116,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <div className="title">
+              <div className="title" aria-label={userContext.apiType === "Postgres"
+                  ? "Welcome to Azure Cosmos DB for PostgreSQL"
+                  : "Welcome to Azure Cosmos DB"}>
                 {userContext.apiType === "Postgres"
                   ? "Welcome to Azure Cosmos DB for PostgreSQL"
                   : "Welcome to Azure Cosmos DB"}
