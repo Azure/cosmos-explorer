@@ -42,39 +42,43 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         horizontal={true}
         verticalAlign="center"
       >
-        <input
-          aria-checked={true}
-          aria-label="Create new database"
-          checked={true}
-          className="panelRadioBtn"
-          id="databaseCreateNew"
-          name="databaseType"
-          onChange={[Function]}
-          role="radio"
-          tabIndex={0}
-          type="radio"
-        />
-        <span
-          className="panelRadioBtnLabel"
+        <div
+          role="radiogroup"
         >
-          Create new
-        </span>
-        <input
-          aria-checked={false}
-          aria-label="Use existing database"
-          checked={false}
-          className="panelRadioBtn"
-          name="databaseType"
-          onChange={[Function]}
-          role="radio"
-          tabIndex={0}
-          type="radio"
-        />
-        <span
-          className="panelRadioBtnLabel"
-        >
-          Use existing
-        </span>
+          <input
+            aria-checked={true}
+            aria-label="Create new database"
+            checked={true}
+            className="panelRadioBtn"
+            id="databaseCreateNew"
+            name="databaseType"
+            onChange={[Function]}
+            role="radio"
+            tabIndex={0}
+            type="radio"
+          />
+          <span
+            className="panelRadioBtnLabel"
+          >
+            Create new
+          </span>
+          <input
+            aria-checked={false}
+            aria-label="Use existing database"
+            checked={false}
+            className="panelRadioBtn"
+            name="databaseType"
+            onChange={[Function]}
+            role="radio"
+            tabIndex={0}
+            type="radio"
+          />
+          <span
+            className="panelRadioBtnLabel"
+          >
+            Use existing
+          </span>
+        </div>
       </Stack>
       <Stack
         className="panelGroupSpacing"
@@ -342,42 +346,46 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         horizontal={true}
         verticalAlign="center"
       >
-        <input
-          aria-checked={false}
-          aria-label="Enable analytical store"
-          checked={false}
-          className="panelRadioBtn"
-          disabled={true}
-          id="enableAnalyticalStoreBtn"
-          name="analyticalStore"
-          onChange={[Function]}
-          role="radio"
-          tabIndex={0}
-          type="radio"
-        />
-        <span
-          className="panelRadioBtnLabel"
+        <div
+          role="radiogroup"
         >
-          On
-        </span>
-        <input
-          aria-checked={true}
-          aria-label="Disable analytical store"
-          checked={true}
-          className="panelRadioBtn"
-          disabled={true}
-          id="disableAnalyticalStoreBtn"
-          name="analyticalStore"
-          onChange={[Function]}
-          role="radio"
-          tabIndex={0}
-          type="radio"
-        />
-        <span
-          className="panelRadioBtnLabel"
-        >
-          Off
-        </span>
+          <input
+            aria-checked={false}
+            aria-label="Enable analytical store"
+            checked={false}
+            className="panelRadioBtn"
+            disabled={true}
+            id="enableAnalyticalStoreBtn"
+            name="analyticalStore"
+            onChange={[Function]}
+            role="radio"
+            tabIndex={0}
+            type="radio"
+          />
+          <span
+            className="panelRadioBtnLabel"
+          >
+            On
+          </span>
+          <input
+            aria-checked={true}
+            aria-label="Disable analytical store"
+            checked={true}
+            className="panelRadioBtn"
+            disabled={true}
+            id="disableAnalyticalStoreBtn"
+            name="analyticalStore"
+            onChange={[Function]}
+            role="radio"
+            tabIndex={0}
+            type="radio"
+          />
+          <span
+            className="panelRadioBtnLabel"
+          >
+            Off
+          </span>
+        </div>
       </Stack>
       <Stack
         className="panelGroupSpacing"

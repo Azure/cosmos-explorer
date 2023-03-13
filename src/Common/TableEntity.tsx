@@ -137,15 +137,16 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         />
         {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
-            <Image
-              {...imageProps}
-              src={EditIcon}
-              alt="editEntity"
-              id="editEntity"
-              onClick={onEditEntity}
-              tabIndex={0}
-              onKeyPress={handleKeyPress}
-            />
+            <div tabIndex={0}>
+              <Image
+                {...imageProps}
+                src={EditIcon}
+                alt="editEntity"
+                id="editEntity"
+                onClick={onEditEntity}
+                onKeyPress={handleKeyPress}
+              />
+            </div>
           </TooltipHost>
         )}
         {isDeleteOptionVisible && userContext.apiType !== "Cassandra" && (
