@@ -10,7 +10,7 @@ import {
   IButtonStyles,
   IconButton,
   IContextualMenuItemProps,
-  IContextualMenuProps
+  IContextualMenuProps,
 } from "@fluentui/react";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
@@ -195,7 +195,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
         </div>
         {node.children && (
           <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
-            <div className="nodeChildren" data-test={node.label} role="group">
+            <div className="nodeChildren" data-test={node.label}>
               {TreeNodeComponent.getSortedChildren(node).map((childNode: TreeNode) => (
                 <TreeNodeComponent
                   key={`${childNode.label}-${generation + 1}-${childNode.timestamp}`}
