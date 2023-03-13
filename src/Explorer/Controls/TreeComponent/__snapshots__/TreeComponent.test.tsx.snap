@@ -100,6 +100,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={3}
@@ -251,6 +252,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={13}
@@ -352,6 +354,7 @@ exports[`TreeNodeComponent renders loading icon 1`] = `
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     />
   </AnimateHeight>
 </div>
@@ -465,6 +468,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={13}
@@ -594,6 +598,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
     <div
       className="nodeChildren"
       data-test="label"
+      role="group"
     >
       <TreeNodeComponent
         generation={3}

@@ -40,6 +40,7 @@ export class GraphVizComponent extends React.Component<GraphVizComponentProps> {
             {/* svg load more icon inlined as-is here: remove the style="fill:#374649;" so we can override it */}
             <svg
               role="img"
+              aria-label="graph"
               version="1.1"
               xmlns="http://www.w3.org/2000/svg"
               xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -135,6 +136,7 @@ export class GraphVizComponent extends React.Component<GraphVizComponentProps> {
           <g id="triangleRight">
             <svg
               role="img"
+              aria-label="graph"
               version="1.1"
               id="Layer_1"
               xmlns="http://www.w3.org/2000/svg"
