@@ -147,10 +147,12 @@ export class NotificationConsoleComponent extends React.Component<
             <div className="notificationConsoleControls">
               <Dropdown
                 label="Filter:"
+                role="combobox"
                 selectedKey={this.state.selectedFilter}
                 options={NotificationConsoleComponent.FilterOptions}
                 onChange={this.onFilterSelected.bind(this)}
-
+                aria-labelledby="consoleFilterLabel"
+                aria-label={this.state.selectedFilter}
               />
               <span className="consoleSplitter" />
               <span

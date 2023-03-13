@@ -112,6 +112,8 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         className="notificationConsoleControls"
       >
         <Dropdown
+          aria-label="All"
+          aria-labelledby="consoleFilterLabel"
           label="Filter:"
           onChange={[Function]}
           options={
@@ -276,6 +278,8 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         className="notificationConsoleControls"
       >
         <Dropdown
+          aria-label="All"
+          aria-labelledby="consoleFilterLabel"
           label="Filter:"
           onChange={[Function]}
           options={
