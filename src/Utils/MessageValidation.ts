@@ -21,6 +21,23 @@ function isValidOrigin(allowedOrigins: ReadonlyArray<string>, event: MessageEven
   return false;
 }
 
+export function shouldProcessMessage(event: MessageEvent): boolean {
+  if (typeof event.data !== "object") {
+    return false;
+  }
+  if (event.data["signature"] !== "pcIframe") {
+    return false;
+  }
+  if (!("data" in event.data)) {
+    return false;
+  }
+  if (typeof event.data["data"] !== "object") {
+    return false;
+  }
+
+  return true;
+}
+
 export function isReadyMessage(event: MessageEvent): boolean {
   if (!event?.data?.kind && !event?.data?.data) {
     return false;
