@@ -654,45 +654,44 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       <div
         className="ms-Stack css-58"
       >
-        <div
+        <input
+          aria-label="Autoscale database throughput"
+          aria-required={true}
+          checked={true}
+          className="throughputInputRadioBtn"
+          id="Autoscale-input"
           key=".0:$.0"
-          role="radiogroup"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <label
+          className="throughputInputRadioBtnLabel"
+          htmlFor="Autoscale-input"
+          key=".0:$.1"
         >
-          <input
-            aria-label="Autoscale database throughput"
-            aria-required={true}
-            checked={true}
-            className="throughputInputRadioBtn"
-            id="Autoscale-input"
-            onChange={[Function]}
-            role="radio"
-            tabIndex={0}
-            type="radio"
-          />
-          <label
-            className="throughputInputRadioBtnLabel"
-            htmlFor="Autoscale-input"
-          >
-            Autoscale
-          </label>
-          <input
-            aria-label="Manual database throughput"
-            aria-required={true}
-            checked={false}
-            className="throughputInputRadioBtn"
-            id="Manual-input"
-            onChange={[Function]}
-            role="radio"
-            tabIndex={0}
-            type="radio"
-          />
-          <label
-            className="throughputInputRadioBtnLabel"
-            htmlFor="Manual-input"
-          >
-            Manual
-          </label>
-        </div>
+          Autoscale
+        </label>
+        <input
+          aria-label="Manual database throughput"
+          aria-required={true}
+          checked={false}
+          className="throughputInputRadioBtn"
+          id="Manual-input"
+          key=".0:$.2"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <label
+          className="throughputInputRadioBtnLabel"
+          htmlFor="Manual-input"
+          key=".0:$.3"
+        >
+          Manual
+        </label>
       </div>
     </Stack>
     <Stack
