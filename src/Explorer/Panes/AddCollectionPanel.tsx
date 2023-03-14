@@ -274,32 +274,34 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
 
             <Stack horizontal verticalAlign="center">
-              <input
-                className="panelRadioBtn"
-                checked={this.state.createNewDatabase}
-                aria-label="Create new database"
-                aria-checked={this.state.createNewDatabase}
-                name="databaseType"
-                type="radio"
-                role="radio"
-                id="databaseCreateNew"
-                tabIndex={0}
-                onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
-              />
-              <span className="panelRadioBtnLabel">Create new</span>
+              <div role="radiogroup">
+                <input
+                  className="panelRadioBtn"
+                  checked={this.state.createNewDatabase}
+                  aria-label="Create new database"
+                  aria-checked={this.state.createNewDatabase}
+                  name="databaseType"
+                  type="radio"
+                  role="radio"
+                  id="databaseCreateNew"
+                  tabIndex={0}
+                  onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">Create new</span>
 
-              <input
-                className="panelRadioBtn"
-                checked={!this.state.createNewDatabase}
-                aria-label="Use existing database"
-                aria-checked={!this.state.createNewDatabase}
-                name="databaseType"
-                type="radio"
-                role="radio"
-                tabIndex={0}
-                onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
-              />
-              <span className="panelRadioBtnLabel">Use existing</span>
+                <input
+                  className="panelRadioBtn"
+                  checked={!this.state.createNewDatabase}
+                  aria-label="Use existing database"
+                  aria-checked={!this.state.createNewDatabase}
+                  name="databaseType"
+                  type="radio"
+                  role="radio"
+                  tabIndex={0}
+                  onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">Use existing</span>
+              </div>
             </Stack>
 
             {this.state.createNewDatabase && (
@@ -802,35 +804,37 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </Stack>
 
               <Stack horizontal verticalAlign="center">
-                <input
-                  className="panelRadioBtn"
-                  checked={this.state.enableAnalyticalStore}
-                  disabled={!this.isSynapseLinkEnabled()}
-                  aria-label="Enable analytical store"
-                  aria-checked={this.state.enableAnalyticalStore}
-                  name="analyticalStore"
-                  type="radio"
-                  role="radio"
-                  id="enableAnalyticalStoreBtn"
-                  tabIndex={0}
-                  onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
-                />
-                <span className="panelRadioBtnLabel">On</span>
+                <div role="radiogroup">
+                  <input
+                    className="panelRadioBtn"
+                    checked={this.state.enableAnalyticalStore}
+                    disabled={!this.isSynapseLinkEnabled()}
+                    aria-label="Enable analytical store"
+                    aria-checked={this.state.enableAnalyticalStore}
+                    name="analyticalStore"
+                    type="radio"
+                    role="radio"
+                    id="enableAnalyticalStoreBtn"
+                    tabIndex={0}
+                    onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
+                  />
+                  <span className="panelRadioBtnLabel">On</span>
 
-                <input
-                  className="panelRadioBtn"
-                  checked={!this.state.enableAnalyticalStore}
-                  disabled={!this.isSynapseLinkEnabled()}
-                  aria-label="Disable analytical store"
-                  aria-checked={!this.state.enableAnalyticalStore}
-                  name="analyticalStore"
-                  type="radio"
-                  role="radio"
-                  id="disableAnalyticalStoreBtn"
-                  tabIndex={0}
-                  onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
-                />
-                <span className="panelRadioBtnLabel">Off</span>
+                  <input
+                    className="panelRadioBtn"
+                    checked={!this.state.enableAnalyticalStore}
+                    disabled={!this.isSynapseLinkEnabled()}
+                    aria-label="Disable analytical store"
+                    aria-checked={!this.state.enableAnalyticalStore}
+                    name="analyticalStore"
+                    type="radio"
+                    role="radio"
+                    id="disableAnalyticalStoreBtn"
+                    tabIndex={0}
+                    onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
+                  />
+                  <span className="panelRadioBtnLabel">Off</span>
+                </div>
               </Stack>
 
               {!this.isSynapseLinkEnabled() && (

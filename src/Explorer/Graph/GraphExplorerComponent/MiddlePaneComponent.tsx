@@ -17,19 +17,19 @@ export class MiddlePaneComponent extends React.Component<MiddlePaneComponentProp
       <div className="middlePane">
         <div className="graphTitle">
           <span className="paneTitle">Graph</span>
-          <span
+          <button
+            style={{ border: "none", background: "none" }}
             className="graphExpandCollapseBtn pull-right"
             onClick={this.props.toggleExpandGraph}
             role="button"
             aria-expanded={this.props.isTabsContentExpanded}
             aria-name="View graph in full screen"
-            tabIndex={0}
           >
             <img
               src={this.props.isTabsContentExpanded ? CollapseArrowIcon : ExpandIcon}
               alt={this.props.isTabsContentExpanded ? "collapse graph content" : "expand graph content"}
             />
-          </span>
+          </button>
         </div>
         <div className="maingraphContainer">
           <GraphVizComponent forceGraphParams={this.props.graphVizProps.forceGraphParams} />

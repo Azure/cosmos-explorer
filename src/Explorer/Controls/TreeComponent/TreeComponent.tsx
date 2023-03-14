@@ -195,7 +195,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
         </div>
         {node.children && (
           <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
-            <div className="nodeChildren" data-test={node.label}>
+            <div className="nodeChildren" data-test={node.label} role="group">
               {TreeNodeComponent.getSortedChildren(node).map((childNode: TreeNode) => (
                 <TreeNodeComponent
                   key={`${childNode.label}-${generation + 1}-${childNode.timestamp}`}
