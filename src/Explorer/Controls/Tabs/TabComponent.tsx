@@ -46,10 +46,13 @@ export class TabComponent extends React.Component<TabComponentProps> {
       }
 
       let className = "toggleSwitch";
+      let ariaselected;
       if (index === this.props.currentTabIndex) {
         className += " selectedToggle";
+        ariaselected = true;
       } else {
         className += " unselectedToggle";
+        ariaselected = false;
       }
 
       return (
@@ -57,9 +60,10 @@ export class TabComponent extends React.Component<TabComponentProps> {
           <AccessibleElement
             as="span"
             className={className}
-            role="presentation"
+            role="tab"
             onActivated={() => this.setActiveTab(index)}
             aria-label={`Select tab: ${tab.title}`}
+            aria-selected={ariaselected}
           >
             {tab.title}
           </AccessibleElement>
@@ -77,7 +81,11 @@ export class TabComponent extends React.Component<TabComponentProps> {
 
     return (
       <div className="tabComponentContainer">
-        {!this.props.hideHeader && <div className="tabs tabSwitch">{this.renderTabTitles()}</div>}
+        {!this.props.hideHeader && (
+          <div className="tabs tabSwitch" role="tablist">
+            {this.renderTabTitles()}
+          </div>
+        )}
         <div className={className}>{currentTabContent.render()}</div>
       </div>
     );

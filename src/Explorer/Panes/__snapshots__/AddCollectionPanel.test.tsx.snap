@@ -172,6 +172,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             ariaLabel="Unique identifier for the container and used for id-based routing through REST and all SDKs."
             className="panelInfoIcon"
             iconName="Info"
+            role="button"
             tabIndex={0}
           />
         </StyledTooltipHostBase>
