@@ -79,8 +79,10 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer">
+      
       <div id="divExplorer" className="flexContainer hideOverflows">
-        {/* Main Command Bar - Start */}
+        <div id = "freeTierTeachingBubble"> </div>
+        {/* Main Command Bar - Start */} 
         <CommandBar container={explorer} />
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
