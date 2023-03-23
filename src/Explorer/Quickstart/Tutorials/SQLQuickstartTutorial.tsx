@@ -186,7 +186,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
           onDismiss={() => onDimissTeachingBubble()}
           footerContent={"Step 8 of " + totalSteps}
         >
-          Unlock everything Azure Cosmos DB has to offer When you're ready, upgrade to production.
+          Unlock everything Azure Cosmos DB has to offer When you&apos;re ready, upgrade to production.
         </TeachingBubble>
       );
     case 9:
