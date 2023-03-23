@@ -155,7 +155,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
           hasCloseButton
           primaryButtonProps={{
             text: "Next",
-            onClick: () => userContext.isTryCosmosDBSubscription ? setStep(8) : setStep(9),
+            onClick: () => (userContext.isTryCosmosDBSubscription ? setStep(8) : setStep(9)),
           }}
           secondaryButtonProps={{
             text: "Previous",
@@ -164,8 +164,8 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
           onDismiss={() => onDimissTeachingBubble()}
           footerContent={"Step 7 of " + totalSteps}
         >
-          This will open a new tab in your browser to use Cosmos DB Explorer.
-          Using the provided URLs you can share read-write or read-only access with other people.
+          This will open a new tab in your browser to use Cosmos DB Explorer. Using the provided URLs you can share
+          read-write or read-only access with other people.
         </TeachingBubble>
       );
     case 8:
@@ -183,12 +183,10 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(7),
           }}
           calloutProps={{ directionalHint: DirectionalHint.leftCenter }}
-
           onDismiss={() => onDimissTeachingBubble()}
           footerContent={"Step 8 of " + totalSteps}
         >
-          Unlock everything Azure Cosmos DB has to offer
-          When you're ready, upgrade to production.
+          Unlock everything Azure Cosmos DB has to offer When you're ready, upgrade to production.
         </TeachingBubble>
       );
     case 9:
@@ -206,7 +204,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
           }}
           secondaryButtonProps={{
             text: "Previous",
-            onClick: () => userContext.isTryCosmosDBSubscription ? setStep(8) : setStep(7),
+            onClick: () => (userContext.isTryCosmosDBSubscription ? setStep(8) : setStep(7)),
           }}
           onDismiss={() => onDimissTeachingBubble()}
           footerContent={"Step 8 of " + totalSteps}
