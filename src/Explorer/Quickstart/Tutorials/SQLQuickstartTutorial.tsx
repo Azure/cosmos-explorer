@@ -207,7 +207,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => (userContext.isTryCosmosDBSubscription ? setStep(8) : setStep(7)),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent={"Step 8 of " + totalSteps}
+          footerContent={"Step " + totalSteps + " of " + totalSteps}
         >
           <Stack>
             <Text style={{ color: "white" }}>

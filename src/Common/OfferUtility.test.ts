@@ -44,10 +44,8 @@ describe("parseSDKOfferResponse", () => {
   });
 
   it("Test OfferDefinition when null", () => {
-    const mockOfferDefinition = null as SDKOfferDefinition;
-
     const mockResponse = {
-      resource: mockOfferDefinition,
+      resource: undefined,
     } as OfferResponse;
 
     expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(undefined);
