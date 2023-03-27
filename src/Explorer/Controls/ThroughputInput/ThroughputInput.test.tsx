@@ -23,12 +23,12 @@ describe("ThroughputInput Pane", () => {
   });
 
   it("should switch mode properly", () => {
-    wrapper.find('[aria-label="Manual database throughput"]').simulate("change");
+    wrapper.find('[id="Manual-input"]').simulate("change");
     expect(wrapper.find('[aria-label="Throughput header"]').at(0).text()).toBe(
       "Container throughput (400 - unlimited RU/s)"
     );
 
-    wrapper.find('[aria-label="Autoscale database throughput"]').simulate("change");
+    wrapper.find('[id="Autoscale-input"]').simulate("change");
     expect(wrapper.find('[aria-label="Throughput header"]').at(0).text()).toBe("Container throughput (autoscale)");
   });
 });

@@ -23,7 +23,7 @@ export class MiddlePaneComponent extends React.Component<MiddlePaneComponentProp
             onClick={this.props.toggleExpandGraph}
             role="button"
             aria-expanded={this.props.isTabsContentExpanded}
-            aria-name="View graph in full screen"
+            aria-label="View graph in full screen"
           >
             <img
               src={this.props.isTabsContentExpanded ? CollapseArrowIcon : ExpandIcon}

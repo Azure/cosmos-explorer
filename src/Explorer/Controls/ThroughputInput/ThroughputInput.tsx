@@ -189,7 +189,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <input
             id="Autoscale-input"
             className="throughputInputRadioBtn"
-            aria-label="Autoscale database throughput"
+            aria-label={`Autoscale` + " " + getThroughputLabelText()}
             aria-required={true}
             checked={isAutoscaleSelected}
             type="radio"
@@ -204,7 +204,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <input
             id="Manual-input"
             className="throughputInputRadioBtn"
-            aria-label="Manual database throughput"
+            aria-label={`Manual` + " " + getThroughputLabelText()}
             checked={!isAutoscaleSelected}
             type="radio"
             aria-required={true}
@@ -222,13 +222,15 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         <Stack className="throughputInputSpacing">
           <Text variant="small" aria-label="capacity calculator of azure cosmos db">
             Estimate your required RU/s with{" "}
-            <Link
-              target="_blank"
-              href="https://cosmos.azure.com/capacitycalculator/"
-              aria-label="capacity calculator of azure cosmos db"
-            >
-              capacity calculator
-            </Link>
+            <u style={{ color: "#0078D4" }}>
+              <Link
+                target="_blank"
+                href="https://cosmos.azure.com/capacitycalculator/"
+                aria-label="capacity calculator of azure cosmos db"
+              >
+                capacity calculator
+              </Link>
+            </u>
             .
           </Text>
 
@@ -249,8 +251,9 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
             step={AutoPilotUtils.autoPilotIncrementStep}
             min={AutoPilotUtils.autoPilotThroughput1K}
+            max={!isSharded ? 10000 : 9000000000000}
             value={throughput.toString()}
-            aria-label="Max request units per second"
+            ariaLabel="Max request units per second"
             required={true}
             errorMessage={throughputError}
           />
@@ -270,9 +273,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         <Stack className="throughputInputSpacing">
           <Text variant="small" aria-label="ruDescription">
             Estimate your required RU/s with&nbsp;
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="capacityLink">
-              capacity calculator
-            </Link>
+            <u style={{ color: "#0078D4" }}>
+              <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="capacityLink">
+                capacity calculator
+              </Link>
+            </u>
             .
           </Text>
 
@@ -295,7 +300,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               min={SharedConstants.CollectionCreation.DefaultCollectionRUs400}
               max={userContext.isTryCosmosDBSubscription ? Constants.TryCosmosExperience.maxRU : Infinity}
               value={throughput.toString()}
-              aria-label="Max request units per second"
+              ariaLabel="Max request units per second"
               required={true}
               errorMessage={throughputError}
             />
