@@ -1,4 +1,4 @@
-import { Link, Stack, TeachingBubble, Text } from "@fluentui/react";
+import { DirectionalHint, Link, Stack, TeachingBubble, Text } from "@fluentui/react";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
@@ -17,6 +17,10 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
   if (userContext.apiType !== "SQL") {
     return <></>;
   }
+  let totalSteps = 8;
+  if (userContext.isTryCosmosDBSubscription) {
+    totalSteps = 9;
+  }
 
   switch (step) {
     case 1:
@@ -33,7 +37,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             },
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 1 of 7"
+          footerContent={"Step 1 of " + totalSteps}
         >
           Start viewing and working with your data by opening Items under Data
         </TeachingBubble>
@@ -55,7 +59,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(1),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 2 of 7"
+          footerContent={"Step 2 of " + totalSteps}
         >
           View item here using the items window. Additionally you can also filter items to be reviewed with the filter
           function
@@ -78,7 +82,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(2),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 3 of 7"
+          footerContent={"Step 3 of " + totalSteps}
         >
           Add new item by copy / pasting JSON; or uploading a JSON
         </TeachingBubble>
@@ -98,7 +102,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(3),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 4 of 7"
+          footerContent={"Step 4 of " + totalSteps}
         >
           Query your data using either the filter function or new query.
         </TeachingBubble>
@@ -118,7 +122,7 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(4),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 5 of 7"
+          footerContent={"Step 5 of " + totalSteps}
         >
           Change throughput provisioned to your container according to your needs
         </TeachingBubble>
@@ -138,12 +142,54 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
             onClick: () => setStep(5),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 6 of 7"
+          footerContent={"Step 6 of " + totalSteps}
         >
           Visualize your data, store queries in an interactive document
         </TeachingBubble>
       );
     case 7:
+      return (
+        <TeachingBubble
+          headline="Launch full screen"
+          target={"#openFullScreenBtn"}
+          hasCloseButton
+          primaryButtonProps={{
+            text: "Next",
+            onClick: () => (userContext.isTryCosmosDBSubscription ? setStep(8) : setStep(9)),
+          }}
+          secondaryButtonProps={{
+            text: "Previous",
+            onClick: () => setStep(6),
+          }}
+          onDismiss={() => onDimissTeachingBubble()}
+          footerContent={"Step 7 of " + totalSteps}
+        >
+          This will open a new tab in your browser to use Cosmos DB Explorer. Using the provided URLs you can share
+          read-write or read-only access with other people.
+        </TeachingBubble>
+      );
+    case 8:
+      return (
+        <TeachingBubble
+          headline="Boost your experience"
+          target={"#freeTierTeachingBubble"}
+          hasCloseButton
+          primaryButtonProps={{
+            text: "Next",
+            onClick: () => setStep(9),
+          }}
+          secondaryButtonProps={{
+            text: "Previous",
+            onClick: () => setStep(7),
+          }}
+          calloutProps={{ directionalHint: DirectionalHint.leftCenter }}
+          onDismiss={() => onDimissTeachingBubble()}
+          footerContent={"Step 8 of " + totalSteps}
+        >
+          Unlock everything Azure Cosmos DB has to offer When you&apos;re ready, upgrade to production.
+        </TeachingBubble>
+      );
+    case 9:
       return (
         <TeachingBubble
           headline="Congratulations!"
@@ -158,10 +204,10 @@ export const SQLQuickstartTutorial: React.FC = (): JSX.Element => {
           }}
           secondaryButtonProps={{
             text: "Previous",
-            onClick: () => setStep(6),
+            onClick: () => (userContext.isTryCosmosDBSubscription ? setStep(8) : setStep(7)),
           }}
           onDismiss={() => onDimissTeachingBubble()}
-          footerContent="Step 7 of 7"
+          footerContent={"Step " + totalSteps + " of " + totalSteps}
         >
           <Stack>
             <Text style={{ color: "white" }}>
