@@ -484,7 +484,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           label: "load more",
           onClick: async () => {
             await database.loadCollections();
-            useDatabases.getState().updateDatabase(this);
+            useDatabases.getState().updateDatabase(database);
           }
         }
         databaseNode.children.push(loadMoreNode)
