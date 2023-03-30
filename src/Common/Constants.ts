@@ -141,7 +141,7 @@ export class Queries {
   public static UnlimitedPageOption: string = "unlimited";
   public static itemsPerPage: number = 100;
   public static unlimitedItemsPerPage: number = 100; // TODO: Figure out appropriate value so it works for accounts with a large number of partitions
-
+  public static containersPerPage: number = 3;
   public static QueryEditorMinHeightRatio: number = 0.1;
   public static QueryEditorMaxHeightRatio: number = 0.4;
   public static readonly DefaultMaxDegreeOfParallelism = 6;

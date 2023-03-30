@@ -3,7 +3,7 @@ import {
   Resource,
   StoredProcedureDefinition,
   TriggerDefinition,
-  UserDefinedFunctionDefinition,
+  UserDefinedFunctionDefinition
 } from "@azure/cosmos";
 import Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
@@ -87,13 +87,13 @@ export interface Database extends TreeNode {
   isDatabaseExpanded: ko.Observable<boolean>;
   isDatabaseShared: ko.Computed<boolean>;
   isSampleDB?: boolean;
-
+  collectionsContinuationToken?: string;
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
 
   expandDatabase(): Promise<void>;
   collapseDatabase(): void;
 
-  loadCollections(): Promise<void>;
+  loadCollections(restart?: boolean): Promise<void>;
   findCollectionWithId(collectionId: string): Collection;
   openAddCollection(database: Database, event: MouseEvent): void;
   onSettingsClick: () => void;

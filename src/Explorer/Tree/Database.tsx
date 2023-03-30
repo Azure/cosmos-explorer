@@ -3,7 +3,7 @@ import React from "react";
 import * as _ from "underscore";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
-import { readCollections } from "../../Common/dataAccess/readCollections";
+import { readCollections, readCollectionsWithPagination } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
@@ -13,6 +13,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
 import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
+import * as StorageUtility from "../../Shared/StorageUtility";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -38,6 +39,7 @@ export default class Database implements ViewModels.Database {
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public junoClient: JunoClient;
   public isSampleDB: boolean;
+  public collectionsContinuationToken?: string;
   private isOfferRead: boolean;
 
   constructor(container: Explorer, data: DataModels.Database) {
@@ -140,7 +142,7 @@ export default class Database implements ViewModels.Database {
     }
 
     await this.loadOffer();
-    await this.loadCollections();
+    await this.loadCollections(true);
     this.isDatabaseExpanded(true);
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "Database node",
@@ -162,9 +164,30 @@ export default class Database implements ViewModels.Database {
     });
   }
 
-  public async loadCollections(): Promise<void> {
+  public async loadCollections(restart: boolean = false) {
     const collectionVMs: Collection[] = [];
-    const collections: DataModels.Collection[] = await readCollections(this.id());
+    let collections: DataModels.Collection[] = [];
+    if (restart) {
+      this.collectionsContinuationToken = undefined;
+    }
+    const containerPaginationEnabled = StorageUtility.LocalStorageUtility.getEntryString(
+      StorageUtility.StorageKey.ContainerPaginationEnabled
+    ) === "true";
+    if (containerPaginationEnabled) {
+      const collectionsWithPagination: DataModels.CollectionsWithPagination = await readCollectionsWithPagination(
+        this.id(),
+        this.collectionsContinuationToken);
+
+      if (collectionsWithPagination.collections?.length == Constants.Queries.containersPerPage) {
+        this.collectionsContinuationToken = collectionsWithPagination.continuationToken;
+      } else {
+        this.collectionsContinuationToken = undefined;
+      }
+      collections = collectionsWithPagination.collections;
+    } else {
+      collections = await readCollections(this.id());
+    }
+
     // TODO Remove
     // This is a hack to make Mongo collections read via ARM have a SQL-ish partitionKey property
     if (userContext.apiType === "Mongo" && userContext.authType === AuthType.AAD) {
@@ -199,7 +222,9 @@ export default class Database implements ViewModels.Database {
 
     //merge collections
     this.addCollectionsToList(collectionVMs);
-    this.deleteCollectionsFromList(deltaCollections.toDelete);
+    if (!containerPaginationEnabled || restart) {
+      this.deleteCollectionsFromList(deltaCollections.toDelete);
+    }
 
     useDatabases.getState().updateDatabase(this);
   }
