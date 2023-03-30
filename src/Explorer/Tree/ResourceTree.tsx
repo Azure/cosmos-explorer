@@ -482,6 +482,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       if (database.collectionsContinuationToken) {
         const loadMoreNode: TreeNode = {
           label: "load more",
+          className: "loadMoreHeader",
           onClick: async () => {
             await database.loadCollections();
             useDatabases.getState().updateDatabase(database);

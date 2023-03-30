@@ -142,7 +142,11 @@ export default class Database implements ViewModels.Database {
     }
 
     await this.loadOffer();
-    await this.loadCollections(true);
+
+    if (this.collections()?.length == 0) {
+      await this.loadCollections(true);
+    }
+
     this.isDatabaseExpanded(true);
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "Database node",
