@@ -196,6 +196,7 @@ export const SettingsPane: FunctionComponent = () => {
               Enable container pagination
               <InfoTooltip>
                 Load {Constants.Queries.containersPerPage.toString()} containers at a time.
+                Currently, containers are not pulled in alphanumeric order.
               </InfoTooltip>
             </div>
             <Checkbox
