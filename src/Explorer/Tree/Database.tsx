@@ -143,7 +143,7 @@ export default class Database implements ViewModels.Database {
 
     await this.loadOffer();
 
-    if (this.collections()?.length == 0) {
+    if (this.collections()?.length === 0) {
       await this.loadCollections(true);
     }
 
