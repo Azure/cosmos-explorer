@@ -164,7 +164,7 @@ export default class Database implements ViewModels.Database {
     });
   }
 
-  public async loadCollections(restart: boolean = false) {
+  public async loadCollections(restart = false) {
     const collectionVMs: Collection[] = [];
     let collections: DataModels.Collection[] = [];
     if (restart) {
@@ -178,7 +178,7 @@ export default class Database implements ViewModels.Database {
         this.id(),
         this.collectionsContinuationToken);
 
-      if (collectionsWithPagination.collections?.length == Constants.Queries.containersPerPage) {
+      if (collectionsWithPagination.collections?.length === Constants.Queries.containersPerPage) {
         this.collectionsContinuationToken = collectionsWithPagination.continuationToken;
       } else {
         this.collectionsContinuationToken = undefined;
