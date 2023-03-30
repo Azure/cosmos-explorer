@@ -79,7 +79,8 @@ export const SettingsPane: FunctionComponent = () => {
 
     if (shouldShowGraphAutoVizOption) {
       logConsoleInfo(
-        `Graph result will be displayed as ${LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
+        `Graph result will be displayed as ${
+          LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
         }`
       );
     }
@@ -195,8 +196,7 @@ export const SettingsPane: FunctionComponent = () => {
             <div className="settingsSectionLabel">
               Enable container pagination
               <InfoTooltip>
-                Load 50 containers at a time.
-                Currently, containers are not pulled in alphanumeric order.
+                Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
               </InfoTooltip>
             </div>
             <Checkbox

@@ -3,7 +3,7 @@ import {
   Resource,
   StoredProcedureDefinition,
   TriggerDefinition,
-  UserDefinedFunctionDefinition
+  UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
 import Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";

@@ -170,13 +170,14 @@ export default class Database implements ViewModels.Database {
     if (restart) {
       this.collectionsContinuationToken = undefined;
     }
-    const containerPaginationEnabled = StorageUtility.LocalStorageUtility.getEntryString(
-      StorageUtility.StorageKey.ContainerPaginationEnabled
-    ) === "true";
+    const containerPaginationEnabled =
+      StorageUtility.LocalStorageUtility.getEntryString(StorageUtility.StorageKey.ContainerPaginationEnabled) ===
+      "true";
     if (containerPaginationEnabled) {
       const collectionsWithPagination: DataModels.CollectionsWithPagination = await readCollectionsWithPagination(
         this.id(),
-        this.collectionsContinuationToken);
+        this.collectionsContinuationToken
+      );
 
       if (collectionsWithPagination.collections?.length === Constants.Queries.containersPerPage) {
         this.collectionsContinuationToken = collectionsWithPagination.continuationToken;

@@ -34,19 +34,23 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
 export async function readCollectionsWithPagination(
   databaseId: string,
-  continuationToken?: string,
+  continuationToken?: string
 ): Promise<DataModels.CollectionsWithPagination> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
-    const sdkResponse = await client().database(databaseId).containers.query(
-      { query: "SELECT * FROM c" },
-      {
-        continuationToken,
-        maxItemCount: Queries.containersPerPage,
-      }).fetchNext();
+    const sdkResponse = await client()
+      .database(databaseId)
+      .containers.query(
+        { query: "SELECT * FROM c" },
+        {
+          continuationToken,
+          maxItemCount: Queries.containersPerPage,
+        }
+      )
+      .fetchNext();
     const collectionsWithPagination: DataModels.CollectionsWithPagination = {
       collections: sdkResponse.resources as DataModels.Collection[],
-      continuationToken: sdkResponse.continuationToken
+      continuationToken: sdkResponse.continuationToken,
     };
     return collectionsWithPagination;
   } catch (error) {

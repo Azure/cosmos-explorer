@@ -485,9 +485,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           onClick: async () => {
             await database.loadCollections();
             useDatabases.getState().updateDatabase(database);
-          }
-        }
-        databaseNode.children.push(loadMoreNode)
+          },
+        };
+        databaseNode.children.push(loadMoreNode);
       }
 
       database.collections.subscribe((collections: ViewModels.Collection[]) => {
