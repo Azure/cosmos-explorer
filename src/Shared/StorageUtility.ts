@@ -4,6 +4,7 @@ import * as SessionStorageUtility from "./SessionStorageUtility";
 export { LocalStorageUtility, SessionStorageUtility };
 export enum StorageKey {
   ActualItemPerPage,
+  ContainerPaginationEnabled,
   CustomItemPerPage,
   DatabaseAccountId,
   EncryptedKeyToken,

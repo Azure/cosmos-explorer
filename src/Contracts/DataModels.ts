@@ -156,6 +156,11 @@ export interface Collection extends Resource {
   requestSchema?: () => void;
 }
 
+export interface CollectionsWithPagination {
+  continuationToken?: string;
+  collections?: Collection[];
+}
+
 export interface Database extends Resource {
   collections?: Collection[];
 }

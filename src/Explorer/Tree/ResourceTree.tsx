@@ -479,6 +479,18 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           databaseNode.children.push(buildCollectionNode(database, collection))
         );
 
+      if (database.collectionsContinuationToken) {
+        const loadMoreNode: TreeNode = {
+          label: "load more",
+          className: "loadMoreHeader",
+          onClick: async () => {
+            await database.loadCollections();
+            useDatabases.getState().updateDatabase(database);
+          },
+        };
+        databaseNode.children.push(loadMoreNode);
+      }
+
       database.collections.subscribe((collections: ViewModels.Collection[]) => {
         collections.forEach((collection: ViewModels.Collection) =>
           databaseNode.children.push(buildCollectionNode(database, collection))
