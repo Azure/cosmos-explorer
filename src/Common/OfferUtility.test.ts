@@ -1,6 +1,6 @@
-import * as OfferUtility from "./OfferUtility";
-import { SDKOfferDefinition, Offer } from "../Contracts/DataModels";
 import { OfferResponse } from "@azure/cosmos";
+import { Offer, SDKOfferDefinition } from "../Contracts/DataModels";
+import * as OfferUtility from "./OfferUtility";
 
 describe("parseSDKOfferResponse", () => {
   it("manual throughput", () => {
@@ -29,6 +29,26 @@ describe("parseSDKOfferResponse", () => {
     };
 
     expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(expectedResult);
+  });
+
+  it("offerContent not defined", () => {
+    const mockOfferDefinition = {
+      id: "test",
+    } as SDKOfferDefinition;
+
+    const mockResponse = {
+      resource: mockOfferDefinition,
+    } as OfferResponse;
+
+    expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(undefined);
+  });
+
+  it("offerDefinition is null", () => {
+    const mockResponse = {
+      resource: undefined,
+    } as OfferResponse;
+
+    expect(OfferUtility.parseSDKOfferResponse(mockResponse)).toEqual(undefined);
   });
 
   it("autoscale throughput", () => {
