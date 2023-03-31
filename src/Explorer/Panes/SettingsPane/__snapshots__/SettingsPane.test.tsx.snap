@@ -106,6 +106,35 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div
           className="settingsSectionLabel"
         >
+          Enable container pagination
+          <InfoTooltip>
+            Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+          </InfoTooltip>
+        </div>
+        <StyledCheckboxBase
+          ariaLabel="Enable container pagination"
+          checked={false}
+          className="padding"
+          onChange={[Function]}
+          styles={
+            Object {
+              "label": Object {
+                "padding": 0,
+              },
+            }
+          }
+        />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
           Enable cross-partition query
           <InfoTooltip>
             Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
@@ -182,6 +211,35 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
   <div
     className="paneMainContent"
   >
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Enable container pagination
+          <InfoTooltip>
+            Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+          </InfoTooltip>
+        </div>
+        <StyledCheckboxBase
+          ariaLabel="Enable container pagination"
+          checked={false}
+          className="padding"
+          onChange={[Function]}
+          styles={
+            Object {
+              "label": Object {
+                "padding": 0,
+              },
+            }
+          }
+        />
+      </div>
+    </div>
     <div
       className="settingsSection"
     >
