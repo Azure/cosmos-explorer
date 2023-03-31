@@ -250,7 +250,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             step={AutoPilotUtils.autoPilotIncrementStep}
             min={AutoPilotUtils.autoPilotThroughput1K}
             value={throughput.toString()}
-            aria-label="Max request units per second"
+            ariaLabel={`${isDatabase ? "Database" : getCollectionName()} max RU/s`}
             required={true}
             errorMessage={throughputError}
           />
