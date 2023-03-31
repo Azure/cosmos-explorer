@@ -984,7 +984,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   private getPartitionKeyPlaceHolder(index?: number): string {
     switch (userContext.apiType) {
       case "Mongo":
-        return "e.g., address.zipCode";
+        return "e.g., categoryId";
       case "Gremlin":
         return "e.g., /address";
       case "SQL":
@@ -1116,7 +1116,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return userContext.apiType === "SQL" ? "/pk" : "pk";
     }
     if (this.props.isQuickstart) {
-      return userContext.apiType === "SQL" ? "/address" : "address";
+      return userContext.apiType === "SQL" ? "/categoryId" : "categoryId";
     }
     return "";
   }

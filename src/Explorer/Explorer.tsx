@@ -577,7 +577,7 @@ export default class Explorer {
     try {
       await Promise.all(
         databasesToLoad.map(async (database: ViewModels.Database) => {
-          await database.loadCollections();
+          await database.loadCollections(true);
           const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
           if (isNewDatabase) {
             database.expandDatabase();
