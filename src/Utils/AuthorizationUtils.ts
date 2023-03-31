@@ -49,7 +49,7 @@ export function getMsalInstance() {
       cacheLocation: "localStorage",
     },
     auth: {
-      authority: `${configContext.AAD_ENDPOINT}common`,
+      authority: `${configContext.AAD_ENDPOINT}organizations`,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
     },
   };
