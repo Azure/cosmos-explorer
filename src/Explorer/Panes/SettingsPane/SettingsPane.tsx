@@ -21,6 +21,11 @@ export const SettingsPane: FunctionComponent = () => {
   const [customItemPerPage, setCustomItemPerPage] = useState<number>(
     LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0
   );
+  const [containerPaginationEnabled, setContainerPaginationEnabled] = useState<boolean>(
+    LocalStorageUtility.hasItem(StorageKey.ContainerPaginationEnabled)
+      ? LocalStorageUtility.getEntryString(StorageKey.ContainerPaginationEnabled) === "true"
+      : false
+  );
   const [crossPartitionQueryEnabled, setCrossPartitionQueryEnabled] = useState<boolean>(
     LocalStorageUtility.hasItem(StorageKey.IsCrossPartitionQueryEnabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
@@ -50,6 +55,7 @@ export const SettingsPane: FunctionComponent = () => {
       isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage
     );
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
+    LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
 
@@ -185,6 +191,25 @@ export const SettingsPane: FunctionComponent = () => {
             </div>
           </div>
         )}
+        <div className="settingsSection">
+          <div className="settingsSectionPart">
+            <div className="settingsSectionLabel">
+              Enable container pagination
+              <InfoTooltip>
+                Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+              </InfoTooltip>
+            </div>
+            <Checkbox
+              styles={{
+                label: { padding: 0 },
+              }}
+              className="padding"
+              ariaLabel="Enable container pagination"
+              checked={containerPaginationEnabled}
+              onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
+            />
+          </div>
+        </div>
         {shouldShowCrossPartitionOption && (
           <div className="settingsSection">
             <div className="settingsSectionPart">
