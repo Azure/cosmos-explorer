@@ -202,6 +202,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
   if (showOpenFullScreen) {
     const label = "Open Full Screen";
     const fullScreenButton: CommandButtonComponentProps = {
+      id: "openFullScreenBtn",
       iconSrc: OpenInTabIcon,
       iconAlt: label,
       onCommandClick: () => {

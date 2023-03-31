@@ -1,3 +1,4 @@
+import { Queries } from "Common/Constants";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -23,6 +24,35 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
     const sdkResponse = await client().database(databaseId).containers.readAll().fetchAll();
     return sdkResponse.resources as DataModels.Collection[];
+  } catch (error) {
+    handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
+    throw error;
+  } finally {
+    clearMessage();
+  }
+}
+
+export async function readCollectionsWithPagination(
+  databaseId: string,
+  continuationToken?: string
+): Promise<DataModels.CollectionsWithPagination> {
+  const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
+  try {
+    const sdkResponse = await client()
+      .database(databaseId)
+      .containers.query(
+        { query: "SELECT * FROM c" },
+        {
+          continuationToken,
+          maxItemCount: Queries.containersPerPage,
+        }
+      )
+      .fetchNext();
+    const collectionsWithPagination: DataModels.CollectionsWithPagination = {
+      collections: sdkResponse.resources as DataModels.Collection[],
+      continuationToken: sdkResponse.continuationToken,
+    };
+    return collectionsWithPagination;
   } catch (error) {
     handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
     throw error;
