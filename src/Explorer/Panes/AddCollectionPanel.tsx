@@ -403,6 +403,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 content={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
               >
                 <Icon
+                  role="button"
                   iconName="Info"
                   className="panelInfoIcon"
                   tabIndex={0}

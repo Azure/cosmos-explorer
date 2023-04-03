@@ -92,6 +92,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
         }
       }}
       className={active ? "active tabList" : "tabList"}
+      style={active ? { fontWeight: "bolder" } : {}}
       title={useObservable(tab?.tabPath || ko.observable(""))}
       aria-selected={active}
       aria-expanded={active}
