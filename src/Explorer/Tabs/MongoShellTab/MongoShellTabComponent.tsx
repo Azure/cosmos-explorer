@@ -167,8 +167,21 @@ export default class MongoShellTabComponent extends Component<
           apiEndpoint: apiEndpoint,
         },
       },
-      configContext.BACKEND_ENDPOINT
+      this.getShellOrigin()
     );
+  }
+
+  private getShellOrigin(): string {
+    if (
+      userContext.features.enableLegacyMongoShellV1 === true ||
+      userContext.features.enableLegacyMongoShellV2 === true ||
+      userContext.features.enableLegacyMongoShellV1Dist === true ||
+      userContext.features.enableLegacyMongoShellV2Dist === true
+    ) {
+      return window.origin;
+    }
+
+    return configContext.BACKEND_ENDPOINT;
   }
 
   //eslint-disable-next-line
