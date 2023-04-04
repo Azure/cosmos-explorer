@@ -413,7 +413,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   className="panelInfoIcon"
                   tabIndex={0}
                   ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
-                  role="button"
+                  
                 />
               </TooltipHost>
             </Stack>
