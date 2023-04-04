@@ -98,7 +98,7 @@ export default class MongoShellTabComponent extends Component<
   }
 
   //eslint-disable-next-line
-  public setContentFocus(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void { }
+  public setContentFocus(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {}
 
   public onTabClick(): void {
     this.props.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
@@ -146,7 +146,7 @@ export default class MongoShellTabComponent extends Component<
       documentEndpoint.substr(
         Constants.MongoDBAccounts.protocol.length + 3,
         documentEndpoint.length -
-        (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
+          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();
