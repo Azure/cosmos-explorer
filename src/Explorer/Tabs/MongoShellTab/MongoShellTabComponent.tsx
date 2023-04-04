@@ -78,11 +78,27 @@ export default class MongoShellTabComponent extends Component<
       baseUrl = "/content/mongoshell/";
     }
 
+    if (userContext.features.enableLegacyMongoShellV1 === true) {
+      return "/mongoshell/index.html";
+    }
+
+    if (userContext.features.enableLegacyMongoShellV1Dist === true) {
+      return "/mongoshell/dist/index.html";
+    }
+
+    if (userContext.features.enableLegacyMongoShellV2 === true) {
+      return "/mongoshell/indexv2.html";
+    }
+
+    if (userContext.features.enableLegacyMongoShellV2Dist === true) {
+      return "/mongoshell/dist/indexv2.html";
+    }
+
     return `${extensionEndpoint}${baseUrl}index.html?resourceId=${resourceId}&accountName=${accountName}&mongoEndpoint=${mongoEndpoint}`;
   }
 
   //eslint-disable-next-line
-  public setContentFocus(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {}
+  public setContentFocus(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void { }
 
   public onTabClick(): void {
     this.props.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
@@ -130,7 +146,7 @@ export default class MongoShellTabComponent extends Component<
       documentEndpoint.substr(
         Constants.MongoDBAccounts.protocol.length + 3,
         documentEndpoint.length -
-          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
+        (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();

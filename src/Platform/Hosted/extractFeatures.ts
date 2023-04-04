@@ -30,6 +30,10 @@ export type Features = {
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
   readonly enableHierarchicalKeys: boolean;
+  readonly enableLegacyMongoShellV1: boolean;
+  readonly enableLegacyMongoShellV1Dist: boolean;
+  readonly enableLegacyMongoShellV2: boolean;
+  readonly enableLegacyMongoShellV2Dist: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -92,6 +96,10 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
     enableHierarchicalKeys: "true" === get("enablehierarchicalkeys"),
+    enableLegacyMongoShellV1: "true" === get("enablelegacymongoshellv1"),
+    enableLegacyMongoShellV1Dist: "true" === get("enablelegacymongoshellv1dist"),
+    enableLegacyMongoShellV2: "true" === get("enablelegacymongoshellv2"),
+    enableLegacyMongoShellV2Dist: "true" === get("enablelegacymongoshellv2dist"),
   };
 }
 
