@@ -150,7 +150,6 @@ export class NotificationConsoleComponent extends React.Component<
                 selectedKey={this.state.selectedFilter}
                 options={NotificationConsoleComponent.FilterOptions}
                 onChange={this.onFilterSelected.bind(this)}
-
               />
               <span className="consoleSplitter" />
               <span

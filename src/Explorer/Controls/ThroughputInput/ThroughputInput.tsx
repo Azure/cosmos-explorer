@@ -186,20 +186,20 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       <Stack horizontal verticalAlign="center">
         <div role="radiogroup">
-        <input
-          id="Autoscale-input"
-          className="throughputInputRadioBtn"
-          aria-label="Autoscale database throughput"
-          aria-required={true}
-          checked={isAutoscaleSelected}
-          type="radio"
-          role="radio"
-          tabIndex={0}
-          onChange={(e) => handleOnChangeMode(e, "Autoscale")}
-        />
-        <label htmlFor="Autoscale-input" className="throughputInputRadioBtnLabel">
-          Autoscale
-        </label>
+          <input
+            id="Autoscale-input"
+            className="throughputInputRadioBtn"
+            aria-label="Autoscale database throughput"
+            aria-required={true}
+            checked={isAutoscaleSelected}
+            type="radio"
+            role="radio"
+            tabIndex={0}
+            onChange={(e) => handleOnChangeMode(e, "Autoscale")}
+          />
+          <label htmlFor="Autoscale-input" className="throughputInputRadioBtnLabel">
+            Autoscale
+          </label>
 
         <input
           id="Manual-input"

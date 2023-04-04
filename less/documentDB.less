@@ -2576,6 +2576,10 @@ a:link {
 .querydropdown.placeholderVisible {
   font-style: italic;
 }
+.querydropdown.placeholderVisible::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #767474;
+  opacity: 1; 
+}
 
 .querydropdown:hover {
   background-color: @AccentLow;
@@ -3087,3 +3091,4 @@ a:link {
   background: white;
   height: 100%;
 }
+

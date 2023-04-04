@@ -18,13 +18,12 @@ export class MiddlePaneComponent extends React.Component<MiddlePaneComponentProp
         <div className="graphTitle">
           <span className="paneTitle">Graph</span>
           <button
-          style={{border:'none',background:'none'}}
+            style={{ border: "none", background: "none" }}
             className="graphExpandCollapseBtn pull-right"
             onClick={this.props.toggleExpandGraph}
             role="button"
             aria-expanded={this.props.isTabsContentExpanded}
             aria-name="View graph in full screen"
- 
           >
             <img
               src={this.props.isTabsContentExpanded ? CollapseArrowIcon : ExpandIcon}
