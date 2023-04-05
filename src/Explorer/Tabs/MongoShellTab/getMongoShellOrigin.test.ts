@@ -4,7 +4,7 @@ import { updateUserContext } from "../../../UserContext";
 import { getMongoShellOrigin } from "./getMongoShellOrigin";
 
 describe("getMongoShellOrigin", () => {
-  (window as any).origin = "window_origin";
+  (window as { origin: string }).origin = "window_origin";
 
   beforeEach(() => {
     updateUserContext({

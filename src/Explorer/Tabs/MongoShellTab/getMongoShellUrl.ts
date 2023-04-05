@@ -24,8 +24,6 @@ export function getMongoShellUrl(): string {
     return `/mongoshell/dist/indexv2.html?${queryString}`;
   }
 
-  const runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
-
   const extensionEndpoint: string = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
 
   if (userContext.portalEnv === "localhost") {
