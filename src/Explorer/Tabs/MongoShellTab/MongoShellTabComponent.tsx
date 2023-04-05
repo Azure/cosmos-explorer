@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as Constants from "../../../Common/Constants";
-import { configContext, Platform } from "../../../ConfigContext";
+import { configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -9,6 +9,8 @@ import { isInvalidParentFrameOrigin, isReadyMessage } from "../../../Utils/Messa
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import TabsBase from "../TabsBase";
+import { getMongoShellOrigin } from "./getMongoShellOrigin";
+import { getMongoShellUrl } from "./getMongoShellUrl";
 
 //eslint-disable-next-line
 class MessageType {
@@ -47,7 +49,6 @@ export default class MongoShellTabComponent extends Component<
   IMongoShellTabComponentProps,
   IMongoShellTabComponentStates
 > {
-  private _runtimeEndpoint: string;
   private _logTraces: Map<string, number>;
 
   constructor(props: IMongoShellTabComponentProps) {
@@ -55,7 +56,7 @@ export default class MongoShellTabComponent extends Component<
     this._logTraces = new Map();
 
     this.state = {
-      url: this.getURL(),
+      url: getMongoShellUrl(),
     };
 
     props.onMongoShellTabAccessor({
@@ -63,38 +64,6 @@ export default class MongoShellTabComponent extends Component<
     });
 
     window.addEventListener("message", this.handleMessage.bind(this), false);
-  }
-
-  public getURL(): string {
-    const { databaseAccount: account } = userContext;
-    const resourceId = account?.id;
-    const accountName = account?.name;
-    const mongoEndpoint = account?.properties?.mongoEndpoint || account?.properties?.documentEndpoint;
-
-    this._runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
-    const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
-    let baseUrl = "/content/mongoshell/dist/";
-    if (userContext.portalEnv === "localhost") {
-      baseUrl = "/content/mongoshell/";
-    }
-
-    if (userContext.features.enableLegacyMongoShellV1 === true) {
-      return "/mongoshell/index.html";
-    }
-
-    if (userContext.features.enableLegacyMongoShellV1Dist === true) {
-      return "/mongoshell/dist/index.html";
-    }
-
-    if (userContext.features.enableLegacyMongoShellV2 === true) {
-      return "/mongoshell/indexv2.html";
-    }
-
-    if (userContext.features.enableLegacyMongoShellV2Dist === true) {
-      return "/mongoshell/dist/indexv2.html";
-    }
-
-    return `${extensionEndpoint}${baseUrl}index.html?resourceId=${resourceId}&accountName=${accountName}&mongoEndpoint=${mongoEndpoint}`;
   }
 
   //eslint-disable-next-line
@@ -152,6 +121,7 @@ export default class MongoShellTabComponent extends Component<
     const collectionId = this.props.collection.id();
     const apiEndpoint = configContext.BACKEND_ENDPOINT;
     const encryptedAuthToken: string = userContext.accessToken;
+    const targetOrigin = getMongoShellOrigin();
 
     shellIframe.contentWindow.postMessage(
       {
@@ -167,7 +137,7 @@ export default class MongoShellTabComponent extends Component<
           apiEndpoint: apiEndpoint,
         },
       },
-      configContext.BACKEND_ENDPOINT
+      targetOrigin
     );
   }
 
