@@ -12,25 +12,28 @@ export function getMongoShellUrl(): string {
     return `/mongoshell/index.html?${queryString}`;
   }
 
-  if (userContext.features.enableLegacyMongoShellV1Dist === true) {
-    return `/mongoshell/dist/index.html?${queryString}`;
+  if (userContext.features.enableLegacyMongoShellV1Debug === true) {
+    return `/mongoshell/debug/index.html?${queryString}`;
   }
 
   if (userContext.features.enableLegacyMongoShellV2 === true) {
     return `/mongoshell/indexv2.html?${queryString}`;
   }
 
-  if (userContext.features.enableLegacyMongoShellV2Dist === true) {
-    return `/mongoshell/dist/indexv2.html?${queryString}`;
+  if (userContext.features.enableLegacyMongoShellV2Debug === true) {
+    return `/mongoshell/debug/indexv2.html?${queryString}`;
   }
-
-  const extensionEndpoint: string = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
 
   if (userContext.portalEnv === "localhost") {
-    return `${extensionEndpoint}/content/mongoshell/index.html?${queryString}`;
+    return `/mongoshell/indexv2.html?${queryString}`;
   }
 
-  return `${extensionEndpoint}/content/mongoshell/dist/index.html?${queryString}`;
+  if (userContext.features.loadLegacyMongoShellFromBE === true) {
+    const extensionEndpoint: string = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
+    return `${extensionEndpoint}/content/mongoshell/debug/index.html?${queryString}`;
+  }
+
+  return `/mongoshell/indexv2.html?${queryString}`;
 }
 
 export function getExtensionEndpoint(platform: string, backendEndpoint: string): string {

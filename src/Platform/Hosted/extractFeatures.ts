@@ -31,9 +31,10 @@ export type Features = {
   readonly enableThroughputCap: boolean;
   readonly enableHierarchicalKeys: boolean;
   readonly enableLegacyMongoShellV1: boolean;
-  readonly enableLegacyMongoShellV1Dist: boolean;
+  readonly enableLegacyMongoShellV1Debug: boolean;
   readonly enableLegacyMongoShellV2: boolean;
-  readonly enableLegacyMongoShellV2Dist: boolean;
+  readonly enableLegacyMongoShellV2Debug: boolean;
+  readonly loadLegacyMongoShellFromBE: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -97,9 +98,10 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableThroughputCap: "true" === get("enablethroughputcap"),
     enableHierarchicalKeys: "true" === get("enablehierarchicalkeys"),
     enableLegacyMongoShellV1: "true" === get("enablelegacymongoshellv1"),
-    enableLegacyMongoShellV1Dist: "true" === get("enablelegacymongoshellv1dist"),
+    enableLegacyMongoShellV1Debug: "true" === get("enablelegacymongoshellv1debug"),
     enableLegacyMongoShellV2: "true" === get("enablelegacymongoshellv2"),
-    enableLegacyMongoShellV2Dist: "true" === get("enablelegacymongoshellv2dist"),
+    enableLegacyMongoShellV2Debug: "true" === get("enablelegacymongoshellv2debug"),
+    loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
   };
 }
 

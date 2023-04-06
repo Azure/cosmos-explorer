@@ -1,5 +1,5 @@
 import { extractFeatures } from "Platform/Hosted/extractFeatures";
-import { Platform, resetConfigContext, updateConfigContext } from "../../../ConfigContext";
+import { Platform, configContext, resetConfigContext, updateConfigContext } from "../../../ConfigContext";
 import { updateUserContext, userContext } from "../../../UserContext";
 import { getExtensionEndpoint, getMongoShellUrl } from "./getMongoShellUrl";
 
@@ -36,8 +36,9 @@ describe("getMongoShellUrl", () => {
         new URLSearchParams({
           "feature.enableLegacyMongoShellV1": "false",
           "feature.enableLegacyMongoShellV2": "false",
-          "feature.enableLegacyMongoShellV1Dist": "false",
-          "feature.enableLegacyMongoShellV2Dist": "false",
+          "feature.enableLegacyMongoShellV1Debug": "false",
+          "feature.enableLegacyMongoShellV2Debug": "false",
+          "feature.loadLegacyMongoShellFromBE": "false",
         })
       ),
       portalEnv: "prod",
@@ -46,53 +47,16 @@ describe("getMongoShellUrl", () => {
     queryString = `resourceId=${userContext.databaseAccount.id}&accountName=${userContext.databaseAccount.name}&mongoEndpoint=${userContext.databaseAccount.properties.documentEndpoint}`;
   });
 
-  it("should return {mongoBackendEndpoint}/content/mongoshell/dist/index.html by default ", () => {
-    expect(getMongoShellUrl()).toBe(`${mongoBackendEndpoint}/content/mongoshell/dist/index.html?${queryString}`);
+  it("should return /mongoshell/indexv2.html by default ", () => {
+    expect(getMongoShellUrl()).toBe(`/mongoshell/indexv2.html?${queryString}`);
   });
 
-  it("should return {mongoBackendEndpoint}/content/mongoshell/index.html when portalEnv==localhost ", () => {
+  it("should return /mongoshell/indexv2.html when portalEnv==localhost ", () => {
     updateUserContext({
       portalEnv: "localhost",
     });
 
-    expect(getMongoShellUrl()).toBe(`${mongoBackendEndpoint}/content/mongoshell/index.html?${queryString}`);
-  });
-
-  it("should return {mongoBackendEndpoint}/content/mongoshell/dist/index.html when configContext.platform !== Platform.Hosted", () => {
-    updateConfigContext({
-      platform: Platform.Portal,
-    });
-
-    expect(getMongoShellUrl()).toBe(`${mongoBackendEndpoint}/content/mongoshell/dist/index.html?${queryString}`);
-  });
-
-  it("should return /content/mongoshell/index.html when configContext.BACKEND_ENDPOINT === '' and configContext.platform === Platform.Hosted", () => {
-    resetConfigContext();
-    updateConfigContext({
-      platform: Platform.Hosted,
-    });
-
-    expect(getMongoShellUrl()).toBe(`/content/mongoshell/dist/index.html?${queryString}`);
-  });
-
-  it("should return /content/mongoshell/index.html when configContext.BACKEND_ENDPOINT === '' and configContext.platform !== Platform.Hosted", () => {
-    resetConfigContext();
-
-    updateConfigContext({
-      platform: Platform.Portal,
-    });
-
-    expect(getMongoShellUrl()).toBe(`/content/mongoshell/dist/index.html?${queryString}`);
-  });
-
-  it("should return /content/mongoshell/index.html when configContext.BACKEND_ENDPOINT !== '' and configContext.platform !== Platform.Hosted", () => {
-    resetConfigContext();
-    updateConfigContext({
-      platform: Platform.Portal,
-      BACKEND_ENDPOINT: mongoBackendEndpoint,
-    });
-
-    expect(getMongoShellUrl()).toBe(`${mongoBackendEndpoint}/content/mongoshell/dist/index.html?${queryString}`);
+    expect(getMongoShellUrl()).toBe(`/mongoshell/indexv2.html?${queryString}`);
   });
 
   it("should return /mongoshell/index.html when enableLegacyMongoShellV1===true", () => {
@@ -119,28 +83,91 @@ describe("getMongoShellUrl", () => {
     expect(getMongoShellUrl()).toBe(`/mongoshell/indexv2.html?${queryString}`);
   });
 
-  it("should return /mongoshell/index.html when enableLegacyMongoShellV1Dist===true", () => {
+  it("should return /mongoshell/index.html when enableLegacyMongoShellV1Debug===true", () => {
     updateUserContext({
       features: extractFeatures(
         new URLSearchParams({
-          "feature.enableLegacyMongoShellV1Dist": "true",
+          "feature.enableLegacyMongoShellV1Debug": "true",
         })
       ),
     });
 
-    expect(getMongoShellUrl()).toBe(`/mongoshell/dist/index.html?${queryString}`);
+    expect(getMongoShellUrl()).toBe(`/mongoshell/debug/index.html?${queryString}`);
   });
 
-  it("should return /mongoshell/index.html when enableLegacyMongoShellV2Dist===true", () => {
+  it("should return /mongoshell/index.html when enableLegacyMongoShellV2Debug===true", () => {
     updateUserContext({
       features: extractFeatures(
         new URLSearchParams({
-          "feature.enableLegacyMongoShellV2Dist": "true",
+          "feature.enableLegacyMongoShellV2Debug": "true",
         })
       ),
     });
 
-    expect(getMongoShellUrl()).toBe(`/mongoshell/dist/indexv2.html?${queryString}`);
+    expect(getMongoShellUrl()).toBe(`/mongoshell/debug/indexv2.html?${queryString}`);
+  });
+
+  describe("loadLegacyMongoShellFromBE===true", () => {
+    beforeEach(() => {
+      resetConfigContext();
+      updateConfigContext({
+        BACKEND_ENDPOINT: mongoBackendEndpoint,
+        platform: Platform.Hosted,
+      });
+
+      updateUserContext({
+        features: extractFeatures(
+          new URLSearchParams({
+            "feature.loadLegacyMongoShellFromBE": "true",
+          })
+        ),
+      });
+    });
+
+    it("should return /mongoshell/index.html", () => {
+      const endpoint = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
+      expect(getMongoShellUrl()).toBe(`${endpoint}/content/mongoshell/debug/index.html?${queryString}`);
+    });
+
+    it("configContext.platform !== Platform.Hosted, should return /mongoshell/indexv2.html", () => {
+      updateConfigContext({
+        platform: Platform.Portal,
+      });
+
+      const endpoint = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
+      expect(getMongoShellUrl()).toBe(`${endpoint}/content/mongoshell/debug/index.html?${queryString}`);
+    });
+
+    it("configContext.BACKEND_ENDPOINT !== '' and configContext.platform !== Platform.Hosted, should return /mongoshell/indexv2.html", () => {
+      resetConfigContext();
+      updateConfigContext({
+        platform: Platform.Portal,
+        BACKEND_ENDPOINT: mongoBackendEndpoint,
+      });
+
+      const endpoint = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
+      expect(getMongoShellUrl()).toBe(`${endpoint}/content/mongoshell/debug/index.html?${queryString}`);
+    });
+
+    it("configContext.BACKEND_ENDPOINT === '' and configContext.platform === Platform.Hosted, should return /mongoshell/indexv2.html ", () => {
+      resetConfigContext();
+      updateConfigContext({
+        platform: Platform.Hosted,
+      });
+
+      const endpoint = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
+      expect(getMongoShellUrl()).toBe(`${endpoint}/content/mongoshell/debug/index.html?${queryString}`);
+    });
+
+    it("configContext.BACKEND_ENDPOINT === '' and configContext.platform !== Platform.Hosted, should return /mongoshell/indexv2.html", () => {
+      resetConfigContext();
+      updateConfigContext({
+        platform: Platform.Portal,
+      });
+
+      const endpoint = getExtensionEndpoint(configContext.platform, configContext.BACKEND_ENDPOINT);
+      expect(getMongoShellUrl()).toBe(`${endpoint}/content/mongoshell/debug/index.html?${queryString}`);
+    });
   });
 });
 
