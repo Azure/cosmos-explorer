@@ -12,18 +12,19 @@ describe("getMongoShellOrigin", () => {
         new URLSearchParams({
           "feature.enableLegacyMongoShellV1": "false",
           "feature.enableLegacyMongoShellV2": "false",
-          "feature.enableLegacyMongoShellV1Dist": "false",
-          "feature.enableLegacyMongoShellV2Dist": "false",
+          "feature.enableLegacyMongoShellV1Debug": "false",
+          "feature.enableLegacyMongoShellV2Debug": "false",
+          "feature.loadLegacyMongoShellFromBE": "false",
         })
       ),
     });
   });
 
-  it("should return BACKEND_ENDPOINT by default", () => {
-    expect(getMongoShellOrigin()).toBe(configContext.BACKEND_ENDPOINT);
+  it("should return  by default", () => {
+    expect(getMongoShellOrigin()).toBe(window.origin);
   });
 
-  it("should return /mongoshell/index.html when enableLegacyMongoShellV1", () => {
+  it("should return window.origin when enableLegacyMongoShellV1", () => {
     updateUserContext({
       features: extractFeatures(
         new URLSearchParams({
@@ -35,7 +36,7 @@ describe("getMongoShellOrigin", () => {
     expect(getMongoShellOrigin()).toBe(window.origin);
   });
 
-  it("should return /mongoshell/index.html when enableLegacyMongoShellV2===true", () => {
+  it("should return window.origin when enableLegacyMongoShellV2===true", () => {
     updateUserContext({
       features: extractFeatures(
         new URLSearchParams({
@@ -47,11 +48,11 @@ describe("getMongoShellOrigin", () => {
     expect(getMongoShellOrigin()).toBe(window.origin);
   });
 
-  it("should return /mongoshell/index.html when enableLegacyMongoShellV1Dist===true", () => {
+  it("should return window.origin when enableLegacyMongoShellV1Debug===true", () => {
     updateUserContext({
       features: extractFeatures(
         new URLSearchParams({
-          "feature.enableLegacyMongoShellV1Dist": "true",
+          "feature.enableLegacyMongoShellV1Debug": "true",
         })
       ),
     });
@@ -59,15 +60,27 @@ describe("getMongoShellOrigin", () => {
     expect(getMongoShellOrigin()).toBe(window.origin);
   });
 
-  it("should return /mongoshell/index.html when enableLegacyMongoShellV2Dist===true", () => {
+  it("should return window.origin when enableLegacyMongoShellV2Debug===true", () => {
     updateUserContext({
       features: extractFeatures(
         new URLSearchParams({
-          "feature.enableLegacyMongoShellV2Dist": "true",
+          "feature.enableLegacyMongoShellV2Debug": "true",
         })
       ),
     });
 
     expect(getMongoShellOrigin()).toBe(window.origin);
+  });
+
+  it("should return BACKEND_ENDPOINT when loadLegacyMongoShellFromBE===true", () => {
+    updateUserContext({
+      features: extractFeatures(
+        new URLSearchParams({
+          "feature.loadLegacyMongoShellFromBE": "true",
+        })
+      ),
+    });
+
+    expect(getMongoShellOrigin()).toBe(configContext.BACKEND_ENDPOINT);
   });
 });
