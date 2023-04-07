@@ -51,11 +51,13 @@ export function createStaticCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   buttons.push(newCollectionBtn);
+  if (userContext.apiType !== "Tables") {
+    const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
-  const addSynapseLink = createOpenSynapseLinkDialogButton(container);
-  if (addSynapseLink) {
-    buttons.push(createDivider());
-    buttons.push(addSynapseLink);
+    if (addSynapseLink) {
+      buttons.push(createDivider());
+      buttons.push(addSynapseLink);
+    }
   }
 
   if (userContext.apiType !== "Tables") {
