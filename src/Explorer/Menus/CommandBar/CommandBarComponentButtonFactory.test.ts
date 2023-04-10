@@ -54,6 +54,22 @@ describe("CommandBarComponentButtonFactory tests", () => {
       );
       expect(enableAzureSynapseLinkBtn).toBeUndefined();
     });
+
+    it("Button should not be visible for Cassandra API", () => {
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableCassandra" }],
+          },
+        } as DatabaseAccount,
+      });
+
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const enableAzureSynapseLinkBtn = buttons.find(
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+      );
+      expect(enableAzureSynapseLinkBtn).toBeUndefined();
+    });
   });
 
   describe("Enable notebook button", () => {

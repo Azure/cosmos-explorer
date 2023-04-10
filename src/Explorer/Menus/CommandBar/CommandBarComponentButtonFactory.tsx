@@ -51,7 +51,7 @@ export function createStaticCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   buttons.push(newCollectionBtn);
-  if (userContext.apiType !== "Tables") {
+  if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
     const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
     if (addSynapseLink) {
