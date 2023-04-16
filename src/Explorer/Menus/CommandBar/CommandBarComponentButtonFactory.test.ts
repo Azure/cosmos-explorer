@@ -25,7 +25,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       updateUserContext({
         databaseAccount: {
           properties: {
-            capabilities: [{ name: "EnableTable" }],
+            capabilities: [{ name: "EnableMongo" }],
           },
         } as DatabaseAccount,
       });
@@ -37,6 +37,38 @@ describe("CommandBarComponentButtonFactory tests", () => {
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
       );
       expect(enableAzureSynapseLinkBtn).toBeDefined();
+    });
+
+    it("Button should not be visible for Tables API", () => {
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableTable" }],
+          },
+        } as DatabaseAccount,
+      });
+
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const enableAzureSynapseLinkBtn = buttons.find(
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+      );
+      expect(enableAzureSynapseLinkBtn).toBeUndefined();
+    });
+
+    it("Button should not be visible for Cassandra API", () => {
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableCassandra" }],
+          },
+        } as DatabaseAccount,
+      });
+
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const enableAzureSynapseLinkBtn = buttons.find(
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+      );
+      expect(enableAzureSynapseLinkBtn).toBeUndefined();
     });
   });
 
