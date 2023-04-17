@@ -107,11 +107,11 @@ describe("New Vertex Component", () => {
   it("should call onTypeChange method on type dropdown change", () => {
     const DOWN_ARROW = { keyCode: 40 };
     const onTypeChange = jest.fn();
-    const dropdown = screen.getByRole("combobox");
+    const dropdown = screen.getByRole("listbox");
     dropdown.onclick = onTypeChange();
     dropdown.onkeydown = onTypeChange();
 
-    fireEvent.keyDown(screen.getByRole("combobox"), DOWN_ARROW);
+    fireEvent.keyDown(screen.getByRole("listbox"), DOWN_ARROW);
     fireEvent.click(screen.getByText(/number/));
     expect(onTypeChange).toHaveBeenCalled();
   });

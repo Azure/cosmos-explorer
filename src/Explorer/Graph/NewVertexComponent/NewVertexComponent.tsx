@@ -165,7 +165,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                 </div>
                 <div>
                   <Dropdown
-                    role="combobox"
+                    role="listbox"
                     placeholder="Select an option"
                     defaultSelectedKey={data.values[0].type}
                     style={{ width: 100 }}
