@@ -729,6 +729,7 @@ export class D3ForceGraph implements GraphRenderer {
     var iconGroup = newNodes
       .append("g")
       .attr("class", "iconContainer")
+      .attr("role", "group")
       .attr("tabindex", 0)
       .attr("aria-label", (d: D3Node) => {
         return this.retrieveNodeCaption(d);
