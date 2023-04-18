@@ -142,6 +142,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
                 {...imageProps}
                 src={EditIcon}
                 alt="editEntity"
+                id="editEntity"
                 onClick={onEditEntity}
                 tabIndex={0}
                 onKeyPress={handleKeyPress}
