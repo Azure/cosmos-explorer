@@ -63,7 +63,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
                 onClick={toggleLeftPaneExpanded}
                 onKeyPress={onKeyPressToggleLeftPaneExpanded}
                 tabIndex={0}
-                aria-label={getApiShortDisplayName() + `Collapse Tree`}
+                aria-label="Collapse Tree"
                 title="Collapse Tree"
                 ref={focusButton}
               >
