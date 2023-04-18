@@ -134,7 +134,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isExecuting: false,
       isThroughputCapExceeded: false,
       teachingBubbleStep: 0,
-    };    
+    };
   }
 
   componentDidMount(): void {
@@ -407,7 +407,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   iconName="Info"
                   className="panelInfoIcon"
                   tabIndex={0}
-                  ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}           
+                  ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}      
                 />
               </TooltipHost>
             </Stack>
