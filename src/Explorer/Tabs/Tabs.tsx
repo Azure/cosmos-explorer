@@ -102,20 +102,20 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
       ref={focusTab}
     >
       <span className="tabNavContentContainer">
-          <div className="tab_Content">
-            <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
-              {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-              {useObservable(tab?.isExecuting || ko.observable(false)) && (
-                <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
-              )}
-            </span>
-            <span className="tabNavText">{useObservable(tab?.tabTitle || ko.observable(ReactTabKind[tabKind]))}</span>
-            {tabKind !== ReactTabKind.Home && (
-              <span className="tabIconSection">
-                <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
-              </span>
+        <div className="tab_Content">
+          <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
+            {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
+            {useObservable(tab?.isExecuting || ko.observable(false)) && (
+              <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
-          </div>
+          </span>
+          <span className="tabNavText">{useObservable(tab?.tabTitle || ko.observable(ReactTabKind[tabKind]))}</span>
+          {tabKind !== ReactTabKind.Home && (
+            <span className="tabIconSection">
+              <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
+            </span>
+          )}
+        </div>
       </span>
     </li>
   );
