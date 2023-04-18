@@ -135,7 +135,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onSelectDate={onSelectDate}
           onEntityTimeValueChange={onEntityTimeValueChange}
         />
-        {!isEntityValueDisable && (          
+        {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
             <div tabIndex={0}>
               <Image
@@ -148,7 +148,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
                 onKeyPress={handleKeyPress}
               />
             </div>
-          </TooltipHost>          
+          </TooltipHost> 
         )}
         {isDeleteOptionVisible && userContext.apiType !== "Cassandra" && (
           <TooltipHost content="Delete property" id="deleteTooltip">
