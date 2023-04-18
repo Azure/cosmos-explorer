@@ -201,20 +201,20 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             Autoscale
           </label>
 
-         <input
-           id="Manual-input"
-           className="throughputInputRadioBtn"
-           aria-label="Manual database throughput"
-           checked={!isAutoscaleSelected}
-           type="radio"
-           aria-required={true}
-           role="radio"
-           tabIndex={0}
-           onChange={(e) => handleOnChangeMode(e, "Manual")}
-         />
-         <label className="throughputInputRadioBtnLabel" htmlFor="Manual-input">
-           Manual
-         </label>
+          <input
+            id="Manual-input"
+            className="throughputInputRadioBtn"
+            aria-label="Manual database throughput"
+            checked={!isAutoscaleSelected}
+            type="radio"
+            aria-required={true}
+            role="radio"
+            tabIndex={0}
+            onChange={(e) => handleOnChangeMode(e, "Manual")}
+          />
+          <label className="throughputInputRadioBtnLabel" htmlFor="Manual-input">
+            Manual
+          </label>
         </div>
       </Stack>
 
