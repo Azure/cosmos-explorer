@@ -10,7 +10,7 @@ import {
   IButtonStyles,
   IconButton,
   IContextualMenuItemProps,
-  IContextualMenuProps
+  IContextualMenuProps,
 } from "@fluentui/react";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
