@@ -13,7 +13,7 @@ import {
   Stack,
   TeachingBubble,
   Text,
-  TooltipHost
+  TooltipHost,
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
@@ -100,7 +100,6 @@ export interface AddCollectionPanelState {
   isExecuting: boolean;
   isThroughputCapExceeded: boolean;
   teachingBubbleStep: number;
-  isParentTooltipVisible:boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -109,7 +108,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   private collectionThroughput: number;
   private isCollectionAutoscale: boolean;
   private isCostAcknowledged: boolean;
-  
 
   constructor(props: AddCollectionPanelProps) {
     super(props);
@@ -136,16 +134,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isExecuting: false,
       isThroughputCapExceeded: false,
       teachingBubbleStep: 0,
-      isParentTooltipVisible: false,
     };
-    
   }
 
   componentDidMount(): void {
     if (this.state.teachingBubbleStep === 0 && this.props.isQuickstart) {
       this.setState({ teachingBubbleStep: 1 });
     }
-
   }
 
   render(): JSX.Element {
@@ -413,7 +408,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   className="panelInfoIcon"
                   tabIndex={0}
                   ariaLabel={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
-                  
                 />
               </TooltipHost>
             </Stack>
