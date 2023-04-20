@@ -15,13 +15,13 @@ import {
 import {
   ChangeFeedPolicyState,
   GeospatialConfigType,
-  getSanitizedInputValue,
   IsComponentDirtyResult,
-  isDirty,
   TtlOff,
   TtlOn,
   TtlOnNoDefault,
   TtlType,
+  getSanitizedInputValue,
+  isDirty,
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -55,6 +55,18 @@ export interface SubSettingsComponentProps {
   onSubSettingsSaveableChange: (isSubSettingsSaveable: boolean) => void;
   onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
 }
+const stylingforvisuallyhiddenspan = {
+  position: "absolute",
+
+  width: "1px",
+  height: "1px",
+  margin: "-1px",
+  border: 0,
+  padding: 0,
+
+  clip: "rect(0 0 0 0)",
+  overflow: "hidden",
+};
 
 export class SubSettingsComponent extends React.Component<SubSettingsComponentProps> {
   private shouldCheckComponentIsDirty = true;
@@ -197,17 +209,26 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           </MessageBar>
         )}
         {this.props.timeToLive === TtlType.On && (
-          <TextField
-            id="timeToLiveSeconds"
-            styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
-            type="number"
-            required
-            min={1}
-            max={Int32.Max}
-            value={this.props.timeToLiveSeconds?.toString()}
-            onChange={this.onTimeToLiveSecondsChange}
-            suffix="second(s)"
-          />
+          <div>
+            <span id="timetoliveon" style={stylingforvisuallyhiddenspan}>
+              Time to live on
+            </span>
+            <TextField
+              id="timeToLiveSeconds"
+              styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
+              type="number"
+              required
+              min={1}
+              max={Int32.Max}
+              value={this.props.timeToLiveSeconds?.toString()}
+              onChange={this.onTimeToLiveSecondsChange}
+              suffix="second(s)"
+              aria-labelledby="timetoliveon secondssuffixforscreenreader"
+            />
+            <span id="secondssuffixforscreenreader" style={stylingforvisuallyhiddenspan}>
+              Second(s)
+            </span>
+          </div>
         )}
       </Stack>
     );
