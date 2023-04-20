@@ -55,7 +55,7 @@ export interface SubSettingsComponentProps {
   onSubSettingsSaveableChange: (isSubSettingsSaveable: boolean) => void;
   onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
 }
-const stylingforvisuallyhiddenspan = {
+const stylingforvisuallyhiddenspan: React.CSSProperties = {
   position: "absolute",
 
   width: "1px",
