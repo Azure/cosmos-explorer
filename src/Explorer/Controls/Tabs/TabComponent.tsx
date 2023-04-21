@@ -1,5 +1,4 @@
 import * as React from "react";
-import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
 import "./TabComponent.less";
 
 export interface TabContent {
@@ -24,6 +23,7 @@ interface TabComponentProps {
  * We assume there's at least one tab
  */
 export class TabComponent extends React.Component<TabComponentProps> {
+  tabRefs: any = {};
   public constructor(props: TabComponentProps) {
     super(props);
 
@@ -33,11 +33,41 @@ export class TabComponent extends React.Component<TabComponentProps> {
       throw new Error(msg);
     }
   }
+  state = {
+    activeTabIndex: this.props.currentTabIndex,
+  };
 
   private setActiveTab(index: number): void {
     this.setState({ activeTabIndex: index });
     this.props.onTabIndexChange(index);
   }
+  private setIndex = (index: number) => {
+    const tab = this.tabRefs[index];
+    if (tab) {
+      tab.focus();
+      this.setState({ activeTabIndex: index });
+    }
+  };
+  private handlekeypress = (event: React.KeyboardEvent<HTMLSpanElement>): void => {
+    const { tabs, onTabIndexChange } = this.props;
+    const { activeTabIndex } = this.state;
+    const count = tabs.length;
+
+    const prevTab = () => {
+      this.setIndex((activeTabIndex - 1 + count) % count);
+      onTabIndexChange((activeTabIndex - 1 + count) % count);
+    };
+    const nextTab = () => {
+      this.setIndex((activeTabIndex + 1) % count);
+      onTabIndexChange((activeTabIndex + 1) % count);
+    };
+
+    if (event.key === "ArrowLeft") {
+      prevTab();
+    } else if (event.key === "ArrowRight") {
+      nextTab();
+    }
+  };
 
   private renderTabTitles(): JSX.Element[] {
     return this.props.tabs.map((tab: Tab, index: number) => {
@@ -47,26 +77,32 @@ export class TabComponent extends React.Component<TabComponentProps> {
 
       let className = "toggleSwitch";
       let ariaselected;
+      let tabindex;
       if (index === this.props.currentTabIndex) {
         className += " selectedToggle";
         ariaselected = true;
+        tabindex = 0;
       } else {
         className += " unselectedToggle";
         ariaselected = false;
+        tabindex = -1;
       }
 
       return (
         <div className="tab" key={index}>
-          <AccessibleElement
-            as="span"
+          <span
             className={className}
             role="tab"
-            onActivated={() => this.setActiveTab(index)}
+            onClick={() => this.setActiveTab(index)}
+            onKeyDown={(event: React.KeyboardEvent<HTMLSpanElement>) => this.handlekeypress(event)}
+            onFocus={() => this.setState({ activeTabIndex: index })}
             aria-label={`Select tab: ${tab.title}`}
             aria-selected={ariaselected}
+            tabIndex={tabindex}
+            ref={(element) => (this.tabRefs[index] = element)}
           >
             {tab.title}
-          </AccessibleElement>
+          </span>
         </div>
       );
     });
