@@ -18,12 +18,15 @@ interface TabComponentProps {
   onTabIndexChange: (newIndex: number) => void;
   hideHeader: boolean;
 }
+interface TabRefs {
+  [key: string]: HTMLElement;
+}
 
 /**
  * We assume there's at least one tab
  */
 export class TabComponent extends React.Component<TabComponentProps> {
-  tabRefs: any = {};
+  private tabRefs: TabRefs = {};
   public constructor(props: TabComponentProps) {
     super(props);
 
