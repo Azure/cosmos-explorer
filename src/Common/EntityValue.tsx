@@ -3,6 +3,7 @@ import React, { FunctionComponent } from "react";
 
 export interface TableEntityProps {
   entityValueLabel?: string;
+  entityValueAriaLabel?: string;
   entityValuePlaceholder: string;
   entityValue: string | Date;
   isEntityTypeDate: boolean;
@@ -16,6 +17,7 @@ export interface TableEntityProps {
 
 export const EntityValue: FunctionComponent<TableEntityProps> = ({
   entityValueLabel,
+  entityValueAriaLabel,
   entityValuePlaceholder,
   entityValue,
   isEntityTypeDate,
@@ -61,6 +63,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
       placeholder={entityValuePlaceholder}
       value={typeof entityValue === "string" ? entityValue : ""}
       onChange={onEntityValueChange}
+      ariaLabel={entityValueAriaLabel}
     />
   );
 };

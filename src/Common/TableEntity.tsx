@@ -16,12 +16,13 @@ import { CassandraType, TableType } from "../Explorer/Tables/Constants";
 import { userContext } from "../UserContext";
 import { EntityValue } from "./EntityValue";
 
-const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
-
 export interface TableEntityProps {
+  indexofelement?: number;
   entityTypeLabel?: string;
   entityPropertyLabel?: string;
   entityValueLabel?: string;
+  entityValueAriaLabel?: string;
+  entityPropertyAriaLabel?: string;
   isDeleteOptionVisible: boolean;
   entityProperty: string;
   entityPropertyPlaceHolder: string;
@@ -43,6 +44,7 @@ export interface TableEntityProps {
 }
 
 export const TableEntity: FunctionComponent<TableEntityProps> = ({
+  indexofelement,
   entityTypeLabel,
   entityPropertyLabel,
   isDeleteOptionVisible,
@@ -50,6 +52,9 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
   selectedKey,
   entityPropertyPlaceHolder,
   entityValueLabel,
+  entityValueAriaLabel,
+  entityPropertyAriaLabel,
+
   entityValuePlaceholder,
   entityValue,
   options,
@@ -100,6 +105,22 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
     }
     return "string";
   };
+  const dropdownandlabelStyles: Partial<IDropdownStyles> = {
+    dropdown: { width: 100 },
+    label: {
+      position: "absolute",
+
+      width: "1px",
+      height: "1px",
+      margin: "-1px",
+      border: 0,
+      padding: 0,
+
+      clip: "rect(0 0 0 0)",
+      overflow: "hidden",
+    },
+  };
+  const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 
   return (
     <>
@@ -113,6 +134,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           value={entityProperty}
           onChange={onEntityPropertyChange}
           required
+          ariaLabel={entityPropertyAriaLabel}
         />
         <Dropdown
           label={entityTypeLabel && entityTypeLabel}
@@ -121,7 +143,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           options={options}
           disabled={isPropertyTypeDisable}
           id="entityTypeId"
-          styles={dropdownStyles}
+          styles={indexofelement === 0 ? dropdownStyles : dropdownandlabelStyles}
         />
         <EntityValue
           entityValueLabel={entityValueLabel}
@@ -134,6 +156,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onEntityValueChange={onEntityValueChange}
           onSelectDate={onSelectDate}
           onEntityTimeValueChange={onEntityTimeValueChange}
+          entityValueAriaLabel={entityValueAriaLabel}
         />
         {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
