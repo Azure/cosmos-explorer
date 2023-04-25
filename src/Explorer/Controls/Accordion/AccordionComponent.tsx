@@ -73,7 +73,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
       <img
         className="expandCollapseIcon"
         src={this.state.isExpanded ? TriangleDownIcon : TriangleRightIcon}
-        alt="Hide"
+        alt={this.state.isExpanded ? `${this.props.title} hide` : `${this.props.title} expand`}
         tabIndex={0}
         role="button"
       />
