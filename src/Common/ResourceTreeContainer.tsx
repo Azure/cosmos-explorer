@@ -51,7 +51,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
                 role="button"
                 data-bind="click: onRefreshResourcesClick, clickBubble: false, event: { keypress: onRefreshDatabasesKeyPress }"
                 tabIndex={0}
-                aria-label="Refresh tree"
+                aria-label={getApiShortDisplayName() + `Refresh tree`}
                 title="Refresh tree"
               >
                 <img className="refreshcol" src={refreshImg} alt="Refresh Tree" />
@@ -63,7 +63,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
                 onClick={toggleLeftPaneExpanded}
                 onKeyPress={onKeyPressToggleLeftPaneExpanded}
                 tabIndex={0}
-                aria-label="Collapse Tree"
+                aria-label={getApiShortDisplayName() + `Collapse Tree`}
                 title="Collapse Tree"
                 ref={focusButton}
               >
