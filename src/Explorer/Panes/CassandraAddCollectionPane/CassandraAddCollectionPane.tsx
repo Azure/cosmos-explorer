@@ -2,13 +2,13 @@ import { Checkbox, Dropdown, IDropdownOption, Link, Stack, Text, TextField } fro
 import * as Constants from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
-import { useSidePanel } from "hooks/useSidePanel";
-import React, { FunctionComponent, useState } from "react";
 import * as SharedConstants from "Shared/Constants";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
+import { useSidePanel } from "hooks/useSidePanel";
+import React, { FunctionComponent, useState } from "react";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
@@ -86,7 +86,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
         : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${newKeySpaceThroughput};`
       : `${createKeyspaceQueryPrefix};`;
     let tableQuery: string;
-    const createTableQueryPrefix = `CREATE TABLE ${keyspaceId}.${tableId.trim()} ${userTableQuery}`;
+    const createTableQueryPrefix = `CREATE TABLE \"${keyspaceId}\".\"${tableId.trim()}\" ${userTableQuery}`;
 
     if (tableThroughput) {
       if (isTableAutoscale) {
