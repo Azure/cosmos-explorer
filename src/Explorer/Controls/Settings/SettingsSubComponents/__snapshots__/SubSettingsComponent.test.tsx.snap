@@ -59,68 +59,31 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         }
       }
     />
-    <div>
-      <span
-        id="timetoliveon"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Time to live on
-      </span>
-      <StyledTextFieldBase
-        aria-labelledby="timetoliveon secondssuffixforscreenreader"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
-      <span
-        id="secondssuffixforscreenreader"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Second(s)
-      </span>
-    </div>
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
@@ -320,68 +283,31 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         }
       }
     />
-    <div>
-      <span
-        id="timetoliveon"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Time to live on
-      </span>
-      <StyledTextFieldBase
-        aria-labelledby="timetoliveon secondssuffixforscreenreader"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
-      <span
-        id="secondssuffixforscreenreader"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Second(s)
-      </span>
-    </div>
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
@@ -634,68 +560,31 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
         }
       }
     />
-    <div>
-      <span
-        id="timetoliveon"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Time to live on
-      </span>
-      <StyledTextFieldBase
-        aria-labelledby="timetoliveon secondssuffixforscreenreader"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
-      <span
-        id="secondssuffixforscreenreader"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Second(s)
-      </span>
-    </div>
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
@@ -910,68 +799,31 @@ exports[`SubSettingsComponent renders 1`] = `
         }
       }
     />
-    <div>
-      <span
-        id="timetoliveon"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Time to live on
-      </span>
-      <StyledTextFieldBase
-        aria-labelledby="timetoliveon secondssuffixforscreenreader"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
-      <span
-        id="secondssuffixforscreenreader"
-        style={
-          Object {
-            "border": 0,
-            "clip": "rect(0 0 0 0)",
-            "height": "1px",
-            "margin": "-1px",
-            "overflow": "hidden",
-            "padding": 0,
-            "position": "absolute",
-            "width": "1px",
-          }
-        }
-      >
-        Second(s)
-      </span>
-    </div>
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
