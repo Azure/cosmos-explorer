@@ -197,17 +197,17 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           </MessageBar>
         )}
         {this.props.timeToLive === TtlType.On && (
-            <TextField
-              id="timeToLiveSeconds"
-              styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
-              type="number"
-              required
-              min={1}
-              max={Int32.Max}
-              value={this.props.timeToLiveSeconds?.toString()}
-              onChange={this.onTimeToLiveSecondsChange}
-              suffix="second(s)"
-            />
+          <TextField
+            id="timeToLiveSeconds"
+            styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
+            type="number"
+            required
+            min={1}
+            max={Int32.Max}
+            value={this.props.timeToLiveSeconds?.toString()}
+            onChange={this.onTimeToLiveSecondsChange}
+            suffix="second(s)"
+          />
         )}
       </Stack>
     );
