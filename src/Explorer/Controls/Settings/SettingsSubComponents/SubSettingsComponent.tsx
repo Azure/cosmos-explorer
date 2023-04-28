@@ -55,7 +55,7 @@ export interface SubSettingsComponentProps {
   onSubSettingsSaveableChange: (isSubSettingsSaveable: boolean) => void;
   onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
 }
-const stylingforvisuallyhiddenspan: React.CSSProperties = {
+const stylingforvisuallyhiddenspan = {
   position: "absolute",
 
   width: "1px",
@@ -210,9 +210,6 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         )}
         {this.props.timeToLive === TtlType.On && (
           <div>
-            <span id="timetoliveon" style={stylingforvisuallyhiddenspan}>
-              Time to live on
-            </span>
             <TextField
               id="timeToLiveSeconds"
               styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
@@ -223,11 +220,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
               value={this.props.timeToLiveSeconds?.toString()}
               onChange={this.onTimeToLiveSecondsChange}
               suffix="second(s)"
-              aria-labelledby="timetoliveon secondssuffixforscreenreader"
+              ariaLabel={`Time to live on ${this.props.timeToLiveSeconds} seconds`}
             />
-            <span id="secondssuffixforscreenreader" style={stylingforvisuallyhiddenspan}>
-              Second(s)
-            </span>
           </div>
         )}
       </Stack>
