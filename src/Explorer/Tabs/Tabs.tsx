@@ -7,10 +7,10 @@ import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
+import { userContext } from "UserContext";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
-import { userContext } from "UserContext";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
 import { useObservable } from "../../hooks/useObservable";
@@ -102,22 +102,20 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
       ref={focusTab}
     >
       <span className="tabNavContentContainer">
-        <a data-toggle="tab" href={"#" + tabId} tabIndex={-1}>
-          <div className="tab_Content">
-            <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
-              {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-              {useObservable(tab?.isExecuting || ko.observable(false)) && (
-                <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
-              )}
-            </span>
-            <span className="tabNavText">{useObservable(tab?.tabTitle || ko.observable(ReactTabKind[tabKind]))}</span>
-            {tabKind !== ReactTabKind.Home && (
-              <span className="tabIconSection">
-                <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
-              </span>
+        <div className="tab_Content">
+          <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
+            {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
+            {useObservable(tab?.isExecuting || ko.observable(false)) && (
+              <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
-          </div>
-        </a>
+          </span>
+          <span className="tabNavText">{useObservable(tab?.tabTitle || ko.observable(ReactTabKind[tabKind]))}</span>
+          {tabKind !== ReactTabKind.Home && (
+            <span className="tabIconSection">
+              <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
+            </span>
+          )}
+        </div>
       </span>
     </li>
   );
