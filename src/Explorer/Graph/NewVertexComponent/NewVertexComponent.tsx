@@ -145,6 +145,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                     type="text"
                     id="propertyKeyNewVertexPane"
                     componentRef={input}
+                    aria-required="true"
                     placeholder="Key"
                     autoComplete="off"
                     aria-label={`Enter value for propery ${index + 1}`}
@@ -152,6 +153,8 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => onKeyChange(event, index)}
                   />
                 </div>
+                <span className="mandatoryStar">*&nbsp;</span>
+
                 <div className="valueCol">
                   <TextField
                     className="edgeInput"
