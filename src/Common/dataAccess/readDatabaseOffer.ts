@@ -68,6 +68,8 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
         ? parseInt(resource.minimumThroughput)
         : resource.minimumThroughput;
     const autoscaleSettings = resource.autoscaleSettings;
+    const instantMaximumThroughput: number = resource.instantMaximumThroughput;
+    const maximumThroughput: number = resource.maximumThroughput;
 
     if (autoscaleSettings) {
       return {
@@ -76,6 +78,8 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
         manualThroughput: undefined,
         minimumThroughput,
         offerReplacePending: resource.offerReplacePending === "true",
+        instantMaximumThroughput,
+        maximumThroughput,
       };
     }
 
@@ -85,6 +89,8 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
       manualThroughput: resource.throughput,
       minimumThroughput,
       offerReplacePending: resource.offerReplacePending === "true",
+      instantMaximumThroughput,
+      maximumThroughput,
     };
   }
 

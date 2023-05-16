@@ -1,7 +1,7 @@
 import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { configContext, Platform } from "../../../../ConfigContext";
+import { Platform, configContext } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as SharedConstants from "../../../../Shared/Constants";
@@ -191,6 +191,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       getThroughputWarningMessage={this.getThroughputWarningMessage}
       usageSizeInKB={this.props.collection?.usageSizeInKB()}
       throughputError={this.props.throughputError}
+      // CTODO: revert these next two lines when the RP is deployed
+      instantMaximumThroughput={5000}//{this.offer?.instantMaximumThroughput}
+      maximumThroughput={1000000}//{this.offer?.maximumThroughput}
     />
   );
 

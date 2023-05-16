@@ -96,6 +96,8 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         ? parseInt(resource.minimumThroughput)
         : resource.minimumThroughput;
     const autoscaleSettings = resource.autoscaleSettings;
+    const instantMaximumThroughput: number = resource.instantMaximumThroughput;
+    const maximumThroughput: number = resource.maximumThroughput;
 
     if (autoscaleSettings) {
       return {
@@ -104,6 +106,8 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         manualThroughput: undefined,
         minimumThroughput,
         offerReplacePending: resource.offerReplacePending === "true",
+        instantMaximumThroughput,
+        maximumThroughput,
       };
     }
 
@@ -113,6 +117,8 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
       manualThroughput: resource.throughput,
       minimumThroughput,
       offerReplacePending: resource.offerReplacePending === "true",
+      instantMaximumThroughput,
+      maximumThroughput,
     };
   }
 

@@ -3,13 +3,17 @@ import {
   ChoiceGroup,
   FontIcon,
   IChoiceGroupOption,
-  IColumn,
+  IProgressIndicatorStyles,
+  ISeparatorStyles,
   Label,
   Link,
   MessageBar,
+  MessageBarType,
+  ProgressIndicator,
+  Separator,
   Stack,
   Text,
-  TextField,
+  TextField
 } from "@fluentui/react";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
@@ -23,24 +27,22 @@ import { autoPilotThroughput1K } from "../../../../../Utils/AutoPilotUtils";
 import { calculateEstimateNumber, usageInGB } from "../../../../../Utils/PricingUtils";
 import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
-  AutoscaleEstimatedSpendingDisplayProps,
+  PriceBreakdown,
   checkBoxAndInputStackProps,
-  getAutoPilotV3SpendElement,
   getChoiceGroupStyles,
   getEstimatedSpendingElement,
   getRuPriceBreakdown,
   getTextFieldStyles,
   getToolTipContainer,
-  ManualEstimatedSpendingDisplayProps,
+  getUpdateThroughputBeyondInstantLimitMessage,
+  getUpdateThroughputBeyondSupportLimitMessage,
   manualToAutoscaleDisclaimerElement,
   messageBarStyles,
   noLeftPaddingCheckBoxStyle,
-  PriceBreakdown,
+  relaxedSpacingStackProps,
   saveThroughputWarningMessage,
-  titleAndInputStackProps,
-  transparentDetailsHeaderStyle,
 } from "../../SettingsRenderUtils";
-import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
+import { IsComponentDirtyResult, getSanitizedInputValue, isDirty } from "../../SettingsUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
@@ -76,6 +78,8 @@ export interface ThroughputInputAutoPilotV3Props {
   getThroughputWarningMessage: () => JSX.Element;
   usageSizeInKB: number;
   throughputError?: string;
+  instantMaximumThroughput: number;
+  maximumThroughput: number;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -215,85 +219,36 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     newThroughput?: number
   ): JSX.Element => {
     const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
-    const estimatedSpendingColumns: IColumn[] = [
-      {
-        key: "costType",
-        name: "",
-        fieldName: "costType",
-        minWidth: 100,
-        maxWidth: 200,
-        isResizable: true,
-        styles: transparentDetailsHeaderStyle,
-      },
-      {
-        key: "minPerMonth",
-        name: "Min Per Month",
-        fieldName: "minPerMonth",
-        minWidth: 100,
-        maxWidth: 200,
-        isResizable: true,
-        styles: transparentDetailsHeaderStyle,
-      },
-      {
-        key: "maxPerMonth",
-        name: "Max Per Month",
-        fieldName: "maxPerMonth",
-        minWidth: 100,
-        maxWidth: 200,
-        isResizable: true,
-        styles: transparentDetailsHeaderStyle,
-      },
-    ];
-    const estimatedSpendingItems: AutoscaleEstimatedSpendingDisplayProps[] = [
-      {
-        costType: <Text>Current Cost</Text>,
-        minPerMonth: (
-          <Text>
-            {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice / 10)}
-          </Text>
-        ),
-        maxPerMonth: (
-          <Text>
-            {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}
-          </Text>
-        ),
-      },
-    ];
 
-    if (newThroughput) {
-      const newPrices: PriceBreakdown = getRuPriceBreakdown(
-        newThroughput,
-        serverId,
-        numberOfRegions,
-        isMultimaster,
-        true
-      );
-      estimatedSpendingItems.unshift({
-        costType: (
-          <Text>
-            <b>Updated Cost</b>
-          </Text>
-        ),
-        minPerMonth: (
-          <Text>
-            <b>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice / 10)}
-            </b>
-          </Text>
-        ),
-        maxPerMonth: (
-          <Text>
-            <b>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}
-            </b>
-          </Text>
-        ),
-      });
+    let newThroughputCostElement = (): JSX.Element => {
+      const newPrices: PriceBreakdown = getRuPriceBreakdown(newThroughput, serverId, numberOfRegions, isMultimaster, true);
+      return (
+        <div>
+          <Text style={{ fontWeight: 600 }}>Updated cost per month</Text>
+          <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
+            <Text style={{ width: "50%" }}>{newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice / 10)} min</Text>
+            <Text style={{ width: "50%" }}>{newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)} max</Text>
+          </Stack>
+        </div>
+      )
+    }
+
+    let costElement = (): JSX.Element => {
+      const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
+      return (
+        <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
+          {newThroughput && newThroughputCostElement()}
+          <Text style={{ fontWeight: 600 }}>Current cost per month</Text>
+          <Stack horizontal style={{ marginTop: 5 }}>
+            <Text style={{ width: "50%" }}>{prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice / 10)} min</Text>
+            <Text style={{ width: "50%" }}>{prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}  max</Text>
+          </Stack>
+        </Stack>
+      )
     }
 
     return getEstimatedSpendingElement(
-      estimatedSpendingColumns,
-      estimatedSpendingItems,
+      costElement(),
       newThroughput ?? throughput,
       numberOfRegions,
       prices,
@@ -309,121 +264,42 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     newThroughput?: number
   ): JSX.Element => {
     const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, false);
-    const estimatedSpendingColumns: IColumn[] = [
-      {
-        key: "costType",
-        name: "",
-        fieldName: "costType",
-        minWidth: 100,
-        maxWidth: 200,
-        isResizable: true,
-        styles: transparentDetailsHeaderStyle,
-      },
-      {
-        key: "hourly",
-        name: "Hourly",
-        fieldName: "hourly",
-        minWidth: 100,
-        maxWidth: 200,
-        isResizable: true,
-        styles: transparentDetailsHeaderStyle,
-      },
-      {
-        key: "daily",
-        name: "Daily",
-        fieldName: "daily",
-        minWidth: 100,
-        maxWidth: 200,
-        isResizable: true,
-        styles: transparentDetailsHeaderStyle,
-      },
-      {
-        key: "monthly",
-        name: "Monthly",
-        fieldName: "monthly",
-        minWidth: 100,
-        maxWidth: 200,
-        isResizable: true,
-        styles: transparentDetailsHeaderStyle,
-      },
-    ];
-    const estimatedSpendingItems: ManualEstimatedSpendingDisplayProps[] = [
-      {
-        costType: <Text>Current Cost</Text>,
-        hourly: (
-          <Text>
-            {prices.currencySign} {calculateEstimateNumber(prices.hourlyPrice)}
-          </Text>
-        ),
-        daily: (
-          <Text>
-            {prices.currencySign} {calculateEstimateNumber(prices.dailyPrice)}
-          </Text>
-        ),
-        monthly: (
-          <Text>
-            {prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}
-          </Text>
-        ),
-      },
-    ];
 
-    if (newThroughput) {
-      const newPrices: PriceBreakdown = getRuPriceBreakdown(
-        newThroughput,
-        serverId,
-        numberOfRegions,
-        isMultimaster,
-        false
-      );
-      estimatedSpendingItems.unshift({
-        costType: (
-          <Text>
-            <b>Updated Cost</b>
-          </Text>
-        ),
-        hourly: (
-          <Text>
-            <b>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.hourlyPrice)}
-            </b>
-          </Text>
-        ),
-        daily: (
-          <Text>
-            <b>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.dailyPrice)}
-            </b>
-          </Text>
-        ),
-        monthly: (
-          <Text>
-            <b>
-              {newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}
-            </b>
-          </Text>
-        ),
-      });
+    let newThroughputCostElement = (): JSX.Element => {
+      const newPrices: PriceBreakdown = getRuPriceBreakdown(newThroughput, serverId, numberOfRegions, isMultimaster, true);
+      return (
+        <div>
+          <Text style={{ fontWeight: 600 }}>Updated cost per month</Text>
+          <Stack horizontal style={{ marginTop: 5, marginBottom: 10 }}>
+            <Text style={{ width: "33%" }}>{newPrices.currencySign} {calculateEstimateNumber(newPrices.hourlyPrice)}/hr</Text>
+            <Text style={{ width: "33%" }}>{newPrices.currencySign} {calculateEstimateNumber(newPrices.dailyPrice)}/day</Text>
+            <Text style={{ width: "33%" }}>{newPrices.currencySign} {calculateEstimateNumber(newPrices.monthlyPrice)}/mo</Text>
+          </Stack>
+        </div>
+      )
+    }
+
+    let costElement = (): JSX.Element => {
+      const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
+      return (
+        <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
+          {newThroughput && newThroughputCostElement()}
+          <Text style={{ fontWeight: 600 }}>Current cost per month</Text>
+          <Stack horizontal style={{ marginTop: 5 }}>
+            <Text style={{ width: "33%" }}>{prices.currencySign} {calculateEstimateNumber(prices.hourlyPrice)}/hr</Text>
+            <Text style={{ width: "33%" }}>{prices.currencySign} {calculateEstimateNumber(prices.dailyPrice)}/day</Text>
+            <Text style={{ width: "33%" }}>{prices.currencySign} {calculateEstimateNumber(prices.monthlyPrice)}/mo</Text>
+          </Stack>
+        </Stack>
+      )
     }
 
     return getEstimatedSpendingElement(
-      estimatedSpendingColumns,
-      estimatedSpendingItems,
+      costElement(),
       newThroughput ?? throughput,
       numberOfRegions,
       prices,
       false
-    );
-  };
-
-  private getAutoPilotUsageCost = (): JSX.Element => {
-    if (!this.props.maxAutoPilotThroughput) {
-      return <></>;
-    }
-    return getAutoPilotV3SpendElement(
-      this.props.maxAutoPilotThroughput,
-      false /* isDatabaseThroughput */,
-      !this.props.isEmulator ? this.getRequestUnitsUsageCost() : <></>
     );
   };
 
@@ -511,7 +387,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           onChange={this.onChoiceGroupChange}
           required={this.props.showAsMandatory}
           ariaLabelledBy={labelId}
-          styles={getChoiceGroupStyles(this.props.wasAutopilotOriginallySet, this.props.isAutoPilotSelected)}
+          styles={getChoiceGroupStyles(this.props.wasAutopilotOriginallySet, this.props.isAutoPilotSelected, true)}
         />
       </Stack>
     );
@@ -520,97 +396,257 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private onSpendAckChecked = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void =>
     this.setState({ spendAckChecked: checked });
 
+  private thoughputScaleStyles: Partial<ISeparatorStyles> = {
+    root: [
+      {
+        selectors: {
+          "::before": {
+            backgroundColor: "rgb(200, 200, 200)",
+            height: "3px",
+            marginTop: "-1px",
+          },
+        }
+      }
+    ]
+  };
+
+  private throughputProgressStyles: Partial<IProgressIndicatorStyles> = {
+    progressBar: [
+      {
+        backgroundColor: "rgb(255 216 109)",//backgroundColor: "rgb(0, 120, 212)" or "rgb(255 216 109)"
+      }
+    ]
+  };
+
+  private getRuThermometerPercentValue = (): number => {
+    let percentValue: number;
+    if (this.getCurrentRuRange() == "instant") {
+      let percentOfInstantThreshold: number = this.currentThroughputValue() / this.props.instantMaximumThroughput;
+      percentValue = percentOfInstantThreshold * .34;
+    }
+    else {
+      percentValue = this.currentThroughputValue() / this.props.maximumThroughput
+    }
+    // get whether new ru is under or over instant threshold
+    //  if under, calculate the percentage between minimum and instant threshold
+    //    then calculate that number as a percentage between 0 and 100, or 0 and 34?
+    //  if over, get whether it is over maximum
+    //    if maximum, style the bar orange and set value to 1
+    //    if in support range, style the bar to yellow and calculate the percentage between instant
+    //      threshold and maximum then calculate that number as a percentage between 0 and 100, or 34 and 100?
+    return percentValue;
+  }
+
+  private getCurrentRuRange = (): "instant" | "delayed" | "requireSupport" => {
+    if (this.currentThroughputValue() <= this.props.instantMaximumThroughput) {
+      return "instant";
+    }
+    if (this.currentThroughputValue() > this.props.maximumThroughput) {
+      return "requireSupport";
+    }
+
+    return "delayed";
+  };
+
+  private getRUThermometer = (): JSX.Element => (
+    <Stack>
+      <Stack horizontal>
+        <Stack.Item style={{ width: "34%" }}>
+          <span>{this.props.minimum}</span>
+        </Stack.Item>
+        <Stack.Item style={{ width: "66%" }}>
+          <span>{this.props.instantMaximumThroughput}</span>
+          <span style={{ float: "right" }}>{this.props.maximumThroughput}</span>
+        </Stack.Item>
+      </Stack>
+      <ProgressIndicator barHeight={20} percentComplete={.2} styles={this.throughputProgressStyles} />
+      <Stack horizontal>
+        <Stack.Item style={{ width: "34%", paddingRight: "5px" }}>
+          <Separator styles={this.thoughputScaleStyles}>Instant</Separator>
+        </Stack.Item>
+        <Stack.Item style={{ width: "66%", paddingLeft: "5px" }}>
+          <Separator styles={this.thoughputScaleStyles}>4-6 hrs</Separator>
+        </Stack.Item>
+      </Stack>
+    </Stack>
+  );
+
+  private currentThroughputValue = (): number => {
+    return (
+      this.props.isAutoPilotSelected
+        ? this.props.maxAutoPilotThroughput
+        : (this.overrideWithAutoPilotSettings()
+          ? this.props.maxAutoPilotThroughputBaseline
+          : this.props.throughput)
+    );
+  };
+
+  private showThroughputWarning = (): boolean => {
+    return this.currentThroughputValue() > this.props.instantMaximumThroughput;
+  }
+
+  private getThroughputWarning = (): JSX.Element => {
+    console.log(this.currentThroughputValue() + " :: " + this.props.maximumThroughput)
+    const requiresSupport: boolean = this.currentThroughputValue() > this.props.maximumThroughput;
+    return (
+      <MessageBar messageBarType={requiresSupport ? MessageBarType.severeWarning : MessageBarType.warning}>
+        {requiresSupport ? (
+          getUpdateThroughputBeyondSupportLimitMessage(this.props.instantMaximumThroughput, this.props.maximumThroughput)
+        ) : (
+          getUpdateThroughputBeyondInstantLimitMessage(this.props.instantMaximumThroughput)
+        )}
+      </MessageBar>
+    );
+  };
+
   private renderAutoPilotInput = (): JSX.Element => (
-    <>
-      <Text>
-        Provision maximum RU/s required by this resource. Estimate your required RU/s with
-        <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
-          {` capacity calculator`}
-        </Link>
-      </Text>
-      <TextField
-        label="Max RU/s"
-        required
-        type="number"
-        id="autopilotInput"
-        key="auto pilot throughput input"
-        styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
-        disabled={this.overrideWithProvisionedThroughputSettings()}
-        step={AutoPilotUtils.autoPilotIncrementStep}
-        value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
-        onChange={this.onAutoPilotThroughputChange}
-        min={autoPilotThroughput1K}
-        errorMessage={this.props.throughputError}
-      />
-      {!this.overrideWithProvisionedThroughputSettings() && this.getAutoPilotUsageCost()}
-      {this.minRUperGBSurvey()}
-      {this.props.spendAckVisible && (
-        <Checkbox
-          id="spendAckCheckBox"
-          styles={noLeftPaddingCheckBoxStyle}
-          label={this.props.spendAckText}
-          checked={this.state.spendAckChecked}
-          onChange={this.onSpendAckChecked}
-        />
-      )}
-      {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
-    </>
+    <Stack horizontal>
+      <Stack.Item style={{ width: "70%", maxWidth: "700px" }}>
+        <Stack {...relaxedSpacingStackProps} style={{ paddingRight: "50px" }}>
+          <Stack.Item>
+            <TextField
+              label="Maximum RU/s required by this resource"
+              required
+              type="number"
+              id="autopilotInput"
+              key="auto pilot throughput input"
+              styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
+              disabled={this.overrideWithProvisionedThroughputSettings()}
+              step={AutoPilotUtils.autoPilotIncrementStep}
+              value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
+              onChange={this.onAutoPilotThroughputChange}
+              min={autoPilotThroughput1K}
+              errorMessage={this.props.throughputError}
+            />
+          </Stack.Item>
+          <Stack.Item>
+            {this.getRUThermometer()}
+          </Stack.Item>
+          <Stack.Item>
+            {this.showThroughputWarning() && this.getThroughputWarning()}
+          </Stack.Item>
+          <Stack.Item>
+            {/* CTODO: determine whether the component is for db vs container. Use appropriate name based on type and API. */}
+            <Text>
+              Based on usage, your container throughput will scale from{" "}
+              <b>
+                {AutoPilotUtils.getMinRUsBasedOnUserInput(this.props.maxAutoPilotThroughput)} RU/s (10% of max RU/s) -{" "}
+                {this.props.maxAutoPilotThroughput} RU/s
+              </b>
+              <br />
+            </Text>
+          </Stack.Item>
+          {!this.overrideWithProvisionedThroughputSettings() &&
+            <Stack.Item>
+              <Text>
+                Estimate your required RU/s with
+                <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
+                  {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />
+                </Link>
+              </Text>
+            </Stack.Item>}
+          <Stack.Item>
+            {this.minRUperGBSurvey()}
+          </Stack.Item>
+          <Stack.Item>
+            {this.props.spendAckVisible && (
+              <Checkbox
+                id="spendAckCheckBox"
+                styles={noLeftPaddingCheckBoxStyle}
+                label={this.props.spendAckText}
+                checked={this.state.spendAckChecked}
+                onChange={this.onSpendAckChecked}
+              />
+            )}
+          </Stack.Item>
+          <Stack.Item>
+            {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
+          </Stack.Item>
+        </Stack>
+      </Stack.Item>
+      <Stack.Item style={{ width: "30%", maxWidth: "300px" }}>
+        {!this.props.isEmulator ? this.getRequestUnitsUsageCost() : <></>}
+      </Stack.Item>
+    </Stack>
   );
 
   private renderThroughputInput = (): JSX.Element => (
-    <Stack {...titleAndInputStackProps}>
-      <Text>
-        Estimate your required throughput with
-        <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
-          {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />
-        </Link>
-      </Text>
-      <TextField
-        required
-        type="number"
-        id="throughputInput"
-        key="provisioned throughput input"
-        styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
-        disabled={this.overrideWithAutoPilotSettings()}
-        step={this.step}
-        value={
-          this.overrideWithAutoPilotSettings()
-            ? this.props.maxAutoPilotThroughputBaseline?.toString()
-            : this.props.throughput?.toString()
-        }
-        onChange={this.onThroughputChange}
-        min={this.props.minimum}
-        errorMessage={this.props.throughputError}
-      />
-      {this.state.exceedFreeTierThroughput && (
-        <MessageBar
-          messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
-          styles={messageBarStyles}
-        >
-          {`Billing will apply if you provision more than ${SharedConstants.FreeTierLimits.RU} RU/s of manual throughput, or if the resource scales beyond ${SharedConstants.FreeTierLimits.RU} RU/s with autoscale.`}
-        </MessageBar>
-      )}
-      {this.props.getThroughputWarningMessage() && (
-        <MessageBar
-          messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-          styles={messageBarStyles}
-        >
-          {this.props.getThroughputWarningMessage()}
-        </MessageBar>
-      )}
-      {!this.props.isEmulator && this.getRequestUnitsUsageCost()}
-      {this.minRUperGBSurvey()}
-      {this.props.spendAckVisible && (
-        <Checkbox
-          id="spendAckCheckBox"
-          styles={noLeftPaddingCheckBoxStyle}
-          label={this.props.spendAckText}
-          checked={this.state.spendAckChecked}
-          onChange={this.onSpendAckChecked}
-        />
-      )}
-      <br />
-      {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
+    <Stack horizontal>
+      <Stack.Item style={{ width: "70%", maxWidth: "700px" }}>
+        <Stack {...relaxedSpacingStackProps} style={{ paddingRight: "50px" }}>
+          <Stack.Item>
+            <TextField
+              required
+              type="number"
+              id="throughputInput"
+              key="provisioned throughput input"
+              styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
+              disabled={this.overrideWithAutoPilotSettings()}
+              step={this.step}
+              value={
+                this.overrideWithAutoPilotSettings()
+                  ? this.props.maxAutoPilotThroughputBaseline?.toString()
+                  : this.props.throughput?.toString()
+              }
+              onChange={this.onThroughputChange}
+              min={this.props.minimum}
+              errorMessage={this.props.throughputError}
+            />
+          </Stack.Item>
+          <Stack.Item>
+            {this.getRUThermometer()}
+          </Stack.Item>
+          <Stack.Item>
+            {this.showThroughputWarning() && this.getThroughputWarning()}
+          </Stack.Item>
+          {this.state.exceedFreeTierThroughput && (
+            <Stack.Item>
+              <MessageBar
+                messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+                styles={messageBarStyles}
+              >
+                {`Billing will apply if you provision more than ${SharedConstants.FreeTierLimits.RU} RU/s of manual throughput, or if the resource scales beyond ${SharedConstants.FreeTierLimits.RU} RU/s with autoscale.`}
+              </MessageBar>
+            </Stack.Item>
+          )}
+          {/* {this.props.getThroughputWarningMessage() && (
+          <MessageBar
+            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+            styles={messageBarStyles}
+          >
+            {this.props.getThroughputWarningMessage()}
+          </MessageBar>
+        )} */}
+          <Stack.Item>
+            <Text>
+              Estimate your required throughput with
+              <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
+                {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />
+              </Link>
+            </Text>
+          </Stack.Item>
+          <Stack.Item>
+            {this.minRUperGBSurvey()}
+          </Stack.Item>
+          {this.props.spendAckVisible && (
+            <Stack.Item>
+              <Checkbox
+                id="spendAckCheckBox"
+                styles={noLeftPaddingCheckBoxStyle}
+                label={this.props.spendAckText}
+                checked={this.state.spendAckChecked}
+                onChange={this.onSpendAckChecked}
+              />
+            </Stack.Item>
+          )}
+          <Stack.Item>
+            {this.props.isFixed && <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>}
+          </Stack.Item>
+        </Stack>
+      </Stack.Item>
+      <Stack.Item style={{ width: "30%", maxWidth: "300px" }}>
+        {!this.props.isEmulator ? this.getRequestUnitsUsageCost() : <></>}
+      </Stack.Item>
     </Stack>
   );
 

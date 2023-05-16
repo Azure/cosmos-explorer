@@ -1,10 +1,7 @@
 import {
-  DetailsList,
-  DetailsListLayoutMode,
   DetailsRow,
   ICheckboxStyles,
   IChoiceGroupStyles,
-  IColumn,
   IDetailsColumnStyles,
   IDetailsListStyles,
   IDetailsRowProps,
@@ -20,16 +17,14 @@ import {
   Link,
   MessageBar,
   MessageBarType,
-  SelectionMode,
   Spinner,
   SpinnerSize,
   Stack,
-  Text,
+  Text
 } from "@fluentui/react";
 import * as React from "react";
 import { StyleConstants, Urls } from "../../../Common/Constants";
-import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { hoursInAMonth } from "../../../Shared/Constants";
 import {
   computeRUUsagePriceHourly,
   estimatedCostDisclaimer,
@@ -103,6 +98,10 @@ export const checkBoxAndInputStackProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 },
 };
 
+export const relaxedSpacingStackProps: Partial<IStackProps> = {
+  tokens: { childrenGap: 20 },
+};
+
 export const toolTipLabelStackTokens: IStackTokens = {
   childrenGap: 6,
 };
@@ -174,41 +173,6 @@ export function onRenderRow(props: IDetailsRowProps): JSX.Element {
   return <DetailsRow {...props} styles={transparentDetailsRowStyles} />;
 }
 
-export const getAutoPilotV3SpendElement = (
-  maxAutoPilotThroughputSet: number,
-  isDatabaseThroughput: boolean,
-  requestUnitsUsageCostElement?: JSX.Element
-): JSX.Element => {
-  if (!maxAutoPilotThroughputSet) {
-    return <></>;
-  }
-
-  const resource: string = isDatabaseThroughput ? "database" : "container";
-  return (
-    <>
-      <Text>
-        Your {resource} throughput will automatically scale from{" "}
-        <b>
-          {AutoPilotUtils.getMinRUsBasedOnUserInput(maxAutoPilotThroughputSet)} RU/s (10% of max RU/s) -{" "}
-          {maxAutoPilotThroughputSet} RU/s
-        </b>{" "}
-        based on usage.
-        <br />
-      </Text>
-      {requestUnitsUsageCostElement}
-      <Text>
-        After the first {AutoPilotUtils.getStorageBasedOnUserInput(maxAutoPilotThroughputSet)} GB of data stored, the
-        max RU/s will be automatically upgraded based on the new storage value.
-        <Link href={AutopilotDocumentation.Url} target="_blank">
-          {" "}
-          Learn more
-        </Link>
-        .
-      </Text>
-    </>
-  );
-};
-
 export const getRuPriceBreakdown = (
   throughput: number,
   serverId: string,
@@ -238,8 +202,7 @@ export const getRuPriceBreakdown = (
 };
 
 export const getEstimatedSpendingElement = (
-  estimatedSpendingColumns: IColumn[],
-  estimatedSpendingItems: EstimatedSpendingDisplayProps[],
+  costElement: JSX.Element,
   throughput: number,
   numberOfRegions: number,
   priceBreakdown: PriceBreakdown,
@@ -247,22 +210,17 @@ export const getEstimatedSpendingElement = (
 ): JSX.Element => {
   const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
-    <Stack {...addMongoIndexStackProps} styles={mediumWidthStackStyles}>
-      <DetailsList
-        disableSelectionZone
-        items={estimatedSpendingItems}
-        columns={estimatedSpendingColumns}
-        selectionMode={SelectionMode.none}
-        layoutMode={DetailsListLayoutMode.justified}
-        onRenderRow={onRenderRow}
-      />
-      <Text id="throughputSpendElement">
-        ({"regions: "} {numberOfRegions}, {ruRange}
-        {throughput} RU/s, {priceBreakdown.currencySign}
-        {priceBreakdown.pricePerRu}/RU)
-      </Text>
-      <Text>
-        <em>{estimatedCostDisclaimer}</em>
+    <Stack>
+      <Text style={{ fontWeight: 600 }}>Cost estimate*</Text>
+      {costElement}
+      <Text style={{ fontWeight: 600, marginTop: 15 }}>How we calculate this</Text>
+      <Stack id="throughputSpendElement" style={{ marginTop: 5 }}>
+        <span>{numberOfRegions} region{numberOfRegions > 1 && <span>s</span>}</span>
+        <span>{ruRange}{throughput} RU/s</span>
+        <span>{priceBreakdown.currencySign}{priceBreakdown.pricePerRu}/RU</span>
+      </Stack>
+      <Text style={{ marginTop: 15 }}>
+        <em>*{estimatedCostDisclaimer}</em>
       </Text>
     </Stack>
   );
@@ -308,6 +266,34 @@ export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
   </Text>
 );
 
+export const getUpdateThroughputBeyondInstantLimitMessage = (instantMaximumThroughput: number): JSX.Element => {
+  return (
+    <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
+      Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your
+      number of physical partitions. You can increase your throughput to {instantMaximumThroughput} instantly or proceed with this value and
+      wait until the scale-up is completed.
+    </Text>
+  );
+};
+
+export const getUpdateThroughputBeyondSupportLimitMessage = (
+  instantMaximumThroughput: number,
+  maximumThroughput: number): JSX.Element => {
+  return (
+    <>
+      <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
+        Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected.
+        There are three options you can choose from to proceed:
+      </Text>
+      <ol>
+        <li>You can instantly scale up to {instantMaximumThroughput} RU/s.</li>
+        <li>You can asynchronously scale up to any value under {maximumThroughput} RU/s in 4-6 hours.</li>
+        <li>You can start a support request to increase your throughput over {maximumThroughput} RU/s.</li>
+      </ol>
+    </>
+  );
+};
+
 export const saveThroughputWarningMessage: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle}>
     Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below
@@ -325,10 +311,10 @@ const getCurrentThroughput = (
     if (throughput) {
       return isAutoscale
         ? `, Current autoscale throughput: ${Math.round(
-            throughput / 10
-          )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-            targetThroughput / 10
-          )} - ${targetThroughput} ${throughputUnit}`
+          throughput / 10
+        )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
+          targetThroughput / 10
+        )} - ${targetThroughput} ${throughputUnit}`
         : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
     } else {
       return isAutoscale
@@ -499,7 +485,7 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
   },
 });
 
-export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTypes): Partial<IChoiceGroupStyles> => ({
+export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTypes, isHorizontal?: boolean): Partial<IChoiceGroupStyles> => ({
   flexContainer: [
     {
       selectors: {
@@ -516,6 +502,8 @@ export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTyp
           padding: "2px 5px",
         },
       },
+      display: isHorizontal ? "inline-flex" : "default",
+      columnGap: isHorizontal ? "30px" : "default"
     },
   ],
 });
