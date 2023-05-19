@@ -15,13 +15,13 @@ import {
 import {
   ChangeFeedPolicyState,
   GeospatialConfigType,
-  getSanitizedInputValue,
   IsComponentDirtyResult,
-  isDirty,
   TtlOff,
   TtlOn,
   TtlOnNoDefault,
   TtlType,
+  getSanitizedInputValue,
+  isDirty,
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -313,6 +313,12 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (
         <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled</Text>
       )}
+
+      {userContext.apiType === "SQL" && (
+         this.isHierarchicalPartitionedContainer() 
+          ? <Text>Hierarchical Partitioned Container - Hash: {this.props.collection.partitionKey?.kind.toString()}</Text>
+          : <Text>Non Hierarchical Container - Hash: {this.props.collection.partitionKey?.kind.toString()}</Text>
+      )}
     </Stack>
   );
 
@@ -330,6 +336,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   };
 
   public isLargePartitionKeyEnabled = (): boolean => this.props.collection.partitionKey?.version >= 2;
+  public isHierarchicalPartitionedContainer = () : boolean => this.props.collection.partitionKey?.kind === "MultiHash";
 
   public render(): JSX.Element {
     return (
