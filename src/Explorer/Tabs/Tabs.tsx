@@ -3,6 +3,7 @@ import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
@@ -211,6 +212,8 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
       return <SplashScreen explorer={explorer} />;
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
+    case ReactTabKind.QueryCopilot:
+      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

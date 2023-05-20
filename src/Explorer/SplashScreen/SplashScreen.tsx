@@ -14,19 +14,21 @@ import {
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
+import { SplashScreenButton } from "Explorer/SplashScreen/SplashScreenButton";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
-import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
+import CopilotIcon from "../../../images/Copilot.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebookColorIcon from "../../../images/Notebooks.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
 import { userContext } from "../../UserContext";
@@ -54,10 +56,6 @@ export interface SplashScreenProps {
 }
 
 export class SplashScreen extends React.Component<SplashScreenProps> {
-  private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
-  private static readonly throughputEstimatorUrl = "https://cosmos.azure.com/capacitycalculator";
-  private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
-
   private readonly container: Explorer;
   private subscriptions: Array<{ dispose: () => void }>;
 
@@ -108,9 +106,141 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.setState({});
   };
 
-  public render(): JSX.Element {
-    const mainItems = this.createMainItems();
+  private getSplashScreenButtons = (): JSX.Element => {
+    if (userContext.features.enableCopilot && userContext.apiType === "SQL") {
+      return (
+        <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
+          <Stack horizontal tokens={{ childrenGap: 16 }}>
+            <SplashScreenButton
+              imgSrc={QuickStartIcon}
+              title={"Launch quick start"}
+              description={"Launch a quick start tutorial to get started with sample data"}
+              onClick={() => {
+                this.container.onNewCollectionClicked({ isQuickstart: true });
+                traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
+              }}
+            />
+            <SplashScreenButton
+              imgSrc={ContainersIcon}
+              title={`New ${getCollectionName()}`}
+              description={"Create a new container for storage and throughput"}
+              onClick={() => {
+                this.container.onNewCollectionClicked();
+                traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+              }}
+            />
+          </Stack>
+          <Stack horizontal tokens={{ childrenGap: 16 }}>
+            <SplashScreenButton
+              imgSrc={CopilotIcon}
+              title={"Query faster with Copilot"}
+              description={
+                "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
+              }
+              onClick={() => useCarousel.getState().setShowCopilotCarousel(true)}
+            />
+            <SplashScreenButton
+              imgSrc={ConnectIcon}
+              title={"Connect"}
+              description={"Prefer using your own choice of tooling? Find the connection string you need to connect"}
+              onClick={() => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect)}
+            />
+          </Stack>
+        </Stack>
+      );
+    }
 
+    const mainItems = this.createMainItems();
+    return (
+      <div className="mainButtonsContainer">
+        {userContext.apiType === "Postgres" &&
+          usePostgres.getState().showPostgreTeachingBubble &&
+          !usePostgres.getState().showResetPasswordBubble && (
+            <TeachingBubble
+              headline="New to Cosmos DB PGSQL?"
+              target={"#mainButton-quickstartDescription"}
+              hasCloseButton
+              onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
+              calloutProps={{
+                directionalHint: DirectionalHint.rightCenter,
+                directionalHintFixed: true,
+                preventDismissOnLostFocus: true,
+                preventDismissOnResize: true,
+                preventDismissOnScroll: true,
+              }}
+              primaryButtonProps={{
+                text: "Get started",
+                onClick: () => {
+                  useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+                  usePostgres.getState().setShowPostgreTeachingBubble(false);
+                },
+              }}
+            >
+              Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find
+              sample data, query.
+            </TeachingBubble>
+          )}
+        {mainItems.map((item) => (
+          <Stack
+            id={`mainButton-${item.id}`}
+            horizontal
+            className="mainButton focusable"
+            key={`${item.title}`}
+            onClick={item.onClick}
+            onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+            tabIndex={0}
+            role="button"
+          >
+            <div>
+              <img src={item.iconSrc} alt="" />
+            </div>
+            <div className="legendContainer">
+              <Stack horizontal verticalAlign="center" style={{ marginBottom: 8 }}>
+                <div className="legend">{item.title}</div>
+                {item.showLinkIcon && <Image style={{ marginLeft: 8, width: 16 }} src={LinkIcon} />}
+              </Stack>
+
+              <div id={item.id} className="newDescription">
+                {item.description}
+              </div>
+            </div>
+          </Stack>
+        ))}
+        {userContext.apiType === "Postgres" && usePostgres.getState().showResetPasswordBubble && (
+          <TeachingBubble
+            headline="Create your password"
+            target={"#mainButton-quickstartDescription"}
+            hasCloseButton
+            onDismiss={() => {
+              localStorage.setItem(userContext.databaseAccount.id, "true");
+              usePostgres.getState().setShowResetPasswordBubble(false);
+            }}
+            calloutProps={{
+              directionalHint: DirectionalHint.bottomRightEdge,
+              directionalHintFixed: true,
+              preventDismissOnLostFocus: true,
+              preventDismissOnResize: true,
+              preventDismissOnScroll: true,
+            }}
+            primaryButtonProps={{
+              text: "Create",
+              onClick: () => {
+                localStorage.setItem(userContext.databaseAccount.id, "true");
+                sendMessage({
+                  type: MessageTypes.OpenPostgreSQLPasswordReset,
+                });
+                usePostgres.getState().setShowResetPasswordBubble(false);
+              },
+            }}
+          >
+            If you haven&apos;t changed your password yet, change it now.
+          </TeachingBubble>
+        )}
+      </div>
+    );
+  };
+
+  public render(): JSX.Element {
     return (
       <div className="connectExplorerContainer">
         <form className="connectExplorerFormContainer">
@@ -134,91 +264,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   ? "Get started with our sample datasets, documentation, and additional tools."
                   : "Globally distributed, multi-model database service for any scale"}
               </div>
-              <div className="mainButtonsContainer">
-                {userContext.apiType === "Postgres" &&
-                  usePostgres.getState().showPostgreTeachingBubble &&
-                  !usePostgres.getState().showResetPasswordBubble && (
-                    <TeachingBubble
-                      headline="New to Cosmos DB PGSQL?"
-                      target={"#mainButton-quickstartDescription"}
-                      hasCloseButton
-                      onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
-                      calloutProps={{
-                        directionalHint: DirectionalHint.rightCenter,
-                        directionalHintFixed: true,
-                        preventDismissOnLostFocus: true,
-                        preventDismissOnResize: true,
-                        preventDismissOnScroll: true,
-                      }}
-                      primaryButtonProps={{
-                        text: "Get started",
-                        onClick: () => {
-                          useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-                          usePostgres.getState().setShowPostgreTeachingBubble(false);
-                        },
-                      }}
-                    >
-                      Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you
-                      can find sample data, query.
-                    </TeachingBubble>
-                  )}
-                {mainItems.map((item) => (
-                  <Stack
-                    id={`mainButton-${item.id}`}
-                    horizontal
-                    className="mainButton focusable"
-                    key={`${item.title}`}
-                    onClick={item.onClick}
-                    onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-                    tabIndex={0}
-                    role="button"
-                  >
-                    <div>
-                      <img src={item.iconSrc} alt="" />
-                    </div>
-                    <div className="legendContainer">
-                      <Stack horizontal verticalAlign="center" style={{ marginBottom: 8 }}>
-                        <div className="legend">{item.title}</div>
-                        {item.showLinkIcon && <Image style={{ marginLeft: 8, width: 16 }} src={LinkIcon} />}
-                      </Stack>
-
-                      <div id={item.id} className="newDescription">
-                        {item.description}
-                      </div>
-                    </div>
-                  </Stack>
-                ))}
-                {userContext.apiType === "Postgres" && usePostgres.getState().showResetPasswordBubble && (
-                  <TeachingBubble
-                    headline="Create your password"
-                    target={"#mainButton-quickstartDescription"}
-                    hasCloseButton
-                    onDismiss={() => {
-                      localStorage.setItem(userContext.databaseAccount.id, "true");
-                      usePostgres.getState().setShowResetPasswordBubble(false);
-                    }}
-                    calloutProps={{
-                      directionalHint: DirectionalHint.bottomRightEdge,
-                      directionalHintFixed: true,
-                      preventDismissOnLostFocus: true,
-                      preventDismissOnResize: true,
-                      preventDismissOnScroll: true,
-                    }}
-                    primaryButtonProps={{
-                      text: "Create",
-                      onClick: () => {
-                        localStorage.setItem(userContext.databaseAccount.id, "true");
-                        sendMessage({
-                          type: MessageTypes.OpenPostgreSQLPasswordReset,
-                        });
-                        usePostgres.getState().setShowResetPasswordBubble(false);
-                      },
-                    }}
-                  >
-                    If you haven&apos;t changed your password yet, change it now.
-                  </TeachingBubble>
-                )}
-              </div>
+              {this.getSplashScreenButtons()}
               {useCarousel.getState().showCoachMark && (
                 <Coachmark
                   target="#quickstartDescription"
@@ -248,7 +294,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 </Coachmark>
               )}
               {userContext.apiType === "Postgres" ? (
-                <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 32 }}>
+                <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 16 }}>
                   <Stack style={{ width: "33%" }}>
                     <Text
                       variant="large"
