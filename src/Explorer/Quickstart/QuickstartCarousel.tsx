@@ -1,8 +1,8 @@
 import { DefaultButton, IconButton, Image, Modal, PrimaryButton, Stack, Text } from "@fluentui/react";
-import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import Youtube from "react-youtube";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import Image1 from "../../../images/CarouselImage1.svg";
