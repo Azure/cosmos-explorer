@@ -118,7 +118,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             <div className="splashScreen">
               <div
                 className="title"
-                role="heading"
                 aria-label={
                   userContext.apiType === "Postgres"
                     ? "Welcome to Azure Cosmos DB for PostgreSQL"
