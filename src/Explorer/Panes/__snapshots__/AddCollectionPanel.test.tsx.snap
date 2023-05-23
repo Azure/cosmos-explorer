@@ -254,12 +254,12 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
               "root": Object {
                 "height": 30,
                 "padding": 0,
-                "width": 250,
+                "width": 200,
               },
             }
           }
         >
-          Add hierarchical partition key (preview)
+          Add hierarchical partition key
         </CustomizedDefaultButton>
       </Stack>
     </Stack>

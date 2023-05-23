@@ -634,18 +634,18 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               {userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
-                    styles={{ root: { padding: 0, width: 250, height: 30 }, label: { fontSize: 12 } }}
+                    styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
                     hidden={this.state.useHashV1}
                     disabled={this.state.subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
                     onClick={() => this.setState({ subPartitionKeys: [...this.state.subPartitionKeys, ""] })}
                   >
-                    Add hierarchical partition key (preview)
+                    Add hierarchical partition key
                   </DefaultButton>
                   {this.state.subPartitionKeys.length > 0 && (
                     <Text variant="small">
                       <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
-                      partition your data with up to three levels of keys for better data distribution. Requires preview
-                      version of .NET V3 or Java V4 SDK.{" "}
+                      partition your data with up to three levels of keys for better data distribution. Requires .NET
+                      V3, Java V4 SDK, or preview JavaScript V3 SDK.{" "}
                       <Link href="https://aka.ms/cosmos-hierarchical-partitioning" target="_blank">
                         Learn more
                       </Link>
