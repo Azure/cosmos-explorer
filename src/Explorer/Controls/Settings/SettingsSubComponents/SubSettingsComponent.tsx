@@ -311,13 +311,13 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       )}
 
       {userContext.apiType === "SQL" && this.isLargePartitionKeyEnabled() && (
-        <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled</Text>
+        <Text>Large {this.partitionKeyName.toLowerCase()} has been enabled.</Text>
       )}
 
       {userContext.apiType === "SQL" && (
          this.isHierarchicalPartitionedContainer() 
-          ? <Text>Hierarchical Partitioned Container - Hash: {this.props.collection.partitionKey?.kind.toString()}</Text>
-          : <Text>Non Hierarchical Container - Hash: {this.props.collection.partitionKey?.kind.toString()}</Text>
+          ? <Text>Hierarchically partitioned container.</Text>
+          : <Text>Non-hierarchically partitioned container.</Text>
       )}
     </Stack>
   );
