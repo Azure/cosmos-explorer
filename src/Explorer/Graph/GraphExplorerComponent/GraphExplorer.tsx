@@ -1427,8 +1427,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   private updatePossibleVertices(): Promise<PossibleVertex[]> {
     const highlightedNodeId = this.state.highlightedNode ? this.state.highlightedNode.id : null;
 
-    const q = `SELECT c.id, c["${this.state.igraphConfigUiData.nodeCaptionChoice || "id"
-      }"] AS p FROM c WHERE NOT IS_DEFINED(c._isEdge)`;
+    const q = `SELECT c.id, c["${
+      this.state.igraphConfigUiData.nodeCaptionChoice || "id"
+    }"] AS p FROM c WHERE NOT IS_DEFINED(c._isEdge)`;
     return this.executeNonPagedDocDbQuery(q).then(
       (documents: DataModels.DocumentId[]) => {
         const possibleVertices = [] as PossibleVertex[];
@@ -1533,7 +1534,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    */
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onGraphUpdated(_timestamp: number): void { }
+  public onGraphUpdated(_timestamp: number): void {}
 
   /**
    * Get node properties for styling purposes. Result is the union of all properties of all nodes.
@@ -1814,8 +1815,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }
 
     let RU: string = GraphExplorer.REQUEST_CHARGE_UNKNOWN_MSG;
-    const queryInfoStr = `${this.currentDocDBQueryInfo.query} (${this.currentDocDBQueryInfo.index + 1}-${this.currentDocDBQueryInfo.index + GraphExplorer.ROOT_LIST_PAGE_SIZE
-      })`;
+    const queryInfoStr = `${this.currentDocDBQueryInfo.query} (${this.currentDocDBQueryInfo.index + 1}-${
+      this.currentDocDBQueryInfo.index + GraphExplorer.ROOT_LIST_PAGE_SIZE
+    })`;
     const clearConsoleProgress = GraphExplorer.reportToConsole(
       ConsoleDataType.InProgress,
       `Executing: ${queryInfoStr}`
