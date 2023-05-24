@@ -15,13 +15,13 @@ import {
 import {
   ChangeFeedPolicyState,
   GeospatialConfigType,
+  getSanitizedInputValue,
   IsComponentDirtyResult,
+  isDirty,
   TtlOff,
   TtlOn,
   TtlOnNoDefault,
   TtlType,
-  getSanitizedInputValue,
-  isDirty,
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
