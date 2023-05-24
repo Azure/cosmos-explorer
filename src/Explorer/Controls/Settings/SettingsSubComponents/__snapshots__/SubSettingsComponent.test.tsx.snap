@@ -218,7 +218,10 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
     <Text>
       Large 
       partition key
-       has been enabled
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
     </Text>
   </Stack>
 </Stack>
@@ -495,7 +498,10 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
     <Text>
       Large 
       partition key
-       has been enabled
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
     </Text>
   </Stack>
 </Stack>
@@ -734,7 +740,10 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     <Text>
       Large 
       partition key
-       has been enabled
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
     </Text>
   </Stack>
 </Stack>
@@ -1036,7 +1045,10 @@ exports[`SubSettingsComponent renders 1`] = `
     <Text>
       Large 
       partition key
-       has been enabled
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
     </Text>
   </Stack>
 </Stack>
@@ -1313,7 +1325,10 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
     <Text>
       Large 
       partition key
-       has been enabled
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
     </Text>
   </Stack>
 </Stack>
