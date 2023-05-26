@@ -112,6 +112,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "30px",
+              "display": "inline-flex",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": undefined,
@@ -132,42 +134,382 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       }
     />
   </Stack>
-  <Text>
-    Provision maximum RU/s required by this resource. Estimate your required RU/s with
-    <StyledLinkBase
-      href="https://cosmos.azure.com/capacitycalculator/"
-      target="_blank"
-    >
-       capacity calculator
-    </StyledLinkBase>
-  </Text>
-  <StyledTextFieldBase
-    disabled={true}
-    id="autopilotInput"
-    key="auto pilot throughput input"
-    label="Max RU/s"
-    min={1000}
-    onChange={[Function]}
-    required={true}
-    step={1000}
-    styles={
-      Object {
-        "fieldGroup": Object {
-          "borderColor": "",
-          "height": 25,
-          "selectors": Object {
-            ":disabled": Object {
-              "backgroundColor": undefined,
-              "borderColor": undefined,
-            },
-          },
-          "width": 300,
-        },
+  <Stack
+    horizontal={true}
+  >
+    <StackItem
+      style={
+        Object {
+          "maxWidth": "700px",
+          "width": "70%",
+        }
       }
-    }
-    type="number"
-    value=""
-  />
+    >
+      <Stack
+        style={
+          Object {
+            "paddingRight": "50px",
+          }
+        }
+        tokens={
+          Object {
+            "childrenGap": 20,
+          }
+        }
+      >
+        <StackItem>
+          <StyledTextFieldBase
+            disabled={true}
+            id="autopilotInput"
+            key="auto pilot throughput input"
+            label="Maximum RU/s required by this resource"
+            min={1000}
+            onChange={[Function]}
+            onGetErrorMessage={[Function]}
+            required={true}
+            step={1000}
+            styles={
+              Object {
+                "fieldGroup": Object {
+                  "borderColor": "",
+                  "height": 25,
+                  "selectors": Object {
+                    ":disabled": Object {
+                      "backgroundColor": undefined,
+                      "borderColor": undefined,
+                    },
+                  },
+                  "width": 300,
+                },
+              }
+            }
+            type="number"
+            validateOnLoad={false}
+            value=""
+          />
+        </StackItem>
+        <StackItem>
+          <Stack>
+            <Stack
+              horizontal={true}
+            >
+              <StackItem
+                style={
+                  Object {
+                    "width": "34%",
+                  }
+                }
+              >
+                <span>
+                  10000
+                </span>
+              </StackItem>
+              <StackItem
+                style={
+                  Object {
+                    "width": "66%",
+                  }
+                }
+              >
+                <span
+                  style={
+                    Object {
+                      "float": "left",
+                      "transform": "translateX(-50%)",
+                    }
+                  }
+                >
+                  5000
+                </span>
+                <span
+                  style={
+                    Object {
+                      "float": "right",
+                    }
+                  }
+                >
+                  1000000
+                </span>
+              </StackItem>
+            </Stack>
+            <StyledProgressIndicatorBase
+              barHeight={20}
+              percentComplete={0}
+              styles={
+                Object {
+                  "progressBar": Array [
+                    Object {
+                      "backgroundColor": "rgb(251, 217, 203)",
+                    },
+                  ],
+                }
+              }
+            />
+            <Stack
+              horizontal={true}
+            >
+              <StackItem
+                style={
+                  Object {
+                    "paddingRight": "5px",
+                    "width": "34%",
+                  }
+                }
+              >
+                <Separator
+                  styles={
+                    Object {
+                      "root": Array [
+                        Object {
+                          "selectors": Object {
+                            "::before": Object {
+                              "backgroundColor": "rgb(200, 200, 200)",
+                              "height": "3px",
+                              "marginTop": "-1px",
+                            },
+                          },
+                        },
+                      ],
+                    }
+                  }
+                >
+                  Instant
+                </Separator>
+              </StackItem>
+              <StackItem
+                style={
+                  Object {
+                    "paddingLeft": "5px",
+                    "width": "66%",
+                  }
+                }
+              >
+                <Separator
+                  styles={
+                    Object {
+                      "root": Array [
+                        Object {
+                          "selectors": Object {
+                            "::before": Object {
+                              "backgroundColor": "rgb(200, 200, 200)",
+                              "height": "3px",
+                              "marginTop": "-1px",
+                            },
+                          },
+                        },
+                      ],
+                    }
+                  }
+                >
+                  4-6 hrs
+                </Separator>
+              </StackItem>
+            </Stack>
+          </Stack>
+        </StackItem>
+        <StackItem>
+          <StyledMessageBar
+            messageBarType={3}
+          >
+            <Text
+              style={
+                Object {
+                  "color": "windowtext",
+                  "fontSize": 14,
+                }
+              }
+            >
+              You are not able to lower throughput below your current minimum of 
+              10000
+               RU/s.
+            </Text>
+          </StyledMessageBar>
+        </StackItem>
+        <StackItem>
+          <Text>
+            Based on usage, your container throughput will scale from
+             
+            <b>
+              400
+               RU/s (10% of max RU/s) -
+               
+              4000
+               RU/s
+            </b>
+            <br />
+          </Text>
+        </StackItem>
+        <StackItem />
+        <StackItem />
+        <StackItem />
+      </Stack>
+    </StackItem>
+    <StackItem
+      style={
+        Object {
+          "maxWidth": "300px",
+          "width": "30%",
+        }
+      }
+    >
+      <Stack>
+        <Text
+          style={
+            Object {
+              "fontWeight": 600,
+            }
+          }
+        >
+          Cost estimate*
+        </Text>
+        <Stack
+          style={
+            Object {
+              "marginTop": 15,
+            }
+          }
+          tokens={
+            Object {
+              "childrenGap": 10,
+            }
+          }
+        >
+          <div>
+            <Text
+              style={
+                Object {
+                  "fontWeight": 600,
+                }
+              }
+            >
+              Updated cost per month
+            </Text>
+            <Stack
+              horizontal={true}
+              style={
+                Object {
+                  "marginBottom": 10,
+                  "marginTop": 5,
+                }
+              }
+            >
+              <Text
+                style={
+                  Object {
+                    "width": "50%",
+                  }
+                }
+              >
+                $
+                 
+                35.04
+                 min
+              </Text>
+              <Text
+                style={
+                  Object {
+                    "width": "50%",
+                  }
+                }
+              >
+                $
+                 
+                350.40
+                 max
+              </Text>
+            </Stack>
+          </div>
+          <Text
+            style={
+              Object {
+                "fontWeight": 600,
+              }
+            }
+          >
+            Current cost per month
+          </Text>
+          <Stack
+            horizontal={true}
+            style={
+              Object {
+                "marginTop": 5,
+              }
+            }
+          >
+            <Text
+              style={
+                Object {
+                  "width": "50%",
+                }
+              }
+            >
+              $
+               
+              35.04
+               min
+            </Text>
+            <Text
+              style={
+                Object {
+                  "width": "50%",
+                }
+              }
+            >
+              $
+               
+              350.40
+               max
+            </Text>
+          </Stack>
+        </Stack>
+        <Text
+          style={
+            Object {
+              "fontWeight": 600,
+              "marginTop": 15,
+            }
+          }
+        >
+          How we calculate this
+        </Text>
+        <Stack
+          id="throughputSpendElement"
+          style={
+            Object {
+              "marginTop": 5,
+            }
+          }
+        >
+          <span>
+            1
+             region
+          </span>
+          <span>
+            400 RU/s - 
+            4000
+             RU/s
+          </span>
+          <span>
+            $
+            0.00012
+            /RU
+          </span>
+        </Stack>
+        <Text
+          style={
+            Object {
+              "marginTop": 15,
+            }
+          }
+        >
+          <em>
+            *
+            This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+          </em>
+        </Text>
+      </Stack>
+    </StackItem>
+  </Stack>
 </Stack>
 `;
 
@@ -222,6 +564,8 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "30px",
+              "display": "inline-flex",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -243,205 +587,362 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
     />
   </Stack>
   <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
+    horizontal={true}
   >
-    <Text>
-      Estimate your required throughput with
-      <StyledLinkBase
-        href="https://cosmos.azure.com/capacitycalculator/"
-        target="_blank"
-      >
-         capacity calculator
-         
-        <FontIcon
-          iconName="NavigateExternalInline"
-        />
-      </StyledLinkBase>
-    </Text>
-    <StyledTextFieldBase
-      disabled={false}
-      id="throughputInput"
-      key="provisioned throughput input"
-      min={10000}
-      onChange={[Function]}
-      required={true}
-      step={100}
-      styles={
+    <StackItem
+      style={
         Object {
-          "fieldGroup": Object {
-            "borderColor": "",
-            "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
-              },
-            },
-            "width": 300,
-          },
-        }
-      }
-      type="number"
-      value="100"
-    />
-    <Stack
-      styles={
-        Object {
-          "root": Object {
-            "width": 600,
-          },
-        }
-      }
-      tokens={
-        Object {
-          "childrenGap": 10,
+          "maxWidth": "700px",
+          "width": "70%",
         }
       }
     >
-      <StyledWithViewportComponent
-        columns={
-          Array [
-            Object {
-              "fieldName": "costType",
-              "isResizable": true,
-              "key": "costType",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-            Object {
-              "fieldName": "hourly",
-              "isResizable": true,
-              "key": "hourly",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "Hourly",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-            Object {
-              "fieldName": "daily",
-              "isResizable": true,
-              "key": "daily",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "Daily",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-            Object {
-              "fieldName": "monthly",
-              "isResizable": true,
-              "key": "monthly",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "Monthly",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-          ]
+      <Stack
+        style={
+          Object {
+            "paddingRight": "50px",
+          }
         }
-        disableSelectionZone={true}
-        items={
-          Array [
-            Object {
-              "costType": <Text>
-                Current Cost
-              </Text>,
-              "daily": <Text>
-                $
-                 
-                0.19
-              </Text>,
-              "hourly": <Text>
-                $
-                 
-                0.0080
-              </Text>,
-              "monthly": <Text>
-                $
-                 
-                5.84
-              </Text>,
-            },
-          ]
+        tokens={
+          Object {
+            "childrenGap": 20,
+          }
         }
-        layoutMode={1}
-        onRenderRow={[Function]}
-        selectionMode={0}
-      />
-      <Text
-        id="throughputSpendElement"
       >
-        (
-        regions: 
-         
-        1
-        , 
-        100
-         RU/s, 
-        $
-        0.00008
-        /RU)
-      </Text>
-      <Text>
-        <em>
-          This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
-        </em>
-      </Text>
-    </Stack>
-    <StyledCheckboxBase
-      checked={false}
-      id="spendAckCheckBox"
-      label="spendAckText"
-      onChange={[Function]}
-      styles={
+        <StackItem>
+          <StyledTextFieldBase
+            disabled={false}
+            id="throughputInput"
+            key="provisioned throughput input"
+            min={10000}
+            onChange={[Function]}
+            required={true}
+            step={100}
+            styles={
+              Object {
+                "fieldGroup": Object {
+                  "borderColor": "",
+                  "height": 25,
+                  "selectors": Object {
+                    ":disabled": Object {
+                      "backgroundColor": undefined,
+                      "borderColor": undefined,
+                    },
+                  },
+                  "width": 300,
+                },
+              }
+            }
+            type="number"
+            value="100"
+          />
+        </StackItem>
+        <StackItem>
+          <Stack>
+            <Stack
+              horizontal={true}
+            >
+              <StackItem
+                style={
+                  Object {
+                    "width": "34%",
+                  }
+                }
+              >
+                <span>
+                  10000
+                </span>
+              </StackItem>
+              <StackItem
+                style={
+                  Object {
+                    "width": "66%",
+                  }
+                }
+              >
+                <span
+                  style={
+                    Object {
+                      "float": "left",
+                      "transform": "translateX(-50%)",
+                    }
+                  }
+                >
+                  5000
+                </span>
+                <span
+                  style={
+                    Object {
+                      "float": "right",
+                    }
+                  }
+                >
+                  1000000
+                </span>
+              </StackItem>
+            </Stack>
+            <StyledProgressIndicatorBase
+              barHeight={20}
+              percentComplete={0}
+              styles={
+                Object {
+                  "progressBar": Array [
+                    Object {
+                      "backgroundColor": "rgb(251, 217, 203)",
+                    },
+                  ],
+                }
+              }
+            />
+            <Stack
+              horizontal={true}
+            >
+              <StackItem
+                style={
+                  Object {
+                    "paddingRight": "5px",
+                    "width": "34%",
+                  }
+                }
+              >
+                <Separator
+                  styles={
+                    Object {
+                      "root": Array [
+                        Object {
+                          "selectors": Object {
+                            "::before": Object {
+                              "backgroundColor": "rgb(200, 200, 200)",
+                              "height": "3px",
+                              "marginTop": "-1px",
+                            },
+                          },
+                        },
+                      ],
+                    }
+                  }
+                >
+                  Instant
+                </Separator>
+              </StackItem>
+              <StackItem
+                style={
+                  Object {
+                    "paddingLeft": "5px",
+                    "width": "66%",
+                  }
+                }
+              >
+                <Separator
+                  styles={
+                    Object {
+                      "root": Array [
+                        Object {
+                          "selectors": Object {
+                            "::before": Object {
+                              "backgroundColor": "rgb(200, 200, 200)",
+                              "height": "3px",
+                              "marginTop": "-1px",
+                            },
+                          },
+                        },
+                      ],
+                    }
+                  }
+                >
+                  4-6 hrs
+                </Separator>
+              </StackItem>
+            </Stack>
+          </Stack>
+        </StackItem>
+        <StackItem>
+          <StyledMessageBar
+            messageBarType={3}
+          >
+            <Text
+              style={
+                Object {
+                  "color": "windowtext",
+                  "fontSize": 14,
+                }
+              }
+            >
+              You are not able to lower throughput below your current minimum of 
+              10000
+               RU/s.
+            </Text>
+          </StyledMessageBar>
+        </StackItem>
+        <StackItem>
+          <Text>
+            Estimate your required throughput with
+            <StyledLinkBase
+              href="https://cosmos.azure.com/capacitycalculator/"
+              target="_blank"
+            >
+               capacity calculator
+               
+              <FontIcon
+                iconName="NavigateExternalInline"
+              />
+            </StyledLinkBase>
+          </Text>
+        </StackItem>
+        <StackItem />
+        <StackItem>
+          <StyledCheckboxBase
+            checked={false}
+            id="spendAckCheckBox"
+            label="spendAckText"
+            onChange={[Function]}
+            styles={
+              Object {
+                "label": Object {
+                  "margin": 0,
+                  "padding": "2 0 2 0",
+                },
+                "text": Object {
+                  "fontSize": 12,
+                },
+              }
+            }
+          />
+        </StackItem>
+        <StackItem />
+      </Stack>
+    </StackItem>
+    <StackItem
+      style={
         Object {
-          "label": Object {
-            "margin": 0,
-            "padding": "2 0 2 0",
-          },
-          "text": Object {
-            "fontSize": 12,
-          },
+          "maxWidth": "300px",
+          "width": "30%",
         }
       }
-    />
-    <br />
+    >
+      <Stack>
+        <Text
+          style={
+            Object {
+              "fontWeight": 600,
+            }
+          }
+        >
+          Cost estimate*
+        </Text>
+        <Stack
+          style={
+            Object {
+              "marginTop": 15,
+            }
+          }
+          tokens={
+            Object {
+              "childrenGap": 10,
+            }
+          }
+        >
+          <Text
+            style={
+              Object {
+                "fontWeight": 600,
+              }
+            }
+          >
+            Current cost per month
+          </Text>
+          <Stack
+            horizontal={true}
+            style={
+              Object {
+                "marginTop": 5,
+              }
+            }
+          >
+            <Text
+              style={
+                Object {
+                  "width": "33%",
+                }
+              }
+            >
+              $
+               
+              0.012
+              /hr
+            </Text>
+            <Text
+              style={
+                Object {
+                  "width": "33%",
+                }
+              }
+            >
+              $
+               
+              0.29
+              /day
+            </Text>
+            <Text
+              style={
+                Object {
+                  "width": "33%",
+                }
+              }
+            >
+              $
+               
+              8.76
+              /mo
+            </Text>
+          </Stack>
+        </Stack>
+        <Text
+          style={
+            Object {
+              "fontWeight": 600,
+              "marginTop": 15,
+            }
+          }
+        >
+          How we calculate this
+        </Text>
+        <Stack
+          id="throughputSpendElement"
+          style={
+            Object {
+              "marginTop": 5,
+            }
+          }
+        >
+          <span>
+            1
+             region
+          </span>
+          <span>
+            100
+             RU/s
+          </span>
+          <span>
+            $
+            0.00008
+            /RU
+          </span>
+        </Stack>
+        <Text
+          style={
+            Object {
+              "marginTop": 15,
+            }
+          }
+        >
+          <em>
+            *
+            This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+          </em>
+        </Text>
+      </Stack>
+    </StackItem>
   </Stack>
 </Stack>
 `;
@@ -497,6 +998,8 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "30px",
+              "display": "inline-flex",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -518,188 +1021,343 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
     />
   </Stack>
   <Stack
-    tokens={
-      Object {
-        "childrenGap": 5,
-      }
-    }
+    horizontal={true}
   >
-    <Text>
-      Estimate your required throughput with
-      <StyledLinkBase
-        href="https://cosmos.azure.com/capacitycalculator/"
-        target="_blank"
-      >
-         capacity calculator
-         
-        <FontIcon
-          iconName="NavigateExternalInline"
-        />
-      </StyledLinkBase>
-    </Text>
-    <StyledTextFieldBase
-      disabled={false}
-      id="throughputInput"
-      key="provisioned throughput input"
-      min={10000}
-      onChange={[Function]}
-      required={true}
-      step={100}
-      styles={
+    <StackItem
+      style={
         Object {
-          "fieldGroup": Object {
-            "borderColor": "",
-            "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
-                "backgroundColor": undefined,
-                "borderColor": undefined,
-              },
-            },
-            "width": 300,
-          },
-        }
-      }
-      type="number"
-      value="100"
-    />
-    <Stack
-      styles={
-        Object {
-          "root": Object {
-            "width": 600,
-          },
-        }
-      }
-      tokens={
-        Object {
-          "childrenGap": 10,
+          "maxWidth": "700px",
+          "width": "70%",
         }
       }
     >
-      <StyledWithViewportComponent
-        columns={
-          Array [
-            Object {
-              "fieldName": "costType",
-              "isResizable": true,
-              "key": "costType",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-            Object {
-              "fieldName": "hourly",
-              "isResizable": true,
-              "key": "hourly",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "Hourly",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-            Object {
-              "fieldName": "daily",
-              "isResizable": true,
-              "key": "daily",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "Daily",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-            Object {
-              "fieldName": "monthly",
-              "isResizable": true,
-              "key": "monthly",
-              "maxWidth": 200,
-              "minWidth": 100,
-              "name": "Monthly",
-              "styles": Object {
-                "root": Object {
-                  "selectors": Object {
-                    ":hover": Object {
-                      "background": "transparent",
-                    },
-                  },
-                },
-              },
-            },
-          ]
+      <Stack
+        style={
+          Object {
+            "paddingRight": "50px",
+          }
         }
-        disableSelectionZone={true}
-        items={
-          Array [
-            Object {
-              "costType": <Text>
-                Current Cost
-              </Text>,
-              "daily": <Text>
-                $
-                 
-                0.19
-              </Text>,
-              "hourly": <Text>
-                $
-                 
-                0.0080
-              </Text>,
-              "monthly": <Text>
-                $
-                 
-                5.84
-              </Text>,
-            },
-          ]
+        tokens={
+          Object {
+            "childrenGap": 20,
+          }
         }
-        layoutMode={1}
-        onRenderRow={[Function]}
-        selectionMode={0}
-      />
-      <Text
-        id="throughputSpendElement"
       >
-        (
-        regions: 
-         
-        1
-        , 
-        100
-         RU/s, 
-        $
-        0.00008
-        /RU)
-      </Text>
-      <Text>
-        <em>
-          This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
-        </em>
-      </Text>
-    </Stack>
-    <br />
+        <StackItem>
+          <StyledTextFieldBase
+            disabled={false}
+            id="throughputInput"
+            key="provisioned throughput input"
+            min={10000}
+            onChange={[Function]}
+            required={true}
+            step={100}
+            styles={
+              Object {
+                "fieldGroup": Object {
+                  "borderColor": "",
+                  "height": 25,
+                  "selectors": Object {
+                    ":disabled": Object {
+                      "backgroundColor": undefined,
+                      "borderColor": undefined,
+                    },
+                  },
+                  "width": 300,
+                },
+              }
+            }
+            type="number"
+            value="100"
+          />
+        </StackItem>
+        <StackItem>
+          <Stack>
+            <Stack
+              horizontal={true}
+            >
+              <StackItem
+                style={
+                  Object {
+                    "width": "34%",
+                  }
+                }
+              >
+                <span>
+                  10000
+                </span>
+              </StackItem>
+              <StackItem
+                style={
+                  Object {
+                    "width": "66%",
+                  }
+                }
+              >
+                <span
+                  style={
+                    Object {
+                      "float": "left",
+                      "transform": "translateX(-50%)",
+                    }
+                  }
+                >
+                  5000
+                </span>
+                <span
+                  style={
+                    Object {
+                      "float": "right",
+                    }
+                  }
+                >
+                  1000000
+                </span>
+              </StackItem>
+            </Stack>
+            <StyledProgressIndicatorBase
+              barHeight={20}
+              percentComplete={0}
+              styles={
+                Object {
+                  "progressBar": Array [
+                    Object {
+                      "backgroundColor": "rgb(251, 217, 203)",
+                    },
+                  ],
+                }
+              }
+            />
+            <Stack
+              horizontal={true}
+            >
+              <StackItem
+                style={
+                  Object {
+                    "paddingRight": "5px",
+                    "width": "34%",
+                  }
+                }
+              >
+                <Separator
+                  styles={
+                    Object {
+                      "root": Array [
+                        Object {
+                          "selectors": Object {
+                            "::before": Object {
+                              "backgroundColor": "rgb(200, 200, 200)",
+                              "height": "3px",
+                              "marginTop": "-1px",
+                            },
+                          },
+                        },
+                      ],
+                    }
+                  }
+                >
+                  Instant
+                </Separator>
+              </StackItem>
+              <StackItem
+                style={
+                  Object {
+                    "paddingLeft": "5px",
+                    "width": "66%",
+                  }
+                }
+              >
+                <Separator
+                  styles={
+                    Object {
+                      "root": Array [
+                        Object {
+                          "selectors": Object {
+                            "::before": Object {
+                              "backgroundColor": "rgb(200, 200, 200)",
+                              "height": "3px",
+                              "marginTop": "-1px",
+                            },
+                          },
+                        },
+                      ],
+                    }
+                  }
+                >
+                  4-6 hrs
+                </Separator>
+              </StackItem>
+            </Stack>
+          </Stack>
+        </StackItem>
+        <StackItem>
+          <StyledMessageBar
+            messageBarType={3}
+          >
+            <Text
+              style={
+                Object {
+                  "color": "windowtext",
+                  "fontSize": 14,
+                }
+              }
+            >
+              You are not able to lower throughput below your current minimum of 
+              10000
+               RU/s.
+            </Text>
+          </StyledMessageBar>
+        </StackItem>
+        <StackItem>
+          <Text>
+            Estimate your required throughput with
+            <StyledLinkBase
+              href="https://cosmos.azure.com/capacitycalculator/"
+              target="_blank"
+            >
+               capacity calculator
+               
+              <FontIcon
+                iconName="NavigateExternalInline"
+              />
+            </StyledLinkBase>
+          </Text>
+        </StackItem>
+        <StackItem />
+        <StackItem />
+      </Stack>
+    </StackItem>
+    <StackItem
+      style={
+        Object {
+          "maxWidth": "300px",
+          "width": "30%",
+        }
+      }
+    >
+      <Stack>
+        <Text
+          style={
+            Object {
+              "fontWeight": 600,
+            }
+          }
+        >
+          Cost estimate*
+        </Text>
+        <Stack
+          style={
+            Object {
+              "marginTop": 15,
+            }
+          }
+          tokens={
+            Object {
+              "childrenGap": 10,
+            }
+          }
+        >
+          <Text
+            style={
+              Object {
+                "fontWeight": 600,
+              }
+            }
+          >
+            Current cost per month
+          </Text>
+          <Stack
+            horizontal={true}
+            style={
+              Object {
+                "marginTop": 5,
+              }
+            }
+          >
+            <Text
+              style={
+                Object {
+                  "width": "33%",
+                }
+              }
+            >
+              $
+               
+              0.012
+              /hr
+            </Text>
+            <Text
+              style={
+                Object {
+                  "width": "33%",
+                }
+              }
+            >
+              $
+               
+              0.29
+              /day
+            </Text>
+            <Text
+              style={
+                Object {
+                  "width": "33%",
+                }
+              }
+            >
+              $
+               
+              8.76
+              /mo
+            </Text>
+          </Stack>
+        </Stack>
+        <Text
+          style={
+            Object {
+              "fontWeight": 600,
+              "marginTop": 15,
+            }
+          }
+        >
+          How we calculate this
+        </Text>
+        <Stack
+          id="throughputSpendElement"
+          style={
+            Object {
+              "marginTop": 5,
+            }
+          }
+        >
+          <span>
+            1
+             region
+          </span>
+          <span>
+            100
+             RU/s
+          </span>
+          <span>
+            $
+            0.00008
+            /RU
+          </span>
+        </Stack>
+        <Text
+          style={
+            Object {
+              "marginTop": 15,
+            }
+          }
+        >
+          <em>
+            *
+            This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+          </em>
+        </Text>
+      </Stack>
+    </StackItem>
   </Stack>
 </Stack>
 `;

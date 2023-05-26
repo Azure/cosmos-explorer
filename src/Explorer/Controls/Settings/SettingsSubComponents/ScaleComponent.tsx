@@ -171,7 +171,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       throughput={this.props.throughput}
       throughputBaseline={this.props.throughputBaseline}
       onThroughputChange={this.props.onThroughputChange}
-      minimum={this.getMinRUs()}
+      minimum={2000} //{this.getMinRUs()}
       maximum={this.getMaxRUs()}
       isEnabled={!!this.props.database || !hasDatabaseSharedThroughput(this.props.collection)}
       canExceedMaximumValue={this.canThroughputExceedMaximumValue()}
@@ -192,8 +192,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       usageSizeInKB={this.props.collection?.usageSizeInKB()}
       throughputError={this.props.throughputError}
       // CTODO: revert these next two lines when the RP is deployed
-      instantMaximumThroughput={5000}//{this.offer?.instantMaximumThroughput}
-      maximumThroughput={1000000}//{this.offer?.maximumThroughput}
+      instantMaximumThroughput={5000} //{this.offer?.instantMaximumThroughput}
+      maximumThroughput={1000000} //{this.offer?.maximumThroughput}
     />
   );
 

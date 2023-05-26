@@ -40,6 +40,8 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -106,6 +108,8 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       Object {
         "flexContainer": Array [
           Object {
+            "columnGap": "default",
+            "display": "default",
             "selectors": Object {
               ".ms-ChoiceField-field.is-checked::after": Object {
                 "borderColor": "",
@@ -168,6 +172,8 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -264,6 +270,8 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -330,6 +338,8 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       Object {
         "flexContainer": Array [
           Object {
+            "columnGap": "default",
+            "display": "default",
             "selectors": Object {
               ".ms-ChoiceField-field.is-checked::after": Object {
                 "borderColor": "",
@@ -382,6 +392,8 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": undefined,
@@ -445,6 +457,8 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -541,6 +555,8 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -607,6 +623,8 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       Object {
         "flexContainer": Array [
           Object {
+            "columnGap": "default",
+            "display": "default",
             "selectors": Object {
               ".ms-ChoiceField-field.is-checked::after": Object {
                 "borderColor": "",
@@ -659,6 +677,8 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -780,6 +800,8 @@ exports[`SubSettingsComponent renders 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -846,6 +868,8 @@ exports[`SubSettingsComponent renders 1`] = `
       Object {
         "flexContainer": Array [
           Object {
+            "columnGap": "default",
+            "display": "default",
             "selectors": Object {
               ".ms-ChoiceField-field.is-checked::after": Object {
                 "borderColor": "",
@@ -898,6 +922,8 @@ exports[`SubSettingsComponent renders 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -986,6 +1012,8 @@ exports[`SubSettingsComponent renders 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -1082,6 +1110,8 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": undefined,
@@ -1123,6 +1153,8 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       Object {
         "flexContainer": Array [
           Object {
+            "columnGap": "default",
+            "display": "default",
             "selectors": Object {
               ".ms-ChoiceField-field.is-checked::after": Object {
                 "borderColor": "",
@@ -1175,6 +1207,8 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",
@@ -1263,6 +1297,8 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         Object {
           "flexContainer": Array [
             Object {
+              "columnGap": "default",
+              "display": "default",
               "selectors": Object {
                 ".ms-ChoiceField-field.is-checked::after": Object {
                   "borderColor": "",

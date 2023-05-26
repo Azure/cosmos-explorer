@@ -43,6 +43,8 @@ describe("ThroughputInputAutoPilotV3Component", () => {
       return;
     },
     getThroughputWarningMessage: () => undefined,
+    instantMaximumThroughput: 5000,
+    maximumThroughput: 1000000,
   };
 
   it("throughput input visible", () => {
