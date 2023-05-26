@@ -20,7 +20,7 @@ import {
   Spinner,
   SpinnerSize,
   Stack,
-  Text
+  Text,
 } from "@fluentui/react";
 import * as React from "react";
 import { StyleConstants, Urls } from "../../../Common/Constants";
@@ -215,9 +215,17 @@ export const getEstimatedSpendingElement = (
       {costElement}
       <Text style={{ fontWeight: 600, marginTop: 15 }}>How we calculate this</Text>
       <Stack id="throughputSpendElement" style={{ marginTop: 5 }}>
-        <span>{numberOfRegions} region{numberOfRegions > 1 && <span>s</span>}</span>
-        <span>{ruRange}{throughput} RU/s</span>
-        <span>{priceBreakdown.currencySign}{priceBreakdown.pricePerRu}/RU</span>
+        <span>
+          {numberOfRegions} region{numberOfRegions > 1 && <span>s</span>}
+        </span>
+        <span>
+          {ruRange}
+          {throughput} RU/s
+        </span>
+        <span>
+          {priceBreakdown.currencySign}
+          {priceBreakdown.pricePerRu}/RU
+        </span>
       </Stack>
       <Text style={{ marginTop: 15 }}>
         <em>*{estimatedCostDisclaimer}</em>
@@ -270,15 +278,16 @@ export const getUpdateThroughputBeyondInstantLimitMessage = (instantMaximumThrou
   return (
     <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
       Scaling up will take 4-6 hours as it exceeds what Azure Cosmos DB can instantly support currently based on your
-      number of physical partitions. You can increase your throughput to {instantMaximumThroughput} instantly or proceed with this value and
-      wait until the scale-up is completed.
+      number of physical partitions. You can increase your throughput to {instantMaximumThroughput} instantly or proceed
+      with this value and wait until the scale-up is completed.
     </Text>
   );
 };
 
 export const getUpdateThroughputBeyondSupportLimitMessage = (
   instantMaximumThroughput: number,
-  maximumThroughput: number): JSX.Element => {
+  maximumThroughput: number
+): JSX.Element => {
   return (
     <>
       <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
@@ -311,10 +320,10 @@ const getCurrentThroughput = (
     if (throughput) {
       return isAutoscale
         ? `, Current autoscale throughput: ${Math.round(
-          throughput / 10
-        )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-          targetThroughput / 10
-        )} - ${targetThroughput} ${throughputUnit}`
+            throughput / 10
+          )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
+            targetThroughput / 10
+          )} - ${targetThroughput} ${throughputUnit}`
         : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
     } else {
       return isAutoscale
@@ -485,7 +494,11 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
   },
 });
 
-export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTypes, isHorizontal?: boolean): Partial<IChoiceGroupStyles> => ({
+export const getChoiceGroupStyles = (
+  current: isDirtyTypes,
+  baseline: isDirtyTypes,
+  isHorizontal?: boolean
+): Partial<IChoiceGroupStyles> => ({
   flexContainer: [
     {
       selectors: {
@@ -503,7 +516,7 @@ export const getChoiceGroupStyles = (current: isDirtyTypes, baseline: isDirtyTyp
         },
       },
       display: isHorizontal ? "inline-flex" : "default",
-      columnGap: isHorizontal ? "30px" : "default"
+      columnGap: isHorizontal ? "30px" : "default",
     },
   ],
 });

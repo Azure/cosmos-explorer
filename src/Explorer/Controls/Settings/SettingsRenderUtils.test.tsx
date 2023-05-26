@@ -19,7 +19,7 @@ import {
   renderMongoIndexTransformationRefreshMessage,
   ttlWarning,
   updateThroughputBeyondLimitWarningMessage,
-  updateThroughputDelayedApplyWarningMessage
+  updateThroughputDelayedApplyWarningMessage,
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {
