@@ -434,8 +434,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     return this.props.isAutoPilotSelected
       ? this.props.maxAutoPilotThroughput
       : this.overrideWithAutoPilotSettings()
-        ? this.props.maxAutoPilotThroughputBaseline
-        : this.props.throughput;
+      ? this.props.maxAutoPilotThroughputBaseline
+      : this.props.throughput;
   };
 
   private getCurrentRuRange = (): "below" | "instant" | "delayed" | "requireSupport" => {
@@ -462,8 +462,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           this.getCurrentRuRange() === "instant"
             ? "rgb(0, 120, 212)"
             : this.getCurrentRuRange() === "delayed"
-              ? "rgb(255 216 109)"
-              : "rgb(251, 217, 203)",
+            ? "rgb(255 216 109)"
+            : "rgb(251, 217, 203)",
       },
     ],
   });
