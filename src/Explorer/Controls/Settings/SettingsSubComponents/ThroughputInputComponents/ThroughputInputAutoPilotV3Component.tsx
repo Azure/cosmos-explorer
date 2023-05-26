@@ -220,7 +220,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   ): JSX.Element => {
     const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
 
-    let newThroughputCostElement = (): JSX.Element => {
+    const newThroughputCostElement = (): JSX.Element => {
       const newPrices: PriceBreakdown = getRuPriceBreakdown(
         newThroughput,
         serverId,
@@ -243,7 +243,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
     };
 
-    let costElement = (): JSX.Element => {
+    const costElement = (): JSX.Element => {
       const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
@@ -273,7 +273,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   ): JSX.Element => {
     const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, false);
 
-    let newThroughputCostElement = (): JSX.Element => {
+    const newThroughputCostElement = (): JSX.Element => {
       const newPrices: PriceBreakdown = getRuPriceBreakdown(
         newThroughput,
         serverId,
@@ -299,7 +299,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       );
     };
 
-    let costElement = (): JSX.Element => {
+    const costElement = (): JSX.Element => {
       const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
@@ -434,8 +434,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     return this.props.isAutoPilotSelected
       ? this.props.maxAutoPilotThroughput
       : this.overrideWithAutoPilotSettings()
-      ? this.props.maxAutoPilotThroughputBaseline
-      : this.props.throughput;
+        ? this.props.maxAutoPilotThroughputBaseline
+        : this.props.throughput;
   };
 
   private getCurrentRuRange = (): "below" | "instant" | "delayed" | "requireSupport" => {
@@ -459,35 +459,36 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     progressBar: [
       {
         backgroundColor:
-          this.getCurrentRuRange() == "instant"
+          this.getCurrentRuRange() === "instant"
             ? "rgb(0, 120, 212)"
-            : this.getCurrentRuRange() == "delayed"
-            ? "rgb(255 216 109)"
-            : "rgb(251, 217, 203)",
+            : this.getCurrentRuRange() === "delayed"
+              ? "rgb(255 216 109)"
+              : "rgb(251, 217, 203)",
       },
     ],
   });
 
   private getRuThermometerPercentValue = (): number => {
     let percentValue: number;
-    const ruRange = this.getCurrentRuRange();
     const currentRus = this.currentThroughputValue();
 
     switch (this.getCurrentRuRange()) {
       case "below":
         percentValue = 0;
         break;
-      case "instant":
+      case "instant": {
         const percentOfInstantRange: number = currentRus / this.props.instantMaximumThroughput;
         percentValue = percentOfInstantRange * 0.34;
         break;
-      case "delayed":
+      }
+      case "delayed": {
         const adjustedMax = this.props.maximumThroughput - this.props.instantMaximumThroughput;
         const adjustedRus = currentRus - this.props.instantMaximumThroughput;
         const percentOfDelayedRange = adjustedRus / adjustedMax;
         const adjustedPercent = percentOfDelayedRange * 0.66;
         percentValue = adjustedPercent + 0.34;
         break;
+      }
       default:
         // over maximum
         percentValue = 1;
