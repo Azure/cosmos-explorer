@@ -242,8 +242,9 @@ export interface Offer {
   minimumThroughput: number | undefined;
   offerDefinition?: SDKOfferDefinition;
   offerReplacePending: boolean;
-  instantMaximumThroughput: number;
-  maximumThroughput: number;
+  // CTODO: make the following two properties mandatory once SDK handles them
+  instantMaximumThroughput?: number;
+  maximumThroughput?: number;
 }
 
 export interface SDKOfferDefinition extends Resource {
