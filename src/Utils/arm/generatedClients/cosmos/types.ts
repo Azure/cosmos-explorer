@@ -839,15 +839,15 @@ export interface ThroughputSettingsResource {
   throughput?: number;
   /* Cosmos DB resource for autoscale settings. Either throughput is required or autoscaleSettings is required, but not both. */
   autoscaleSettings?: AutoscaleSettingsResource;
-  /* The value below which a change to RUs is instantaneous, above which the change will take time due to partition splitting. */
-  instantMaximumThroughput: number;
-  /* The value below which a change to RUs can be made by the user, above which a support ticket must be created. */
-  maximumThroughput: number;
 
   /* The minimum throughput of the resource */
   readonly minimumThroughput?: string;
   /* The throughput replace is pending */
   readonly offerReplacePending?: string;
+  /* The value below which a change to RUs is instantaneous, above which the change will take time due to partition splitting. */
+  readonly instantMaximumThroughput?: number;
+  /* The value below which a change to RUs can be made by the user, above which a support ticket must be created. */
+  readonly maximumThroughput?: number;
 }
 
 /* Cosmos DB provisioned throughput settings object */
