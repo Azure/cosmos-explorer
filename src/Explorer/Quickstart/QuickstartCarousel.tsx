@@ -1,10 +1,10 @@
 import { DefaultButton, IconButton, Image, Modal, PrimaryButton, Stack, Text } from "@fluentui/react";
-import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "UserContext";
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import Youtube from "react-youtube";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "UserContext";
 import Image1 from "../../../images/CarouselImage1.svg";
 import Image2 from "../../../images/CarouselImage2.svg";
 
@@ -25,7 +25,7 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
       <Stack>
         <Stack horizontal horizontalAlign="space-between" style={{ padding: 16 }}>
           <Text variant="xLarge">{getHeaderText(page)}</Text>
-          <IconButton iconProps={{ iconName: "Cancel" }} onClick={() => setPage(4)} ariaLabel="Close" />
+          <IconButton iconProps={{ iconName: "Cancel" }} onClick={() => setPage(4)} />
         </Stack>
         {getContent(page)}
         <Text variant="medium" style={{ padding: "0 16px" }}>
