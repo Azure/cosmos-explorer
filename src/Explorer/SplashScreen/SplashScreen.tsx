@@ -14,19 +14,19 @@ import {
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
-import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebookColorIcon from "../../../images/Notebooks.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
 import { userContext } from "../../UserContext";
@@ -116,9 +116,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <h1
+              <div
                 className="title"
-                role="heading"
                 aria-label={
                   userContext.apiType === "Postgres"
                     ? "Welcome to Azure Cosmos DB for PostgreSQL"
@@ -129,7 +128,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   ? "Welcome to Azure Cosmos DB for PostgreSQL"
                   : "Welcome to Azure Cosmos DB"}
                 <FeaturePanelLauncher />
-              </h1>
+              </div>
               <div className="subtitle">
                 {userContext.apiType === "Postgres"
                   ? "Get started with our sample datasets, documentation, and additional tools."
