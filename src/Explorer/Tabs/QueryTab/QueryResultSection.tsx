@@ -40,6 +40,15 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   isExecuting,
   executeQueryDocumentsPage,
 }: QueryResultProps): JSX.Element => {
+  const queryMetrics = React.useRef(queryResults?.headers?.[HttpHeaders.queryMetrics]);
+
+  React.useEffect(() => {
+    const latestQueryMetrics = queryResults?.headers?.[HttpHeaders.queryMetrics];
+    if (latestQueryMetrics && Object.keys(latestQueryMetrics).length > 0) {
+      queryMetrics.current = latestQueryMetrics;
+    }
+  }, [queryResults]);
+
   const onRender = (item: IDocument): JSX.Element => (
     <>
       <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>
@@ -126,12 +135,6 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   };
 
   const getAggregatedQueryMetrics = (): QueryMetrics => {
-    const queryMetrics: { [partitionKeyRangeId: string]: QueryMetrics } =
-      queryResults?.headers?.[HttpHeaders.queryMetrics];
-    if (!queryMetrics) {
-      return undefined;
-    }
-
     const aggregatedQueryMetrics = {
       documentLoadTime: 0,
       documentWriteTime: 0,
@@ -149,38 +152,39 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
       },
       totalQueryExecutionTime: 0,
     } as QueryMetrics;
-    Object.keys(queryMetrics).forEach((partitionKeyRangeId) => {
-      const queryMetricsPerPartition = queryMetrics[partitionKeyRangeId];
-      if (!queryMetricsPerPartition) {
-        return;
-      }
-      aggregatedQueryMetrics.documentLoadTime += queryMetricsPerPartition.documentLoadTime?.totalMilliseconds() || 0;
-      aggregatedQueryMetrics.documentWriteTime += queryMetricsPerPartition.documentWriteTime?.totalMilliseconds() || 0;
-      aggregatedQueryMetrics.indexHitDocumentCount += queryMetricsPerPartition.indexHitDocumentCount || 0;
-      aggregatedQueryMetrics.outputDocumentCount += queryMetricsPerPartition.outputDocumentCount || 0;
-      aggregatedQueryMetrics.outputDocumentSize += queryMetricsPerPartition.outputDocumentSize || 0;
-      aggregatedQueryMetrics.indexLookupTime += queryMetricsPerPartition.indexLookupTime?.totalMilliseconds() || 0;
-      aggregatedQueryMetrics.retrievedDocumentCount += queryMetricsPerPartition.retrievedDocumentCount || 0;
-      aggregatedQueryMetrics.retrievedDocumentSize += queryMetricsPerPartition.retrievedDocumentSize || 0;
-      aggregatedQueryMetrics.vmExecutionTime += queryMetricsPerPartition.vmExecutionTime?.totalMilliseconds() || 0;
-      aggregatedQueryMetrics.totalQueryExecutionTime +=
-        queryMetricsPerPartition.totalQueryExecutionTime?.totalMilliseconds() || 0;
-      aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime +=
-        queryMetricsPerPartition.runtimeExecutionTimes?.queryEngineExecutionTime?.totalMilliseconds() || 0;
-      aggregatedQueryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime +=
-        queryMetricsPerPartition.runtimeExecutionTimes?.systemFunctionExecutionTime?.totalMilliseconds() || 0;
-      aggregatedQueryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime +=
-        queryMetricsPerPartition.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.totalMilliseconds() || 0;
-    });
+
+    if (queryMetrics.current) {
+      Object.keys(queryMetrics.current).forEach((partitionKeyRangeId) => {
+        const queryMetricsPerPartition = queryMetrics.current[partitionKeyRangeId];
+        if (!queryMetricsPerPartition) {
+          return;
+        }
+        aggregatedQueryMetrics.documentLoadTime += queryMetricsPerPartition.documentLoadTime?.totalMilliseconds() || 0;
+        aggregatedQueryMetrics.documentWriteTime +=
+          queryMetricsPerPartition.documentWriteTime?.totalMilliseconds() || 0;
+        aggregatedQueryMetrics.indexHitDocumentCount += queryMetricsPerPartition.indexHitDocumentCount || 0;
+        aggregatedQueryMetrics.outputDocumentCount += queryMetricsPerPartition.outputDocumentCount || 0;
+        aggregatedQueryMetrics.outputDocumentSize += queryMetricsPerPartition.outputDocumentSize || 0;
+        aggregatedQueryMetrics.indexLookupTime += queryMetricsPerPartition.indexLookupTime?.totalMilliseconds() || 0;
+        aggregatedQueryMetrics.retrievedDocumentCount += queryMetricsPerPartition.retrievedDocumentCount || 0;
+        aggregatedQueryMetrics.retrievedDocumentSize += queryMetricsPerPartition.retrievedDocumentSize || 0;
+        aggregatedQueryMetrics.vmExecutionTime += queryMetricsPerPartition.vmExecutionTime?.totalMilliseconds() || 0;
+        aggregatedQueryMetrics.totalQueryExecutionTime +=
+          queryMetricsPerPartition.totalQueryExecutionTime?.totalMilliseconds() || 0;
+        aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime +=
+          queryMetricsPerPartition.runtimeExecutionTimes?.queryEngineExecutionTime?.totalMilliseconds() || 0;
+        aggregatedQueryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime +=
+          queryMetricsPerPartition.runtimeExecutionTimes?.systemFunctionExecutionTime?.totalMilliseconds() || 0;
+        aggregatedQueryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime +=
+          queryMetricsPerPartition.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.totalMilliseconds() || 0;
+      });
+    }
 
     return aggregatedQueryMetrics;
   };
 
   const generateQueryMetricsCsvData = (): string => {
-    const queryMetrics: { [partitionKeyRangeId: string]: QueryMetrics } =
-      queryResults?.headers?.[HttpHeaders.queryMetrics];
-
-    if (queryMetrics) {
+    if (queryMetrics.current) {
       let csvData =
         [
           "Partition key range id",
@@ -197,8 +201,8 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
           "Document write time (ms)",
         ].join(",") + "\n";
 
-      Object.keys(queryMetrics).forEach((partitionKeyRangeId) => {
-        const queryMetricsPerPartition = queryMetrics[partitionKeyRangeId];
+      Object.keys(queryMetrics.current).forEach((partitionKeyRangeId) => {
+        const queryMetricsPerPartition = queryMetrics.current[partitionKeyRangeId];
         csvData +=
           [
             partitionKeyRangeId,
