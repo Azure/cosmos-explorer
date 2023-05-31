@@ -165,7 +165,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource {}
+export interface DocumentId extends Resource { }
 
 export interface ConflictId extends Resource {
   resourceId?: string;
@@ -242,9 +242,8 @@ export interface Offer {
   minimumThroughput: number | undefined;
   offerDefinition?: SDKOfferDefinition;
   offerReplacePending: boolean;
-  // CTODO: make the following two properties mandatory once SDK handles them
   instantMaximumThroughput?: number;
-  maximumThroughput?: number;
+  softAllowedMaximumThroughput?: number;
 }
 
 export interface SDKOfferDefinition extends Resource {

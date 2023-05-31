@@ -34,6 +34,7 @@ import {
   getRuPriceBreakdown,
   getTextFieldStyles,
   getToolTipContainer,
+  getUpdateThroughputBelowMinimumMessage,
   getUpdateThroughputBeyondInstantLimitMessage,
   getUpdateThroughputBeyondSupportLimitMessage,
   manualToAutoscaleDisclaimerElement,
@@ -79,7 +80,7 @@ export interface ThroughputInputAutoPilotV3Props {
   usageSizeInKB: number;
   throughputError?: string;
   instantMaximumThroughput: number;
-  maximumThroughput: number;
+  softAllowedMaximumThroughput: number;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -434,8 +435,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     return this.props.isAutoPilotSelected
       ? this.props.maxAutoPilotThroughput
       : this.overrideWithAutoPilotSettings()
-      ? this.props.maxAutoPilotThroughputBaseline
-      : this.props.throughput;
+        ? this.props.maxAutoPilotThroughputBaseline
+        : this.props.throughput;
   };
 
   private getCurrentRuRange = (): "below" | "instant" | "delayed" | "requireSupport" => {
@@ -448,7 +449,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     ) {
       return "instant";
     }
-    if (this.currentThroughputValue() > this.props.maximumThroughput) {
+    if (this.currentThroughputValue() > this.props.softAllowedMaximumThroughput) {
       return "requireSupport";
     }
 
@@ -462,8 +463,8 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           this.getCurrentRuRange() === "instant"
             ? "rgb(0, 120, 212)"
             : this.getCurrentRuRange() === "delayed"
-            ? "rgb(255 216 109)"
-            : "rgb(251, 217, 203)",
+              ? "rgb(255 216 109)"
+              : "rgb(251, 217, 203)",
       },
     ],
   });
@@ -482,7 +483,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         break;
       }
       case "delayed": {
-        const adjustedMax = this.props.maximumThroughput - this.props.instantMaximumThroughput;
+        const adjustedMax = this.props.softAllowedMaximumThroughput - this.props.instantMaximumThroughput;
         const adjustedRus = currentRus - this.props.instantMaximumThroughput;
         const percentOfDelayedRange = adjustedRus / adjustedMax;
         const adjustedPercent = percentOfDelayedRange * 0.66;
@@ -504,7 +505,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         </Stack.Item>
         <Stack.Item style={{ width: "66%" }}>
           <span style={{ float: "left", transform: "translateX(-50%)" }}>{this.props.instantMaximumThroughput}</span>
-          <span style={{ float: "right" }}>{this.props.maximumThroughput}</span>
+          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput}</span>
         </Stack.Item>
       </Stack>
       <ProgressIndicator
@@ -533,17 +534,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private getThroughputWarningMessageText = (): JSX.Element => {
     switch (this.getCurrentRuRange()) {
       case "below":
-        return (
-          <Text style={{ fontSize: 14, color: "windowtext" }}>
-            You are not able to lower throughput below your current minimum of {this.props.minimum} RU/s.
-          </Text>
-        );
+        return getUpdateThroughputBelowMinimumMessage(this.props.minimum);
       case "delayed":
         return getUpdateThroughputBeyondInstantLimitMessage(this.props.instantMaximumThroughput);
       case "requireSupport":
         return getUpdateThroughputBeyondSupportLimitMessage(
           this.props.instantMaximumThroughput,
-          this.props.maximumThroughput
+          this.props.softAllowedMaximumThroughput
         );
       default:
         return <></>;
@@ -552,7 +549,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
   private getThroughputWarningMessageBar = (): JSX.Element => {
     const isSevereWarning: boolean =
-      this.currentThroughputValue() > this.props.maximumThroughput ||
+      this.currentThroughputValue() > this.props.softAllowedMaximumThroughput ||
       this.currentThroughputValue() < this.props.minimum;
     return (
       <MessageBar messageBarType={isSevereWarning ? MessageBarType.severeWarning : MessageBarType.warning}>
@@ -595,7 +592,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           <Stack.Item>
             {/* CTODO: determine whether the component is for db vs container. Use appropriate name based on type and API. */}
             <Text>
-              Based on usage, your container throughput will scale from{" "}
+              Based on usage, your {this.props.collectionName ? "container" : "database"} throughput will scale from{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.props.maxAutoPilotThroughput)} RU/s (10% of max RU/s) -{" "}
                 {this.props.maxAutoPilotThroughput} RU/s

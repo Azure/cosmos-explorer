@@ -294,12 +294,35 @@ export const getUpdateThroughputBeyondSupportLimitMessage = (
         Your request to increase throughput exceeds the pre-allocated capacity which may take longer than expected.
         There are three options you can choose from to proceed:
       </Text>
-      <ol>
+      <ol style={{ fontSize: 14, color: "windowtext", marginTop: "5px" }}>
         <li>You can instantly scale up to {instantMaximumThroughput} RU/s.</li>
         <li>You can asynchronously scale up to any value under {maximumThroughput} RU/s in 4-6 hours.</li>
-        <li>You can start a support request to increase your throughput over {maximumThroughput} RU/s.</li>
+        <li>
+          You can start a support request to increase your throughput over {maximumThroughput} RU/s.
+          <Link
+            href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/create-support-request-quota-increase"
+            target="_blank"
+          >
+            Learn more
+          </Link>
+        </li>
       </ol>
     </>
+  );
+};
+
+export const getUpdateThroughputBelowMinimumMessage = (minimum: number): JSX.Element => {
+  return (
+    <Text styles={infoAndToolTipTextStyle}>
+      You are not able to lower throughput below your current minimum of {minimum} RU/s. For more information on this
+      limit, please refer to our service quote documentation.
+      <Link
+        href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
+        target="_blank"
+      >
+        Learn more
+      </Link>
+    </Text>
   );
 };
 

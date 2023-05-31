@@ -96,8 +96,14 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         ? parseInt(resource.minimumThroughput)
         : resource.minimumThroughput;
     const autoscaleSettings = resource.autoscaleSettings;
-    const instantMaximumThroughput: number = resource.instantMaximumThroughput;
-    const maximumThroughput: number = resource.maximumThroughput;
+    const instantMaximumThroughput: number =
+      typeof resource.instantMaximumThroughput === "string"
+        ? parseInt(resource.instantMaximumThroughput)
+        : resource.instantMaximumThroughput;
+    const softAllowedMaximumThroughput: number =
+      typeof resource.softAllowedMaximumThroughput === "string"
+        ? parseInt(resource.softAllowedMaximumThroughput)
+        : resource.softAllowedMaximumThroughput;
 
     if (autoscaleSettings) {
       return {
@@ -107,7 +113,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         minimumThroughput,
         offerReplacePending: resource.offerReplacePending === "true",
         instantMaximumThroughput,
-        maximumThroughput,
+        softAllowedMaximumThroughput: softAllowedMaximumThroughput,
       };
     }
 
@@ -118,7 +124,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
       minimumThroughput,
       offerReplacePending: resource.offerReplacePending === "true",
       instantMaximumThroughput,
-      maximumThroughput,
+      softAllowedMaximumThroughput: softAllowedMaximumThroughput,
     };
   }
 
