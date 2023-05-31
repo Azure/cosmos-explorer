@@ -165,7 +165,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource { }
+export interface DocumentId extends Resource {}
 
 export interface ConflictId extends Resource {
   resourceId?: string;

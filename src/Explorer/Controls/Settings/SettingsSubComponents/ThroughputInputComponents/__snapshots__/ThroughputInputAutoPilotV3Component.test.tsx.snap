@@ -312,22 +312,32 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             messageBarType={3}
           >
             <Text
-              style={
+              styles={
                 Object {
-                  "color": "windowtext",
-                  "fontSize": 14,
+                  "root": Object {
+                    "color": "windowtext",
+                    "fontSize": 14,
+                  },
                 }
               }
             >
               You are not able to lower throughput below your current minimum of 
               10000
-               RU/s.
+               RU/s. For more information on this limit, please refer to our service quote documentation.
+              <StyledLinkBase
+                href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
+                target="_blank"
+              >
+                Learn more
+              </StyledLinkBase>
             </Text>
           </StyledMessageBar>
         </StackItem>
         <StackItem>
           <Text>
-            Based on usage, your container throughput will scale from
+            Based on usage, your 
+            container
+             throughput will scale from
              
             <b>
               400
@@ -761,16 +771,24 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             messageBarType={3}
           >
             <Text
-              style={
+              styles={
                 Object {
-                  "color": "windowtext",
-                  "fontSize": 14,
+                  "root": Object {
+                    "color": "windowtext",
+                    "fontSize": 14,
+                  },
                 }
               }
             >
               You are not able to lower throughput below your current minimum of 
               10000
-               RU/s.
+               RU/s. For more information on this limit, please refer to our service quote documentation.
+              <StyledLinkBase
+                href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
+                target="_blank"
+              >
+                Learn more
+              </StyledLinkBase>
             </Text>
           </StyledMessageBar>
         </StackItem>
@@ -1195,16 +1213,24 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             messageBarType={3}
           >
             <Text
-              style={
+              styles={
                 Object {
-                  "color": "windowtext",
-                  "fontSize": 14,
+                  "root": Object {
+                    "color": "windowtext",
+                    "fontSize": 14,
+                  },
                 }
               }
             >
               You are not able to lower throughput below your current minimum of 
               10000
-               RU/s.
+               RU/s. For more information on this limit, please refer to our service quote documentation.
+              <StyledLinkBase
+                href="https://learn.microsoft.com/en-us/azure/cosmos-db/concepts-limits#minimum-throughput-limits"
+                target="_blank"
+              >
+                Learn more
+              </StyledLinkBase>
             </Text>
           </StyledMessageBar>
         </StackItem>
