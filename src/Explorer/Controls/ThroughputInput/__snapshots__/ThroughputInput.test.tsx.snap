@@ -998,6 +998,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               >
                 <a
                   aria-label="capacity calculator of azure cosmos db"
+                  className="ms-Link root-60"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
                   target="_blank"
