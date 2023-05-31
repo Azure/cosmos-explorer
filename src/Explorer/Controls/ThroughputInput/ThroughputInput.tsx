@@ -226,7 +226,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               target="_blank"
               href="https://cosmos.azure.com/capacitycalculator/"
               aria-label="capacity calculator of azure cosmos db"
-              className="capacitycalculator-link"
             >
               capacity calculator
             </Link>
