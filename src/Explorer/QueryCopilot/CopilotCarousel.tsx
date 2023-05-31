@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { StyleConstants } from "Common/Constants";
+import { QueryCopilotSampleDatabaseId, StyleConstants } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createCollection } from "Common/dataAccess/createCollection";
 import * as DataModels from "Contracts/DataModels";
@@ -66,7 +66,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
   const getQueryCopilotInitialInput = (): string => {
     switch (selectedPrompt) {
       case 1:
-        return "Write a query to return all recrods in this table";
+        return "Write a query to return all records in this table";
       case 2:
         return "Write a query to return all records in this table created in the last thirty days";
       case 3:
@@ -77,7 +77,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
   };
 
   const createSampleDatabase = async (): Promise<void> => {
-    const database = useDatabases.getState().findDatabaseWithId("CopilotSampleDb");
+    const database = useDatabases.getState().findDatabaseWithId(QueryCopilotSampleDatabaseId);
     if (database) {
       return;
     }
@@ -87,7 +87,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
       const params: DataModels.CreateCollectionParams = {
         createNewDatabase: true,
         collectionId: "SampleContainer",
-        databaseId: "CopilotSampleDb",
+        databaseId: QueryCopilotSampleDatabaseId,
         databaseLevelThroughput: true,
         autoPilotMaxThroughput: 1000,
         offerThroughput: undefined,
@@ -100,7 +100,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
       };
       await createCollection(params);
       await explorer.refreshAllDatabases();
-      const database = useDatabases.getState().findDatabaseWithId("CopilotSampleDb");
+      const database = useDatabases.getState().findDatabaseWithId(QueryCopilotSampleDatabaseId);
       // populate sample container with sample data
       await database.loadCollections();
       const collection = database.findCollectionWithId("SampleContainer");
@@ -192,7 +192,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
             <Text>To help you get started, here are some sample prompts to get you started</Text>
             <Stack tokens={{ childrenGap: 12 }} style={{ marginTop: 16 }}>
               <PromptCard
-                header="Write a query to return all recrods in this table"
+                header="Write a query to return all records in this table"
                 description="This is a basic query which returns all records in the table "
                 onSelect={() => setSelectedPrompt(1)}
                 isSelected={selectedPrompt === 1}

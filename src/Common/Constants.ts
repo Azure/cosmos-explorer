@@ -428,3 +428,6 @@ export class JunoEndpoints {
   public static readonly Prod = "https://tools.cosmos.azure.com";
   public static readonly Stage = "https://tools-staging.cosmos.azure.com";
 }
+
+export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
+export const QueryCopilotSampleContainerId = "SampleContainer";

@@ -213,7 +213,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
     case ReactTabKind.QueryCopilot:
-      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} />;
+      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
