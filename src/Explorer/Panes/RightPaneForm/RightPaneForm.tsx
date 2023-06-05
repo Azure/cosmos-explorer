@@ -1,4 +1,3 @@
-import { useNotificationConsole } from "hooks/useNotificationConsole";
 import React, { FunctionComponent, ReactNode } from "react";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
@@ -23,12 +22,9 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   isSubmitButtonDisabled = false,
   children,
 }: RightPaneFormProps) => {
-  const expandConsole = useNotificationConsole((state) => state.expandConsole);
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("right pane form clicked");
     onSubmit();
-    expandConsole();
   };
 
   return (
