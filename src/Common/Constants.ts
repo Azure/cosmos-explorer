@@ -431,3 +431,79 @@ export class JunoEndpoints {
 
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
 export const QueryCopilotSampleContainerId = "SampleContainer";
+
+export const QueryCopilotSampleContainerSchema = {
+  product: {
+    sampleData: {
+      id: "027D0B9A-F9D9-4C96-8213-C8546C4AAE71",
+      categoryId: "26C74104-40BC-4541-8EF5-9892F7F03D72",
+      categoryName: "Components, Saddles",
+      sku: "SE-R581",
+      name: "LL Road Seat/Saddle",
+      description: 'The product called "LL Road Seat/Saddle"',
+      price: 27.12,
+      tags: [
+        {
+          id: "0573D684-9140-4DEE-89AF-4E4A90E65666",
+          name: "Tag-113",
+        },
+        {
+          id: "6C2F05C8-1E61-4912-BE1A-C67A378429BB",
+          name: "Tag-5",
+        },
+        {
+          id: "B48D6572-67EB-4630-A1DB-AFD4AD7041C9",
+          name: "Tag-100",
+        },
+        {
+          id: "D70F215D-A8AC-483A-9ABD-4A008D2B72B2",
+          name: "Tag-85",
+        },
+        {
+          id: "DCF66D9A-E2BF-4C70-8AC1-AD55E5988E9D",
+          name: "Tag-37",
+        },
+      ],
+    },
+    schema: {
+      properties: {
+        id: {
+          type: "string",
+        },
+        categoryId: {
+          type: "string",
+        },
+        categoryName: {
+          type: "string",
+        },
+        sku: {
+          type: "string",
+        },
+        name: {
+          type: "string",
+        },
+        description: {
+          type: "string",
+        },
+        price: {
+          type: "number",
+        },
+        tags: {
+          items: {
+            properties: {
+              id: {
+                type: "string",
+              },
+              name: {
+                type: "string",
+              },
+            },
+            type: "object",
+          },
+          type: "array",
+        },
+      },
+      type: "object",
+    },
+  },
+};
