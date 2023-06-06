@@ -843,10 +843,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <Text variant="small">
                     Azure Synapse Link is required for creating an analytical store{" "}
                     {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
-                    <Link
-                      href="https://aka.ms/cosmosdb-synapselink"
-                      target="_blank"
-                    >
+                    <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
                       Learn more
                     </Link>
                   </Text>
