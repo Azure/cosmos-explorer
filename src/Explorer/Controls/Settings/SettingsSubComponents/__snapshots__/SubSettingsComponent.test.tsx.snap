@@ -828,7 +828,6 @@ exports[`SubSettingsComponent renders 1`] = `
       type="number"
       value="1000"
     />
-    </div>
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
