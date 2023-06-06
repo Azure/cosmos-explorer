@@ -137,12 +137,13 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         />
         {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
-            <div tabIndex={0}>
+            <div>
               <Image
                 {...imageProps}
                 src={EditIcon}
                 alt="editEntity"
                 onClick={onEditEntity}
+                tabIndex={0}
                 onKeyPress={handleKeyPress}
               />
             </div>
