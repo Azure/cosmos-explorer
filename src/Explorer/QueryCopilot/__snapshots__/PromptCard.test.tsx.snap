@@ -1,0 +1,171 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Prompt card snapshot test should render properly if isSelected is false 1`] = `
+<Stack
+  horizontal={true}
+  style={
+    Object {
+      "border": "1px solid #F3F2F1",
+      "boxShadow": "0px 1.6px 3.6px rgba(0, 0, 0, 0.132), 0px 0.3px 0.9px rgba(0, 0, 0, 0.108)",
+      "boxSizing": "border-box",
+      "height": 100,
+      "padding": "16px 0 16px 16px ",
+      "width": 650,
+    }
+  }
+>
+  <StackItem
+    grow={1}
+  >
+    <Stack
+      horizontal={true}
+    >
+      <div>
+        <Text
+          style={
+            Object {
+              "background": "#F8FFF0",
+              "color": "#00A2AD",
+              "fontSize": 13,
+            }
+          }
+        >
+          Prompt
+        </Text>
+      </div>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "marginLeft": 16,
+          }
+        }
+      >
+        TestHeader
+      </Text>
+    </Stack>
+    <Text
+      style={
+        Object {
+          "fontSize": 10,
+          "marginTop": 16,
+        }
+      }
+    >
+      TestDescription
+    </Text>
+  </StackItem>
+  <StackItem
+    style={
+      Object {
+        "marginLeft": 16,
+      }
+    }
+  >
+    <StyledChoiceGroup
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "selected",
+            "text": "",
+          },
+        ]
+      }
+      selectedKey=""
+      styles={
+        Object {
+          "flexContainer": Object {
+            "width": 36,
+          },
+        }
+      }
+    />
+  </StackItem>
+</Stack>
+`;
+
+exports[`Prompt card snapshot test should render properly if isSelected is true 1`] = `
+<Stack
+  horizontal={true}
+  style={
+    Object {
+      "border": "1px solid #F3F2F1",
+      "boxShadow": "0px 1.6px 3.6px rgba(0, 0, 0, 0.132), 0px 0.3px 0.9px rgba(0, 0, 0, 0.108)",
+      "boxSizing": "border-box",
+      "height": 100,
+      "padding": "16px 0 16px 16px ",
+      "width": 650,
+    }
+  }
+>
+  <StackItem
+    grow={1}
+  >
+    <Stack
+      horizontal={true}
+    >
+      <div>
+        <Text
+          style={
+            Object {
+              "background": "#F8FFF0",
+              "color": "#00A2AD",
+              "fontSize": 13,
+            }
+          }
+        >
+          Prompt
+        </Text>
+      </div>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "marginLeft": 16,
+          }
+        }
+      >
+        TestHeader
+      </Text>
+    </Stack>
+    <Text
+      style={
+        Object {
+          "fontSize": 10,
+          "marginTop": 16,
+        }
+      }
+    >
+      TestDescription
+    </Text>
+  </StackItem>
+  <StackItem
+    style={
+      Object {
+        "marginLeft": 16,
+      }
+    }
+  >
+    <StyledChoiceGroup
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "selected",
+            "text": "",
+          },
+        ]
+      }
+      selectedKey="selected"
+      styles={
+        Object {
+          "flexContainer": Object {
+            "width": 36,
+          },
+        }
+      }
+    />
+  </StackItem>
+</Stack>
+`;

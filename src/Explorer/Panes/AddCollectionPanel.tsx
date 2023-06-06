@@ -57,7 +57,7 @@ const SharedDatabaseDefault: DataModels.IndexingPolicy = {
   ],
 };
 
-const AllPropertiesIndexed: DataModels.IndexingPolicy = {
+export const AllPropertiesIndexed: DataModels.IndexingPolicy = {
   indexingMode: "consistent",
   automatic: true,
   includedPaths: [

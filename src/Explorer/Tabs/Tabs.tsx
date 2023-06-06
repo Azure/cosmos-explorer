@@ -3,6 +3,7 @@ import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
@@ -68,6 +69,13 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
   const tabId = tab ? tab.tabId : "connect";
 
+  const getReactTabTitle = (): ko.Observable<string> => {
+    if (tabKind === ReactTabKind.QueryCopilot) {
+      return ko.observable("Query");
+    }
+    return ko.observable(ReactTabKind[tabKind]);
+  };
+
   useEffect(() => {
     if (active && focusTab.current) {
       focusTab.current.focus();
@@ -109,7 +117,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
               <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
           </span>
-          <span className="tabNavText">{useObservable(tab?.tabTitle || ko.observable(ReactTabKind[tabKind]))}</span>
+          <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           {tabKind !== ReactTabKind.Home && (
             <span className="tabIconSection">
               <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
@@ -211,6 +219,8 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
       return <SplashScreen explorer={explorer} />;
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
+    case ReactTabKind.QueryCopilot:
+      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
