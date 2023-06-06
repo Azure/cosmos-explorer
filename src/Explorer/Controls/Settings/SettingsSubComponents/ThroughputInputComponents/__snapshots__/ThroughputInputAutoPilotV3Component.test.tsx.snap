@@ -311,7 +311,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               "key": "costType",
               "maxWidth": 200,
               "minWidth": 100,
-              "name": "Cost type",
+              "name": "",
               "styles": Object {
                 "root": Object {
                   "selectors": Object {
@@ -586,7 +586,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               "key": "costType",
               "maxWidth": 200,
               "minWidth": 100,
-              "name": "Cost type",
+              "name": "",
               "styles": Object {
                 "root": Object {
                   "selectors": Object {
