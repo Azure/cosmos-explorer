@@ -319,7 +319,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   placeholder="Type a new database id"
                   size={40}
                   className="panelTextField"
-                  aria-label="New database id"
+                  aria-label="New database id, Type a new database id"
                   autoFocus
                   tabIndex={0}
                   value={this.state.newDatabaseId}
@@ -425,7 +425,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
-              aria-label={`${getCollectionName()} id`}
+              aria-label={`${getCollectionName()} id Example ${getCollectionName()}1`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
