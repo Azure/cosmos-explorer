@@ -26,7 +26,6 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
         className="panelMainContent"
       >
         <Stack
-          aria-label="Add Property"
           className="addButtonEntiy"
           horizontal={true}
           onClick={[Function]}
@@ -34,21 +33,20 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
           tabIndex={0}
         >
           <div
-            aria-label="Add Property"
             className="ms-Stack addButtonEntiy css-53"
             onClick={[Function]}
             onKeyPress={[Function]}
             tabIndex={0}
           >
             <StyledImageBase
-              alt="Add Property"
+              alt="Add Entity"
               height={30}
               key=".0:$.0"
               src=""
               width={16}
             >
               <ImageBase
-                alt="Add Property"
+                alt="Add Entity"
                 height={30}
                 src=""
                 styles={[Function]}
@@ -337,7 +335,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                   }
                 >
                   <img
-                    alt="Add Property"
+                    alt="Add Entity"
                     className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-55"
                     key="fabricImage"
                     onError={[Function]}
