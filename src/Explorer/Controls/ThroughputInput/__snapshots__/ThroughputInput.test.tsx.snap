@@ -714,13 +714,11 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
              
             <StyledLinkBase
               aria-label="capacity calculator of azure cosmos db"
-              className="capacitycalculator-link"
               href="https://cosmos.azure.com/capacitycalculator/"
               target="_blank"
             >
               <LinkBase
                 aria-label="capacity calculator of azure cosmos db"
-                className="capacitycalculator-link"
                 href="https://cosmos.azure.com/capacitycalculator/"
                 styles={[Function]}
                 target="_blank"
@@ -1000,7 +998,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               >
                 <a
                   aria-label="capacity calculator of azure cosmos db"
-                  className="ms-Link capacitycalculator-link root-60"
+                  className="ms-Link root-60"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
                   target="_blank"
