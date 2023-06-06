@@ -295,9 +295,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
             className="addButtonEntiy"
             tabIndex={0}
             onKeyPress={handlekeypressaddentity}
-            aria-label="Add Property"
           >
-            <Image {...imageProps} src={AddPropertyIcon} alt="Add Property" />
+            <Image {...imageProps} src={AddPropertyIcon} alt="Add Entity" />
             <Text className="addNewParamStyle">{getAddButtonLabel(userContext.apiType)}</Text>
           </Stack>
         )}
