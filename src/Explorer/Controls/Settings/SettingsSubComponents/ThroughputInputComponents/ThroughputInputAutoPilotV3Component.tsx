@@ -24,23 +24,23 @@ import { calculateEstimateNumber, usageInGB } from "../../../../../Utils/Pricing
 import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
   AutoscaleEstimatedSpendingDisplayProps,
-  ManualEstimatedSpendingDisplayProps,
-  PriceBreakdown,
   checkBoxAndInputStackProps,
   getAutoPilotV3SpendElement,
   getChoiceGroupStyles,
   getEstimatedSpendingElement,
   getRuPriceBreakdown,
   getTextFieldStyles,
+  ManualEstimatedSpendingDisplayProps,
   getToolTipContainer,
   manualToAutoscaleDisclaimerElement,
   messageBarStyles,
   noLeftPaddingCheckBoxStyle,
+  PriceBreakdown,
   saveThroughputWarningMessage,
   titleAndInputStackProps,
   transparentDetailsHeaderStyle,
 } from "../../SettingsRenderUtils";
-import { IsComponentDirtyResult, getSanitizedInputValue, isDirty } from "../../SettingsUtils";
+import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
@@ -218,7 +218,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const estimatedSpendingColumns: IColumn[] = [
       {
         key: "costType",
-        name: "Cost Type",
+        name: "",
         fieldName: "costType",
         minWidth: 100,
         maxWidth: 200,
@@ -312,7 +312,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const estimatedSpendingColumns: IColumn[] = [
       {
         key: "costType",
-        name: "Cost type",
+        name: "",
         fieldName: "costType",
         minWidth: 100,
         maxWidth: 200,
