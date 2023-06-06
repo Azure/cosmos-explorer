@@ -400,6 +400,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           . Enable Synapse Link for this Cosmos DB account.
            
           <StyledLinkBase
+            className="capacitycalculator-link"
             href="https://aka.ms/cosmosdb-synapselink"
             target="_blank"
           >
