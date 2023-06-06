@@ -59,34 +59,32 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         }
       }
     />
-    <div>
-      <StyledTextFieldBase
-        ariaLabel="Time to live on 1000 seconds"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      ariaLabel="Time to live on 1000 seconds"
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
-    </div>
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
@@ -286,34 +284,32 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         }
       }
     />
-    <div>
-      <StyledTextFieldBase
-        ariaLabel="Time to live on 1000 seconds"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      ariaLabel="Time to live on 1000 seconds"
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
-    </div>
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
@@ -566,34 +562,32 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
         }
       }
     />
-    <div>
-      <StyledTextFieldBase
-        ariaLabel="Time to live on 1000 seconds"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      ariaLabel="Time to live on 1000 seconds"
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
-    </div>
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
   </Stack>
   <StyledChoiceGroup
     id="geoSpatialConfig"
@@ -808,33 +802,32 @@ exports[`SubSettingsComponent renders 1`] = `
         }
       }
     />
-    <div>
-      <StyledTextFieldBase
-        ariaLabel="Time to live on 1000 seconds"
-        id="timeToLiveSeconds"
-        max={2147483647}
-        min={1}
-        onChange={[Function]}
-        required={true}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "borderColor": "",
-              "height": 25,
-              "selectors": Object {
-                ":disabled": Object {
-                  "backgroundColor": undefined,
-                  "borderColor": undefined,
-                },
+    <StyledTextFieldBase
+      ariaLabel="Time to live on 1000 seconds"
+      id="timeToLiveSeconds"
+      max={2147483647}
+      min={1}
+      onChange={[Function]}
+      required={true}
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
               },
-              "width": 300,
             },
-          }
+            "width": 300,
+          },
         }
-        suffix="second(s)"
-        type="number"
-        value="1000"
-      />
+      }
+      suffix="second(s)"
+      type="number"
+      value="1000"
+    />
     </div>
   </Stack>
   <StyledChoiceGroup
