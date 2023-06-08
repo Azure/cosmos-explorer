@@ -84,7 +84,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         className="panelGroupSpacing"
       >
         <input
-          aria-label="New database id, Type a new database id"
+          aria-label="New database id"
           aria-required={true}
           autoComplete="off"
           autoFocus={true}
@@ -178,7 +178,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         </StyledTooltipHostBase>
       </Stack>
       <input
-        aria-label="Container id Example Container1"
+        aria-label="Container id"
         aria-required={true}
         autoComplete="off"
         className="panelTextField"
@@ -400,7 +400,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           . Enable Synapse Link for this Cosmos DB account.
            
           <StyledLinkBase
-            className="capacitycalculator-link"
             href="https://aka.ms/cosmosdb-synapselink"
             target="_blank"
           >
