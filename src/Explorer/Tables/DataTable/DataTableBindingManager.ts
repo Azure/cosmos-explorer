@@ -5,11 +5,11 @@ import * as Constants from "../Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as DataTableBuilder from "./DataTableBuilder";
 import DataTableOperationManager from "./DataTableOperationManager";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as DataTableOperations from "./DataTableOperations";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Utilities from "../Utilities";	
-import * as Entities from "../Entities"
+import * as Utilities from "../Utilities";
+import * as Entities from "../Entities";
 
 /**
  * Custom binding manager of datatable
