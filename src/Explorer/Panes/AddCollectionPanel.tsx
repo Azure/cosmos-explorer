@@ -33,7 +33,6 @@ import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils"
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
-import "../Controls/ThroughputInput/ThroughputInput.less";
 import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
@@ -319,7 +318,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   placeholder="Type a new database id"
                   size={40}
                   className="panelTextField"
-                  aria-label="New database id, Type a new database id"
+                  aria-label="New database id"
                   autoFocus
                   tabIndex={0}
                   value={this.state.newDatabaseId}
@@ -425,7 +424,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
-              aria-label={`${getCollectionName()} id Example ${getCollectionName()}1`}
+              aria-label={`${getCollectionName()} id Example`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
