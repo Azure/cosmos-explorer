@@ -33,7 +33,6 @@ import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils"
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
-import "../Controls/ThroughputInput/ThroughputInput.less";
 import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
@@ -844,11 +843,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <Text variant="small">
                     Azure Synapse Link is required for creating an analytical store{" "}
                     {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
-                    <Link
-                      href="https://aka.ms/cosmosdb-synapselink"
-                      target="_blank"
-                      className="capacitycalculator-link"
-                    >
+                    <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
                       Learn more
                     </Link>
                   </Text>
