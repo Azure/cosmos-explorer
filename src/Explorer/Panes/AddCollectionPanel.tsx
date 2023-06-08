@@ -424,7 +424,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
-              aria-label={`${getCollectionName()} id Example`}
+              aria-label={`${getCollectionName()} id`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
@@ -843,11 +843,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <Text variant="small">
                     Azure Synapse Link is required for creating an analytical store{" "}
                     {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
-                    <Link
-                      href="https://aka.ms/cosmosdb-synapselink"
-                      target="_blank"
-                      className="capacitycalculator-link"
-                    >
+                    <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
                       Learn more
                     </Link>
                   </Text>
