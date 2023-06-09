@@ -259,14 +259,6 @@ export const indexingPolicynUnsavedWarningMessage: JSX.Element = (
   </Text>
 );
 
-export const updateThroughputBeyondLimitWarningMessage: JSX.Element = (
-  <Text styles={infoAndToolTipTextStyle} id="updateThroughputBeyondLimitWarningMessage">
-    You are about to request an increase in throughput beyond the pre-allocated capacity. The service will scale out and
-    increase throughput for the selected container. This operation will take 1-3 business days to complete. You can
-    track the status of this request in Notifications.
-  </Text>
-);
-
 export const updateThroughputDelayedApplyWarningMessage: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="updateThroughputDelayedApplyWarningMessage">
     You are about to request an increase in throughput beyond the pre-allocated capacity. This operation will take some

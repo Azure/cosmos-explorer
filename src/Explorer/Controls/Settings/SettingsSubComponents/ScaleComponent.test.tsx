@@ -3,7 +3,6 @@ import ko from "knockout";
 import React from "react";
 import * as Constants from "../../../../Common/Constants";
 import * as DataModels from "../../../../Contracts/DataModels";
-import * as SharedConstants from "../../../../Shared/Constants";
 import { updateUserContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import { throughputUnit } from "../SettingsRenderUtils";
@@ -124,12 +123,5 @@ describe("ScaleComponent", () => {
     const newProps = { ...baseProps };
     scaleComponent = new ScaleComponent(newProps);
     expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
-  });
-
-  it("getThroughputWarningMessage", () => {
-    const throughputBeyondLimit = SharedConstants.CollectionCreation.DefaultCollectionRUs1Million + 1000;
-    const newProps = { ...baseProps, container: nonNationalCloudContainer, throughput: throughputBeyondLimit };
-    const scaleComponent = new ScaleComponent(newProps);
-    expect(scaleComponent.getThroughputWarningMessage().props.id).toEqual("updateThroughputBeyondLimitWarningMessage");
   });
 });

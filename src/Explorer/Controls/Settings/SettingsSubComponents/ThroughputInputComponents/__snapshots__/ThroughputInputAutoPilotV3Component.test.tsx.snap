@@ -157,38 +157,36 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           }
         }
       >
-        <StackItem>
-          <StyledTextFieldBase
-            disabled={true}
-            id="autopilotInput"
-            key="auto pilot throughput input"
-            label="Maximum RU/s required by this resource"
-            min={1000}
-            onChange={[Function]}
-            onGetErrorMessage={[Function]}
-            required={true}
-            step={1000}
-            styles={
-              Object {
-                "fieldGroup": Object {
-                  "borderColor": "",
-                  "height": 25,
-                  "selectors": Object {
-                    ":disabled": Object {
-                      "backgroundColor": undefined,
-                      "borderColor": undefined,
-                    },
+        <StyledTextFieldBase
+          disabled={true}
+          id="autopilotInput"
+          key="auto pilot throughput input"
+          label="Maximum RU/s required by this resource"
+          min={1000}
+          onChange={[Function]}
+          onGetErrorMessage={[Function]}
+          required={true}
+          step={1000}
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "borderColor": "",
+                "height": 25,
+                "selectors": Object {
+                  ":disabled": Object {
+                    "backgroundColor": undefined,
+                    "borderColor": undefined,
                   },
-                  "width": 300,
                 },
-              }
+                "width": 300,
+              },
             }
-            type="number"
-            validateOnLoad={false}
-            value=""
-          />
-        </StackItem>
-        <StackItem>
+          }
+          type="number"
+          validateOnLoad={false}
+          value=""
+        />
+        <Stack>
           <Stack>
             <Stack
               horizontal={true}
@@ -201,7 +199,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 }
               >
                 <span>
-                  10000
+                  10,000
                 </span>
               </StackItem>
               <StackItem
@@ -219,7 +217,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                     }
                   }
                 >
-                  5000
+                  5,000
                 </span>
                 <span
                   style={
@@ -228,7 +226,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                     }
                   }
                 >
-                  1000000
+                  1,000,000
                 </span>
               </StackItem>
             </Stack>
@@ -306,8 +304,6 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               </StackItem>
             </Stack>
           </Stack>
-        </StackItem>
-        <StackItem>
           <StyledMessageBar
             messageBarType={3}
           >
@@ -332,26 +328,49 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               </StyledLinkBase>
             </Text>
           </StyledMessageBar>
-        </StackItem>
-        <StackItem>
-          <Text>
-            Based on usage, your 
-            container
-             throughput will scale from
+        </Stack>
+        <Text
+          style={
+            Object {
+              "marginTop": "40px",
+            }
+          }
+        >
+          Based on usage, your 
+          container
+           throughput will scale from
+           
+          <b>
+            400
+             RU/s (10% of max RU/s) -
              
-            <b>
-              400
-               RU/s (10% of max RU/s) -
-               
-              4000
-               RU/s
-            </b>
-            <br />
-          </Text>
+            4000
+             RU/s
+          </b>
+          <br />
+        </Text>
+        <StackItem
+          style={
+            Object {
+              "marginTop": "40px",
+            }
+          }
+        >
+          <Stack
+            tokens={
+              Object {
+                "childrenGap": 5,
+              }
+            }
+          >
+            <StyledLabelBase>
+              Storage capacity
+            </StyledLabelBase>
+            <Text>
+              Unlimited
+            </Text>
+          </Stack>
         </StackItem>
-        <StackItem />
-        <StackItem />
-        <StackItem />
       </Stack>
     </StackItem>
     <StackItem
@@ -619,35 +638,33 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           }
         }
       >
-        <StackItem>
-          <StyledTextFieldBase
-            disabled={false}
-            id="throughputInput"
-            key="provisioned throughput input"
-            min={10000}
-            onChange={[Function]}
-            required={true}
-            step={100}
-            styles={
-              Object {
-                "fieldGroup": Object {
-                  "borderColor": "",
-                  "height": 25,
-                  "selectors": Object {
-                    ":disabled": Object {
-                      "backgroundColor": undefined,
-                      "borderColor": undefined,
-                    },
+        <StyledTextFieldBase
+          disabled={false}
+          id="throughputInput"
+          key="provisioned throughput input"
+          min={10000}
+          onChange={[Function]}
+          required={true}
+          step={100}
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "borderColor": "",
+                "height": 25,
+                "selectors": Object {
+                  ":disabled": Object {
+                    "backgroundColor": undefined,
+                    "borderColor": undefined,
                   },
-                  "width": 300,
                 },
-              }
+                "width": 300,
+              },
             }
-            type="number"
-            value="100"
-          />
-        </StackItem>
-        <StackItem>
+          }
+          type="number"
+          value="100"
+        />
+        <Stack>
           <Stack>
             <Stack
               horizontal={true}
@@ -660,7 +677,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                 }
               >
                 <span>
-                  10000
+                  10,000
                 </span>
               </StackItem>
               <StackItem
@@ -678,7 +695,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                     }
                   }
                 >
-                  5000
+                  5,000
                 </span>
                 <span
                   style={
@@ -687,7 +704,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                     }
                   }
                 >
-                  1000000
+                  1,000,000
                 </span>
               </StackItem>
             </Stack>
@@ -765,8 +782,6 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               </StackItem>
             </Stack>
           </Stack>
-        </StackItem>
-        <StackItem>
           <StyledMessageBar
             messageBarType={3}
           >
@@ -791,43 +806,59 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               </StyledLinkBase>
             </Text>
           </StyledMessageBar>
-        </StackItem>
-        <StackItem>
-          <Text>
-            Estimate your required throughput with
-            <StyledLinkBase
-              href="https://cosmos.azure.com/capacitycalculator/"
-              target="_blank"
-            >
-               capacity calculator
-               
-              <FontIcon
-                iconName="NavigateExternalInline"
-              />
-            </StyledLinkBase>
-          </Text>
-        </StackItem>
-        <StackItem />
-        <StackItem>
-          <StyledCheckboxBase
-            checked={false}
-            id="spendAckCheckBox"
-            label="spendAckText"
-            onChange={[Function]}
-            styles={
+        </Stack>
+        <Text>
+          Estimate your required RU/s with
+          <StyledLinkBase
+            href="https://cosmos.azure.com/capacitycalculator/"
+            target="_blank"
+          >
+             capacity calculator
+             
+            <FontIcon
+              iconName="NavigateExternalInline"
+            />
+          </StyledLinkBase>
+        </Text>
+        <StyledCheckboxBase
+          checked={false}
+          id="spendAckCheckBox"
+          label="spendAckText"
+          onChange={[Function]}
+          styles={
+            Object {
+              "label": Object {
+                "margin": 0,
+                "padding": "2 0 2 0",
+              },
+              "text": Object {
+                "fontSize": 12,
+              },
+            }
+          }
+        />
+        <StackItem
+          style={
+            Object {
+              "marginTop": "40px",
+            }
+          }
+        >
+          <Stack
+            tokens={
               Object {
-                "label": Object {
-                  "margin": 0,
-                  "padding": "2 0 2 0",
-                },
-                "text": Object {
-                  "fontSize": 12,
-                },
+                "childrenGap": 5,
               }
             }
-          />
+          >
+            <StyledLabelBase>
+              Storage capacity
+            </StyledLabelBase>
+            <Text>
+              Unlimited
+            </Text>
+          </Stack>
         </StackItem>
-        <StackItem />
       </Stack>
     </StackItem>
     <StackItem
@@ -1061,35 +1092,33 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
           }
         }
       >
-        <StackItem>
-          <StyledTextFieldBase
-            disabled={false}
-            id="throughputInput"
-            key="provisioned throughput input"
-            min={10000}
-            onChange={[Function]}
-            required={true}
-            step={100}
-            styles={
-              Object {
-                "fieldGroup": Object {
-                  "borderColor": "",
-                  "height": 25,
-                  "selectors": Object {
-                    ":disabled": Object {
-                      "backgroundColor": undefined,
-                      "borderColor": undefined,
-                    },
+        <StyledTextFieldBase
+          disabled={false}
+          id="throughputInput"
+          key="provisioned throughput input"
+          min={10000}
+          onChange={[Function]}
+          required={true}
+          step={100}
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "borderColor": "",
+                "height": 25,
+                "selectors": Object {
+                  ":disabled": Object {
+                    "backgroundColor": undefined,
+                    "borderColor": undefined,
                   },
-                  "width": 300,
                 },
-              }
+                "width": 300,
+              },
             }
-            type="number"
-            value="100"
-          />
-        </StackItem>
-        <StackItem>
+          }
+          type="number"
+          value="100"
+        />
+        <Stack>
           <Stack>
             <Stack
               horizontal={true}
@@ -1102,7 +1131,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                 }
               >
                 <span>
-                  10000
+                  10,000
                 </span>
               </StackItem>
               <StackItem
@@ -1120,7 +1149,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                     }
                   }
                 >
-                  5000
+                  5,000
                 </span>
                 <span
                   style={
@@ -1129,7 +1158,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                     }
                   }
                 >
-                  1000000
+                  1,000,000
                 </span>
               </StackItem>
             </Stack>
@@ -1207,8 +1236,6 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               </StackItem>
             </Stack>
           </Stack>
-        </StackItem>
-        <StackItem>
           <StyledMessageBar
             messageBarType={3}
           >
@@ -1233,24 +1260,42 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               </StyledLinkBase>
             </Text>
           </StyledMessageBar>
+        </Stack>
+        <Text>
+          Estimate your required RU/s with
+          <StyledLinkBase
+            href="https://cosmos.azure.com/capacitycalculator/"
+            target="_blank"
+          >
+             capacity calculator
+             
+            <FontIcon
+              iconName="NavigateExternalInline"
+            />
+          </StyledLinkBase>
+        </Text>
+        <StackItem
+          style={
+            Object {
+              "marginTop": "40px",
+            }
+          }
+        >
+          <Stack
+            tokens={
+              Object {
+                "childrenGap": 5,
+              }
+            }
+          >
+            <StyledLabelBase>
+              Storage capacity
+            </StyledLabelBase>
+            <Text>
+              Unlimited
+            </Text>
+          </Stack>
         </StackItem>
-        <StackItem>
-          <Text>
-            Estimate your required throughput with
-            <StyledLinkBase
-              href="https://cosmos.azure.com/capacitycalculator/"
-              target="_blank"
-            >
-               capacity calculator
-               
-              <FontIcon
-                iconName="NavigateExternalInline"
-              />
-            </StyledLinkBase>
-          </Text>
-        </StackItem>
-        <StackItem />
-        <StackItem />
       </Stack>
     </StackItem>
     <StackItem

@@ -42,6 +42,7 @@ import {
   noLeftPaddingCheckBoxStyle,
   relaxedSpacingStackProps,
   saveThroughputWarningMessage,
+  titleAndInputStackProps,
 } from "../../SettingsRenderUtils";
 import { IsComponentDirtyResult, getSanitizedInputValue, isDirty } from "../../SettingsUtils";
 import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
@@ -76,7 +77,6 @@ export interface ThroughputInputAutoPilotV3Props {
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
-  getThroughputWarningMessage: () => JSX.Element;
   usageSizeInKB: number;
   throughputError?: string;
   instantMaximumThroughput: number;
@@ -191,7 +191,15 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
     let estimatedSpend: JSX.Element;
 
-    if (!this.props.isAutoPilotSelected) {
+    if (this.props.isAutoPilotSelected) {
+      estimatedSpend = this.getEstimatedAutoscaleSpendElement(
+        this.props.maxAutoPilotThroughputBaseline,
+        userContext.portalEnv,
+        regions,
+        multimaster,
+        isDirty ? this.props.maxAutoPilotThroughput : undefined
+      );
+    } else {
       estimatedSpend = this.getEstimatedManualSpendElement(
         // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
         this.overrideWithAutoPilotSettings() ? this.props.maxAutoPilotThroughput : this.props.throughputBaseline,
@@ -199,14 +207,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         regions,
         multimaster,
         isDirty ? this.props.throughput : undefined
-      );
-    } else {
-      estimatedSpend = this.getEstimatedAutoscaleSpendElement(
-        this.props.maxAutoPilotThroughputBaseline,
-        userContext.portalEnv,
-        regions,
-        multimaster,
-        isDirty ? this.props.maxAutoPilotThroughput : undefined
       );
     }
     return estimatedSpend;
@@ -417,6 +417,16 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
   private onSpendAckChecked = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void =>
     this.setState({ spendAckChecked: checked });
 
+  private getStorageCapacityTitle = (): JSX.Element => {
+    const capacity: string = this.props.isFixed ? "Fixed" : "Unlimited";
+    return (
+      <Stack {...titleAndInputStackProps}>
+        <Label>Storage capacity</Label>
+        <Text>{capacity}</Text>
+      </Stack>
+    );
+  };
+
   private thoughputRangeSeparatorStyles: Partial<ISeparatorStyles> = {
     root: [
       {
@@ -501,11 +511,13 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     <Stack>
       <Stack horizontal>
         <Stack.Item style={{ width: "34%" }}>
-          <span>{this.props.minimum}</span>
+          <span>{this.props.minimum.toLocaleString()}</span>
         </Stack.Item>
         <Stack.Item style={{ width: "66%" }}>
-          <span style={{ float: "left", transform: "translateX(-50%)" }}>{this.props.instantMaximumThroughput}</span>
-          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput}</span>
+          <span style={{ float: "left", transform: "translateX(-50%)" }}>
+            {this.props.instantMaximumThroughput.toLocaleString()}
+          </span>
+          <span style={{ float: "right" }}>{this.props.softAllowedMaximumThroughput.toLocaleString()}</span>
         </Stack.Item>
       </Stack>
       <ProgressIndicator
@@ -558,40 +570,64 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     );
   };
 
-  private renderAutoPilotInput = (): JSX.Element => (
+  private getThroughputTextField = (): JSX.Element => (
+    <>
+      {this.props.isAutoPilotSelected ? (
+        <TextField
+          label="Maximum RU/s required by this resource"
+          required
+          type="number"
+          id="autopilotInput"
+          key="auto pilot throughput input"
+          styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
+          disabled={this.overrideWithProvisionedThroughputSettings()}
+          step={AutoPilotUtils.autoPilotIncrementStep}
+          value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
+          onChange={this.onAutoPilotThroughputChange}
+          min={autoPilotThroughput1K}
+          onGetErrorMessage={(value: string) => {
+            const sanitizedValue = getSanitizedInputValue(value);
+            return sanitizedValue % 1000
+              ? "Throughput value must be in increments of 1000"
+              : this.props.throughputError;
+          }}
+          validateOnLoad={false}
+        />
+      ) : (
+        <TextField
+          required
+          type="number"
+          id="throughputInput"
+          key="provisioned throughput input"
+          styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
+          disabled={this.overrideWithAutoPilotSettings()}
+          step={this.step}
+          value={
+            this.overrideWithAutoPilotSettings()
+              ? this.props.maxAutoPilotThroughputBaseline?.toString()
+              : this.props.throughput?.toString()
+          }
+          onChange={this.onThroughputChange}
+          min={this.props.minimum}
+          errorMessage={this.props.throughputError}
+        />
+      )}
+    </>
+  );
+
+  private renderThroughputComponent = (): JSX.Element => (
     <Stack horizontal>
       <Stack.Item style={{ width: "70%", maxWidth: "700px" }}>
         <Stack {...relaxedSpacingStackProps} style={{ paddingRight: "50px" }}>
-          <Stack.Item>
-            <TextField
-              label="Maximum RU/s required by this resource"
-              required
-              type="number"
-              id="autopilotInput"
-              key="auto pilot throughput input"
-              styles={getTextFieldStyles(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)}
-              disabled={this.overrideWithProvisionedThroughputSettings()}
-              step={AutoPilotUtils.autoPilotIncrementStep}
-              value={
-                this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()
-              }
-              onChange={this.onAutoPilotThroughputChange}
-              min={autoPilotThroughput1K}
-              //errorMessage={this.props.throughputError}
-              onGetErrorMessage={(value: string) => {
-                const sanitizedValue = getSanitizedInputValue(value);
-                return sanitizedValue % 1000
-                  ? "Throughput value must be in increments of 1000"
-                  : this.props.throughputError;
-              }}
-              validateOnLoad={false}
-            />
-          </Stack.Item>
-          <Stack.Item>{this.getRUThermometer()}</Stack.Item>
-          <Stack.Item>{this.showThroughputWarning() && this.getThroughputWarningMessageBar()}</Stack.Item>
-          <Stack.Item>
-            {/* CTODO: determine whether the component is for db vs container. Use appropriate name based on type and API. */}
-            <Text>
+          {this.getThroughputTextField()}
+          {this.props.instantMaximumThroughput && (
+            <Stack>
+              {this.getRUThermometer()}
+              {this.showThroughputWarning() && this.getThroughputWarningMessageBar()}
+            </Stack>
+          )}
+          {this.props.isAutoPilotSelected ? (
+            <Text style={{ marginTop: "40px" }}>
               Based on usage, your {this.props.collectionName ? "container" : "database"} throughput will scale from{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.props.maxAutoPilotThroughput)} RU/s (10% of max RU/s) -{" "}
@@ -599,110 +635,43 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
               </b>
               <br />
             </Text>
-          </Stack.Item>
+          ) : (
+            <>
+              {this.state.exceedFreeTierThroughput && (
+                <MessageBar
+                  messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
+                  styles={messageBarStyles}
+                  style={{ marginTop: "40px" }}
+                >
+                  {`Billing will apply if you provision more than ${SharedConstants.FreeTierLimits.RU} RU/s of manual throughput, or if the resource scales beyond ${SharedConstants.FreeTierLimits.RU} RU/s with autoscale.`}
+                </MessageBar>
+              )}
+            </>
+          )}
           {!this.overrideWithProvisionedThroughputSettings() && (
-            <Stack.Item>
-              <Text>
-                Estimate your required RU/s with
-                <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
-                  {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />
-                </Link>
-              </Text>
-            </Stack.Item>
-          )}
-          <Stack.Item>{this.minRUperGBSurvey()}</Stack.Item>
-          <Stack.Item>
-            {this.props.spendAckVisible && (
-              <Checkbox
-                id="spendAckCheckBox"
-                styles={noLeftPaddingCheckBoxStyle}
-                label={this.props.spendAckText}
-                checked={this.state.spendAckChecked}
-                onChange={this.onSpendAckChecked}
-              />
-            )}
-          </Stack.Item>
-          <Stack.Item>
-            {this.props.isFixed && (
-              <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>
-            )}
-          </Stack.Item>
-        </Stack>
-      </Stack.Item>
-      <Stack.Item style={{ width: "30%", maxWidth: "300px" }}>
-        {!this.props.isEmulator ? this.getRequestUnitsUsageCost() : <></>}
-      </Stack.Item>
-    </Stack>
-  );
-
-  private renderThroughputInput = (): JSX.Element => (
-    <Stack horizontal>
-      <Stack.Item style={{ width: "70%", maxWidth: "700px" }}>
-        <Stack {...relaxedSpacingStackProps} style={{ paddingRight: "50px" }}>
-          <Stack.Item>
-            <TextField
-              required
-              type="number"
-              id="throughputInput"
-              key="provisioned throughput input"
-              styles={getTextFieldStyles(this.props.throughput, this.props.throughputBaseline)}
-              disabled={this.overrideWithAutoPilotSettings()}
-              step={this.step}
-              value={
-                this.overrideWithAutoPilotSettings()
-                  ? this.props.maxAutoPilotThroughputBaseline?.toString()
-                  : this.props.throughput?.toString()
-              }
-              onChange={this.onThroughputChange}
-              min={this.props.minimum}
-              errorMessage={this.props.throughputError}
-            />
-          </Stack.Item>
-          <Stack.Item>{this.getRUThermometer()}</Stack.Item>
-          <Stack.Item>{this.showThroughputWarning() && this.getThroughputWarningMessageBar()}</Stack.Item>
-          {this.state.exceedFreeTierThroughput && (
-            <Stack.Item>
-              <MessageBar
-                messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
-                styles={messageBarStyles}
-              >
-                {`Billing will apply if you provision more than ${SharedConstants.FreeTierLimits.RU} RU/s of manual throughput, or if the resource scales beyond ${SharedConstants.FreeTierLimits.RU} RU/s with autoscale.`}
-              </MessageBar>
-            </Stack.Item>
-          )}
-          {/* {this.props.getThroughputWarningMessage() && (
-          <MessageBar
-            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-            styles={messageBarStyles}
-          >
-            {this.props.getThroughputWarningMessage()}
-          </MessageBar>
-        )} */}
-          <Stack.Item>
             <Text>
-              Estimate your required throughput with
+              Estimate your required RU/s with
               <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
                 {` capacity calculator`} <FontIcon iconName="NavigateExternalInline" />
               </Link>
             </Text>
-          </Stack.Item>
-          <Stack.Item>{this.minRUperGBSurvey()}</Stack.Item>
-          {this.props.spendAckVisible && (
-            <Stack.Item>
-              <Checkbox
-                id="spendAckCheckBox"
-                styles={noLeftPaddingCheckBoxStyle}
-                label={this.props.spendAckText}
-                checked={this.state.spendAckChecked}
-                onChange={this.onSpendAckChecked}
-              />
-            </Stack.Item>
           )}
-          <Stack.Item>
-            {this.props.isFixed && (
-              <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>
-            )}
-          </Stack.Item>
+          {this.minRUperGBSurvey()}
+          {this.props.spendAckVisible && (
+            <Checkbox
+              id="spendAckCheckBox"
+              styles={noLeftPaddingCheckBoxStyle}
+              label={this.props.spendAckText}
+              checked={this.state.spendAckChecked}
+              onChange={this.onSpendAckChecked}
+            />
+          )}
+          {this.props.isFixed && (
+            <p>When using a collection with fixed storage capacity, you can set up to 10,000 RU/s.</p>
+          )}
+          {this.props.collectionName && (
+            <Stack.Item style={{ marginTop: "40px" }}>{this.getStorageCapacityTitle()}</Stack.Item>
+          )}
         </Stack>
       </Stack.Item>
       <Stack.Item style={{ width: "30%", maxWidth: "300px" }}>
@@ -737,7 +706,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         {this.renderWarningMessage()}
         {this.renderThroughputModeChoices()}
 
-        {this.props.isAutoPilotSelected ? this.renderAutoPilotInput() : this.renderThroughputInput()}
+        {this.renderThroughputComponent()}
       </Stack>
     );
   }

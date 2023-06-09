@@ -18,7 +18,6 @@ import {
   mongoIndexingPolicyDisclaimer,
   renderMongoIndexTransformationRefreshMessage,
   ttlWarning,
-  updateThroughputBeyondLimitWarningMessage,
   updateThroughputDelayedApplyWarningMessage,
 } from "./SettingsRenderUtils";
 
@@ -41,7 +40,6 @@ class SettingsRenderUtilsTestComponent extends React.Component {
         {manualToAutoscaleDisclaimerElement}
         {ttlWarning}
         {indexingPolicynUnsavedWarningMessage}
-        {updateThroughputBeyondLimitWarningMessage}
         {updateThroughputDelayedApplyWarningMessage}
 
         {getThroughputApplyDelayedMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
