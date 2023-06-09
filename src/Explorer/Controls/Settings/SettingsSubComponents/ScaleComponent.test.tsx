@@ -11,7 +11,6 @@ import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 describe("ScaleComponent", () => {
-  const nonNationalCloudContainer = new Explorer();
   const targetThroughput = 6000;
 
   const baseProps: ScaleComponentProps = {
