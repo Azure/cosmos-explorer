@@ -435,72 +435,81 @@ export const QueryCopilotSampleContainerId = "SampleContainer";
 export const QueryCopilotSampleContainerSchema = {
   product: {
     sampleData: {
-      id: "027D0B9A-F9D9-4C96-8213-C8546C4AAE71",
-      categoryId: "26C74104-40BC-4541-8EF5-9892F7F03D72",
-      categoryName: "Components, Saddles",
-      sku: "SE-R581",
-      name: "LL Road Seat/Saddle",
-      description: 'The product called "LL Road Seat/Saddle"',
-      price: 27.12,
-      tags: [
-        {
-          id: "0573D684-9140-4DEE-89AF-4E4A90E65666",
-          name: "Tag-113",
-        },
-        {
-          id: "6C2F05C8-1E61-4912-BE1A-C67A378429BB",
-          name: "Tag-5",
-        },
-        {
-          id: "B48D6572-67EB-4630-A1DB-AFD4AD7041C9",
-          name: "Tag-100",
-        },
-        {
-          id: "D70F215D-A8AC-483A-9ABD-4A008D2B72B2",
-          name: "Tag-85",
-        },
-        {
-          id: "DCF66D9A-E2BF-4C70-8AC1-AD55E5988E9D",
-          name: "Tag-37",
-        },
+      id: "de6fadec-0384-43c8-93ea-16c0170b5460",
+      name: "Premium Phone Mini (Red)",
+      price: 652.04,
+      category: "Electronics",
+      description:
+        "This Premium Phone Mini (Red) is designed by the company under agreement with the FCC, so we'd give it a pass in either direction, but no one should be using this handset without a compatible handset. All in all, this phone is one of the most affordable Android handsets out there at $100. Check them out.\n\n9. HTC One M9 4",
+      stock: 74,
+      countryOfOrigin: "Mexico",
+      firstAvailable: "2018-07-07 17:42:28",
+      priceHistory: [592.81],
+      customerRatings: [
+        { username: "dannyhowell", stars: 1, date: "2022-03-12 17:01:23", verifiedUser: true },
+        { username: "lindsay26", stars: 1, date: "2022-12-29 07:18:20", verifiedUser: false },
+        { username: "smithmiguel", stars: 3, date: "2022-09-08 11:43:27", verifiedUser: false },
+        { username: "julie07", stars: 3, date: "2021-03-14 23:54:10", verifiedUser: true },
+        { username: "kelly93", stars: 3, date: "2022-11-05 12:45:43", verifiedUser: false },
+        { username: "katherinereynolds", stars: 2, date: "2022-09-14 11:49:36", verifiedUser: false },
+        { username: "chandlerkenneth", stars: 1, date: "2022-01-14 12:14:43", verifiedUser: true },
       ],
+      rareProperty: true,
     },
     schema: {
       properties: {
         id: {
           type: "string",
         },
-        categoryId: {
-          type: "string",
-        },
-        categoryName: {
-          type: "string",
-        },
-        sku: {
-          type: "string",
-        },
         name: {
-          type: "string",
-        },
-        description: {
           type: "string",
         },
         price: {
           type: "number",
         },
-        tags: {
+        category: {
+          type: "string",
+        },
+        description: {
+          type: "string",
+        },
+        stock: {
+          type: "number",
+        },
+        countryOfOrigin: {
+          type: "string",
+        },
+        firstAvailable: {
+          type: "string",
+        },
+        priceHistory: {
+          items: {
+            type: "number",
+          },
+          type: "array",
+        },
+        customerRatings: {
           items: {
             properties: {
-              id: {
+              username: {
                 type: "string",
               },
-              name: {
+              stars: {
+                type: "number",
+              },
+              date: {
                 type: "string",
+              },
+              verifiedUser: {
+                type: "boolean",
               },
             },
             type: "object",
           },
           type: "array",
+        },
+        rareProperty: {
+          type: "boolean",
         },
       },
       type: "object",

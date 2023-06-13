@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { FeedOptions } from "@azure/cosmos";
-import { IconButton, Image, Link, Spinner, Stack, Text, TextField } from "@fluentui/react";
+import { CommandBarButton, IconButton, Image, Link, Separator, Spinner, Stack, Text, TextField } from "@fluentui/react";
 import {
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
@@ -69,9 +69,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (generateSQLQueryResponse?.sql) {
-        const query = generateSQLQueryResponse.explanation
-          ? `-- ${generateSQLQueryResponse.explanation}\r\n${generateSQLQueryResponse.sql}`
-          : generateSQLQueryResponse.sql;
+        let query = `-- ${userInput}\r\n`;
+        if (generateSQLQueryResponse.explanation) {
+          query += "-- **Explanation of query**\r\n";
+          query += `-- ${generateSQLQueryResponse.explanation}\r\n`;
+        }
+        query += generateSQLQueryResponse.sql;
         setQuery(query);
       }
     } catch (error) {
@@ -142,6 +145,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
 
+  React.useEffect(() => {
+    if (initialInput) {
+      generateSQLQuery();
+    }
+  }, []);
+
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%", height: "100%" }}>
       <Stack horizontal verticalAlign="center">
@@ -171,6 +180,18 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         </Link>
       </Text>
 
+      <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
+        <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
+        <IconButton style={{ marginLeft: 20 }} iconProps={{ iconName: "Like" }} />
+        <IconButton style={{ margin: "0 10px" }} iconProps={{ iconName: "Dislike" }} />
+        <Separator vertical style={{ color: "#EDEBE9" }} />
+        <CommandBarButton iconProps={{ iconName: "Copy" }} style={{ margin: "0 10px", backgroundColor: "#FFF8F0" }}>
+          Copy code
+        </CommandBarButton>
+        <CommandBarButton iconProps={{ iconName: "Delete" }} style={{ backgroundColor: "#FFF8F0" }}>
+          Delete code
+        </CommandBarButton>
+      </Stack>
       <Stack className="tabPaneContentContainer">
         <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
           <EditorReact

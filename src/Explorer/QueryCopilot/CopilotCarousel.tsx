@@ -107,7 +107,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
       const collection = database.findCollectionWithId("SampleContainer");
 
       setSpinnerText("Adding sample data set...");
-      const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorer);
+      const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorer, true);
       await sampleGenerator.populateContainerAsync(collection);
       await database.expandDatabase();
       collection.expandCollection();
