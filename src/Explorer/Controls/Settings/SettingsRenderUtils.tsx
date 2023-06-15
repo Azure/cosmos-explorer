@@ -288,9 +288,12 @@ export const getUpdateThroughputBeyondSupportLimitMessage = (
       </Text>
       <ol style={{ fontSize: 14, color: "windowtext", marginTop: "5px" }}>
         <li>You can instantly scale up to {instantMaximumThroughput} RU/s.</li>
-        <li>You can asynchronously scale up to any value under {maximumThroughput} RU/s in 4-6 hours.</li>
+        {instantMaximumThroughput < maximumThroughput && (
+          <li>You can asynchronously scale up to any value under {maximumThroughput} RU/s in 4-6 hours.</li>
+        )}
         <li>
-          You can start a support request to increase your throughput over {maximumThroughput} RU/s.
+          Your current quota max is {maximumThroughput} RU/s. To go over this limit, you must request a quota increase
+          and the Azure Cosmos DB team will review.
           <Link
             href="https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/create-support-request-quota-increase"
             target="_blank"
