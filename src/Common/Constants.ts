@@ -102,6 +102,7 @@ export class Flights {
   public static readonly PhoenixFeatures = "phoenixfeatures";
   public static readonly NotebooksDownBanner = "notebooksdownbanner";
   public static readonly PublicGallery = "publicgallery";
+  public static readonly WsAuthByPayload = "wsAuthByPayload";
 }
 
 export class AfecFeatures {
