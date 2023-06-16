@@ -11,7 +11,7 @@ import {
   createKernelRef,
   selectors,
 } from "@nteract/core";
-import { Channels, JupyterMessage, childOf, createMessage, message, ofMessageType } from "@nteract/messaging";
+import { Channels, childOf, createMessage, message, ofMessageType } from "@nteract/messaging";
 import { defineConfigOption } from "@nteract/mythic-configuration";
 import { userContext } from "UserContext";
 import { RecordOf } from "immutable";
@@ -46,7 +46,7 @@ import * as cdbActions from "../NotebookComponent/actions";
 import { NotebookContentProviderType, NotebookUtil } from "../NotebookUtil";
 import * as CdbActions from "./actions";
 import * as TextFile from "./contents/file/text-file";
-import { CdbAppState } from "./types";
+import { CdbAppState, JupyterMessage } from "./types";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
