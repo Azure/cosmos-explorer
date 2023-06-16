@@ -103,8 +103,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableLegacyMongoShellV2: "true" === get("enablelegacymongoshellv2"),
     enableLegacyMongoShellV2Debug: "true" === get("enablelegacymongoshellv2debug"),
     loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
-    enableCopilot: true,
-    //enableCopilot: "true" === get("enablecopilot"),
+    enableCopilot: "true" === get("enablecopilot"),
   };
 }
 

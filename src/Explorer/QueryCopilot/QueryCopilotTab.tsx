@@ -1,6 +1,18 @@
 /* eslint-disable no-console */
 import { FeedOptions } from "@azure/cosmos";
-import { CommandBarButton, IconButton, Image, Link, Separator, Spinner, Stack, Text, TextField } from "@fluentui/react";
+import {
+  Callout,
+  CommandBarButton,
+  DirectionalHint,
+  IconButton,
+  Image,
+  Link,
+  Separator,
+  Spinner,
+  Stack,
+  Text,
+  TextField,
+} from "@fluentui/react";
 import {
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
@@ -17,8 +29,10 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
+import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -43,11 +57,15 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   initialInput,
   explorer,
 }: QueryCopilotTabProps): JSX.Element => {
+  const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
   const [userInput, setUserInput] = useState<string>(initialInput || "");
+  const [generatedQuery, setGeneratedQuery] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const [selectedQuery, setSelectedQuery] = useState<string>("");
   const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [likeQuery, setLikeQuery] = useState<boolean>();
+  const [showCallout, setShowCallout] = useState<boolean>(false);
   const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
   const [queryResults, setQueryResults] = useState<QueryResults>();
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -76,6 +94,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         }
         query += generateSQLQueryResponse.sql;
         setQuery(query);
+        setGeneratedQuery(generateSQLQueryResponse.sql);
       }
     } catch (error) {
       handleError(error, "executeNaturalLanguageQuery");
@@ -182,8 +201,47 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
       <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
         <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
-        <IconButton style={{ marginLeft: 20 }} iconProps={{ iconName: "Like" }} />
-        <IconButton style={{ margin: "0 10px" }} iconProps={{ iconName: "Dislike" }} />
+        {showCallout && !hideFeedbackModalForLikedQueries && (
+          <Callout
+            style={{ padding: 8 }}
+            target="#likeBtn"
+            onDismiss={() => {
+              setShowCallout(false);
+              submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userInput });
+            }}
+            directionalHint={DirectionalHint.topCenter}
+          >
+            <Text>
+              Thank you. Need to give{" "}
+              <Link
+                onClick={() => {
+                  setShowCallout(false);
+                  useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userInput);
+                }}
+              >
+                more feedback?
+              </Link>
+            </Text>
+          </Callout>
+        )}
+        <IconButton
+          id="likeBtn"
+          style={{ marginLeft: 20 }}
+          iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
+          onClick={() => {
+            setLikeQuery(true);
+            setShowCallout(true);
+          }}
+        />
+        <IconButton
+          style={{ margin: "0 10px" }}
+          iconProps={{ iconName: likeQuery === false ? "DislikeSolid" : "Dislike" }}
+          onClick={() => {
+            setLikeQuery(false);
+            setShowCallout(false);
+            useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userInput);
+          }}
+        />
         <Separator vertical style={{ color: "#EDEBE9" }} />
         <CommandBarButton iconProps={{ iconName: "Copy" }} style={{ margin: "0 10px", backgroundColor: "#FFF8F0" }}>
           Copy code

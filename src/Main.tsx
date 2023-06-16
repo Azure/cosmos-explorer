@@ -17,6 +17,7 @@ import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
+import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/QueryCopilotFeedbackModal";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../images/favicon.ico";
@@ -125,6 +126,7 @@ const App: React.FunctionComponent = () => {
       {<SQLQuickstartTutorial />}
       {<MongoQuickstartTutorial />}
       {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
+      {<QueryCopilotFeedbackModal />}
     </div>
   );
 };
