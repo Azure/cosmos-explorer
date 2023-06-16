@@ -242,6 +242,8 @@ export interface Offer {
   minimumThroughput: number | undefined;
   offerDefinition?: SDKOfferDefinition;
   offerReplacePending: boolean;
+  instantMaximumThroughput?: number;
+  softAllowedMaximumThroughput?: number;
 }
 
 export interface SDKOfferDefinition extends Resource {

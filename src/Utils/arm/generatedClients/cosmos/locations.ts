@@ -11,15 +11,17 @@ import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
 const apiVersion = "2023-04-15";
 
-/* Retrieves the metrics determined by the given filter for the given partition key range id. */
-export async function listMetrics(
+/* List Cosmos DB locations and their properties */
+export async function list(subscriptionId: string): Promise<Types.LocationListResult | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
+}
+
+/* Get the properties of an existing Cosmos DB location */
+export async function get(
   subscriptionId: string,
-  resourceGroupName: string,
-  accountName: string,
-  databaseRid: string,
-  collectionRid: string,
-  partitionKeyRangeId: string
-): Promise<Types.PartitionMetricListResult> {
-  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`;
+  location: string
+): Promise<Types.LocationGetResult | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
