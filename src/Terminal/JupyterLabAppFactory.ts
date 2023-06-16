@@ -72,7 +72,7 @@ export class JupyterLabAppFactory {
     if (userContext.features.wsAuthByPayload) {
       var internalSend = session.send;
       session.send = (message: IMessage) => {
-        message.content.push(serverSettings.token);
+        message?.content?.push(serverSettings?.token);
         internalSend.call(session, message);
       };
     }
