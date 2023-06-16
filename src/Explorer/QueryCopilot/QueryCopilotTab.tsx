@@ -1,7 +1,23 @@
 /* eslint-disable no-console */
 import { FeedOptions } from "@azure/cosmos";
-import { IconButton, Image, Link, Stack, Text, TextField } from "@fluentui/react";
-import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
+import {
+  Callout,
+  CommandBarButton,
+  DirectionalHint,
+  IconButton,
+  Image,
+  Link,
+  Separator,
+  Spinner,
+  Stack,
+  Text,
+  TextField,
+} from "@fluentui/react";
+import {
+  QueryCopilotSampleContainerId,
+  QueryCopilotSampleContainerSchema,
+  QueryCopilotSampleDatabaseId,
+} from "Common/Constants";
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
@@ -13,8 +29,10 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
+import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -27,28 +45,62 @@ interface QueryCopilotTabProps {
   explorer: Explorer;
 }
 
+interface GenerateSQLQueryResponse {
+  apiVersion: string;
+  sql: string;
+  explanation: string;
+  generateStart: string;
+  generateEnd: string;
+}
+
 export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   initialInput,
   explorer,
 }: QueryCopilotTabProps): JSX.Element => {
+  const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
   const [userInput, setUserInput] = useState<string>(initialInput || "");
+  const [generatedQuery, setGeneratedQuery] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const [selectedQuery, setSelectedQuery] = useState<string>("");
+  const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [likeQuery, setLikeQuery] = useState<boolean>();
+  const [showCallout, setShowCallout] = useState<boolean>(false);
   const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
   const [queryResults, setQueryResults] = useState<QueryResults>();
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const generateQuery = (): string => {
-    switch (userInput) {
-      case "Write a query to return all records in this table":
-        return "SELECT * FROM c";
-      case "Write a query to return all records in this table created in the last thirty days":
-        return "SELECT * FROM c WHERE c._ts > (DATEDIFF(s, '1970-01-01T00:00:00Z', GETUTCDATE()) - 2592000) * 1000";
-      case `Write a query to return all records in this table created in the last thirty days which also have the record owner as "Contoso"`:
-        return `SELECT * FROM c WHERE c.owner = "Contoso" AND c._ts > (DATEDIFF(s, '1970-01-01T00:00:00Z', GETUTCDATE()) - 2592000) * 1000`;
-      default:
-        return "";
+  const generateSQLQuery = async (): Promise<void> => {
+    try {
+      setIsGeneratingQuery(true);
+      const payload = {
+        containerSchema: QueryCopilotSampleContainerSchema,
+        userPrompt: userInput,
+      };
+      const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
+      if (generateSQLQueryResponse?.sql) {
+        let query = `-- ${userInput}\r\n`;
+        if (generateSQLQueryResponse.explanation) {
+          query += "-- **Explanation of query**\r\n";
+          query += `-- ${generateSQLQueryResponse.explanation}\r\n`;
+        }
+        query += generateSQLQueryResponse.sql;
+        setQuery(query);
+        setGeneratedQuery(generateSQLQueryResponse.sql);
+      }
+    } catch (error) {
+      handleError(error, "executeNaturalLanguageQuery");
+      throw error;
+    } finally {
+      setIsGeneratingQuery(false);
     }
   };
 
@@ -110,7 +162,13 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
   React.useEffect(() => {
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
-  }, [query]);
+  }, [query, selectedQuery]);
+
+  React.useEffect(() => {
+    if (initialInput) {
+      generateSQLQuery();
+    }
+  }, []);
 
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%", height: "100%" }}>
@@ -124,12 +182,15 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           onChange={(_, newValue) => setUserInput(newValue)}
           style={{ lineHeight: 30 }}
           styles={{ root: { width: "90%" } }}
+          disabled={isGeneratingQuery}
         />
         <IconButton
           iconProps={{ iconName: "Send" }}
+          disabled={isGeneratingQuery}
           style={{ marginLeft: 8 }}
-          onClick={() => setQuery(generateQuery())}
+          onClick={() => generateSQLQuery()}
         />
+        {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
       </Stack>
       <Text style={{ marginTop: 8, marginBottom: 24, fontSize: 12 }}>
         AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
@@ -138,6 +199,57 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         </Link>
       </Text>
 
+      <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
+        <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
+        {showCallout && !hideFeedbackModalForLikedQueries && (
+          <Callout
+            style={{ padding: 8 }}
+            target="#likeBtn"
+            onDismiss={() => {
+              setShowCallout(false);
+              submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userInput });
+            }}
+            directionalHint={DirectionalHint.topCenter}
+          >
+            <Text>
+              Thank you. Need to give{" "}
+              <Link
+                onClick={() => {
+                  setShowCallout(false);
+                  useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userInput);
+                }}
+              >
+                more feedback?
+              </Link>
+            </Text>
+          </Callout>
+        )}
+        <IconButton
+          id="likeBtn"
+          style={{ marginLeft: 20 }}
+          iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
+          onClick={() => {
+            setLikeQuery(true);
+            setShowCallout(true);
+          }}
+        />
+        <IconButton
+          style={{ margin: "0 10px" }}
+          iconProps={{ iconName: likeQuery === false ? "DislikeSolid" : "Dislike" }}
+          onClick={() => {
+            setLikeQuery(false);
+            setShowCallout(false);
+            useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userInput);
+          }}
+        />
+        <Separator vertical style={{ color: "#EDEBE9" }} />
+        <CommandBarButton iconProps={{ iconName: "Copy" }} style={{ margin: "0 10px", backgroundColor: "#FFF8F0" }}>
+          Copy code
+        </CommandBarButton>
+        <CommandBarButton iconProps={{ iconName: "Delete" }} style={{ backgroundColor: "#FFF8F0" }}>
+          Delete code
+        </CommandBarButton>
+      </Stack>
       <Stack className="tabPaneContentContainer">
         <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
           <EditorReact
