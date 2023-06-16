@@ -85,7 +85,7 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
         minimumThroughput,
         offerReplacePending: resource.offerReplacePending === "true",
         instantMaximumThroughput,
-        softAllowedMaximumThroughput: softAllowedMaximumThroughput,
+        softAllowedMaximumThroughput,
       };
     }
 
@@ -96,7 +96,7 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
       minimumThroughput,
       offerReplacePending: resource.offerReplacePending === "true",
       instantMaximumThroughput,
-      softAllowedMaximumThroughput: softAllowedMaximumThroughput,
+      softAllowedMaximumThroughput,
     };
   }
 

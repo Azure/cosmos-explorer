@@ -113,7 +113,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         minimumThroughput,
         offerReplacePending: resource.offerReplacePending === "true",
         instantMaximumThroughput,
-        softAllowedMaximumThroughput: softAllowedMaximumThroughput,
+        softAllowedMaximumThroughput,
       };
     }
 
@@ -124,7 +124,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
       minimumThroughput,
       offerReplacePending: resource.offerReplacePending === "true",
       instantMaximumThroughput,
-      softAllowedMaximumThroughput: softAllowedMaximumThroughput,
+      softAllowedMaximumThroughput,
     };
   }
 
