@@ -1,6 +1,8 @@
 import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as ko from "knockout";
 import Q from "q";
+import CopilotQueryTablesTab from "../../../images/CopilotQueryTablesTab.svg";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
@@ -54,6 +56,7 @@ export default class DocumentsTab extends TabsBase {
   public discardNewDocumentChangesButton: ViewModels.Button;
   public discardExisitingDocumentChangesButton: ViewModels.Button;
   public deleteExisitingDocumentButton: ViewModels.Button;
+  public copliotEntityButton: ViewModels.Button;
   public displayedError: ko.Observable<string>;
   public accessibleDocumentList: AccessibleVerticalList;
   public dataContentsGridScrollHeight: ko.Observable<string>;
@@ -304,6 +307,16 @@ export default class DocumentsTab extends TabsBase {
         return true;
       }),
     };
+
+    this.copliotEntityButton = {
+      enabled: ko.computed<boolean>(() => {
+        return userContext.features.enableCopilot;
+      }),
+      visible: ko.computed<boolean>(() => {
+        return userContext.features.enableCopilot;
+      })
+    };
+
     this.buildCommandBarOptions();
     this.shouldShowEditor = ko.computed<boolean>(() => {
       const documentHasContent: boolean =
@@ -768,6 +781,10 @@ export default class DocumentsTab extends TabsBase {
     }
   };
 
+  public onCopilotEntityClick = (): void => {
+    useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot)
+  }
+
   protected _loadNextPageInternal(): Q.Promise<DataModels.DocumentId[]> {
     return Q(this._documentsIterator.fetchNext().then((response) => response.resources));
   }
@@ -882,6 +899,19 @@ export default class DocumentsTab extends TabsBase {
 
     if (!this.isPreferredApiMongoDB) {
       buttons.push(DocumentsTab._createUploadButton(this.collection.container));
+    }
+
+    if (this.copliotEntityButton.visible()) {
+      const label = "Query Copliot";
+      buttons.push({
+        iconSrc: CopilotQueryTablesTab,
+        iconAlt: label,
+        onCommandClick: this.onCopilotEntityClick,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: true,
+        disabled: !this.copliotEntityButton.enabled(),
+      });
     }
 
     return buttons;
