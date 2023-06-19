@@ -212,7 +212,7 @@
     "strict:find": "node ./strict-null-checks/find.js",
     "strict:add": "node ./strict-null-checks/auto-add.js",
     "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks",
-    "generateARMClients": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' utils/armClientGenerator/generator.ts"
+    "generateARMClients": "npx ts-node utils/armClientGenerator/generator.ts"
   },
   "repository": {
     "type": "git",

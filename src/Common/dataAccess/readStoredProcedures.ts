@@ -1,8 +1,9 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
+import { CloudError, SqlStoredProcedureListResult } from "Utils/arm/generatedClients/cosmos/types";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { listSqlStoredProcedures } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { listSqlStoredProcedures } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
@@ -24,7 +25,13 @@ export async function readStoredProcedures(
         databaseId,
         collectionId
       );
-      return rpResponse?.value?.map((sproc) => sproc.properties?.resource as StoredProcedureDefinition & Resource);
+      const listResult = rpResponse as SqlStoredProcedureListResult;
+      if (listResult) {
+        return listResult?.value?.map((sproc) => sproc.properties?.resource as StoredProcedureDefinition & Resource);
+      }
+
+      const cloudError = rpResponse as CloudError;
+      throw new Error(cloudError?.error?.message);
     }
 
     const response = await client()

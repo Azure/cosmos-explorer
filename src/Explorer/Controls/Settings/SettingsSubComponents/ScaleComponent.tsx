@@ -1,7 +1,7 @@
-import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
+import { Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { configContext, Platform } from "../../../../ConfigContext";
+import { Platform, configContext } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as SharedConstants from "../../../../Shared/Constants";
@@ -15,7 +15,6 @@ import {
   subComponentStackProps,
   throughputUnit,
   titleAndInputStackProps,
-  updateThroughputBeyondLimitWarningMessage,
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
@@ -66,16 +65,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       });
 
     return !!enableAutoScaleCapability;
-  };
-
-  private getStorageCapacityTitle = (): JSX.Element => {
-    const capacity: string = this.props.isFixedContainer ? "Fixed" : "Unlimited";
-    return (
-      <Stack {...titleAndInputStackProps}>
-        <Label>Storage capacity</Label>
-        <Text>{capacity}</Text>
-      </Stack>
-    );
   };
 
   public getMaxRUs = (): number => {
@@ -131,18 +120,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     return undefined;
   };
 
-  public getThroughputWarningMessage = (): JSX.Element => {
-    const throughputExceedsBackendLimits: boolean =
-      this.canThroughputExceedMaximumValue() &&
-      this.props.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs1Million;
-
-    if (throughputExceedsBackendLimits && !this.props.isFixedContainer) {
-      return updateThroughputBeyondLimitWarningMessage;
-    }
-
-    return undefined;
-  };
-
   public getLongDelayMessage = (): JSX.Element => {
     const matches: string[] = this.props.initialNotification?.description.match(
       `Throughput update for (.*) ${throughputUnit}`
@@ -188,9 +165,10 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       spendAckChecked={false}
       onScaleSaveableChange={this.props.onScaleSaveableChange}
       onScaleDiscardableChange={this.props.onScaleDiscardableChange}
-      getThroughputWarningMessage={this.getThroughputWarningMessage}
       usageSizeInKB={this.props.collection?.usageSizeInKB()}
       throughputError={this.props.throughputError}
+      instantMaximumThroughput={this.offer?.instantMaximumThroughput}
+      softAllowedMaximumThroughput={this.offer?.softAllowedMaximumThroughput}
     />
   );
 
@@ -229,12 +207,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         {this.getInitialNotificationElement() && (
           <MessageBar messageBarType={MessageBarType.warning}>{this.getInitialNotificationElement()}</MessageBar>
         )}
-        {!this.isAutoScaleEnabled() && (
-          <Stack {...subComponentStackProps}>
-            {this.getThroughputInputComponent()}
-            {!this.props.database && this.getStorageCapacityTitle()}
-          </Stack>
-        )}
+        {!this.isAutoScaleEnabled() && <Stack {...subComponentStackProps}>{this.getThroughputInputComponent()}</Stack>}
 
         {/* TODO: Replace link with call to the Azure Support blade */}
         {this.isAutoScaleEnabled() && (
