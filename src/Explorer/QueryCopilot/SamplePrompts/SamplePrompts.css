@@ -1,0 +1,129 @@
+.sampleBox {
+    overflow: auto;
+    padding: 16px 24px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 850px;
+    height: 500px;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    border: 1px solid rgba(204, 204, 204, 0.5);
+    box-shadow: 0px 6.4px 14.4px rgba(0, 0, 0, 0.132), 0px 1.2px 3.6px rgba(0, 0, 0, 0.108);
+}
+
+.sampleContent {
+    height: 100%;
+  }
+
+.sampleHeader {
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 32px;
+    color: #323130;
+    display: inline-block;
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.closeButton {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    color: #212121;
+    outline: none;
+    border: none;
+}
+.closeButton:focus { 
+    outline: none;
+    border: none;
+}
+
+.sampleDescription {
+    width: 832px;
+    height: 18px;
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+    color: #323130;
+    margin-top: 10px;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.imageStlye {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+.promptDifficulty {
+    display: inline-block;
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: #323130;
+}
+
+.arrowPosition {
+    width: 14.2px;
+    height: 9.7px;
+    position: absolute;
+    left: 92.61%;
+    right: 3.35%;
+    top: 46.67%;
+    bottom: 46.15%;
+}
+
+.inlineElements {
+    display: flex;
+    justify-content: space-between;
+}
+
+.titleLogo {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    padding-bottom: 10px;
+}
+
+.inlineButtons {
+    display: flex;
+    justify-content: left;
+    margin-top: 20px;
+    gap: 35px;
+}
+
+.defaultButton {
+    width: 352px;
+    height: 135px;
+    display: inline-block;
+    margin:0 0px;
+    background: #F6F6F7;
+}
+
+.buttonText {
+    position: absolute;
+    height: 80px;
+    left: 4.55%;
+    right: 12.22%;
+    top: 29px;
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+    color: #323130;
+}
