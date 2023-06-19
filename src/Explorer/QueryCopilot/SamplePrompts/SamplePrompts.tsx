@@ -1,4 +1,4 @@
-import { DefaultButton, FontIcon, Image, Layer, Overlay, Popup, Stack, Text } from "@fluentui/react";
+import { DefaultButton, FontIcon, Image, Layer, Overlay, Popup, Separator, Stack, Text } from "@fluentui/react";
 import React, { Dispatch, SetStateAction } from "react";
 import ComplexPrompts from "../../../../images/ComplexPrompts.svg";
 import IntermediatePrompts from "../../../../images/IntermediatePrompts.svg";
@@ -28,6 +28,7 @@ export const SamplePrompts = ({ sampleProps }: { sampleProps: SamplePromptsProps
 
   return sampleProps.isSamplePromptsOpen ? (
     <Layer>
+      <Separator vertical style={{ color: "#EDEBE9" }} />
       <Popup
         className="sampleBox"
         role="dialog"

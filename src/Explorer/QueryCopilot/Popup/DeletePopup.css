@@ -1,0 +1,99 @@
+.popupRoot {
+    box-sizing: border-box;
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 16px 24px;
+    gap: 16px;
+    position: fixed;
+    background: #FFFFFF;
+    max-width: 880px;
+    min-width: 280px;
+    width: 70%;
+    height: auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(204, 204, 204, 0.5);
+    box-shadow: 0px 6.4px 14.4px rgba(0, 0, 0, 0.132), 0px 1.2px 3.6px rgba(0, 0, 0, 0.108);
+  }
+
+.deleteCodeHeader {
+    max-width: 100%;
+    width: calc(100% - 48px);
+    height: 24px;
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    color: #292827;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.deleteCodeText {
+    max-width: 100%;
+    width: calc(100% - 48px);
+    height: 18px;
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+    color: #292827;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.popUpButtonsBar {
+    display: inline-block;
+    margin: 0px 10px;
+    margin-top: 60px;
+    width: 100%;
+}
+.popUpButtonsBar > * + * {
+    margin-left: 10px;
+  }
+
+.deletePopUpButton {
+    box-sizing: border-box;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 10px;
+    width: fit-content;
+    height: 24px;
+    background: #0078D4;
+    border-radius: 2px;
+}
+.deletePopUpButton:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+.cancelPopupButton {
+    box-sizing: border-box;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 10px;
+    width: fit-content;
+    height: 24px;
+    background: #FFFFFF;
+    border: 1px solid #8A8886;
+    border-radius: 2px;
+}
+.cancelPopupButton:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+.commandPopupButton {
+    background-color: #FFF8F0
+}
