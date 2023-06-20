@@ -108,7 +108,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (generateSQLQueryResponse?.sql) {
-        let query = `-- Prompt: ${userPrompt}\r\n`;
+        let query = `-- **Prompt**: ${userPrompt}\r\n`;
         if (generateSQLQueryResponse.explanation) {
           query += `-- **Explanation of query**: ${generateSQLQueryResponse.explanation}\r\n`;
         }
