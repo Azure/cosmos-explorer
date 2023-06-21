@@ -11,6 +11,7 @@ interface TabsState {
   activeReactTab: ReactTabKind | undefined;
   networkSettingsWarning: string;
   queryCopilotTabInitialInput: string;
+  isTabExecuting: boolean;
   activateTab: (tab: TabsBase) => void;
   activateNewTab: (tab: TabsBase) => void;
   activateReactTab: (tabkind: ReactTabKind) => void;
@@ -24,6 +25,7 @@ interface TabsState {
   closeReactTab: (tabKind: ReactTabKind) => void;
   setNetworkSettingsWarning: (warningMessage: string) => void;
   setQueryCopilotTabInitialInput: (input: string) => void;
+  setIsTabExecuting: (state: boolean) => void;
 }
 
 export enum ReactTabKind {
@@ -40,6 +42,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   activeReactTab: ReactTabKind.Home,
   networkSettingsWarning: "",
   queryCopilotTabInitialInput: "",
+  isTabExecuting: false,
   activateTab: (tab: TabsBase): void => {
     if (get().openedTabs.some((openedTab) => openedTab.tabId === tab.tabId)) {
       set({ activeTab: tab, activeReactTab: undefined });
@@ -151,4 +154,5 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   },
   setNetworkSettingsWarning: (warningMessage: string) => set({ networkSettingsWarning: warningMessage }),
   setQueryCopilotTabInitialInput: (input: string) => set({ queryCopilotTabInitialInput: input }),
+  setIsTabExecuting: (state: boolean) => { set({ isTabExecuting: state }); }
 }));

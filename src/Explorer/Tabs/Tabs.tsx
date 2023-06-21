@@ -113,7 +113,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
         <div className="tab_Content">
           <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
             {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-            {useObservable(tab?.isExecuting || ko.observable(false)) && (
+            {isTabExecuting(tab, tabKind) && (
               <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
           </span>
@@ -211,6 +211,15 @@ const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
   }
 };
 
+const isTabExecuting = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
+  if (useObservable(tab?.isExecuting || ko.observable(false))) {
+    return true;
+  } else if (tabKind !== undefined && tabKind !== ReactTabKind.Home && useTabs.getState()?.isTabExecuting) {
+    return true;
+  }
+  return false;
+}
+
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
   switch (activeReactTab) {
     case ReactTabKind.Connect:
@@ -220,7 +229,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
     case ReactTabKind.QueryCopilot:
-      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} />;
+      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} isTabWorking={useTabs.getState().setIsTabExecuting} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

@@ -43,6 +43,7 @@ import SaveQueryIcon from "../../../images/save-cosmos.svg";
 interface QueryCopilotTabProps {
   initialInput: string;
   explorer: Explorer;
+  isTabWorking: (state: boolean) => void;
 }
 
 interface GenerateSQLQueryResponse {
@@ -56,6 +57,7 @@ interface GenerateSQLQueryResponse {
 export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   initialInput,
   explorer,
+  isTabWorking,
 }: QueryCopilotTabProps): JSX.Element => {
   const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
   const [userInput, setUserInput] = useState<string>(initialInput || "");
@@ -73,6 +75,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
+      isTabWorking(true);
       const payload = {
         containerSchema: QueryCopilotSampleContainerSchema,
         userPrompt: userInput,
@@ -101,6 +104,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       throw error;
     } finally {
       setIsGeneratingQuery(false);
+      isTabWorking(false);
     }
   };
 
@@ -119,6 +123,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const queryDocumentsPerPage = async (firstItemIndex: number, queryIterator: MinimalQueryIterator): Promise<void> => {
     try {
       setIsExecuting(true);
+      isTabWorking(true);
       const queryResults: QueryResults = await queryPagesUntilContentPresent(
         firstItemIndex,
         async (firstItemIndex: number) =>
@@ -133,6 +138,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       handleError(errorMessage, "executeQueryCopilotTab");
     } finally {
       setIsExecuting(false);
+      isTabWorking(false);
     }
   };
 
