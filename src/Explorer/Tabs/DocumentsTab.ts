@@ -56,7 +56,6 @@ export default class DocumentsTab extends TabsBase {
   public discardNewDocumentChangesButton: ViewModels.Button;
   public discardExisitingDocumentChangesButton: ViewModels.Button;
   public deleteExisitingDocumentButton: ViewModels.Button;
-  public copliotEntityButton: ViewModels.Button;
   public displayedError: ko.Observable<string>;
   public accessibleDocumentList: AccessibleVerticalList;
   public dataContentsGridScrollHeight: ko.Observable<string>;
@@ -308,13 +307,13 @@ export default class DocumentsTab extends TabsBase {
       }),
     };
 
-    this.copliotEntityButton = {
+    this.copilotEntityButton = {
       enabled: ko.computed<boolean>(() => {
         return userContext.features.enableCopilot;
       }),
       visible: ko.computed<boolean>(() => {
         return userContext.features.enableCopilot;
-      })
+      }),
     };
 
     this.buildCommandBarOptions();
@@ -782,8 +781,8 @@ export default class DocumentsTab extends TabsBase {
   };
 
   public onCopilotEntityClick = (): void => {
-    useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot)
-  }
+    useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+  };
 
   protected _loadNextPageInternal(): Q.Promise<DataModels.DocumentId[]> {
     return Q(this._documentsIterator.fetchNext().then((response) => response.resources));
@@ -901,7 +900,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push(DocumentsTab._createUploadButton(this.collection.container));
     }
 
-    if (this.copliotEntityButton.visible()) {
+    if (userContext.features.enableCopilot) {
       const label = "Query Copliot";
       buttons.push({
         iconSrc: CopilotQueryTablesTab,
@@ -910,7 +909,7 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: !this.copliotEntityButton.enabled(),
+        disabled: false,
       });
     }
 
