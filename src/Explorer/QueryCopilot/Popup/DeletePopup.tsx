@@ -10,10 +10,10 @@ export const DeletePopup = ({
   setShowDeletePopup: Dispatch<SetStateAction<boolean>>;
   setQuery: Dispatch<SetStateAction<string>>;
 }): JSX.Element => {
-  function deleteCode() {
+  const deleteCode = () => {
     setQuery("");
     setShowDeletePopup(false);
-  }
+  };
 
   return (
     <Modal isOpen={showDeletePopup}>
