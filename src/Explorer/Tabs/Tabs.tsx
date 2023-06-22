@@ -218,7 +218,7 @@ const isTabExecuting = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
     return true;
   }
   return false;
-}
+};
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
   switch (activeReactTab) {
@@ -229,7 +229,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
     case ReactTabKind.QueryCopilot:
-      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} isTabWorking={useTabs.getState().setIsTabExecuting} />;
+      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

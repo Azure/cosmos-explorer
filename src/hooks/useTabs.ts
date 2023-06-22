@@ -154,5 +154,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   },
   setNetworkSettingsWarning: (warningMessage: string) => set({ networkSettingsWarning: warningMessage }),
   setQueryCopilotTabInitialInput: (input: string) => set({ queryCopilotTabInitialInput: input }),
-  setIsTabExecuting: (state: boolean) => { set({ isTabExecuting: state }); }
+  setIsTabExecuting: (state: boolean) => {
+    set({ isTabExecuting: state });
+  },
 }));
