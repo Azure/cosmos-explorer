@@ -86,7 +86,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
 
   const updateHistories = (): void => {
-    const newHistories = histories.length < 3 ? [...histories, userPrompt] : [histories[1], histories[2], userPrompt];
+    const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
     setHistories(newHistories);
     localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
   };
@@ -196,7 +196,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           value={userPrompt}
           onChange={(_, newValue) => setUserPrompt(newValue)}
           style={{ lineHeight: 30 }}
-          styles={{ root: { width: "80vw" } }}
+          styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
           onClick={() => setShowSamplePrompts(true)}
         />
@@ -212,12 +212,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
         {showSamplePrompts && (
           <Callout
+            styles={{ root: { minWidth: 400 } }}
             style={{ padding: "8px 0" }}
-            styles={{ root: { width: "80vw" } }}
             target="#naturalLanguageInput"
             isBeakVisible={false}
             onDismiss={() => setShowSamplePrompts(false)}
-            directionalHint={DirectionalHint.bottomCenter}
+            directionalHint={DirectionalHint.bottomLeftEdge}
           >
             <Stack>
               {histories?.length > 0 && (
@@ -291,6 +291,20 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
               >
                 Show me all customers who bought a bike in 2019
               </DefaultButton>
+              <Separator styles={{ root: { selectors: { "::before": { background: "#E1DFDD" } }, padding: 0 } }} />
+              <Text
+                style={{
+                  width: "100%",
+                  fontSize: 14,
+                  marginLeft: 16,
+                  padding: "4px 0",
+                }}
+              >
+                Learn about{" "}
+                <Link target="_blank" href="">
+                  writing effective prompts
+                </Link>
+              </Text>
             </Stack>
           </Callout>
         )}
@@ -345,7 +359,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
           }}
         />
-        <Separator vertical style={{ color: "#EDEBE9" }} />
+        <Separator vertical styles={{ root: { selectors: { "::before": { background: "#E1DFDD" } } } }} />
         <CommandBarButton iconProps={{ iconName: "Copy" }} style={{ margin: "0 10px", backgroundColor: "#FFF8F0" }}>
           Copy code
         </CommandBarButton>
