@@ -2,20 +2,16 @@
 import { FeedOptions } from "@azure/cosmos";
 import {
   Callout,
-  ComboBox,
   CommandBarButton,
   DirectionalHint,
-  IComboBox,
-  IComboBoxOption,
-  IIconProps,
   IconButton,
   Image,
   Link,
-  SelectableOptionMenuItemType,
   Separator,
   Spinner,
   Stack,
   Text,
+  TextField,
 } from "@fluentui/react";
 import {
   QueryCopilotSampleContainerId,
@@ -43,19 +39,13 @@ import { useSidePanel } from "hooks/useSidePanel";
 import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
-import HistoryImage from "../../../images/History.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
-import Sparkle from "../../../images/sparkle.svg";
 
 interface QueryCopilotTabProps {
   initialInput: string;
   explorer: Explorer;
-}
-
-interface IExtendedComboBoxOption extends IComboBoxOption {
-  iconProps?: IIconProps;
 }
 
 interface GenerateSQLQueryResponse {
@@ -66,24 +56,12 @@ interface GenerateSQLQueryResponse {
   generateEnd: string;
 }
 
-const copilotHistoryStorageName = "copilotInputHistory";
-
-const suggestedPrompts: IExtendedComboBoxOption[] = [
-  { key: "Header1", text: "Suggested Prompts", itemType: SelectableOptionMenuItemType.Header },
-  { key: "prompt1", text: "Give me all customers whose name start with C" },
-  { key: "prompt2", text: "Show me all customers" },
-  { key: "prompt3", text: "Show me all customers who bought a bike in 2019" },
-  { key: "prompt4", text: "Show items with a description that contains a number between 0 and 99" },
-  { key: "prompt5", text: "Write a query to return all records in this table created in the last thirty days" },
-  { key: "Header2", text: "History", itemType: SelectableOptionMenuItemType.Header },
-];
-
 export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   initialInput,
   explorer,
 }: QueryCopilotTabProps): JSX.Element => {
   const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
-  const [userInput, setUserInput] = useState<string>(initialInput);
+  const [userInput, setUserInput] = useState<string>(initialInput || "");
   const [generatedQuery, setGeneratedQuery] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const [selectedQuery, setSelectedQuery] = useState<string>("");
@@ -95,88 +73,14 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [queryResults, setQueryResults] = useState<QueryResults>();
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
-  const [filteredSuggestions, setFilteredSuggestions] = useState(suggestedPrompts);
-  const comboBoxRef = React.useRef<IComboBox>(null);
-  const [inputHistory, setInputHistory] = useState<string[]>([]);
-  const [querySent, setQuerySent] = useState<boolean>(false);
   const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
   const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
-
-  function updateLocalStorage(key: string, value: string[]) {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  }
-
-  function getLocalStorageItems(key: string) {
-    if (window.localStorage.getItem(key)) return JSON.parse(window.localStorage.getItem(key));
-    return [];
-  }
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
     setIsSamplePromptsOpen: setIsSamplePromptsOpen,
     setTextBox: setUserInput,
   };
-
-  const onsuggestedPromptOption = (suggestion: IExtendedComboBoxOption): JSX.Element => {
-    if (suggestion.itemType === SelectableOptionMenuItemType.Header) {
-      return <span>{suggestion.text}</span>;
-    }
-
-    if (suggestion.iconProps && suggestion.iconProps.iconName === "Clock") {
-      return (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Image src={HistoryImage} style={{ marginRight: 8 }} />
-          <span>{suggestion.text}</span>
-        </div>
-      );
-    }
-
-    return (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Image src={Sparkle} style={{ marginRight: 8 }} />
-        <span>{suggestion.text}</span>
-      </div>
-    );
-  };
-
-  const handleInputChange = (event: React.FormEvent<IComboBox>, newTextValue?: IComboBoxOption) => {
-    const inputValue = (event.target as HTMLInputElement).value;
-    const newInput = (newTextValue ? newTextValue.text : inputValue) || "";
-
-    setUserInput(newInput);
-
-    if (newInput !== "" && newInput.trim().length !== 0) {
-      const updatedHistory = [newInput, ...getLocalStorageItems(copilotHistoryStorageName)];
-      const distinctHistory = Array.from(new Set(updatedHistory)).slice(0, 4);
-      updateLocalStorage(copilotHistoryStorageName, distinctHistory);
-      setInputHistory(distinctHistory);
-    }
-  };
-
-  const handleOnKeyUp = (event: React.FormEvent<IComboBox>) => {
-    const newInputValue = (event.target as HTMLInputElement).value;
-    const filteredOptions = suggestedPrompts.filter((option) =>
-      option.text.toLowerCase().includes(newInputValue.toLowerCase())
-    );
-    const historyOptions = inputHistory.filter((input) => input.toLowerCase().includes(newInputValue.toLowerCase()));
-
-    setFilteredSuggestions(filteredOptions);
-    newInputValue === ""
-      ? setInputHistory(getLocalStorageItems(copilotHistoryStorageName))
-      : setInputHistory(historyOptions);
-  };
-
-  const handleSendClick = () => {
-    if (comboBoxRef.current) {
-      comboBoxRef.current.focus(true);
-    }
-    setUserInput("");
-    setQuerySent(true);
-  };
-
-  function copyToClipboard() {
-    navigator.clipboard.writeText(query);
-  }
 
   const generateSQLQuery = async (): Promise<void> => {
     try {
@@ -209,7 +113,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       throw error;
     } finally {
       setIsGeneratingQuery(false);
-      setUserInput("");
       setShowFeedbackBar(true);
     }
   };
@@ -279,36 +182,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     return [executeQueryBtn, saveQueryBtn, samplePromptsBtn];
   };
 
-  const comboBoxStyleRef = React.useRef(null);
-  React.useEffect(() => {
-    const handleResize = () => {
-      const comboBoxElement = comboBoxStyleRef.current;
-      if (comboBoxElement) {
-        const viewportWidth = window.innerWidth;
-        const desiredWidth = viewportWidth * 1; // Adjust the percentage as needed
-        comboBoxElement.style.setProperty("--dropdown-width", `${desiredWidth}px`);
-      }
-    };
-
-    handleResize(); // Set initial width
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    setInputHistory(getLocalStorageItems(copilotHistoryStorageName));
-  }, []);
-
-  React.useEffect(() => {
-    if (querySent) {
-      setUserInput("");
-      setQuerySent(false);
-    }
-  }, [querySent]);
-
   React.useEffect(() => {
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
@@ -326,37 +199,20 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
       </Stack>
       <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%" }}>
-        <ComboBox
-          styles={{ root: { width: "80vw" } }}
-          calloutProps={{
-            styles: { root: { maxHeight: "50vh", maxWidth: "var(--dropdown-width)", overflowY: "auto" } },
-          }}
-          dropdownWidth={1335}
+        <TextField
+          value={userInput}
+          onChange={(_, newValue) => setUserInput(newValue)}
+          style={{ lineHeight: 30 }}
+          styles={{ root: { width: "90%" } }}
           disabled={isGeneratingQuery}
-          onChange={handleInputChange}
-          options={[
-            ...filteredSuggestions,
-            ...inputHistory.map((text, index, iconProps) => ({
-              key: `history${index}`,
-              text,
-              iconProps: { iconName: "Clock" },
-            })),
-          ]}
-          onRenderOption={onsuggestedPromptOption}
-          allowFreeform
-          autoComplete="off"
-          componentRef={comboBoxRef}
-          text={userInput}
-          onClick={handleSendClick}
-          onKeyUp={handleOnKeyUp}
         />
         <IconButton
           iconProps={{ iconName: "Send" }}
           disabled={isGeneratingQuery}
-          style={{ marginLeft: "8px" }}
+          style={{ marginLeft: 8 }}
           onClick={() => generateSQLQuery()}
         />
-        {isGeneratingQuery && <Spinner style={{ marginLeft: "8px" }} />}
+        {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
       </Stack>
       <Text style={{ marginTop: 8, marginBottom: 24, fontSize: 12 }}>
         AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
@@ -364,6 +220,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           Read preview terms
         </Link>
       </Text>
+
       {showFeedbackBar ? (
         <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
           <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
@@ -410,7 +267,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           />
           <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton
-            onClick={copyToClipboard}
+            onClick={() => navigator.clipboard.writeText(query)}
             iconProps={{ iconName: "Copy" }}
             style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
           >
