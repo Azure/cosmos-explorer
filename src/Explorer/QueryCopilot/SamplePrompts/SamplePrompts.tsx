@@ -1,9 +1,8 @@
-import { DefaultButton, FontIcon, Image, Layer, Overlay, Popup, Separator, Stack, Text } from "@fluentui/react";
+import { DefaultButton, FontIcon, IconButton, Image, Modal, Stack, Text } from "@fluentui/react";
 import React, { Dispatch, SetStateAction } from "react";
 import ComplexPrompts from "../../../../images/ComplexPrompts.svg";
 import IntermediatePrompts from "../../../../images/IntermediatePrompts.svg";
 import SimplePrompts from "../../../../images/SimplePrompts.svg";
-import "./SamplePrompts.css";
 
 export interface SamplePromptsProps {
   isSamplePromptsOpen: boolean;
@@ -26,86 +25,114 @@ export const SamplePrompts = ({ sampleProps }: { sampleProps: SamplePromptsProps
     sampleProps.setIsSamplePromptsOpen(false);
   }
 
-  return sampleProps.isSamplePromptsOpen ? (
-    <Layer>
-      <Separator vertical style={{ color: "#EDEBE9" }} />
-      <Popup
-        className="sampleBox"
+  return (
+    <Modal isOpen={sampleProps.isSamplePromptsOpen}>
+      <Stack
+        style={{ padding: "16px 24px", overflowY: "auto", maxHeight: "calc(100vh - 120px)" }}
         role="dialog"
         aria-modal="true"
-        onDismiss={() => sampleProps.setIsSamplePromptsOpen(false)}
       >
-        <div className="sampleContent">
-          <Overlay onClick={() => sampleProps.setIsSamplePromptsOpen(false)} />
-          <Stack>
-            <Stack className="inlineElements">
-              <Text className="sampleHeader">Sample Prompts</Text>
-              <DefaultButton className="closeButton" onClick={() => sampleProps.setIsSamplePromptsOpen(false)}>
-                X
-              </DefaultButton>
-            </Stack>
-            <Text className="sampleDescription">
-              Here are some sample prompts for writing queries in NoSQL, ranging from simple to complex
-            </Text>
+        <Stack>
+          <Stack horizontal style={{ display: "flex", justifyContent: "space-between" }}>
+            <Text style={{ fontSize: 24, fontWeight: 600 }}>Sample Prompts</Text>
+            <IconButton
+              styles={{
+                root: {
+                  border: "none",
+                  backgroundColor: "transparent",
+                  padding: 0,
+                  selectors: {
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                      color: "#000", // Set the desired color for the X button on hover
+                    },
+                    "&:focus": {
+                      outline: "none",
+                    },
+                  },
+                },
+              }}
+              iconProps={{ iconName: "Cancel" }}
+              onClick={() => sampleProps.setIsSamplePromptsOpen(false)}
+            />
           </Stack>
+          <Text style={{ fontWeight: 400, fontSize: 13, marginTop: 10 }}>
+            Here are some sample prompts for writing queries in NoSQL, ranging from simple to complex
+          </Text>
+        </Stack>
 
-          <Stack className="titleLogo">
-            <Stack horizontal verticalAlign="center">
-              <Image className="imageStlye" src={SimplePrompts} />
-              <Text className="promptDifficulty">Simple Prompts</Text>
-            </Stack>
+        <Stack style={{ marginTop: 30, display: "flex" }}>
+          <Stack horizontal verticalAlign="center">
+            <Image style={{ width: 25, height: 25 }} src={SimplePrompts} />
+            <Text style={{ fontSize: 14, fontWeight: 600 }}>Simple Prompts</Text>
           </Stack>
+        </Stack>
 
-          <Stack horizontal className="inlineButtons">
-            <DefaultButton className="defaultButton" onClick={() => updateTextBox(SampleUserInputs[0])}>
-              <Text className="buttonText">{SampleUserInputs[0]}</Text>
-              <FontIcon className="arrowPosition" aria-label="Forward" iconName="Forward" />
-            </DefaultButton>
-            <DefaultButton className="defaultButton" onClick={() => updateTextBox(SampleUserInputs[1])}>
-              <Text className="buttonText">{SampleUserInputs[1]}</Text>
-              <FontIcon className="arrowPosition" aria-label="Forward" iconName="Forward" />
-            </DefaultButton>
-          </Stack>
+        <Stack horizontal style={{ gap: 35 }}>
+          <DefaultButton
+            style={{ width: 352, height: 135, background: "#F6F6F7" }}
+            onClick={() => updateTextBox(SampleUserInputs[0])}
+          >
+            <Text style={{ height: 80, fontSize: 13 }}>{SampleUserInputs[0]}</Text>
+            <FontIcon style={{ position: "absolute", left: "92.61%" }} aria-label="Forward" iconName="Forward" />
+          </DefaultButton>
+          <DefaultButton
+            style={{ width: 352, height: 135, background: "#F6F6F7" }}
+            onClick={() => updateTextBox(SampleUserInputs[1])}
+          >
+            <Text style={{ height: 80, fontSize: 13 }}>{SampleUserInputs[1]}</Text>
+            <FontIcon style={{ position: "absolute", left: "92.61%" }} aria-label="Forward" iconName="Forward" />
+          </DefaultButton>
+        </Stack>
 
-          <Stack className="titleLogo">
-            <Stack horizontal verticalAlign="center">
-              <Image className="imageStlye" src={IntermediatePrompts} />
-              <Text className="promptDifficulty">Intermediate Prompts</Text>
-            </Stack>
+        <Stack style={{ marginTop: 30, display: "flex" }}>
+          <Stack horizontal verticalAlign="center">
+            <Image style={{ width: 25, height: 25 }} src={IntermediatePrompts} />
+            <Text style={{ fontSize: 14, fontWeight: 600 }}>Intermediate Prompts</Text>
           </Stack>
+        </Stack>
 
-          <Stack horizontal className="inlineButtons">
-            <DefaultButton className="defaultButton" onClick={() => updateTextBox(SampleUserInputs[2])}>
-              <Text className="buttonText">{SampleUserInputs[2]}</Text>
-              <FontIcon className="arrowPosition" aria-label="Forward" iconName="Forward" />
-            </DefaultButton>
-            <DefaultButton className="defaultButton" onClick={() => updateTextBox(SampleUserInputs[3])}>
-              <Text className="buttonText">{SampleUserInputs[3]}</Text>
-              <FontIcon className="arrowPosition" aria-label="Forward" iconName="Forward" />
-            </DefaultButton>
-          </Stack>
+        <Stack horizontal style={{ gap: 35 }}>
+          <DefaultButton
+            style={{ width: 352, height: 135, background: "#F6F6F7" }}
+            onClick={() => updateTextBox(SampleUserInputs[2])}
+          >
+            <Text style={{ height: 80, fontSize: 13 }}>{SampleUserInputs[2]}</Text>
+            <FontIcon style={{ position: "absolute", left: "92.61%" }} aria-label="Forward" iconName="Forward" />
+          </DefaultButton>
+          <DefaultButton
+            style={{ width: 352, height: 135, background: "#F6F6F7" }}
+            onClick={() => updateTextBox(SampleUserInputs[3])}
+          >
+            <Text style={{ height: 80, fontSize: 13 }}>{SampleUserInputs[3]}</Text>
+            <FontIcon style={{ position: "absolute", left: "92.61%" }} aria-label="Forward" iconName="Forward" />
+          </DefaultButton>
+        </Stack>
 
-          <Stack className="titleLogo">
-            <Stack horizontal verticalAlign="center">
-              <Image className="imageStlye" src={ComplexPrompts} />
-              <Text className="promptDifficulty">Complex Prompts</Text>
-            </Stack>
+        <Stack style={{ marginTop: 30, display: "flex" }}>
+          <Stack horizontal verticalAlign="center">
+            <Image style={{ width: 25, height: 25 }} src={ComplexPrompts} />
+            <Text style={{ fontSize: 14, fontWeight: 600 }}>Complex Prompts</Text>
           </Stack>
+        </Stack>
 
-          <Stack horizontal className="inlineButtons">
-            <DefaultButton className="defaultButton" onClick={() => updateTextBox(SampleUserInputs[4])}>
-              <Text className="buttonText">{SampleUserInputs[4]}</Text>
-              <FontIcon className="arrowPosition" aria-label="Forward" iconName="Forward" />
-            </DefaultButton>
-            <DefaultButton className="defaultButton" onClick={() => updateTextBox(SampleUserInputs[5])}>
-              <Text className="buttonText">{SampleUserInputs[5]}</Text>
-              <FontIcon className="arrowPosition" aria-label="Forward" iconName="Forward" />
-            </DefaultButton>
-          </Stack>
-        </div>
-      </Popup>
-    </Layer>
-  ) : (
-    <></>
+        <Stack horizontal style={{ gap: 35 }}>
+          <DefaultButton
+            style={{ width: 352, height: 135, background: "#F6F6F7" }}
+            onClick={() => updateTextBox(SampleUserInputs[4])}
+          >
+            <Text style={{ height: 80, fontSize: 13 }}>{SampleUserInputs[4]}</Text>
+            <FontIcon style={{ position: "absolute", left: "92.61%" }} aria-label="Forward" iconName="Forward" />
+          </DefaultButton>
+          <DefaultButton
+            style={{ width: 352, height: 135, background: "#F6F6F7" }}
+            onClick={() => updateTextBox(SampleUserInputs[5])}
+          >
+            <Text style={{ height: 80, fontSize: 13 }}>{SampleUserInputs[5]}</Text>
+            <FontIcon style={{ position: "absolute", left: "92.61%" }} aria-label="Forward" iconName="Forward" />
+          </DefaultButton>
+        </Stack>
+      </Stack>
+    </Modal>
   );
 };
