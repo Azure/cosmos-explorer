@@ -41,33 +41,4 @@ export const DeletePopup = ({
       </Stack>
     </Modal>
   );
-
-  // return (
-  //   <>
-  //     {showDeletePopup && (
-  //       <Layer>
-  //         <Popup className="popupRoot" role="dialog" aria-modal="true" onDismiss={() => setShowDeletePopup(false)}>
-  //           <Overlay onClick={() => setShowDeletePopup(false)} />
-  //           <FocusTrapZone>
-  //             <Stack role="document">
-  //               <Text className="deleteCodeHeader">Delete code?</Text>
-  //               <Text className="deleteCodeText">
-  //                 This will clear the query from the query builder pane along with all comments and also reset the
-  //                 prompt pane
-  //               </Text>
-  //             </Stack>
-  //             <Stack className="popUpButtonsBar">
-  //               <PrimaryButton className="deletePopUpButton" onClick={deleteCode}>
-  //                 Delete
-  //               </PrimaryButton>
-  //               <DefaultButton className="cancelPopupButton" onClick={() => setShowDeletePopup(false)}>
-  //                 Close
-  //               </DefaultButton>
-  //             </Stack>
-  //           </FocusTrapZone>
-  //         </Popup>
-  //       </Layer>
-  //     )}
-  //   </>
-  // );
 };
