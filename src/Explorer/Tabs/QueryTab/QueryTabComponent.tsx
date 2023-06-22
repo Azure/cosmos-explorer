@@ -220,7 +220,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         firstItemIndex,
         queryDocuments
       );
-      this.setState({ queryResults });
+      this.setState({ queryResults, error: "" });
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);
       this.setState({
