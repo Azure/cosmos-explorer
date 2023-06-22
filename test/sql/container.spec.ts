@@ -14,7 +14,7 @@ test("SQL CRUD", async () => {
 
   await explorer.click('[data-test="New Container"]');
   await explorer.fill('[aria-label="New database id, Type a new database id"]', databaseId);
-  await explorer.fill('[aria-label="Container id"]', containerId);
+  await explorer.fill('[aria-label="Container id Example Container1"]', containerId);
   await explorer.fill('[aria-label="Partition key"]', "/pk");
   await explorer.click("#sidePanelOkButton");
   await explorer.click(`.nodeItem >> text=${databaseId}`);

@@ -15,7 +15,7 @@ test("Mongo CRUD", async () => {
   // Create new database and collection
   await explorer.click('[data-test="New Collection"]');
   await explorer.fill('[aria-label="New database id, Type a new database id"]', databaseId);
-  await explorer.fill('[aria-label="Collection id"]', containerId);
+  await explorer.fill('[aria-label="Container id Example Container1"]', containerId);
   await explorer.fill('[aria-label="Shard key"]', "pk");
   await explorer.click("#sidePanelOkButton");
   await explorer.click(`.nodeItem >> text=${databaseId}`);
