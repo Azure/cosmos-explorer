@@ -81,7 +81,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [queryResults, setQueryResults] = useState<QueryResults>();
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount.id}-queryCopilotHistories`);
+  const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
   const cachedHistories = cachedHistoriesString?.split(",");
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
 
