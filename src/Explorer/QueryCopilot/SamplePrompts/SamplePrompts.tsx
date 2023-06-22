@@ -20,10 +20,10 @@ const SampleUserInputs: string[] = [
 ];
 
 export const SamplePrompts = ({ sampleProps }: { sampleProps: SamplePromptsProps }): JSX.Element => {
-  function updateTextBox(userInput: string) {
+  const updateTextBox = (userInput: string) => {
     sampleProps.setTextBox(userInput);
     sampleProps.setIsSamplePromptsOpen(false);
-  }
+  };
 
   return (
     <Modal isOpen={sampleProps.isSamplePromptsOpen}>
