@@ -307,15 +307,6 @@ export default class DocumentsTab extends TabsBase {
       }),
     };
 
-    this.copilotEntityButton = {
-      enabled: ko.computed<boolean>(() => {
-        return userContext.features.enableCopilot;
-      }),
-      visible: ko.computed<boolean>(() => {
-        return userContext.features.enableCopilot;
-      }),
-    };
-
     this.buildCommandBarOptions();
     this.shouldShowEditor = ko.computed<boolean>(() => {
       const documentHasContent: boolean =
