@@ -3,6 +3,9 @@ import { useNotebook } from "Explorer/Notebook/useNotebook";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import { bulkCreateDocument } from "../../Common/dataAccess/bulkCreateDocument";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
@@ -10,19 +13,16 @@ import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer
 import { readStoredProcedures } from "../../Common/dataAccess/readStoredProcedures";
 import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import * as Logger from "../../Common/Logger";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { UploadDetailsRecord } from "../../Contracts/ViewModels";
-import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
+import { useTabs } from "../../hooks/useTabs";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
@@ -57,6 +57,7 @@ export default class Collection implements ViewModels.Collection {
   public indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   public uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   public usageSizeInKB: ko.Observable<number>;
+  public computedProperties: ko.Observable<DataModels.ComputedProperties>;
 
   public offer: ko.Observable<DataModels.Offer>;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
@@ -120,6 +121,7 @@ export default class Collection implements ViewModels.Collection {
     this.schema = data.schema;
     this.requestSchema = data.requestSchema;
     this.geospatialConfig = ko.observable(data.geospatialConfig);
+    this.computedProperties = ko.observable(data.computedProperties);
 
     this.partitionKeyPropertyHeaders = this.partitionKey?.paths;
     this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {

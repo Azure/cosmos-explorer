@@ -1045,6 +1045,8 @@ export interface SqlContainerResource {
 
   /* Analytical TTL. */
   analyticalStorageTtl?: number;
+
+  computedProperties?: ComputedProperties;
 }
 
 /* Cosmos DB indexing policy */
@@ -1065,6 +1067,13 @@ export interface IndexingPolicy {
 
   /* List of spatial specifics */
   spatialIndexes?: SpatialSpec[];
+}
+
+export type ComputedProperties = ComputedProperty[];
+
+export interface ComputedProperty {
+  name?: string;
+  query?: string;
 }
 
 /* undocumented */

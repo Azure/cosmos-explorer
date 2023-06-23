@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ComputedPropertiesComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 5,
+    }
+  }
+>
+  <div
+    className="settingsV2IndexingPolicyEditor"
+    tabIndex={0}
+  />
+</Stack>
+`;

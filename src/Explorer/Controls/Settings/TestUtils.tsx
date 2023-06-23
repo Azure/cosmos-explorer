@@ -40,6 +40,12 @@ export const collection = ({
     version: 2,
   },
   partitionKeyProperties: ["partitionKey"],
+  computedProperties: ko.observable<DataModels.ComputedProperties>([
+    {
+      name: "queryName",
+      query: "query",
+    },
+  ]),
   readSettings: () => {
     return;
   },

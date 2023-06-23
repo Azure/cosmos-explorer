@@ -1,22 +1,26 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import {
+  ComputedPropertiesComponent,
+  ComputedPropertiesComponentProps,
+} from "Explorer/Controls/Settings/SettingsSubComponents/ComputedPropertiesComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
@@ -37,15 +41,15 @@ import {
   AddMongoIndexProps,
   ChangeFeedPolicyState,
   GeospatialConfigType,
+  MongoIndexTypes,
+  SettingsV2TabTypes,
+  TtlType,
   getMongoNotification,
   getTabTitle,
   hasDatabaseSharedThroughput,
   isDirty,
-  MongoIndexTypes,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
-  SettingsV2TabTypes,
-  TtlType,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -101,6 +105,11 @@ export interface SettingsComponentState {
   indexesToAdd: AddMongoIndexProps[];
   indexTransformationProgress: number;
 
+  computedPropertiesContent: DataModels.ComputedProperties;
+  computedPropertiesContentBaseline: DataModels.ComputedProperties;
+  shouldDiscardComputedProperties: boolean;
+  isComputedPropertiesDirty: boolean;
+
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyPath: string;
@@ -125,6 +134,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private offer: DataModels.Offer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
+  private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private totalThroughputUsed: number;
   public mongoDBCollectionResource: MongoDBCollectionResource;
@@ -137,6 +147,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.collection = this.props.settingsTab.collection as ViewModels.Collection;
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
+      this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
@@ -186,6 +197,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isMongoIndexingPolicySaveable: false,
       isMongoIndexingPolicyDiscardable: false,
       indexTransformationProgress: undefined,
+
+      computedPropertiesContent: undefined,
+      computedPropertiesContentBaseline: undefined,
+      shouldDiscardComputedProperties: false,
+      isComputedPropertiesDirty: false,
 
       conflictResolutionPolicyMode: undefined,
       conflictResolutionPolicyModeBaseline: undefined,
@@ -277,6 +293,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsSaveable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
+      this.state.isComputedPropertiesDirty ||
       (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicySaveable)
     );
   };
@@ -287,6 +304,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isSubSettingsDiscardable ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
+      this.state.isComputedPropertiesDirty ||
       (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicyDiscardable)
     );
   };
@@ -390,6 +408,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isMongoIndexingPolicySaveable: false,
       isMongoIndexingPolicyDiscardable: false,
       isConflictResolutionDirty: false,
+      computedPropertiesContent: this.state.computedPropertiesContentBaseline,
+      shouldDiscardComputedProperties: true,
+      isComputedPropertiesDirty: false,
     });
   };
 
@@ -505,6 +526,31 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onMongoIndexingPolicyDiscardableChange = (isMongoIndexingPolicyDiscardable: boolean): void =>
     this.setState({ isMongoIndexingPolicyDiscardable });
+
+  private onComputedPropertiesContentChange = (newComputedProperties: DataModels.ComputedProperties): void =>
+    this.setState({ computedPropertiesContent: newComputedProperties });
+
+  private resetShouldDiscardComputedProperties = (): void => this.setState({ shouldDiscardComputedProperties: false });
+
+  private logComputedPropertiesSuccessMessage = (): void => {
+    if (this.props.settingsTab.onLoadStartKey) {
+      traceSuccess(
+        Action.Tab,
+        {
+          databaseName: this.collection.databaseId,
+          collectionName: this.collection.id(),
+
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.props.settingsTab.tabTitle(),
+        },
+        this.props.settingsTab.onLoadStartKey
+      );
+      this.props.settingsTab.onLoadStartKey = undefined;
+    }
+  };
+
+  private onComputedPropertiesDirtyChange = (isComputedPropertiesDirty: boolean): void =>
+    this.setState({ isComputedPropertiesDirty: isComputedPropertiesDirty });
 
   private calculateTotalThroughputUsed = (): void => {
     this.totalThroughputUsed = 0;
@@ -626,7 +672,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const indexingPolicyContent = this.collection.indexingPolicy();
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
-
     const conflictResolutionPolicyMode = parseConflictResolutionMode(conflictResolutionPolicy?.mode);
     const conflictResolutionPolicyPath = conflictResolutionPolicy?.conflictResolutionPath;
     const conflictResolutionPolicyProcedure = parseConflictResolutionProcedure(
@@ -635,6 +680,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const geospatialConfigTypeString: string =
       (this.collection.geospatialConfig && this.collection.geospatialConfig()?.type) || GeospatialConfigType.Geometry;
     const geoSpatialConfigType = GeospatialConfigType[geospatialConfigTypeString as keyof typeof GeospatialConfigType];
+    let computedPropertiesContent = this.collection.computedProperties();
+    if (!computedPropertiesContent || computedPropertiesContent.length == 0) {
+      computedPropertiesContent = [
+        { name: "name_of_property", query: "query_to_compute_property" },
+      ] as DataModels.ComputedProperties;
+    }
 
     return {
       throughput: offerThroughput,
@@ -659,6 +710,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       conflictResolutionPolicyProcedureBaseline: conflictResolutionPolicyProcedure,
       geospatialConfigType: geoSpatialConfigType,
       geospatialConfigTypeBaseline: geoSpatialConfigType,
+      computedPropertiesContent: computedPropertiesContent,
+      computedPropertiesContentBaseline: computedPropertiesContent,
     };
   };
 
@@ -775,7 +828,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private saveCollectionSettings = async (startKey: number): Promise<void> => {
     const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
 
-    if (this.state.isSubSettingsSaveable || this.state.isIndexingPolicyDirty || this.state.isConflictResolutionDirty) {
+    if (
+      this.state.isSubSettingsSaveable ||
+      this.state.isIndexingPolicyDirty ||
+      this.state.isConflictResolutionDirty ||
+      this.state.isComputedPropertiesDirty
+    ) {
       let defaultTtl: number;
       switch (this.state.timeToLive) {
         case TtlType.On:
@@ -813,6 +871,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         newCollection.conflictResolutionPolicy = conflictResolutionChanges;
       }
 
+      if (this.state.isComputedPropertiesDirty) {
+        newCollection.computedProperties = this.state.computedPropertiesContent;
+      }
+
       const updatedCollection: DataModels.Collection = await updateCollection(
         this.collection.databaseId,
         this.collection.id(),
@@ -826,6 +888,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
       this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
       this.collection.geospatialConfig(updatedCollection.geospatialConfig);
+      this.collection.computedProperties(updatedCollection.computedProperties);
 
       if (wasIndexingPolicyModified) {
         await this.refreshIndexTransformationProgress();
@@ -836,6 +899,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         isSubSettingsDiscardable: false,
         isIndexingPolicyDirty: false,
         isConflictResolutionDirty: false,
+        isComputedPropertiesDirty: false,
       });
     }
 
@@ -1028,6 +1092,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onMongoIndexingPolicyDiscardableChange: this.onMongoIndexingPolicyDiscardableChange,
     };
 
+    const computedPropertiesComponentProps: ComputedPropertiesComponentProps = {
+      computedPropertiesContent: this.state.computedPropertiesContent,
+      computedPropertiesContentBaseline: this.state.computedPropertiesContentBaseline,
+      logComputedPropertiesSuccessMessage: this.logComputedPropertiesSuccessMessage,
+      onComputedPropertiesContentChange: this.onComputedPropertiesContentChange,
+      onComputedPropertiesDirtyChange: this.onComputedPropertiesDirtyChange,
+      resetShouldDiscardComputedProperties: this.resetShouldDiscardComputedProperties,
+      shouldDiscardComputedProperties: this.state.shouldDiscardComputedProperties,
+    };
+
     const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {
       collection: this.collection,
       conflictResolutionPolicyMode: this.state.conflictResolutionPolicyMode,
@@ -1068,6 +1142,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           content: mongoIndexTabContext,
         });
       }
+    }
+
+    if (this.shouldShowComputedPropertiesEditor) {
+      tabs.push({
+        tab: SettingsV2TabTypes.ComputedPropertiesTab,
+        content: <ComputedPropertiesComponent {...computedPropertiesComponentProps} />,
+      });
     }
 
     if (this.hasConflictResolution()) {
