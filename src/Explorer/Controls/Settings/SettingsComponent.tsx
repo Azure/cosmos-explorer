@@ -681,7 +681,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       (this.collection.geospatialConfig && this.collection.geospatialConfig()?.type) || GeospatialConfigType.Geometry;
     const geoSpatialConfigType = GeospatialConfigType[geospatialConfigTypeString as keyof typeof GeospatialConfigType];
     let computedPropertiesContent = this.collection.computedProperties();
-    if (!computedPropertiesContent || computedPropertiesContent.length == 0) {
+    if (!computedPropertiesContent || computedPropertiesContent.length === 0) {
       computedPropertiesContent = [
         { name: "name_of_property", query: "query_to_compute_property" },
       ] as DataModels.ComputedProperties;
@@ -751,9 +751,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.autoscaleMaxThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
   };
@@ -764,9 +763,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.manualThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });
   };
@@ -856,8 +854,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
           ? {
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
-            }
+            retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
+          }
           : undefined;
 
       newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();

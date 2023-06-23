@@ -258,7 +258,7 @@ export const ttlWarning: JSX.Element = (
 export const unsavedEditorWarningMessage = (editor: editorType): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
     You have not saved the latest changes made to your{" "}
-    {editor == "indexPolicy" ? "indexing policy" : "computed properties"}. Please click save to confirm the changes.
+    {editor === "indexPolicy" ? "indexing policy" : "computed properties"}. Please click save to confirm the changes.
   </Text>
 );
 
@@ -341,10 +341,10 @@ const getCurrentThroughput = (
     if (throughput) {
       return isAutoscale
         ? `, Current autoscale throughput: ${Math.round(
-            throughput / 10
-          )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-            targetThroughput / 10
-          )} - ${targetThroughput} ${throughputUnit}`
+          throughput / 10
+        )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
+          targetThroughput / 10
+        )} - ${targetThroughput} ${throughputUnit}`
         : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
     } else {
       return isAutoscale
