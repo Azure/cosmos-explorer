@@ -1256,6 +1256,8 @@ export interface SqlContainerResource {
 
   /* The configuration for defining Materialized Views. This must be specified only for creating a Materialized View container. */
   materializedViewDefinition?: MaterializedViewDefinition;
+
+  computedProperties?: ComputedProperties;
 }
 
 /* Cosmos DB indexing policy */
@@ -1276,6 +1278,13 @@ export interface IndexingPolicy {
 
   /* List of spatial specifics */
   spatialIndexes?: SpatialSpec[];
+}
+
+export type ComputedProperties = ComputedProperty[];
+
+export interface ComputedProperty {
+  name?: string;
+  query?: string;
 }
 
 /* undocumented */

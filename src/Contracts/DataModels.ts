@@ -159,6 +159,7 @@ export interface Collection extends Resource {
   geospatialConfig?: GeospatialConfig;
   schema?: ISchema;
   requestSchema?: () => void;
+  computedProperties?: ComputedProperties;
 }
 
 export interface CollectionsWithPagination {
@@ -170,7 +171,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource {}
+export interface DocumentId extends Resource { }
 
 export interface ConflictId extends Resource {
   resourceId?: string;
@@ -196,6 +197,13 @@ export interface IndexingPolicy {
   compositeIndexes?: any;
   spatialIndexes?: any;
 }
+
+export interface ComputedProperty {
+  name: string;
+  query: string;
+}
+
+export type ComputedProperties = ComputedProperty[]
 
 export interface PartitionKey {
   paths: string[];
