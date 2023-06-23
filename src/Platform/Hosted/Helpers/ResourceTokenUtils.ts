@@ -1,17 +1,18 @@
 export interface ParsedResourceTokenConnectionString {
-  accountEndpoint: string;
-  collectionId: string;
-  databaseId: string;
+  accountEndpoint?: string;
+  collectionId?: string;
+  databaseId?: string;
   partitionKey?: string;
-  resourceToken: string;
+  resourceToken?: string;
 }
 
 export function parseResourceTokenConnectionString(connectionString: string): ParsedResourceTokenConnectionString {
-  let accountEndpoint: string;
-  let collectionId: string;
-  let databaseId: string;
-  let partitionKey: string;
-  let resourceToken: string;
+  let accountEndpoint: string | undefined = undefined;
+  let collectionId: string | undefined = undefined;
+  let databaseId: string | undefined = undefined;
+  let partitionKey: string | undefined = undefined;
+  let resourceToken: string | undefined = undefined;
+
   const connectionStringParts = connectionString.split(";");
   connectionStringParts.forEach((part: string) => {
     if (part.startsWith("type=resource")) {
@@ -39,5 +40,5 @@ export function parseResourceTokenConnectionString(connectionString: string): Pa
 }
 
 export function isResourceTokenConnectionString(connectionString: string): boolean {
-  return connectionString && connectionString.includes("type=resource");
+  return !!connectionString && connectionString.includes("type=resource");
 }
