@@ -16,25 +16,19 @@ export const DeletePopup = ({
   };
 
   return (
-    <Modal isOpen={showDeletePopup}>
+    <Modal isOpen={showDeletePopup} styles={{ main: { minHeight: "122px", minWidth: "880px" } }}>
       <Stack style={{ padding: "16px 24px", height: "auto" }}>
         <Text style={{ height: 24, fontSize: "18px" }}>
           <b>Delete code?</b>
         </Text>
-        <Text style={{ marginTop: 10, display: "inline" }}>
+        <Text style={{ marginTop: 10, marginBottom: 20 }}>
           This will clear the query from the query builder pane along with all comments and also reset the prompt pane
         </Text>
-        <Stack style={{ display: "inline-block", marginTop: 50 }}>
-          <PrimaryButton
-            style={{ padding: "10px 20px", width: "fit-content", height: 24, background: "#0078D4" }}
-            onClick={deleteCode}
-          >
+        <Stack horizontal tokens={{ childrenGap: 10 }} horizontalAlign="start">
+          <PrimaryButton style={{ padding: "0px 20px", height: 24, background: "#0078D4" }} onClick={deleteCode}>
             Delete
           </PrimaryButton>
-          <DefaultButton
-            style={{ marginLeft: 10, padding: "10px 20px", width: "fit-content", height: 24 }}
-            onClick={() => setShowDeletePopup(false)}
-          >
+          <DefaultButton style={{ padding: "0px 20px", height: 24 }} onClick={() => setShowDeletePopup(false)}>
             Close
           </DefaultButton>
         </Stack>
