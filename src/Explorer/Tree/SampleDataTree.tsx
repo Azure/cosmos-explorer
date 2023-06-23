@@ -5,7 +5,9 @@ import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent
 export const SampleDataTree: React.FC = (): JSX.Element => {
   const root: TreeNode = getSampleDataTreeRoot();
 
-  return <>
-    <TreeComponent className="sampleDataResourceTree" rootNode={root} />
-  </>;
-}
+  return (
+    <>
+      <TreeComponent className="sampleDataResourceTree" rootNode={root} />
+    </>
+  );
+};

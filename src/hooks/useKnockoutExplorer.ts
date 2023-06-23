@@ -433,7 +433,7 @@ async function updateContextForSampleData(): Promise<void> {
   }
 
   const data: SampledataconnectionResponse = await response.json();
-  const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString)
+  const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
   updateUserContext({ sampleDataConnectionInfo });
 }
 

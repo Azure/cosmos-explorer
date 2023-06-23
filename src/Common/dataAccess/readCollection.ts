@@ -25,7 +25,11 @@ export async function readSampleCollection(): Promise<DataModels.Collection> {
   return await readCollectionInternal(cosmosClient, databaseId, collectionId);
 }
 
-export async function readCollectionInternal(cosmosClient: CosmosClient, databaseId: string, collectionId: string): Promise<DataModels.Collection> {
+export async function readCollectionInternal(
+  cosmosClient: CosmosClient,
+  databaseId: string,
+  collectionId: string
+): Promise<DataModels.Collection> {
   let collection: DataModels.Collection;
   const clearMessage = logConsoleProgress(`Querying container ${collectionId}`);
   try {

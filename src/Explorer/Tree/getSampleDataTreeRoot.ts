@@ -5,34 +5,36 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { TreeNode } from "../Controls/TreeComponent/TreeComponent";
 
 export function getSampleDataTreeRoot(): TreeNode {
-    const sampleDataResourceTokenCollection: ViewModels.CollectionBase = useDatabases((state) => state.sampleDataResourceTokenCollection);
+  const sampleDataResourceTokenCollection: ViewModels.CollectionBase = useDatabases(
+    (state) => state.sampleDataResourceTokenCollection
+  );
 
-    // TODO: fix the race condition that fails to render after updating sampleDataResourceTokenCollection
-    if (!sampleDataResourceTokenCollection) {
-        return {
-            label: "Sample data not initialized."
-        };
-    }
-
-    const containerId = sampleDataResourceTokenCollection.id();
-    const databaseId = sampleDataResourceTokenCollection.databaseId;
-
+  // TODO: fix the race condition that fails to render after updating sampleDataResourceTokenCollection
+  if (!sampleDataResourceTokenCollection) {
     return {
-        label: databaseId,
+      label: "Sample data not initialized.",
+    };
+  }
+
+  const containerId = sampleDataResourceTokenCollection.id();
+  const databaseId = sampleDataResourceTokenCollection.databaseId;
+
+  return {
+    label: databaseId,
+    isExpanded: true,
+    iconSrc: CosmosDBIcon,
+    children: [
+      {
+        label: containerId,
+        iconSrc: CollectionIcon,
         isExpanded: true,
-        iconSrc: CosmosDBIcon,
+        className: "collectionHeader",
         children: [
-            {
-                label: containerId,
-                iconSrc: CollectionIcon,
-                isExpanded: true,
-                className: "collectionHeader",
-                children: [
-                    {
-                        label: "Items"
-                    }
-                ]
-            }
-        ]
-    }
+          {
+            label: "Items",
+          },
+        ],
+      },
+    ],
+  };
 }

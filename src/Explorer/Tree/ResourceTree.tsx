@@ -788,7 +788,6 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         {buildGalleryCallout()}
       </>
     );
-
   }
 
   if (!isNotebookEnabled && isSampleDataEnabled) {
@@ -806,7 +805,6 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         {buildGalleryCallout()}
       </>
     );
-
   }
 
   return (

@@ -18,7 +18,7 @@ export function sampleDataClient(): Cosmos.CosmosClient {
     connectionPolicy: {
       enableEndpointDiscovery: false,
     },
-    userAgentSuffix: "Azure Portal"
+    userAgentSuffix: "Azure Portal",
   };
 
   _sampleDataclient = new Cosmos.CosmosClient(options);
