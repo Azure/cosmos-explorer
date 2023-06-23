@@ -259,7 +259,7 @@ export const ttlWarning: JSX.Element = (
 export const unsavedEditorWarningMessage = (editor: editorType): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
     You have not saved the latest changes made to your{" "}
-    {editor == "indexPolicy" ? "indexing policy" : "computed properties"}. Please click save to confirm the changes.
+    {editor === "indexPolicy" ? "indexing policy" : "computed properties"}. Please click save to confirm the changes.
   </Text>
 );
 

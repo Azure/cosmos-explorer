@@ -171,7 +171,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource { }
+export interface DocumentId extends Resource {}
 
 export interface ConflictId extends Resource {
   resourceId?: string;
@@ -203,7 +203,7 @@ export interface ComputedProperty {
   query: string;
 }
 
-export type ComputedProperties = ComputedProperty[]
+export type ComputedProperties = ComputedProperty[];
 
 export interface PartitionKey {
   paths: string[];
