@@ -7,11 +7,11 @@ export interface ParsedResourceTokenConnectionString {
 }
 
 export function parseResourceTokenConnectionString(connectionString: string): ParsedResourceTokenConnectionString {
-  let accountEndpoint: string | undefined = undefined;
-  let collectionId: string | undefined = undefined;
-  let databaseId: string | undefined = undefined;
-  let partitionKey: string | undefined = undefined;
-  let resourceToken: string | undefined = undefined;
+  let accountEndpoint: string | undefined;
+  let collectionId: string | undefined;
+  let databaseId: string | undefined;
+  let partitionKey: string | undefined;
+  let resourceToken: string | undefined;
 
   const connectionStringParts = connectionString.split(";");
   connectionStringParts.forEach((part: string) => {
