@@ -133,8 +133,10 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         if (isDirty(this.props.maxAutoPilotThroughput, this.props.maxAutoPilotThroughputBaseline)) {
           isDiscardable = true;
           if (
-            this.props.maxAutoPilotThroughput <= this.props.softAllowedMaximumThroughput &&
-            AutoPilotUtils.isValidAutoPilotThroughput(this.props.maxAutoPilotThroughput)
+            this.props.softAllowedMaximumThroughput
+              ? this.props.maxAutoPilotThroughput <= this.props.softAllowedMaximumThroughput &&
+                AutoPilotUtils.isValidAutoPilotThroughput(this.props.maxAutoPilotThroughput)
+              : AutoPilotUtils.isValidAutoPilotThroughput(this.props.maxAutoPilotThroughput)
           ) {
             isSaveable = true;
           }
