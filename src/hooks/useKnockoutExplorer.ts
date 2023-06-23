@@ -1,13 +1,13 @@
+import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
+import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
-import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
-import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
-import { configContext, Platform, updateConfigContext } from "../ConfigContext";
+import { Platform, configContext, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
@@ -21,19 +21,20 @@ import {
   ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
-import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
+import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
+import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
+import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
-import { getMsalInstance } from "../Utils/AuthorizationUtils";
-import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
+import { applyExplorerBindings } from "../applyExplorerBindings";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -60,6 +61,10 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           const explorer = await configurePortal();
           setExplorer(explorer);
         }
+      }
+
+      if (userContext.features.enableCopilot) {
+        await updateContextForSampleData();
       }
     };
     effect();
@@ -408,4 +413,30 @@ interface PortalMessage {
   actionType?: ActionType;
   type?: MessageTypes;
   inputs?: DataExplorerInputsFrame;
+}
+
+async function updateContextForSampleData(): Promise<void> {
+  if (!userContext.features.enableCopilot) {
+    return;
+  }
+
+  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, `/api/tokens/sampledataconnection`);
+  const authorizationHeader = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  const response = await window.fetch(url, {
+    headers,
+  });
+
+  if (!response.ok) {
+    return undefined;
+  }
+
+  const data: SampledataconnectionResponse = await response.json();
+  const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString)
+  updateUserContext({ sampleDataConnectionInfo });
+}
+
+interface SampledataconnectionResponse {
+  connectionString: string;
 }
