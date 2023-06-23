@@ -48,6 +48,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
 }: QueryCopilotCarouselProps): JSX.Element => {
   const [page, setPage] = useState<number>(1);
   const [isCreatingDatabase, setIsCreatingDatabase] = useState<boolean>(false);
+  const [spinnerText, setSpinnerText] = useState<string>("");
   const [selectedPrompt, setSelectedPrompt] = useState<number>(1);
 
   const getHeaderText = (): string => {
@@ -84,6 +85,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
 
     try {
       setIsCreatingDatabase(true);
+      setSpinnerText("Setting up your database...");
       const params: DataModels.CreateCollectionParams = {
         createNewDatabase: true,
         collectionId: "SampleContainer",
@@ -93,7 +95,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
         offerThroughput: undefined,
         indexingPolicy: AllPropertiesIndexed,
         partitionKey: {
-          paths: ["/CategoryId"],
+          paths: ["/categoryId"],
           kind: "Hash",
           version: 2,
         },
@@ -101,22 +103,22 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
       await createCollection(params);
       await explorer.refreshAllDatabases();
       const database = useDatabases.getState().findDatabaseWithId(QueryCopilotSampleDatabaseId);
-      // populate sample container with sample data
       await database.loadCollections();
       const collection = database.findCollectionWithId("SampleContainer");
-      collection.isSampleCollection = true;
-      const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorer);
-      await sampleGenerator.populateContainerAsync(collection, "/CategoryId");
-      // auto-expand sample database + container and show teaching bubble
+
+      setSpinnerText("Adding sample data set...");
+      const sampleGenerator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorer, true);
+      await sampleGenerator.populateContainerAsync(collection);
       await database.expandDatabase();
       collection.expandCollection();
       useDatabases.getState().updateDatabase(database);
     } catch (error) {
       //TODO: show error in UI
-      handleError(error, "Query copilot quickstart");
+      handleError(error, "QueryCopilotCreateSampleDB");
       throw error;
     } finally {
       setIsCreatingDatabase(false);
+      setSpinnerText("");
     }
   };
 
@@ -183,7 +185,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
             <Text style={{ fontSize: 13, fontWeight: 600, marginTop: 16 }}>Container Id</Text>
             <Text style={{ fontSize: 13 }}>SampleContainer</Text>
             <Text style={{ fontSize: 13, fontWeight: 600, marginTop: 16 }}>Partition key</Text>
-            <Text style={{ fontSize: 13 }}>CategoryId</Text>
+            <Text style={{ fontSize: 13 }}>categoryId</Text>
           </Stack>
         );
       case 3:
@@ -267,7 +269,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
             disabled={isCreatingDatabase}
           />
           {isCreatingDatabase && <Spinner style={{ marginLeft: 8 }} />}
-          {isCreatingDatabase && <Text style={{ marginLeft: 8, color: "#0078D4" }}>Setting up your database...</Text>}
+          {isCreatingDatabase && <Text style={{ marginLeft: 8, color: "#0078D4" }}>{spinnerText}</Text>}
         </Stack>
       </Stack>
     </Modal>

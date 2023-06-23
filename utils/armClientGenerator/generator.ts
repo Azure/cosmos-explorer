@@ -16,10 +16,15 @@ Results of this file should be checked into the repo.
 */
 
 // CHANGE THESE VALUES TO GENERATE NEW CLIENTS
-const version = "2021-04-15";
-const resourceName = "cosmosNotebooks";
-const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/${version}/notebook.json`;
-const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${resourceName}/${version}`);
+const version = "2023-04-15";
+/* The following are legal options for resourceName but you generally will only use cosmos-db:
+"cosmos-db" | "managedCassandra" | "mongorbac" | "notebook" | "privateEndpointConnection" | "privateLinkResources" |
+"rbac" | "restorable" | "services"
+*/
+const githubResourceName = "cosmos-db";
+const deResourceName = "cosmos";
+const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/${version}/${githubResourceName}.json`;
+const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${deResourceName}`);
 
 // Array of strings to use for eventual output
 const outputTypes: string[] = [""];
@@ -142,7 +147,7 @@ const propertyToType = (property: Property, prop: string, required: boolean) => 
           `);
     } else {
       if (property.type === undefined) {
-        console.log(`UHANDLED TYPE: ${prop}. Falling back to unknown`);
+        console.log(`generator.ts - UNHANDLED TYPE: ${prop}. Falling back to unknown`);
         property.type = "unknown";
       }
       outputTypes.push(`
@@ -209,7 +214,7 @@ async function main() {
         export type ${definition} = ${type}
         `);
       } else {
-        console.log("UNHANDLED MODEL:", def, schema.definitions[def]);
+        console.log("generator.ts - UNHANDLED MODEL:", def, schema.definitions[def]);
       }
     }
   }
@@ -233,9 +238,9 @@ async function main() {
   // Write all grouped fetch functions to objects
   for (const clientName in clients) {
     const outputClient: string[] = [""];
-    outputClient.push(`import { armRequest } from "../../../request"\n`);
+    outputClient.push(`import { armRequest } from "../../request"\n`);
     outputClient.push(`import * as Types from "./types"\n`);
-    outputClient.push(`import { configContext } from "../../../../../ConfigContext";\n`);
+    outputClient.push(`import { configContext } from "../../../../ConfigContext";\n`);
     outputClient.push(`const apiVersion = "${version}"\n\n`);
     for (const path of clients[clientName].paths) {
       for (const method in schema.paths[path]) {

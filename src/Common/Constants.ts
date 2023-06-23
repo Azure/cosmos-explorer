@@ -431,3 +431,88 @@ export class JunoEndpoints {
 
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
 export const QueryCopilotSampleContainerId = "SampleContainer";
+
+export const QueryCopilotSampleContainerSchema = {
+  product: {
+    sampleData: {
+      id: "de6fadec-0384-43c8-93ea-16c0170b5460",
+      name: "Premium Phone Mini (Red)",
+      price: 652.04,
+      category: "Electronics",
+      description:
+        "This Premium Phone Mini (Red) is designed by the company under agreement with the FCC, so we'd give it a pass in either direction, but no one should be using this handset without a compatible handset. All in all, this phone is one of the most affordable Android handsets out there at $100. Check them out.\n\n9. HTC One M9 4",
+      stock: 74,
+      countryOfOrigin: "Mexico",
+      firstAvailable: "2018-07-07 17:42:28",
+      priceHistory: [592.81],
+      customerRatings: [
+        { username: "dannyhowell", stars: 1, date: "2022-03-12 17:01:23", verifiedUser: true },
+        { username: "lindsay26", stars: 1, date: "2022-12-29 07:18:20", verifiedUser: false },
+        { username: "smithmiguel", stars: 3, date: "2022-09-08 11:43:27", verifiedUser: false },
+        { username: "julie07", stars: 3, date: "2021-03-14 23:54:10", verifiedUser: true },
+        { username: "kelly93", stars: 3, date: "2022-11-05 12:45:43", verifiedUser: false },
+        { username: "katherinereynolds", stars: 2, date: "2022-09-14 11:49:36", verifiedUser: false },
+        { username: "chandlerkenneth", stars: 1, date: "2022-01-14 12:14:43", verifiedUser: true },
+      ],
+      rareProperty: true,
+    },
+    schema: {
+      properties: {
+        id: {
+          type: "string",
+        },
+        name: {
+          type: "string",
+        },
+        price: {
+          type: "number",
+        },
+        category: {
+          type: "string",
+        },
+        description: {
+          type: "string",
+        },
+        stock: {
+          type: "number",
+        },
+        countryOfOrigin: {
+          type: "string",
+        },
+        firstAvailable: {
+          type: "string",
+        },
+        priceHistory: {
+          items: {
+            type: "number",
+          },
+          type: "array",
+        },
+        customerRatings: {
+          items: {
+            properties: {
+              username: {
+                type: "string",
+              },
+              stars: {
+                type: "number",
+              },
+              date: {
+                type: "string",
+              },
+              verifiedUser: {
+                type: "boolean",
+              },
+            },
+            type: "object",
+          },
+          type: "array",
+        },
+        rareProperty: {
+          type: "boolean",
+        },
+      },
+      type: "object",
+    },
+  },
+};
