@@ -1158,7 +1158,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    if (this.shouldShowComputedPropertiesEditor) {
+    if (
+      this.shouldShowComputedPropertiesEditor &&
+      userContext.authType === AuthType.AAD &&
+      !userContext.features.enableSDKoperations
+    ) {
       tabs.push({
         tab: SettingsV2TabTypes.ComputedPropertiesTab,
         content: <ComputedPropertiesComponent {...computedPropertiesComponentProps} />,
