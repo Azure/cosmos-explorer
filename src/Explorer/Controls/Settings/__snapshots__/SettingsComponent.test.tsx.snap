@@ -207,7 +207,7 @@ exports[`SettingsComponent renders 1`] = `
         />
       </PivotItem>
       <PivotItem
-        headerText="Computed Properties"
+        headerText="Computed Properties (preview)"
         itemKey="ComputedPropertiesTab"
         key="ComputedPropertiesTab"
         style={
