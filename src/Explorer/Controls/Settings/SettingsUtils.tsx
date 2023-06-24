@@ -148,7 +148,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.IndexingPolicyTab:
       return "Indexing Policy";
     case SettingsV2TabTypes.ComputedPropertiesTab:
-      return "Computed Properties";
+      return "Computed Properties (preview)";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
