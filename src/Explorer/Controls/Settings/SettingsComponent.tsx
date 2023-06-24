@@ -763,9 +763,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.autoscaleMaxThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
   };
@@ -776,9 +775,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.manualThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });
   };
@@ -868,8 +866,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
           ? {
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
-            }
+            retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
+          }
           : undefined;
 
       newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
@@ -1159,9 +1157,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
 
     if (
-      this.shouldShowComputedPropertiesEditor &&
-      userContext.authType === AuthType.AAD &&
-      !userContext.features.enableSDKoperations
+      this.shouldShowComputedPropertiesEditor
     ) {
       tabs.push({
         tab: SettingsV2TabTypes.ComputedPropertiesTab,
