@@ -39,7 +39,6 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
       canExceedMaximumValue={true}
       collectionName="test"
       databaseName="test"
-      getThroughputWarningMessage={[Function]}
       isAutoPilotSelected={false}
       isEmulator={false}
       isEnabled={true}
@@ -60,20 +59,6 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
       usageSizeInKB={100}
       wasAutopilotOriginallySet={true}
     />
-    <Stack
-      tokens={
-        Object {
-          "childrenGap": 5,
-        }
-      }
-    >
-      <StyledLabelBase>
-        Storage capacity
-      </StyledLabelBase>
-      <Text>
-        Unlimited
-      </Text>
-    </Stack>
   </Stack>
 </Stack>
 `;

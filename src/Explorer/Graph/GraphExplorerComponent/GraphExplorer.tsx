@@ -6,9 +6,9 @@ import * as React from "react";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
 import * as Constants from "../../../Common/Constants";
+import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
-import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { InputProperty } from "../../../Contracts/ViewModels";
@@ -182,7 +182,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public static readonly WITHOUT_STEP_ARGS_MAX_CHARS = 10000; // maximums char size of the without() step parameter
   public static readonly ROOT_LIST_PAGE_SIZE = 100;
   private static readonly MAX_LATEST_QUERIES = 10;
-  private static readonly MAX_RESULT_SIZE = 10000;
+  // TODO This prevents loading too much data in GraphExplorer and d3. A better is to cap the size of the result, rather than the number of items in the array.
+  private static readonly MAX_RESULT_SIZE = 100_000;
 
   private static readonly TAB_INDEX_JSON = 0;
   private static readonly TAB_INDEX_GRAPH = 1;

@@ -22,10 +22,17 @@ export class ContainerSampleGenerator {
   /**
    * Factory function to load the json data file
    */
-  public static async createSampleGeneratorAsync(container: Explorer): Promise<ContainerSampleGenerator> {
+  public static async createSampleGeneratorAsync(
+    container: Explorer,
+    isCopilot?: boolean
+  ): Promise<ContainerSampleGenerator> {
     const generator = new ContainerSampleGenerator(container);
     let dataFileContent: any;
-    if (userContext.apiType === "Gremlin") {
+    if (isCopilot) {
+      dataFileContent = await import(
+        /* webpackChunkName: "queryCopilotSampleData" */ "../../../sampleData/queryCopilotSampleData.json"
+      );
+    } else if (userContext.apiType === "Gremlin") {
       dataFileContent = await import(
         /* webpackChunkName: "gremlinSampleJsonData" */ "../../../sampleData/gremlinSampleData.json"
       );

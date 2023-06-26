@@ -31,7 +31,7 @@ export class GremlinClient {
   public client: GremlinSimpleClient;
   public pendingResults: Map<string, PendingResultData>; // public for testing purposes
   private maxResultSize: number;
-  private static readonly PENDING_REQUEST_TIMEOUT_MS = 6 /* minutes */ * 60 /* seconds */ * 1000 /* ms */;
+  private static readonly PENDING_REQUEST_TIMEOUT_MS = 1 /* hour */ * 3_600 /* seconds */ * 1_000 /* ms */;
   private static readonly TIMEOUT_ERROR_MSG = `Pending request timed out (${GremlinClient.PENDING_REQUEST_TIMEOUT_MS} ms)`;
   private static readonly LOG_AREA = "GremlinClient";
 

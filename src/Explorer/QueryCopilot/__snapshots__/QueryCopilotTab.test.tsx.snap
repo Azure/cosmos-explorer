@@ -1,0 +1,211 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Query copilot tab snapshot test should render with initial input 1`] = `
+<Stack
+  className="tab-pane"
+  style={
+    Object {
+      "height": "100%",
+      "padding": 24,
+      "width": "100%",
+    }
+  }
+>
+  <Stack
+    horizontal={true}
+    verticalAlign="center"
+  >
+    <Image
+      src=""
+    />
+    <Text
+      style={
+        Object {
+          "fontSize": 16,
+          "fontWeight": 600,
+          "marginLeft": 8,
+        }
+      }
+    >
+      Copilot
+    </Text>
+  </Stack>
+  <Stack
+    horizontal={true}
+    style={
+      Object {
+        "marginTop": 16,
+        "width": "100%",
+      }
+    }
+    verticalAlign="center"
+  >
+    <StyledTextFieldBase
+      disabled={false}
+      onChange={[Function]}
+      style={
+        Object {
+          "lineHeight": 30,
+        }
+      }
+      styles={
+        Object {
+          "root": Object {
+            "width": "90%",
+          },
+        }
+      }
+      value="Write a query to return all records in this table"
+    />
+    <CustomizedIconButton
+      disabled={false}
+      iconProps={
+        Object {
+          "iconName": "Send",
+        }
+      }
+      onClick={[Function]}
+      style={
+        Object {
+          "marginLeft": 8,
+        }
+      }
+    />
+  </Stack>
+  <Text
+    style={
+      Object {
+        "fontSize": 12,
+        "marginBottom": 24,
+        "marginTop": 8,
+      }
+    }
+  >
+    AI-generated content can have mistakes. Make sure it's accurate and appropriate before using it.
+     
+    <StyledLinkBase
+      href=""
+      target="_blank"
+    >
+      Read preview terms
+    </StyledLinkBase>
+  </Text>
+  <Stack
+    horizontal={true}
+    style={
+      Object {
+        "backgroundColor": "#FFF8F0",
+        "padding": "2px 8px",
+      }
+    }
+    verticalAlign="center"
+  >
+    <Text
+      style={
+        Object {
+          "fontSize": 12,
+          "fontWeight": 600,
+        }
+      }
+    >
+      Provide feedback on the query generated
+    </Text>
+    <CustomizedIconButton
+      iconProps={
+        Object {
+          "iconName": "Like",
+        }
+      }
+      id="likeBtn"
+      onClick={[Function]}
+      style={
+        Object {
+          "marginLeft": 20,
+        }
+      }
+    />
+    <CustomizedIconButton
+      iconProps={
+        Object {
+          "iconName": "Dislike",
+        }
+      }
+      onClick={[Function]}
+      style={
+        Object {
+          "margin": "0 10px",
+        }
+      }
+    />
+    <Separator
+      style={
+        Object {
+          "color": "#EDEBE9",
+        }
+      }
+      vertical={true}
+    />
+    <CustomizedCommandBarButton
+      iconProps={
+        Object {
+          "iconName": "Copy",
+        }
+      }
+      style={
+        Object {
+          "backgroundColor": "#FFF8F0",
+          "margin": "0 10px",
+        }
+      }
+    >
+      Copy code
+    </CustomizedCommandBarButton>
+    <CustomizedCommandBarButton
+      iconProps={
+        Object {
+          "iconName": "Delete",
+        }
+      }
+      style={
+        Object {
+          "backgroundColor": "#FFF8F0",
+        }
+      }
+    >
+      Delete code
+    </CustomizedCommandBarButton>
+  </Stack>
+  <Stack
+    className="tabPaneContentContainer"
+  >
+    <t
+      customClassName=""
+      onDragEnd={null}
+      onDragStart={null}
+      onSecondaryPaneSizeChange={null}
+      percentage={false}
+      primaryIndex={0}
+      primaryMinSize={100}
+      secondaryMinSize={200}
+      vertical={true}
+    >
+      <EditorReact
+        ariaLabel="Editing Query"
+        content=""
+        isReadOnly={false}
+        language="sql"
+        lineNumbers="on"
+        onContentChanged={[Function]}
+        onContentSelected={[Function]}
+      />
+      <QueryResultSection
+        error=""
+        executeQueryDocumentsPage={[Function]}
+        isExecuting={false}
+        isMongoDB={false}
+        queryEditorContent=""
+      />
+    </t>
+  </Stack>
+</Stack>
+`;
