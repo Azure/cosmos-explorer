@@ -42,6 +42,7 @@ import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
+import { useTabs } from "../../hooks/useTabs";
 
 interface QueryCopilotTabProps {
   initialInput: string;
@@ -85,6 +86,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
+      useTabs.getState().setIsTabExecuting(true);
       const payload = {
         containerSchema: QueryCopilotSampleContainerSchema,
         userPrompt: userInput,
@@ -113,6 +115,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       throw error;
     } finally {
       setIsGeneratingQuery(false);
+      useTabs.getState().setIsTabExecuting(false);
       setShowFeedbackBar(true);
     }
   };
@@ -132,6 +135,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const queryDocumentsPerPage = async (firstItemIndex: number, queryIterator: MinimalQueryIterator): Promise<void> => {
     try {
       setIsExecuting(true);
+      useTabs.getState().setIsTabExecuting(true);
       const queryResults: QueryResults = await queryPagesUntilContentPresent(
         firstItemIndex,
         async (firstItemIndex: number) =>
@@ -146,6 +150,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       handleError(errorMessage, "executeQueryCopilotTab");
     } finally {
       setIsExecuting(false);
+      useTabs.getState().setIsTabExecuting(false);
     }
   };
 
