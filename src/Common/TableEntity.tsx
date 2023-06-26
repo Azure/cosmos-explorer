@@ -35,7 +35,7 @@ export interface TableEntityProps {
   entityTimeValue: string;
   isEntityValueDisable?: boolean;
   onDeleteEntity?: () => void;
-  onEditEntity?: () => void;
+  onEditEntity: () => void;
   onEntityPropertyChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
   onEntityTypeChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void;
   onEntityValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
