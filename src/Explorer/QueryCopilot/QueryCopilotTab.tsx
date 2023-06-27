@@ -44,9 +44,7 @@ import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import HintIcon from "../../../images/Hint.svg";
-import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
-import RecentIcon from "../../../images/Recent.svg";
-import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
+
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { useTabs } from "../../hooks/useTabs";
 
@@ -121,7 +119,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
     setHistories(newHistories);
     localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
-  };
+
   const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
@@ -402,7 +400,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             onClick={() => {
               setLikeQuery(false);
               setShowCallout(false);
-              useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
+
             }}
           />
           <Separator vertical style={{ color: "#EDEBE9" }} />
@@ -411,20 +409,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             iconProps={{ iconName: "Copy" }}
             style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
           >
-            Copy code
-          </CommandBarButton>
-          <CommandBarButton
-            onClick={() => setShowDeletePopup(true)}
-            iconProps={{ iconName: "Delete" }}
-            style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
-          >
-            Delete code
-          </CommandBarButton>
-        </Stack>
-      ) : (
-        <></>
-      )}
-
       <Stack className="tabPaneContentContainer">
         <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
           <EditorReact
