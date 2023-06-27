@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] = `
+<Stack
+  style={
+    Object {
+      "boxShadow": "0 2px 6px rgba(0, 0, 0, 0.16)",
+      "gap": 5,
+      "height": 66,
+      "padding": 10,
+      "position": "fixed",
+      "right": 20,
+      "top": 75,
+      "width": 345,
+    }
+  }
+>
+  <Stack
+    horizontal={true}
+    style={
+      Object {
+        "display": "flex",
+        "justifyContent": "space-between",
+        "padding": "5px, 2px, 0px, 0px",
+      }
+    }
+    verticalAlign="center"
+  >
+    <Stack
+      horizontal={true}
+      style={
+        Object {
+          "display": "flex",
+          "gap": 10,
+        }
+      }
+      verticalAlign="center"
+    >
+      <Image
+        src=""
+        style={
+          Object {
+            "height": 15,
+            "width": 15,
+          }
+        }
+      />
+      <Text>
+        <b>
+          Code copied successfully
+        </b>
+      </Text>
+    </Stack>
+    <CustomizedIconButton
+      iconProps={
+        Object {
+          "iconName": "Cancel",
+        }
+      }
+      onClick={[Function]}
+      styles={
+        Object {
+          "root": Object {
+            "backgroundColor": "transparent",
+            "border": "none",
+            "padding": 0,
+            "selectors": Object {
+              "&:focus": Object {
+                "outline": "none",
+              },
+            },
+          },
+        }
+      }
+    />
+  </Stack>
+  <Text
+    style={
+      Object {
+        "marginTop": -10,
+      }
+    }
+  >
+    The query has been copied to the clipboard
+  </Text>
+</Stack>
+`;
