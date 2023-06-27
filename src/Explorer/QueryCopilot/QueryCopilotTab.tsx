@@ -44,8 +44,8 @@ import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import HintIcon from "../../../images/Hint.svg";
-import RecentIcon from "../../../images/Recent.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
+import RecentIcon from "../../../images/Recent.svg";
 import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { useTabs } from "../../hooks/useTabs";
@@ -93,31 +93,36 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
     setIsSamplePromptsOpen: setIsSamplePromptsOpen,
-    setTextBox: setUserInput,
+    setTextBox: setUserPrompt,
   };
 
   const copyGeneratedCode = () => {
     if (!query) {
       return;
     }
+    const queryElement = document.createElement("textarea");
+    queryElement.value = query;
+    document.body.appendChild(queryElement);
+    queryElement.select();
+    document.execCommand("copy");
+    document.body.removeChild(queryElement);
 
-    navigator.clipboard.writeText(query);
     setshowCopyPopup(true);
     setTimeout(() => {
       setshowCopyPopup(false);
     }, 6000);
   };
 
-    const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
-    const cachedHistories = cachedHistoriesString?.split(",");
-    const [histories, setHistories] = useState<string[]>(cachedHistories || []);
+  const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
+  const cachedHistories = cachedHistoriesString?.split(",");
+  const [histories, setHistories] = useState<string[]>(cachedHistories || []);
 
-    const updateHistories = (): void => {
-        const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
-        setHistories(newHistories);
-        localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
-    };
-    const generateSQLQuery = async (): Promise<void> => {
+  const updateHistories = (): void => {
+    const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
+    setHistories(newHistories);
+    localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
+  };
+  const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
       useTabs.getState().setIsTabExecuting(true);
@@ -365,7 +370,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
               target="#likeBtn"
               onDismiss={() => {
                 setShowCallout(false);
-                submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userInput });
+                submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userPrompt });
               }}
               directionalHint={DirectionalHint.topCenter}
             >
@@ -374,7 +379,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                 <Link
                   onClick={() => {
                     setShowCallout(false);
-                    useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userInput);
+                    useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userPrompt);
                   }}
                 >
                   more feedback?
@@ -397,7 +402,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             onClick={() => {
               setLikeQuery(false);
               setShowCallout(false);
-              useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userInput);
+              useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
             }}
           />
           <Separator vertical style={{ color: "#EDEBE9" }} />

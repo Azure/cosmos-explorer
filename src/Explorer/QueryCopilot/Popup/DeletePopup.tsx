@@ -25,7 +25,7 @@ export const DeletePopup = ({
           This will clear the query from the query builder pane along with all comments and also reset the prompt pane
         </Text>
         <Stack horizontal tokens={{ childrenGap: 10 }} horizontalAlign="start">
-          <PrimaryButton style={{ padding: "0px 20px", height: 24, background: "#0078D4" }} onClick={deleteCode}>
+          <PrimaryButton style={{ padding: "0px 20px", height: 24 }} onClick={deleteCode}>
             Delete
           </PrimaryButton>
           <DefaultButton style={{ padding: "0px 20px", height: 24 }} onClick={() => setShowDeletePopup(false)}>
