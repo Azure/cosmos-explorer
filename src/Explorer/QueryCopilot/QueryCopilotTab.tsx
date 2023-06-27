@@ -3,7 +3,9 @@ import { FeedOptions } from "@azure/cosmos";
 import {
   Callout,
   CommandBarButton,
+  DefaultButton,
   DirectionalHint,
+  IButtonStyles,
   IconButton,
   Image,
   Link,
@@ -34,12 +36,15 @@ import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/SamplePrompts/SamplePrompts";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
+import HintIcon from "../../../images/Hint.svg";
+import RecentIcon from "../../../images/Recent.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
@@ -58,12 +63,17 @@ interface GenerateSQLQueryResponse {
   generateEnd: string;
 }
 
+const promptStyles: IButtonStyles = {
+  root: { border: 0, selectors: { ":hover": { outline: "1px dashed #605e5c" } } },
+  label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
+};
+
 export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   initialInput,
   explorer,
 }: QueryCopilotTabProps): JSX.Element => {
   const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
-  const [userInput, setUserInput] = useState<string>(initialInput || "");
+  const [userPrompt, setUserPrompt] = useState<string>(initialInput || "");
   const [generatedQuery, setGeneratedQuery] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const [selectedQuery, setSelectedQuery] = useState<string>("");
@@ -71,6 +81,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [likeQuery, setLikeQuery] = useState<boolean>();
   const [showCallout, setShowCallout] = useState<boolean>(false);
+  const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
   const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
   const [queryResults, setQueryResults] = useState<QueryResults>();
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -97,13 +108,22 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     }, 6000);
   };
 
-  const generateSQLQuery = async (): Promise<void> => {
+    const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
+    const cachedHistories = cachedHistoriesString?.split(",");
+    const [histories, setHistories] = useState<string[]>(cachedHistories || []);
+
+    const updateHistories = (): void => {
+        const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
+        setHistories(newHistories);
+        localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
+    };
+    const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
       useTabs.getState().setIsTabExecuting(true);
       const payload = {
         containerSchema: QueryCopilotSampleContainerSchema,
-        userPrompt: userInput,
+        userPrompt: userPrompt,
       };
       const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
         method: "POST",
@@ -115,10 +135,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (generateSQLQueryResponse?.sql) {
-        let query = `-- ${userInput}\r\n`;
+        let query = `-- **Prompt:** ${userPrompt}\r\n`;
         if (generateSQLQueryResponse.explanation) {
-          query += "-- **Explanation of query**\r\n";
-          query += `-- ${generateSQLQueryResponse.explanation}\r\n`;
+          query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
         }
         query += generateSQLQueryResponse.sql;
         setQuery(query);
@@ -205,12 +224,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
 
-  React.useEffect(() => {
-    if (initialInput) {
-      generateSQLQuery();
-    }
-  }, []);
-
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%", height: "100%" }}>
       <Stack horizontal verticalAlign="center">
@@ -219,19 +232,122 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       </Stack>
       <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%" }}>
         <TextField
-          value={userInput}
-          onChange={(_, newValue) => setUserInput(newValue)}
+          id="naturalLanguageInput"
+          value={userPrompt}
+          onChange={(_, newValue) => setUserPrompt(newValue)}
           style={{ lineHeight: 30 }}
-          styles={{ root: { width: "90%" } }}
+          styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
+          onClick={() => setShowSamplePrompts(true)}
         />
         <IconButton
           iconProps={{ iconName: "Send" }}
           disabled={isGeneratingQuery}
           style={{ marginLeft: 8 }}
-          onClick={() => generateSQLQuery()}
+          onClick={() => {
+            updateHistories();
+            generateSQLQuery();
+          }}
         />
         {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
+        {showSamplePrompts && (
+          <Callout
+            styles={{ root: { minWidth: 400 } }}
+            style={{ padding: "8px 0" }}
+            target="#naturalLanguageInput"
+            isBeakVisible={false}
+            onDismiss={() => setShowSamplePrompts(false)}
+            directionalHint={DirectionalHint.bottomLeftEdge}
+          >
+            <Stack>
+              {histories?.length > 0 && (
+                <Stack>
+                  <Text
+                    style={{
+                      width: "100%",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0078D4",
+                      marginLeft: 16,
+                      padding: "4px 0",
+                    }}
+                  >
+                    Recent
+                  </Text>
+                  {histories.map((history, i) => (
+                    <DefaultButton
+                      key={i}
+                      onClick={() => {
+                        setUserPrompt(history);
+                        setShowSamplePrompts(false);
+                      }}
+                      onRenderIcon={() => <Image src={RecentIcon} />}
+                      styles={promptStyles}
+                    >
+                      {history}
+                    </DefaultButton>
+                  ))}
+                </Stack>
+              )}
+              <Text
+                style={{
+                  width: "100%",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#0078D4",
+                  marginLeft: 16,
+                  padding: "4px 0",
+                }}
+              >
+                Suggested Prompts
+              </Text>
+              <DefaultButton
+                onClick={() => {
+                  setUserPrompt("Give me all customers whose names start with C");
+                  setShowSamplePrompts(false);
+                }}
+                onRenderIcon={() => <Image src={HintIcon} />}
+                styles={promptStyles}
+              >
+                Give me all customers whose names start with C
+              </DefaultButton>
+              <DefaultButton
+                onClick={() => {
+                  setUserPrompt("Show me all customers");
+                  setShowSamplePrompts(false);
+                }}
+                onRenderIcon={() => <Image src={HintIcon} />}
+                styles={promptStyles}
+              >
+                Show me all customers
+              </DefaultButton>
+              <DefaultButton
+                onClick={() => {
+                  setUserPrompt("Show me all customers who bought a bike in 2019");
+                  setShowSamplePrompts(false);
+                }}
+                onRenderIcon={() => <Image src={HintIcon} />}
+                styles={promptStyles}
+              >
+                Show me all customers who bought a bike in 2019
+              </DefaultButton>
+              <Separator styles={{ root: { selectors: { "::before": { background: "#E1DFDD" } }, padding: 0 } }} />
+              <Text
+                style={{
+                  width: "100%",
+                  fontSize: 14,
+                  marginLeft: 16,
+                  padding: "4px 0",
+                }}
+              >
+                Learn about{" "}
+                <Link target="_blank" href="">
+                  writing effective prompts
+                </Link>
+              </Text>
+            </Stack>
+          </Callout>
+        )}
       </Stack>
       <Text style={{ marginTop: 8, marginBottom: 24, fontSize: 12 }}>
         AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
