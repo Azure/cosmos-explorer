@@ -29,6 +29,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
+import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/SamplePrompts/SamplePrompts";
@@ -76,11 +77,22 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
   const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
   const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
+  const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
     setIsSamplePromptsOpen: setIsSamplePromptsOpen,
     setTextBox: setUserInput,
+  };
+
+  const copyGeneratedCode = () => {
+    if (!query) return;
+
+    navigator.clipboard.writeText(query);
+    setshowCopyPopup(true);
+    setTimeout(() => {
+      setshowCopyPopup(false);
+    }, 6000);
   };
 
   const generateSQLQuery = async (): Promise<void> => {
@@ -272,7 +284,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           />
           <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton
-            onClick={() => navigator.clipboard.writeText(query)}
+            onClick={copyGeneratedCode}
             iconProps={{ iconName: "Copy" }}
             style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
           >
@@ -317,6 +329,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       ) : (
         <></>
       )}
+      <CopyPopup showCopyPopup={showCopyPopup} setShowCopyPopup={setshowCopyPopup} />
     </Stack>
   );
 };
