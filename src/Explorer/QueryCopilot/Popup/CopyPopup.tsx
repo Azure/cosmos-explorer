@@ -23,6 +23,7 @@ export const CopyPopup = ({
         gap: 5,
         top: 75,
         right: 20,
+        background: "#FFFFFF",
         boxShadow: "0 2px 6px rgba(0, 0, 0, 0.16)",
       }}
     >
