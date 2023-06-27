@@ -205,6 +205,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                 role="button"
                 onClick={onAddNewProperty}
                 onKeyPress={(event: React.KeyboardEvent<HTMLSpanElement>) => onAddNewPropertyKeyPress(event)}
+                aria-label="Add property"
               >
                 <img className="refreshcol rightPaneAddPropertyImg" src={AddIcon} alt="Add property" /> Add Property
               </span>
