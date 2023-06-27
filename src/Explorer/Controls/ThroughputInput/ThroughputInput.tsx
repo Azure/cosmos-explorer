@@ -249,6 +249,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             onChange={(event, newInput?: string) => onThroughputValueChange(newInput)}
             step={AutoPilotUtils.autoPilotIncrementStep}
             min={AutoPilotUtils.autoPilotThroughput1K}
+            max={isSharded ? Number.MAX_SAFE_INTEGER.toString() : "10000"}
             value={throughput.toString()}
             ariaLabel={`${isDatabase ? "Database" : getCollectionName()} max RU/s`}
             required={true}
