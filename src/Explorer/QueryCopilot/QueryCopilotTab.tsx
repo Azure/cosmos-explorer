@@ -86,7 +86,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   };
 
   const copyGeneratedCode = () => {
-    if (!query) return;
+    if (!query) {
+      return;
+    }
 
     navigator.clipboard.writeText(query);
     setshowCopyPopup(true);
