@@ -2,154 +2,60 @@
 
 exports[`SettingsUtils functions render 1`] = `
 <Fragment>
-  <Text>
-    Your 
-    container
-     throughput will automatically scale from
-     
-    <b>
-      100
-       RU/s (10% of max RU/s) -
-       
-      1000
-       RU/s
-    </b>
-     
-    based on usage.
-    <br />
-  </Text>
-  <Text>
-    After the first 
-    10
-     GB of data stored, the max RU/s will be automatically upgraded based on the new storage value.
-    <StyledLinkBase
-      href="https://aka.ms/cosmos-autoscale-info"
-      target="_blank"
-    >
-       
-      Learn more
-    </StyledLinkBase>
-    .
-  </Text>
-  <Text>
-    Your 
-    database
-     throughput will automatically scale from
-     
-    <b>
-      100
-       RU/s (10% of max RU/s) -
-       
-      1000
-       RU/s
-    </b>
-     
-    based on usage.
-    <br />
-  </Text>
-  <Text>
-    After the first 
-    10
-     GB of data stored, the max RU/s will be automatically upgraded based on the new storage value.
-    <StyledLinkBase
-      href="https://aka.ms/cosmos-autoscale-info"
-      target="_blank"
-    >
-       
-      Learn more
-    </StyledLinkBase>
-    .
-  </Text>
-  <Stack
-    styles={
-      Object {
-        "root": Object {
-          "width": 600,
-        },
-      }
-    }
-    tokens={
-      Object {
-        "childrenGap": 10,
-      }
-    }
-  >
-    <StyledWithViewportComponent
-      columns={
-        Array [
-          Object {
-            "fieldName": "costType",
-            "isResizable": true,
-            "key": "costType",
-            "maxWidth": 200,
-            "minWidth": 100,
-            "name": "",
-          },
-          Object {
-            "fieldName": "hourly",
-            "isResizable": true,
-            "key": "hourly",
-            "maxWidth": 200,
-            "minWidth": 100,
-            "name": "Hourly",
-          },
-          Object {
-            "fieldName": "daily",
-            "isResizable": true,
-            "key": "daily",
-            "maxWidth": 200,
-            "minWidth": 100,
-            "name": "Daily",
-          },
-          Object {
-            "fieldName": "monthly",
-            "isResizable": true,
-            "key": "monthly",
-            "maxWidth": 200,
-            "minWidth": 100,
-            "name": "Monthly",
-          },
-        ]
-      }
-      disableSelectionZone={true}
-      items={
-        Array [
-          Object {
-            "costType": <Text>
-              Current Cost
-            </Text>,
-            "daily": <Text>
-              $ 24.48
-            </Text>,
-            "hourly": <Text>
-              $ 1.02
-            </Text>,
-            "monthly": <Text>
-              $ 744.6
-            </Text>,
-          },
-        ]
-      }
-      layoutMode={1}
-      onRenderRow={[Function]}
-      selectionMode={0}
-    />
+  <Stack>
     <Text
-      id="throughputSpendElement"
+      style={
+        Object {
+          "fontWeight": 600,
+        }
+      }
     >
-      (
-      regions: 
-       
-      2
-      , 
-      1000
-       RU/s, 
-      ¥
-      0.00051
-      /RU)
+      Cost estimate*
     </Text>
-    <Text>
+    <Text
+      style={
+        Object {
+          "fontWeight": 600,
+          "marginTop": 15,
+        }
+      }
+    >
+      How we calculate this
+    </Text>
+    <Stack
+      id="throughputSpendElement"
+      style={
+        Object {
+          "marginTop": 5,
+        }
+      }
+    >
+      <span>
+        2
+         region
+        <span>
+          s
+        </span>
+      </span>
+      <span>
+        1000
+         RU/s
+      </span>
+      <span>
+        ¥
+        0.00051
+        /RU
+      </span>
+    </Stack>
+    <Text
+      style={
+        Object {
+          "marginTop": 15,
+        }
+      }
+    >
       <em>
+        *
         This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
       </em>
     </Text>
@@ -204,19 +110,6 @@ exports[`SettingsUtils functions render 1`] = `
     }
   >
     You have not saved the latest changes made to your indexing policy. Please click save to confirm the changes.
-  </Text>
-  <Text
-    id="updateThroughputBeyondLimitWarningMessage"
-    styles={
-      Object {
-        "root": Object {
-          "color": "windowtext",
-          "fontSize": 14,
-        },
-      }
-    }
-  >
-    You are about to request an increase in throughput beyond the pre-allocated capacity. The service will scale out and increase throughput for the selected container. This operation will take 1-3 business days to complete. You can track the status of this request in Notifications.
   </Text>
   <Text
     id="updateThroughputDelayedApplyWarningMessage"

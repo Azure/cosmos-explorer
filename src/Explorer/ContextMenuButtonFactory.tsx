@@ -11,9 +11,9 @@ import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
 import * as ViewModels from "../Contracts/ViewModels";
-import { useSidePanel } from "../hooks/useSidePanel";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
+import { useSidePanel } from "../hooks/useSidePanel";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
 import { useNotebook } from "./Notebook/useNotebook";
@@ -152,7 +152,7 @@ export const createStoreProcedureContextMenuItems = (
     {
       iconSrc: DeleteSprocIcon,
       onClick: () => storedProcedure.delete(),
-      label: "Delete Store Procedure",
+      label: "Delete Stored Procedure",
     },
   ];
 };
