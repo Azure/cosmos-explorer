@@ -55,7 +55,6 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
         onClick={[Function]}
         style={
           Object {
-            "background": "#0078D4",
             "height": 24,
             "padding": "0px 20px",
           }
