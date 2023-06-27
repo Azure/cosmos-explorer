@@ -22,7 +22,7 @@ import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
-import { useSidePanel } from "../../../hooks
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
