@@ -1,40 +1,30 @@
-import {
-  DetailsList,
-  DetailsListLayoutMode,
-  IColumn,
-  Icon,
-  Link,
-  Pivot,
-  PivotItem,
-  SelectionMode,
-  Text,
-  TooltipHost,
-} from "@fluentui/react";
+import { DetailsList, DetailsListLayoutMode, IColumn, Pivot, PivotItem, SelectionMode, Text } from "@fluentui/react";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
 import DownloadQueryMetrics from "../../../../images/DownloadQuery.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
+import InfoColor from "../../../../images/info_color.svg";
 import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
 import RunQuery from "../../../../images/RunQuery.png";
-import InfoColor from "../../../../images/info_color.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
 import { NormalizedEventKey } from "../../../Common/Constants";
+import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
+import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
 import { queryIterator } from "../../../Common/MongoProxyClient";
 import MongoUtility from "../../../Common/MongoUtility";
 import { Splitter } from "../../../Common/Splitter";
-import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
-import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
+import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
+import { useSidePanel } from "../../../hooks
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
-import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
@@ -130,31 +120,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   constructor(props: IQueryTabComponentProps) {
     super(props);
     const columns: IColumn[] = [
-      {
-        key: "column1",
-        name: "",
-        minWidth: 10,
-        maxWidth: 12,
-        data: String,
-        fieldName: "",
-        onRender: (item: IDocument) => {
-          if (item.toolTip !== "") {
-            return (
-              <>
-                <span>
-                  <TooltipHost content={`${item.toolTip}`}>
-                    <Link style={{}}>
-                      <Icon iconName="Info" ariaLabel={`${item.toolTip}`} className="panelInfoIcon" tabIndex={0} />
-                    </Link>
-                  </TooltipHost>
-                </span>
-              </>
-            );
-          } else {
-            return undefined;
-          }
-        },
-      },
       {
         key: "column2",
         name: "METRIC",
