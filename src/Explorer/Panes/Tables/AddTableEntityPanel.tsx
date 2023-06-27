@@ -254,14 +254,11 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         {entities.map((entity, index) => {
           return (
             <TableEntity
-              indexofelement={index}
               key={"" + entity.id + index}
               isDeleteOptionVisible={entity.isDeleteOptionVisible}
-              entityTypeLabel={dataTypeLabel}
+              entityTypeLabel={index === 0 && dataTypeLabel}
               entityPropertyLabel={index === 0 && attributeNameLabel}
               entityValueLabel={index === 0 && attributeValueLabel}
-              entityValueAriaLabel={attributeValueLabel}
-              entityPropertyAriaLabel={attributeNameLabel}
               options={userContext.apiType === "Cassandra" ? cassandraOptions : options}
               isPropertyTypeDisable={entity.isPropertyTypeDisable}
               entityProperty={entity.property}
