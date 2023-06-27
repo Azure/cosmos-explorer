@@ -130,6 +130,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         containerSchema: QueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
       };
+      setShowDeletePopup(false);
       const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
         method: "POST",
         headers: {
