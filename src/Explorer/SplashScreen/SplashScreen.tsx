@@ -14,6 +14,7 @@ import {
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
+import { SplashScreenButton } from "Explorer/SplashScreen/SplashScreenButton";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
