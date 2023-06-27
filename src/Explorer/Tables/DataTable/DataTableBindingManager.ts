@@ -1,15 +1,14 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
 
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as Constants from "../Constants";
-import * as ViewModels from "../../../Contracts/ViewModels";
+import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
 import * as DataTableBuilder from "./DataTableBuilder";
 import DataTableOperationManager from "./DataTableOperationManager";
 import * as DataTableOperations from "./DataTableOperations";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
 
 /**
  * Custom binding manager of datatable
@@ -41,7 +40,6 @@ function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewM
 
   createDataTable(0, tableEntityListViewModel, queryTablesTab); // Fake a DataTable to start.
   $(window).resize(updateTableScrollableRegionMetrics);
-  operationManager.focusTable(); // Also selects the first row if needed.
 }
 
 function onTableColumnChange(enablePrompt: boolean = true, queryTablesTab: QueryTablesTab) {
@@ -367,7 +365,6 @@ function updateDataTableFocus(queryTablesTabId: string): void {
     } else {
       // If some control is active, we don't give focus back to the table,
       // just select the first row if needed (empty selection).
-      operationManager.selectFirstIfNeeded();
     }
   }
 }
