@@ -93,97 +93,6 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
     </StyledLinkBase>
   </Text>
   <Stack
-    horizontal={true}
-    style={
-      Object {
-        "backgroundColor": "#FFF8F0",
-        "padding": "2px 8px",
-      }
-    }
-    verticalAlign="center"
-  >
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "fontWeight": 600,
-        }
-      }
-    >
-      Provide feedback on the query generated
-    </Text>
-    <CustomizedIconButton
-      iconProps={
-        Object {
-          "iconName": "Like",
-        }
-      }
-      id="likeBtn"
-      onClick={[Function]}
-      style={
-        Object {
-          "marginLeft": 20,
-        }
-      }
-    />
-    <CustomizedIconButton
-      iconProps={
-        Object {
-          "iconName": "Dislike",
-        }
-      }
-      onClick={[Function]}
-      style={
-        Object {
-          "margin": "0 10px",
-        }
-      }
-    />
-    <Separator
-      styles={
-        Object {
-          "root": Object {
-            "selectors": Object {
-              "::before": Object {
-                "background": "#E1DFDD",
-              },
-            },
-          },
-        }
-      }
-      vertical={true}
-    />
-    <CustomizedCommandBarButton
-      iconProps={
-        Object {
-          "iconName": "Copy",
-        }
-      }
-      style={
-        Object {
-          "backgroundColor": "#FFF8F0",
-          "margin": "0 10px",
-        }
-      }
-    >
-      Copy code
-    </CustomizedCommandBarButton>
-    <CustomizedCommandBarButton
-      iconProps={
-        Object {
-          "iconName": "Delete",
-        }
-      }
-      style={
-        Object {
-          "backgroundColor": "#FFF8F0",
-        }
-      }
-    >
-      Delete code
-    </CustomizedCommandBarButton>
-  </Stack>
-  <Stack
     className="tabPaneContentContainer"
   >
     <t
@@ -215,5 +124,9 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       />
     </t>
   </Stack>
+  <CopyPopup
+    setShowCopyPopup={[Function]}
+    showCopyPopup={false}
+  />
 </Stack>
 `;
