@@ -3,7 +3,9 @@ import { FeedOptions } from "@azure/cosmos";
 import {
   Callout,
   CommandBarButton,
+  DefaultButton,
   DirectionalHint,
+  IButtonStyles,
   IconButton,
   Image,
   Link,
@@ -29,16 +31,24 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
+import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
+import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/SamplePrompts/SamplePrompts";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
-import CopilotIcon from "../../../images/Copilot.svg";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
+import HintIcon from "../../../images/Hint.svg";
+import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
+import RecentIcon from "../../../images/Recent.svg";
+import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
+import { useTabs } from "../../hooks/useTabs";
 
 interface QueryCopilotTabProps {
   initialInput: string;
@@ -53,12 +63,17 @@ interface GenerateSQLQueryResponse {
   generateEnd: string;
 }
 
+const promptStyles: IButtonStyles = {
+  root: { border: 0, selectors: { ":hover": { outline: "1px dashed #605e5c" } } },
+  label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
+};
+
 export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   initialInput,
   explorer,
 }: QueryCopilotTabProps): JSX.Element => {
   const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
-  const [userInput, setUserInput] = useState<string>(initialInput || "");
+  const [userPrompt, setUserPrompt] = useState<string>(initialInput || "");
   const [generatedQuery, setGeneratedQuery] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const [selectedQuery, setSelectedQuery] = useState<string>("");
@@ -66,17 +81,56 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [likeQuery, setLikeQuery] = useState<boolean>();
   const [showCallout, setShowCallout] = useState<boolean>(false);
+  const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
   const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
   const [queryResults, setQueryResults] = useState<QueryResults>();
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
+  const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
+  const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
+  const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
 
+  const sampleProps: SamplePromptsProps = {
+    isSamplePromptsOpen: isSamplePromptsOpen,
+    setIsSamplePromptsOpen: setIsSamplePromptsOpen,
+    setTextBox: setUserPrompt,
+  };
+
+  const copyGeneratedCode = () => {
+    if (!query) {
+      return;
+    }
+    const queryElement = document.createElement("textarea");
+    queryElement.value = query;
+    document.body.appendChild(queryElement);
+    queryElement.select();
+    document.execCommand("copy");
+    document.body.removeChild(queryElement);
+
+    setshowCopyPopup(true);
+    setTimeout(() => {
+      setshowCopyPopup(false);
+    }, 6000);
+  };
+
+  const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
+  const cachedHistories = cachedHistoriesString?.split(",");
+  const [histories, setHistories] = useState<string[]>(cachedHistories || []);
+
+  const updateHistories = (): void => {
+    const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
+    setHistories(newHistories);
+    localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
+  };
   const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
+      useTabs.getState().setIsTabExecuting(true);
       const payload = {
         containerSchema: QueryCopilotSampleContainerSchema,
-        userPrompt: userInput,
+        userPrompt: userPrompt,
       };
+      setShowDeletePopup(false);
       const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
         method: "POST",
         headers: {
@@ -87,10 +141,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (generateSQLQueryResponse?.sql) {
-        let query = `-- ${userInput}\r\n`;
+        let query = `-- **Prompt:** ${userPrompt}\r\n`;
         if (generateSQLQueryResponse.explanation) {
-          query += "-- **Explanation of query**\r\n";
-          query += `-- ${generateSQLQueryResponse.explanation}\r\n`;
+          query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
         }
         query += generateSQLQueryResponse.sql;
         setQuery(query);
@@ -101,6 +154,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       throw error;
     } finally {
       setIsGeneratingQuery(false);
+      useTabs.getState().setIsTabExecuting(false);
+      setShowFeedbackBar(true);
     }
   };
 
@@ -119,6 +174,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const queryDocumentsPerPage = async (firstItemIndex: number, queryIterator: MinimalQueryIterator): Promise<void> => {
     try {
       setIsExecuting(true);
+      useTabs.getState().setIsTabExecuting(true);
       const queryResults: QueryResults = await queryPagesUntilContentPresent(
         firstItemIndex,
         async (firstItemIndex: number) =>
@@ -133,6 +189,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       handleError(errorMessage, "executeQueryCopilotTab");
     } finally {
       setIsExecuting(false);
+      useTabs.getState().setIsTabExecuting(false);
     }
   };
 
@@ -157,18 +214,21 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       hasPopup: false,
     };
 
-    return [executeQueryBtn, saveQueryBtn];
+    const samplePromptsBtn = {
+      iconSrc: SamplePromptsIcon,
+      iconAlt: "Sample Prompts",
+      onCommandClick: () => setIsSamplePromptsOpen(true),
+      commandButtonLabel: "Sample Prompts",
+      ariaLabel: "Sample Prompts",
+      hasPopup: false,
+    };
+
+    return [executeQueryBtn, saveQueryBtn, samplePromptsBtn];
   };
 
   React.useEffect(() => {
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
-
-  React.useEffect(() => {
-    if (initialInput) {
-      generateSQLQuery();
-    }
-  }, []);
 
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%", height: "100%" }}>
@@ -178,19 +238,122 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       </Stack>
       <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%" }}>
         <TextField
-          value={userInput}
-          onChange={(_, newValue) => setUserInput(newValue)}
+          id="naturalLanguageInput"
+          value={userPrompt}
+          onChange={(_, newValue) => setUserPrompt(newValue)}
           style={{ lineHeight: 30 }}
-          styles={{ root: { width: "90%" } }}
+          styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
+          onClick={() => setShowSamplePrompts(true)}
         />
         <IconButton
           iconProps={{ iconName: "Send" }}
           disabled={isGeneratingQuery}
           style={{ marginLeft: 8 }}
-          onClick={() => generateSQLQuery()}
+          onClick={() => {
+            updateHistories();
+            generateSQLQuery();
+          }}
         />
         {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
+        {showSamplePrompts && (
+          <Callout
+            styles={{ root: { minWidth: 400 } }}
+            style={{ padding: "8px 0" }}
+            target="#naturalLanguageInput"
+            isBeakVisible={false}
+            onDismiss={() => setShowSamplePrompts(false)}
+            directionalHint={DirectionalHint.bottomLeftEdge}
+          >
+            <Stack>
+              {histories?.length > 0 && (
+                <Stack>
+                  <Text
+                    style={{
+                      width: "100%",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0078D4",
+                      marginLeft: 16,
+                      padding: "4px 0",
+                    }}
+                  >
+                    Recent
+                  </Text>
+                  {histories.map((history, i) => (
+                    <DefaultButton
+                      key={i}
+                      onClick={() => {
+                        setUserPrompt(history);
+                        setShowSamplePrompts(false);
+                      }}
+                      onRenderIcon={() => <Image src={RecentIcon} />}
+                      styles={promptStyles}
+                    >
+                      {history}
+                    </DefaultButton>
+                  ))}
+                </Stack>
+              )}
+              <Text
+                style={{
+                  width: "100%",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#0078D4",
+                  marginLeft: 16,
+                  padding: "4px 0",
+                }}
+              >
+                Suggested Prompts
+              </Text>
+              <DefaultButton
+                onClick={() => {
+                  setUserPrompt("Give me all customers whose names start with C");
+                  setShowSamplePrompts(false);
+                }}
+                onRenderIcon={() => <Image src={HintIcon} />}
+                styles={promptStyles}
+              >
+                Give me all customers whose names start with C
+              </DefaultButton>
+              <DefaultButton
+                onClick={() => {
+                  setUserPrompt("Show me all customers");
+                  setShowSamplePrompts(false);
+                }}
+                onRenderIcon={() => <Image src={HintIcon} />}
+                styles={promptStyles}
+              >
+                Show me all customers
+              </DefaultButton>
+              <DefaultButton
+                onClick={() => {
+                  setUserPrompt("Show me all customers who bought a bike in 2019");
+                  setShowSamplePrompts(false);
+                }}
+                onRenderIcon={() => <Image src={HintIcon} />}
+                styles={promptStyles}
+              >
+                Show me all customers who bought a bike in 2019
+              </DefaultButton>
+              <Separator styles={{ root: { selectors: { "::before": { background: "#E1DFDD" } }, padding: 0 } }} />
+              <Text
+                style={{
+                  width: "100%",
+                  fontSize: 14,
+                  marginLeft: 16,
+                  padding: "4px 0",
+                }}
+              >
+                Learn about{" "}
+                <Link target="_blank" href="">
+                  writing effective prompts
+                </Link>
+              </Text>
+            </Stack>
+          </Callout>
+        )}
       </Stack>
       <Text style={{ marginTop: 8, marginBottom: 24, fontSize: 12 }}>
         AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
@@ -199,57 +362,70 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         </Link>
       </Text>
 
-      <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
-        <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
-        {showCallout && !hideFeedbackModalForLikedQueries && (
-          <Callout
-            style={{ padding: 8 }}
-            target="#likeBtn"
-            onDismiss={() => {
-              setShowCallout(false);
-              submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userInput });
+      {showFeedbackBar ? (
+        <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
+          <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
+          {showCallout && !hideFeedbackModalForLikedQueries && (
+            <Callout
+              style={{ padding: 8 }}
+              target="#likeBtn"
+              onDismiss={() => {
+                setShowCallout(false);
+                submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userPrompt });
+              }}
+              directionalHint={DirectionalHint.topCenter}
+            >
+              <Text>
+                Thank you. Need to give{" "}
+                <Link
+                  onClick={() => {
+                    setShowCallout(false);
+                    useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userPrompt);
+                  }}
+                >
+                  more feedback?
+                </Link>
+              </Text>
+            </Callout>
+          )}
+          <IconButton
+            id="likeBtn"
+            style={{ marginLeft: 20 }}
+            iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
+            onClick={() => {
+              setLikeQuery(true);
+              setShowCallout(true);
             }}
-            directionalHint={DirectionalHint.topCenter}
+          />
+          <IconButton
+            style={{ margin: "0 10px" }}
+            iconProps={{ iconName: likeQuery === false ? "DislikeSolid" : "Dislike" }}
+            onClick={() => {
+              setLikeQuery(false);
+              setShowCallout(false);
+              useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
+            }}
+          />
+          <Separator vertical style={{ color: "#EDEBE9" }} />
+          <CommandBarButton
+            onClick={copyGeneratedCode}
+            iconProps={{ iconName: "Copy" }}
+            style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
           >
-            <Text>
-              Thank you. Need to give{" "}
-              <Link
-                onClick={() => {
-                  setShowCallout(false);
-                  useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userInput);
-                }}
-              >
-                more feedback?
-              </Link>
-            </Text>
-          </Callout>
-        )}
-        <IconButton
-          id="likeBtn"
-          style={{ marginLeft: 20 }}
-          iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
-          onClick={() => {
-            setLikeQuery(true);
-            setShowCallout(true);
-          }}
-        />
-        <IconButton
-          style={{ margin: "0 10px" }}
-          iconProps={{ iconName: likeQuery === false ? "DislikeSolid" : "Dislike" }}
-          onClick={() => {
-            setLikeQuery(false);
-            setShowCallout(false);
-            useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userInput);
-          }}
-        />
-        <Separator vertical style={{ color: "#EDEBE9" }} />
-        <CommandBarButton iconProps={{ iconName: "Copy" }} style={{ margin: "0 10px", backgroundColor: "#FFF8F0" }}>
-          Copy code
-        </CommandBarButton>
-        <CommandBarButton iconProps={{ iconName: "Delete" }} style={{ backgroundColor: "#FFF8F0" }}>
-          Delete code
-        </CommandBarButton>
-      </Stack>
+            Copy code
+          </CommandBarButton>
+          <CommandBarButton
+            onClick={() => setShowDeletePopup(true)}
+            iconProps={{ iconName: "Delete" }}
+            style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
+          >
+            Delete code
+          </CommandBarButton>
+        </Stack>
+      ) : (
+        <></>
+      )}
+
       <Stack className="tabPaneContentContainer">
         <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
           <EditorReact
@@ -271,6 +447,13 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           />
         </SplitterLayout>
       </Stack>
+      {isSamplePromptsOpen ? <SamplePrompts sampleProps={sampleProps} /> : <></>}
+      {query !== "" && query.trim().length !== 0 ? (
+        <DeletePopup showDeletePopup={showDeletePopup} setShowDeletePopup={setShowDeletePopup} setQuery={setQuery} />
+      ) : (
+        <></>
+      )}
+      <CopyPopup showCopyPopup={showCopyPopup} setShowCopyPopup={setshowCopyPopup} />
     </Stack>
   );
 };
