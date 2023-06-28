@@ -117,7 +117,12 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
               <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
           </span>
-          <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
+          <span
+            className="tabNavText"
+            style={active ? { fontWeight: "bolder", borderBottom: "2px solid rgba(0,120,212,1)" } : {}}
+          >
+            {useObservable(tab?.tabTitle || ko.observable(ReactTabKind[tabKind]))}
+          </span>
           {tabKind !== ReactTabKind.Home && (
             <span className="tabIconSection">
               <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
