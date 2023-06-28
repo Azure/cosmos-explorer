@@ -12,9 +12,11 @@ import {
   Separator,
   Spinner,
   Stack,
+  TeachingBubble,
   Text,
   TextField,
 } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import {
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
@@ -41,7 +43,7 @@ import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import HintIcon from "../../../images/Hint.svg";
@@ -93,6 +95,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
   const [queryResults, setQueryResults] = useState<QueryResults>();
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
+  const inputEdited = useRef(false);
   const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
   const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
   const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
@@ -274,6 +278,23 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
 
+  React.useEffect(() => {
+    if (initialInput) {
+      generateSQLQuery();
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (!inputEdited.current) {
+      setTimeout(() => {
+        if (!inputEdited.current) {
+          toggleCopilotTeachingBubbleVisible();
+          inputEdited.current = true;
+        }
+      }, 30000);
+    }
+  });
+
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%", height: "100%" }}>
       <Stack horizontal verticalAlign="center">
@@ -285,12 +306,38 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           id="naturalLanguageInput"
           value={userPrompt}
           onChange={handleUserPromptChange}
+          onClick={() => {
+            inputEdited.current = true;
+            setShowSamplePrompts(true);
+          }}
           style={{ lineHeight: 30 }}
           styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
           autoComplete="off"
-          onClick={() => setShowSamplePrompts(true)}
         />
+        {copilotTeachingBubbleVisible && (
+          <TeachingBubble
+            calloutProps={{ directionalHint: DirectionalHint.bottomCenter }}
+            target="#naturalLanguageInput"
+            hasCloseButton={true}
+            closeButtonAriaLabel="Close"
+            onDismiss={toggleCopilotTeachingBubbleVisible}
+            hasSmallHeadline={true}
+            headline="Write a prompt"
+          >
+            Write a prompt here and Copilot will generate the query for you. You can also choose from our{" "}
+            <Link
+              onClick={() => {
+                setShowSamplePrompts(true);
+                toggleCopilotTeachingBubbleVisible();
+              }}
+              style={{ color: "white", fontWeight: 600 }}
+            >
+              sample prompts
+            </Link>{" "}
+            or write your own query
+          </TeachingBubble>
+        )}
         <IconButton
           iconProps={{ iconName: "Send" }}
           disabled={isGeneratingQuery || !userPrompt.trim()}
