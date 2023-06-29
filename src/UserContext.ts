@@ -1,5 +1,6 @@
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
+import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { AuthType } from "./AuthType";
@@ -69,6 +70,7 @@ interface UserContext {
   readonly postgresConnectionStrParams?: PostgresConnectionStrParams;
   readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
+  sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres";
@@ -157,4 +159,4 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
   return "SQL";
 }
 
-export { userContext, updateUserContext };
+export { updateUserContext, userContext };
