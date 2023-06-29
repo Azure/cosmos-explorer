@@ -75,11 +75,17 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
   };
 
   private getPanelHeight = (): string => {
-    const consoleHeight = this.props.isConsoleExpanded
-      ? PanelContainerComponent.consoleContentHeight + PanelContainerComponent.consoleHeaderHeight
-      : PanelContainerComponent.consoleHeaderHeight;
-    const panelHeight = window.innerHeight - consoleHeight;
-    return panelHeight + "px";
+    const notificationConsole = document.getElementById("explorerNotificationConsole");
+    if (notificationConsole !== undefined) {
+      return window.innerHeight - notificationConsole?.clientHeight + "px";
+    }
+    return (
+      window.innerHeight -
+      (this.props.isConsoleExpanded
+        ? PanelContainerComponent.consoleContentHeight + PanelContainerComponent.consoleHeaderHeight
+        : PanelContainerComponent.consoleHeaderHeight) +
+      "px"
+    );
   };
 }
 

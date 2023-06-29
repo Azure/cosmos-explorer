@@ -11,7 +11,7 @@ exports[`PaneContainerComponent test should be resize if notification console is
   onDismiss={[Function]}
   style={
     Object {
-      "height": "516px",
+      "height": "NaNpx",
     }
   }
   styles={
@@ -53,7 +53,7 @@ exports[`PaneContainerComponent test should render with panel content and header
   onDismiss={[Function]}
   style={
     Object {
-      "height": "736px",
+      "height": "NaNpx",
     }
   }
   styles={
