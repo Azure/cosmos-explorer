@@ -1,15 +1,14 @@
-import { useDatabases } from "Explorer/useDatabases";
 import React, { useEffect, useState } from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 
-export const SampleDataTree: React.FC = (): JSX.Element => {
-  const sampleDataResourceTokenCollection: ViewModels.CollectionBase = useDatabases(
-    (state) => state.sampleDataResourceTokenCollection
-  );
-
+export const SampleDataTree = ({
+  sampleDataResourceTokenCollection,
+}: {
+  sampleDataResourceTokenCollection: ViewModels.CollectionBase;
+}): JSX.Element => {
   const [root, setRoot] = useState<TreeNode | undefined>(undefined);
 
   useEffect(() => {
@@ -37,17 +36,6 @@ export const SampleDataTree: React.FC = (): JSX.Element => {
   }, [sampleDataResourceTokenCollection]);
 
   return (
-    <>
-      {root === undefined ? (
-        <TreeComponent
-          className="sampleDataResourceTree"
-          rootNode={{
-            label: "Sample data not initialized.",
-          }}
-        />
-      ) : (
-        <TreeComponent className="sampleDataResourceTree" rootNode={root} />
-      )}
-    </>
+    <TreeComponent className="sampleDataResourceTree" rootNode={root || { label: "Sample data not initialized." }} />
   );
 };
