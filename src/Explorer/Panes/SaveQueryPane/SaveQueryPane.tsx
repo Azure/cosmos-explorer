@@ -139,6 +139,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
     onSubmit: () => {
       isSaveQueryEnabled() ? submit() : setupQueries();
     },
+    footerStyle: isSaveQueryEnabled() ? { bottom: 0, position: "absolute", width: "100%" } : {},
   };
   return (
     <RightPaneForm {...props}>

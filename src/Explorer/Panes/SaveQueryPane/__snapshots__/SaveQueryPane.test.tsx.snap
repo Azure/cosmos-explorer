@@ -2,6 +2,7 @@
 
 exports[`Save Query Pane should render Default properly 1`] = `
 <RightPaneForm
+  footerStyle={Object {}}
   formError=""
   isExecuting={false}
   onSubmit={[Function]}
