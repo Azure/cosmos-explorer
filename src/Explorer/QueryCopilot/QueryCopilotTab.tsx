@@ -50,6 +50,11 @@ import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { useTabs } from "../../hooks/useTabs";
 
+interface SuggestedPrompt {
+  id: number;
+  text: string;
+}
+
 interface QueryCopilotTabProps {
   initialInput: string;
   explorer: Explorer;
@@ -116,12 +121,35 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
   const cachedHistories = cachedHistoriesString?.split(",");
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<SuggestedPrompt[]>([
+    { id: 1, text: "Give me all customers whose names start with C" },
+    { id: 2, text: "Show me all customers" },
+    { id: 3, text: "Show me all customers who bought a bike in 2019" },
+  ]);
+  const [filteredHistories, setFilteredHistories] = useState<string[]>(histories);
+  const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
+
+  const handleUserPromptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setUserPrompt(value);
+
+    // Filter history prompts
+    const filteredHistory = histories.filter((history) => history.toLowerCase().includes(value.toLowerCase()));
+    setFilteredHistories(filteredHistory);
+
+    // Filter suggested prompts
+    const filteredSuggested = suggestedPrompts.filter((prompt) =>
+      prompt.text.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredSuggestedPrompts(filteredSuggested);
+  };
 
   const updateHistories = (): void => {
     const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
     setHistories(newHistories);
     localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
   };
+
   const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
@@ -240,7 +268,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <TextField
           id="naturalLanguageInput"
           value={userPrompt}
-          onChange={(_, newValue) => setUserPrompt(newValue)}
+          onChange={handleUserPromptChange}
           style={{ lineHeight: 30 }}
           styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
@@ -266,7 +294,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             directionalHint={DirectionalHint.bottomLeftEdge}
           >
             <Stack>
-              {histories?.length > 0 && (
+              {filteredHistories?.length > 0 && (
                 <Stack>
                   <Text
                     style={{
@@ -280,7 +308,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                   >
                     Recent
                   </Text>
-                  {histories.map((history, i) => (
+                  {filteredHistories.map((history, i) => (
                     <DefaultButton
                       key={i}
                       onClick={() => {
@@ -307,36 +335,19 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
               >
                 Suggested Prompts
               </Text>
-              <DefaultButton
-                onClick={() => {
-                  setUserPrompt("Give me all customers whose names start with C");
-                  setShowSamplePrompts(false);
-                }}
-                onRenderIcon={() => <Image src={HintIcon} />}
-                styles={promptStyles}
-              >
-                Give me all customers whose names start with C
-              </DefaultButton>
-              <DefaultButton
-                onClick={() => {
-                  setUserPrompt("Show me all customers");
-                  setShowSamplePrompts(false);
-                }}
-                onRenderIcon={() => <Image src={HintIcon} />}
-                styles={promptStyles}
-              >
-                Show me all customers
-              </DefaultButton>
-              <DefaultButton
-                onClick={() => {
-                  setUserPrompt("Show me all customers who bought a bike in 2019");
-                  setShowSamplePrompts(false);
-                }}
-                onRenderIcon={() => <Image src={HintIcon} />}
-                styles={promptStyles}
-              >
-                Show me all customers who bought a bike in 2019
-              </DefaultButton>
+              {filteredSuggestedPrompts.map((prompt) => (
+                <DefaultButton
+                  key={prompt.id}
+                  onClick={() => {
+                    setUserPrompt(prompt.text);
+                    setShowSamplePrompts(false);
+                  }}
+                  onRenderIcon={() => <Image src={HintIcon} />}
+                  styles={promptStyles}
+                >
+                  {prompt.text}
+                </DefaultButton>
+              ))}
               <Separator styles={{ root: { selectors: { "::before": { background: "#E1DFDD" } }, padding: 0 } }} />
               <Text
                 style={{
