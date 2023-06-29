@@ -77,7 +77,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
   private getPanelHeight = (): string => {
     const notificationConsole = document.getElementById("explorerNotificationConsole");
     if (notificationConsole !== undefined) {
-      return window.innerHeight - notificationConsole?.clientHeight + "px";
+      return window.innerHeight - notificationConsole.clientHeight + "px";
     }
     return (
       window.innerHeight -
