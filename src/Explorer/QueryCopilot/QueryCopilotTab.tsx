@@ -47,6 +47,7 @@ import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
+import XErrorMessage from "../../../images/X-errorMessage.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { useTabs } from "../../hooks/useTabs";
 
@@ -94,6 +95,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
   const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
   const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
+  const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -371,6 +373,16 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <Link href="" target="_blank">
           Read preview terms
         </Link>
+        {showErrorMessageBar ? (
+          <Stack style={{ backgroundColor: "#FEF0F1", padding: "4px 8px" }} horizontal verticalAlign="center">
+            <Image src={XErrorMessage} style={{ marginRight: "8px" }} />
+            <Text style={{ fontSize: 12 }}>
+              We ran into an error and were not able to execute query. Please try again after sometime
+            </Text>
+          </Stack>
+        ) : (
+          <></>
+        )}
       </Text>
 
       {showFeedbackBar ? (
