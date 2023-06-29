@@ -2,6 +2,7 @@ import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text 
 import { SampleDataTree } from "Explorer/Tree/SampleDataTree";
 import { getItemName } from "Utils/APITypeUtils";
 import * as React from "react";
+import { useState } from "react";
 import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
@@ -765,49 +766,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   };
 
   const dataRootNode = buildDataTree();
+  const isSampleDataEnabled = userContext.sampleDataConnectionInfo && userContext.apiType === "SQL";
 
-  // TODO: isSampleDataEnabled should depend on userContext.sampleDataConnectionInfo instead of the feature flag
-  const isSampleDataEnabled = userContext.features.enableCopilot && userContext.apiType === "SQL";
-
-  if (!isNotebookEnabled && !isSampleDataEnabled) {
-    return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
-  }
-
-  if (isNotebookEnabled && !isSampleDataEnabled) {
-    return (
-      <>
-        <AccordionComponent>
-          <AccordionItemComponent title={"DATA"} isExpanded={!gitHubNotebooksContentRoot}>
-            <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-          </AccordionItemComponent>
-          <AccordionItemComponent title={"NOTEBOOKS"}>
-            <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
-          </AccordionItemComponent>
-        </AccordionComponent>
-
-        {buildGalleryCallout()}
-      </>
-    );
-  }
-
-  if (!isNotebookEnabled && isSampleDataEnabled) {
-    return (
-      <>
-        <AccordionComponent>
-          <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
-            <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-          </AccordionItemComponent>
-          <AccordionItemComponent title={"SAMPLE DATA"}>
-            <SampleDataTree />
-          </AccordionItemComponent>
-        </AccordionComponent>
-
-        {buildGalleryCallout()}
-      </>
-    );
-  }
-
-  return (
+  const [availableResourceTrees, setAvailableResourceTrees] = useState<JSX.Element>(
     <>
       <AccordionComponent>
         <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
@@ -824,4 +785,46 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       {buildGalleryCallout()}
     </>
   );
+
+  React.useEffect(() => {
+    if (!isNotebookEnabled && !isSampleDataEnabled) {
+      setAvailableResourceTrees(<TreeComponent className="dataResourceTree" rootNode={dataRootNode} />);
+    }
+
+    if (isNotebookEnabled && !isSampleDataEnabled) {
+      setAvailableResourceTrees(
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent title={"DATA"} isExpanded={!gitHubNotebooksContentRoot}>
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"NOTEBOOKS"}>
+              <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
+            </AccordionItemComponent>
+          </AccordionComponent>
+
+          {buildGalleryCallout()}
+        </>
+      );
+    }
+
+    if (!isNotebookEnabled && isSampleDataEnabled) {
+      setAvailableResourceTrees(
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"SAMPLE DATA"}>
+              <SampleDataTree />
+            </AccordionItemComponent>
+          </AccordionComponent>
+
+          {buildGalleryCallout()}
+        </>
+      );
+    }
+  }, [isSampleDataEnabled]);
+
+  return availableResourceTrees;
 };
