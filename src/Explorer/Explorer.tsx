@@ -1,39 +1,39 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { IGalleryItem } from "Juno/JunoClient";
+import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
-import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
 import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
-import { readCollection } from "../Common/dataAccess/readCollection";
-import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
+import { readCollection, readSampleCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
-import { useSidePanel } from "../hooks/useSidePanel";
-import { useTabs } from "../hooks/useTabs";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
-import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
+import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
+import { useSidePanel } from "../hooks/useSidePanel";
+import { useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
@@ -1272,5 +1272,26 @@ export default class Explorer {
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
     }
+
+    await this.refreshSampleData();
+  }
+
+  public async refreshSampleData(): Promise<void> {
+    if (!userContext.sampleDataConnectionInfo) {
+      return;
+    }
+
+    const collection: DataModels.Collection = await readSampleCollection();
+    if (!collection) {
+      return;
+    }
+
+    const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
+    if (!databaseId) {
+      return;
+    }
+
+    const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection);
+    useDatabases.setState({ sampleDataResourceTokenCollection });
   }
 }
