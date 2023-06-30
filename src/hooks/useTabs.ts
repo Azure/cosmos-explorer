@@ -162,5 +162,5 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   },
   setIsQueryErrorThrown: (state: boolean) => {
     set({ isQueryErrorThrown: state });
-  }
+  },
 }));
