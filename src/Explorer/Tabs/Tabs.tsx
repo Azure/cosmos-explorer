@@ -117,15 +117,13 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
             {isTabExecuting(tab, tabKind) && (
               <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
-            {isQueryErrorThrown(tab, tabKind) ? (
+            {isQueryErrorThrown(tab, tabKind) && (
               <img
                 src={errorQuery}
                 title="Error"
                 alt="Error"
                 style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
               />
-            ) : (
-              <></>
             )}
           </span>
           <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
