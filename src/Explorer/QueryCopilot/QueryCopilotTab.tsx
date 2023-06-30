@@ -123,11 +123,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
   const cachedHistories = cachedHistoriesString?.split(",");
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
-  const [suggestedPrompts, setSuggestedPrompts] = useState<SuggestedPrompt[]>([
+  const suggestedPrompts: SuggestedPrompt[] = [
     { id: 1, text: "Give me all customers whose names start with C" },
     { id: 2, text: "Show me all customers" },
     { id: 3, text: "Show me all customers who bought a bike in 2019" },
-  ]);
+  ];
   const [filteredHistories, setFilteredHistories] = useState<string[]>(histories);
   const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
 
@@ -272,7 +272,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <Image src={CopilotIcon} />
         <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
       </Stack>
-      <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%" }}>
+      <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%", position: "relative" }}>
         <TextField
           id="naturalLanguageInput"
           value={userPrompt}
@@ -280,8 +280,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           style={{ lineHeight: 30 }}
           styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
-          onClick={() => setShowSamplePrompts(true)}
           autoComplete="off"
+          onClick={() => setShowSamplePrompts(true)}
         />
         <IconButton
           iconProps={{ iconName: "Send" }}
@@ -296,11 +296,13 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         {showSamplePrompts && (
           <Callout
             styles={{ root: { minWidth: 400 } }}
-            style={{ padding: "8px 0" }}
             target="#naturalLanguageInput"
             isBeakVisible={false}
             onDismiss={() => setShowSamplePrompts(false)}
+            directionalHintFixed={true}
             directionalHint={DirectionalHint.bottomLeftEdge}
+            alignTargetEdge={true}
+            gapSpace={4}
           >
             <Stack>
               {filteredHistories?.length > 0 && (
@@ -357,7 +359,14 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                   {prompt.text}
                 </DefaultButton>
               ))}
-              <Separator styles={{ root: { selectors: { "::before": { background: "#E1DFDD" } }, padding: 0 } }} />
+              <Separator
+                styles={{
+                  root: {
+                    selectors: { "::before": { background: "#E1DFDD" } },
+                    padding: 0,
+                  },
+                }}
+              />
               <Text
                 style={{
                   width: "100%",
@@ -375,6 +384,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           </Callout>
         )}
       </Stack>
+
       <Text style={{ marginTop: 8, marginBottom: 24, fontSize: 12 }}>
         AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
         <Link href="" target="_blank">
