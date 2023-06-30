@@ -1,3 +1,4 @@
+import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import React from "react";
 import AddCollectionIcon from "../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../images/AddSqlQuery_16x16.svg";
@@ -61,6 +62,13 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
   return items;
 };
 
+const isQueryCopilotMoreMenu = (selectedCollection: ViewModels.Collection): boolean => {
+  return (
+    selectedCollection.databaseId === QueryCopilotSampleDatabaseId &&
+    selectedCollection.id() === QueryCopilotSampleContainerId
+  );
+};
+
 export const createCollectionContextMenuButton = (
   container: Explorer,
   selectedCollection: ViewModels.Collection
@@ -95,48 +103,49 @@ export const createCollectionContextMenuButton = (
     });
   }
 
-  if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
-    items.push({
-      iconSrc: AddStoredProcedureIcon,
-      onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
-      },
-      label: "New Stored Procedure",
-    });
+  if (!isQueryCopilotMoreMenu(selectedCollection)) {
+    if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
+      items.push({
+        iconSrc: AddStoredProcedureIcon,
+        onClick: () => {
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+          selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
+        },
+        label: "New Stored Procedure",
+      });
+
+      items.push({
+        iconSrc: AddUdfIcon,
+        onClick: () => {
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+          selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
+        },
+        label: "New UDF",
+      });
+
+      items.push({
+        iconSrc: AddTriggerIcon,
+        onClick: () => {
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+          selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, undefined);
+        },
+        label: "New Trigger",
+      });
+    }
 
     items.push({
-      iconSrc: AddUdfIcon,
-      onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
-      },
-      label: "New UDF",
-    });
-
-    items.push({
-      iconSrc: AddTriggerIcon,
-      onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, undefined);
-      },
-      label: "New Trigger",
+      iconSrc: DeleteCollectionIcon,
+      onClick: () =>
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Delete " + getCollectionName(),
+            <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
+          ),
+      label: `Delete ${getCollectionName()}`,
+      styleClass: "deleteCollectionMenuItem",
     });
   }
-
-  items.push({
-    iconSrc: DeleteCollectionIcon,
-    onClick: () =>
-      useSidePanel
-        .getState()
-        .openSidePanel(
-          "Delete " + getCollectionName(),
-          <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
-        ),
-    label: `Delete ${getCollectionName()}`,
-    styleClass: "deleteCollectionMenuItem",
-  });
-
   return items;
 };
 
