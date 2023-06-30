@@ -362,9 +362,6 @@ function updateDataTableFocus(queryTablesTabId: string): void {
     if ($activeElement.is(".sorting_asc") || $activeElement.is(".sorting_desc")) {
       // If table header is selected, focus is shifted to the selected element as part of accessibility
       $activeElement && $activeElement.focus();
-    } else {
-      // If some control is active, we don't give focus back to the table,
-      // just select the first row if needed (empty selection).
     }
   }
 }
