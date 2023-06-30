@@ -156,6 +156,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     try {
       setIsGeneratingQuery(true);
       useTabs.getState().setIsTabExecuting(true);
+      useTabs.getState().setIsQueryErrorThrown(false);
       const payload = {
         containerSchema: QueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
@@ -181,6 +182,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       }
     } catch (error) {
       handleError(error, "executeNaturalLanguageQuery");
+      useTabs.getState().setIsQueryErrorThrown(true);
+      setShowErrorMessageBar(true);
       throw error;
     } finally {
       setIsGeneratingQuery(false);
@@ -205,6 +208,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     try {
       setIsExecuting(true);
       useTabs.getState().setIsTabExecuting(true);
+      useTabs.getState().setIsQueryErrorThrown(false);
       const queryResults: QueryResults = await queryPagesUntilContentPresent(
         firstItemIndex,
         async (firstItemIndex: number) =>
@@ -217,6 +221,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       const errorMessage = getErrorMessage(error);
       setErrorMessage(errorMessage);
       handleError(errorMessage, "executeQueryCopilotTab");
+      useTabs.getState().setIsQueryErrorThrown(true);
+      setShowErrorMessageBar(true);
     } finally {
       setIsExecuting(false);
       useTabs.getState().setIsTabExecuting(false);
@@ -275,10 +281,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
           onClick={() => setShowSamplePrompts(true)}
+          autoComplete="off"
         />
         <IconButton
           iconProps={{ iconName: "Send" }}
-          disabled={isGeneratingQuery}
+          disabled={isGeneratingQuery || !userPrompt.trim()}
           style={{ marginLeft: 8 }}
           onClick={() => {
             updateHistories();
