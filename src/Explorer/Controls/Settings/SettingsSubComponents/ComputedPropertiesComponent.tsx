@@ -1,7 +1,4 @@
-// CTODO: Render/edit CP in monaco
-// CTODO: Get CPs from RP
-// CTODO: Save CPs to RP
-import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
+import { FontIcon, Link, MessageBar, MessageBarType, Stack, Text } from "@fluentui/react";
 import * as DataModels from "Contracts/DataModels";
 import { titleAndInputStackProps, unsavedEditorWarningMessage } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { isDirty } from "Explorer/Controls/Settings/SettingsUtils";
@@ -88,7 +85,7 @@ export class ComputedPropertiesComponent extends React.Component<
     this.computedPropertiesEditor = monaco.editor.create(this.computedPropertiesDiv.current, {
       value: value,
       language: "json",
-      ariaLabel: "Indexing Policy",
+      ariaLabel: "Computed properties",
     });
     if (this.computedPropertiesEditor) {
       const computedPropertiesEditorModel = this.computedPropertiesEditor.getModel();
@@ -118,6 +115,12 @@ export class ComputedPropertiesComponent extends React.Component<
             {unsavedEditorWarningMessage("computedProperties")}
           </MessageBar>
         )}
+        <Text style={{ marginLeft: "30px", marginBottom: "10px" }}>
+          <Link target="_blank" href="https://aka.ms/computed-properties-preview/">
+            {"Learn more"} <FontIcon iconName="NavigateExternalInline" />
+          </Link>
+          &#160; about how to define computed properties and how to use them.
+        </Text>
         <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.computedPropertiesDiv}></div>
       </Stack>
     );
