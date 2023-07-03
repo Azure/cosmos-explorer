@@ -15,14 +15,15 @@ export const SampleDataTree = ({
     if (sampleDataResourceTokenCollection) {
       const updatedSampleTree: TreeNode = {
         label: sampleDataResourceTokenCollection.databaseId,
-        isExpanded: true,
+        isExpanded: false,
         iconSrc: CosmosDBIcon,
+        className: "databaseHeader",
         children: [
           {
             label: sampleDataResourceTokenCollection.id(),
             iconSrc: CollectionIcon,
-            isExpanded: true,
-            className: "collectionHeader",
+            isExpanded: false,
+            className: "dataResourceTree",
             children: [
               {
                 label: "Items",
@@ -35,7 +36,5 @@ export const SampleDataTree = ({
     }
   }, [sampleDataResourceTokenCollection]);
 
-  return (
-    <TreeComponent className="sampleDataResourceTree" rootNode={root || { label: "Sample data not initialized." }} />
-  );
+  return <TreeComponent className="dataResourceTree" rootNode={root || { label: "Sample data not initialized." }} />;
 };

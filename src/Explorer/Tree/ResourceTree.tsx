@@ -790,7 +790,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       {!isNotebookEnabled && isSampleDataEnabled && (
         <>
           <AccordionComponent>
-            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
+            <AccordionItemComponent
+              title={"MY DATA"}
+              isExpanded={!gitHubNotebooksContentRoot}
+              styles={{ maxHeight: 230 }}
+            >
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
             </AccordionItemComponent>
             <AccordionItemComponent title={"SAMPLE DATA"}>
@@ -804,7 +808,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       {isNotebookEnabled && isSampleDataEnabled && (
         <>
           <AccordionComponent>
-            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
+            <AccordionItemComponent
+              title={"MY DATA"}
+              isExpanded={!gitHubNotebooksContentRoot}
+              styles={{ maxHeight: 130 }}
+            >
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
             </AccordionItemComponent>
             <AccordionItemComponent title={"SAMPLE DATA"}>

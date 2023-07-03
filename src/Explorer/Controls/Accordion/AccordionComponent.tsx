@@ -25,6 +25,7 @@ export class AccordionComponent extends React.Component<AccordionComponentProps>
 export interface AccordionItemComponentProps {
   title: string;
   isExpanded?: boolean;
+  styles?: React.CSSProperties;
 }
 
 interface AccordionItemComponentState {
@@ -53,6 +54,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
   }
 
   public render(): JSX.Element {
+    const { styles } = this.props;
     return (
       <div className="accordionItemContainer">
         <div className="accordionItemHeader" onClick={this.onHeaderClick} onKeyPress={this.onHeaderKeyPress}>
@@ -60,7 +62,11 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
           {this.props.title}
         </div>
         <div className="accordionItemContent">
-          <AnimateHeight duration={AccordionItemComponent.durationMS} height={this.state.isExpanded ? "auto" : 0}>
+          <AnimateHeight
+            style={{ ...styles }}
+            duration={AccordionItemComponent.durationMS}
+            height={this.state.isExpanded ? "auto" : 0}
+          >
             {this.props.children}
           </AnimateHeight>
         </div>
