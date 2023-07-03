@@ -14,6 +14,7 @@ import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
+import errorQuery from "../../../images/error_no_outline.svg";
 import { useObservable } from "../../hooks/useObservable";
 import { ReactTabKind, useTabs } from "../../hooks/useTabs";
 import TabsBase from "./TabsBase";
@@ -116,6 +117,14 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
             {isTabExecuting(tab, tabKind) && (
               <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
+            {isQueryErrorThrown(tab, tabKind) && (
+              <img
+                src={errorQuery}
+                title="Error"
+                alt="Error"
+                style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
+              />
+            )}
           </span>
           <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           {tabKind !== ReactTabKind.Home && (
@@ -215,6 +224,19 @@ const isTabExecuting = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
   if (useObservable(tab?.isExecuting || ko.observable(false))) {
     return true;
   } else if (tabKind !== undefined && tabKind !== ReactTabKind.Home && useTabs.getState()?.isTabExecuting) {
+    return true;
+  }
+  return false;
+};
+
+const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
+  if (
+    !tab?.isExecuting &&
+    tabKind !== undefined &&
+    tabKind !== ReactTabKind.Home &&
+    useTabs.getState()?.isQueryErrorThrown &&
+    !useTabs.getState()?.isTabExecuting
+  ) {
     return true;
   }
   return false;

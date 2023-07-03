@@ -47,8 +47,14 @@ import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
+import XErrorMessage from "../../../images/X-errorMessage.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { useTabs } from "../../hooks/useTabs";
+
+interface SuggestedPrompt {
+  id: number;
+  text: string;
+}
 
 interface QueryCopilotTabProps {
   initialInput: string;
@@ -89,6 +95,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
   const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
   const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
+  const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -116,16 +123,40 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
   const cachedHistories = cachedHistoriesString?.split(",");
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
+  const suggestedPrompts: SuggestedPrompt[] = [
+    { id: 1, text: "Give me all customers whose names start with C" },
+    { id: 2, text: "Show me all customers" },
+    { id: 3, text: "Show me all customers who bought a bike in 2019" },
+  ];
+  const [filteredHistories, setFilteredHistories] = useState<string[]>(histories);
+  const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
+
+  const handleUserPromptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setUserPrompt(value);
+
+    // Filter history prompts
+    const filteredHistory = histories.filter((history) => history.toLowerCase().includes(value.toLowerCase()));
+    setFilteredHistories(filteredHistory);
+
+    // Filter suggested prompts
+    const filteredSuggested = suggestedPrompts.filter((prompt) =>
+      prompt.text.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredSuggestedPrompts(filteredSuggested);
+  };
 
   const updateHistories = (): void => {
     const newHistories = histories.length < 3 ? [userPrompt, ...histories] : [userPrompt, histories[1], histories[2]];
     setHistories(newHistories);
     localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join(","));
   };
+
   const generateSQLQuery = async (): Promise<void> => {
     try {
       setIsGeneratingQuery(true);
       useTabs.getState().setIsTabExecuting(true);
+      useTabs.getState().setIsQueryErrorThrown(false);
       const payload = {
         containerSchema: QueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
@@ -151,6 +182,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       }
     } catch (error) {
       handleError(error, "executeNaturalLanguageQuery");
+      useTabs.getState().setIsQueryErrorThrown(true);
+      setShowErrorMessageBar(true);
       throw error;
     } finally {
       setIsGeneratingQuery(false);
@@ -175,6 +208,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     try {
       setIsExecuting(true);
       useTabs.getState().setIsTabExecuting(true);
+      useTabs.getState().setIsQueryErrorThrown(false);
       const queryResults: QueryResults = await queryPagesUntilContentPresent(
         firstItemIndex,
         async (firstItemIndex: number) =>
@@ -187,6 +221,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       const errorMessage = getErrorMessage(error);
       setErrorMessage(errorMessage);
       handleError(errorMessage, "executeQueryCopilotTab");
+      useTabs.getState().setIsQueryErrorThrown(true);
+      setShowErrorMessageBar(true);
     } finally {
       setIsExecuting(false);
       useTabs.getState().setIsTabExecuting(false);
@@ -236,19 +272,20 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <Image src={CopilotIcon} />
         <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
       </Stack>
-      <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%" }}>
+      <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%", position: "relative" }}>
         <TextField
           id="naturalLanguageInput"
           value={userPrompt}
-          onChange={(_, newValue) => setUserPrompt(newValue)}
+          onChange={handleUserPromptChange}
           style={{ lineHeight: 30 }}
           styles={{ root: { width: "95%" } }}
           disabled={isGeneratingQuery}
+          autoComplete="off"
           onClick={() => setShowSamplePrompts(true)}
         />
         <IconButton
           iconProps={{ iconName: "Send" }}
-          disabled={isGeneratingQuery}
+          disabled={isGeneratingQuery || !userPrompt.trim()}
           style={{ marginLeft: 8 }}
           onClick={() => {
             updateHistories();
@@ -259,14 +296,16 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         {showSamplePrompts && (
           <Callout
             styles={{ root: { minWidth: 400 } }}
-            style={{ padding: "8px 0" }}
             target="#naturalLanguageInput"
             isBeakVisible={false}
             onDismiss={() => setShowSamplePrompts(false)}
+            directionalHintFixed={true}
             directionalHint={DirectionalHint.bottomLeftEdge}
+            alignTargetEdge={true}
+            gapSpace={4}
           >
             <Stack>
-              {histories?.length > 0 && (
+              {filteredHistories?.length > 0 && (
                 <Stack>
                   <Text
                     style={{
@@ -280,7 +319,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                   >
                     Recent
                   </Text>
-                  {histories.map((history, i) => (
+                  {filteredHistories.map((history, i) => (
                     <DefaultButton
                       key={i}
                       onClick={() => {
@@ -307,37 +346,27 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
               >
                 Suggested Prompts
               </Text>
-              <DefaultButton
-                onClick={() => {
-                  setUserPrompt("Give me all customers whose names start with C");
-                  setShowSamplePrompts(false);
+              {filteredSuggestedPrompts.map((prompt) => (
+                <DefaultButton
+                  key={prompt.id}
+                  onClick={() => {
+                    setUserPrompt(prompt.text);
+                    setShowSamplePrompts(false);
+                  }}
+                  onRenderIcon={() => <Image src={HintIcon} />}
+                  styles={promptStyles}
+                >
+                  {prompt.text}
+                </DefaultButton>
+              ))}
+              <Separator
+                styles={{
+                  root: {
+                    selectors: { "::before": { background: "#E1DFDD" } },
+                    padding: 0,
+                  },
                 }}
-                onRenderIcon={() => <Image src={HintIcon} />}
-                styles={promptStyles}
-              >
-                Give me all customers whose names start with C
-              </DefaultButton>
-              <DefaultButton
-                onClick={() => {
-                  setUserPrompt("Show me all customers");
-                  setShowSamplePrompts(false);
-                }}
-                onRenderIcon={() => <Image src={HintIcon} />}
-                styles={promptStyles}
-              >
-                Show me all customers
-              </DefaultButton>
-              <DefaultButton
-                onClick={() => {
-                  setUserPrompt("Show me all customers who bought a bike in 2019");
-                  setShowSamplePrompts(false);
-                }}
-                onRenderIcon={() => <Image src={HintIcon} />}
-                styles={promptStyles}
-              >
-                Show me all customers who bought a bike in 2019
-              </DefaultButton>
-              <Separator styles={{ root: { selectors: { "::before": { background: "#E1DFDD" } }, padding: 0 } }} />
+              />
               <Text
                 style={{
                   width: "100%",
@@ -355,11 +384,22 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           </Callout>
         )}
       </Stack>
+
       <Text style={{ marginTop: 8, marginBottom: 24, fontSize: 12 }}>
         AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
         <Link href="" target="_blank">
           Read preview terms
         </Link>
+        {showErrorMessageBar ? (
+          <Stack style={{ backgroundColor: "#FEF0F1", padding: "4px 8px" }} horizontal verticalAlign="center">
+            <Image src={XErrorMessage} style={{ marginRight: "8px" }} />
+            <Text style={{ fontSize: 12 }}>
+              We ran into an error and were not able to execute query. Please try again after sometime
+            </Text>
+          </Stack>
+        ) : (
+          <></>
+        )}
       </Text>
 
       {showFeedbackBar ? (

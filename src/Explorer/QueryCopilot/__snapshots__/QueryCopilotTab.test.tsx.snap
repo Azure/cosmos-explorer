@@ -35,12 +35,14 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
     style={
       Object {
         "marginTop": 16,
+        "position": "relative",
         "width": "100%",
       }
     }
     verticalAlign="center"
   >
     <StyledTextFieldBase
+      autoComplete="off"
       disabled={false}
       id="naturalLanguageInput"
       onChange={[Function]}
