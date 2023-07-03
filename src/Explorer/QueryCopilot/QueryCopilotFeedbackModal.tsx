@@ -13,6 +13,7 @@ import {
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
+import { getUserEmail } from "../../Utils/UserUtils";
 
 export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
   const {
@@ -26,6 +27,7 @@ export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
   const [isContactAllowed, setIsContactAllowed] = React.useState<boolean>(true);
   const [description, setDescription] = React.useState<string>("");
   const [doNotShowAgainChecked, setDoNotShowAgainChecked] = React.useState<boolean>(false);
+  const [contact, setContact] = React.useState<string>(getUserEmail());
   return (
     <Modal isOpen={showFeedbackModal}>
       <Stack style={{ padding: 24 }}>
@@ -69,7 +71,10 @@ export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
             { key: "no", text: "No, do not contact me." },
           ]}
           selectedKey={isContactAllowed ? "yes" : "no"}
-          onChange={(_, option) => setIsContactAllowed(option.key === "yes")}
+          onChange={(_, option) => {
+            setIsContactAllowed(option.key === "yes");
+            setContact(option.key === "yes" ? getUserEmail() : "");
+          }}
         ></ChoiceGroup>
         <Text style={{ fontSize: 12, marginBottom: 14 }}>
           By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your
@@ -92,7 +97,7 @@ export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
             onClick={() => {
               closeFeedbackModal();
               setHideFeedbackModalForLikedQueries(doNotShowAgainChecked);
-              submitFeedback({ generatedQuery, likeQuery, description, userPrompt });
+              submitFeedback({ generatedQuery, likeQuery, description, userPrompt, contact });
             }}
           >
             Submit
