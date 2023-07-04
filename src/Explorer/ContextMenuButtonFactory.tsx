@@ -140,6 +140,21 @@ export const createCollectionContextMenuButton = (
   return items;
 };
 
+export const createSampleCollectionContextMenuButton = (
+  selectedCollection: ViewModels.CollectionBase
+): TreeNodeMenuItem[] => {
+  const items: TreeNodeMenuItem[] = [];
+  if (userContext.apiType === "SQL") {
+    items.push({
+      iconSrc: AddSqlQueryIcon,
+      onClick: () => selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined),
+      label: "New SQL Query",
+    });
+  }
+
+  return items;
+};
+
 export const createStoreProcedureContextMenuItems = (
   container: Explorer,
   storedProcedure: StoredProcedure

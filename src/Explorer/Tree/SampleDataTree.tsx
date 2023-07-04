@@ -1,7 +1,9 @@
+import { useSelectedNode } from "Explorer/useSelectedNode";
 import React, { useEffect, useState } from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as ViewModels from "../../Contracts/ViewModels";
+import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 
 export const SampleDataTree = ({
@@ -24,6 +26,17 @@ export const SampleDataTree = ({
             iconSrc: CollectionIcon,
             isExpanded: false,
             className: "dataResourceTree",
+            contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(
+              sampleDataResourceTokenCollection
+            ),
+            isSelected: () =>
+              useSelectedNode
+                .getState()
+                .isDataNodeSelected(
+                  sampleDataResourceTokenCollection.databaseId,
+                  sampleDataResourceTokenCollection.id()
+                ),
+            onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection),
             children: [
               {
                 label: "Items",
