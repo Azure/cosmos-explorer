@@ -37,7 +37,7 @@ export interface TableEntityProps {
   onDeleteEntity?: () => void;
   onEditEntity?: () => void;
   onEntityPropertyChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
-  onEntityTypeChange: (event: React.FormEvent<HTMLDivElement>, selectedParam?: IDropdownOption<any> | undefined, index?: number | undefined) => void;
+  onEntityTypeChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void
   onEntityValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
   onSelectDate: (date: Date | null | undefined) => void;
   onEntityTimeValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
@@ -76,12 +76,12 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" || event.key === "Space") {
-      onEditEntity?.();
+      onEditEntity();
     }
   };
   const handleKeyPressdelete = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" || event.key === "Space") {
-      onDeleteEntity?.();
+      onDeleteEntity();
     }
   };
 
