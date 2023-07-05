@@ -17,7 +17,6 @@ export enum MessageTypes {
   UpdateLocationHash,
   SingleOffer,
   RefreshOffer,
-  DisplayNPSSurvey,
   UpdateAccountName,
   ForbiddenError,
   AadSignIn,
@@ -39,6 +38,7 @@ export enum MessageTypes {
   OpenPostgreSQLPasswordReset,
   OpenPostgresNetworkingBlade,
   OpenCosmosDBNetworkingBlade,
+  DisplayNPSSurvey,
 }
 
 export { Versions, ActionContracts, Diagnostics };
