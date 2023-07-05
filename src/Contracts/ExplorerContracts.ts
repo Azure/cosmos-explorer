@@ -38,6 +38,7 @@ export enum MessageTypes {
   OpenPostgreSQLPasswordReset,
   OpenPostgresNetworkingBlade,
   OpenCosmosDBNetworkingBlade,
+  DisplayNPSSurvey,
 }
 
 export { Versions, ActionContracts, Diagnostics };
