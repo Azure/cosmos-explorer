@@ -17,6 +17,7 @@ export enum MessageTypes {
   UpdateLocationHash,
   SingleOffer,
   RefreshOffer,
+  DisplayNPSSurvey,
   UpdateAccountName,
   ForbiddenError,
   AadSignIn,
