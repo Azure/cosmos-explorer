@@ -31,6 +31,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
+import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
@@ -487,6 +488,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           />
         </SplitterLayout>
       </Stack>
+      <WelcomeModal visible={localStorage.getItem("hideWelcomeModal") !== "true"}></WelcomeModal>
       {isSamplePromptsOpen ? <SamplePrompts sampleProps={sampleProps} /> : <></>}
       {query !== "" && query.trim().length !== 0 ? (
         <DeletePopup showDeletePopup={showDeletePopup} setShowDeletePopup={setShowDeletePopup} setQuery={setQuery} />
