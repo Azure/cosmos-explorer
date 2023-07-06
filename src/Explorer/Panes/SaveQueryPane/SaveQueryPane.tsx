@@ -139,11 +139,11 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
     onSubmit: () => {
       isSaveQueryEnabled() ? submit() : setupQueries();
     },
-    footerStyle: isSaveQueryEnabled() ? { bottom: 0, position: "absolute", width: "100%" } : {},
+    footerStyle: isSaveQueryEnabled() ? { flexGrow: 0 } : {},
   };
   return (
     <RightPaneForm {...props}>
-      <div className="panelFormWrapper">
+      <div className="panelFormWrapper" style={{ flexGrow: 1 }}>
         <div className="panelMainContent">
           {!isSaveQueryEnabled() ? (
             <Text variant="small">{setupSaveQueriesText}</Text>

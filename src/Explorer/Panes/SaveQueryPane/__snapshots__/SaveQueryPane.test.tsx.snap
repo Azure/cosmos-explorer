@@ -10,6 +10,11 @@ exports[`Save Query Pane should render Default properly 1`] = `
 >
   <div
     className="panelFormWrapper"
+    style={
+      Object {
+        "flexGrow": 1,
+      }
+    }
   >
     <div
       className="panelMainContent"

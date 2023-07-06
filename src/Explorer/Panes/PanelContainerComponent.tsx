@@ -8,6 +8,7 @@ export interface PanelContainerProps {
   panelContent?: JSX.Element;
   isConsoleExpanded: boolean;
   isOpen: boolean;
+  isConsoleAnimationFinished?: boolean;
   panelWidth?: string;
   onRenderNavigationContent?: IRenderFunction<IPanelProps>;
 }
@@ -28,12 +29,21 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     };
   }
 
-  componentDidMount(): void {
+  omponentDidMount(): void {
     window.addEventListener("resize", () => this.setState({ height: this.getPanelHeight() }));
   }
 
   componentWillUnmount(): void {
     window.removeEventListener("resize", () => this.setState({ height: this.getPanelHeight() }));
+  }
+
+  componentDidUpdate(): void {
+    if (useNotificationConsole.getState().consoleAnimationFinished || this.state.height !== this.getPanelHeight()) {
+      this.setState({
+        height: this.getPanelHeight(),
+      });
+      useNotificationConsole.getState().setConsoleAnimationFinished(false);
+    }
   }
 
   render(): JSX.Element {
@@ -59,7 +69,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
           header: { padding: "0 0 8px 34px" },
           commands: { marginTop: 8 },
         }}
-        style={{ height: this.getPanelHeight() }}
+        style={{ height: this.state.height }}
       >
         {this.props.panelContent}
       </Panel>
@@ -88,9 +98,9 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     );
   };
 }
-
 export const SidePanel: React.FC = () => {
   const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
+  const isConsoleAnimationFinished = useNotificationConsole((state) => state.consoleAnimationFinished);
   const { isOpen, panelContent, panelWidth, headerText } = useSidePanel((state) => {
     return {
       isOpen: state.isOpen,
@@ -108,6 +118,7 @@ export const SidePanel: React.FC = () => {
       headerText={headerText}
       isConsoleExpanded={isConsoleExpanded}
       panelWidth={panelWidth}
+      isConsoleAnimationFinished={isConsoleAnimationFinished}
     />
   );
 };
