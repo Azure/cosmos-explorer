@@ -145,9 +145,9 @@ export function createStaticCommandBarButtons(
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected()
-          ? true
-          : selectedNodeState.isDatabaseNodeOrNoneSelected(),
+        disabled:
+          useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+          selectedNodeState.isDatabaseNodeOrNoneSelected(),
       };
 
       newStoredProcedureBtn.children = createScriptCommandButtons(selectedNodeState);
@@ -293,9 +293,8 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected()
-      ? true
-      : useNotebook.getState().isSynapseLinkUpdating,
+    disabled:
+      useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
@@ -315,7 +314,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() ? true : false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -377,9 +376,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected()
-        ? true
-        : selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -396,9 +395,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected()
-        ? true
-        : selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -415,9 +414,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected()
-        ? true
-        : selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newTriggerBtn);
   }
@@ -441,7 +440,7 @@ function createNewNotebookButton(container: Explorer): CommandButtonComponentPro
     onCommandClick: () => container.onNewNotebookClicked(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() ? true : false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -454,7 +453,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
     onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() ? true : false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -469,7 +468,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() ? true : false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -482,7 +481,7 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() ? true : false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -574,7 +573,7 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
     onCommandClick: () => container.resetNotebookWorkspace(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() ? true : false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -600,7 +599,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
     },
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected() ? true : false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
