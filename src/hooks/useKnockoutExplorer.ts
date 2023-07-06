@@ -415,7 +415,7 @@ interface PortalMessage {
   inputs?: DataExplorerInputsFrame;
 }
 
-async function updateContextForSampleData(): Promise<void> {
+export async function updateContextForSampleData(): Promise<void> {
   if (!userContext.features.enableCopilot) {
     return;
   }
