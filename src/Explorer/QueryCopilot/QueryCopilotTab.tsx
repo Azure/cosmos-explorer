@@ -138,6 +138,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
 
   const handleUserPromptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    inputEdited.current = true;
     const { value } = event.target;
     setUserPrompt(value);
 
@@ -267,6 +268,16 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
     return [executeQueryBtn, saveQueryBtn, samplePromptsBtn];
   };
+  const showTeachingBubble = (): void => {
+    if (!inputEdited.current) {
+      setTimeout(() => {
+        if (!inputEdited.current) {
+          toggleCopilotTeachingBubbleVisible();
+          inputEdited.current = true;
+        }
+      }, 30000);
+    }
+  };
 
   const resetButtonState = () => {
     setDislikeQuery(false);
@@ -282,18 +293,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     if (initialInput) {
       generateSQLQuery();
     }
+    showTeachingBubble();
   }, []);
-
-  React.useEffect(() => {
-    if (!inputEdited.current) {
-      setTimeout(() => {
-        if (!inputEdited.current) {
-          toggleCopilotTeachingBubbleVisible();
-          inputEdited.current = true;
-        }
-      }, 30000);
-    }
-  });
 
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%", height: "100%" }}>
