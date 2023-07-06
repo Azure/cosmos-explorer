@@ -5,14 +5,20 @@ export const DeletePopup = ({
   showDeletePopup,
   setShowDeletePopup,
   setQuery,
+  clearFeedback,
+  showFeedbackBar,
 }: {
   showDeletePopup: boolean;
   setShowDeletePopup: Dispatch<SetStateAction<boolean>>;
   setQuery: Dispatch<SetStateAction<string>>;
+  clearFeedback: Dispatch<SetStateAction<void>>;
+  showFeedbackBar: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
   const deleteCode = () => {
     setQuery("");
     setShowDeletePopup(false);
+    clearFeedback();
+    showFeedbackBar(false);
   };
 
   return (

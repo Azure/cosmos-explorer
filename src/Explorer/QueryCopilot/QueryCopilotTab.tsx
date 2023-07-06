@@ -31,6 +31,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
+import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
@@ -86,6 +87,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [likeQuery, setLikeQuery] = useState<boolean>();
+  const [dislikeQuery, setDislikeQuery] = useState<boolean>();
   const [showCallout, setShowCallout] = useState<boolean>(false);
   const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
   const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
@@ -262,6 +264,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     return [executeQueryBtn, saveQueryBtn, samplePromptsBtn];
   };
 
+  const resetButtonState = () => {
+    setDislikeQuery(false);
+    setLikeQuery(false);
+    setShowCallout(false);
+  };
+
   React.useEffect(() => {
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
@@ -290,6 +298,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           onClick={() => {
             updateHistories();
             generateSQLQuery();
+            resetButtonState();
           }}
         />
         {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
@@ -433,17 +442,23 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             style={{ marginLeft: 20 }}
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
             onClick={() => {
-              setLikeQuery(true);
-              setShowCallout(true);
+              setShowCallout(!likeQuery);
+              setLikeQuery(!likeQuery);
+              if (dislikeQuery) {
+                setDislikeQuery(!dislikeQuery);
+              }
             }}
           />
           <IconButton
             style={{ margin: "0 10px" }}
-            iconProps={{ iconName: likeQuery === false ? "DislikeSolid" : "Dislike" }}
+            iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
             onClick={() => {
-              setLikeQuery(false);
+              if (!dislikeQuery) {
+                useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
+                setLikeQuery(false);
+              }
+              setDislikeQuery(!dislikeQuery);
               setShowCallout(false);
-              useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
             }}
           />
           <Separator vertical style={{ color: "#EDEBE9" }} />
@@ -455,7 +470,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             Copy code
           </CommandBarButton>
           <CommandBarButton
-            onClick={() => setShowDeletePopup(true)}
+            onClick={() => {
+              setShowDeletePopup(true);
+            }}
             iconProps={{ iconName: "Delete" }}
             style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
           >
@@ -487,9 +504,16 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           />
         </SplitterLayout>
       </Stack>
+      <WelcomeModal visible={localStorage.getItem("hideWelcomeModal") !== "true"}></WelcomeModal>
       {isSamplePromptsOpen ? <SamplePrompts sampleProps={sampleProps} /> : <></>}
       {query !== "" && query.trim().length !== 0 ? (
-        <DeletePopup showDeletePopup={showDeletePopup} setShowDeletePopup={setShowDeletePopup} setQuery={setQuery} />
+        <DeletePopup
+          showDeletePopup={showDeletePopup}
+          setShowDeletePopup={setShowDeletePopup}
+          setQuery={setQuery}
+          clearFeedback={resetButtonState}
+          showFeedbackBar={setShowFeedbackBar}
+        />
       ) : (
         <></>
       )}
