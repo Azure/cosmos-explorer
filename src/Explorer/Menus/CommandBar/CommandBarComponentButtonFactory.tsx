@@ -1,3 +1,4 @@
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
@@ -8,23 +9,23 @@ import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
-import GitHubIcon from "../../../../images/github.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
+import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
+import GitHubIcon from "../../../../images/github.svg";
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
-import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
-import { configContext, Platform } from "../../../ConfigContext";
+import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
@@ -35,7 +36,7 @@ import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel"
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
-import { SelectedNodeState } from "../../useSelectedNode";
+import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
 
 let counter = 0;
 
@@ -144,7 +145,9 @@ export function createStaticCommandBarButtons(
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+        disabled:
+          useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+          selectedNodeState.isDatabaseNodeOrNoneSelected(),
       };
 
       newStoredProcedureBtn.children = createScriptCommandButtons(selectedNodeState);
@@ -265,6 +268,7 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
     ariaLabel: label,
     hasPopup: true,
     id: "createNewContainerCommandButton",
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -289,7 +293,8 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useNotebook.getState().isSynapseLinkUpdating,
+    disabled:
+      useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
@@ -309,6 +314,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -320,8 +326,12 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
+        if (useSelectedNode.getState().isQueryCopilotCollectionSelected()) {
+          useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+        } else {
+          const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
+          selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
+        }
       },
       commandButtonLabel: label,
       ariaLabel: label,
@@ -366,7 +376,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -383,7 +395,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -400,7 +414,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newTriggerBtn);
   }
@@ -424,7 +440,7 @@ function createNewNotebookButton(container: Explorer): CommandButtonComponentPro
     onCommandClick: () => container.onNewNotebookClicked(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -437,7 +453,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
     onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -452,7 +468,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -465,7 +481,7 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -529,7 +545,8 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
 function createOpenPsqlTerminalButton(container: Explorer): CommandButtonComponentProps {
   const label = "Open PSQL Shell";
   const disableButton =
-    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
+    (!useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled) ||
+    useSelectedNode.getState().isQueryCopilotCollectionSelected();
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
@@ -556,7 +573,7 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
     onCommandClick: () => container.resetNotebookWorkspace(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -582,7 +599,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
     },
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
