@@ -1,4 +1,7 @@
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import TabsBase from "Explorer/Tabs/TabsBase";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { useTabs } from "hooks/useTabs";
 import React, { useEffect, useState } from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
@@ -29,6 +32,16 @@ export const SampleDataTree = ({
             contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(
               sampleDataResourceTokenCollection
             ),
+            onClick: () => {
+              // Rewritten version of expandCollapseCollection
+              useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
+              useCommandBar.getState().setContextButtons([]);
+              useTabs().refreshActiveTab(
+                (tab: TabsBase) =>
+                  tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
+                  tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
+              );
+            },
             isSelected: () =>
               useSelectedNode
                 .getState()
