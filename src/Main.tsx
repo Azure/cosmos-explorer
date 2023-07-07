@@ -18,6 +18,7 @@ import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/QueryCopilotFeedbackModal";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../images/favicon.ico";
@@ -63,6 +64,7 @@ const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
+  const shouldShowModal = useQueryCopilot((state) => state.showFeedbackModal);
 
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform);
@@ -126,7 +128,7 @@ const App: React.FunctionComponent = () => {
       {<SQLQuickstartTutorial />}
       {<MongoQuickstartTutorial />}
       {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
-      {<QueryCopilotFeedbackModal />}
+      {shouldShowModal && <QueryCopilotFeedbackModal />}
     </div>
   );
 };
