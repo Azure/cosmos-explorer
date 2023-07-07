@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from "react";
+import React, { CSSProperties, FunctionComponent, ReactNode } from "react";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
@@ -11,6 +11,7 @@ export interface RightPaneFormProps {
   isSubmitButtonHidden?: boolean;
   isSubmitButtonDisabled?: boolean;
   children?: ReactNode;
+  footerStyle?: CSSProperties;
 }
 
 export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
@@ -21,6 +22,7 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   isSubmitButtonHidden = false,
   isSubmitButtonDisabled = false,
   children,
+  footerStyle,
 }: RightPaneFormProps) => {
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,7 +35,11 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
         {formError && <PanelInfoErrorComponent messageType="error" message={formError} showErrorDetails={true} />}
         {children}
         {!isSubmitButtonHidden && (
-          <PanelFooterComponent buttonLabel={submitButtonText} isButtonDisabled={isSubmitButtonDisabled} />
+          <PanelFooterComponent
+            buttonLabel={submitButtonText}
+            isButtonDisabled={isSubmitButtonDisabled}
+            style={footerStyle}
+          />
         )}
       </form>
       {isExecuting && <PanelLoadingScreen />}
