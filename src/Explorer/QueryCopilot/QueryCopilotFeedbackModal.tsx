@@ -24,10 +24,10 @@ export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
     closeFeedbackModal,
     setHideFeedbackModalForLikedQueries,
   } = useQueryCopilot();
-  const [isContactAllowed, setIsContactAllowed] = React.useState<boolean>(true);
+  const [isContactAllowed, setIsContactAllowed] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [doNotShowAgainChecked, setDoNotShowAgainChecked] = React.useState<boolean>(false);
-  const [contact, setContact] = React.useState<string>(getUserEmail());
+  const [contact, setContact] = React.useState<string>("");
   return (
     <Modal isOpen={showFeedbackModal}>
       <Stack style={{ padding: 24 }}>
