@@ -1,3 +1,4 @@
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React from "react";
 import AddCollectionIcon from "../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../images/AddSqlQuery_16x16.svg";
@@ -147,7 +148,7 @@ export const createSampleCollectionContextMenuButton = (
   if (userContext.apiType === "SQL") {
     items.push({
       iconSrc: AddSqlQueryIcon,
-      onClick: () => selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined),
+      onClick: () => selectedCollection && useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot),
       label: "New SQL Query",
     });
   }
