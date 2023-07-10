@@ -29,9 +29,7 @@ export const SampleDataTree = ({
             iconSrc: CollectionIcon,
             isExpanded: false,
             className: "dataResourceTree",
-            contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(
-              sampleDataResourceTokenCollection
-            ),
+            contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
             onClick: () => {
               // Rewritten version of expandCollapseCollection
               useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);

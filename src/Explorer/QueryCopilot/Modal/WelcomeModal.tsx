@@ -18,7 +18,6 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
 
   return (
     <>
-      (
       <Modal isOpen={isModalVisible} onDismiss={hideModal} isBlocking={false}>
         <Stack className="modalContentPadding">
           <Stack horizontal>
@@ -110,7 +109,6 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
           </Stack>
         </Stack>
       </Modal>
-      )
     </>
   );
 };
