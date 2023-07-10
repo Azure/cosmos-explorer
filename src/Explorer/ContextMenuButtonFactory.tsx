@@ -141,14 +141,12 @@ export const createCollectionContextMenuButton = (
   return items;
 };
 
-export const createSampleCollectionContextMenuButton = (
-  selectedCollection: ViewModels.CollectionBase
-): TreeNodeMenuItem[] => {
+export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] => {
   const items: TreeNodeMenuItem[] = [];
   if (userContext.apiType === "SQL") {
     items.push({
       iconSrc: AddSqlQueryIcon,
-      onClick: () => selectedCollection && useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot),
+      onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot),
       label: "New SQL Query",
     });
   }
