@@ -294,6 +294,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       generateSQLQuery();
     }
     showTeachingBubble();
+    useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
   return (
