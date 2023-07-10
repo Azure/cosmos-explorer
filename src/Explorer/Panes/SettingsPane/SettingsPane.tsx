@@ -2,12 +2,12 @@ import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
-import { useSidePanel } from "hooks/useSidePanel";
-import React, { FunctionComponent, MouseEvent, useState } from "react";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
+import { useSidePanel } from "hooks/useSidePanel";
+import React, { FunctionComponent, MouseEvent, useState } from "react";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export const SettingsPane: FunctionComponent = () => {
@@ -29,7 +29,7 @@ export const SettingsPane: FunctionComponent = () => {
   const [crossPartitionQueryEnabled, setCrossPartitionQueryEnabled] = useState<boolean>(
     LocalStorageUtility.hasItem(StorageKey.IsCrossPartitionQueryEnabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
-      : true
+      : false
   );
   const [graphAutoVizDisabled, setGraphAutoVizDisabled] = useState<string>(
     LocalStorageUtility.hasItem(StorageKey.IsGraphAutoVizDisabled)
