@@ -6,3 +6,9 @@ export const getFullName = (): string => {
   const { name } = decryptJWTToken(authorizationToken);
   return name;
 };
+
+export const getUserEmail = (): string => {
+  const { authorizationToken } = userContext;
+  const { upn } = decryptJWTToken(authorizationToken);
+  return upn;
+};
