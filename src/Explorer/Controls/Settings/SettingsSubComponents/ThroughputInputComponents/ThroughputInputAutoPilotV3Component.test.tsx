@@ -42,7 +42,8 @@ describe("ThroughputInputAutoPilotV3Component", () => {
     onScaleDiscardableChange: () => {
       return;
     },
-    getThroughputWarningMessage: () => undefined,
+    instantMaximumThroughput: 5000,
+    softAllowedMaximumThroughput: 1000000,
   };
 
   it("throughput input visible", () => {

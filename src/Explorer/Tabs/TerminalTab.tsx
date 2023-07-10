@@ -134,7 +134,7 @@ export default class TerminalTab extends TabsBase {
       host: configContext.ARM_ENDPOINT,
       path: firewallRulesUri,
       method: "GET",
-      apiVersion: "2020-10-05-privatepreview",
+      apiVersion: "2022-11-08",
     });
     const firewallRules: DataModels.PostgresFirewallRule[] = response?.data?.value || response?.value || [];
     const isEnabled = firewallRules.some(

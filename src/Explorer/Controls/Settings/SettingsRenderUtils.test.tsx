@@ -1,46 +1,29 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { IColumn, Text } from "@fluentui/react";
 import {
-  getAutoPilotV3SpendElement,
-  getEstimatedSpendingElement,
-  manualToAutoscaleDisclaimerElement,
-  ttlWarning,
-  indexingPolicynUnsavedWarningMessage,
-  updateThroughputBeyondLimitWarningMessage,
-  updateThroughputDelayedApplyWarningMessage,
-  getThroughputApplyDelayedMessage,
-  getThroughputApplyShortDelayMessage,
-  getThroughputApplyLongDelayMessage,
-  getToolTipContainer,
-  conflictResolutionCustomToolTip,
-  changeFeedPolicyToolTip,
-  conflictResolutionLwwTooltip,
-  mongoIndexingPolicyDisclaimer,
-  mongoIndexingPolicyAADError,
-  mongoIndexTransformationRefreshingMessage,
-  renderMongoIndexTransformationRefreshMessage,
-  ManualEstimatedSpendingDisplayProps,
   PriceBreakdown,
+  changeFeedPolicyToolTip,
+  conflictResolutionCustomToolTip,
+  conflictResolutionLwwTooltip,
+  getEstimatedSpendingElement,
   getRuPriceBreakdown,
+  getThroughputApplyDelayedMessage,
+  getThroughputApplyLongDelayMessage,
+  getThroughputApplyShortDelayMessage,
+  getToolTipContainer,
+  indexingPolicynUnsavedWarningMessage,
+  manualToAutoscaleDisclaimerElement,
+  mongoIndexTransformationRefreshingMessage,
+  mongoIndexingPolicyAADError,
+  mongoIndexingPolicyDisclaimer,
+  renderMongoIndexTransformationRefreshMessage,
+  ttlWarning,
+  updateThroughputDelayedApplyWarningMessage,
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {
   public render(): JSX.Element {
-    const estimatedSpendingColumns: IColumn[] = [
-      { key: "costType", name: "", fieldName: "costType", minWidth: 100, maxWidth: 200, isResizable: true },
-      { key: "hourly", name: "Hourly", fieldName: "hourly", minWidth: 100, maxWidth: 200, isResizable: true },
-      { key: "daily", name: "Daily", fieldName: "daily", minWidth: 100, maxWidth: 200, isResizable: true },
-      { key: "monthly", name: "Monthly", fieldName: "monthly", minWidth: 100, maxWidth: 200, isResizable: true },
-    ];
-    const estimatedSpendingItems: ManualEstimatedSpendingDisplayProps[] = [
-      {
-        costType: <Text>Current Cost</Text>,
-        hourly: <Text>$ 1.02</Text>,
-        daily: <Text>$ 24.48</Text>,
-        monthly: <Text>$ 744.6</Text>,
-      },
-    ];
+    const costElement: JSX.Element = <></>;
     const priceBreakdown: PriceBreakdown = {
       hourlyPrice: 1.02,
       dailyPrice: 24.48,
@@ -52,17 +35,11 @@ class SettingsRenderUtilsTestComponent extends React.Component {
 
     return (
       <>
-        {getAutoPilotV3SpendElement(1000, false)}
-        {getAutoPilotV3SpendElement(undefined, false)}
-        {getAutoPilotV3SpendElement(1000, true)}
-        {getAutoPilotV3SpendElement(undefined, true)}
-
-        {getEstimatedSpendingElement(estimatedSpendingColumns, estimatedSpendingItems, 1000, 2, priceBreakdown, false)}
+        {getEstimatedSpendingElement(costElement, 1000, 2, priceBreakdown, false)}
 
         {manualToAutoscaleDisclaimerElement}
         {ttlWarning}
         {indexingPolicynUnsavedWarningMessage}
-        {updateThroughputBeyondLimitWarningMessage}
         {updateThroughputDelayedApplyWarningMessage}
 
         {getThroughputApplyDelayedMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}

@@ -14,6 +14,7 @@ import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
+import errorQuery from "../../../images/error_no_outline.svg";
 import { useObservable } from "../../hooks/useObservable";
 import { ReactTabKind, useTabs } from "../../hooks/useTabs";
 import TabsBase from "./TabsBase";
@@ -113,8 +114,16 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
         <div className="tab_Content">
           <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
             {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-            {useObservable(tab?.isExecuting || ko.observable(false)) && (
+            {isTabExecuting(tab, tabKind) && (
               <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
+            )}
+            {isQueryErrorThrown(tab, tabKind) && (
+              <img
+                src={errorQuery}
+                title="Error"
+                alt="Error"
+                style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
+              />
             )}
           </span>
           <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
@@ -209,6 +218,28 @@ const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
     useTabs.getState().activateReactTab(tabKind);
     e.stopPropagation();
   }
+};
+
+const isTabExecuting = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
+  if (useObservable(tab?.isExecuting || ko.observable(false))) {
+    return true;
+  } else if (tabKind !== undefined && tabKind !== ReactTabKind.Home && useTabs.getState()?.isTabExecuting) {
+    return true;
+  }
+  return false;
+};
+
+const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
+  if (
+    !tab?.isExecuting &&
+    tabKind !== undefined &&
+    tabKind !== ReactTabKind.Home &&
+    useTabs.getState()?.isQueryErrorThrown &&
+    !useTabs.getState()?.isTabExecuting
+  ) {
+    return true;
+  }
+  return false;
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {

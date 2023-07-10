@@ -18,7 +18,10 @@ export const getNetworkSettingsWarningMessage = (): string => {
   }
 
   // public network access is disabled
-  if (accountProperties.publicNetworkAccess !== "Enabled") {
+  if (
+    accountProperties.publicNetworkAccess !== "Enabled" &&
+    accountProperties.publicNetworkAccess !== "SecuredByPerimeter"
+  ) {
     return "The Network settings for this account are preventing access from Data Explorer. Please enable public access to proceed.";
   }
 

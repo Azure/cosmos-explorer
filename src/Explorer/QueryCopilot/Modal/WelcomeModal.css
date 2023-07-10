@@ -1,0 +1,47 @@
+.modalContentPadding {
+  padding-top: 15px;
+  width: 513px;
+  height: 638px;
+}
+
+.exitPadding {
+  padding: 0px 7px 0px 0px;
+}
+
+.previewMargin {
+  margin: 8px 10px 0px 0;
+}
+
+.preview {
+  padding: 0px 4px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  font-size: 10px;
+}
+
+.exitIcon {
+  margin: 3px 7px 0px 0px;
+  color: #424242;
+}
+
+.text {
+  width: 348px;
+  padding: 8px 16px 8px 16px;
+  margin-left: 25px;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.imageTextPadding {
+  padding: 0px 5px 0px 0px;
+}
+
+.buttonPadding {
+  padding: 15px 0px 0px 0px;
+}
+
+.tryButton {
+  border-radius: 4px;
+}

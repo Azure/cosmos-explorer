@@ -35,13 +35,18 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
     style={
       Object {
         "marginTop": 16,
+        "position": "relative",
         "width": "100%",
       }
     }
     verticalAlign="center"
   >
     <StyledTextFieldBase
+      autoComplete="off"
+      disabled={false}
+      id="naturalLanguageInput"
       onChange={[Function]}
+      onClick={[Function]}
       style={
         Object {
           "lineHeight": 30,
@@ -50,13 +55,14 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       styles={
         Object {
           "root": Object {
-            "width": "90%",
+            "width": "95%",
           },
         }
       }
       value="Write a query to return all records in this table"
     />
     <CustomizedIconButton
+      disabled={false}
       iconProps={
         Object {
           "iconName": "Send",
@@ -120,5 +126,12 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       />
     </t>
   </Stack>
+  <WelcomeModal
+    visible={true}
+  />
+  <CopyPopup
+    setShowCopyPopup={[Function]}
+    showCopyPopup={false}
+  />
 </Stack>
 `;

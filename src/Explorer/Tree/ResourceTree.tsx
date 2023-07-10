@@ -1,14 +1,15 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
-import * as React from "react";
+import { SampleDataTree } from "Explorer/Tree/SampleDataTree";
 import { getItemName } from "Utils/APITypeUtils";
+import * as React from "react";
 import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
-import DeleteIcon from "../../../images/delete.svg";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
-import FileIcon from "../../../images/notebook/file-cosmos.svg";
+import DeleteIcon from "../../../images/delete.svg";
 import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import FileIcon from "../../../images/notebook/file-cosmos.svg";
 import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
@@ -16,14 +17,14 @@ import { Areas, ConnectionStatusType, Notebook } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { useSidePanel } from "../../hooks/useSidePanel";
-import { useTabs } from "../../hooks/useTabs";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
+import { useSidePanel } from "../../hooks/useSidePanel";
+import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
 import { useDialog } from "../Controls/Dialog";
@@ -764,23 +765,67 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   };
 
   const dataRootNode = buildDataTree();
+  const isSampleDataEnabled = userContext.sampleDataConnectionInfo && userContext.apiType === "SQL";
+  const sampleDataResourceTokenCollection = useDatabases((state) => state.sampleDataResourceTokenCollection);
 
-  if (isNotebookEnabled) {
-    return (
-      <>
-        <AccordionComponent>
-          <AccordionItemComponent title={"DATA"} isExpanded={!gitHubNotebooksContentRoot}>
-            <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-          </AccordionItemComponent>
-          <AccordionItemComponent title={"NOTEBOOKS"}>
-            <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
-          </AccordionItemComponent>
-        </AccordionComponent>
+  return (
+    <>
+      {!isNotebookEnabled && !isSampleDataEnabled && (
+        <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+      )}
+      {isNotebookEnabled && !isSampleDataEnabled && (
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent title={"DATA"} isExpanded={!gitHubNotebooksContentRoot}>
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"NOTEBOOKS"}>
+              <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
+            </AccordionItemComponent>
+          </AccordionComponent>
 
-        {buildGalleryCallout()}
-      </>
-    );
-  }
+          {buildGalleryCallout()}
+        </>
+      )}
+      {!isNotebookEnabled && isSampleDataEnabled && (
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent
+              title={"MY DATA"}
+              isExpanded={!gitHubNotebooksContentRoot}
+              styles={{ maxHeight: 230 }}
+            >
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"SAMPLE DATA"}>
+              <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
+            </AccordionItemComponent>
+          </AccordionComponent>
 
-  return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
+          {buildGalleryCallout()}
+        </>
+      )}
+      {isNotebookEnabled && isSampleDataEnabled && (
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent
+              title={"MY DATA"}
+              isExpanded={!gitHubNotebooksContentRoot}
+              styles={{ maxHeight: 130 }}
+            >
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"SAMPLE DATA"}>
+              <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"NOTEBOOKS"}>
+              <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
+            </AccordionItemComponent>
+          </AccordionComponent>
+
+          {buildGalleryCallout()}
+        </>
+      )}
+    </>
+  );
 };

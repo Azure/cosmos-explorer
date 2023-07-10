@@ -1,3 +1,4 @@
+import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -29,7 +30,7 @@ import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { getMsalInstance } from "../Utils/AuthorizationUtils";
+import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
@@ -68,6 +69,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
+      if (userContext.features.enableCopilot) {
+        updateContextForSampleData(explorer);
+      }
     }
   }, [explorer]);
 
@@ -408,4 +412,32 @@ interface PortalMessage {
   actionType?: ActionType;
   type?: MessageTypes;
   inputs?: DataExplorerInputsFrame;
+}
+
+async function updateContextForSampleData(explorer: Explorer): Promise<void> {
+  if (!userContext.features.enableCopilot) {
+    return;
+  }
+
+  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, `/api/tokens/sampledataconnection`);
+  const authorizationHeader = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  const response = await window.fetch(url, {
+    headers,
+  });
+
+  if (!response.ok) {
+    return undefined;
+  }
+
+  const data: SampledataconnectionResponse = await response.json();
+  const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
+  updateUserContext({ sampleDataConnectionInfo });
+
+  await explorer.refreshSampleData();
+}
+
+interface SampledataconnectionResponse {
+  connectionString: string;
 }

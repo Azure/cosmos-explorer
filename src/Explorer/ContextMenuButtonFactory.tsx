@@ -1,3 +1,4 @@
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React from "react";
 import AddCollectionIcon from "../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../images/AddSqlQuery_16x16.svg";
@@ -136,6 +137,21 @@ export const createCollectionContextMenuButton = (
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });
+
+  return items;
+};
+
+export const createSampleCollectionContextMenuButton = (
+  selectedCollection: ViewModels.CollectionBase
+): TreeNodeMenuItem[] => {
+  const items: TreeNodeMenuItem[] = [];
+  if (userContext.apiType === "SQL") {
+    items.push({
+      iconSrc: AddSqlQueryIcon,
+      onClick: () => selectedCollection && useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot),
+      label: "New SQL Query",
+    });
+  }
 
   return items;
 };

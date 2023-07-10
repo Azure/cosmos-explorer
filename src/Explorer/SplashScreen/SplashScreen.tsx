@@ -23,10 +23,10 @@ import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
-import CopilotIcon from "../../../images/Copilot.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
 import NotebookColorIcon from "../../../images/Notebooks.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
+import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
@@ -137,7 +137,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               description={
                 "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
               }
-              onClick={() => useCarousel.getState().setShowCopilotCarousel(true)}
+              onClick={() => useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot)}
             />
             <SplashScreenButton
               imgSrc={ConnectIcon}
