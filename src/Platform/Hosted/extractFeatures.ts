@@ -45,7 +45,6 @@ export type Features = {
   phoenixFeatures?: boolean;
   notebooksDownBanner: boolean;
   publicGallery?: boolean;
-  wsAuthByPayload?: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -105,7 +104,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableLegacyMongoShellV2Debug: "true" === get("enablelegacymongoshellv2debug"),
     loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
     enableCopilot: "true" === get("enablecopilot"),
-    wsAuthByPayload: "true" === get("wsAuthByPayload"),
   };
 }
 

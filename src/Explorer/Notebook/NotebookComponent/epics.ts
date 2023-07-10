@@ -13,7 +13,6 @@ import {
 } from "@nteract/core";
 import { Channels, childOf, createMessage, message, ofMessageType } from "@nteract/messaging";
 import { defineConfigOption } from "@nteract/mythic-configuration";
-import { userContext } from "UserContext";
 import { RecordOf } from "immutable";
 import { Action, AnyAction } from "redux";
 import { StateObservable, ofType } from "redux-observable";
@@ -101,21 +100,17 @@ const addInitialCodeCellEpic = (
  */
 const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string, sessionId?: string): string => {
   let url: string;
-  if (userContext.features.wsAuthByPayload) {
-    url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels`;
-  } else {
-    const params = new URLSearchParams();
-    if (serverConfig.token) {
-      params.append("token", serverConfig.token);
-    }
-    if (sessionId) {
-      params.append("session_id", sessionId);
-    }
+  const params = new URLSearchParams();
 
-    const q = params.toString();
-    const suffix = q !== "" ? `?${q}` : "";
-    url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels${suffix}`;
+  if (serverConfig.token) {
+    params.append("token", serverConfig.token);
   }
+  if (sessionId) {
+    params.append("session_id", sessionId);
+  }
+  const q = params.toString();
+  const suffix = q !== "" ? `?${q}` : "";
+  url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels${suffix}`;
 
   return url.replace(/^http(s)?/, "ws$1");
 };
@@ -246,12 +241,10 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
             ...message,
             header: {
               session: sessionID,
+              token: serverConfig.token,
               ...message.header,
             },
           };
-          if (userContext.features.wsAuthByPayload) {
-            sessionizedMessage.header.token = serverConfig.token;
-          }
           wsSubject.next(sessionizedMessage);
         } else {
           console.error("Message must be an object, the app sent", message);

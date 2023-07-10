@@ -47,11 +47,10 @@ export class JupyterLabAppFactory {
   }
 
   public async createTerminalApp(serverSettings: ServerConnection.ISettings): Promise<ITerminalConnection | undefined> {
-    if (userContext.features.wsAuthByPayload) {
-      const configurationSettings: Partial<ServerConnection.ISettings> = serverSettings;
-      (configurationSettings.appendToken as boolean) = false;
-      serverSettings = ServerConnection.makeSettings(configurationSettings);
-    }
+    //Need to add this after we remove passing token through url
+    //const configurationSettings: Partial<ServerConnection.ISettings> = serverSettings;
+    //(configurationSettings.appendToken as boolean) = false;
+    //serverSettings = ServerConnection.makeSettings(configurationSettings);
     const manager = new TerminalManager({
       serverSettings: serverSettings,
     });
@@ -69,14 +68,11 @@ export class JupyterLabAppFactory {
       }
     }, this);
 
-    if (userContext.features.wsAuthByPayload) {
-      var internalSend = session.send;
-      session.send = (message: IMessage) => {
-        message?.content?.push(serverSettings?.token);
-        internalSend.call(session, message);
-      };
-    }
-
+    var internalSend = session.send;
+    session.send = (message: IMessage) => {
+      message?.content?.push(serverSettings?.token);
+      internalSend.call(session, message);
+    };
     const term = new Terminal(session, { theme: "dark", shutdownOnClose: true });
 
     if (!term) {

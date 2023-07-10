@@ -400,9 +400,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.PublicGallery) !== -1) {
       userContext.features.publicGallery = true;
     }
-    if (inputs.flights.indexOf(Flights.WsAuthByPayload) !== -1) {
-      userContext.features.wsAuthByPayload = true;
-    }
   }
 }
 
