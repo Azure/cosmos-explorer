@@ -142,7 +142,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         </div>
         <StyledCheckboxBase
           ariaLabel="Enable cross partition query"
-          checked={true}
+          checked={false}
           className="padding"
           onChange={[Function]}
           styles={
