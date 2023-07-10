@@ -99,9 +99,7 @@ const addInitialCodeCellEpic = (
  * Updated kernels.formWebSocketURL so we pass the userId as a query param
  */
 const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string, sessionId?: string): string => {
-  let url: string;
   const params = new URLSearchParams();
-
   if (serverConfig.token) {
     params.append("token", serverConfig.token);
   }
@@ -110,7 +108,7 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
   }
   const q = params.toString();
   const suffix = q !== "" ? `?${q}` : "";
-  url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels${suffix}`;
+  const url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels${suffix}`;
 
   return url.replace(/^http(s)?/, "ws$1");
 };
