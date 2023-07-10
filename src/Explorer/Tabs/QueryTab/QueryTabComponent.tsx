@@ -195,7 +195,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             this.props.collection.databaseId,
             this.props.collection.id(),
             this.state.selectedContent || this.state.sqlQueryEditorContent,
-            { enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey() } as FeedOptions
+            {
+              enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+              populateIndexMetrics: userContext.apiType === "SQL",
+            } as FeedOptions
           );
     }
 
