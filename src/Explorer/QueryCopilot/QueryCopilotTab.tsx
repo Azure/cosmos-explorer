@@ -448,19 +448,17 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <Link href="" target="_blank">
           Read preview terms
         </Link>
-        {showErrorMessageBar ? (
+        {showErrorMessageBar && (
           <Stack style={{ backgroundColor: "#FEF0F1", padding: "4px 8px" }} horizontal verticalAlign="center">
             <Image src={XErrorMessage} style={{ marginRight: "8px" }} />
             <Text style={{ fontSize: 12 }}>
               We ran into an error and were not able to execute query. Please try again after sometime
             </Text>
           </Stack>
-        ) : (
-          <></>
         )}
       </Text>
 
-      {showFeedbackBar ? (
+      {showFeedbackBar && (
         <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
           <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
           {showCallout && !hideFeedbackModalForLikedQueries && (
@@ -528,8 +526,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             Delete code
           </CommandBarButton>
         </Stack>
-      ) : (
-        <></>
       )}
 
       <Stack className="tabPaneContentContainer">
@@ -553,9 +549,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           />
         </SplitterLayout>
       </Stack>
-      <WelcomeModal visible={localStorage.getItem("hideWelcomeModal") !== "true"}></WelcomeModal>
-      {isSamplePromptsOpen ? <SamplePrompts sampleProps={sampleProps} /> : <></>}
-      {query !== "" && query.trim().length !== 0 ? (
+      <WelcomeModal visible={localStorage.getItem("hideWelcomeModal") !== "true"} />
+      {isSamplePromptsOpen && <SamplePrompts sampleProps={sampleProps} />}
+      {query !== "" && query.trim().length !== 0 && (
         <DeletePopup
           showDeletePopup={showDeletePopup}
           setShowDeletePopup={setShowDeletePopup}
@@ -563,8 +559,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           clearFeedback={resetButtonState}
           showFeedbackBar={setShowFeedbackBar}
         />
-      ) : (
-        <></>
       )}
       <CopyPopup showCopyPopup={showCopyPopup} setShowCopyPopup={setshowCopyPopup} />
     </Stack>
