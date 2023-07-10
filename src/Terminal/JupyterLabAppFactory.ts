@@ -68,7 +68,7 @@ export class JupyterLabAppFactory {
       }
     }, this);
 
-    var internalSend = session.send;
+    let internalSend = session.send;
     session.send = (message: IMessage) => {
       message?.content?.push(serverSettings?.token);
       internalSend.call(session, message);
