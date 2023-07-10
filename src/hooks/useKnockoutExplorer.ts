@@ -62,10 +62,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           setExplorer(explorer);
         }
       }
-
-      if (userContext.features.enableCopilot) {
-        await updateContextForSampleData();
-      }
     };
     effect();
   }, [platform]);
@@ -73,6 +69,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
+      if (userContext.features.enableCopilot) {
+        updateContextForSampleData(explorer);
+      }
     }
   }, [explorer]);
 
@@ -415,7 +414,7 @@ interface PortalMessage {
   inputs?: DataExplorerInputsFrame;
 }
 
-async function updateContextForSampleData(): Promise<void> {
+async function updateContextForSampleData(explorer: Explorer): Promise<void> {
   if (!userContext.features.enableCopilot) {
     return;
   }
@@ -435,6 +434,8 @@ async function updateContextForSampleData(): Promise<void> {
   const data: SampledataconnectionResponse = await response.json();
   const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
   updateUserContext({ sampleDataConnectionInfo });
+
+  await explorer.refreshSampleData();
 }
 
 interface SampledataconnectionResponse {
