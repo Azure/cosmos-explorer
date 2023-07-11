@@ -30,16 +30,6 @@ export const SampleDataTree = ({
             isExpanded: false,
             className: "sampleCollectionHeader",
             contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
-            // onClick: () => {
-            //   // Rewritten version of expandCollapseCollection
-            //   useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
-            //   useCommandBar.getState().setContextButtons([]);
-            //   useTabs().refreshActiveTab(
-            //     (tab: TabsBase) =>
-            //       tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
-            //       tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
-            //   );
-            // },
             isSelected: () =>
               useSelectedNode
                 .getState()
