@@ -141,8 +141,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
       documentsTab = new DocumentsTab({
         partitionKey: isQueryCopilotCollection ? queryCopilotPartitionKey : this.partitionKey,
-        resourceTokenPartitionKey: isQueryCopilotCollection ? queryCopilotPartitionKey.paths[0] :
-          userContext.parsedResourceToken.partitionKey,
+        resourceTokenPartitionKey: isQueryCopilotCollection
+          ? queryCopilotPartitionKey.paths[0]
+          : userContext.parsedResourceToken.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
