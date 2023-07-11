@@ -17,15 +17,11 @@ import {
   TextField,
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import {
-  QueryCopilotSampleContainerId,
-  QueryCopilotSampleContainerSchema,
-  QueryCopilotSampleDatabaseId,
-} from "Common/Constants";
+import { QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from "Common/Constants";
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
-import { queryDocuments } from "Common/dataAccess/queryDocuments";
+import { querySampleDocuments } from "Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { QueryResults } from "Contracts/ViewModels";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
@@ -201,7 +197,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
   const onExecuteQueryClick = async (): Promise<void> => {
     const queryToExecute = selectedQuery || query;
-    const queryIterator = queryDocuments(QueryCopilotSampleDatabaseId, QueryCopilotSampleContainerId, queryToExecute, {
+    const queryIterator = querySampleDocuments(queryToExecute, {
       enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
     } as FeedOptions);
     setQueryIterator(queryIterator);

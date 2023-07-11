@@ -1,6 +1,7 @@
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { sampleDataClient } from "Common/SampleDataClient";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
-import { Queries } from "../Constants";
+import { Queries, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "../Constants";
 import { client } from "../CosmosClient";
 
 export const queryDocuments = (
@@ -11,6 +12,14 @@ export const queryDocuments = (
 ): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
   return client().database(databaseId).container(containerId).items.query(query, options);
+};
+
+export const querySampleDocuments = (query: string, options: FeedOptions): QueryIterator<ItemDefinition & Resource> => {
+  options = getCommonQueryOptions(options);
+  return sampleDataClient()
+    .database(QueryCopilotSampleDatabaseId)
+    .container(QueryCopilotSampleContainerId)
+    .items.query(query, options);
 };
 
 export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
