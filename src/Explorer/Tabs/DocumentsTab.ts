@@ -8,7 +8,12 @@ import NewDocumentIcon from "../../../images/NewDocument.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
 import * as Constants from "../../Common/Constants";
-import { DocumentsGridMetrics, KeyCodes, QueryCopilotSampleDatabaseId } from "../../Common/Constants";
+import {
+  DocumentsGridMetrics,
+  KeyCodes,
+  QueryCopilotSampleContainerId,
+  QueryCopilotSampleDatabaseId,
+} from "../../Common/Constants";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
@@ -321,7 +326,7 @@ export default class DocumentsTab extends TabsBase {
     this.showPartitionKey = this._shouldShowPartitionKey();
     this._isQueryCopilotSampleContainer =
       this.collection.databaseId === QueryCopilotSampleDatabaseId &&
-      this.collection.id() === Constants.QueryCopilotSampleContainerId;
+      this.collection.id() === QueryCopilotSampleContainerId;
   }
 
   private _shouldShowPartitionKey(): boolean {
