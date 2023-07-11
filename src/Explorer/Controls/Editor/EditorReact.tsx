@@ -35,7 +35,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   public componentDidUpdate(previous: EditorReactProps) {
     if (this.props.content !== previous.content) {
-      this.editor.setValue(this.props.content);
+      this.editor?.setValue(this.props.content);
     }
   }
 
