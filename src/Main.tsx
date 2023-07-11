@@ -63,7 +63,7 @@ initializeIcons();
 const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
-  const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
+  // const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
   const shouldShowModal = useQueryCopilot((state) => state.showFeedbackModal);
 
   const config = useConfig();
@@ -127,7 +127,7 @@ const App: React.FunctionComponent = () => {
       {<QuickstartCarousel isOpen={isCarouselOpen} />}
       {<SQLQuickstartTutorial />}
       {<MongoQuickstartTutorial />}
-      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
+      {<QueryCopilotCarousel isOpen={true} explorer={explorer} />}
       {shouldShowModal && <QueryCopilotFeedbackModal />}
     </div>
   );

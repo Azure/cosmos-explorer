@@ -13,11 +13,8 @@ import {
 } from "@fluentui/react";
 import { QueryCopilotSampleDatabaseId, StyleConstants } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
-import { createCollection } from "Common/dataAccess/createCollection";
-import * as DataModels from "Contracts/DataModels";
 import { ContainerSampleGenerator } from "Explorer/DataSamples/ContainerSampleGenerator";
 import Explorer from "Explorer/Explorer";
-import { AllPropertiesIndexed } from "Explorer/Panes/AddCollectionPanel";
 import { PromptCard } from "Explorer/QueryCopilot/PromptCard";
 import { useDatabases } from "Explorer/useDatabases";
 import { useCarousel } from "hooks/useCarousel";
@@ -78,30 +75,27 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
   };
 
   const createSampleDatabase = async (): Promise<void> => {
-    const database = useDatabases.getState().findDatabaseWithId(QueryCopilotSampleDatabaseId);
-    if (database) {
-      return;
-    }
+    // const database = useDatabases.getState().findDatabaseWithId(QueryCopilotSampleDatabaseId);
 
     try {
-      setIsCreatingDatabase(true);
-      setSpinnerText("Setting up your database...");
-      const params: DataModels.CreateCollectionParams = {
-        createNewDatabase: true,
-        collectionId: "SampleContainer",
-        databaseId: QueryCopilotSampleDatabaseId,
-        databaseLevelThroughput: true,
-        autoPilotMaxThroughput: 1000,
-        offerThroughput: undefined,
-        indexingPolicy: AllPropertiesIndexed,
-        partitionKey: {
-          paths: ["/categoryId"],
-          kind: "Hash",
-          version: 2,
-        },
-      };
-      await createCollection(params);
-      await explorer.refreshAllDatabases();
+      // setIsCreatingDatabase(true);
+      // setSpinnerText("Setting up your database...");
+      // const params: DataModels.CreateCollectionParams = {
+      //   createNewDatabase: false,
+      //   collectionId: "SampleContainer",
+      //   databaseId: QueryCopilotSampleDatabaseId,
+      //   databaseLevelThroughput: true,
+      //   autoPilotMaxThroughput: 1000,
+      //   offerThroughput: undefined,
+      //   indexingPolicy: AllPropertiesIndexed,
+      //   partitionKey: {
+      //     paths: ["/categoryId"],
+      //     kind: "Hash",
+      //     version: 2,
+      //   },
+      // };
+      // await createCollection(params);
+      // await explorer.refreshAllDatabases();
       const database = useDatabases.getState().findDatabaseWithId(QueryCopilotSampleDatabaseId);
       await database.loadCollections();
       const collection = database.findCollectionWithId("SampleContainer");
