@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { FeedOptions } from "@azure/cosmos";
 import {
   Callout,
   CommandBarButton,
@@ -17,16 +17,10 @@ import {
   TextField,
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import {
-  QueryCopilotSampleContainerId,
-  QueryCopilotSampleContainerSchema,
-  QueryCopilotSampleDatabaseId,
-} from "Common/Constants";
+import { QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from "Common/Constants";
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
-import { sampleDataClient } from "Common/SampleDataClient";
-import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { QueryResults } from "Contracts/ViewModels";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
@@ -37,7 +31,7 @@ import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
-import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { querySampleDocuments, submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/SamplePrompts/SamplePrompts";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { userContext } from "UserContext";
@@ -198,14 +192,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       useTabs.getState().setIsTabExecuting(false);
       setShowFeedbackBar(true);
     }
-  };
-
-  const querySampleDocuments = (query: string, options: FeedOptions): QueryIterator<ItemDefinition & Resource> => {
-    options = getCommonQueryOptions(options);
-    return sampleDataClient()
-      .database(QueryCopilotSampleDatabaseId)
-      .container(QueryCopilotSampleContainerId)
-      .items.query(query, options);
   };
 
   const onExecuteQueryClick = async (): Promise<void> => {

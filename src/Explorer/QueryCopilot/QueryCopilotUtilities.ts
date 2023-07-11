@@ -1,5 +1,15 @@
-import { QueryCopilotSampleContainerSchema } from "Common/Constants";
+import { FeedOptions, Item, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import {
+  QueryCopilotSampleContainerId,
+  QueryCopilotSampleContainerSchema,
+  QueryCopilotSampleDatabaseId,
+} from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
+import { sampleDataClient } from "Common/SampleDataClient";
+import { getPartitionKeyValue } from "Common/dataAccess/getPartitionKeyValue";
+import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
+import DocumentId from "Explorer/Tree/DocumentId";
+import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 
 interface FeedbackParams {
   likeQuery: boolean;
@@ -21,16 +31,41 @@ export const submitFeedback = async (params: FeedbackParams): Promise<void> => {
       contact: contact || "",
     };
 
-    const response = await fetch("https://copilotorchestrater.azurewebsites.net/feedback", {
+    await fetch("https://copilotorchestrater.azurewebsites.net/feedback", {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify(payload),
     });
-    // eslint-disable-next-line no-console
-    console.log(response);
   } catch (error) {
     handleError(error, "copilotSubmitFeedback");
+  }
+};
+
+export const querySampleDocuments = (query: string, options: FeedOptions): QueryIterator<ItemDefinition & Resource> => {
+  options = getCommonQueryOptions(options);
+  return sampleDataClient()
+    .database(QueryCopilotSampleDatabaseId)
+    .container(QueryCopilotSampleContainerId)
+    .items.query(query, options);
+};
+
+export const readSampleDocument = async (documentId: DocumentId): Promise<Item> => {
+  const clearMessage = logConsoleProgress(`Reading item ${documentId.id()}`);
+
+  try {
+    const response = await sampleDataClient()
+      .database(QueryCopilotSampleDatabaseId)
+      .container(QueryCopilotSampleContainerId)
+      .item(documentId.id(), getPartitionKeyValue(documentId))
+      .read();
+
+    return response?.resource;
+  } catch (error) {
+    handleError(error, "ReadDocument", `Failed to read item ${documentId.id()}`);
+    throw error;
+  } finally {
+    clearMessage();
   }
 };

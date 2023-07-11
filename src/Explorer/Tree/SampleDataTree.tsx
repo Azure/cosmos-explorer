@@ -34,11 +34,13 @@ export const SampleDataTree = ({
               // Rewritten version of expandCollapseCollection
               useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
               useCommandBar.getState().setContextButtons([]);
-              useTabs().refreshActiveTab(
-                (tab: TabsBase) =>
-                  tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
-                  tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
-              );
+              useTabs
+                .getState()
+                .refreshActiveTab(
+                  (tab: TabsBase) =>
+                    tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
+                    tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
+                );
             },
             isSelected: () =>
               useSelectedNode
@@ -51,6 +53,15 @@ export const SampleDataTree = ({
             children: [
               {
                 label: "Items",
+                onClick: () => sampleDataResourceTokenCollection.onDocumentDBDocumentsClick(),
+                isSelected: () =>
+                  useSelectedNode
+                    .getState()
+                    .isDataNodeSelected(
+                      sampleDataResourceTokenCollection.databaseId,
+                      sampleDataResourceTokenCollection.id(),
+                      [ViewModels.CollectionTabKind.Documents]
+                    ),
               },
             ],
           },
