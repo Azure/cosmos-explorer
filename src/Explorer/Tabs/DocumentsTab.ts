@@ -1,4 +1,5 @@
 import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import * as ko from "knockout";
 import Q from "q";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
@@ -7,7 +8,12 @@ import NewDocumentIcon from "../../../images/NewDocument.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
 import * as Constants from "../../Common/Constants";
-import { DocumentsGridMetrics, KeyCodes } from "../../Common/Constants";
+import {
+  DocumentsGridMetrics,
+  KeyCodes,
+  QueryCopilotSampleContainerId,
+  QueryCopilotSampleDatabaseId,
+} from "../../Common/Constants";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
@@ -71,6 +77,7 @@ export default class DocumentsTab extends TabsBase {
 
   private _documentsIterator: QueryIterator<ItemDefinition & Resource>;
   private _resourceTokenPartitionKey: string;
+  private _isQueryCopilotSampleContainer: boolean;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
@@ -317,6 +324,9 @@ export default class DocumentsTab extends TabsBase {
     this.selectedDocumentContent.subscribe((newContent: string) => this._onEditorContentChange(newContent));
 
     this.showPartitionKey = this._shouldShowPartitionKey();
+    this._isQueryCopilotSampleContainer =
+      this.collection?.databaseId === QueryCopilotSampleDatabaseId &&
+      this.collection?.id() === QueryCopilotSampleContainerId;
   }
 
   private _shouldShowPartitionKey(): boolean {
@@ -678,7 +688,6 @@ export default class DocumentsTab extends TabsBase {
   }
 
   public createIterator(): QueryIterator<ItemDefinition & Resource> {
-    let filters = this.lastFilterContents();
     const filter: string = this.filterContent().trim();
     const query: string = this.buildQuery(filter);
     let options: any = {};
@@ -688,12 +697,16 @@ export default class DocumentsTab extends TabsBase {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
 
-    return queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
+    return this._isQueryCopilotSampleContainer
+      ? querySampleDocuments(query, options)
+      : queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
   }
 
   public async selectDocument(documentId: DocumentId): Promise<void> {
     this.selectedDocumentId(documentId);
-    const content = await readDocument(this.collection, documentId);
+    const content = await (this._isQueryCopilotSampleContainer
+      ? readSampleDocument(documentId)
+      : readDocument(this.collection, documentId));
     this.initDocumentEditor(documentId, content);
   }
 

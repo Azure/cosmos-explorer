@@ -2,10 +2,10 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { useTabs } from "../../hooks/useTabs";
 import Explorer from "../Explorer";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
@@ -139,7 +139,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
       documentsTab = new DocumentsTab({
         partitionKey: this.partitionKey,
-        resourceTokenPartitionKey: userContext.parsedResourceToken.partitionKey,
+        resourceTokenPartitionKey: userContext.parsedResourceToken?.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
