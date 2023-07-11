@@ -95,7 +95,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
         offerThroughput: undefined,
         indexingPolicy: AllPropertiesIndexed,
         partitionKey: {
-          paths: ["/categoryId"],
+          paths: ["/objectId"],
           kind: "Hash",
           version: 2,
         },

@@ -1,8 +1,7 @@
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
-import TabsBase from "Explorer/Tabs/TabsBase";
+import { mostRecentActivity } from "Explorer/MostRecentActivity/MostRecentActivity";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { userContext } from "UserContext";
 import { getItemName } from "Utils/APITypeUtils";
-import { useTabs } from "hooks/useTabs";
 import React, { useEffect, useState } from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
@@ -31,16 +30,16 @@ export const SampleDataTree = ({
             isExpanded: false,
             className: "sampleCollectionHeader",
             contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
-            onClick: () => {
-              // Rewritten version of expandCollapseCollection
-              useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
-              useCommandBar.getState().setContextButtons([]);
-              useTabs().refreshActiveTab(
-                (tab: TabsBase) =>
-                  tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
-                  tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
-              );
-            },
+            // onClick: () => {
+            //   // Rewritten version of expandCollapseCollection
+            //   useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
+            //   useCommandBar.getState().setContextButtons([]);
+            //   useTabs().refreshActiveTab(
+            //     (tab: TabsBase) =>
+            //       tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
+            //       tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
+            //   );
+            // },
             isSelected: () =>
               useSelectedNode
                 .getState()
@@ -54,6 +53,21 @@ export const SampleDataTree = ({
                 label: getItemName(),
                 id: sampleDataResourceTokenCollection.isSampleCollection ? "sampleItems" : "",
                 contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
+                onClick: () => {
+                  sampleDataResourceTokenCollection.onDocumentDBDocumentsClick(true, sampleDataResourceTokenCollection);
+                  mostRecentActivity.collectionWasOpened(
+                    userContext.databaseAccount?.id,
+                    sampleDataResourceTokenCollection
+                  );
+                },
+                isSelected: () =>
+                  useSelectedNode
+                    .getState()
+                    .isDataNodeSelected(
+                      sampleDataResourceTokenCollection.databaseId,
+                      sampleDataResourceTokenCollection.id(),
+                      [ViewModels.CollectionTabKind.Documents]
+                    ),
               },
             ],
           },

@@ -115,7 +115,7 @@ export interface CollectionBase extends TreeNode {
   isCollectionExpanded: ko.Observable<boolean>;
   isSampleCollection?: boolean;
 
-  onDocumentDBDocumentsClick(): void;
+  onDocumentDBDocumentsClick(isQueryCopilotCollection?: boolean, sampleCollection?: CollectionBase): void;
   onNewQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
   expandCollection(): void;
   collapseCollection(): void;
