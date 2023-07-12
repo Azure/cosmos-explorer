@@ -25,6 +25,7 @@ export class AccordionComponent extends React.Component<AccordionComponentProps>
 export interface AccordionItemComponentProps {
   title: string;
   isExpanded?: boolean;
+  containerStyles?: React.CSSProperties;
   styles?: React.CSSProperties;
 }
 
@@ -54,9 +55,9 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
   }
 
   public render(): JSX.Element {
-    const { styles } = this.props;
+    const { containerStyles, styles } = this.props;
     return (
-      <div className="accordionItemContainer">
+      <div className="accordionItemContainer" style={{ ...containerStyles }}>
         <div className="accordionItemHeader" onClick={this.onHeaderClick} onKeyPress={this.onHeaderKeyPress}>
           {this.renderCollapseExpandIcon()}
           {this.props.title}

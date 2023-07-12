@@ -20,9 +20,9 @@ export const SampleDataTree = ({
     if (sampleDataResourceTokenCollection) {
       const updatedSampleTree: TreeNode = {
         label: sampleDataResourceTokenCollection.databaseId,
-        isExpanded: false,
+        isExpanded: true,
         iconSrc: CosmosDBIcon,
-        className: "databaseHeader",
+        className: "sampleCollectionHeader",
         children: [
           {
             label: sampleDataResourceTokenCollection.id(),
