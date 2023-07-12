@@ -268,7 +268,6 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
     ariaLabel: label,
     hasPopup: true,
     id: "createNewContainerCommandButton",
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -314,7 +313,6 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
