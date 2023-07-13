@@ -240,6 +240,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       commandButtonLabel: executeQueryBtnLabel,
       ariaLabel: executeQueryBtnLabel,
       hasPopup: false,
+      disabled: query?.trim() === "" && true,
     };
 
     const saveQueryBtn = {
@@ -250,6 +251,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       commandButtonLabel: "Save Query",
       ariaLabel: "Save Query",
       hasPopup: false,
+      disabled: query?.trim() === "" && true,
     };
 
     const samplePromptsBtn = {
@@ -387,52 +389,60 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                   ))}
                 </Stack>
               )}
-              <Text
-                style={{
-                  width: "100%",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#0078D4",
-                  marginLeft: 16,
-                  padding: "4px 0",
-                }}
-              >
-                Suggested Prompts
-              </Text>
-              {filteredSuggestedPrompts.map((prompt) => (
-                <DefaultButton
-                  key={prompt.id}
-                  onClick={() => {
-                    setUserPrompt(prompt.text);
-                    setShowSamplePrompts(false);
-                  }}
-                  onRenderIcon={() => <Image src={HintIcon} />}
-                  styles={promptStyles}
-                >
-                  {prompt.text}
-                </DefaultButton>
-              ))}
-              <Separator
-                styles={{
-                  root: {
-                    selectors: { "::before": { background: "#E1DFDD" } },
-                    padding: 0,
-                  },
-                }}
-              />
-              <Text
-                style={{
-                  width: "100%",
-                  fontSize: 14,
-                  marginLeft: 16,
-                  padding: "4px 0",
-                }}
-              >
-                Learn about{" "}
-                <Link target="_blank" href="">
-                  writing effective prompts
-                </Link>
-              </Text>
+              {filteredSuggestedPrompts?.length > 0 && (
+                <Stack>
+                  <Text
+                    style={{
+                      width: "100%",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0078D4",
+                      marginLeft: 16,
+                      padding: "4px 0",
+                    }}
+                  >
+                    Suggested Prompts
+                  </Text>
+                  {filteredSuggestedPrompts.map((prompt) => (
+                    <DefaultButton
+                      key={prompt.id}
+                      onClick={() => {
+                        setUserPrompt(prompt.text);
+                        setShowSamplePrompts(false);
+                      }}
+                      onRenderIcon={() => <Image src={HintIcon} />}
+                      styles={promptStyles}
+                    >
+                      {prompt.text}
+                    </DefaultButton>
+                  ))}
+                </Stack>
+              )}
+              {(filteredHistories?.length > 0 || filteredSuggestedPrompts?.length > 0) && (
+                <Stack>
+                  <Separator
+                    styles={{
+                      root: {
+                        selectors: { "::before": { background: "#E1DFDD" } },
+                        padding: 0,
+                      },
+                    }}
+                  />
+                  <Text
+                    style={{
+                      width: "100%",
+                      fontSize: 14,
+                      marginLeft: 16,
+                      padding: "4px 0",
+                    }}
+                  >
+                    Learn about{" "}
+                    <Link target="_blank" href="">
+                      writing effective prompts
+                    </Link>
+                  </Text>
+                </Stack>
+              )}
             </Stack>
           </Callout>
         )}
