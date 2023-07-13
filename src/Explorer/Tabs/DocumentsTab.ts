@@ -837,7 +837,8 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveNewDocumentButton.enabled() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+        disabled:
+          !this.saveNewDocumentButton.enabled() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       });
     }
 
@@ -850,7 +851,9 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardNewDocumentChangesButton.enabled() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+        disabled:
+          !this.discardNewDocumentChangesButton.enabled() ||
+          useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       });
     }
 
@@ -863,7 +866,8 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.saveExistingDocumentButton.enabled() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+        disabled:
+          !this.saveExistingDocumentButton.enabled() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       });
     }
 
@@ -876,7 +880,9 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.discardExisitingDocumentChangesButton.enabled() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+        disabled:
+          !this.discardExisitingDocumentChangesButton.enabled() ||
+          useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       });
     }
 
@@ -889,7 +895,9 @@ export default class DocumentsTab extends TabsBase {
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
-        disabled: !this.deleteExisitingDocumentButton.enabled() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+        disabled:
+          !this.deleteExisitingDocumentButton.enabled() ||
+          useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       });
     }
 
@@ -933,7 +941,9 @@ export default class DocumentsTab extends TabsBase {
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: useSelectedNode.getState().isDatabaseNodeOrNoneSelected() || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled:
+        useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
+        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     };
   }
 }
