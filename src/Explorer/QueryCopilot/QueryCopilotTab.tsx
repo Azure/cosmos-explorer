@@ -44,7 +44,6 @@ import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
-import SamplePromptsIcon from "../../../images/SamplePromptsIcon.svg";
 import XErrorMessage from "../../../images/X-errorMessage.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { useTabs } from "../../hooks/useTabs";
@@ -265,15 +264,15 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       hasPopup: false,
     };
 
-    // Sample Prompts temporary disabled
-    const samplePromptsBtn = {
-      iconSrc: SamplePromptsIcon,
-      iconAlt: "Sample Prompts",
-      onCommandClick: () => setIsSamplePromptsOpen(true),
-      commandButtonLabel: "Sample Prompts",
-      ariaLabel: "Sample Prompts",
-      hasPopup: false,
-    };
+    // Sample Prompts temporary disabled due current design
+    // const samplePromptsBtn = {
+    //   iconSrc: SamplePromptsIcon,
+    //   iconAlt: "Sample Prompts",
+    //   onCommandClick: () => setIsSamplePromptsOpen(true),
+    //   commandButtonLabel: "Sample Prompts",
+    //   ariaLabel: "Sample Prompts",
+    //   hasPopup: false,
+    // };
 
     return [executeQueryBtn, saveQueryBtn];
   };
