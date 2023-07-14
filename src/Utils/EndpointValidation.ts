@@ -42,6 +42,7 @@ export const allowedArmEndpoints: ReadonlyArray<string> = [
   "https://​management.azure.com",
   "https://​management.usgovcloudapi.net",
   "https://management.chinacloudapi.cn",
+  "https://management.mycloud.net/",
 ];
 
 export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.microsoftonline.com/"];
