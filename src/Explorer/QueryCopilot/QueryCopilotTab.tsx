@@ -246,7 +246,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       commandButtonLabel: executeQueryBtnLabel,
       ariaLabel: executeQueryBtnLabel,
       hasPopup: false,
-      disabled: query?.trim() === "" && true,
+      disabled: query?.trim() === "",
     };
 
     const saveQueryBtn = {
@@ -257,7 +257,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       commandButtonLabel: "Save Query",
       ariaLabel: "Save Query",
       hasPopup: false,
-      disabled: query?.trim() === "" && true,
+      disabled: query?.trim() === "",
     };
 
     const samplePromptsBtn = {
