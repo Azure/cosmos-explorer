@@ -173,14 +173,20 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       });
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
-      if (generateSQLQueryResponse?.sql) {
-        let query = `-- **Prompt:** ${userPrompt}\r\n`;
-        if (generateSQLQueryResponse.explanation) {
-          query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
+      if (response.ok) {
+        if (generateSQLQueryResponse?.sql) {
+          let query = `-- **Prompt:** ${userPrompt}\r\n`;
+          if (generateSQLQueryResponse.explanation) {
+            query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
+          }
+          query += generateSQLQueryResponse.sql;
+          setQuery(query);
+          setGeneratedQuery(generateSQLQueryResponse.sql);
         }
-        query += generateSQLQueryResponse.sql;
-        setQuery(query);
-        setGeneratedQuery(generateSQLQueryResponse.sql);
+      } else {
+        handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
+        useTabs.getState().setIsQueryErrorThrown(true);
+        setShowErrorMessageBar(true);
       }
     } catch (error) {
       handleError(error, "executeNaturalLanguageQuery");
