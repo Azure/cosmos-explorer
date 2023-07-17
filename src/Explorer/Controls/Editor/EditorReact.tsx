@@ -31,6 +31,13 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   public componentDidMount(): void {
     this.createEditor(this.configureEditor.bind(this));
+
+    setTimeout(() => {
+      const suggestionWidget = this.editor?.getDomNode()?.querySelector(".suggest-widget") as HTMLElement;
+      if (suggestionWidget) {
+        suggestionWidget.style.display = "none";
+      }
+    }, 100);
   }
 
   public componentDidUpdate(previous: EditorReactProps) {
