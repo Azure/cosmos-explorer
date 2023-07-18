@@ -3,7 +3,7 @@ import { withHooks } from "jest-react-hooks-shallow";
 import React from "react";
 import { WelcomeModal } from "./WelcomeModal";
 
-describe("Query Copilot Carousel snapshot test", () => {
+describe("Query Copilot Welcome Modal snapshot test", () => {
   it("should render when isOpen is true", () => {
     withHooks(() => {
       const spy = jest.spyOn(localStorage, "setItem");
