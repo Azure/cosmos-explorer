@@ -7,10 +7,18 @@ describe("Delete Popup snapshot test", () => {
     const wrapper = shallow(
       <DeletePopup
         showDeletePopup={true}
-        setShowDeletePopup={() => {}}
-        setQuery={() => {}}
-        clearFeedback={() => {}}
-        showFeedbackBar={() => {}}
+        setShowDeletePopup={() => {
+          console.log("setShowDeletePopup called");
+        }}
+        setQuery={() => {
+          console.log("setQuery called");
+        }}
+        clearFeedback={() => {
+          console.log("clearFeedback called");
+        }}
+        showFeedbackBar={() => {
+          console.log("showFeedbackBar called");
+        }}
       />
     );
     expect(wrapper.find("Modal").prop("isOpen")).toBeTruthy();
@@ -21,10 +29,18 @@ describe("Delete Popup snapshot test", () => {
     const wrapper = shallow(
       <DeletePopup
         showDeletePopup={false}
-        setShowDeletePopup={() => {}}
-        setQuery={() => {}}
-        clearFeedback={() => {}}
-        showFeedbackBar={() => {}}
+        setShowDeletePopup={() => {
+          console.log("setShowDeletePopup called");
+        }}
+        setQuery={() => {
+          console.log("setQuery called");
+        }}
+        clearFeedback={() => {
+          console.log("clearFeedback called");
+        }}
+        showFeedbackBar={() => {
+          console.log("showFeedbackBar called");
+        }}
       />
     );
     expect(wrapper.props().children.props.showDeletePopup).toBeFalsy();
@@ -39,8 +55,12 @@ describe("Delete Popup snapshot test", () => {
         showDeletePopup={true}
         setShowDeletePopup={setShowDeletePopupMock}
         setQuery={setQueryMock}
-        clearFeedback={() => {}}
-        showFeedbackBar={() => {}}
+        clearFeedback={() => {
+          console.log("clearFeedback called");
+        }}
+        showFeedbackBar={() => {
+          console.log("showFeedbackBar called");
+        }}
       />
     );
 
@@ -56,9 +76,15 @@ describe("Delete Popup snapshot test", () => {
       <DeletePopup
         showDeletePopup={true}
         setShowDeletePopup={setShowDeletePopupMock}
-        setQuery={() => {}}
-        clearFeedback={() => {}}
-        showFeedbackBar={() => {}}
+        setQuery={() => {
+          console.log("setQuery called");
+        }}
+        clearFeedback={() => {
+          console.log("clearFeedback called");
+        }}
+        showFeedbackBar={() => {
+          console.log("showFeedbackBar called");
+        }}
       />
     );
 
@@ -90,10 +116,18 @@ describe("Delete Popup snapshot test", () => {
     const wrapper = shallow(
       <DeletePopup
         showDeletePopup={true}
-        setShowDeletePopup={() => {}}
-        setQuery={() => {}}
-        clearFeedback={() => {}}
-        showFeedbackBar={() => {}}
+        setShowDeletePopup={() => {
+          console.log("setShowDeletePopup called");
+        }}
+        setQuery={() => {
+          console.log("setQuery called");
+        }}
+        clearFeedback={() => {
+          console.log("clearFeedback called");
+        }}
+        showFeedbackBar={() => {
+          console.log("showFeedbackBar called");
+        }}
       />
     );
 

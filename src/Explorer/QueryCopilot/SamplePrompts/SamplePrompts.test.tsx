@@ -6,8 +6,12 @@ describe("Sample Prompts snapshot test", () => {
   it("should render properly if isSamplePromptsOpen is true", () => {
     const sampleProps: SamplePromptsProps = {
       isSamplePromptsOpen: true,
-      setIsSamplePromptsOpen: () => {},
-      setTextBox: () => {},
+      setIsSamplePromptsOpen: () => {
+        console.log("setIsSamplePromptsOpen called");
+      },
+      setTextBox: () => {
+        console.log("setTextBox called");
+      },
     };
 
     const wrapper = shallow(<SamplePrompts sampleProps={sampleProps} />);
@@ -17,8 +21,12 @@ describe("Sample Prompts snapshot test", () => {
   it("should render properly if isSamplePromptsOpen is false", () => {
     const sampleProps: SamplePromptsProps = {
       isSamplePromptsOpen: false,
-      setIsSamplePromptsOpen: () => {},
-      setTextBox: () => {},
+      setIsSamplePromptsOpen: () => {
+        console.log("setIsSamplePromptsOpen called");
+      },
+      setTextBox: () => {
+        console.log("setTextBox called");
+      },
     };
     const wrapper = shallow(<SamplePrompts sampleProps={sampleProps} />);
     expect(wrapper).toMatchSnapshot();
@@ -50,7 +58,9 @@ describe("Sample Prompts snapshot test", () => {
     const sampleProps: SamplePromptsProps = {
       isSamplePromptsOpen: true,
       setIsSamplePromptsOpen: setIsSamplePromptsOpenMock,
-      setTextBox: () => {},
+      setTextBox: () => {
+        console.log("setTextBox called");
+      },
     };
     const wrapper = mount(<SamplePrompts sampleProps={sampleProps} />);
 
