@@ -3,22 +3,19 @@ import React from "react";
 import { DeletePopup } from "./DeletePopup";
 
 describe("Delete Popup snapshot test", () => {
+  const setShowDeletePopupMock = jest.fn();
+  const setQueryMock = jest.fn();
+  const clearFeedbackMock = jest.fn();
+  const showFeedbackBarMock = jest.fn();
+
   it("should render when showDeletePopup is true", () => {
     const wrapper = shallow(
       <DeletePopup
         showDeletePopup={true}
-        setShowDeletePopup={() => {
-          console.log("setShowDeletePopup called");
-        }}
-        setQuery={() => {
-          console.log("setQuery called");
-        }}
-        clearFeedback={() => {
-          console.log("clearFeedback called");
-        }}
-        showFeedbackBar={() => {
-          console.log("showFeedbackBar called");
-        }}
+        setShowDeletePopup={setShowDeletePopupMock}
+        setQuery={setQueryMock}
+        clearFeedback={clearFeedbackMock}
+        showFeedbackBar={showFeedbackBarMock}
       />
     );
     expect(wrapper.find("Modal").prop("isOpen")).toBeTruthy();
@@ -29,18 +26,10 @@ describe("Delete Popup snapshot test", () => {
     const wrapper = shallow(
       <DeletePopup
         showDeletePopup={false}
-        setShowDeletePopup={() => {
-          console.log("setShowDeletePopup called");
-        }}
-        setQuery={() => {
-          console.log("setQuery called");
-        }}
-        clearFeedback={() => {
-          console.log("clearFeedback called");
-        }}
-        showFeedbackBar={() => {
-          console.log("showFeedbackBar called");
-        }}
+        setShowDeletePopup={setShowDeletePopupMock}
+        setQuery={setQueryMock}
+        clearFeedback={clearFeedbackMock}
+        showFeedbackBar={showFeedbackBarMock}
       />
     );
     expect(wrapper.props().children.props.showDeletePopup).toBeFalsy();
@@ -48,19 +37,13 @@ describe("Delete Popup snapshot test", () => {
   });
 
   it("should call setQuery with an empty string and setShowDeletePopup(false) when delete button is clicked", () => {
-    const setQueryMock = jest.fn();
-    const setShowDeletePopupMock = jest.fn();
     const wrapper = mount(
       <DeletePopup
         showDeletePopup={true}
         setShowDeletePopup={setShowDeletePopupMock}
         setQuery={setQueryMock}
-        clearFeedback={() => {
-          console.log("clearFeedback called");
-        }}
-        showFeedbackBar={() => {
-          console.log("showFeedbackBar called");
-        }}
+        clearFeedback={clearFeedbackMock}
+        showFeedbackBar={showFeedbackBarMock}
       />
     );
 
@@ -76,15 +59,9 @@ describe("Delete Popup snapshot test", () => {
       <DeletePopup
         showDeletePopup={true}
         setShowDeletePopup={setShowDeletePopupMock}
-        setQuery={() => {
-          console.log("setQuery called");
-        }}
-        clearFeedback={() => {
-          console.log("clearFeedback called");
-        }}
-        showFeedbackBar={() => {
-          console.log("showFeedbackBar called");
-        }}
+        setQuery={setQueryMock}
+        clearFeedback={clearFeedbackMock}
+        showFeedbackBar={showFeedbackBarMock}
       />
     );
 
@@ -97,10 +74,10 @@ describe("Delete Popup snapshot test", () => {
     const wrapper = shallow(
       <DeletePopup
         showDeletePopup={true}
-        setShowDeletePopup={() => {}}
-        setQuery={() => {}}
-        clearFeedback={() => {}}
-        showFeedbackBar={() => {}}
+        setShowDeletePopup={setShowDeletePopupMock}
+        setQuery={setQueryMock}
+        clearFeedback={clearFeedbackMock}
+        showFeedbackBar={showFeedbackBarMock}
       />
     );
 
@@ -116,18 +93,10 @@ describe("Delete Popup snapshot test", () => {
     const wrapper = shallow(
       <DeletePopup
         showDeletePopup={true}
-        setShowDeletePopup={() => {
-          console.log("setShowDeletePopup called");
-        }}
-        setQuery={() => {
-          console.log("setQuery called");
-        }}
-        clearFeedback={() => {
-          console.log("clearFeedback called");
-        }}
-        showFeedbackBar={() => {
-          console.log("showFeedbackBar called");
-        }}
+        setShowDeletePopup={setShowDeletePopupMock}
+        setQuery={setQueryMock}
+        clearFeedback={clearFeedbackMock}
+        showFeedbackBar={showFeedbackBarMock}
       />
     );
 
