@@ -81,11 +81,17 @@ describe("Delete Popup snapshot test", () => {
       />
     );
 
-    const textContent = wrapper.find("Text").map((text) => text.props().children);
+    const textContent = wrapper
+      .find("Text")
+      .map((text, index) => <React.Fragment key={index}>{text.props().children}</React.Fragment>);
 
     expect(textContent).toEqual([
-      <b>Delete code?</b>,
-      "This will clear the query from the query builder pane along with all comments and also reset the prompt pane",
+      <React.Fragment key={0}>
+        <b>Delete code?</b>
+      </React.Fragment>,
+      <React.Fragment key={1}>
+        This will clear the query from the query builder pane along with all comments and also reset the prompt pane
+      </React.Fragment>,
     ]);
   });
 
