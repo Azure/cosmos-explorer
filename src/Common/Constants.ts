@@ -516,3 +516,9 @@ export const QueryCopilotSampleContainerSchema = {
     },
   },
 };
+
+export class PriorityLevel {
+  public static readonly None = "none";
+  public static readonly High = "high";
+  public static readonly Low = "low";
+}
