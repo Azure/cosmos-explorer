@@ -28,8 +28,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   public children: ko.ObservableArray<ViewModels.TreeNode>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public isCollectionExpanded: ko.Observable<boolean>;
+  public isSampleCollection?: boolean;
 
-  constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
+  constructor(container: Explorer, databaseId: string, data: DataModels.Collection, isSampleCollection?: boolean) {
     this.nodeKind = "Collection";
     this.container = container;
     this.databaseId = databaseId;
@@ -42,6 +43,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.children = ko.observableArray<ViewModels.TreeNode>([]);
     this.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
     this.isCollectionExpanded = ko.observable<boolean>(true);
+    this.isSampleCollection = isSampleCollection;
   }
 
   public expandCollection(): void {
