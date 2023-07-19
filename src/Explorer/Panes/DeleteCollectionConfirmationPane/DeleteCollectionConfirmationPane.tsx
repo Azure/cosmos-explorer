@@ -10,6 +10,7 @@ import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "Utils/NotificationConsoleUtils";
+import { useNotificationConsole } from "hooks/useNotificationConsole";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTabs } from "hooks/useTabs";
 import React, { FunctionComponent, useState } from "react";
@@ -35,10 +36,12 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
 
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
+  const expandConsole = useNotificationConsole((state) => state.expandConsole);
+
   const onSubmit = async (): Promise<void> => {
     const collection = useSelectedNode.getState().findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
-      const errorMessage = "Input " + collectionName + " id does not match the selected " + collectionName;
+      const errorMessage = "Input id" + inputCollectionName + " does not match the selected " + collection.id();
       setFormError(errorMessage);
       NotificationConsoleUtils.logConsoleError(
         `Error while deleting ${collectionName} ${collection.id()}: ${errorMessage}`
