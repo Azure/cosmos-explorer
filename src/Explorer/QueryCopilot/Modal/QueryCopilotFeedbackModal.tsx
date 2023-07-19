@@ -13,7 +13,7 @@ import {
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
-import { getUserEmail } from "../../Utils/UserUtils";
+import { getUserEmail } from "../../../Utils/UserUtils";
 
 export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
   const {
@@ -28,6 +28,7 @@ export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
   const [description, setDescription] = React.useState<string>("");
   const [doNotShowAgainChecked, setDoNotShowAgainChecked] = React.useState<boolean>(false);
   const [contact, setContact] = React.useState<string>(getUserEmail());
+
   return (
     <Modal isOpen={showFeedbackModal}>
       <Stack style={{ padding: 24 }}>
