@@ -17,7 +17,7 @@ import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
-import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/QueryCopilotFeedbackModal";
+import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";

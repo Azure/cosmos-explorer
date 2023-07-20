@@ -188,6 +188,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           query += generateSQLQueryResponse.sql;
           setQuery(query);
           setGeneratedQuery(generateSQLQueryResponse.sql);
+          setShowErrorMessageBar(false);
         }
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
@@ -231,6 +232,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
       setQueryResults(queryResults);
       setErrorMessage("");
+      setShowErrorMessageBar(false);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       setErrorMessage(errorMessage);

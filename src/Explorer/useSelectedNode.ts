@@ -66,11 +66,12 @@ export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) =>
     return useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Connected;
   },
   isQueryCopilotCollectionSelected: (): boolean => {
-    const selectedNode = get().selectedNode;
+    const selectedNode = get().selectedNode as ViewModels.CollectionBase;
     if (
       selectedNode &&
+      selectedNode.isSampleCollection &&
       selectedNode.id() === QueryCopilotSampleContainerId &&
-      (selectedNode as ViewModels.Collection)?.databaseId === QueryCopilotSampleDatabaseId
+      selectedNode.databaseId === QueryCopilotSampleDatabaseId
     ) {
       return true;
     }

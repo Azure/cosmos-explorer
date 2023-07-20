@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Query Copilot Carousel snapshot test should render when isOpen is true 1`] = `
+exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is true 1`] = `
 <Fragment>
   <Modal
     isBlocking={false}
