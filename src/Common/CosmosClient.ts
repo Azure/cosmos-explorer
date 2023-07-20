@@ -6,8 +6,10 @@ import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { PriorityLevel } from "../Common/Constants";
+import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils" 
 
 const _global = typeof self === "undefined" ? window : self;
+const shouldShowPriorityLevelOption = userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL";
 
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
@@ -39,37 +41,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   return decodeURIComponent(result.PrimaryReadWriteToken);
 };
 
-export function isRelevantRequest(requestContext: Cosmos.RequestContext): boolean {
- return requestContext.resourceType === Cosmos.ResourceType.item ||
-    requestContext.resourceType === Cosmos.ResourceType.conflicts ||
-    (
-      requestContext.resourceType === Cosmos.ResourceType.sproc &&
-      requestContext.operationType === Cosmos.OperationType.Execute
-    );
-};
-
-export function getPriorityLevel(): PriorityLevel {
- const priorityLevel = LocalStorageUtility.getEntryString(StorageKey.PriorityLevel);
- if (priorityLevel && Object.values<string>(PriorityLevel).includes(priorityLevel)) {
-  return priorityLevel as PriorityLevel;
- } else {
-  return PriorityLevel.Low;
- }
-};
-
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
-
-  if (userContext.apiType !== "Gremlin") {
-   if (isRelevantRequest(requestContext)) {
-    const priorityLevel: PriorityLevel = getPriorityLevel();
-    if (priorityLevel !== PriorityLevel.None) {
-     requestContext.headers["x-ms-cosmos-priority-level"] = priorityLevel;
-    }
-   }
-  }
-
   return next(requestContext);
 };
 
@@ -134,6 +108,12 @@ export function client(): Cosmos.CosmosClient {
 
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
+  }
+  
+  if (userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL") {
+	const plugins = options.plugins || [];
+	plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
+	(options as any).plugins = plugins; 
   }
 
   _client = new Cosmos.CosmosClient(options);
