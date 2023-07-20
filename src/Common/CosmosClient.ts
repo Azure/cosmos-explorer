@@ -9,7 +9,6 @@ import { PriorityLevel } from "../Common/Constants";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils" 
 
 const _global = typeof self === "undefined" ? window : self;
-const shouldShowPriorityLevelOption = userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL";
 
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
