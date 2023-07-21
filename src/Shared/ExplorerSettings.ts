@@ -18,7 +18,7 @@ export const hasSettingsDefined = (): boolean => {
 };
 
 export const ensurePriorityLevel = () => {
-    if (!LocalStorageUtility.hasItem(StorageKey.PriorityLevel)) {
-        LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Low);
-    }
+  if (!LocalStorageUtility.hasItem(StorageKey.PriorityLevel)) {
+    LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Low);
+  }
 };

@@ -42,16 +42,17 @@ export const SettingsPane: FunctionComponent = () => {
       : Constants.Queries.DefaultMaxDegreeOfParallelism
   );
   const [priorityLevel, setPriorityLevel] = useState<string>(
-      LocalStorageUtility.hasItem(StorageKey.PriorityLevel)
-        ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
-        : Constants.PriorityLevel.Low
+    LocalStorageUtility.hasItem(StorageKey.PriorityLevel)
+      ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
+      : Constants.PriorityLevel.Low
   );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-  const shouldShowPriorityLevelOption = userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL";
+  const shouldShowPriorityLevelOption =
+    userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL";
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     setIsExecuting(true);
 
@@ -82,11 +83,7 @@ export const SettingsPane: FunctionComponent = () => {
         StorageKey.MaxDegreeOfParellism
       )}`
     );
-    logConsoleInfo(
-          `Updated priority level setting to ${LocalStorageUtility.getEntryString(
-            StorageKey.PriorityLevel
-          )}`
-        );
+    logConsoleInfo(`Updated priority level setting to ${LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)}`);
 
     if (shouldShowGraphAutoVizOption) {
       logConsoleInfo(
@@ -128,11 +125,14 @@ export const SettingsPane: FunctionComponent = () => {
   ];
 
   const priorityLevelOptionList: IChoiceGroupOption[] = [
-   { key: Constants.PriorityLevel.Low, text: "Low" },
-   { key: Constants.PriorityLevel.High, text: "High" },
+    { key: Constants.PriorityLevel.Low, text: "Low" },
+    { key: Constants.PriorityLevel.High, text: "High" },
   ];
 
-  const handleOnPriorityLevelOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
+  const handleOnPriorityLevelOptionChange = (
+    ev: React.FormEvent<HTMLInputElement>,
+    option: IChoiceGroupOption
+  ): void => {
     setPriorityLevel(option.key);
   };
 
@@ -281,26 +281,27 @@ export const SettingsPane: FunctionComponent = () => {
           </div>
         )}
         {shouldShowPriorityLevelOption && (
-         <div className="settingsSection">
-             <div className="settingsSectionPart">
-                 <fieldset>
-                     <legend id="priorityLevel" className="settingsSectionLabel legendLabel">
-                        Priority Level
-                     </legend>
-                     <InfoTooltip>
-                         Sets the priority level for data-plane requests from Data Explorer when using Priority-Based Execution.
-                         If "None" is selected, Data Explorer will not specify priority level, and the server-side default priority level will be used.
-                     </InfoTooltip>
-                     <ChoiceGroup
-                         ariaLabelledBy="priorityLevel"
-                         selectedKey={priorityLevel}
-                         options={priorityLevelOptionList}
-                         styles={choiceButtonStyles}
-                         onChange={handleOnPriorityLevelOptionChange}
-                     />
-                </fieldset>
-             </div>
-         </div>
+          <div className="settingsSection">
+            <div className="settingsSectionPart">
+              <fieldset>
+                <legend id="priorityLevel" className="settingsSectionLabel legendLabel">
+                  Priority Level
+                </legend>
+                <InfoTooltip>
+                  Sets the priority level for data-plane requests from Data Explorer when using Priority-Based
+                  Execution. If &quot;None&quot; is selected, Data Explorer will not specify priority level, and the
+                  server-side default priority level will be used.
+                </InfoTooltip>
+                <ChoiceGroup
+                  ariaLabelledBy="priorityLevel"
+                  selectedKey={priorityLevel}
+                  options={priorityLevelOptionList}
+                  styles={choiceButtonStyles}
+                  onChange={handleOnPriorityLevelOptionChange}
+                />
+              </fieldset>
+            </div>
+          </div>
         )}
         {shouldShowGraphAutoVizOption && (
           <div className="settingsSection">

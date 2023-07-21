@@ -6,7 +6,7 @@ import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { PriorityLevel } from "../Common/Constants";
-import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils" 
+import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -108,11 +108,11 @@ export function client(): Cosmos.CosmosClient {
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
-  
+
   if (userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL") {
-	const plugins = (options as any).plugins || [];
-	plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
-	(options as any).plugins = plugins; 
+    const plugins = (options as any).plugins || [];
+    plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
+    (options as any).plugins = plugins;
   }
 
   _client = new Cosmos.CosmosClient(options);
