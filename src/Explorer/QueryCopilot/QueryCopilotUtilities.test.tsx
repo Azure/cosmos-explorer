@@ -29,9 +29,7 @@ jest.mock("Common/ErrorHandlingUtils", () => ({
 }));
 
 jest.mock("Utils/NotificationConsoleUtils", () => ({
-  logConsoleProgress: jest.fn().mockReturnValue(() => () => {
-    console.log("test");
-  }),
+  logConsoleProgress: jest.fn().mockReturnValue(() => () => {}),
 }));
 
 jest.mock("Common/dataAccess/queryDocuments", () => ({
