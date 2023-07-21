@@ -13,7 +13,7 @@ export function isRelevantRequest(requestContext: Cosmos.RequestContext): boolea
 
 export function getPriorityLevel(): PriorityLevel {
  const priorityLevel = LocalStorageUtility.getEntryString(StorageKey.PriorityLevel);
- if (priorityLevel && Object.values<string>(PriorityLevel).includes(priorityLevel)) {
+ if (priorityLevel && Object.values(PriorityLevel).includes(priorityLevel)) {
   return priorityLevel as PriorityLevel;
  } else {
   return PriorityLevel.Low;
@@ -24,7 +24,7 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) =>
  if (isRelevantRequest(requestContext)) {
   const priorityLevel: PriorityLevel = getPriorityLevel();
   if (priorityLevel !== PriorityLevel.None) {
-   requestContext.headers["x-ms-cosmos-priority-level"] = priorityLevel;
+   requestContext.headers["x-ms-cosmos-priority-level"] = priorityLevel as string;
   }
  }
  return next(requestContext);
