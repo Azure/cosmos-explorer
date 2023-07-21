@@ -28,9 +28,8 @@ jest.mock("Common/ErrorHandlingUtils", () => ({
   handleError: jest.fn(),
 }));
 
-const emptyFunction = () => {};
 jest.mock("Utils/NotificationConsoleUtils", () => ({
-  logConsoleProgress: jest.fn().mockReturnValue(emptyFunction),
+  logConsoleProgress: jest.fn().mockReturnValue(() => () => {}),
 }));
 
 jest.mock("Common/dataAccess/queryDocuments", () => ({
@@ -111,9 +110,6 @@ describe("QueryCopilotUtilities", () => {
     });
 
     it("should handle errors and call handleError", async () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const handleErrorMock = require("Common/ErrorHandlingUtils").handleError;
-
       globalThis.fetch = jest.fn().mockRejectedValueOnce(new Error("Mock error"));
 
       await submitFeedback({
@@ -126,7 +122,7 @@ describe("QueryCopilotUtilities", () => {
         expect(error.message).toEqual("Mock error");
       });
 
-      expect(handleErrorMock).toHaveBeenCalledWith(new Error("Mock error"), expect.any(String));
+      expect(handleError).toHaveBeenCalledWith(new Error("Mock error"), expect.any(String));
     });
   });
 
