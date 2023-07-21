@@ -55,7 +55,7 @@ describe("QueryCopilotUtilities", () => {
     it("should call fetch with the payload with like", async () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
-      (globalThis as any).fetch = mockFetch;
+      globalThis.fetch = mockFetch;
 
       await submitFeedback({
         likeQuery: true,
@@ -75,7 +75,7 @@ describe("QueryCopilotUtilities", () => {
         })
       );
 
-      const actualBody = JSON.parse((mockFetch.mock.calls[0][1] as any).body);
+      const actualBody = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(actualBody).toEqual(payload);
     });
 
@@ -85,7 +85,7 @@ describe("QueryCopilotUtilities", () => {
       payload.contact = "";
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
-      (globalThis as any).fetch = mockFetch;
+      globalThis.fetch = mockFetch;
 
       await submitFeedback({
         likeQuery: false,
@@ -105,7 +105,7 @@ describe("QueryCopilotUtilities", () => {
         })
       );
 
-      const actualBody = JSON.parse((mockFetch.mock.calls[0][1] as any).body);
+      const actualBody = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(actualBody).toEqual(payload);
     });
 
@@ -124,7 +124,6 @@ describe("QueryCopilotUtilities", () => {
         expect(error.message).toEqual("Mock error");
       });
 
-      console.log(handleErrorMock.mock.calls);
       expect(handleErrorMock).toHaveBeenCalledWith(new Error("Mock error"), expect.any(String));
     });
   });
