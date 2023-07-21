@@ -18,16 +18,40 @@ describe("Priority execution utility", () => {
   it("check relevant request based on different resource types", () => {
 	const requestContext1: Cosmos.RequestContext = {
 		resourceType: Cosmos.ResourceType.item,
-	}
+      globalEndpointManager: null,
+      connectionPolicy: null,
+      requestAgent: null,
+      method: null,
+      options: null,
+      plugins: null,
+	  }
 	const requestContext2: Cosmos.RequestContext = {
 		resourceType: Cosmos.ResourceType.conflicts,
-	}
+	      globalEndpointManager: null,
+      connectionPolicy: null,
+      requestAgent: null,
+      method: null,
+      options: null,
+      plugins: null,
+	  }
 	const requestContext3: Cosmos.RequestContext = {
 		resourceType: Cosmos.ResourceType.sproc,
 		operationType: Cosmos.OperationType.Execute,
-	}
+      globalEndpointManager: null,
+      connectionPolicy: null,
+      requestAgent: null,
+      method: null,
+      options: null,
+      plugins: null,
+	  }
 	const requestContext4: Cosmos.RequestContext = {
 		resourceType: Cosmos.ResourceType.database,
+		      globalEndpointManager: null,
+      connectionPolicy: null,
+      requestAgent: null,
+      method: null,
+      options: null,
+      plugins: null,
 	}
 	expect(PriorityBasedExecutionUtils.isRelevantRequest(requestContext1)).toEqual(true)
 	expect(PriorityBasedExecutionUtils.isRelevantRequest(requestContext2)).toEqual(true)

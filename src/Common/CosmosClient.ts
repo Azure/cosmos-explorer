@@ -110,7 +110,7 @@ export function client(): Cosmos.CosmosClient {
   }
   
   if (userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL") {
-	const plugins = options.plugins || [];
+	const plugins = (options as any).plugins || [];
 	plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
 	(options as any).plugins = plugins; 
   }
