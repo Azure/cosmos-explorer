@@ -12,12 +12,12 @@ import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constan
 interface ThroughputDefaults {
   fixed: number;
   unlimited:
-    | number
-    | {
-        collectionThreshold: number;
-        lessThanOrEqualToThreshold: number;
-        greatThanThreshold: number;
-      };
+  | number
+  | {
+    collectionThreshold: number;
+    lessThanOrEqualToThreshold: number;
+    greatThanThreshold: number;
+  };
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;
@@ -73,7 +73,7 @@ interface UserContext {
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
 }
 
-export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres";
+export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
 const ONE_WEEK_IN_MS = 604800000;
@@ -111,6 +111,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
       ONE_WEEK_IN_MS
     );
 
+    //CTODO: Add VCoreMongo cases below?
     if (!localStorage.getItem(newContext.databaseAccount.id)) {
       if (newContext.isTryCosmosDBSubscription || isNewAccount) {
         if (newContext.apiType === "Postgres" && !newContext.isReplica) {
@@ -156,7 +157,11 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
   if (account.kind === "Postgres") {
     return "Postgres";
   }
+  if (account.kind === "VCoreMongo") {
+    return "VCoreMongo";
+  }
   return "SQL";
 }
 
 export { updateUserContext, userContext };
+
