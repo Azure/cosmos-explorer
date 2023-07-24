@@ -372,6 +372,7 @@ export enum TerminalKind {
   Mongo = 1,
   Cassandra = 2,
   Postgres = 3,
+  VCoreMongo = 4,
 }
 
 export interface DataExplorerInputsFrame {

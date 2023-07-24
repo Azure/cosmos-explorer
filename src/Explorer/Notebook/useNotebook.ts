@@ -1,6 +1,6 @@
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
-import { cloneDeep } from "lodash";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
+import { cloneDeep } from "lodash";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
@@ -10,13 +10,13 @@ import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { ContainerConnectionInfo, ContainerInfo, PhoenixErrorType } from "../../Contracts/DataModels";
-import { useTabs } from "../../hooks/useTabs";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
+import { useTabs } from "../../hooks/useTabs";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
 
@@ -123,6 +123,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       return;
     }
 
+    //CTODO: add exception for VCoreMongo?
     const firstWriteLocation =
       userContext.apiType === "Postgres"
         ? databaseAccount?.location
@@ -220,10 +221,10 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     };
     const gitHubNotebooksContentRoot = notebookManager?.gitHubOAuthService?.isLoggedIn()
       ? {
-          name: "GitHub repos",
-          path: "PsuedoDir",
-          type: NotebookContentItemType.Directory,
-        }
+        name: "GitHub repos",
+        path: "PsuedoDir",
+        type: NotebookContentItemType.Directory,
+      }
       : undefined;
 
     set({
@@ -316,6 +317,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks === true;
           isPhoenixFeatures =
             isPublicInternetAllowed &&
+            //CTODO: add case for VCoreMongo?
             // phoenix needs to be enabled for Postgres accounts since the PSQL shell requires phoenix containers
             (userContext.features.phoenixFeatures === true || userContext.apiType === "Postgres");
         } else {
