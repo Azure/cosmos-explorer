@@ -12,12 +12,12 @@ import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constan
 interface ThroughputDefaults {
   fixed: number;
   unlimited:
-    | number
-    | {
-        collectionThreshold: number;
-        lessThanOrEqualToThreshold: number;
-        greatThanThreshold: number;
-      };
+  | number
+  | {
+    collectionThreshold: number;
+    lessThanOrEqualToThreshold: number;
+    greatThanThreshold: number;
+  };
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;
@@ -170,3 +170,4 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { updateUserContext, userContext };
+
