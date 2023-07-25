@@ -1,15 +1,13 @@
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
-  allowedArmEndpoints,
-  allowedBackendEndpoints,
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
   allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
-  validateEndpoint,
+  validateEndpoint
 } from "Utils/EndpointValidation";
 
 export enum Platform {
@@ -21,6 +19,8 @@ export enum Platform {
 export interface ConfigContext {
   platform: Platform;
   allowedParentFrameOrigins: ReadonlyArray<string>;
+  allowedArmEndpoints: ReadonlyArray<string>;
+  allowedBackendEndpoints: ReadonlyArray<string>;
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -57,6 +57,20 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
     `^https:\\/\\/cosmos-db-dataexplorer-germanycentral\\.azurewebsites\\.de$`,
   ], // Webpack injects this at build time
+  allowedArmEndpoints: [
+    "https://​management.azure.com",
+    "https://​management.usgovcloudapi.net",
+    "https://management.chinacloudapi.cn",
+    "https://management.mycloud.net/",
+  ],
+  allowedBackendEndpoints: [
+    "https://main.documentdb.ext.azure.com",
+    "https://main.documentdb.ext.azure.cn",
+    "https://main.documentdb.ext.azure.us",
+    "https://main.cosmos.ext.azure",
+    "https://localhost:12901",
+    "https://localhost:1234",
+  ],
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
   AAD_ENDPOINT: "https://login.microsoftonline.com/",
@@ -77,7 +91,7 @@ let configContext: Readonly<ConfigContext> = {
 
 export function resetConfigContext(): void {
   if (process.env.NODE_ENV !== "test") {
-    throw new Error("resetConfigContext can only becalled in a test environment");
+    throw new Error("resetConfigContext can only be called in a test environment");
   }
   configContext = {} as ConfigContext;
 }
@@ -87,7 +101,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, allowedArmEndpoints)) {
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints)) {
     delete newContext.ARM_ENDPOINT;
   }
 
@@ -107,7 +121,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, allowedBackendEndpoints)) {
+  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, configContext.allowedBackendEndpoints)) {
     delete newContext.BACKEND_ENDPOINT;
   }
 
@@ -190,3 +204,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
