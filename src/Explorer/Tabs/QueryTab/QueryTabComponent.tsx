@@ -219,10 +219,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     });
 
     try {
+      //CTODO: Add index metrics to the following method?
       const queryResults: ViewModels.QueryResults = await QueryUtils.queryPagesUntilContentPresent(
         firstItemIndex,
         queryDocuments
       );
+      console.log("Index Metrics: " + queryResults.indexMetrics);
       this.setState({ queryResults, error: "" });
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);

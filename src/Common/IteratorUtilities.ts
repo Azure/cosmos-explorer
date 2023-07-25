@@ -7,6 +7,7 @@ interface QueryResponse {
   hasMoreResults: boolean;
   activityId: string;
   requestCharge: number;
+  indexMetrics: string;
 }
 
 export interface MinimalQueryIterator {
@@ -30,6 +31,7 @@ export function nextPage(documentsIterator: MinimalQueryIterator, firstItemIndex
       headers,
       activityId: response.activityId,
       requestCharge: response.requestCharge,
+      indexMetrics: response.indexMetrics,
     };
   });
 }
