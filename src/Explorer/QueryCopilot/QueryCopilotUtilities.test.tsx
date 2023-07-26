@@ -57,7 +57,7 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-      useQueryCopilot.getState().refreshCorreclationId();
+      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
         likeQuery: true,
@@ -89,7 +89,7 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-      useQueryCopilot.getState().refreshCorreclationId();
+      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
         likeQuery: false,
