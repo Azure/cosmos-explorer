@@ -80,7 +80,7 @@ export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
         <Text style={{ fontSize: 12, marginBottom: 14 }}>
           By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your
           organization will be able to view and manage your feedback data.{" "}
-          <Link href="" target="_blank">
+          <Link href="https://privacy.microsoft.com/privacystatement" target="_blank">
             Privacy statement
           </Link>
         </Text>
