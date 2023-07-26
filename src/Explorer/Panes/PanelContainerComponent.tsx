@@ -79,7 +79,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 
   private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
     const collection = useSelectedNode.getState().findSelectedCollection();
-    const targetElementDataTest: string | undefined = collection.id();
+    const targetElementDataTest: string = collection.id();
     const targetElement: HTMLElement | null = document.querySelector(`[data-test="${targetElementDataTest}"]`);
     if (ev && (ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
