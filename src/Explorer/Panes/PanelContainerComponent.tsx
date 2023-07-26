@@ -58,7 +58,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         onDismiss={this.onDissmiss}
         isLightDismiss
         type={PanelType.custom}
-        closeButtonAriaLabel="Close"
+        closeButtonAriaLabel="Closes"
         customWidth={this.props.panelWidth ? this.props.panelWidth : "440px"}
         headerClassName="panelHeader"
         onRenderNavigationContent={this.props.onRenderNavigationContent}
