@@ -11,7 +11,7 @@ interface QueryCopilotState {
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
   setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) => void;
-  refreshCorreclationId: () => void;
+  refreshCorrelationId: () => void;
 }
 
 export const useQueryCopilot: UseStore<QueryCopilotState> = create((set) => ({
@@ -26,5 +26,5 @@ export const useQueryCopilot: UseStore<QueryCopilotState> = create((set) => ({
   closeFeedbackModal: () => set({ generatedQuery: "", likeQuery: false, userPrompt: "", showFeedbackModal: false }),
   setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) =>
     set({ hideFeedbackModalForLikedQueries }),
-  refreshCorreclationId: () => set({ correlationId: guid() }),
+  refreshCorrelationId: () => set({ correlationId: guid() }),
 }));
