@@ -1,3 +1,5 @@
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React from "react";
 import AddCollectionIcon from "../../images/AddCollection.svg";
@@ -146,7 +148,10 @@ export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] =>
   if (userContext.apiType === "SQL") {
     items.push({
       iconSrc: AddSqlQueryIcon,
-      onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot),
+      onClick: () => {
+        useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+        traceOpen(Action.OpenQueryCopilotFromNewQuery, { apiType: userContext.apiType });
+      },
       label: "New SQL Query",
     });
   }

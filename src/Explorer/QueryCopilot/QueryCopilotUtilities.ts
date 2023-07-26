@@ -10,6 +10,7 @@ import { getPartitionKeyValue } from "Common/dataAccess/getPartitionKeyValue";
 import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
 import DocumentId from "Explorer/Tree/DocumentId";
 import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 
 interface FeedbackParams {
   likeQuery: boolean;
@@ -35,6 +36,7 @@ export const submitFeedback = async (params: FeedbackParams): Promise<void> => {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        "x-ms-correlationid": `${useQueryCopilot.getState().correlationId}`,
       },
       body: JSON.stringify(payload),
     });
