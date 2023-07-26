@@ -101,7 +101,7 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
         AI-generated content can have mistakes. Make sure it's accurate and appropriate before using it.
          
         <StyledLinkBase
-          href=""
+          href="http://aka.ms/cdb-copilot-preview-terms"
           target="_blank"
         >
           Read preview terms

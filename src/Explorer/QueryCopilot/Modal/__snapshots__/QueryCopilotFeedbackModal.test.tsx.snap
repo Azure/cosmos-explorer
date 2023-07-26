@@ -121,7 +121,7 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -274,7 +274,7 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -427,7 +427,7 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -580,7 +580,7 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -733,7 +733,7 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -886,7 +886,7 @@ exports[`Query Copilot Feedback Modal snapshot test should record user contact c
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -1039,7 +1039,7 @@ exports[`Query Copilot Feedback Modal snapshot test should record user contact c
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -1192,7 +1192,7 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
@@ -1360,7 +1360,7 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
       By pressing submit, your feedback will be used to improve Microsoft products and services. IT admins for your organization will be able to view and manage your feedback data.
        
       <StyledLinkBase
-        href=""
+        href="https://privacy.microsoft.com/privacystatement"
         target="_blank"
       >
         Privacy statement
