@@ -36,7 +36,7 @@ export const submitFeedback = async (params: FeedbackParams): Promise<void> => {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-ms-correlationid": `${useQueryCopilot.getState().correlationId}`,
+        "x-ms-correlationid": useQueryCopilot.getState().correlationId,
       },
       body: JSON.stringify(payload),
     });
