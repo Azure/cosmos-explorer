@@ -1,7 +1,9 @@
 import { MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
+import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { CollectionTabKind } from "Contracts/ViewModels";
+import { CollectionTabKind, QueryResults } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
@@ -9,6 +11,7 @@ import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { userContext } from "UserContext";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -243,6 +246,27 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
+  const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
+  const [userPrompt, setUserPrompt] = useState<string>("");
+  const [generatedQuery, setGeneratedQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
+  const [selectedQuery, setSelectedQuery] = useState<string>("");
+  const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [likeQuery, setLikeQuery] = useState<boolean>();
+  const [dislikeQuery, setDislikeQuery] = useState<boolean>();
+  const [showCallout, setShowCallout] = useState<boolean>(false);
+  const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
+  const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
+  const [queryResults, setQueryResults] = useState<QueryResults>();
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
+  const inputEdited = useRef(false);
+  const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
+  const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
+  const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
+  const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
+  const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
   switch (activeReactTab) {
     case ReactTabKind.Connect:
       return userContext.apiType === "Postgres" ? <PostgresConnectTab /> : <ConnectTab />;
@@ -251,7 +275,53 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
     case ReactTabKind.QueryCopilot:
-      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} />;
+      return (
+        <QueryCopilotTab
+          // Pass the states as props
+          hideFeedbackModalForLikedQueries={hideFeedbackModalForLikedQueries}
+          userPrompt={userPrompt}
+          generatedQuery={generatedQuery}
+          query={query}
+          selectedQuery={selectedQuery}
+          isGeneratingQuery={isGeneratingQuery}
+          isExecuting={isExecuting}
+          likeQuery={likeQuery}
+          dislikeQuery={dislikeQuery}
+          showCallout={showCallout}
+          showSamplePrompts={showSamplePrompts}
+          queryIterator={queryIterator}
+          queryResults={queryResults}
+          errorMessage={errorMessage}
+          copilotTeachingBubbleVisible={copilotTeachingBubbleVisible}
+          inputEdited={inputEdited.current}
+          isSamplePromptsOpen={isSamplePromptsOpen}
+          showDeletePopup={showDeletePopup}
+          showFeedbackBar={showFeedbackBar}
+          showCopyPopup={showCopyPopup}
+          showErrorMessageBar={showErrorMessageBar}
+          // Pass the update functions as props
+          setUserPrompt={setUserPrompt}
+          setGeneratedQuery={setGeneratedQuery}
+          setQuery={setQuery}
+          setSelectedQuery={setSelectedQuery}
+          setIsGeneratingQuery={setIsGeneratingQuery}
+          setIsExecuting={setIsExecuting}
+          setLikeQuery={setLikeQuery}
+          setDislikeQuery={setDislikeQuery}
+          setShowCallout={setShowCallout}
+          setShowSamplePrompts={setShowSamplePrompts}
+          setQueryIterator={setQueryIterator}
+          setQueryResults={setQueryResults}
+          setErrorMessage={setErrorMessage}
+          toggleCopilotTeachingBubbleVisible={toggleCopilotTeachingBubbleVisible}
+          setIsSamplePromptsOpen={setIsSamplePromptsOpen}
+          setShowDeletePopup={setShowDeletePopup}
+          setShowFeedbackBar={setShowFeedbackBar}
+          setshowCopyPopup={setshowCopyPopup}
+          setShowErrorMessageBar={setShowErrorMessageBar}
+          explorer={explorer}
+        />
+      );
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

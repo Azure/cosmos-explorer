@@ -16,7 +16,6 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import { useBoolean } from "@fluentui/react-hooks";
 import { QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from "Common/Constants";
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
@@ -38,7 +37,7 @@ import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import SplitterLayout from "react-splitter-layout";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import HintIcon from "../../../images/Hint.svg";
@@ -54,8 +53,49 @@ interface SuggestedPrompt {
 }
 
 interface QueryCopilotTabProps {
-  initialInput: string;
   explorer: Explorer;
+  hideFeedbackModalForLikedQueries: boolean;
+  userPrompt: string;
+  generatedQuery: string;
+  query: string;
+  selectedQuery: string;
+  isGeneratingQuery: boolean;
+  isExecuting: boolean;
+  likeQuery: boolean;
+  dislikeQuery: boolean;
+  showCallout: boolean;
+  showSamplePrompts: boolean;
+  queryIterator: MinimalQueryIterator | undefined;
+  queryResults: QueryResults | undefined;
+  errorMessage: string;
+  copilotTeachingBubbleVisible: boolean;
+  inputEdited: boolean;
+  isSamplePromptsOpen: boolean;
+  showDeletePopup: boolean;
+  showFeedbackBar: boolean;
+  showCopyPopup: boolean;
+  showErrorMessageBar: boolean;
+
+  // Pass the update functions as props
+  setUserPrompt: (userPrompt: string) => void;
+  setGeneratedQuery: (generatedQuery: string) => void;
+  setQuery: (query: string) => void;
+  setSelectedQuery: (selectedQuery: string) => void;
+  setIsGeneratingQuery: (isGeneratingQuery: boolean) => void;
+  setIsExecuting: (isExecuting: boolean) => void;
+  setLikeQuery: (likeQuery: boolean) => void;
+  setDislikeQuery: (dislikeQuery: boolean) => void;
+  setShowCallout: (showCallout: boolean) => void;
+  setShowSamplePrompts: (showSamplePrompts: boolean) => void;
+  setQueryIterator: (queryIterator: MinimalQueryIterator) => void;
+  setQueryResults: (queryResults: QueryResults) => void;
+  setErrorMessage: (errorMessage: string) => void;
+  toggleCopilotTeachingBubbleVisible: () => void;
+  setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => void;
+  setShowDeletePopup: (showDeletePopup: boolean) => void;
+  setShowFeedbackBar: (showFeedbackBar: boolean) => void;
+  setshowCopyPopup: (showCopyPopup: boolean) => void;
+  setShowErrorMessageBar: (showErrorMessageBar: boolean) => void;
 }
 
 interface GenerateSQLQueryResponse {
@@ -72,30 +112,68 @@ const promptStyles: IButtonStyles = {
 };
 
 export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
-  initialInput,
   explorer,
+  userPrompt,
+  setUserPrompt,
+  generatedQuery,
+  setGeneratedQuery,
+  query,
+  setQuery,
+  selectedQuery,
+  setSelectedQuery,
+  isGeneratingQuery,
+  setIsGeneratingQuery,
+  isExecuting,
+  setIsExecuting,
+  likeQuery,
+  setLikeQuery,
+  dislikeQuery,
+  setDislikeQuery,
+  showCallout,
+  setShowCallout,
+  showSamplePrompts,
+  setShowSamplePrompts,
+  queryIterator,
+  setQueryIterator,
+  queryResults,
+  setQueryResults,
+  errorMessage,
+  setErrorMessage,
+  copilotTeachingBubbleVisible,
+  toggleCopilotTeachingBubbleVisible,
+  inputEdited,
+  isSamplePromptsOpen,
+  setIsSamplePromptsOpen,
+  showDeletePopup,
+  setShowDeletePopup,
+  showFeedbackBar,
+  setShowFeedbackBar,
+  showCopyPopup,
+  setshowCopyPopup,
+  showErrorMessageBar,
+  setShowErrorMessageBar,
 }: QueryCopilotTabProps): JSX.Element => {
   const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
-  const [userPrompt, setUserPrompt] = useState<string>(initialInput || "");
-  const [generatedQuery, setGeneratedQuery] = useState<string>("");
-  const [query, setQuery] = useState<string>("");
-  const [selectedQuery, setSelectedQuery] = useState<string>("");
-  const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
-  const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [likeQuery, setLikeQuery] = useState<boolean>();
-  const [dislikeQuery, setDislikeQuery] = useState<boolean>();
-  const [showCallout, setShowCallout] = useState<boolean>(false);
-  const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
-  const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
-  const [queryResults, setQueryResults] = useState<QueryResults>();
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
-  const inputEdited = useRef(false);
-  const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
-  const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
-  const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
-  const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
-  const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
+  // const [userPrompt, setUserPrompt] = useState<string>("");
+  // const [generatedQuery, setGeneratedQuery] = useState<string>("");
+  // const [query, setQuery] = useState<string>("");
+  // const [selectedQuery, setSelectedQuery] = useState<string>("");
+  // const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
+  // const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  // const [likeQuery, setLikeQuery] = useState<boolean>();
+  // const [dislikeQuery, setDislikeQuery] = useState<boolean>();
+  // const [showCallout, setShowCallout] = useState<boolean>(false);
+  // const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
+  // const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
+  // const [queryResults, setQueryResults] = useState<QueryResults>();
+  // const [errorMessage, setErrorMessage] = useState<string>("");
+  // const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
+  //const inputEdited = useRef(false);
+  // const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
+  // const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
+  // const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
+  // const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
+  // const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -132,7 +210,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
 
   const handleUserPromptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    inputEdited.current = true;
+    inputEdited = true;
     const { value } = event.target;
     setUserPrompt(value);
 
@@ -281,11 +359,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     return [executeQueryBtn, saveQueryBtn];
   };
   const showTeachingBubble = (): void => {
-    if (!inputEdited.current) {
+    if (!inputEdited) {
       setTimeout(() => {
-        if (!inputEdited.current) {
+        if (!inputEdited) {
           toggleCopilotTeachingBubbleVisible();
-          inputEdited.current = true;
+          inputEdited = true;
         }
       }, 30000);
     }
@@ -302,9 +380,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   }, [query, selectedQuery]);
 
   React.useEffect(() => {
-    if (initialInput) {
-      generateSQLQuery();
-    }
+    // if (initialInput) {
+    //   generateSQLQuery();
+    // }
     showTeachingBubble();
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
@@ -322,7 +400,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             value={userPrompt}
             onChange={handleUserPromptChange}
             onClick={() => {
-              inputEdited.current = true;
+              inputEdited = true;
               setShowSamplePrompts(true);
             }}
             style={{ lineHeight: 30 }}
