@@ -1,5 +1,4 @@
 import { IPanelProps, IRenderFunction, Panel, PanelType } from "@fluentui/react";
-import { useSelectedNode } from "Explorer/useSelectedNode";
 import * as React from "react";
 import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { useSidePanel } from "../../hooks/useSidePanel";
@@ -78,18 +77,10 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
   }
 
   private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
-    const targetElementDataTest: string | undefined = useSelectedNode.getState().findSelectedCollection().id();
-    const targetElement: HTMLElement | null = document.querySelector(`[data-test="${targetElementDataTest}"]`);
     if (ev && (ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
     } else {
       useSidePanel.getState().closeSidePanel();
-    }
-    if (targetElement) {
-      const moreButton: HTMLElement | null = targetElement.querySelector('[name="More"]');
-      if (moreButton) {
-        moreButton.focus();
-      }
     }
   };
 
