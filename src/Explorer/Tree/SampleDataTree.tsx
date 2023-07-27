@@ -17,7 +17,7 @@ export const SampleDataTree = ({
   const buildSampleDataTree = (): TreeNode => {
     const updatedSampleTree: TreeNode = {
       label: sampleDataResourceTokenCollection.databaseId,
-      isExpanded: true,
+      isExpanded: false,
       iconSrc: CosmosDBIcon,
       className: "databaseHeader",
       children: [
@@ -47,6 +47,7 @@ export const SampleDataTree = ({
             {
               label: "Items",
               onClick: () => sampleDataResourceTokenCollection.onDocumentDBDocumentsClick(),
+              contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
               isSelected: () =>
                 useSelectedNode
                   .getState()
