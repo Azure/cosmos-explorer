@@ -54,6 +54,7 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
         id="naturalLanguageInput"
         onChange={[Function]}
         onClick={[Function]}
+        onKeyDown={[Function]}
         style={
           Object {
             "lineHeight": 30,
