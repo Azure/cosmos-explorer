@@ -64,8 +64,6 @@
     "./src/Explorer/Notebook/SchemaAnalyzer/SchemaAnalyzerUtils.ts",
     "./src/Explorer/OpenFullScreen.test.tsx",
     "./src/Explorer/OpenFullScreen.tsx",
-    "./src/Explorer/Panes/PanelContainerComponent.test.tsx",
-    "./src/Explorer/Panes/PanelContainerComponent.tsx",
     "./src/Explorer/Panes/PanelFooterComponent.tsx",
     "./src/Explorer/Panes/PanelInfoErrorComponent.tsx",
     "./src/Explorer/Panes/PanelLoadingScreen.tsx",
