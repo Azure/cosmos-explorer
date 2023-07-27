@@ -1,9 +1,7 @@
 import { MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
-import { useBoolean } from "@fluentui/react-hooks";
-import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { CollectionTabKind, QueryResults } from "Contracts/ViewModels";
+import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
@@ -11,7 +9,7 @@ import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { userContext } from "UserContext";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { QueryCopilotState, useQueryCopilotState } from "hooks/useQueryCopilotState";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -30,6 +28,7 @@ interface TabsProps {
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
+  const queryCopilotState = useQueryCopilotState();
 
   return (
     <div className="tabsManagerContainer">
@@ -50,15 +49,20 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
         <div className="nav-tabs-margin">
           <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
             {openedReactTabs.map((tab) => (
-              <TabNav key={ReactTabKind[tab]} active={activeReactTab === tab} tabKind={tab} />
+              <TabNav
+                key={ReactTabKind[tab]}
+                active={activeReactTab === tab}
+                tabKind={tab}
+                queryCopilotState={queryCopilotState}
+              />
             ))}
             {openedTabs.map((tab) => (
-              <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
+              <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} queryCopilotState={queryCopilotState} />
             ))}
           </ul>
         </div>
         <div className="tabPanesContainer">
-          {activeReactTab !== undefined && getReactTabContent(activeReactTab, explorer)}
+          {activeReactTab !== undefined && getReactTabContent(activeReactTab, queryCopilotState, explorer)}
           {openedTabs.map((tab) => (
             <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
           ))}
@@ -68,7 +72,17 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   );
 };
 
-function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?: ReactTabKind }) {
+function TabNav({
+  tab,
+  active,
+  tabKind,
+  queryCopilotState,
+}: {
+  tab?: Tab;
+  active: boolean;
+  tabKind?: ReactTabKind;
+  queryCopilotState: QueryCopilotState;
+}) {
   const [hovering, setHovering] = useState(false);
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
   const tabId = tab ? tab.tabId : "";
@@ -132,7 +146,13 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
           <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           {tabKind !== ReactTabKind.Home && (
             <span className="tabIconSection">
-              <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
+              <CloseButton
+                tab={tab}
+                active={active}
+                hovering={hovering}
+                tabKind={tabKind}
+                queryCopilotState={queryCopilotState}
+              />
             </span>
           )}
         </div>
@@ -146,11 +166,13 @@ const CloseButton = ({
   active,
   hovering,
   tabKind,
+  queryCopilotState,
 }: {
   tab: Tab;
   active: boolean;
   hovering: boolean;
   tabKind?: ReactTabKind;
+  queryCopilotState: QueryCopilotState;
 }) => (
   <span
     style={{ display: hovering || active ? undefined : "none" }}
@@ -161,6 +183,7 @@ const CloseButton = ({
     onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
       event.stopPropagation();
       tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+      queryCopilotState.resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
@@ -245,28 +268,11 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
   return false;
 };
 
-const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
-  const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
-  const [userPrompt, setUserPrompt] = useState<string>("");
-  const [generatedQuery, setGeneratedQuery] = useState<string>("");
-  const [query, setQuery] = useState<string>("");
-  const [selectedQuery, setSelectedQuery] = useState<string>("");
-  const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
-  const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [likeQuery, setLikeQuery] = useState<boolean>();
-  const [dislikeQuery, setDislikeQuery] = useState<boolean>();
-  const [showCallout, setShowCallout] = useState<boolean>(false);
-  const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
-  const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
-  const [queryResults, setQueryResults] = useState<QueryResults>();
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
-  const inputEdited = useRef(false);
-  const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
-  const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
-  const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
-  const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
-  const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
+const getReactTabContent = (
+  activeReactTab: ReactTabKind,
+  queryCopilotState: QueryCopilotState,
+  explorer: Explorer
+): JSX.Element => {
   switch (activeReactTab) {
     case ReactTabKind.Connect:
       return userContext.apiType === "Postgres" ? <PostgresConnectTab /> : <ConnectTab />;
@@ -275,53 +281,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
     case ReactTabKind.QueryCopilot:
-      return (
-        <QueryCopilotTab
-          // Pass the states as props
-          hideFeedbackModalForLikedQueries={hideFeedbackModalForLikedQueries}
-          userPrompt={userPrompt}
-          generatedQuery={generatedQuery}
-          query={query}
-          selectedQuery={selectedQuery}
-          isGeneratingQuery={isGeneratingQuery}
-          isExecuting={isExecuting}
-          likeQuery={likeQuery}
-          dislikeQuery={dislikeQuery}
-          showCallout={showCallout}
-          showSamplePrompts={showSamplePrompts}
-          queryIterator={queryIterator}
-          queryResults={queryResults}
-          errorMessage={errorMessage}
-          copilotTeachingBubbleVisible={copilotTeachingBubbleVisible}
-          inputEdited={inputEdited.current}
-          isSamplePromptsOpen={isSamplePromptsOpen}
-          showDeletePopup={showDeletePopup}
-          showFeedbackBar={showFeedbackBar}
-          showCopyPopup={showCopyPopup}
-          showErrorMessageBar={showErrorMessageBar}
-          // Pass the update functions as props
-          setUserPrompt={setUserPrompt}
-          setGeneratedQuery={setGeneratedQuery}
-          setQuery={setQuery}
-          setSelectedQuery={setSelectedQuery}
-          setIsGeneratingQuery={setIsGeneratingQuery}
-          setIsExecuting={setIsExecuting}
-          setLikeQuery={setLikeQuery}
-          setDislikeQuery={setDislikeQuery}
-          setShowCallout={setShowCallout}
-          setShowSamplePrompts={setShowSamplePrompts}
-          setQueryIterator={setQueryIterator}
-          setQueryResults={setQueryResults}
-          setErrorMessage={setErrorMessage}
-          toggleCopilotTeachingBubbleVisible={toggleCopilotTeachingBubbleVisible}
-          setIsSamplePromptsOpen={setIsSamplePromptsOpen}
-          setShowDeletePopup={setShowDeletePopup}
-          setShowFeedbackBar={setShowFeedbackBar}
-          setshowCopyPopup={setshowCopyPopup}
-          setShowErrorMessageBar={setShowErrorMessageBar}
-          explorer={explorer}
-        />
-      );
+      return <QueryCopilotTab queryCopilotState={queryCopilotState} explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
