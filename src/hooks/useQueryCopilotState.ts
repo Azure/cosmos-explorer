@@ -1,7 +1,7 @@
-import { MinimalQueryIterator } from 'Common/IteratorUtilities';
-import { QueryResults } from 'Contracts/ViewModels';
-import { useQueryCopilot } from 'hooks/useQueryCopilot';
-import { useRef, useState } from 'react';
+import { MinimalQueryIterator } from "Common/IteratorUtilities";
+import { QueryResults } from "Contracts/ViewModels";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { useRef, useState } from "react";
 
 export interface QueryCopilotState {
     hideFeedbackModalForLikedQueries: boolean;
@@ -127,6 +127,6 @@ export const useQueryCopilotState = (): QueryCopilotState => {
         setshowCopyPopup,
         showErrorMessageBar,
         setShowErrorMessageBar,
-        resetQueryCopilotStates
+        resetQueryCopilotStates,
     };
 };
