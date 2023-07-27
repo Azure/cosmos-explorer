@@ -433,9 +433,7 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
 
   const data: SampledataconnectionResponse = await response.json();
   const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
-  updateUserContext({
-    sampleDataConnectionInfo,
-  });
+  updateUserContext({ sampleDataConnectionInfo });
 
   await explorer.refreshSampleData();
 }
