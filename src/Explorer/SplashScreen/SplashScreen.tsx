@@ -97,6 +97,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           () => this.setState({}),
           (state) => state.showResetPasswordBubble
         ),
+      },
+      {
+        dispose: useDatabases.subscribe(
+          () => this.setState({}),
+          (state) => state.sampleDataResourceTokenCollection
+        ),
       }
     );
   }
