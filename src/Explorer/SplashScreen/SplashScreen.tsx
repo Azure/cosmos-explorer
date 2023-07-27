@@ -113,7 +113,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   };
 
   private getSplashScreenButtons = (): JSX.Element => {
-    if (userContext.features.enableCopilot && userContext.apiType === "SQL") {
+    if (userContext.sampleDataConnectionInfo && userContext.features.enableCopilot && userContext.apiType === "SQL") {
       return (
         <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
           <Stack horizontal tokens={{ childrenGap: 16 }}>

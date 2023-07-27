@@ -435,11 +435,6 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
   const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
   updateUserContext({
     sampleDataConnectionInfo,
-    features: extractFeatures(
-      new URLSearchParams({
-        "feature.enableCopilot": sampleDataConnectionInfo ? "true" : "false",
-      })
-    ),
   });
 
   await explorer.refreshSampleData();
