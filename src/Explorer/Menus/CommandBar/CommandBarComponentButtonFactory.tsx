@@ -1,3 +1,5 @@
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
@@ -326,6 +328,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       onCommandClick: () => {
         if (useSelectedNode.getState().isQueryCopilotCollectionSelected()) {
           useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+          traceOpen(Action.OpenQueryCopilotFromNewQuery, { apiType: userContext.apiType });
         } else {
           const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
           selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);

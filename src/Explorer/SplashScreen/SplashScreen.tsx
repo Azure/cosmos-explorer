@@ -137,7 +137,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               description={
                 "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
               }
-              onClick={() => useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot)}
+              onClick={() => {
+                useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+                traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
+              }}
             />
             <SplashScreenButton
               imgSrc={ConnectIcon}
