@@ -265,7 +265,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     return [executeQueryBtn, saveQueryBtn];
   };
   const showTeachingBubble = (): void => {
-    let shouldShowTeachingBubble = !queryCopilotState.inputEdited && queryCopilotState.userPrompt.trim() === "";
+    const shouldShowTeachingBubble = !queryCopilotState.inputEdited && queryCopilotState.userPrompt.trim() === "";
     if (shouldShowTeachingBubble) {
       setTimeout(() => {
         if (shouldShowTeachingBubble) {
