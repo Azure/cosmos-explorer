@@ -297,6 +297,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     setShowCallout(false);
   };
 
+  const startGenerateQueryProcess = () => {
+    updateHistories();
+    generateSQLQuery();
+    resetButtonState();
+  };
+
   React.useEffect(() => {
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
@@ -324,6 +330,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             onClick={() => {
               inputEdited.current = true;
               setShowSamplePrompts(true);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                startGenerateQueryProcess();
+              }
             }}
             style={{ lineHeight: 30 }}
             styles={{ root: { width: "95%" } }}
@@ -357,11 +368,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             iconProps={{ iconName: "Send" }}
             disabled={isGeneratingQuery || !userPrompt.trim()}
             style={{ marginLeft: 8 }}
-            onClick={() => {
-              updateHistories();
-              generateSQLQuery();
-              resetButtonState();
-            }}
+            onClick={() => startGenerateQueryProcess()}
           />
           {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
           {showSamplePrompts && (
