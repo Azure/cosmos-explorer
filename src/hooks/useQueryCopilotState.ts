@@ -42,6 +42,8 @@ export interface QueryCopilotState {
   setshowCopyPopup: React.Dispatch<React.SetStateAction<boolean>>;
   showErrorMessageBar: boolean;
   setShowErrorMessageBar: React.Dispatch<React.SetStateAction<boolean>>;
+  generatedQueryComments: string;
+  setGeneratedQueryComments: React.Dispatch<React.SetStateAction<string>>;
   resetQueryCopilotStates: () => void;
 }
 
@@ -66,6 +68,7 @@ export const useQueryCopilotState = (): QueryCopilotState => {
   const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
   const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
   const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
+  const [generatedQueryComments, setGeneratedQueryComments] = useState<string>("");
 
   const resetQueryCopilotStates = () => {
     setUserPrompt("");
@@ -86,6 +89,7 @@ export const useQueryCopilotState = (): QueryCopilotState => {
     setShowFeedbackBar(false);
     setshowCopyPopup(false);
     setShowErrorMessageBar(false);
+    setGeneratedQueryComments("");
   };
 
   return {
@@ -127,6 +131,8 @@ export const useQueryCopilotState = (): QueryCopilotState => {
     setshowCopyPopup,
     showErrorMessageBar,
     setShowErrorMessageBar,
+    generatedQueryComments,
+    setGeneratedQueryComments,
     resetQueryCopilotStates,
   };
 };

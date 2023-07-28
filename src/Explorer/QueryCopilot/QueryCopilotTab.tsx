@@ -153,7 +153,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         containerSchema: QueryCopilotSampleContainerSchema,
         userPrompt: queryCopilotState.userPrompt,
       };
-      setShowDeletePopup(false);
+      queryCopilotState.setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
       const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
         method: "POST",
@@ -172,10 +172,10 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
           }
           query += generateSQLQueryResponse.sql;
-          setQuery(query);
-          setGeneratedQuery(generateSQLQueryResponse.sql);
-          setGeneratedQueryComments(generateSQLQueryResponse.explanation);
-          setShowErrorMessageBar(false);
+          queryCopilotState.setQuery(query);
+          queryCopilotState.setGeneratedQuery(generateSQLQueryResponse.sql);
+          queryCopilotState.setGeneratedQueryComments(generateSQLQueryResponse.explanation);
+          queryCopilotState.setShowErrorMessageBar(false);
         }
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
@@ -197,12 +197,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const onExecuteQueryClick = async (): Promise<void> => {
     traceStart(Action.ExecuteQueryGeneratedFromQueryCopilot, {
       correlationId: useQueryCopilot.getState().correlationId,
-      userPrompt: userPrompt,
-      generatedQuery: generatedQuery,
-      generatedQueryComments: generatedQueryComments,
-      executedQuery: selectedQuery || query,
+      userPrompt: queryCopilotState.userPrompt,
+      generatedQuery: queryCopilotState.generatedQuery,
+      generatedQueryComments: queryCopilotState.generatedQueryComments,
+      executedQuery: queryCopilotState.selectedQuery || queryCopilotState.query,
     });
-    const queryToExecute = selectedQuery || query;
+    const queryToExecute = queryCopilotState.selectedQuery || queryCopilotState.query;
     const queryIterator = querySampleDocuments(queryToExecute, {
       enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
     } as FeedOptions);
@@ -224,9 +224,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           queryDocumentsPage(QueryCopilotSampleContainerId, queryIterator, firstItemIndex)
       );
 
-      setQueryResults(queryResults);
-      setErrorMessage("");
-      setShowErrorMessageBar(false);
+      queryCopilotState.setQueryResults(queryResults);
+      queryCopilotState.setErrorMessage("");
+      queryCopilotState.setShowErrorMessageBar(false);
       traceSuccess(Action.ExecuteQueryGeneratedFromQueryCopilot, {
         correlationId: useQueryCopilot.getState().correlationId,
       });
@@ -236,7 +236,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         correlationId: useQueryCopilot.getState().correlationId,
         errorMessage: errorMessage,
       });
-      setErrorMessage(errorMessage);
+      queryCopilotState.setErrorMessage(errorMessage);
       handleError(errorMessage, "executeQueryCopilotTab");
       useTabs.getState().setIsQueryErrorThrown(true);
       queryCopilotState.setShowErrorMessageBar(true);
