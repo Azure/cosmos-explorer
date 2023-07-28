@@ -47,6 +47,8 @@ describe("Query copilot tab snapshot test", () => {
       setshowCopyPopup: jest.fn(),
       showErrorMessageBar: false,
       setShowErrorMessageBar: jest.fn(),
+      generatedQueryComments: "",
+      setGeneratedQueryComments: jest.fn(),
       resetQueryCopilotStates: jest.fn(),
     };
 
