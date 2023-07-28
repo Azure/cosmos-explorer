@@ -4,6 +4,7 @@ import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import * as commonUtils from "Common/dataAccess/queryDocuments";
 import DocumentId from "Explorer/Tree/DocumentId";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { querySampleDocuments, readSampleDocument, submitFeedback } from "./QueryCopilotUtilities";
 jest.mock("Explorer/Tree/DocumentId", () => {
   return jest.fn().mockImplementation(() => {
@@ -56,6 +57,7 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
+      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
         likeQuery: true,
@@ -71,6 +73,7 @@ describe("QueryCopilotUtilities", () => {
           method: "POST",
           headers: {
             "content-type": "application/json",
+            "x-ms-correlationid": useQueryCopilot.getState().correlationId,
           },
         })
       );
@@ -86,6 +89,7 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
+      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
         likeQuery: false,
@@ -101,6 +105,7 @@ describe("QueryCopilotUtilities", () => {
           method: "POST",
           headers: {
             "content-type": "application/json",
+            "x-ms-correlationid": useQueryCopilot.getState().correlationId,
           },
         })
       );
