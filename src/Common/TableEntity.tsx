@@ -106,7 +106,6 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
       <Stack horizontal tokens={sectionStackTokens}>
         <TextField
           label={entityPropertyLabel && entityPropertyLabel}
-          id="entityPropertyId"
           autoFocus
           disabled={isPropertyTypeDisable}
           placeholder={entityPropertyPlaceHolder}
@@ -120,7 +119,6 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onChange={onEntityTypeChange}
           options={options}
           disabled={isPropertyTypeDisable}
-          id="entityTypeId"
           styles={dropdownStyles}
         />
         <EntityValue
@@ -137,7 +135,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         />
         {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
-            <div tabIndex={0}>
+            <div>
               <Image
                 {...imageProps}
                 src={EditIcon}
