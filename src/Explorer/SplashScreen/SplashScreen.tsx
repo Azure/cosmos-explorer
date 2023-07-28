@@ -97,6 +97,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           () => this.setState({}),
           (state) => state.showResetPasswordBubble
         ),
+      },
+      {
+        dispose: useDatabases.subscribe(
+          () => this.setState({}),
+          (state) => state.sampleDataResourceTokenCollection
+        ),
       }
     );
   }
@@ -107,7 +113,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   };
 
   private getSplashScreenButtons = (): JSX.Element => {
-    if (userContext.features.enableCopilot && userContext.apiType === "SQL") {
+    if (
+      useDatabases.getState().sampleDataResourceTokenCollection &&
+      userContext.features.enableCopilot &&
+      userContext.apiType === "SQL"
+    ) {
       return (
         <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
           <Stack horizontal tokens={{ childrenGap: 16 }}>
