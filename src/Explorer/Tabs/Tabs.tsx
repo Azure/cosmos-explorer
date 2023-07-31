@@ -53,11 +53,16 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
                 key={ReactTabKind[tab]}
                 active={activeReactTab === tab}
                 tabKind={tab}
-                queryCopilotState={queryCopilotState}
+                resetQueryCopilotStates={queryCopilotState.resetQueryCopilotStates}
               />
             ))}
             {openedTabs.map((tab) => (
-              <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} queryCopilotState={queryCopilotState} />
+              <TabNav
+                key={tab.tabId}
+                tab={tab}
+                active={activeTab === tab}
+                resetQueryCopilotStates={queryCopilotState.resetQueryCopilotStates}
+              />
             ))}
           </ul>
         </div>
@@ -76,12 +81,12 @@ function TabNav({
   tab,
   active,
   tabKind,
-  queryCopilotState,
+  resetQueryCopilotStates,
 }: {
   tab?: Tab;
   active: boolean;
   tabKind?: ReactTabKind;
-  queryCopilotState: QueryCopilotState;
+  resetQueryCopilotStates: () => void;
 }) {
   const [hovering, setHovering] = useState(false);
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
@@ -151,7 +156,7 @@ function TabNav({
                 active={active}
                 hovering={hovering}
                 tabKind={tabKind}
-                queryCopilotState={queryCopilotState}
+                resetQueryCopilotStates={resetQueryCopilotStates}
               />
             </span>
           )}
@@ -166,13 +171,13 @@ const CloseButton = ({
   active,
   hovering,
   tabKind,
-  queryCopilotState,
+  resetQueryCopilotStates,
 }: {
   tab: Tab;
   active: boolean;
   hovering: boolean;
   tabKind?: ReactTabKind;
-  queryCopilotState: QueryCopilotState;
+  resetQueryCopilotStates: () => void;
 }) => (
   <span
     style={{ display: hovering || active ? undefined : "none" }}
@@ -183,7 +188,7 @@ const CloseButton = ({
     onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
       event.stopPropagation();
       tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
-      tabKind === ReactTabKind.QueryCopilot && queryCopilotState.resetQueryCopilotStates();
+      tabKind === ReactTabKind.QueryCopilot && resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
