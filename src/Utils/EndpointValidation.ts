@@ -38,14 +38,13 @@ function validateEndpointInternal(
   return valid;
 }
 
-export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.microsoftonline.com/"];
-
 export const defaultAllowedArmEndpoints: ReadonlyArray<string> = [
   "https://​management.azure.com",
   "https://​management.usgovcloudapi.net",
   "https://management.chinacloudapi.cn",
-  "https://management.mycloud.net/",
 ];
+
+export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.microsoftonline.com/"];
 
 export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
