@@ -80,27 +80,68 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 }: QueryCopilotTabProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
+  const {
+    hideFeedbackModalForLikedQueries,
+    userPrompt,
+    setUserPrompt,
+    generatedQuery,
+    setGeneratedQuery,
+    query,
+    setQuery,
+    selectedQuery,
+    setSelectedQuery,
+    isGeneratingQuery,
+    setIsGeneratingQuery,
+    isExecuting,
+    setIsExecuting,
+    likeQuery,
+    setLikeQuery,
+    dislikeQuery,
+    setDislikeQuery,
+    showCallout,
+    setShowCallout,
+    showSamplePrompts,
+    setShowSamplePrompts,
+    queryIterator,
+    setQueryIterator,
+    queryResults,
+    setQueryResults,
+    errorMessage,
+    setErrorMessage,
+    isSamplePromptsOpen,
+    setIsSamplePromptsOpen,
+    showDeletePopup,
+    setShowDeletePopup,
+    showFeedbackBar,
+    setShowFeedbackBar,
+    showCopyPopup,
+    setshowCopyPopup,
+    showErrorMessageBar,
+    setShowErrorMessageBar,
+    generatedQueryComments,
+    setGeneratedQueryComments,
+  } = queryCopilotState;
 
   const sampleProps: SamplePromptsProps = {
-    isSamplePromptsOpen: queryCopilotState.isSamplePromptsOpen,
-    setIsSamplePromptsOpen: queryCopilotState.setIsSamplePromptsOpen,
-    setTextBox: queryCopilotState.setUserPrompt,
+    isSamplePromptsOpen: isSamplePromptsOpen,
+    setIsSamplePromptsOpen: setIsSamplePromptsOpen,
+    setTextBox: setUserPrompt,
   };
 
   const copyGeneratedCode = () => {
-    if (!queryCopilotState.query) {
+    if (!query) {
       return;
     }
     const queryElement = document.createElement("textarea");
-    queryElement.value = queryCopilotState.query;
+    queryElement.value = query;
     document.body.appendChild(queryElement);
     queryElement.select();
     document.execCommand("copy");
     document.body.removeChild(queryElement);
 
-    queryCopilotState.setshowCopyPopup(true);
+    setshowCopyPopup(true);
     setTimeout(() => {
-      queryCopilotState.setshowCopyPopup(false);
+      setshowCopyPopup(false);
     }, 6000);
   };
 
@@ -118,7 +159,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   const handleUserPromptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     inputEdited.current = true;
     const { value } = event.target;
-    queryCopilotState.setUserPrompt(value);
+    setUserPrompt(value);
 
     // Filter history prompts
     const filteredHistory = histories.filter((history) => history.toLowerCase().includes(value.toLowerCase()));
@@ -132,7 +173,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   };
 
   const updateHistories = (): void => {
-    const formattedUserPrompt = queryCopilotState.userPrompt.replace(/\s+/g, " ").trim();
+    const formattedUserPrompt = userPrompt.replace(/\s+/g, " ").trim();
     const existingHistories = histories.map((history) => history.replace(/\s+/g, " ").trim());
 
     const updatedHistories = existingHistories.filter(
@@ -146,14 +187,14 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
   const generateSQLQuery = async (): Promise<void> => {
     try {
-      queryCopilotState.setIsGeneratingQuery(true);
+      setIsGeneratingQuery(true);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
       const payload = {
         containerSchema: QueryCopilotSampleContainerSchema,
-        userPrompt: queryCopilotState.userPrompt,
+        userPrompt: userPrompt,
       };
-      queryCopilotState.setShowDeletePopup(false);
+      setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
       const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
         method: "POST",
@@ -167,46 +208,46 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (response.ok) {
         if (generateSQLQueryResponse?.sql) {
-          let query = `-- **Prompt:** ${queryCopilotState.userPrompt}\r\n`;
+          let query = `-- **Prompt:** ${userPrompt}\r\n`;
           if (generateSQLQueryResponse.explanation) {
             query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
           }
           query += generateSQLQueryResponse.sql;
-          queryCopilotState.setQuery(query);
-          queryCopilotState.setGeneratedQuery(generateSQLQueryResponse.sql);
-          queryCopilotState.setGeneratedQueryComments(generateSQLQueryResponse.explanation);
-          queryCopilotState.setShowErrorMessageBar(false);
+          setQuery(query);
+          setGeneratedQuery(generateSQLQueryResponse.sql);
+          setGeneratedQueryComments(generateSQLQueryResponse.explanation);
+          setShowErrorMessageBar(false);
         }
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
         useTabs.getState().setIsQueryErrorThrown(true);
-        queryCopilotState.setShowErrorMessageBar(true);
+        setShowErrorMessageBar(true);
       }
     } catch (error) {
       handleError(error, "executeNaturalLanguageQuery");
       useTabs.getState().setIsQueryErrorThrown(true);
-      queryCopilotState.setShowErrorMessageBar(true);
+      setShowErrorMessageBar(true);
       throw error;
     } finally {
-      queryCopilotState.setIsGeneratingQuery(false);
+      setIsGeneratingQuery(false);
       useTabs.getState().setIsTabExecuting(false);
-      queryCopilotState.setShowFeedbackBar(true);
+      setShowFeedbackBar(true);
     }
   };
 
   const onExecuteQueryClick = async (): Promise<void> => {
     traceStart(Action.ExecuteQueryGeneratedFromQueryCopilot, {
       correlationId: useQueryCopilot.getState().correlationId,
-      userPrompt: queryCopilotState.userPrompt,
-      generatedQuery: queryCopilotState.generatedQuery,
-      generatedQueryComments: queryCopilotState.generatedQueryComments,
-      executedQuery: queryCopilotState.selectedQuery || queryCopilotState.query,
+      userPrompt: userPrompt,
+      generatedQuery: generatedQuery,
+      generatedQueryComments: generatedQueryComments,
+      executedQuery: selectedQuery || query,
     });
-    const queryToExecute = queryCopilotState.selectedQuery || queryCopilotState.query;
+    const queryToExecute = selectedQuery || query;
     const queryIterator = querySampleDocuments(queryToExecute, {
       enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
     } as FeedOptions);
-    queryCopilotState.setQueryIterator(queryIterator);
+    setQueryIterator(queryIterator);
 
     setTimeout(async () => {
       await queryDocumentsPerPage(0, queryIterator);
@@ -215,7 +256,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
   const queryDocumentsPerPage = async (firstItemIndex: number, queryIterator: MinimalQueryIterator): Promise<void> => {
     try {
-      queryCopilotState.setIsExecuting(true);
+      setIsExecuting(true);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
       const queryResults: QueryResults = await queryPagesUntilContentPresent(
@@ -224,9 +265,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           queryDocumentsPage(QueryCopilotSampleContainerId, queryIterator, firstItemIndex)
       );
 
-      queryCopilotState.setQueryResults(queryResults);
-      queryCopilotState.setErrorMessage("");
-      queryCopilotState.setShowErrorMessageBar(false);
+      setQueryResults(queryResults);
+      setErrorMessage("");
+      setShowErrorMessageBar(false);
       traceSuccess(Action.ExecuteQueryGeneratedFromQueryCopilot, {
         correlationId: useQueryCopilot.getState().correlationId,
       });
@@ -236,18 +277,18 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         correlationId: useQueryCopilot.getState().correlationId,
         errorMessage: errorMessage,
       });
-      queryCopilotState.setErrorMessage(errorMessage);
+      setErrorMessage(errorMessage);
       handleError(errorMessage, "executeQueryCopilotTab");
       useTabs.getState().setIsQueryErrorThrown(true);
-      queryCopilotState.setShowErrorMessageBar(true);
+      setShowErrorMessageBar(true);
     } finally {
-      queryCopilotState.setIsExecuting(false);
+      setIsExecuting(false);
       useTabs.getState().setIsTabExecuting(false);
     }
   };
 
   const getCommandbarButtons = (): CommandButtonComponentProps[] => {
-    const executeQueryBtnLabel = queryCopilotState.selectedQuery ? "Execute Selection" : "Execute Query";
+    const executeQueryBtnLabel = selectedQuery ? "Execute Selection" : "Execute Query";
     const executeQueryBtn = {
       iconSrc: ExecuteQueryIcon,
       iconAlt: executeQueryBtnLabel,
@@ -255,20 +296,18 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       commandButtonLabel: executeQueryBtnLabel,
       ariaLabel: executeQueryBtnLabel,
       hasPopup: false,
-      disabled: queryCopilotState.query?.trim() === "",
+      disabled: query?.trim() === "",
     };
 
     const saveQueryBtn = {
       iconSrc: SaveQueryIcon,
       iconAlt: "Save Query",
       onCommandClick: () =>
-        useSidePanel
-          .getState()
-          .openSidePanel("Save Query", <SaveQueryPane explorer={explorer} queryToSave={queryCopilotState.query} />),
+        useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={explorer} queryToSave={query} />),
       commandButtonLabel: "Save Query",
       ariaLabel: "Save Query",
       hasPopup: false,
-      disabled: queryCopilotState.query?.trim() === "",
+      disabled: query?.trim() === "",
     };
 
     // Sample Prompts temporary disabled due current design
@@ -284,21 +323,21 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     return [executeQueryBtn, saveQueryBtn];
   };
   const showTeachingBubble = (): void => {
-    const shouldShowTeachingBubble = !queryCopilotState.inputEdited && queryCopilotState.userPrompt.trim() === "";
+    const shouldShowTeachingBubble = !inputEdited.current && userPrompt.trim() === "";
     if (shouldShowTeachingBubble) {
       setTimeout(() => {
         if (shouldShowTeachingBubble) {
           toggleCopilotTeachingBubbleVisible();
-          queryCopilotState.inputEdited = true;
+          inputEdited.current = true;
         }
       }, 30000);
     }
   };
 
   const resetButtonState = () => {
-    queryCopilotState.setDislikeQuery(false);
-    queryCopilotState.setLikeQuery(false);
-    queryCopilotState.setShowCallout(false);
+    setDislikeQuery(false);
+    setLikeQuery(false);
+    setShowCallout(false);
   };
 
   const startGenerateQueryProcess = () => {
@@ -309,7 +348,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
   React.useEffect(() => {
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
-  }, [queryCopilotState.query, queryCopilotState.selectedQuery]);
+  }, [query, selectedQuery]);
 
   React.useEffect(() => {
     showTeachingBubble();
@@ -326,11 +365,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%", position: "relative" }}>
           <TextField
             id="naturalLanguageInput"
-            value={queryCopilotState.userPrompt}
+            value={userPrompt}
             onChange={handleUserPromptChange}
             onClick={() => {
-              queryCopilotState.inputEdited = true;
-              queryCopilotState.setShowSamplePrompts(true);
+              inputEdited.current = true;
+              setShowSamplePrompts(true);
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -339,7 +378,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             }}
             style={{ lineHeight: 30 }}
             styles={{ root: { width: "95%" } }}
-            disabled={queryCopilotState.isGeneratingQuery}
+            disabled={isGeneratingQuery}
             autoComplete="off"
           />
           {copilotTeachingBubbleVisible && (
@@ -355,7 +394,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
               Write a prompt here and Copilot will generate the query for you. You can also choose from our{" "}
               <Link
                 onClick={() => {
-                  queryCopilotState.setShowSamplePrompts(true);
+                  setShowSamplePrompts(true);
                   toggleCopilotTeachingBubbleVisible();
                 }}
                 style={{ color: "white", fontWeight: 600 }}
@@ -367,17 +406,17 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           )}
           <IconButton
             iconProps={{ iconName: "Send" }}
-            disabled={queryCopilotState.isGeneratingQuery || !queryCopilotState.userPrompt.trim()}
+            disabled={isGeneratingQuery || !userPrompt.trim()}
             style={{ marginLeft: 8 }}
             onClick={() => startGenerateQueryProcess()}
           />
-          {queryCopilotState.isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
-          {queryCopilotState.showSamplePrompts && (
+          {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
+          {showSamplePrompts && (
             <Callout
               styles={{ root: { minWidth: 400 } }}
               target="#naturalLanguageInput"
               isBeakVisible={false}
-              onDismiss={() => queryCopilotState.setShowSamplePrompts(false)}
+              onDismiss={() => setShowSamplePrompts(false)}
               directionalHintFixed={true}
               directionalHint={DirectionalHint.bottomLeftEdge}
               alignTargetEdge={true}
@@ -402,8 +441,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                       <DefaultButton
                         key={i}
                         onClick={() => {
-                          queryCopilotState.setUserPrompt(history);
-                          queryCopilotState.setShowSamplePrompts(false);
+                          setUserPrompt(history);
+                          setShowSamplePrompts(false);
                         }}
                         onRenderIcon={() => <Image src={RecentIcon} />}
                         styles={promptStyles}
@@ -431,8 +470,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                       <DefaultButton
                         key={prompt.id}
                         onClick={() => {
-                          queryCopilotState.setUserPrompt(prompt.text);
-                          queryCopilotState.setShowSamplePrompts(false);
+                          setUserPrompt(prompt.text);
+                          setShowSamplePrompts(false);
                         }}
                         onRenderIcon={() => <Image src={HintIcon} />}
                         styles={promptStyles}
@@ -478,7 +517,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             <Link href="http://aka.ms/cdb-copilot-preview-terms" target="_blank">
               Read preview terms
             </Link>
-            {queryCopilotState.showErrorMessageBar && (
+            {showErrorMessageBar && (
               <Stack style={{ backgroundColor: "#FEF0F1", padding: "4px 8px" }} horizontal verticalAlign="center">
                 <Image src={XErrorMessage} style={{ marginRight: "8px" }} />
                 <Text style={{ fontSize: 12 }}>
@@ -489,20 +528,20 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           </Text>
         </Stack>
 
-        {queryCopilotState.showFeedbackBar && (
+        {showFeedbackBar && (
           <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
             <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
-            {queryCopilotState.showCallout && !queryCopilotState.hideFeedbackModalForLikedQueries && (
+            {showCallout && !hideFeedbackModalForLikedQueries && (
               <Callout
                 style={{ padding: 8 }}
                 target="#likeBtn"
                 onDismiss={() => {
-                  queryCopilotState.setShowCallout(false);
+                  setShowCallout(false);
                   submitFeedback({
-                    generatedQuery: queryCopilotState.generatedQuery,
-                    likeQuery: queryCopilotState.likeQuery,
+                    generatedQuery: generatedQuery,
+                    likeQuery: likeQuery,
                     description: "",
-                    userPrompt: queryCopilotState.userPrompt,
+                    userPrompt: userPrompt,
                   });
                 }}
                 directionalHint={DirectionalHint.topCenter}
@@ -511,10 +550,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                   Thank you. Need to give{" "}
                   <Link
                     onClick={() => {
-                      queryCopilotState.setShowCallout(false);
-                      useQueryCopilot
-                        .getState()
-                        .openFeedbackModal(queryCopilotState.generatedQuery, true, queryCopilotState.userPrompt);
+                      setShowCallout(false);
+                      useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userPrompt);
                     }}
                   >
                     more feedback?
@@ -525,27 +562,25 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             <IconButton
               id="likeBtn"
               style={{ marginLeft: 20 }}
-              iconProps={{ iconName: queryCopilotState.likeQuery === true ? "LikeSolid" : "Like" }}
+              iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
               onClick={() => {
-                queryCopilotState.setShowCallout(!queryCopilotState.likeQuery);
-                queryCopilotState.setLikeQuery(!queryCopilotState.likeQuery);
-                if (queryCopilotState.dislikeQuery) {
-                  queryCopilotState.setDislikeQuery(!queryCopilotState.dislikeQuery);
+                setShowCallout(!likeQuery);
+                setLikeQuery(!likeQuery);
+                if (dislikeQuery) {
+                  setDislikeQuery(!dislikeQuery);
                 }
               }}
             />
             <IconButton
               style={{ margin: "0 10px" }}
-              iconProps={{ iconName: queryCopilotState.dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
+              iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
               onClick={() => {
-                if (!queryCopilotState.dislikeQuery) {
-                  useQueryCopilot
-                    .getState()
-                    .openFeedbackModal(queryCopilotState.generatedQuery, false, queryCopilotState.userPrompt);
-                  queryCopilotState.setLikeQuery(false);
+                if (!dislikeQuery) {
+                  useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
+                  setLikeQuery(false);
                 }
-                queryCopilotState.setDislikeQuery(!queryCopilotState.dislikeQuery);
-                queryCopilotState.setShowCallout(false);
+                setDislikeQuery(!dislikeQuery);
+                setShowCallout(false);
               }}
             />
             <Separator vertical style={{ color: "#EDEBE9" }} />
@@ -558,7 +593,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             </CommandBarButton>
             <CommandBarButton
               onClick={() => {
-                queryCopilotState.setShowDeletePopup(true);
+                setShowDeletePopup(true);
               }}
               iconProps={{ iconName: "Delete" }}
               style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
@@ -572,40 +607,37 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
             <EditorReact
               language={"sql"}
-              content={queryCopilotState.query}
+              content={query}
               isReadOnly={false}
               ariaLabel={"Editing Query"}
               lineNumbers={"on"}
-              onContentChanged={(newQuery: string) => queryCopilotState.setQuery(newQuery)}
-              onContentSelected={(selectedQuery: string) => queryCopilotState.setSelectedQuery(selectedQuery)}
+              onContentChanged={(newQuery: string) => setQuery(newQuery)}
+              onContentSelected={(selectedQuery: string) => setSelectedQuery(selectedQuery)}
             />
             <QueryResultSection
               isMongoDB={false}
-              queryEditorContent={queryCopilotState.selectedQuery || queryCopilotState.query}
-              error={queryCopilotState.errorMessage}
-              queryResults={queryCopilotState.queryResults}
-              isExecuting={queryCopilotState.isExecuting}
+              queryEditorContent={selectedQuery || query}
+              error={errorMessage}
+              queryResults={queryResults}
+              isExecuting={isExecuting}
               executeQueryDocumentsPage={(firstItemIndex: number) =>
-                queryDocumentsPerPage(firstItemIndex, queryCopilotState.queryIterator)
+                queryDocumentsPerPage(firstItemIndex, queryIterator)
               }
             />
           </SplitterLayout>
         </Stack>
         <WelcomeModal visible={localStorage.getItem("hideWelcomeModal") !== "true"} />
-        {queryCopilotState.isSamplePromptsOpen && <SamplePrompts sampleProps={sampleProps} />}
-        {queryCopilotState.query !== "" && queryCopilotState.query.trim().length !== 0 && (
+        {isSamplePromptsOpen && <SamplePrompts sampleProps={sampleProps} />}
+        {query !== "" && query.trim().length !== 0 && (
           <DeletePopup
-            showDeletePopup={queryCopilotState.showDeletePopup}
-            setShowDeletePopup={queryCopilotState.setShowDeletePopup}
-            setQuery={queryCopilotState.setQuery}
+            showDeletePopup={showDeletePopup}
+            setShowDeletePopup={setShowDeletePopup}
+            setQuery={setQuery}
             clearFeedback={resetButtonState}
-            showFeedbackBar={queryCopilotState.setShowFeedbackBar}
+            showFeedbackBar={setShowFeedbackBar}
           />
         )}
-        <CopyPopup
-          showCopyPopup={queryCopilotState.showCopyPopup}
-          setShowCopyPopup={queryCopilotState.setshowCopyPopup}
-        />
+        <CopyPopup showCopyPopup={showCopyPopup} setShowCopyPopup={setshowCopyPopup} />
       </div>
     </Stack>
   );
