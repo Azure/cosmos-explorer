@@ -60,7 +60,6 @@ describe("getTokenFromAuthService", () => {
   });
 
   it("builds the correct URL in production", () => {
-    debugger;
     updateConfigContext({
       BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
     });
