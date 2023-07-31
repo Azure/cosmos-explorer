@@ -9,7 +9,7 @@ import {
   allowedMsalRedirectEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
-  validateEndpoint
+  validateEndpoint,
 } from "Utils/EndpointValidation";
 
 export enum Platform {
@@ -91,7 +91,12 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints ? configContext.allowedArmEndpoints : defaultAllowedArmEndpoints)) {
+  if (
+    !validateEndpoint(
+      newContext.ARM_ENDPOINT,
+      configContext.allowedArmEndpoints ? configContext.allowedArmEndpoints : defaultAllowedArmEndpoints
+    )
+  ) {
     delete newContext.ARM_ENDPOINT;
   }
 
@@ -111,7 +116,12 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, configContext.allowedBackendEndpoints ? configContext.allowedBackendEndpoints : defaultAllowedBackendEndpoints)) {
+  if (
+    !validateEndpoint(
+      newContext.BACKEND_ENDPOINT,
+      configContext.allowedBackendEndpoints ? configContext.allowedBackendEndpoints : defaultAllowedBackendEndpoints
+    )
+  ) {
     delete newContext.BACKEND_ENDPOINT;
   }
 
@@ -194,4 +204,3 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
-
