@@ -40,6 +40,22 @@ function validateEndpointInternal(
 
 export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.microsoftonline.com/"];
 
+export const defaultAllowedArmEndpoints:ReadonlyArray<string> = [
+  "https://​management.azure.com",
+  "https://​management.usgovcloudapi.net",
+  "https://management.chinacloudapi.cn",
+  "https://management.mycloud.net/",
+];
+
+export const defaultAllowedBackendEndpoints:ReadonlyArray<string> = [
+  "https://main.documentdb.ext.azure.com",
+  "https://main.documentdb.ext.azure.cn",
+  "https://main.documentdb.ext.azure.us",
+  "https://main.cosmos.ext.azure",
+  "https://localhost:12901",
+  "https://localhost:1234",
+];
+
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
   "https://main.documentdb.ext.azure.cn",

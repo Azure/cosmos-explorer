@@ -7,6 +7,8 @@ import {
   allowedJunoOrigins,
   allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
+  defaultAllowedArmEndpoints,
+  defaultAllowedBackendEndpoints,
   validateEndpoint
 } from "Utils/EndpointValidation";
 
@@ -18,9 +20,9 @@ export enum Platform {
 
 export interface ConfigContext {
   platform: Platform;
-  allowedParentFrameOrigins: ReadonlyArray<string>;
   allowedArmEndpoints: ReadonlyArray<string>;
   allowedBackendEndpoints: ReadonlyArray<string>;
+  allowedParentFrameOrigins: ReadonlyArray<string>;
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
@@ -46,80 +48,11 @@ export interface ConfigContext {
   msalRedirectURI?: string;
 }
 
-let useDefaultEndpointValidationValues: boolean = false;
-let receivedAllowedArmEndpoints: string[];
-let receivedAllowedBackendEndpoints: string[];
-
-try {
-  const response = await fetch("./config.json", {
-    headers: {
-      "If-None-Match": "", // disable client side cache
-    },
-  });
-  if (response.status === 200) {
-    try {
-      const { ...externalConfig } = await response.json();
-      updateConfigContext(externalConfig);
-    } catch (error) {
-      console.error("Unable to parse json in config file");
-      useDefaultEndpointValidationValues = true;
-      console.error(error);
-    }
-  }
-  // Allow override of platform value with URL query parameter
-  const params = new URLSearchParams(window.location.search);
-  if (params.has("armAPIVersion")) {
-    const armAPIVersion = params.get("armAPIVersion") || "";
-    updateConfigContext({ armAPIVersion });
-  }
-  if (params.has("armEndpoint")) {
-    const ARM_ENDPOINT = params.get("armEndpoint") || "";
-    updateConfigContext({ ARM_ENDPOINT });
-  }
-  if (params.has("aadEndpoint")) {
-    const AAD_ENDPOINT = params.get("aadEndpoint") || "";
-    updateConfigContext({ AAD_ENDPOINT });
-  }
-  if (params.has("platform")) {
-    const platform = params.get("platform");
-    switch (platform) {
-      default:
-        console.error(`Invalid platform query parameter: ${platform}`);
-        break;
-      case Platform.Portal:
-      case Platform.Hosted:
-      case Platform.Emulator:
-        updateConfigContext({ platform });
-    }
-  }
-} catch (error) {
-  useDefaultEndpointValidationValues = true;
-  console.error("No configuration file found using defaults");
-}
-
-const defaultAllowedArmEndpoints:ReadonlyArray<string> = [
-  "https://​management.azure.com",
-  "https://​management.usgovcloudapi.net",
-  "https://management.chinacloudapi.cn",
-  "https://management.mycloud.net/",
-];
-
-const allowedArmEndpoints:ReadonlyArray<string> = useDefaultEndpointValidationValues ? defaultAllowedArmEndpoints : receivedAllowedArmEndpoints;
-
-const defaultAllowedBackendEndpoints:ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
-  "https://localhost:1234",
-];
-
-const allowedBackendEndpoints:ReadonlyArray<string> = useDefaultEndpointValidationValues ? defaultAllowedBackendEndpoints : receivedAllowedBackendEndpoints;
-
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
+  allowedArmEndpoints: defaultAllowedArmEndpoints,
+  allowedBackendEndpoints: defaultAllowedBackendEndpoints,
   allowedParentFrameOrigins: [
     `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
@@ -128,20 +61,6 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
     `^https:\\/\\/cosmos-db-dataexplorer-germanycentral\\.azurewebsites\\.de$`,
   ], // Webpack injects this at build time
-  allowedArmEndpoints: [
-    "https://​management.azure.com",
-    "https://​management.usgovcloudapi.net",
-    "https://management.chinacloudapi.cn",
-    "https://management.mycloud.net/",
-  ],
-  allowedBackendEndpoints: [
-    "https://main.documentdb.ext.azure.com",
-    "https://main.documentdb.ext.azure.cn",
-    "https://main.documentdb.ext.azure.us",
-    "https://main.cosmos.ext.azure",
-    "https://localhost:12901",
-    "https://localhost:1234",
-  ],
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
   AAD_ENDPOINT: "https://login.microsoftonline.com/",
@@ -172,7 +91,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, allowedArmEndpoints)) {
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints ? configContext.allowedArmEndpoints : defaultAllowedArmEndpoints)) {
     delete newContext.ARM_ENDPOINT;
   }
 
@@ -192,7 +111,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, allowedBackendEndpoints)) {
+  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, configContext.allowedBackendEndpoints ? configContext.allowedBackendEndpoints : defaultAllowedBackendEndpoints)) {
     delete newContext.BACKEND_ENDPOINT;
   }
 
