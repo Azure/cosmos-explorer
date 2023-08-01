@@ -337,7 +337,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
 
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%" }}>
-      <div style={{ overflowY: "auto", height: "100%" }}>
+      <div style={isGeneratingQuery ? { height: "100%" } : { overflowY: "auto", height: "100%" }}>
         <Stack horizontal verticalAlign="center">
           <Image src={CopilotIcon} />
           <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
