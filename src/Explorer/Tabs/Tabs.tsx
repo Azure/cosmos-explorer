@@ -9,7 +9,7 @@ import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { userContext } from "UserContext";
-import { QueryCopilotState, useQueryCopilotState } from "hooks/useQueryCopilotState";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -28,7 +28,6 @@ interface TabsProps {
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
-  const queryCopilotState = useQueryCopilotState();
 
   return (
     <div className="tabsManagerContainer">
@@ -49,25 +48,15 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
         <div className="nav-tabs-margin">
           <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
             {openedReactTabs.map((tab) => (
-              <TabNav
-                key={ReactTabKind[tab]}
-                active={activeReactTab === tab}
-                tabKind={tab}
-                resetQueryCopilotStates={queryCopilotState.resetQueryCopilotStates}
-              />
+              <TabNav key={ReactTabKind[tab]} active={activeReactTab === tab} tabKind={tab} />
             ))}
             {openedTabs.map((tab) => (
-              <TabNav
-                key={tab.tabId}
-                tab={tab}
-                active={activeTab === tab}
-                resetQueryCopilotStates={queryCopilotState.resetQueryCopilotStates}
-              />
+              <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
             ))}
           </ul>
         </div>
         <div className="tabPanesContainer">
-          {activeReactTab !== undefined && getReactTabContent(activeReactTab, queryCopilotState, explorer)}
+          {activeReactTab !== undefined && getReactTabContent(activeReactTab, explorer)}
           {openedTabs.map((tab) => (
             <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
           ))}
@@ -77,17 +66,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   );
 };
 
-function TabNav({
-  tab,
-  active,
-  tabKind,
-  resetQueryCopilotStates,
-}: {
-  tab?: Tab;
-  active: boolean;
-  tabKind?: ReactTabKind;
-  resetQueryCopilotStates: () => void;
-}) {
+function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?: ReactTabKind }) {
   const [hovering, setHovering] = useState(false);
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
   const tabId = tab ? tab.tabId : "";
@@ -151,13 +130,7 @@ function TabNav({
           <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           {tabKind !== ReactTabKind.Home && (
             <span className="tabIconSection">
-              <CloseButton
-                tab={tab}
-                active={active}
-                hovering={hovering}
-                tabKind={tabKind}
-                resetQueryCopilotStates={resetQueryCopilotStates}
-              />
+              <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
             </span>
           )}
         </div>
@@ -171,13 +144,11 @@ const CloseButton = ({
   active,
   hovering,
   tabKind,
-  resetQueryCopilotStates,
 }: {
   tab: Tab;
   active: boolean;
   hovering: boolean;
   tabKind?: ReactTabKind;
-  resetQueryCopilotStates: () => void;
 }) => (
   <span
     style={{ display: hovering || active ? undefined : "none" }}
@@ -188,7 +159,7 @@ const CloseButton = ({
     onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
       event.stopPropagation();
       tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
-      tabKind === ReactTabKind.QueryCopilot && resetQueryCopilotStates();
+      tabKind === ReactTabKind.QueryCopilot && useQueryCopilot.getState().resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
@@ -273,11 +244,7 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
   return false;
 };
 
-const getReactTabContent = (
-  activeReactTab: ReactTabKind,
-  queryCopilotState: QueryCopilotState,
-  explorer: Explorer
-): JSX.Element => {
+const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
   switch (activeReactTab) {
     case ReactTabKind.Connect:
       return userContext.apiType === "Postgres" ? <PostgresConnectTab /> : <ConnectTab />;
@@ -286,7 +253,7 @@ const getReactTabContent = (
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
     case ReactTabKind.QueryCopilot:
-      return <QueryCopilotTab queryCopilotState={queryCopilotState} explorer={explorer} />;
+      return <QueryCopilotTab explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

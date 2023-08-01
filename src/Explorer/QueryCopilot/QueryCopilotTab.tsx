@@ -39,7 +39,6 @@ import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/Telemet
 import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import { QueryCopilotState } from "hooks/useQueryCopilotState";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useRef, useState } from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -57,7 +56,6 @@ interface SuggestedPrompt {
 }
 
 interface QueryCopilotTabProps {
-  queryCopilotState: QueryCopilotState;
   explorer: Explorer;
 }
 
@@ -74,10 +72,7 @@ const promptStyles: IButtonStyles = {
   label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
 };
 
-export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
-  queryCopilotState,
-  explorer,
-}: QueryCopilotTabProps): JSX.Element => {
+export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: QueryCopilotTabProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
   const {
@@ -120,7 +115,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     setShowErrorMessageBar,
     generatedQueryComments,
     setGeneratedQueryComments,
-  } = queryCopilotState;
+  } = useQueryCopilot();
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
