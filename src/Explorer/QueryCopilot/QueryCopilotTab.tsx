@@ -17,7 +17,7 @@ import {
   TextField,
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import { QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from "Common/Constants";
+import { JunoEndpoints, QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from "Common/Constants";
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
@@ -174,7 +174,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       };
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
-      const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
+      const response = await fetch(`${JunoEndpoints.Prod}/generateSQLQuery`, {
         method: "POST",
         headers: {
           "content-type": "application/json",

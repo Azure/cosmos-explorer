@@ -1,5 +1,6 @@
 import { FeedOptions, Item, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import {
+  JunoEndpoints,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   QueryCopilotSampleDatabaseId,
@@ -32,7 +33,7 @@ export const submitFeedback = async (params: FeedbackParams): Promise<void> => {
       contact: contact || "",
     };
 
-    await fetch("https://copilotorchestrater.azurewebsites.net/feedback", {
+    await fetch(`${JunoEndpoints.Prod}/feedback`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
