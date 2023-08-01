@@ -145,7 +145,7 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       visible={true}
     />
     <CopyPopup
-      setShowCopyPopup={[MockFunction]}
+      setShowCopyPopup={[Function]}
       showCopyPopup={false}
     />
   </div>
