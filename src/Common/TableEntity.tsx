@@ -12,6 +12,7 @@ import {
 import React, { FunctionComponent } from "react";
 import DeleteIcon from "../../images/delete.svg";
 import EditIcon from "../../images/Edit_entity.svg";
+import { attributeNameLabel, dataTypeLabel } from "../Explorer/Panes/Tables/Validators/EntityTableHelper";
 import { CassandraType, TableType } from "../Explorer/Tables/Constants";
 import { userContext } from "../UserContext";
 import { EntityValue } from "./EntityValue";
@@ -36,7 +37,7 @@ export interface TableEntityProps {
   onDeleteEntity?: () => void;
   onEditEntity?: () => void;
   onEntityPropertyChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
-  onEntityTypeChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void;
+  onEntityTypeChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void
   onEntityValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
   onSelectDate: (date: Date | null | undefined) => void;
   onEntityTimeValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
@@ -113,6 +114,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           value={entityProperty}
           onChange={onEntityPropertyChange}
           required
+          ariaLabel={attributeNameLabel}
         />
         <Dropdown
           label={entityTypeLabel && entityTypeLabel}
@@ -122,6 +124,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           disabled={isPropertyTypeDisable}
           id="entityTypeId"
           styles={dropdownStyles}
+          ariaLabel={dataTypeLabel}
         />
         <EntityValue
           entityValueLabel={entityValueLabel}

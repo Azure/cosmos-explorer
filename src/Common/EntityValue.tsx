@@ -1,5 +1,6 @@
 import { DatePicker, TextField } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
+import { attributeValueLabel } from "../Explorer/Panes/Tables/Validators/EntityTableHelper";
 
 export interface TableEntityProps {
   entityValueLabel?: string;
@@ -55,11 +56,13 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
       label={entityValueLabel && entityValueLabel}
       className="addEntityTextField"
       id="entityValueId"
+      autoFocus
       disabled={isEntityValueDisable}
       type={entityValueType}
       placeholder={entityValuePlaceholder}
       value={typeof entityValue === "string" ? entityValue : ""}
       onChange={onEntityValueChange}
+      ariaLabel={attributeValueLabel}
     />
   );
 };

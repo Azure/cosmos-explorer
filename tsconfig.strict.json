@@ -135,7 +135,6 @@
     "./src/quickstart.ts",
     "./src/setupTests.ts",
     "./src/userContext.test.ts",
-    "src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
     "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
   ],
