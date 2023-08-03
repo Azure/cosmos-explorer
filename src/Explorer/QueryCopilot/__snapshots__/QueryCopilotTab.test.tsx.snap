@@ -67,10 +67,10 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
             },
           }
         }
-        value="Write a query to return all records in this table"
+        value=""
       />
       <CustomizedIconButton
-        disabled={false}
+        disabled={true}
         iconProps={
           Object {
             "iconName": "Send",

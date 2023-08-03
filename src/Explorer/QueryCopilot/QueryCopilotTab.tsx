@@ -56,7 +56,6 @@ interface SuggestedPrompt {
 }
 
 interface QueryCopilotTabProps {
-  initialInput: string;
   explorer: Explorer;
 }
 
@@ -73,32 +72,50 @@ const promptStyles: IButtonStyles = {
   label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
 };
 
-export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
-  initialInput,
-  explorer,
-}: QueryCopilotTabProps): JSX.Element => {
-  const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
-  const [userPrompt, setUserPrompt] = useState<string>(initialInput || "");
-  const [generatedQuery, setGeneratedQuery] = useState<string>("");
-  const [generatedQueryComments, setGeneratedQueryComments] = useState<string>("");
-  const [query, setQuery] = useState<string>("");
-  const [selectedQuery, setSelectedQuery] = useState<string>("");
-  const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
-  const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [likeQuery, setLikeQuery] = useState<boolean>();
-  const [dislikeQuery, setDislikeQuery] = useState<boolean>();
-  const [showCallout, setShowCallout] = useState<boolean>(false);
-  const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
-  const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
-  const [queryResults, setQueryResults] = useState<QueryResults>();
-  const [errorMessage, setErrorMessage] = useState<string>("");
+export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: QueryCopilotTabProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
-  const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
-  const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
-  const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
-  const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
-  const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
+  const {
+    hideFeedbackModalForLikedQueries,
+    userPrompt,
+    setUserPrompt,
+    generatedQuery,
+    setGeneratedQuery,
+    query,
+    setQuery,
+    selectedQuery,
+    setSelectedQuery,
+    isGeneratingQuery,
+    setIsGeneratingQuery,
+    isExecuting,
+    setIsExecuting,
+    likeQuery,
+    setLikeQuery,
+    dislikeQuery,
+    setDislikeQuery,
+    showCallout,
+    setShowCallout,
+    showSamplePrompts,
+    setShowSamplePrompts,
+    queryIterator,
+    setQueryIterator,
+    queryResults,
+    setQueryResults,
+    errorMessage,
+    setErrorMessage,
+    isSamplePromptsOpen,
+    setIsSamplePromptsOpen,
+    showDeletePopup,
+    setShowDeletePopup,
+    showFeedbackBar,
+    setShowFeedbackBar,
+    showCopyPopup,
+    setshowCopyPopup,
+    showErrorMessageBar,
+    setShowErrorMessageBar,
+    generatedQueryComments,
+    setGeneratedQueryComments,
+  } = useQueryCopilot();
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -301,9 +318,10 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     return [executeQueryBtn, saveQueryBtn];
   };
   const showTeachingBubble = (): void => {
-    if (!inputEdited.current) {
+    const shouldShowTeachingBubble = !inputEdited.current && userPrompt.trim() === "";
+    if (shouldShowTeachingBubble) {
       setTimeout(() => {
-        if (!inputEdited.current) {
+        if (shouldShowTeachingBubble) {
           toggleCopilotTeachingBubbleVisible();
           inputEdited.current = true;
         }
@@ -328,9 +346,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   }, [query, selectedQuery]);
 
   React.useEffect(() => {
-    if (initialInput) {
-      generateSQLQuery();
-    }
     showTeachingBubble();
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
@@ -517,7 +532,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                 target="#likeBtn"
                 onDismiss={() => {
                   setShowCallout(false);
-                  submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userPrompt });
+                  submitFeedback({
+                    generatedQuery: generatedQuery,
+                    likeQuery: likeQuery,
+                    description: "",
+                    userPrompt: userPrompt,
+                  });
                 }}
                 directionalHint={DirectionalHint.topCenter}
               >

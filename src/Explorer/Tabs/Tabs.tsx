@@ -9,6 +9,7 @@ import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { userContext } from "UserContext";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -158,6 +159,7 @@ const CloseButton = ({
     onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
       event.stopPropagation();
       tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+      tabKind === ReactTabKind.QueryCopilot && useQueryCopilot.getState().resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
@@ -251,7 +253,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     case ReactTabKind.Quickstart:
       return <QuickstartTab explorer={explorer} />;
     case ReactTabKind.QueryCopilot:
-      return <QueryCopilotTab initialInput={useTabs.getState().queryCopilotTabInitialInput} explorer={explorer} />;
+      return <QueryCopilotTab explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
