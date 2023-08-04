@@ -261,7 +261,7 @@ export default class Explorer {
     // TODO: return result
   }
 
-  public getRandomInt(max: number) {
+  private getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
   }
 
@@ -278,11 +278,11 @@ export default class Explorer {
     );
 
     // Try Cosmos DB subscription - survey shown to random 25% of users at day 1 in Data Explorer.
-    if (
-      userContext.isTryCosmosDBSubscription &&
-      isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)
-    ) {
-      if (this.getRandomInt(100) < 25) {
+    if (userContext.isTryCosmosDBSubscription) {
+      if (
+        isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS) &&
+        this.getRandomInt(100) < 25
+      ) {
         sendMessage(MessageTypes.DisplayNPSSurvey);
       }
     } else {
