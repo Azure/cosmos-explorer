@@ -1,5 +1,8 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
+import { sendMessage } from "Common/MessageHandler";
+import { Platform } from "ConfigContext";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { IGalleryItem } from "Juno/JunoClient";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import * as ko from "knockout";
@@ -23,7 +26,7 @@ import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
+import { isAccountNewerThanThresholdInMs, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -256,6 +259,45 @@ export default class Explorer {
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
+  }
+
+  public getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
+  }
+
+  public openNPSSurveyDialog(): void {
+    if (!Platform.Portal) {
+      return;
+    }
+
+    const NINETY_DAYS_IN_MS = 7776000000;
+    const ONE_DAY_IN_MS = 86400000;
+    const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
+      userContext.databaseAccount?.systemData?.createdAt || "",
+      NINETY_DAYS_IN_MS
+    );
+
+    // Try Cosmos DB subscription - survey shown to random 25% of users at day 1 in Data Explorer.
+    if (
+      userContext.isTryCosmosDBSubscription &&
+      isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)
+    ) {
+      if (this.getRandomInt(100) < 25) {
+        sendMessage(MessageTypes.DisplayNPSSurvey);
+      }
+    } else {
+      // An existing account is lesser than 90 days old. For existing account show to random 10 % of users in Data Explorer.
+      if (isAccountNewerThanNinetyDays) {
+        if (this.getRandomInt(100) < 10) {
+          sendMessage(MessageTypes.DisplayNPSSurvey);
+        }
+      } else {
+        // An existing account is greater than 90 days. For existing account show to random 25 % of users in Data Explorer.
+        if (this.getRandomInt(100) < 25) {
+          sendMessage(MessageTypes.DisplayNPSSurvey);
+        }
+      }
+    }
   }
 
   public async refreshDatabaseForResourceToken(): Promise<void> {
