@@ -1,4 +1,5 @@
 import { FeedOptions } from "@azure/cosmos";
+import { QueryCopilotSidecar } from "Explorer/QueryCopilot/QueryCopilotSidecar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -310,7 +311,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  render(): JSX.Element {
+  private getEditorAndQueryResult(): JSX.Element {
     return (
       <Fragment>
         <div className="tab-pane" id={this.props.tabId} role="tabpanel">
@@ -341,6 +342,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
           </div>
         </div>
       </Fragment>
+    );
+  }
+
+  render(): JSX.Element {
+    return true ? (
+      <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+        <div style={{ width: "75%", height: "100%" }}>{this.getEditorAndQueryResult()}</div>
+        <div style={{ width: "25%", height: "800px" }}>
+          <QueryCopilotSidecar explorer={this.props.collection.container} />
+        </div>
+      </div>
+    ) : (
+      this.getEditorAndQueryResult()
     );
   }
 }
