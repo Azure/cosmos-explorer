@@ -15,13 +15,11 @@ export const WelcomeSidecarModal: React.FC = (): JSX.Element => {
   };
 
   React.useEffect(() => {
-    if (window.localStorage.getItem("setShowWelcomeSidecar") === "false") {
-      setShowWelcomeSidecar(false);
-    }
-  });
+    setShowWelcomeSidecar(window.localStorage.getItem("setShowWelcomeSidecar") === "false" ? false : true);
+  }, []);
 
   return showWelcomeSidecar ? (
-    <Stack style={{ width: "288px", height: "520px", backgroundColor: "#FAFAFA", padding: "5px", overflowY: "auto" }}>
+    <Stack style={{ width: "288px", height: "90%", padding: "5px", overflow: "auto" }}>
       <div style={{ overflowY: "auto", maxHeight: "100%", boxSizing: "border-box" }}>
         <Stack horizontalAlign="center" verticalAlign="center">
           <Image src={CopilotSidecarWelcomeIllustration} />
