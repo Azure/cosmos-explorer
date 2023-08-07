@@ -1,6 +1,7 @@
 import { FeedOptions } from "@azure/cosmos";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { useDatabases } from "Explorer/useDatabases";
 import { QueryCopilotSidebarState, useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -161,9 +162,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public launchQueryCopilotChat = (): void => {
-    console.log(useQueryCopilotSidebar.getState().showCopilotSidebar);
     useQueryCopilotSidebar.getState().setShowCopilotSidebar(!useQueryCopilotSidebar.getState().showCopilotSidebar);
-    console.log(useQueryCopilotSidebar.getState().showCopilotSidebar);
   };
 
   public onSavedQueriesClick = (): void => {
@@ -289,7 +288,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
-    if (this.launchCopilotButton.visible) {
+    if (
+      this.launchCopilotButton.visible &&
+      userContext.features.enableCopilot &&
+      useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId
+    ) {
       const label = "Launch Copilot";
       buttons.push({
         iconSrc: LaunchCopilot,

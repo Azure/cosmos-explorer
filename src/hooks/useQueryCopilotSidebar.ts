@@ -24,22 +24,11 @@ export const useQueryCopilotSidebar: QueryCopilotSidebarStore = create((set) => 
   userInput: "",
   chatMessages: [],
 
-  setWasCopilotUsed(wasCopilotUsed) {
-    set({ wasCopilotUsed });
-  },
-  setShowWelcomeSidebar(showWelcomeSidebar) {
-    set({ showWelcomeSidebar });
-  },
-  setShowCopilotSidebar(showCopilotSidebar) {
-    set({ showCopilotSidebar });
-  },
-  setUserInput(userInput) {
-    set({ userInput });
-  },
-  setChatMessages(chatMessages) {
-    set({ chatMessages });
-  },
-
+  setWasCopilotUsed: (wasCopilotUsed) => set({ wasCopilotUsed }),
+  setShowWelcomeSidebar: (showWelcomeSidebar) => set({ showWelcomeSidebar }),
+  setShowCopilotSidebar: (showCopilotSidebar) => set({ showCopilotSidebar }),
+  setUserInput: (userInput) => set({ userInput }),
+  setChatMessages: (chatMessages) => set({ chatMessages }),
   resetQueryCopilotSidebarStates() {
     set((state) => ({
       ...state,
