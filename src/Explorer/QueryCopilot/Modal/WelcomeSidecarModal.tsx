@@ -19,7 +19,7 @@ export const WelcomeSidecarModal: React.FC = (): JSX.Element => {
   }, []);
 
   return showWelcomeSidecar ? (
-    <Stack style={{ width: "288px", height: "90%", padding: "5px", overflow: "auto" }}>
+    <Stack style={{ width: "288px", height: "90%", padding: "5px", overflow: "auto", backgroundColor: "white" }}>
       <div style={{ overflowY: "auto", maxHeight: "100%", boxSizing: "border-box" }}>
         <Stack horizontalAlign="center" verticalAlign="center">
           <Image src={CopilotSidecarWelcomeIllustration} />

@@ -1,9 +1,11 @@
 import { FeedOptions } from "@azure/cosmos";
 import { QueryCopilotSidecar } from "Explorer/QueryCopilot/QueryCopilotSidecar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { QueryCopilotSidecarState, useQueryCopilotSidecar } from "hooks/useQueryCopilotSidecar";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
+import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
@@ -73,12 +75,14 @@ interface IQueryTabStates {
   error: string;
   isExecutionError: boolean;
   isExecuting: boolean;
+  showCopilotSidecar: boolean;
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
   public queryEditorId: string;
   public executeQueryButton: Button;
   public saveQueryButton: Button;
+  public launchCopilotButton: Button;
   public splitterId: string;
   public isPreferredApiMongoDB: boolean;
   public isCloseClicked: boolean;
@@ -95,6 +99,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       error: "",
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
+      showCopilotSidecar: useQueryCopilotSidecar.getState().showCopilotSidecar,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -112,6 +117,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       visible: isSaveQueryBtnEnabled,
     };
 
+    this.launchCopilotButton = {
+      enabled: userContext.apiType === "SQL" && true,
+      visible: userContext.apiType === "SQL" && true,
+    };
+
     this.props.tabsBaseInstance.updateNavbarWithTabsButtons();
     props.onTabAccessor({
       onTabClickEvent: this.onTabClick.bind(this),
@@ -122,6 +132,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onCloseClick(isClicked: boolean): void {
     this.isCloseClicked = isClicked;
+    if (useQueryCopilotSidecar.getState().wasCopilotUsed) {
+      useQueryCopilotSidecar.getState().resetQueryCopilotSidecarStates();
+    }
   }
 
   public getCurrentEditorQuery(): string {
@@ -145,6 +158,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onSaveQueryClick = (): void => {
     useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this.props.collection.container} />);
+  };
+
+  public launchQueryCopilotChat = (): void => {
+    console.log(useQueryCopilotSidecar.getState().showCopilotSidecar);
+    useQueryCopilotSidecar.getState().setShowCopilotSidecar(!useQueryCopilotSidecar.getState().showCopilotSidecar);
+    console.log(useQueryCopilotSidecar.getState().showCopilotSidecar);
   };
 
   public onSavedQueriesClick = (): void => {
@@ -270,6 +289,18 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
+    if (this.launchCopilotButton.visible) {
+      const label = "Launch Copilot";
+      buttons.push({
+        iconSrc: LaunchCopilot,
+        iconAlt: label,
+        onCommandClick: this.launchQueryCopilotChat,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+      });
+    }
+
     return buttons;
   }
 
@@ -307,8 +338,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
+  private unsubscribe: () => void;
+
   componentDidMount(): void {
+    this.unsubscribe = useQueryCopilotSidecar.subscribe((state: QueryCopilotSidecarState) => {
+      if (this.state.showCopilotSidecar !== state.showCopilotSidecar) {
+        this.setState({ showCopilotSidecar: state.showCopilotSidecar });
+      }
+    });
+
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
+  }
+
+  componentWillUnmount(): void {
+    this.unsubscribe();
   }
 
   private getEditorAndQueryResult(): JSX.Element {
@@ -346,15 +389,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   render(): JSX.Element {
-    return true ? (
+    return (
       <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
-        <div style={{ width: "75%", height: "100%" }}>{this.getEditorAndQueryResult()}</div>
-        <div style={{ width: "25%", height: "800px" }}>
-          <QueryCopilotSidecar explorer={this.props.collection.container} />
+        <div style={{ width: this.state.showCopilotSidecar ? "70%" : "100%", height: "100%" }}>
+          {/* Main content goes here */}
+          {this.getEditorAndQueryResult()}
         </div>
+        {this.state.showCopilotSidecar && (
+          <div style={{ width: "30%", height: "100%" }}>
+            {/* QueryCopilotSidecar component */}
+            <QueryCopilotSidecar explorer={this.props.collection.container} />
+          </div>
+        )}
       </div>
-    ) : (
-      this.getEditorAndQueryResult()
     );
   }
 }
