@@ -44,6 +44,7 @@ export const useQueryCopilotSidecar: QueryCopilotSidecarStore = create((set) => 
     set((state) => ({
       ...state,
       wasCopilotUsed: false,
+      showCopilotSidecar: false,
       userInput: "",
       chatMessages: [],
     }));
