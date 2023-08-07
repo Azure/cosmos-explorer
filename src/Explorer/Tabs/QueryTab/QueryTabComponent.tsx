@@ -1,7 +1,7 @@
 import { FeedOptions } from "@azure/cosmos";
-import { QueryCopilotSidecar } from "Explorer/QueryCopilot/QueryCopilotSidecar";
+import { QueryCopilotSidebar } from "Explorer/QueryCopilot/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
-import { QueryCopilotSidecarState, useQueryCopilotSidecar } from "hooks/useQueryCopilotSidecar";
+import { QueryCopilotSidebarState, useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
@@ -75,7 +75,7 @@ interface IQueryTabStates {
   error: string;
   isExecutionError: boolean;
   isExecuting: boolean;
-  showCopilotSidecar: boolean;
+  showCopilotSidebar: boolean;
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
@@ -99,7 +99,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       error: "",
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
-      showCopilotSidecar: useQueryCopilotSidecar.getState().showCopilotSidecar,
+      showCopilotSidebar: useQueryCopilotSidebar.getState().showCopilotSidebar,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -132,8 +132,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onCloseClick(isClicked: boolean): void {
     this.isCloseClicked = isClicked;
-    if (useQueryCopilotSidecar.getState().wasCopilotUsed) {
-      useQueryCopilotSidecar.getState().resetQueryCopilotSidecarStates();
+    if (useQueryCopilotSidebar.getState().wasCopilotUsed) {
+      useQueryCopilotSidebar.getState().resetQueryCopilotSidebarStates();
     }
   }
 
@@ -161,9 +161,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public launchQueryCopilotChat = (): void => {
-    console.log(useQueryCopilotSidecar.getState().showCopilotSidecar);
-    useQueryCopilotSidecar.getState().setShowCopilotSidecar(!useQueryCopilotSidecar.getState().showCopilotSidecar);
-    console.log(useQueryCopilotSidecar.getState().showCopilotSidecar);
+    console.log(useQueryCopilotSidebar.getState().showCopilotSidebar);
+    useQueryCopilotSidebar.getState().setShowCopilotSidebar(!useQueryCopilotSidebar.getState().showCopilotSidebar);
+    console.log(useQueryCopilotSidebar.getState().showCopilotSidebar);
   };
 
   public onSavedQueriesClick = (): void => {
@@ -341,9 +341,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   private unsubscribe: () => void;
 
   componentDidMount(): void {
-    this.unsubscribe = useQueryCopilotSidecar.subscribe((state: QueryCopilotSidecarState) => {
-      if (this.state.showCopilotSidecar !== state.showCopilotSidecar) {
-        this.setState({ showCopilotSidecar: state.showCopilotSidecar });
+    this.unsubscribe = useQueryCopilotSidebar.subscribe((state: QueryCopilotSidebarState) => {
+      if (this.state.showCopilotSidebar !== state.showCopilotSidebar) {
+        this.setState({ showCopilotSidebar: state.showCopilotSidebar });
       }
     });
 
@@ -391,14 +391,14 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   render(): JSX.Element {
     return (
       <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
-        <div style={{ width: this.state.showCopilotSidecar ? "70%" : "100%", height: "100%" }}>
+        <div style={{ width: this.state.showCopilotSidebar ? "70%" : "100%", height: "100%" }}>
           {/* Main content goes here */}
           {this.getEditorAndQueryResult()}
         </div>
-        {this.state.showCopilotSidecar && (
+        {this.state.showCopilotSidebar && (
           <div style={{ width: "30%", height: "100%" }}>
-            {/* QueryCopilotSidecar component */}
-            <QueryCopilotSidecar explorer={this.props.collection.container} />
+            {/* QueryCopilotSidebar component */}
+            <QueryCopilotSidebar explorer={this.props.collection.container} />
           </div>
         )}
       </div>

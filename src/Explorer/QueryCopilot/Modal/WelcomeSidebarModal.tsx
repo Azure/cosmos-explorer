@@ -1,28 +1,28 @@
 import { Image, Link, PrimaryButton, Stack, Text } from "@fluentui/react";
-import { useQueryCopilotSidecar } from "hooks/useQueryCopilotSidecar";
+import { useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
 import React from "react";
 import Database from "../../../../images/CopilotDatabase.svg";
 import Flash from "../../../../images/CopilotFlash.svg";
-import CopilotSidecarWelcomeIllustration from "../../../../images/CopilotSidecarWelcomeIllustration.svg";
+import CopilotSidebarWelcomeIllustration from "../../../../images/CopilotSidebarWelcomeIllustration.svg";
 import Thumb from "../../../../images/CopilotThumb.svg";
 
-export const WelcomeSidecarModal: React.FC = (): JSX.Element => {
-  const { showWelcomeSidecar, setShowWelcomeSidecar } = useQueryCopilotSidecar();
+export const WelcomeSidebarModal: React.FC = (): JSX.Element => {
+  const { showWelcomeSidebar, setShowWelcomeSidebar } = useQueryCopilotSidebar();
 
   const hideModal = () => {
-    setShowWelcomeSidecar(false);
-    window.localStorage.setItem("setShowWelcomeSidecar", "false");
+    setShowWelcomeSidebar(false);
+    window.localStorage.setItem("setShowWelcomeSidebar", "false");
   };
 
   React.useEffect(() => {
-    setShowWelcomeSidecar(window.localStorage.getItem("setShowWelcomeSidecar") === "false" ? false : true);
+    setShowWelcomeSidebar(window.localStorage.getItem("setShowWelcomeSidebar") === "false" ? false : true);
   }, []);
 
-  return showWelcomeSidecar ? (
+  return showWelcomeSidebar ? (
     <Stack style={{ width: "288px", height: "90%", padding: "5px", overflow: "auto", backgroundColor: "white" }}>
       <div style={{ overflowY: "auto", maxHeight: "100%", boxSizing: "border-box" }}>
         <Stack horizontalAlign="center" verticalAlign="center">
-          <Image src={CopilotSidecarWelcomeIllustration} />
+          <Image src={CopilotSidebarWelcomeIllustration} />
         </Stack>
 
         <Stack horizontalAlign="center">

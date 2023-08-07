@@ -1,26 +1,26 @@
 import { Icon, IconButton, Image, Stack, Text, TextField } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
-import { WelcomeSidecarModal } from "Explorer/QueryCopilot/Modal/WelcomeSidecarModal";
-import { useQueryCopilotSidecar } from "hooks/useQueryCopilotSidecar";
+import { WelcomeSidebarModal } from "Explorer/QueryCopilot/Modal/WelcomeSidebarModal";
+import { useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
 import React from "react";
-import CopilotIcon from "../../../images/CopilotSidecarLogo.svg";
+import CopilotIcon from "../../../images/CopilotSidebarLogo.svg";
 
-interface QueryCopilotSidecarProps {
+interface QueryCopilotSidebarProps {
   explorer: Explorer;
 }
 
-export const QueryCopilotSidecar: React.FC<QueryCopilotSidecarProps> = ({
+export const QueryCopilotSidebar: React.FC<QueryCopilotSidebarProps> = ({
   explorer,
-}: QueryCopilotSidecarProps): JSX.Element => {
+}: QueryCopilotSidebarProps): JSX.Element => {
   const {
     setWasCopilotUsed,
-    showCopilotSidecar,
-    setShowCopilotSidecar,
+    showCopilotSidebar,
+    setShowCopilotSidebar,
     userInput,
     setUserInput,
     chatMessages,
     setChatMessages,
-  } = useQueryCopilotSidecar();
+  } = useQueryCopilotSidebar();
 
   const handleSendMessage = () => {
     if (userInput.trim() !== "") {
@@ -41,7 +41,7 @@ export const QueryCopilotSidecar: React.FC<QueryCopilotSidecarProps> = ({
   };
 
   React.useEffect(() => {
-    if (showCopilotSidecar) {
+    if (showCopilotSidebar) {
       setWasCopilotUsed(true);
     }
   }, []);
@@ -66,7 +66,7 @@ export const QueryCopilotSidecar: React.FC<QueryCopilotSidecarProps> = ({
             </Text>
           </Stack>
           <IconButton
-            onClick={() => setShowCopilotSidecar(false)}
+            onClick={() => setShowCopilotSidebar(false)}
             iconProps={{ iconName: "Cancel" }}
             title="Exit"
             ariaLabel="Exit"
@@ -172,7 +172,7 @@ export const QueryCopilotSidecar: React.FC<QueryCopilotSidecarProps> = ({
       </Stack>
 
       <Stack.Item styles={{ root: { textAlign: "center" } }}>
-        <WelcomeSidecarModal />
+        <WelcomeSidebarModal />
       </Stack.Item>
     </Stack>
   );
