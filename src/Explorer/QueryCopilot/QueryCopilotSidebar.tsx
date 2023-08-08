@@ -1,15 +1,10 @@
 import { Icon, IconButton, Image, Stack, Text, TextField } from "@fluentui/react";
-import Explorer from "Explorer/Explorer";
 import { WelcomeSidebarPopup } from "Explorer/QueryCopilot/Popup/WelcomeSidebarPopup";
 import { useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
 import React from "react";
 import CopilotIcon from "../../../images/CopilotSidebarLogo.svg";
 
-interface QueryCopilotSidebarProps {
-  explorer?: Explorer;
-}
-
-export const QueryCopilotSidebar: React.FC<QueryCopilotSidebarProps> = ({}: QueryCopilotSidebarProps): JSX.Element => {
+export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
   const {
     setWasCopilotUsed,
     showCopilotSidebar,
