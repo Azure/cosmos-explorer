@@ -260,6 +260,23 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   };
 
   public render(): JSX.Element {
+    let title: string;
+    let subtitle: string;
+
+    switch (userContext.apiType) {
+      case "Postgres":
+        title = "Welcome to Azure Cosmos DB for PostgreSQL";
+        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+        break;
+      case "VCoreMongo":
+        title = "Welcome to Azure Cosmos DB for MongoDB (vCore)";
+        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+        break;
+      default:
+        title = "Welcome to Azure Cosmos DB";
+        subtitle = "Globally distributed, multi-model database service for any scale";
+    }
+
     return (
       <div className="connectExplorerContainer">
         <form className="connectExplorerFormContainer">
@@ -268,21 +285,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               <h1
                 className="title"
                 role="heading"
-                aria-label={
-                  userContext.apiType === "Postgres"
-                    ? "Welcome to Azure Cosmos DB for PostgreSQL"
-                    : "Welcome to Azure Cosmos DB"
-                }
+                aria-label={title}
               >
-                {userContext.apiType === "Postgres"
-                  ? "Welcome to Azure Cosmos DB for PostgreSQL"
-                  : "Welcome to Azure Cosmos DB"}
+                {title}
                 <FeaturePanelLauncher />
               </h1>
               <div className="subtitle">
-                {userContext.apiType === "Postgres"
-                  ? "Get started with our sample datasets, documentation, and additional tools."
-                  : "Globally distributed, multi-model database service for any scale"}
+                {subtitle}
               </div>
               {this.getSplashScreenButtons()}
               {useCarousel.getState().showCoachMark && (
@@ -380,7 +389,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     if (
       userContext.apiType === "SQL" ||
       userContext.apiType === "Mongo" ||
-      (userContext.apiType === "Postgres" && !userContext.isReplica)
+      (userContext.apiType === "Postgres" && !userContext.isReplica) ||
+      userContext.apiType === "VCoreMongo"
     ) {
       const launchQuickstartBtn = {
         id: "quickstartDescription",
@@ -388,9 +398,17 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
         onClick: () => {
-          userContext.apiType === "Postgres"
-            ? useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart)
-            : this.container.onNewCollectionClicked({ isQuickstart: true });
+          switch (userContext.apiType) {
+            case "Postgres":
+              useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+              break;
+            case "VCoreMongo":
+              //CTODO: new kind of tab kind?
+              useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+              break;
+            default:
+              this.container.onNewCollectionClicked({ isQuickstart: true });
+          }
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
       };
@@ -405,37 +423,57 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       heroes.push(newNotebookBtn);
     }
 
-    if (userContext.apiType === "Postgres") {
-      const postgreShellBtn = {
-        iconSrc: PowerShellIcon,
-        title: "PostgreSQL Shell",
-        description: "Create table and interact with data using PostgreSQL’s shell interface",
-        onClick: () => this.container.openNotebookTerminal(TerminalKind.Postgres),
-      };
-      heroes.push(postgreShellBtn);
-    } else {
-      const newContainerBtn = {
-        iconSrc: ContainersIcon,
-        title: `New ${getCollectionName()}`,
-        description: "Create a new container for storage and throughput",
-        onClick: () => {
-          this.container.onNewCollectionClicked();
-          traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
-        },
-      };
-      heroes.push(newContainerBtn);
+    switch (userContext.apiType) {
+      case "Postgres":
+        const postgreShellBtn = {
+          iconSrc: PowerShellIcon,
+          title: "PostgreSQL Shell",
+          description: "Create table and interact with data using PostgreSQL’s shell interface",
+          onClick: () => this.container.openNotebookTerminal(TerminalKind.Postgres),
+        };
+        heroes.push(postgreShellBtn);
+        break;
+      case "VCoreMongo":
+        const vcoreMongoBtn = {
+          iconSrc: PowerShellIcon,
+          title: "Mongo Shell",
+          description: "Create a table and interact with data using MongoDB's shell interface",
+          onClick: () => this.container.openNotebookTerminal(TerminalKind.VCoreMongo),
+        };
+        break;
+      default:
+        const newContainerBtn = {
+          iconSrc: ContainersIcon,
+          title: `New ${getCollectionName()}`,
+          description: "Create a new container for storage and throughput",
+          onClick: () => {
+            this.container.onNewCollectionClicked();
+            traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+          },
+        };
+        heroes.push(newContainerBtn);
     }
 
-    const connectBtn = {
-      iconSrc: ConnectIcon,
-      title: userContext.apiType === "Postgres" ? "Connect with pgAdmin" : "Connect",
-      description:
-        userContext.apiType === "Postgres"
-          ? "Prefer pgAdmin? Find your connection strings here"
-          : "Prefer using your own choice of tooling? Find the connection string you need to connect",
-      onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
-    };
-    heroes.push(connectBtn);
+    if (userContext.apiType === "VCoreMongo") {
+      const sampleBtn = {
+        iconSrc: ContainersIcon,
+        title: "Get started with sample datasets",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        onClick: () => { }
+      };
+      heroes.push(sampleBtn);
+    } else {
+      const connectBtn = {
+        iconSrc: ConnectIcon,
+        title: userContext.apiType === "Postgres" ? "Connect with pgAdmin" : "Connect",
+        description:
+          userContext.apiType === "Postgres"
+            ? "Prefer pgAdmin? Find your connection strings here"
+            : "Prefer using your own choice of tooling? Find the connection string you need to connect",
+        onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
+      };
+      heroes.push(connectBtn);
+    }
 
     return heroes;
   }
