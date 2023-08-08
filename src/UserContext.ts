@@ -1,12 +1,12 @@
-import { useCarousel } from "hooks/useCarousel";
-import { usePostgres } from "hooks/usePostgres";
 import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
+import { useCarousel } from "hooks/useCarousel";
+import { usePostgres } from "hooks/usePostgres";
 import { AuthType } from "./AuthType";
-import { DatabaseAccount } from "./Contracts/DataModels";
+import { DatabaseAccount, VCoreMongoDatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
-import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
+import { Features, extractFeatures } from "./Platform/Hosted/extractFeatures";
 import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constants";
 
 interface ThroughputDefaults {
@@ -71,6 +71,7 @@ interface UserContext {
   readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
+  readonly vcoreMongoDatabaseAccount?: VCoreMongoDatabaseAccount;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
