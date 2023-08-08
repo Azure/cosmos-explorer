@@ -29,7 +29,8 @@ export const useQueryCopilotSidebar: QueryCopilotSidebarStore = create((set) => 
   setShowCopilotSidebar: (showCopilotSidebar) => set({ showCopilotSidebar }),
   setUserInput: (userInput) => set({ userInput }),
   setChatMessages: (chatMessages) => set({ chatMessages }),
-  resetQueryCopilotSidebarStates() {
+
+  resetQueryCopilotSidebarStates: () => {
     set((state) => ({
       ...state,
       wasCopilotUsed: false,
