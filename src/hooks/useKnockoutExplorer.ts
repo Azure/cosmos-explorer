@@ -372,6 +372,15 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
+  if (inputs.isVCoreMongoAccount) {
+    if (inputs.vcoreMongoDatabaseAccount) {
+      updateUserContext({
+        apiType: "VCoreMongo",
+        vcoreMongoDatabaseAccount: inputs.vcoreMongoDatabaseAccount,
+      });
+    }
+  }
+
   const warningMessage = getNetworkSettingsWarningMessage();
   useTabs.getState().setNetworkSettingsWarning(warningMessage);
 
