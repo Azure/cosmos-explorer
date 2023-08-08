@@ -133,7 +133,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onCloseClick(isClicked: boolean): void {
     this.isCloseClicked = isClicked;
-    if (useQueryCopilotSidebar.getState().wasCopilotUsed) {
+    if (
+      useQueryCopilotSidebar.getState().wasCopilotUsed &&
+      useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId
+    ) {
       useQueryCopilotSidebar.getState().resetQueryCopilotSidebarStates();
     }
   }
@@ -341,10 +344,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  private unsubscribe: () => void;
+  private unsubscribeCopilotSidebar: () => void;
 
   componentDidMount(): void {
-    this.unsubscribe = useQueryCopilotSidebar.subscribe((state: QueryCopilotSidebarState) => {
+    this.unsubscribeCopilotSidebar = useQueryCopilotSidebar.subscribe((state: QueryCopilotSidebarState) => {
       if (this.state.showCopilotSidebar !== state.showCopilotSidebar) {
         this.setState({ showCopilotSidebar: state.showCopilotSidebar });
       }
@@ -354,7 +357,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   componentWillUnmount(): void {
-    this.unsubscribe();
+    this.unsubscribeCopilotSidebar();
   }
 
   private getEditorAndQueryResult(): JSX.Element {
@@ -395,15 +398,14 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     return (
       <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
         <div style={{ width: this.state.showCopilotSidebar ? "70%" : "100%", height: "100%" }}>
-          {/* Main content goes here */}
           {this.getEditorAndQueryResult()}
         </div>
-        {this.state.showCopilotSidebar && (
-          <div style={{ width: "30%", height: "100%" }}>
-            {/* QueryCopilotSidebar component */}
-            <QueryCopilotSidebar explorer={this.props.collection.container} />
-          </div>
-        )}
+        {this.state.showCopilotSidebar &&
+          useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId && (
+            <div style={{ width: "30%", height: "100%" }}>
+              <QueryCopilotSidebar />
+            </div>
+          )}
       </div>
     );
   }

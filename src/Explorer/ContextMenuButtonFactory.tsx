@@ -148,7 +148,7 @@ export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] =>
   const items: TreeNodeMenuItem[] = [];
   if (userContext.apiType === "SQL") {
     const copilotVersion = userContext.features.copilotVersion;
-    if (copilotVersion === "1.0") {
+    if (copilotVersion === "v1.0") {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => {
@@ -157,7 +157,7 @@ export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] =>
         },
         label: "New SQL Query",
       });
-    } else if (copilotVersion === "2.0") {
+    } else if (copilotVersion === "v2.0") {
       const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
       items.push({
         iconSrc: AddSqlQueryIcon,

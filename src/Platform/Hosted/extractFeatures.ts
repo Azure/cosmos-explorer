@@ -107,7 +107,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
     enableCopilot: "true" === get("enablecopilot"),
     enableNPSSurvey: "true" === get("enableNPSSurvey"),
-    copilotVersion: get("copilotVersion"),
+    copilotVersion: get("copilotVersion") ? get("copilotVersion") : "v1.0",
   };
 }
 

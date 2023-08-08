@@ -149,9 +149,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               }
               onClick={() => {
                 const copilotVersion = userContext.features.copilotVersion;
-                if (copilotVersion === "1.0") {
+                if (copilotVersion === "v1.0") {
                   useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
-                } else if (copilotVersion === "2.0") {
+                } else if (copilotVersion === "v2.0") {
                   const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
                   sampleCollection.onNewQueryClick(sampleCollection, undefined);
                 }
