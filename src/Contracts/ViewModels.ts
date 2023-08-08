@@ -398,6 +398,8 @@ export interface DataExplorerInputsFrame {
   defaultCollectionThroughput?: CollectionCreationDefaults;
   isPostgresAccount?: boolean;
   isReplica?: boolean;
+  isVCoreMongoAccount?: boolean;
+  vcoreMongoDatabaseAccount?: any;
   clientIpAddress?: string;
   // TODO: Update this param in the OSS extension to remove isFreeTier, isMarlinServerGroup, and make nodes a flat array instead of an nested array
   connectionStringParams?: any;
