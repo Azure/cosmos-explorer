@@ -193,7 +193,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
       const serverInfo = useNotebook.getState().notebookServerInfo;
-      const response = await fetch(`${serverInfo.notebookServerEndpoint}/generateSQLQuery`, {
+      const response = await fetch(`${serverInfo.notebookServerEndpoint}generateSQLQuery`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
