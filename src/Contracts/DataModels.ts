@@ -41,6 +41,29 @@ export interface DatabaseAccountExtendedProperties {
   vcoreMongoEndpoint?: string;
 }
 
+export interface VCoreMongoDatabaseAccount extends ArmEntity {
+  properties: VCoreMongoClusterProperties;
+}
+
+export interface VCoreMongoClusterProperties {
+  provisioningState: string;
+  clusterStatus: string;
+  administratorLogin: string;
+  serverVersion: string;
+  nodeGroupSpecs: VCoreMongoNodeGroupSpecs[];
+  connectionString: string;
+  earliestRestoreTime: string;
+}
+
+export interface VCoreMongoNodeGroupSpecs {
+  name: string;
+  kind: string;
+  sku: string;
+  diskSizeGB: number;
+  enableHa: boolean;
+  nodeCount: number;
+}
+
 export interface DatabaseAccountResponseLocation {
   documentEndpoint: string;
   failoverPriority: number;
@@ -169,7 +192,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource {}
+export interface DocumentId extends Resource { }
 
 export interface ConflictId extends Resource {
   resourceId?: string;
