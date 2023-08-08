@@ -64,6 +64,29 @@ export interface VCoreMongoNodeGroupSpecs {
   nodeCount: number;
 }
 
+export interface VCoreMongoDatabaseAccount extends ArmEntity {
+  properties: VCoreMongoClusterProperties;
+}
+
+export interface VCoreMongoClusterProperties {
+  provisioningState: string;
+  clusterStatus: string;
+  administratorLogin: string;
+  serverVersion: string;
+  nodeGroupSpecs: VCoreMongoNodeGroupSpecs[];
+  connectionString: string;
+  earliestRestoreTime: string;
+}
+
+export interface VCoreMongoNodeGroupSpecs {
+  name: string;
+  kind: string;
+  sku: string;
+  diskSizeGB: number;
+  enableHa: boolean;
+  nodeCount: number;
+}
+
 export interface DatabaseAccountResponseLocation {
   documentEndpoint: string;
   failoverPriority: number;
