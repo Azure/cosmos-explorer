@@ -27,6 +27,7 @@ import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/Com
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
@@ -191,7 +192,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       };
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
-      const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
+      const serverInfo = useNotebook.getState().notebookServerInfo;
+      const response = await fetch(`${serverInfo.notebookServerEndpoint}/generateSQLQuery`, {
         method: "POST",
         headers: {
           "content-type": "application/json",

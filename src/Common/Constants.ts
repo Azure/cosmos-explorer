@@ -358,6 +358,7 @@ export enum ContainerStatusType {
 
 export enum PoolIdType {
   DefaultPoolId = "default",
+  QueryCopilot = "query-copilot",
 }
 
 export const EmulatorMasterKey =
