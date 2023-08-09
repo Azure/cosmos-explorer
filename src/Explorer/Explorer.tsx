@@ -283,18 +283,18 @@ export default class Explorer {
         isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS) &&
         this.getRandomInt(100) < 25
       ) {
-        sendMessage(MessageTypes.DisplayNPSSurvey);
+        sendMessage({ type: MessageTypes.DisplayNPSSurvey })
       }
     } else {
       // An existing account is lesser than 90 days old. For existing account show to random 10 % of users in Data Explorer.
       if (isAccountNewerThanNinetyDays) {
         if (this.getRandomInt(100) < 10) {
-          sendMessage(MessageTypes.DisplayNPSSurvey);
+          sendMessage({ type: MessageTypes.DisplayNPSSurvey })
         }
       } else {
         // An existing account is greater than 90 days. For existing account show to random 25 % of users in Data Explorer.
         if (this.getRandomInt(100) < 25) {
-          sendMessage(MessageTypes.DisplayNPSSurvey);
+          sendMessage({ type: MessageTypes.DisplayNPSSurvey });
         }
       }
     }
