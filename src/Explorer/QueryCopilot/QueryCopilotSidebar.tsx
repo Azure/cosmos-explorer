@@ -1,30 +1,50 @@
-import { Icon, IconButton, Image, Stack, Text, TextField } from "@fluentui/react";
+import { IButtonStyles, IconButton, Image, Stack, Text, TextField } from "@fluentui/react";
 import { WelcomeSidebarPopup } from "Explorer/QueryCopilot/Popup/WelcomeSidebarPopup";
-import { useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
+import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/SamplePrompts/SamplePrompts";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import CopilotIcon from "../../../images/CopilotSidebarLogo.svg";
+import HintIcon from "../../../images/Hint.svg";
+
+const sampleChatMessages: string[] = [
+  "Write a query to return last 10 records in the database",
+  'Write a query to return all records in this table created in the last thirty days which also have the record owner as "Contoso"',
+];
+
+const promptStyles: IButtonStyles = {
+  root: { border: "5px", selectors: { ":hover": { outline: "1px dashed #605e5c" } } },
+  label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
+};
 
 export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
   const {
     setWasCopilotUsed,
     showCopilotSidebar,
     setShowCopilotSidebar,
-    userInput,
-    setUserInput,
+    userPrompt,
+    setUserPrompt,
     chatMessages,
     setChatMessages,
     showWelcomeSidebar,
-  } = useQueryCopilotSidebar();
+    isSamplePromptsOpen,
+    setIsSamplePromptsOpen,
+  } = useQueryCopilot();
+
+  const sampleProps: SamplePromptsProps = {
+    isSamplePromptsOpen: isSamplePromptsOpen,
+    setIsSamplePromptsOpen: setIsSamplePromptsOpen,
+    setTextBox: setUserPrompt,
+  };
 
   const handleSendMessage = () => {
-    if (userInput.trim() !== "") {
-      setChatMessages([...chatMessages, userInput]);
-      setUserInput("");
+    if (userPrompt.trim() !== "") {
+      setChatMessages([...chatMessages, userPrompt]);
+      setUserPrompt("");
     }
   };
 
   const handleInputChange = (value: string) => {
-    setUserInput(value);
+    setUserPrompt(value);
   };
 
   const handleEnterKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -41,41 +61,40 @@ export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
   }, []);
 
   return (
-    <Stack style={{ width: "320px", height: "405px", backgroundColor: "#FAFAFA", overflow: "auto" }}>
+    <Stack style={{ width: "100%", height: "100%", backgroundColor: "#FAFAFA", overflow: "auto" }}>
+      <Stack style={{ margin: "15px 0px 0px 0px", padding: "5px" }}>
+        <Stack style={{ display: "flex", justifyContent: "space-between" }} horizontal verticalAlign="center">
+          <Stack horizontal verticalAlign="center">
+            <Image src={CopilotIcon} />
+            <Text style={{ marginLeft: "5px", fontWeight: "bold" }}>Copilot</Text>
+            <Text
+              style={{
+                background: "#f0f0f0",
+                fontSize: "10px",
+                padding: "2px 4px",
+                marginLeft: "5px",
+                borderRadius: "8px",
+              }}
+            >
+              Preview
+            </Text>
+          </Stack>
+          <IconButton
+            onClick={() => setShowCopilotSidebar(false)}
+            iconProps={{ iconName: "Cancel" }}
+            title="Exit"
+            ariaLabel="Exit"
+            style={{ color: "#424242", verticalAlign: "middle" }}
+          />
+        </Stack>
+      </Stack>
       {showWelcomeSidebar ? (
         <Stack.Item styles={{ root: { textAlign: "center", verticalAlign: "middle" } }}>
           <WelcomeSidebarPopup />
         </Stack.Item>
       ) : (
         <>
-          <Stack style={{ margin: "15px 0px 0px 0px", padding: "5px" }}>
-            <Stack style={{ display: "flex", justifyContent: "space-between" }} horizontal verticalAlign="center">
-              <Stack horizontal verticalAlign="center">
-                <Image src={CopilotIcon} />
-                <Text style={{ marginLeft: "5px", fontWeight: "bold" }}>Copilot</Text>
-                <Text
-                  style={{
-                    background: "#f0f0f0",
-                    fontSize: "10px",
-                    padding: "2px 4px",
-                    marginLeft: "5px",
-                    borderRadius: "8px",
-                  }}
-                >
-                  Preview
-                </Text>
-              </Stack>
-              <IconButton
-                onClick={() => setShowCopilotSidebar(false)}
-                iconProps={{ iconName: "Cancel" }}
-                title="Exit"
-                ariaLabel="Exit"
-                style={{ color: "#424242", verticalAlign: "middle" }}
-              />
-            </Stack>
-          </Stack>
-
-          <Stack horizontalAlign="center" tokens={{ padding: 8, childrenGap: 8 }}>
+          <Stack horizontalAlign="center" style={{ color: "#707070" }} tokens={{ padding: 8, childrenGap: 8 }}>
             {new Date().toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
@@ -100,17 +119,19 @@ export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
                   Hello, I am Cosmos Db&apos;s copilot assistant. I can help you do the following things:
                 </Text>
                 <Stack tokens={{ childrenGap: 8 }}>
-                  <Stack horizontal tokens={{ childrenGap: 8 }}>
-                    <Icon iconName="BulletedList" />
-                    <Text>Generate queries based upon prompt you suggest</Text>
+                  <Stack horizontal style={{ marginLeft: "15px" }} tokens={{ childrenGap: 8 }}>
+                    <Text style={{ fontSize: "16px", lineHeight: "16px", verticalAlign: "middle" }}>•</Text>
+                    <Text style={{ verticalAlign: "middle" }}>Generate queries based upon prompt you suggest</Text>
                   </Stack>
-                  <Stack horizontal tokens={{ childrenGap: 8 }}>
-                    <Icon iconName="BulletedList" />
-                    <Text>Explain and provide alternate queries for a query suggested by you</Text>
+                  <Stack horizontal style={{ marginLeft: "15px" }} tokens={{ childrenGap: 8 }}>
+                    <Text style={{ fontSize: "16px", lineHeight: "16px", verticalAlign: "middle" }}>•</Text>
+                    <Text style={{ verticalAlign: "middle" }}>
+                      Explain and provide alternate queries for a query suggested by you
+                    </Text>
                   </Stack>
-                  <Stack horizontal tokens={{ childrenGap: 8 }}>
-                    <Icon iconName="BulletedList" />
-                    <Text>Help answer questions about Cosmos DB</Text>
+                  <Stack horizontal style={{ marginLeft: "15px" }} tokens={{ childrenGap: 8 }}>
+                    <Text style={{ fontSize: "16px", lineHeight: "16px", verticalAlign: "middle" }}>•</Text>
+                    <Text style={{ verticalAlign: "middle" }}>Help answer questions about Cosmos DB</Text>
                   </Stack>
                 </Stack>
                 <Text variant="medium">
@@ -135,6 +156,46 @@ export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
               ))}
             </div>
 
+            {chatMessages.length === 0 && (
+              <Stack
+                horizontalAlign="end"
+                verticalAlign="end"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "10px",
+                  margin: "10px",
+                }}
+              >
+                <Text
+                  onClick={() => handleInputChange(sampleChatMessages[0])}
+                  style={{
+                    cursor: "pointer",
+                    border: "1.5px solid #B0BEFF",
+                    width: "100%",
+                    padding: "2px",
+                    borderRadius: "4px",
+                    marginBottom: "5px",
+                  }}
+                >
+                  {sampleChatMessages[0]}
+                </Text>
+                <Text
+                  onClick={() => handleInputChange(sampleChatMessages[1])}
+                  style={{
+                    cursor: "pointer",
+                    border: "1.5px solid #B0BEFF",
+                    width: "100%",
+                    padding: "2px",
+                    borderRadius: "4px",
+                    marginBottom: "5px",
+                  }}
+                >
+                  {sampleChatMessages[1]}
+                </Text>
+              </Stack>
+            )}
+
             <Stack
               horizontal
               horizontalAlign="end"
@@ -148,9 +209,13 @@ export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
                 margin: "5px",
               }}
             >
+              <Stack>
+                <Image src={HintIcon} styles={promptStyles} onClick={() => setIsSamplePromptsOpen(true)} />
+                <SamplePrompts sampleProps={sampleProps} />
+              </Stack>
               <TextField
                 placeholder="Write your own prompt or ask a question"
-                value={userInput}
+                value={userPrompt}
                 onChange={(_, newValue) => handleInputChange(newValue)}
                 onKeyDown={handleEnterKeyPress}
                 multiline
@@ -163,6 +228,7 @@ export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
                     padding: "8px",
                     border: "none",
                     outline: "none",
+                    marginLeft: "10px",
                   },
                   fieldGroup: { border: "none" },
                 }}

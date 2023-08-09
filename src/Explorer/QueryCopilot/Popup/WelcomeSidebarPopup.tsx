@@ -1,5 +1,5 @@
 import { Image, Link, PrimaryButton, Stack, Text } from "@fluentui/react";
-import { useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import Database from "../../../../images/CopilotDatabase.svg";
 import Flash from "../../../../images/CopilotFlash.svg";
@@ -7,7 +7,7 @@ import CopilotSidebarWelcomeIllustration from "../../../../images/CopilotSidebar
 import Thumb from "../../../../images/CopilotThumb.svg";
 
 export const WelcomeSidebarPopup: React.FC = (): JSX.Element => {
-  const { setShowWelcomeSidebar } = useQueryCopilotSidebar();
+  const { setShowWelcomeSidebar } = useQueryCopilot();
 
   const hideModal = () => {
     setShowWelcomeSidebar(false);
@@ -19,8 +19,24 @@ export const WelcomeSidebarPopup: React.FC = (): JSX.Element => {
   }, []);
 
   return (
-    <Stack style={{ width: "288px", height: "100%", padding: "5px", overflow: "auto", backgroundColor: "white" }}>
-      <div style={{ overflowY: "auto", maxHeight: "100%", boxSizing: "border-box" }}>
+    <Stack
+      style={{
+        width: "100%",
+        height: "100%",
+        overflow: "auto",
+        backgroundColor: "#FAFAFA",
+      }}
+    >
+      <div
+        style={{
+          margin: "20px 10px",
+          padding: "20px",
+          maxHeight: "100%",
+          boxSizing: "border-box",
+          borderRadius: "20px",
+          backgroundColor: "white",
+        }}
+      >
         <Stack horizontalAlign="center" verticalAlign="center">
           <Image src={CopilotSidebarWelcomeIllustration} />
         </Stack>
@@ -34,7 +50,7 @@ export const WelcomeSidebarPopup: React.FC = (): JSX.Element => {
               <Stack.Item align="start">
                 <Image src={Flash} />
               </Stack.Item>
-              <Stack.Item align="start" style={{ marginLeft: "10px" }}>
+              <Stack.Item align="center" style={{ marginLeft: "10px" }}>
                 <Text style={{ fontWeight: 600 }}>
                   Let copilot do the work for you
                   <br />
@@ -52,7 +68,7 @@ export const WelcomeSidebarPopup: React.FC = (): JSX.Element => {
               <Stack.Item align="start">
                 <Image src={Thumb} />
               </Stack.Item>
-              <Stack.Item align="start" style={{ marginLeft: "10px" }}>
+              <Stack.Item align="center" style={{ marginLeft: "10px" }}>
                 <Text style={{ fontWeight: 600 }}>
                   Use your judgement
                   <br />
@@ -70,7 +86,7 @@ export const WelcomeSidebarPopup: React.FC = (): JSX.Element => {
               <Stack.Item align="start">
                 <Image src={Database} />
               </Stack.Item>
-              <Stack.Item align="start">
+              <Stack.Item align="center" style={{ marginLeft: "10px" }}>
                 <Text style={{ fontWeight: 600 }}>
                   Copilot currently works only a sample database
                   <br />

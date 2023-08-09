@@ -2,7 +2,7 @@ import { FeedOptions } from "@azure/cosmos";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useDatabases } from "Explorer/useDatabases";
-import { QueryCopilotSidebarState, useQueryCopilotSidebar } from "hooks/useQueryCopilotSidebar";
+import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
@@ -77,6 +77,7 @@ interface IQueryTabStates {
   isExecutionError: boolean;
   isExecuting: boolean;
   showCopilotSidebar: boolean;
+  isCopilotTabActive: boolean;
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
@@ -100,7 +101,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       error: "",
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
-      showCopilotSidebar: useQueryCopilotSidebar.getState().showCopilotSidebar,
+      showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
+      isCopilotTabActive:
+        useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -133,11 +136,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onCloseClick(isClicked: boolean): void {
     this.isCloseClicked = isClicked;
-    if (
-      useQueryCopilotSidebar.getState().wasCopilotUsed &&
-      useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId
-    ) {
-      useQueryCopilotSidebar.getState().resetQueryCopilotSidebarStates();
+    if (useQueryCopilot.getState().wasCopilotUsed && this.state.isCopilotTabActive) {
+      useQueryCopilot.getState().resetQueryCopilotStates();
     }
   }
 
@@ -165,7 +165,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public launchQueryCopilotChat = (): void => {
-    useQueryCopilotSidebar.getState().setShowCopilotSidebar(!useQueryCopilotSidebar.getState().showCopilotSidebar);
+    useQueryCopilot.getState().setShowCopilotSidebar(!useQueryCopilot.getState().showCopilotSidebar);
   };
 
   public onSavedQueriesClick = (): void => {
@@ -291,11 +291,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
-    if (
-      this.launchCopilotButton.visible &&
-      userContext.features.enableCopilot &&
-      useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId
-    ) {
+    if (this.launchCopilotButton.visible && this.state.isCopilotTabActive) {
       const label = "Launch Copilot";
       buttons.push({
         iconSrc: LaunchCopilot,
@@ -347,7 +343,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   private unsubscribeCopilotSidebar: () => void;
 
   componentDidMount(): void {
-    this.unsubscribeCopilotSidebar = useQueryCopilotSidebar.subscribe((state: QueryCopilotSidebarState) => {
+    this.unsubscribeCopilotSidebar = useQueryCopilot.subscribe((state: QueryCopilotState) => {
       if (this.state.showCopilotSidebar !== state.showCopilotSidebar) {
         this.setState({ showCopilotSidebar: state.showCopilotSidebar });
       }
@@ -400,12 +396,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         <div style={{ width: this.state.showCopilotSidebar ? "70%" : "100%", height: "100%" }}>
           {this.getEditorAndQueryResult()}
         </div>
-        {this.state.showCopilotSidebar &&
-          useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId && (
-            <div style={{ width: "30%", height: "100%" }}>
-              <QueryCopilotSidebar />
-            </div>
-          )}
+        {this.state.showCopilotSidebar && this.state.isCopilotTabActive && (
+          <div style={{ width: "30%", height: "100%" }}>
+            <QueryCopilotSidebar />
+          </div>
+        )}
       </div>
     );
   }
