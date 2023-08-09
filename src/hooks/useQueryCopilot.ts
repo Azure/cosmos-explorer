@@ -88,7 +88,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showErrorMessageBar: false,
   generatedQueryComments: "",
   wasCopilotUsed: false,
-  showWelcomeSidebar: false,
+  showWelcomeSidebar: true,
   showCopilotSidebar: false,
   chatMessages: [],
 
@@ -148,7 +148,6 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       showErrorMessageBar: false,
       generatedQueryComments: "",
       wasCopilotUsed: false,
-      showWelcomeSidebar: false,
       showCopilotSidebar: false,
       chatMessages: [],
     }));

@@ -1,10 +1,10 @@
 import { IButtonStyles, IconButton, Image, Stack, Text, TextField } from "@fluentui/react";
-import { WelcomeSidebarPopup } from "Explorer/QueryCopilot/Popup/WelcomeSidebarPopup";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/SamplePrompts/SamplePrompts";
+import { WelcomeSidebarPopup } from "Explorer/QueryCopilot/Sidebar/WelcomeSidebarPopup";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
-import CopilotIcon from "../../../images/CopilotSidebarLogo.svg";
-import HintIcon from "../../../images/Hint.svg";
+import CopilotIcon from "../../../../images/CopilotSidebarLogo.svg";
+import HintIcon from "../../../../images/Hint.svg";
 
 const sampleChatMessages: string[] = [
   "Write a query to return last 10 records in the database",
