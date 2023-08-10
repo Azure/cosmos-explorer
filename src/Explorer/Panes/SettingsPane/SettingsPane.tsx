@@ -44,7 +44,7 @@ export const SettingsPane: FunctionComponent = () => {
   const [priorityLevel, setPriorityLevel] = useState<string>(
     LocalStorageUtility.hasItem(StorageKey.PriorityLevel)
       ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
-      : Constants.PriorityLevel.Low
+      : Constants.PriorityLevel.Default
   );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";

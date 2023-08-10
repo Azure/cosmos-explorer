@@ -6,7 +6,7 @@ export const createDefaultSettings = () => {
   LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, Constants.Queries.itemsPerPage);
   LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, "true");
   LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, Constants.Queries.DefaultMaxDegreeOfParallelism);
-  LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Low);
+  LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Default);
 };
 
 export const hasSettingsDefined = (): boolean => {
@@ -19,6 +19,6 @@ export const hasSettingsDefined = (): boolean => {
 
 export const ensurePriorityLevel = () => {
   if (!LocalStorageUtility.hasItem(StorageKey.PriorityLevel)) {
-    LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Low);
+    LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Default);
   }
 };
