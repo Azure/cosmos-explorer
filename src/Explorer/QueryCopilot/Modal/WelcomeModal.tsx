@@ -42,8 +42,8 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
             </Stack>
           </Stack>
           <Stack horizontalAlign="center">
-            <Stack.Item align="center">
-              <Text className="title bold">Welcome to Copilot in CosmosDB</Text>
+            <Stack.Item align="center" style={{ textAlign: "center" }}>
+              <Text className="title bold">Welcome to Query Copilot for Azure Cosmos DB (Private Preview)</Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
               <Stack horizontal>
@@ -52,7 +52,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 </StackItem>
                 <StackItem align="start">
                   <Text className="bold">
-                    Let copilot do the work for you
+                    Let Query Copilot do the work for you
                     <br />
                   </Text>
                 </StackItem>
@@ -88,13 +88,14 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 </StackItem>
                 <StackItem align="start">
                   <Text className="bold">
-                    Copilot currently works only a sample database
+                    Query Copilot works on a sample database.
                     <br />
                   </Text>
                 </StackItem>
               </Stack>
               <Text>
-                Copilot is setup on a sample database we have configured for you at no cost
+                While in Private Preview, Query Copilot is setup to work on sample database we have configured for you
+                at no cost.
                 <br />
                 <Link href="http://aka.ms/cdb-copilot-learn-more">Learn more</Link>
               </Text>
