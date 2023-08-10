@@ -115,7 +115,7 @@
     "@types/crossroads": "0.0.30",
     "@types/d3": "5.9.2",
     "@types/dom-to-image": "2.6.2",
-    "@types/enzyme": "3.10.7",
+    "@types/enzyme": "3.10.13",
     "@types/enzyme-adapter-react-16": "1.0.6",
     "@types/hasher": "0.0.31",
     "@types/jest": "26.0.20",
