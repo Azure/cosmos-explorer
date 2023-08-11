@@ -116,6 +116,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
     setShowErrorMessageBar,
     generatedQueryComments,
     setGeneratedQueryComments,
+    shouldAllocateContainer,
+    setShouldAllocateContainer,
   } = useQueryCopilot();
 
   const sampleProps: SamplePromptsProps = {
@@ -183,6 +185,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
 
   const generateSQLQuery = async (): Promise<void> => {
     try {
+      if (shouldAllocateContainer) {
+        await explorer.allocateContainer();
+        setShouldAllocateContainer(false);
+      }
+
       setIsGeneratingQuery(true);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
@@ -203,6 +210,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       });
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
+      if (response.status === 404) {
+        setShouldAllocateContainer(true);
+      }
       if (response.ok) {
         if (generateSQLQueryResponse?.sql) {
           let query = `-- **Prompt:** ${userPrompt}\r\n`;
@@ -535,10 +545,13 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
                 onDismiss={() => {
                   setShowCallout(false);
                   submitFeedback({
-                    generatedQuery: generatedQuery,
-                    likeQuery: likeQuery,
-                    description: "",
-                    userPrompt: userPrompt,
+                    params: {
+                      generatedQuery: generatedQuery,
+                      likeQuery: likeQuery,
+                      description: "",
+                      userPrompt: userPrompt,
+                    },
+                    explorer: explorer,
                   });
                 }}
                 directionalHint={DirectionalHint.topCenter}

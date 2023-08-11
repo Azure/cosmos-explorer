@@ -8,6 +8,8 @@ import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import { getPartitionKeyValue } from "Common/dataAccess/getPartitionKeyValue";
 import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
+import Explorer from "Explorer/Explorer";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
 import DocumentId from "Explorer/Tree/DocumentId";
 import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -20,9 +22,16 @@ interface FeedbackParams {
   contact?: string;
 }
 
-export const submitFeedback = async (params: FeedbackParams): Promise<void> => {
+export const submitFeedback = async ({
+  params,
+  explorer,
+}: {
+  params: FeedbackParams;
+  explorer: Explorer;
+}): Promise<void> => {
   try {
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
+    const { correlationId, shouldAllocateContainer, setShouldAllocateContainer } = useQueryCopilot();
     const payload = {
       containerSchema: QueryCopilotSampleContainerSchema,
       like: likeQuery ? "like" : "dislike",
@@ -31,15 +40,22 @@ export const submitFeedback = async (params: FeedbackParams): Promise<void> => {
       description: description || "",
       contact: contact || "",
     };
-
-    await fetch("https://copilotorchestrater.azurewebsites.net/feedback", {
+    if (shouldAllocateContainer) {
+      await explorer.allocateContainer();
+      setShouldAllocateContainer(false);
+    }
+    const serverInfo = useNotebook.getState().notebookServerInfo;
+    const response = await fetch(`${serverInfo.notebookServerEndpoint}feedback`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+        "x-ms-correlationid": correlationId,
       },
       body: JSON.stringify(payload),
     });
+    if (response.status === 404) {
+      setShouldAllocateContainer(true);
+    }
   } catch (error) {
     handleError(error, "copilotSubmitFeedback");
   }

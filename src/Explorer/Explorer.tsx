@@ -1335,7 +1335,5 @@ export default class Explorer {
 
     const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
     useDatabases.setState({ sampleDataResourceTokenCollection });
-
-    await this.allocateContainer();
   }
 }

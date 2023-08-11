@@ -230,7 +230,7 @@ export class PhoenixClient {
       throw new Error("The Phoenix client was not initialized properly: missing ARM resourcce id");
     }
 
-    const toolsEndpoint = JunoEndpoints.Test2;
+    const toolsEndpoint = JunoEndpoints.Stage;
     // userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
 
     if (!validateEndpoint(toolsEndpoint, allowedJunoOrigins)) {

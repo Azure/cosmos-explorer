@@ -3,8 +3,8 @@ import { QueryCopilotSampleContainerSchema } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import * as commonUtils from "Common/dataAccess/queryDocuments";
+import Explorer from "Explorer/Explorer";
 import DocumentId from "Explorer/Tree/DocumentId";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { querySampleDocuments, readSampleDocument, submitFeedback } from "./QueryCopilotUtilities";
 jest.mock("Explorer/Tree/DocumentId", () => {
   return jest.fn().mockImplementation(() => {
@@ -24,7 +24,6 @@ jest.mock("@azure/cosmos", () => ({
   FeedOptions: jest.fn(),
   QueryIterator: jest.fn(),
 }));
-
 jest.mock("Common/ErrorHandlingUtils", () => ({
   handleError: jest.fn(),
 }));
@@ -40,6 +39,31 @@ jest.mock("Common/dataAccess/queryDocuments", () => ({
 jest.mock("Common/SampleDataClient");
 
 jest.mock("node-fetch");
+
+jest.mock("@azure/cosmos", () => ({
+  Constants: {
+    HttpHeaders: {},
+  },
+}));
+
+jest.mock("Explorer/Explorer", () => {
+  class MockExplorer {
+    allocateContainer = jest.fn().mockResolvedValueOnce({});
+  }
+  return MockExplorer;
+});
+
+jest.mock("hooks/useQueryCopilot", () => {
+  const mockQueryCopilotStore = {
+    shouldAllocateContainer: true,
+    setShouldAllocateContainer: jest.fn(),
+    correlationId: "mocked-correlation-id",
+  };
+
+  return {
+    useQueryCopilot: jest.fn(() => mockQueryCopilotStore),
+  };
+});
 
 describe("QueryCopilotUtilities", () => {
   beforeEach(() => jest.clearAllMocks());
@@ -57,24 +81,24 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
-        likeQuery: true,
-        generatedQuery: "GeneratedQuery",
-        userPrompt: "UserPrompt",
-        description: "Description",
-        contact: "Contact",
+        params: {
+          likeQuery: true,
+          generatedQuery: "GeneratedQuery",
+          userPrompt: "UserPrompt",
+          description: "Description",
+          contact: "Contact",
+        },
+        explorer: new Explorer(),
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://copilotorchestrater.azurewebsites.net/feedback",
+        expect.any(String),
         expect.objectContaining({
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "x-ms-correlationid": useQueryCopilot.getState().correlationId,
-          },
+          headers: expect.objectContaining({
+            "x-ms-correlationid": "mocked-correlation-id",
+          }),
         })
       );
 
@@ -89,23 +113,25 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
-        likeQuery: false,
-        generatedQuery: "GeneratedQuery",
-        userPrompt: "UserPrompt",
-        description: undefined,
-        contact: undefined,
+        params: {
+          likeQuery: false,
+          generatedQuery: "GeneratedQuery",
+          userPrompt: "UserPrompt",
+          description: undefined,
+          contact: undefined,
+        },
+        explorer: new Explorer(),
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://copilotorchestrater.azurewebsites.net/feedback",
+        expect.any(String),
         expect.objectContaining({
           method: "POST",
           headers: {
             "content-type": "application/json",
-            "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+            "x-ms-correlationid": "mocked-correlation-id",
           },
         })
       );
@@ -118,11 +144,14 @@ describe("QueryCopilotUtilities", () => {
       globalThis.fetch = jest.fn().mockRejectedValueOnce(new Error("Mock error"));
 
       await submitFeedback({
-        likeQuery: true,
-        generatedQuery: "GeneratedQuery",
-        userPrompt: "UserPrompt",
-        description: "Description",
-        contact: "Contact",
+        params: {
+          likeQuery: true,
+          generatedQuery: "GeneratedQuery",
+          userPrompt: "UserPrompt",
+          description: "Description",
+          contact: "Contact",
+        },
+        explorer: new Explorer(),
       }).catch((error) => {
         expect(error.message).toEqual("Mock error");
       });

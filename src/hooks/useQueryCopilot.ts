@@ -26,6 +26,7 @@ interface QueryCopilotState {
   showCopyPopup: boolean;
   showErrorMessageBar: boolean;
   generatedQueryComments: string;
+  shouldAllocateContainer: boolean;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
@@ -50,6 +51,8 @@ interface QueryCopilotState {
   setshowCopyPopup: (showCopyPopup: boolean) => void;
   setShowErrorMessageBar: (showErrorMessageBar: boolean) => void;
   setGeneratedQueryComments: (generatedQueryComments: string) => void;
+  setShouldAllocateContainer: (shouldAllocateContainer: boolean) => void;
+
   resetQueryCopilotStates: () => void;
 }
 
@@ -78,6 +81,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showCopyPopup: false,
   showErrorMessageBar: false,
   generatedQueryComments: "",
+  shouldAllocateContainer: true,
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
@@ -104,6 +108,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setshowCopyPopup: (showCopyPopup: boolean) => set({ showCopyPopup }),
   setShowErrorMessageBar: (showErrorMessageBar: boolean) => set({ showErrorMessageBar }),
   setGeneratedQueryComments: (generatedQueryComments: string) => set({ generatedQueryComments }),
+  setShouldAllocateContainer: (shouldAllocateContainer: boolean) => set({ shouldAllocateContainer }),
 
   resetQueryCopilotStates: () => {
     set((state) => ({
@@ -130,6 +135,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       showCopyPopup: false,
       showErrorMessageBar: false,
       generatedQueryComments: "",
+      shouldAllocateContainer: true,
     }));
   },
 }));
