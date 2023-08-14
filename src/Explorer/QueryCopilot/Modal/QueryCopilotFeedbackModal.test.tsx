@@ -1,4 +1,5 @@
 import { Checkbox, ChoiceGroup, DefaultButton, IconButton, PrimaryButton, TextField } from "@fluentui/react";
+import Explorer from "Explorer/Explorer";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { getUserEmail } from "Utils/UserUtils";
@@ -19,14 +20,14 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   it("shoud render and match snapshot", () => {
     useQueryCopilot.getState().openFeedbackModal("test query", false, "test prompt");
 
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
 
     expect(wrapper.props().isOpen).toBeTruthy();
     expect(wrapper).toMatchSnapshot();
   });
 
   it("should close on cancel click", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
 
     const cancelButton = wrapper.find(IconButton);
     cancelButton.simulate("click");
@@ -37,7 +38,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should get user unput", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
     const testUserInput = "test user input";
 
     const userInput = wrapper.find(TextField).first();
@@ -48,7 +49,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should record user contact choice no", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
     const contactAllowed = wrapper.find(ChoiceGroup);
 
     contactAllowed.simulate("change", {}, { key: "no" });
@@ -59,7 +60,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should record user contact choice yes", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
     const contactAllowed = wrapper.find(ChoiceGroup);
 
     contactAllowed.simulate("change", {}, { key: "yes" });
@@ -70,7 +71,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should not render dont show again button", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
 
     const dontShowAgain = wrapper.find(Checkbox);
 
@@ -80,7 +81,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
 
   it("should render dont show again button and check it ", () => {
     useQueryCopilot.getState().openFeedbackModal("test query", true, "test prompt");
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
 
     const dontShowAgain = wrapper.find(Checkbox);
     dontShowAgain.simulate("change", {}, true);
@@ -91,7 +92,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should cancel submission", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
 
     const cancelButton = wrapper.find(DefaultButton);
     cancelButton.simulate("click");
@@ -102,7 +103,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should submit submission", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal />);
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
 
     const submitButton = wrapper.find(PrimaryButton);
     submitButton.simulate("click");

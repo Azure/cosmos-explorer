@@ -10,12 +10,13 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
+import Explorer from "Explorer/Explorer";
 import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { getUserEmail } from "../../../Utils/UserUtils";
 
-export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
+export const QueryCopilotFeedbackModal = ({ explorer }: { explorer: Explorer }): JSX.Element => {
   const {
     generatedQuery,
     userPrompt,
@@ -100,7 +101,10 @@ export const QueryCopilotFeedbackModal: React.FC = (): JSX.Element => {
             onClick={() => {
               closeFeedbackModal();
               setHideFeedbackModalForLikedQueries(doNotShowAgainChecked);
-              submitFeedback({ generatedQuery, likeQuery, description, userPrompt, contact });
+              submitFeedback({
+                params: { generatedQuery, likeQuery, description, userPrompt, contact },
+                explorer: explorer,
+              });
             }}
           >
             Submit
