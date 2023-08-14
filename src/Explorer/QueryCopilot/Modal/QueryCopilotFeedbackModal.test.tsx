@@ -103,7 +103,8 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should submit submission", () => {
-    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
+    const explorer = new Explorer();
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={explorer} />);
 
     const submitButton = wrapper.find(PrimaryButton);
     submitButton.simulate("click");
@@ -111,11 +112,14 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
 
     expect(submitFeedback).toHaveBeenCalledTimes(1);
     expect(submitFeedback).toHaveBeenCalledWith({
-      likeQuery: false,
-      generatedQuery: "",
-      userPrompt: "",
-      description: "",
-      contact: getUserEmail(),
+      params: {
+        likeQuery: false,
+        generatedQuery: "",
+        userPrompt: "",
+        description: "",
+        contact: getUserEmail(),
+      },
+      explorer: explorer,
     });
     expect(wrapper.props().isOpen).toBeFalsy();
     expect(wrapper).toMatchSnapshot();
