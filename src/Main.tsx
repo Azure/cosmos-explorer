@@ -83,7 +83,7 @@ const App: React.FunctionComponent = () => {
   }
 
   return (
-    <div className="flexContainer">
+    <div className="flexContainer" aria-hidden="false">
       <div id="divExplorer" className="flexContainer hideOverflows">
         <div id="freeTierTeachingBubble"> </div>
         {/* Main Command Bar - Start */}
