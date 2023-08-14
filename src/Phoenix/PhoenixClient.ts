@@ -1,18 +1,18 @@
 import { useDialog } from "Explorer/Controls/Dialog";
-import promiseRetry, { AbortError } from "p-retry";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import promiseRetry, { AbortError } from "p-retry";
 import {
   Areas,
   ConnectionStatusType,
   ContainerStatusType,
   HttpHeaders,
   HttpStatusCodes,
+  JunoEndpoints,
   Notebook,
 } from "../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { configContext } from "../ConfigContext";
 import {
   ContainerConnectionInfo,
   ContainerInfo,
@@ -28,7 +28,6 @@ import {
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
@@ -231,8 +230,8 @@ export class PhoenixClient {
       throw new Error("The Phoenix client was not initialized properly: missing ARM resourcce id");
     }
 
-    const toolsEndpoint =
-      userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
+    const toolsEndpoint = JunoEndpoints.Test2;
+    // userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
 
     if (!validateEndpoint(toolsEndpoint, allowedJunoOrigins)) {
       const error = `${toolsEndpoint} not allowed as tools endpoint`;
