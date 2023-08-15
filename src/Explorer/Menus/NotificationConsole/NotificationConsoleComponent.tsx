@@ -122,7 +122,9 @@ export class NotificationConsoleComponent extends React.Component<
             {userContext.features.pr && <PrPreview pr={userContext.features.pr} />}
             <span className="consoleSplitter" />
             <span className="headerStatus">
-              <span className="headerStatusEllipsis">{this.state.headerStatus}</span>
+              <span className="headerStatusEllipsis" aria-live="assertive" aria-atomic="true">
+                {this.state.headerStatus}
+              </span>
             </span>
           </div>
           <div

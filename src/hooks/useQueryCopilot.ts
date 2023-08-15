@@ -3,7 +3,7 @@ import { QueryResults } from "Contracts/ViewModels";
 import { guid } from "Explorer/Tables/Utilities";
 import create, { UseStore } from "zustand";
 
-interface QueryCopilotState {
+export interface QueryCopilotState {
   generatedQuery: string;
   likeQuery: boolean;
   userPrompt: string;
@@ -26,6 +26,10 @@ interface QueryCopilotState {
   showCopyPopup: boolean;
   showErrorMessageBar: boolean;
   generatedQueryComments: string;
+  wasCopilotUsed: boolean;
+  showWelcomeSidebar: boolean;
+  showCopilotSidebar: boolean;
+  chatMessages: string[];
   shouldAllocateContainer: boolean;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
@@ -51,6 +55,11 @@ interface QueryCopilotState {
   setshowCopyPopup: (showCopyPopup: boolean) => void;
   setShowErrorMessageBar: (showErrorMessageBar: boolean) => void;
   setGeneratedQueryComments: (generatedQueryComments: string) => void;
+  setWasCopilotUsed: (wasCopilotUsed: boolean) => void;
+  setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
+  setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
+  setChatMessages: (chatMessages: string[]) => void;
+
   setShouldAllocateContainer: (shouldAllocateContainer: boolean) => void;
 
   resetQueryCopilotStates: () => void;
@@ -81,6 +90,10 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showCopyPopup: false,
   showErrorMessageBar: false,
   generatedQueryComments: "",
+  wasCopilotUsed: false,
+  showWelcomeSidebar: true,
+  showCopilotSidebar: false,
+  chatMessages: [],
   shouldAllocateContainer: true,
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
@@ -108,6 +121,10 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setshowCopyPopup: (showCopyPopup: boolean) => set({ showCopyPopup }),
   setShowErrorMessageBar: (showErrorMessageBar: boolean) => set({ showErrorMessageBar }),
   setGeneratedQueryComments: (generatedQueryComments: string) => set({ generatedQueryComments }),
+  setWasCopilotUsed: (wasCopilotUsed: boolean) => set({ wasCopilotUsed }),
+  setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
+  setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
+  setChatMessages: (chatMessages: string[]) => set({ chatMessages }),
   setShouldAllocateContainer: (shouldAllocateContainer: boolean) => set({ shouldAllocateContainer }),
 
   resetQueryCopilotStates: () => {
@@ -135,6 +152,9 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       showCopyPopup: false,
       showErrorMessageBar: false,
       generatedQueryComments: "",
+      wasCopilotUsed: false,
+      showCopilotSidebar: false,
+      chatMessages: [],
       shouldAllocateContainer: true,
     }));
   },
