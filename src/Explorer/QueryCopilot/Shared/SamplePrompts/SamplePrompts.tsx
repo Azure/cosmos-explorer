@@ -1,8 +1,8 @@
 import { DefaultButton, FontIcon, IconButton, Image, Modal, Stack, Text } from "@fluentui/react";
 import React, { Dispatch, SetStateAction } from "react";
-import ComplexPrompts from "../../../../images/ComplexPrompts.svg";
-import IntermediatePrompts from "../../../../images/IntermediatePrompts.svg";
-import SimplePrompts from "../../../../images/SimplePrompts.svg";
+import ComplexPrompts from "../../../../../images/ComplexPrompts.svg";
+import IntermediatePrompts from "../../../../../images/IntermediatePrompts.svg";
+import SimplePrompts from "../../../../../images/SimplePrompts.svg";
 
 export interface SamplePromptsProps {
   isSamplePromptsOpen: boolean;

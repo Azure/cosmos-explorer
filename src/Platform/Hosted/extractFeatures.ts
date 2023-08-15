@@ -54,8 +54,10 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   const set = (value: string, key: string) => {
     downcased.set(key.toLowerCase(), value);
   };
-  const get = (key: string, defaultValue?: string) =>
-    downcased.get("feature." + key) ?? downcased.get(key) ?? defaultValue;
+  const get = (key: string, defaultValue?: string) => {
+    const res = downcased.get("feature." + key) ?? downcased.get(key) ?? defaultValue;
+    return res;
+  };
 
   try {
     new URLSearchParams(window.parent.location.search).forEach(set);
@@ -107,7 +109,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
     enableCopilot: "true" === get("enablecopilot"),
     enableNPSSurvey: "true" === get("enablenpssurvey"),
-    copilotVersion: get("copilotVersion") ? get("copilotVersion") : "v1.0",
+    copilotVersion: "v2.0",
   };
 }
 
