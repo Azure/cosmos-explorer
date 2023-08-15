@@ -43,7 +43,6 @@ exports[`Header snapshot test should render  1`] = `
     >
       Preview
     </Text>
-    d
   </Stack>
   <CustomizedIconButton
     ariaLabel="Exit"
