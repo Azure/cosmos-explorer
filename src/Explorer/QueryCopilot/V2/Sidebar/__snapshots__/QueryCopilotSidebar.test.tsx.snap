@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer snapshot test should render  1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "overflow": "auto",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+</Stack>
+`;
