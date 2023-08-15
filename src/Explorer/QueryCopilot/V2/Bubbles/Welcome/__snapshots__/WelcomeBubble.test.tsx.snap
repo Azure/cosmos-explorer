@@ -16,9 +16,9 @@ exports[`Welcome Bubble snapshot test should render  1`] = `
       }
     }
   >
-    August 15
+    September 15
      
-    1:30 PM
+    12:00 AM
   </Stack>
   <Stack
     style={
