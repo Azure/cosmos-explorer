@@ -54,10 +54,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   const set = (value: string, key: string) => {
     downcased.set(key.toLowerCase(), value);
   };
-  const get = (key: string, defaultValue?: string) => {
-    const res = downcased.get("feature." + key) ?? downcased.get(key) ?? defaultValue;
-    return res;
-  };
+  const get = (key: string, defaultValue?: string) =>
+    downcased.get("feature." + key) ?? downcased.get(key) ?? defaultValue;
 
   try {
     new URLSearchParams(window.parent.location.search).forEach(set);
