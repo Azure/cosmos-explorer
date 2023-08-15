@@ -16,7 +16,7 @@ export function getPriorityLevel(): PriorityLevel {
   if (priorityLevel && Object.values(PriorityLevel).includes(priorityLevel)) {
     return priorityLevel as PriorityLevel;
   } else {
-    return PriorityLevel.Low;
+    return PriorityLevel.Default;
   }
 }
 
