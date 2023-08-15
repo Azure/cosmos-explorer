@@ -148,7 +148,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                 "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
               }
               onClick={() => {
-                useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+                const copilotVersion = userContext.features.copilotVersion;
+                if (copilotVersion === "v1.0") {
+                  useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+                } else if (copilotVersion === "v2.0") {
+                  const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
+                  sampleCollection.onNewQueryClick(sampleCollection, undefined);
+                }
                 traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
               }}
             />
