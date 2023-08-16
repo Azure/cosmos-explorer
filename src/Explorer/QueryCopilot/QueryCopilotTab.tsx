@@ -21,6 +21,7 @@ import { QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
+import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { QueryResults } from "Contracts/ViewModels";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
@@ -200,7 +201,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
       const serverInfo = useNotebook.getState().notebookServerInfo;
-      const response = await fetch(`${serverInfo.notebookServerEndpoint}generateSQLQuery`, {
+      const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+      const response = await fetch(queryUri, {
         method: "POST",
         headers: {
           "content-type": "application/json",

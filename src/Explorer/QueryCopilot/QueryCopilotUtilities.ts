@@ -6,6 +6,7 @@ import {
 } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
+import { createUri } from "Common/UrlUtility";
 import { getPartitionKeyValue } from "Common/dataAccess/getPartitionKeyValue";
 import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
 import Explorer from "Explorer/Explorer";
@@ -45,7 +46,8 @@ export const submitFeedback = async ({
       setShouldAllocateContainer(false);
     }
     const serverInfo = useNotebook.getState().notebookServerInfo;
-    const response = await fetch(`${serverInfo.notebookServerEndpoint}feedback`, {
+    const feedbackUri = createUri(serverInfo.notebookServerEndpoint, "feedback");
+    const response = await fetch(feedbackUri, {
       method: "POST",
       headers: {
         "content-type": "application/json",
