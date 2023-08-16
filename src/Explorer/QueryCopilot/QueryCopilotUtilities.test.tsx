@@ -6,6 +6,7 @@ import * as commonUtils from "Common/dataAccess/queryDocuments";
 import Explorer from "Explorer/Explorer";
 import DocumentId from "Explorer/Tree/DocumentId";
 import { querySampleDocuments, readSampleDocument, submitFeedback } from "./QueryCopilotUtilities";
+
 jest.mock("Explorer/Tree/DocumentId", () => {
   return jest.fn().mockImplementation(() => {
     return {
@@ -16,20 +17,19 @@ jest.mock("Explorer/Tree/DocumentId", () => {
 });
 
 jest.mock("Utils/NotificationConsoleUtils", () => ({
-  logConsoleProgress: jest.fn(),
+  logConsoleProgress: jest.fn().mockReturnValue((): void => undefined),
   logConsoleError: jest.fn(),
 }));
 
 jest.mock("@azure/cosmos", () => ({
   FeedOptions: jest.fn(),
   QueryIterator: jest.fn(),
+  Constants: {
+    HttpHeaders: {},
+  },
 }));
 jest.mock("Common/ErrorHandlingUtils", () => ({
   handleError: jest.fn(),
-}));
-
-jest.mock("Utils/NotificationConsoleUtils", () => ({
-  logConsoleProgress: jest.fn().mockReturnValue((): void => undefined),
 }));
 
 jest.mock("Common/dataAccess/queryDocuments", () => ({
@@ -39,12 +39,6 @@ jest.mock("Common/dataAccess/queryDocuments", () => ({
 jest.mock("Common/SampleDataClient");
 
 jest.mock("node-fetch");
-
-jest.mock("@azure/cosmos", () => ({
-  Constants: {
-    HttpHeaders: {},
-  },
-}));
 
 jest.mock("Explorer/Explorer", () => {
   class MockExplorer {
@@ -62,6 +56,18 @@ jest.mock("hooks/useQueryCopilot", () => {
 
   return {
     useQueryCopilot: jest.fn(() => mockQueryCopilotStore),
+  };
+});
+
+jest.mock("Explorer/Notebook/useNotebook", () => {
+  const mockNotebook = {
+    notebookServerInfo: {
+      notebookServerEndpoint: "mocked-endpoint",
+    },
+  };
+
+  return {
+    useNotebook: jest.fn(() => mockNotebook),
   };
 });
 
@@ -94,7 +100,7 @@ describe("QueryCopilotUtilities", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.any(String),
+        "mocked-endpoint/feedback",
         expect.objectContaining({
           headers: expect.objectContaining({
             "x-ms-correlationid": "mocked-correlation-id",
@@ -126,7 +132,7 @@ describe("QueryCopilotUtilities", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.any(String),
+        "mocked-endpoint/feedback",
         expect.objectContaining({
           method: "POST",
           headers: {
