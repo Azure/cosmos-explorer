@@ -1,5 +1,5 @@
 import { FeedOptions } from "@azure/cosmos";
-import { QueryCopilotSidebar } from "Explorer/QueryCopilot/Sidebar/QueryCopilotSidebar";
+import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useDatabases } from "Explorer/useDatabases";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
