@@ -1,12 +1,12 @@
 import { Image, Link, PrimaryButton, Stack, Text } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
-import Database from "../../../../images/CopilotDatabase.svg";
-import Flash from "../../../../images/CopilotFlash.svg";
-import CopilotSidebarWelcomeIllustration from "../../../../images/CopilotSidebarWelcomeIllustration.svg";
-import Thumb from "../../../../images/CopilotThumb.svg";
+import Database from "../../../../../images/CopilotDatabase.svg";
+import Flash from "../../../../../images/CopilotFlash.svg";
+import CopilotSidebarWelcomeIllustration from "../../../../../images/CopilotSidebarWelcomeIllustration.svg";
+import Thumb from "../../../../../images/CopilotThumb.svg";
 
-export const WelcomeSidebarPopup: React.FC = (): JSX.Element => {
+export const WelcomeSidebarModal: React.FC = (): JSX.Element => {
   const { setShowWelcomeSidebar } = useQueryCopilot();
 
   const hideModal = () => {

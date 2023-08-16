@@ -1,0 +1,160 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome Bubble snapshot test should render  1`] = `
+<Stack>
+  <Stack
+    horizontalAlign="center"
+    style={
+      Object {
+        "color": "#707070",
+      }
+    }
+    tokens={
+      Object {
+        "childrenGap": 8,
+        "padding": 8,
+      }
+    }
+  >
+    August 15
+     
+    12:00 AM
+  </Stack>
+  <Stack
+    style={
+      Object {
+        "backgroundColor": "white",
+        "borderRadius": "8px",
+        "margin": "5px 10px",
+      }
+    }
+    tokens={
+      Object {
+        "childrenGap": 12,
+        "padding": 16,
+      }
+    }
+  >
+    <Text
+      variant="medium"
+    >
+      Hello, I am Cosmos Db's copilot assistant. I can help you do the following things:
+    </Text>
+    <Stack
+      tokens={
+        Object {
+          "childrenGap": 8,
+        }
+      }
+    >
+      <Stack
+        horizontal={true}
+        style={
+          Object {
+            "marginLeft": "15px",
+          }
+        }
+        tokens={
+          Object {
+            "childrenGap": 8,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": "16px",
+              "lineHeight": "16px",
+              "verticalAlign": "middle",
+            }
+          }
+        >
+          •
+        </Text>
+        <Text
+          style={
+            Object {
+              "verticalAlign": "middle",
+            }
+          }
+        >
+          Generate queries based upon prompt you suggest
+        </Text>
+      </Stack>
+      <Stack
+        horizontal={true}
+        style={
+          Object {
+            "marginLeft": "15px",
+          }
+        }
+        tokens={
+          Object {
+            "childrenGap": 8,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": "16px",
+              "lineHeight": "16px",
+              "verticalAlign": "middle",
+            }
+          }
+        >
+          •
+        </Text>
+        <Text
+          style={
+            Object {
+              "verticalAlign": "middle",
+            }
+          }
+        >
+          Explain and provide alternate queries for a query suggested by you
+        </Text>
+      </Stack>
+      <Stack
+        horizontal={true}
+        style={
+          Object {
+            "marginLeft": "15px",
+          }
+        }
+        tokens={
+          Object {
+            "childrenGap": 8,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": "16px",
+              "lineHeight": "16px",
+              "verticalAlign": "middle",
+            }
+          }
+        >
+          •
+        </Text>
+        <Text
+          style={
+            Object {
+              "verticalAlign": "middle",
+            }
+          }
+        >
+          Help answer questions about Cosmos DB
+        </Text>
+      </Stack>
+    </Stack>
+    <Text
+      variant="medium"
+    >
+      To get started, ask me a question or use one of the sample prompts to generate a query. AI-generated content may be incorrect.
+    </Text>
+  </Stack>
+</Stack>
+`;
