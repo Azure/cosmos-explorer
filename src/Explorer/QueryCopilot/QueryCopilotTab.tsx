@@ -120,7 +120,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
     shouldAllocateContainer,
     setShouldAllocateContainer,
   } = useQueryCopilot();
-  const { notebookServerInfo } = useNotebook();
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
