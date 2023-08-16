@@ -38,7 +38,7 @@ function validateEndpointInternal(
   return valid;
 }
 
-export const allowedArmEndpoints: ReadonlyArray<string> = [
+export const defaultAllowedArmEndpoints: ReadonlyArray<string> = [
   "https://​management.azure.com",
   "https://​management.usgovcloudapi.net",
   "https://management.chinacloudapi.cn",
@@ -46,7 +46,7 @@ export const allowedArmEndpoints: ReadonlyArray<string> = [
 
 export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.microsoftonline.com/"];
 
-export const allowedBackendEndpoints: ReadonlyArray<string> = [
+export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
   "https://main.documentdb.ext.azure.cn",
   "https://main.documentdb.ext.azure.us",

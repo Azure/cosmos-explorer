@@ -34,6 +34,8 @@ import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { querySampleDocuments, submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/SamplePrompts/SamplePrompts";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -54,7 +56,6 @@ interface SuggestedPrompt {
 }
 
 interface QueryCopilotTabProps {
-  initialInput: string;
   explorer: Explorer;
 }
 
@@ -71,31 +72,50 @@ const promptStyles: IButtonStyles = {
   label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
 };
 
-export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
-  initialInput,
-  explorer,
-}: QueryCopilotTabProps): JSX.Element => {
-  const hideFeedbackModalForLikedQueries = useQueryCopilot((state) => state.hideFeedbackModalForLikedQueries);
-  const [userPrompt, setUserPrompt] = useState<string>(initialInput || "");
-  const [generatedQuery, setGeneratedQuery] = useState<string>("");
-  const [query, setQuery] = useState<string>("");
-  const [selectedQuery, setSelectedQuery] = useState<string>("");
-  const [isGeneratingQuery, setIsGeneratingQuery] = useState<boolean>(false);
-  const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [likeQuery, setLikeQuery] = useState<boolean>();
-  const [dislikeQuery, setDislikeQuery] = useState<boolean>();
-  const [showCallout, setShowCallout] = useState<boolean>(false);
-  const [showSamplePrompts, setShowSamplePrompts] = useState<boolean>(false);
-  const [queryIterator, setQueryIterator] = useState<MinimalQueryIterator>();
-  const [queryResults, setQueryResults] = useState<QueryResults>();
-  const [errorMessage, setErrorMessage] = useState<string>("");
+export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: QueryCopilotTabProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
-  const [isSamplePromptsOpen, setIsSamplePromptsOpen] = useState<boolean>(false);
-  const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
-  const [showFeedbackBar, setShowFeedbackBar] = useState<boolean>(false);
-  const [showCopyPopup, setshowCopyPopup] = useState<boolean>(false);
-  const [showErrorMessageBar, setShowErrorMessageBar] = useState<boolean>(false);
+  const {
+    hideFeedbackModalForLikedQueries,
+    userPrompt,
+    setUserPrompt,
+    generatedQuery,
+    setGeneratedQuery,
+    query,
+    setQuery,
+    selectedQuery,
+    setSelectedQuery,
+    isGeneratingQuery,
+    setIsGeneratingQuery,
+    isExecuting,
+    setIsExecuting,
+    likeQuery,
+    setLikeQuery,
+    dislikeQuery,
+    setDislikeQuery,
+    showCallout,
+    setShowCallout,
+    showSamplePrompts,
+    setShowSamplePrompts,
+    queryIterator,
+    setQueryIterator,
+    queryResults,
+    setQueryResults,
+    errorMessage,
+    setErrorMessage,
+    isSamplePromptsOpen,
+    setIsSamplePromptsOpen,
+    showDeletePopup,
+    setShowDeletePopup,
+    showFeedbackBar,
+    setShowFeedbackBar,
+    showCopyPopup,
+    setshowCopyPopup,
+    showErrorMessageBar,
+    setShowErrorMessageBar,
+    generatedQueryComments,
+    setGeneratedQueryComments,
+  } = useQueryCopilot();
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -170,10 +190,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         userPrompt: userPrompt,
       };
       setShowDeletePopup(false);
+      useQueryCopilot.getState().refreshCorrelationId();
       const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
         method: "POST",
         headers: {
           "content-type": "application/json",
+          "x-ms-correlationid": useQueryCopilot.getState().correlationId,
         },
         body: JSON.stringify(payload),
       });
@@ -188,6 +210,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
           query += generateSQLQueryResponse.sql;
           setQuery(query);
           setGeneratedQuery(generateSQLQueryResponse.sql);
+          setGeneratedQueryComments(generateSQLQueryResponse.explanation);
           setShowErrorMessageBar(false);
         }
       } else {
@@ -208,6 +231,13 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
   };
 
   const onExecuteQueryClick = async (): Promise<void> => {
+    traceStart(Action.ExecuteQueryGeneratedFromQueryCopilot, {
+      correlationId: useQueryCopilot.getState().correlationId,
+      userPrompt: userPrompt,
+      generatedQuery: generatedQuery,
+      generatedQueryComments: generatedQueryComments,
+      executedQuery: selectedQuery || query,
+    });
     const queryToExecute = selectedQuery || query;
     const queryIterator = querySampleDocuments(queryToExecute, {
       enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
@@ -233,8 +263,15 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
       setQueryResults(queryResults);
       setErrorMessage("");
       setShowErrorMessageBar(false);
+      traceSuccess(Action.ExecuteQueryGeneratedFromQueryCopilot, {
+        correlationId: useQueryCopilot.getState().correlationId,
+      });
     } catch (error) {
       const errorMessage = getErrorMessage(error);
+      traceFailure(Action.ExecuteQueryGeneratedFromQueryCopilot, {
+        correlationId: useQueryCopilot.getState().correlationId,
+        errorMessage: errorMessage,
+      });
       setErrorMessage(errorMessage);
       handleError(errorMessage, "executeQueryCopilotTab");
       useTabs.getState().setIsQueryErrorThrown(true);
@@ -281,9 +318,10 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     return [executeQueryBtn, saveQueryBtn];
   };
   const showTeachingBubble = (): void => {
-    if (!inputEdited.current) {
+    const shouldShowTeachingBubble = !inputEdited.current && userPrompt.trim() === "";
+    if (shouldShowTeachingBubble) {
       setTimeout(() => {
-        if (!inputEdited.current) {
+        if (shouldShowTeachingBubble) {
           toggleCopilotTeachingBubbleVisible();
           inputEdited.current = true;
         }
@@ -297,21 +335,24 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
     setShowCallout(false);
   };
 
+  const startGenerateQueryProcess = () => {
+    updateHistories();
+    generateSQLQuery();
+    resetButtonState();
+  };
+
   React.useEffect(() => {
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery]);
 
   React.useEffect(() => {
-    if (initialInput) {
-      generateSQLQuery();
-    }
     showTeachingBubble();
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
   return (
     <Stack className="tab-pane" style={{ padding: 24, width: "100%" }}>
-      <div style={{ overflowY: "auto", height: "100%" }}>
+      <div style={isGeneratingQuery ? { height: "100%" } : { overflowY: "auto", height: "100%" }}>
         <Stack horizontal verticalAlign="center">
           <Image src={CopilotIcon} />
           <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
@@ -324,6 +365,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             onClick={() => {
               inputEdited.current = true;
               setShowSamplePrompts(true);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                startGenerateQueryProcess();
+              }
             }}
             style={{ lineHeight: 30 }}
             styles={{ root: { width: "95%" } }}
@@ -357,11 +403,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
             iconProps={{ iconName: "Send" }}
             disabled={isGeneratingQuery || !userPrompt.trim()}
             style={{ marginLeft: 8 }}
-            onClick={() => {
-              updateHistories();
-              generateSQLQuery();
-              resetButtonState();
-            }}
+            onClick={() => startGenerateQueryProcess()}
           />
           {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
           {showSamplePrompts && (
@@ -453,7 +495,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                       }}
                     >
                       Learn about{" "}
-                      <Link target="_blank" href="">
+                      <Link target="_blank" href="http://aka.ms/cdb-copilot-writing">
                         writing effective prompts
                       </Link>
                     </Text>
@@ -467,7 +509,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
         <Stack style={{ marginTop: 8, marginBottom: 24 }}>
           <Text style={{ fontSize: 12 }}>
             AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
-            <Link href="" target="_blank">
+            <Link href="http://aka.ms/cdb-copilot-preview-terms" target="_blank">
               Read preview terms
             </Link>
             {showErrorMessageBar && (
@@ -490,7 +532,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({
                 target="#likeBtn"
                 onDismiss={() => {
                   setShowCallout(false);
-                  submitFeedback({ generatedQuery, likeQuery, description: "", userPrompt: userPrompt });
+                  submitFeedback({
+                    generatedQuery: generatedQuery,
+                    likeQuery: likeQuery,
+                    description: "",
+                    userPrompt: userPrompt,
+                  });
                 }}
                 directionalHint={DirectionalHint.topCenter}
               >

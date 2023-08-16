@@ -131,6 +131,9 @@ export enum Action {
   LaunchUITour,
   CancelUITour,
   CompleteUITour,
+  OpenQueryCopilotFromSplashScreen,
+  OpenQueryCopilotFromNewQuery,
+  ExecuteQueryGeneratedFromQueryCopilot,
 }
 
 export const ActionModifiers = {
