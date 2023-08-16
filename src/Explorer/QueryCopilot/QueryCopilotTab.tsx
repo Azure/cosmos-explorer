@@ -120,6 +120,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
     shouldAllocateContainer,
     setShouldAllocateContainer,
   } = useQueryCopilot();
+  const { notebookServerInfo } = useNotebook();
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -200,8 +201,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       };
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
-      const serverInfo = useNotebook.getState().notebookServerInfo;
-      const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+      const queryUri = createUri(notebookServerInfo.notebookServerEndpoint, "generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {
