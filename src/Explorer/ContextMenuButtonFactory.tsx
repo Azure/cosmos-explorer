@@ -1,3 +1,6 @@
+import { useDatabases } from "Explorer/useDatabases";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React from "react";
 import AddCollectionIcon from "../../images/AddCollection.svg";
@@ -144,11 +147,24 @@ export const createCollectionContextMenuButton = (
 export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] => {
   const items: TreeNodeMenuItem[] = [];
   if (userContext.apiType === "SQL") {
-    items.push({
-      iconSrc: AddSqlQueryIcon,
-      onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot),
-      label: "New SQL Query",
-    });
+    const copilotVersion = userContext.features.copilotVersion;
+    if (copilotVersion === "v1.0") {
+      items.push({
+        iconSrc: AddSqlQueryIcon,
+        onClick: () => {
+          useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+          traceOpen(Action.OpenQueryCopilotFromNewQuery, { apiType: userContext.apiType });
+        },
+        label: "New SQL Query",
+      });
+    } else if (copilotVersion === "v2.0") {
+      const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
+      items.push({
+        iconSrc: AddSqlQueryIcon,
+        onClick: () => sampleCollection && sampleCollection.onNewQueryClick(sampleCollection, undefined),
+        label: "New SQL Query",
+      });
+    }
   }
 
   return items;

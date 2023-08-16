@@ -97,6 +97,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           () => this.setState({}),
           (state) => state.showResetPasswordBubble
         ),
+      },
+      {
+        dispose: useDatabases.subscribe(
+          () => this.setState({}),
+          (state) => state.sampleDataResourceTokenCollection
+        ),
       }
     );
   }
@@ -107,7 +113,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   };
 
   private getSplashScreenButtons = (): JSX.Element => {
-    if (userContext.features.enableCopilot && userContext.apiType === "SQL") {
+    if (
+      useDatabases.getState().sampleDataResourceTokenCollection &&
+      userContext.features.enableCopilot &&
+      userContext.apiType === "SQL"
+    ) {
       return (
         <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
           <Stack horizontal tokens={{ childrenGap: 16 }}>
@@ -137,7 +147,16 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               description={
                 "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
               }
-              onClick={() => useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot)}
+              onClick={() => {
+                const copilotVersion = userContext.features.copilotVersion;
+                if (copilotVersion === "v1.0") {
+                  useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+                } else if (copilotVersion === "v2.0") {
+                  const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
+                  sampleCollection.onNewQueryClick(sampleCollection, undefined);
+                }
+                traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
+              }}
             />
             <SplashScreenButton
               imgSrc={ConnectIcon}
@@ -246,8 +265,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <div
+              <h1
                 className="title"
+                role="heading"
                 aria-label={
                   userContext.apiType === "Postgres"
                     ? "Welcome to Azure Cosmos DB for PostgreSQL"
@@ -258,7 +278,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   ? "Welcome to Azure Cosmos DB for PostgreSQL"
                   : "Welcome to Azure Cosmos DB"}
                 <FeaturePanelLauncher />
-              </div>
+              </h1>
               <div className="subtitle">
                 {userContext.apiType === "Postgres"
                   ? "Get started with our sample datasets, documentation, and additional tools."

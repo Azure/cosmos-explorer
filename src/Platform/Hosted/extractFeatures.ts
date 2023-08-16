@@ -37,6 +37,8 @@ export type Features = {
   readonly loadLegacyMongoShellFromBE: boolean;
   readonly enableCopilot: boolean;
   readonly enablePriorityBasedThrottling: boolean;
+  readonly enableNPSSurvey: boolean;
+  readonly copilotVersion?: string;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -106,6 +108,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
     enableCopilot: "true" === get("enablecopilot"),
     enablePriorityBasedThrottling: "true" === get("enableprioritybasedthrottling"),
+    enableNPSSurvey: "true" === get("enablenpssurvey"),
+    copilotVersion: get("copilotVersion") ? get("copilotVersion") : "v1.0",
   };
 }
 

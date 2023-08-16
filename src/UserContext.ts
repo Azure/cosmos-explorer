@@ -91,7 +91,7 @@ const userContext: UserContext = {
   collectionCreationDefaults: CollectionCreationDefaults,
 };
 
-function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
+export function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
   let createdAtMs: number = Date.parse(createdAt);
   if (isNaN(createdAtMs)) {
     createdAtMs = 0;

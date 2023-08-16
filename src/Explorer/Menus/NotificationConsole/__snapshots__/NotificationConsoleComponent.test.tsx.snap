@@ -64,6 +64,8 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         className="headerStatus"
       >
         <span
+          aria-atomic="true"
+          aria-live="assertive"
           className="headerStatusEllipsis"
         />
       </span>
@@ -225,6 +227,8 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         className="headerStatus"
       >
         <span
+          aria-atomic="true"
+          aria-live="assertive"
           className="headerStatusEllipsis"
         >
           message
