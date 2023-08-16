@@ -4,6 +4,7 @@ import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import * as commonUtils from "Common/dataAccess/queryDocuments";
 import Explorer from "Explorer/Explorer";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
 import DocumentId from "Explorer/Tree/DocumentId";
 import { querySampleDocuments, readSampleDocument, submitFeedback } from "./QueryCopilotUtilities";
 
@@ -59,20 +60,9 @@ jest.mock("hooks/useQueryCopilot", () => {
   };
 });
 
-jest.mock("Explorer/Notebook/useNotebook", () => {
-  const mockNotebook = {
-    notebookServerInfo: {
-      notebookServerEndpoint: "mocked-endpoint",
-    },
-  };
-
-  return {
-    useNotebook: jest.fn(() => mockNotebook),
-  };
-});
-
 describe("QueryCopilotUtilities", () => {
   beforeEach(() => jest.clearAllMocks());
+
   describe("submitFeedback", () => {
     const payload = {
       like: "like",
@@ -82,6 +72,15 @@ describe("QueryCopilotUtilities", () => {
       contact: "Contact",
       containerSchema: QueryCopilotSampleContainerSchema,
     };
+
+    const mockStore = useNotebook.getState();
+    beforeEach(() => {
+      mockStore.notebookServerInfo = {
+        notebookServerEndpoint: "mocked-endpoint",
+        authToken: "mocked-token",
+        forwardingId: "mocked-forwarding-id",
+      };
+    });
 
     it("should call fetch with the payload with like", async () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});

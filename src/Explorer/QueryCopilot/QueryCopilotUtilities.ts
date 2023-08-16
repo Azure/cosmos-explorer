@@ -33,7 +33,6 @@ export const submitFeedback = async ({
   try {
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
     const { correlationId, shouldAllocateContainer, setShouldAllocateContainer } = useQueryCopilot();
-    const { notebookServerInfo } = useNotebook();
     const payload = {
       containerSchema: QueryCopilotSampleContainerSchema,
       like: likeQuery ? "like" : "dislike",
@@ -46,7 +45,8 @@ export const submitFeedback = async ({
       await explorer.allocateContainer();
       setShouldAllocateContainer(false);
     }
-    const feedbackUri = createUri(notebookServerInfo.notebookServerEndpoint, "feedback");
+    const serverInfo = useNotebook.getState().notebookServerInfo;
+    const feedbackUri = createUri(serverInfo.notebookServerEndpoint, "feedback");
     const response = await fetch(feedbackUri, {
       method: "POST",
       headers: {
