@@ -790,14 +790,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       {!isNotebookEnabled && isSampleDataEnabled && (
         <>
           <AccordionComponent>
-            <AccordionItemComponent
-              title={"MY DATA"}
-              isExpanded={!gitHubNotebooksContentRoot}
-              styles={{ maxHeight: 230 }}
-            >
+            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
             </AccordionItemComponent>
-            <AccordionItemComponent title={"SAMPLE DATA"}>
+            <AccordionItemComponent title={"SAMPLE DATA"} containerStyles={{ display: "table" }}>
               <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
             </AccordionItemComponent>
           </AccordionComponent>
@@ -808,14 +804,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       {isNotebookEnabled && isSampleDataEnabled && (
         <>
           <AccordionComponent>
-            <AccordionItemComponent
-              title={"MY DATA"}
-              isExpanded={!gitHubNotebooksContentRoot}
-              styles={{ maxHeight: 130 }}
-            >
+            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
             </AccordionItemComponent>
-            <AccordionItemComponent title={"SAMPLE DATA"}>
+            <AccordionItemComponent title={"SAMPLE DATA"} containerStyles={{ display: "table" }}>
               <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
             </AccordionItemComponent>
             <AccordionItemComponent title={"NOTEBOOKS"}>

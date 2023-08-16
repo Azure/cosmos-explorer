@@ -1,0 +1,196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is true 1`] = `
+<Fragment>
+  <Modal
+    isBlocking={false}
+    isOpen={true}
+    onDismiss={[Function]}
+  >
+    <Stack
+      className="modalContentPadding"
+    >
+      <Stack
+        horizontal={true}
+      >
+        <Stack
+          grow={4}
+          horizontal={true}
+          horizontalAlign="end"
+        >
+          <StackItem>
+            <Image
+              src=""
+            />
+          </StackItem>
+        </Stack>
+        <Stack
+          className="exitPadding"
+          grow={1}
+          horizontal={true}
+          horizontalAlign="end"
+          verticalAlign="start"
+        >
+          <StackItem
+            className="previewMargin"
+          >
+            <Text
+              className="preview"
+            >
+              Preview
+            </Text>
+          </StackItem>
+          <StackItem>
+            <CustomizedIconButton
+              ariaLabel="Exit"
+              className="exitIcon"
+              iconProps={
+                Object {
+                  "iconName": "Cancel",
+                }
+              }
+              onClick={[Function]}
+              title="Exit"
+            />
+          </StackItem>
+        </Stack>
+      </Stack>
+      <Stack
+        horizontalAlign="center"
+      >
+        <StackItem
+          align="center"
+        >
+          <Text
+            className="title bold"
+          >
+            Welcome to Copilot in CosmosDB
+          </Text>
+        </StackItem>
+        <StackItem
+          align="center"
+          className="text"
+        >
+          <Stack
+            horizontal={true}
+          >
+            <StackItem
+              align="start"
+              className="imageTextPadding"
+            >
+              <Image
+                src=""
+              />
+            </StackItem>
+            <StackItem
+              align="start"
+            >
+              <Text
+                className="bold"
+              >
+                Let copilot do the work for you
+                <br />
+              </Text>
+            </StackItem>
+          </Stack>
+          <Text>
+            Ask Copilot to generate a query by describing the query in your words.
+            <br />
+            <StyledLinkBase
+              href=""
+            >
+              Learn more
+            </StyledLinkBase>
+          </Text>
+        </StackItem>
+        <StackItem
+          align="center"
+          className="text"
+        >
+          <Stack
+            horizontal={true}
+          >
+            <StackItem
+              align="start"
+              className="imageTextPadding"
+            >
+              <Image
+                src=""
+              />
+            </StackItem>
+            <StackItem
+              align="start"
+            >
+              <Text
+                className="bold"
+              >
+                Use your judgement
+                <br />
+              </Text>
+            </StackItem>
+          </Stack>
+          <Text>
+            AI-generated content can have mistakes. Make sure it’s accurate and appropriate before using it.
+            <br />
+            <StyledLinkBase
+              href=""
+            >
+              Read preview terms
+            </StyledLinkBase>
+          </Text>
+        </StackItem>
+        <StackItem
+          align="center"
+          className="text"
+        >
+          <Stack
+            horizontal={true}
+          >
+            <StackItem
+              align="start"
+              className="imageTextPadding"
+            >
+              <Image
+                src=""
+              />
+            </StackItem>
+            <StackItem
+              align="start"
+            >
+              <Text
+                className="bold"
+              >
+                Copilot currently works only a sample database
+                <br />
+              </Text>
+            </StackItem>
+          </Stack>
+          <Text>
+            Copilot is setup on a sample database we have configured for you at no cost
+            <br />
+            <StyledLinkBase
+              href=""
+            >
+              Learn more
+            </StyledLinkBase>
+          </Text>
+        </StackItem>
+      </Stack>
+      <Stack
+        className="buttonPadding"
+      >
+        <StackItem
+          align="center"
+        >
+          <CustomizedPrimaryButton
+            className="tryButton"
+            onClick={[Function]}
+          >
+            Try Copilot
+          </CustomizedPrimaryButton>
+        </StackItem>
+      </Stack>
+    </Stack>
+  </Modal>
+</Fragment>
+`;

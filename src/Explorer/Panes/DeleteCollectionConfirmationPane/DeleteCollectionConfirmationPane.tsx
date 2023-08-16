@@ -1,18 +1,18 @@
 import { Text, TextField } from "@fluentui/react";
 import { Areas } from "Common/Constants";
-import { deleteCollection } from "Common/dataAccess/deleteCollection";
 import DeleteFeedback from "Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { deleteCollection } from "Common/dataAccess/deleteCollection";
 import { Collection } from "Contracts/ViewModels";
-import { useSidePanel } from "hooks/useSidePanel";
-import { useTabs } from "hooks/useTabs";
-import React, { FunctionComponent, useState } from "react";
 import { DefaultExperienceUtility } from "Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "Utils/NotificationConsoleUtils";
+import { useSidePanel } from "hooks/useSidePanel";
+import { useTabs } from "hooks/useTabs";
+import React, { FunctionComponent, useState } from "react";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -126,6 +126,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
                 setInputCollectionName(newInput);
               }}
               ariaLabel={confirmContainer}
+              required
             />
           </div>
           {shouldRecordFeedback() && (

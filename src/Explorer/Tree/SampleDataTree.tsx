@@ -2,7 +2,7 @@ import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdap
 import TabsBase from "Explorer/Tabs/TabsBase";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { useTabs } from "hooks/useTabs";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -14,51 +14,64 @@ export const SampleDataTree = ({
 }: {
   sampleDataResourceTokenCollection: ViewModels.CollectionBase;
 }): JSX.Element => {
-  const [root, setRoot] = useState<TreeNode | undefined>(undefined);
-
-  useEffect(() => {
-    if (sampleDataResourceTokenCollection) {
-      const updatedSampleTree: TreeNode = {
-        label: sampleDataResourceTokenCollection.databaseId,
-        isExpanded: false,
-        iconSrc: CosmosDBIcon,
-        className: "databaseHeader",
-        children: [
-          {
-            label: sampleDataResourceTokenCollection.id(),
-            iconSrc: CollectionIcon,
-            isExpanded: false,
-            className: "dataResourceTree",
-            contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
-            onClick: () => {
-              // Rewritten version of expandCollapseCollection
-              useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
-              useCommandBar.getState().setContextButtons([]);
-              useTabs().refreshActiveTab(
+  const buildSampleDataTree = (): TreeNode => {
+    const updatedSampleTree: TreeNode = {
+      label: sampleDataResourceTokenCollection.databaseId,
+      isExpanded: true,
+      iconSrc: CosmosDBIcon,
+      className: "databaseHeader",
+      children: [
+        {
+          label: sampleDataResourceTokenCollection.id(),
+          iconSrc: CollectionIcon,
+          isExpanded: false,
+          className: "collectionHeader",
+          contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
+          onClick: () => {
+            useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
+            useCommandBar.getState().setContextButtons([]);
+            useTabs
+              .getState()
+              .refreshActiveTab(
                 (tab: TabsBase) =>
                   tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
                   tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
               );
-            },
-            isSelected: () =>
-              useSelectedNode
-                .getState()
-                .isDataNodeSelected(
-                  sampleDataResourceTokenCollection.databaseId,
-                  sampleDataResourceTokenCollection.id()
-                ),
-            onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection),
-            children: [
-              {
-                label: "Items",
-              },
-            ],
           },
-        ],
-      };
-      setRoot(updatedSampleTree);
-    }
-  }, [sampleDataResourceTokenCollection]);
+          isSelected: () =>
+            useSelectedNode
+              .getState()
+              .isDataNodeSelected(sampleDataResourceTokenCollection.databaseId, sampleDataResourceTokenCollection.id()),
+          onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection),
+          children: [
+            {
+              label: "Items",
+              onClick: () => sampleDataResourceTokenCollection.onDocumentDBDocumentsClick(),
+              isSelected: () =>
+                useSelectedNode
+                  .getState()
+                  .isDataNodeSelected(
+                    sampleDataResourceTokenCollection.databaseId,
+                    sampleDataResourceTokenCollection.id(),
+                    [ViewModels.CollectionTabKind.Documents]
+                  ),
+            },
+          ],
+        },
+      ],
+    };
 
-  return <TreeComponent className="dataResourceTree" rootNode={root || { label: "Sample data not initialized." }} />;
+    return {
+      label: undefined,
+      isExpanded: true,
+      children: [updatedSampleTree],
+    };
+  };
+
+  return (
+    <TreeComponent
+      className="dataResourceTree"
+      rootNode={sampleDataResourceTokenCollection ? buildSampleDataTree() : { label: "Sample data not initialized." }}
+    />
+  );
 };

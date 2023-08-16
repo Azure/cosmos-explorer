@@ -371,6 +371,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             autoFocus={true}
             id="confirmDatabaseId"
             onChange={[Function]}
+            required={true}
             styles={
               Object {
                 "fieldGroup": Object {
@@ -385,6 +386,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               deferredValidationTime={200}
               id="confirmDatabaseId"
               onChange={[Function]}
+              required={true}
               resizable={true}
               styles={[Function]}
               theme={
@@ -663,7 +665,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               validateOnLoad={true}
             >
               <div
-                className="ms-TextField root-58"
+                className="ms-TextField is-required root-58"
               >
                 <div
                   className="ms-TextField-wrapper"
@@ -681,6 +683,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                       onChange={[Function]}
                       onFocus={[Function]}
                       onInput={[Function]}
+                      required={true}
                       type="text"
                       value=""
                     />

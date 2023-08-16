@@ -140,6 +140,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
               setDatabaseInput(newInput);
             }}
             ariaLabel={confirmDatabase}
+            required
           />
         </div>
         {isLastNonEmptyDatabase() && (

@@ -44,6 +44,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               autoFocus={true}
               id="confirmCollectionId"
               onChange={[Function]}
+              required={true}
               styles={
                 Object {
                   "fieldGroup": Object {
@@ -59,6 +60,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                 deferredValidationTime={200}
                 id="confirmCollectionId"
                 onChange={[Function]}
+                required={true}
                 resizable={true}
                 styles={[Function]}
                 theme={
@@ -338,7 +340,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                 value=""
               >
                 <div
-                  className="ms-TextField root-55"
+                  className="ms-TextField is-required root-55"
                 >
                   <div
                     className="ms-TextField-wrapper"
@@ -356,6 +358,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         onChange={[Function]}
                         onFocus={[Function]}
                         onInput={[Function]}
+                        required={true}
                         type="text"
                         value=""
                       />

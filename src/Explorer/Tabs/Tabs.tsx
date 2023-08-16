@@ -68,7 +68,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
 function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?: ReactTabKind }) {
   const [hovering, setHovering] = useState(false);
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
-  const tabId = tab ? tab.tabId : "connect";
+  const tabId = tab ? tab.tabId : "";
 
   const getReactTabTitle = (): ko.Observable<string> => {
     if (tabKind === ReactTabKind.QueryCopilot) {

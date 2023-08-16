@@ -581,7 +581,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               >
                 {item.title}
               </Link>
-              <Image src={LinkIcon} alt=" " />
+              <Image src={LinkIcon} alt={item.title} />
             </Stack>
             <Text>{item.description}</Text>
           </Stack>
@@ -600,7 +600,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             <li key={`${item.title}${item.description}${index}`}>
               <Stack style={{ marginBottom: 26 }}>
                 <Stack horizontal>
-                  <Image style={{ marginRight: 8 }} src={item.iconSrc} />
+                  <Image style={{ marginRight: 8 }} src={item.iconSrc} alt={item.title} />
                   <Link style={{ fontSize: 14 }} onClick={item.onClick} title={item.info}>
                     {item.title}
                   </Link>
@@ -720,7 +720,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               >
                 {item.title}
               </Link>
-              <Image src={LinkIcon} />
+              <Image src={LinkIcon} alt={item.title} />
             </Stack>
             <Text>{item.description}</Text>
           </Stack>

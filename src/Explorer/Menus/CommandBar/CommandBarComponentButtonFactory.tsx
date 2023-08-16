@@ -268,7 +268,6 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
     ariaLabel: label,
     hasPopup: true,
     id: "createNewContainerCommandButton",
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -314,7 +313,6 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -493,7 +491,7 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
     onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }

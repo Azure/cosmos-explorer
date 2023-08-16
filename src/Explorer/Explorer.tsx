@@ -1293,7 +1293,7 @@ export default class Explorer {
       return;
     }
 
-    const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection);
+    const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
     useDatabases.setState({ sampleDataResourceTokenCollection });
   }
 }
