@@ -111,7 +111,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enablePriorityBasedThrottling: "true" === get("enableprioritybasedthrottling"),
     enableNPSSurvey: "true" === get("enablenpssurvey"),
     enableCopilot: "true" === get("enablecopilot"),
-    copilotVersion: get("copilotVersion") ? get("copilotVersion") : "v1.0",
+    copilotVersion: get("copilotversion") ?? "v1.0",
     enableCopilotPhoenixGateaway: "true" === get("enablecopilotphoenixgateaway"),
     enableCopilotFullSchema: "true" === get("enablecopilotfullschema"),
   };

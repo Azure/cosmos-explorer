@@ -1,17 +1,136 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`QueryCopilotSidebar snapshot test should render  1`] = `
+exports[`QueryCopilotSidebar snapshot test should render and not set copilot used flag  1`] = `
 <Stack
   style={
     Object {
       "backgroundColor": "#FAFAFA",
       "height": "100%",
-      "overflow": "auto",
       "width": "100%",
     }
   }
 >
   <Header />
   <WelcomeSidebarModal />
+  <Stack
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "overflowY": "auto",
+      }
+    }
+  >
+    <WelcomeBubble />
+    <SampleBubble />
+  </Stack>
+  <Footer />
+</Stack>
+`;
+
+exports[`Footer snapshot test should render and set copilot used flag  1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+  <Stack
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "overflowY": "auto",
+      }
+    }
+  >
+    <WelcomeBubble />
+    <SampleBubble />
+  </Stack>
+  <Footer />
+</Stack>
+`;
+
+exports[`Footer snapshot test should render samples without messages 1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+  <Stack
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "overflowY": "auto",
+      }
+    }
+  >
+    <WelcomeBubble />
+    <SampleBubble />
+  </Stack>
+  <Footer />
+</Stack>
+`;
+
+exports[`Footer snapshot test should render with chat messages 1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+  <Stack
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "overflowY": "auto",
+      }
+    }
+  >
+    <WelcomeBubble />
+    <Stack
+      horizontalAlign="center"
+      key="0"
+      style={
+        Object {
+          "backgroundColor": "#E0E7FF",
+          "borderRadius": "8px",
+          "margin": "5px 10px",
+          "textAlign": "start",
+        }
+      }
+      tokens={
+        Object {
+          "childrenGap": 8,
+          "padding": 8,
+        }
+      }
+    >
+      some test message
+    </Stack>
+  </Stack>
+  <Footer />
 </Stack>
 `;
