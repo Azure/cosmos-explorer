@@ -1,4 +1,5 @@
 import { Stack } from "@fluentui/react";
+import { RetrievingBubble } from "Explorer/QueryCopilot/V2/Bubbles/Retriveing/RetrievingBubble";
 import { SampleBubble } from "Explorer/QueryCopilot/V2/Bubbles/Sample/SampleBubble";
 import { WelcomeBubble } from "Explorer/QueryCopilot/V2/Bubbles/Welcome/WelcomeBubble";
 import { Footer } from "Explorer/QueryCopilot/V2/Footer/Footer";
@@ -47,6 +48,9 @@ export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
                 {message}
               </Stack>
             ))}
+
+            <RetrievingBubble />
+
             {chatMessages.length === 0 && <SampleBubble />}
           </Stack>
           <Footer />

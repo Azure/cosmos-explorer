@@ -13,6 +13,7 @@ export interface QueryCopilotState {
   query: string;
   selectedQuery: string;
   isGeneratingQuery: boolean;
+  isGeneratingExplanation: boolean;
   isExecuting: boolean;
   dislikeQuery: boolean | undefined;
   showCallout: boolean;
@@ -30,6 +31,7 @@ export interface QueryCopilotState {
   showWelcomeSidebar: boolean;
   showCopilotSidebar: boolean;
   chatMessages: string[];
+  shouldIncludeInMessages: boolean;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
@@ -40,6 +42,7 @@ export interface QueryCopilotState {
   setGeneratedQuery: (generatedQuery: string) => void;
   setSelectedQuery: (selectedQuery: string) => void;
   setIsGeneratingQuery: (isGeneratingQuery: boolean) => void;
+  setIsGeneratingExplanation: (isGeneratingExplanation: boolean) => void;
   setIsExecuting: (isExecuting: boolean) => void;
   setLikeQuery: (likeQuery: boolean) => void;
   setDislikeQuery: (dislikeQuery: boolean | undefined) => void;
@@ -58,6 +61,7 @@ export interface QueryCopilotState {
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
   setChatMessages: (chatMessages: string[]) => void;
+  setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => void;
 
   resetQueryCopilotStates: () => void;
 }
@@ -74,6 +78,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   query: "",
   selectedQuery: "",
   isGeneratingQuery: false,
+  isGeneratingExplanation: false,
   isExecuting: false,
   dislikeQuery: undefined,
   showCallout: false,
@@ -91,6 +96,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showWelcomeSidebar: true,
   showCopilotSidebar: false,
   chatMessages: [],
+  shouldIncludeInMessages: true,
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
@@ -103,6 +109,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setGeneratedQuery: (generatedQuery: string) => set({ generatedQuery }),
   setSelectedQuery: (selectedQuery: string) => set({ selectedQuery }),
   setIsGeneratingQuery: (isGeneratingQuery: boolean) => set({ isGeneratingQuery }),
+  setIsGeneratingExplanation: (isGeneratingExplanation: boolean) => set({ isGeneratingExplanation }),
   setIsExecuting: (isExecuting: boolean) => set({ isExecuting }),
   setLikeQuery: (likeQuery: boolean) => set({ likeQuery }),
   setDislikeQuery: (dislikeQuery: boolean | undefined) => set({ dislikeQuery }),
@@ -121,6 +128,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
   setChatMessages: (chatMessages: string[]) => set({ chatMessages }),
+  setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
 
   resetQueryCopilotStates: () => {
     set((state) => ({
@@ -134,6 +142,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       query: "",
       selectedQuery: "",
       isGeneratingQuery: false,
+      isGeneratingExplanation: false,
       isExecuting: false,
       dislikeQuery: undefined,
       showCallout: false,
@@ -150,6 +159,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       wasCopilotUsed: false,
       showCopilotSidebar: false,
       chatMessages: [],
+      shouldIncludeInMessages: true,
     }));
   },
 }));
