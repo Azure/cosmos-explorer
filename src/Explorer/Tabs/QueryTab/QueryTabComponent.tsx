@@ -186,6 +186,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     });
   }
 
+  public handleCopilotKeyDown = (event: KeyboardEvent): void => {
+    if (this.state.isCopilotTabActive && event.altKey && event.key === "c") {
+      this.launchQueryCopilotChat();
+    }
+  };
+
   public onToggleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
     if (event.key === NormalizedEventKey.LeftArrow) {
       this.toggleResult();
@@ -371,18 +377,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     });
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
-    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keydown", this.handleCopilotKeyDown);
   }
-
-  handleKeyDown = (event: KeyboardEvent): void => {
-    if (this.state.isCopilotTabActive && event.altKey && event.key === "c") {
-      this.launchQueryCopilotChat();
-    }
-  };
 
   componentWillUnmount(): void {
     this.unsubscribeCopilotSidebar();
-    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keydown", this.handleCopilotKeyDown);
   }
 
   private getEditorAndQueryResult(): JSX.Element {
@@ -420,12 +420,13 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   render(): JSX.Element {
+    const shouldScaleElements = this.state.showCopilotSidebar && this.state.isCopilotTabActive;
     return (
       <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
-        <div style={{ width: this.state.showCopilotSidebar ? "70%" : "100%", height: "100%" }}>
+        <div style={{ width: shouldScaleElements ? "70%" : "100%", height: "100%" }}>
           {this.getEditorAndQueryResult()}
         </div>
-        {this.state.showCopilotSidebar && this.state.isCopilotTabActive && (
+        {shouldScaleElements && (
           <div style={{ width: "30%", height: "100%" }}>
             <QueryCopilotSidebar />
           </div>
