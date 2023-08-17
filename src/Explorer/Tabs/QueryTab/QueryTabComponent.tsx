@@ -8,7 +8,7 @@ import "react-splitter-layout/lib/index.css";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
-import { NormalizedEventKey } from "../../../Common/Constants";
+import { NormalizedEventKey, QueryCopilotSampleDatabaseId } from "../../../Common/Constants";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
@@ -106,7 +106,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.splitterId = this.props.tabId + "_splitter";
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this.isPreferredApiMongoDB = this.props.isPreferredApiMongoDB;
-    this.isCopilotTabActive = "CopilotSampleDb" === this.props.collection.databaseId;
+    this.isCopilotTabActive = QueryCopilotSampleDatabaseId === this.props.collection.databaseId;
 
     this.executeQueryButton = {
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
