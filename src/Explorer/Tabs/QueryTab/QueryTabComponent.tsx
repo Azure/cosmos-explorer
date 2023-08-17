@@ -1,7 +1,6 @@
 import { FeedOptions } from "@azure/cosmos";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
-import { useDatabases } from "Explorer/useDatabases";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -77,7 +76,6 @@ interface IQueryTabStates {
   isExecutionError: boolean;
   isExecuting: boolean;
   showCopilotSidebar: boolean;
-  isCopilotTabActive: boolean;
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
@@ -88,6 +86,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   public splitterId: string;
   public isPreferredApiMongoDB: boolean;
   public isCloseClicked: boolean;
+  public isCopilotTabActive: boolean;
   private _iterator: MinimalQueryIterator;
 
   constructor(props: IQueryTabComponentProps) {
@@ -102,13 +101,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
       showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
-      isCopilotTabActive:
-        useDatabases.getState().sampleDataResourceTokenCollection.databaseId === this.props.collection.databaseId,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this.isPreferredApiMongoDB = this.props.isPreferredApiMongoDB;
+    this.isCopilotTabActive = "CopilotSampleDb" === this.props.collection.databaseId;
 
     this.executeQueryButton = {
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
@@ -136,7 +134,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onCloseClick(isClicked: boolean): void {
     this.isCloseClicked = isClicked;
-    if (useQueryCopilot.getState().wasCopilotUsed && this.state.isCopilotTabActive) {
+    if (useQueryCopilot.getState().wasCopilotUsed && this.isCopilotTabActive) {
       useQueryCopilot.getState().resetQueryCopilotStates();
     }
   }
@@ -291,7 +289,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
-    if (this.launchCopilotButton.visible && this.state.isCopilotTabActive) {
+    if (this.launchCopilotButton.visible && this.isCopilotTabActive) {
       const label = "Launch Copilot";
       buttons.push({
         iconSrc: LaunchCopilot,
@@ -396,7 +394,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         <div style={{ width: this.state.showCopilotSidebar ? "70%" : "100%", height: "100%" }}>
           {this.getEditorAndQueryResult()}
         </div>
-        {this.state.showCopilotSidebar && this.state.isCopilotTabActive && (
+        {this.state.showCopilotSidebar && this.isCopilotTabActive && (
           <div style={{ width: "30%", height: "100%" }}>
             <QueryCopilotSidebar />
           </div>
