@@ -128,7 +128,7 @@ const App: React.FunctionComponent = () => {
       {<SQLQuickstartTutorial />}
       {<MongoQuickstartTutorial />}
       {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
-      {shouldShowModal && <QueryCopilotFeedbackModal />}
+      {shouldShowModal && <QueryCopilotFeedbackModal explorer={explorer} />}
     </div>
   );
 };
