@@ -186,7 +186,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
 
   const generateSQLQuery = async (): Promise<void> => {
     try {
-      if (shouldAllocateContainer) {
+      if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
         await explorer.allocateContainer();
         setShouldAllocateContainer(false);
       }
@@ -201,7 +201,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
       const serverInfo = useNotebook.getState().notebookServerInfo;
-      const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+      const queryUri = userContext.features.enableCopilotPhoenixGateaway
+        ? createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery")
+        : createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {
