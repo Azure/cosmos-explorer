@@ -31,6 +31,7 @@ export interface QueryCopilotState {
   showWelcomeSidebar: boolean;
   showCopilotSidebar: boolean;
   chatMessages: string[];
+  shouldAllocateContainer: boolean;
   shouldIncludeInMessages: boolean;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
@@ -61,6 +62,8 @@ export interface QueryCopilotState {
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
   setChatMessages: (chatMessages: string[]) => void;
+
+  setShouldAllocateContainer: (shouldAllocateContainer: boolean) => void;
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => void;
 
   resetQueryCopilotStates: () => void;
@@ -96,6 +99,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showWelcomeSidebar: true,
   showCopilotSidebar: false,
   chatMessages: [],
+  shouldAllocateContainer: true,
   shouldIncludeInMessages: true,
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
@@ -128,6 +132,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
   setChatMessages: (chatMessages: string[]) => set({ chatMessages }),
+  setShouldAllocateContainer: (shouldAllocateContainer: boolean) => set({ shouldAllocateContainer }),
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
 
   resetQueryCopilotStates: () => {
@@ -159,6 +164,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       wasCopilotUsed: false,
       showCopilotSidebar: false,
       chatMessages: [],
+      shouldAllocateContainer: true,
       shouldIncludeInMessages: true,
     }));
   },
