@@ -396,7 +396,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         </div>
         {this.state.showCopilotSidebar && this.isCopilotTabActive && (
           <div style={{ width: "30%", height: "100%" }}>
-            <QueryCopilotSidebar />
+            <QueryCopilotSidebar explorer={this.props.collection.container} />
           </div>
         )}
       </div>

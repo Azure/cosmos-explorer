@@ -34,6 +34,7 @@ import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { querySampleDocuments, submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -59,14 +60,6 @@ interface SuggestedPrompt {
 
 interface QueryCopilotTabProps {
   explorer: Explorer;
-}
-
-interface GenerateSQLQueryResponse {
-  apiVersion: string;
-  sql: string;
-  explanation: string;
-  generateStart: string;
-  generateEnd: string;
 }
 
 const promptStyles: IButtonStyles = {

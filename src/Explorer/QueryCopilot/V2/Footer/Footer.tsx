@@ -1,10 +1,17 @@
 import { IButtonStyles, IconButton, Image, Stack, TextField } from "@fluentui/react";
+import { QueryCopilotSampleContainerSchema } from "Common/Constants";
+import { handleError } from "Common/ErrorHandlingUtils";
+import { createUri } from "Common/UrlUtility";
+import Explorer from "Explorer/Explorer";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { useTabs } from "hooks/useTabs";
 import React from "react";
 import HintIcon from "../../../../../images/Hint.svg";
 import { SamplePrompts, SamplePromptsProps } from "../../Shared/SamplePrompts/SamplePrompts";
 
-export const Footer: React.FC = (): JSX.Element => {
+export const Footer = ({ explorer }: { explorer: Explorer }): JSX.Element => {
   const {
     userPrompt,
     setUserPrompt,
@@ -12,6 +19,12 @@ export const Footer: React.FC = (): JSX.Element => {
     setChatMessages,
     isSamplePromptsOpen,
     setIsSamplePromptsOpen,
+    isGeneratingQuery,
+    setIsGeneratingQuery,
+    shouldAllocateContainer,
+    setShouldAllocateContainer,
+    setGeneratedQueryComments,
+    setGeneratedQuery,
   } = useQueryCopilot();
 
   const promptStyles: IButtonStyles = {
@@ -28,15 +41,72 @@ export const Footer: React.FC = (): JSX.Element => {
   const handleEnterKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      handleSendMessage();
+      startSentMessageProcess();
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async (): Promise<void> => {
     if (userPrompt.trim() !== "") {
-      setChatMessages([...chatMessages, userPrompt]);
-      setUserPrompt("");
+      setChatMessages([...chatMessages, { source: 0, message: userPrompt }]);
+      setIsGeneratingQuery(true);
+      try {
+        if (shouldAllocateContainer) {
+          await explorer.allocateContainer();
+          setShouldAllocateContainer(false);
+        }
+        useTabs.getState().setIsTabExecuting(true);
+        useTabs.getState().setIsQueryErrorThrown(false);
+        const payload = {
+          containerSchema: QueryCopilotSampleContainerSchema,
+          userPrompt: userPrompt,
+        };
+        useQueryCopilot.getState().refreshCorrelationId();
+        const serverInfo = useNotebook.getState().notebookServerInfo;
+        const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+        const response = await fetch(queryUri, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
+        if (response.status === 404) {
+          setShouldAllocateContainer(true);
+        }
+        if (response.ok) {
+          if (generateSQLQueryResponse?.sql) {
+            let query = `Here is a query which will help you with provided prompt.\r\n **Prompt:** ${userPrompt}`;
+            query += `\r\n${generateSQLQueryResponse.sql}`;
+            setChatMessages([
+              ...chatMessages,
+              { source: 0, message: userPrompt },
+              { source: 1, message: query, explanation: generateSQLQueryResponse.explanation },
+            ]);
+            setGeneratedQuery(generateSQLQueryResponse.sql);
+            setGeneratedQueryComments(generateSQLQueryResponse.explanation);
+          }
+        } else {
+          handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
+          useTabs.getState().setIsQueryErrorThrown(true);
+        }
+      } catch (error) {
+        handleError(error, "executeNaturalLanguageQuery");
+        useTabs.getState().setIsQueryErrorThrown(true);
+        throw error;
+      } finally {
+        setUserPrompt("");
+        setIsGeneratingQuery(false);
+        useTabs.getState().setIsTabExecuting(false);
+      }
     }
+  };
+
+  const startSentMessageProcess = () => {
+    setIsGeneratingQuery(true);
+    handleSendMessage();
   };
 
   return (
@@ -77,7 +147,7 @@ export const Footer: React.FC = (): JSX.Element => {
           fieldGroup: { border: "none" },
         }}
       />
-      <IconButton iconProps={{ iconName: "Send" }} onClick={handleSendMessage} />
+      <IconButton disabled={isGeneratingQuery} iconProps={{ iconName: "Send" }} onClick={startSentMessageProcess} />
     </Stack>
   );
 };

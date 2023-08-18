@@ -1,4 +1,5 @@
 import { Stack } from "@fluentui/react";
+import Explorer from "Explorer/Explorer";
 import { SampleBubble } from "Explorer/QueryCopilot/V2/Bubbles/Sample/SampleBubble";
 import { WelcomeBubble } from "Explorer/QueryCopilot/V2/Bubbles/Welcome/WelcomeBubble";
 import { Footer } from "Explorer/QueryCopilot/V2/Footer/Footer";
@@ -7,7 +8,7 @@ import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { WelcomeSidebarModal } from "../Modal/WelcomeSidebarModal";
 
-export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
+export const QueryCopilotSidebar = ({ explorer }: { explorer: Explorer }): JSX.Element => {
   const { setWasCopilotUsed, showCopilotSidebar, chatMessages, showWelcomeSidebar } = useQueryCopilot();
 
   React.useEffect(() => {
@@ -32,24 +33,40 @@ export const QueryCopilotSidebar: React.FC = (): JSX.Element => {
             }}
           >
             <WelcomeBubble />
-            {chatMessages.map((message, index) => (
-              <Stack
-                key={index}
-                horizontalAlign="center"
-                tokens={{ padding: 8, childrenGap: 8 }}
-                style={{
-                  backgroundColor: "#E0E7FF",
-                  borderRadius: "8px",
-                  margin: "5px 10px",
-                  textAlign: "start",
-                }}
-              >
-                {message}
-              </Stack>
-            ))}
+            {chatMessages.map((message, index) =>
+              message.source === 0 ? (
+                <Stack
+                  key={index}
+                  horizontalAlign="center"
+                  tokens={{ padding: 8, childrenGap: 8 }}
+                  style={{
+                    backgroundColor: "#E0E7FF",
+                    borderRadius: "8px",
+                    margin: "5px 10px",
+                    textAlign: "start",
+                  }}
+                >
+                  {message.message}
+                </Stack>
+              ) : (
+                <Stack
+                  key={index}
+                  horizontalAlign="center"
+                  tokens={{ padding: 8, childrenGap: 8 }}
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: "8px",
+                    margin: "5px 10px",
+                    textAlign: "start",
+                  }}
+                >
+                  {message.message}
+                </Stack>
+              )
+            )}
             {chatMessages.length === 0 && <SampleBubble />}
           </Stack>
-          <Footer />
+          <Footer explorer={explorer} />
         </>
       )}
     </Stack>

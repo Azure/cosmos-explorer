@@ -1,5 +1,6 @@
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { QueryResults } from "Contracts/ViewModels";
+import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
 import create, { UseStore } from "zustand";
 
@@ -29,7 +30,7 @@ export interface QueryCopilotState {
   wasCopilotUsed: boolean;
   showWelcomeSidebar: boolean;
   showCopilotSidebar: boolean;
-  chatMessages: string[];
+  chatMessages: CopilotMessage[];
   shouldAllocateContainer: boolean;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
@@ -58,7 +59,7 @@ export interface QueryCopilotState {
   setWasCopilotUsed: (wasCopilotUsed: boolean) => void;
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
-  setChatMessages: (chatMessages: string[]) => void;
+  setChatMessages: (chatMessages: CopilotMessage[]) => void;
 
   setShouldAllocateContainer: (shouldAllocateContainer: boolean) => void;
 
@@ -124,7 +125,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setWasCopilotUsed: (wasCopilotUsed: boolean) => set({ wasCopilotUsed }),
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
-  setChatMessages: (chatMessages: string[]) => set({ chatMessages }),
+  setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
   setShouldAllocateContainer: (shouldAllocateContainer: boolean) => set({ shouldAllocateContainer }),
 
   resetQueryCopilotStates: () => {
