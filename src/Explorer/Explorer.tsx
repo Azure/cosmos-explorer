@@ -395,7 +395,7 @@ export default class Explorer {
     ) {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
-        poolId: PoolIdType.DefaultPoolId,
+        poolId: PoolIdType.QueryCopilot,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,

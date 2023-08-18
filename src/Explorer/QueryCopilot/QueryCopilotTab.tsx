@@ -21,12 +21,14 @@ import { QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
+import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { QueryResults } from "Contracts/ViewModels";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
@@ -115,6 +117,8 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
     setShowErrorMessageBar,
     generatedQueryComments,
     setGeneratedQueryComments,
+    shouldAllocateContainer,
+    setShouldAllocateContainer,
   } = useQueryCopilot();
 
   const sampleProps: SamplePromptsProps = {
@@ -182,6 +186,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
 
   const generateSQLQuery = async (): Promise<void> => {
     try {
+      if (shouldAllocateContainer) {
+        await explorer.allocateContainer();
+        setShouldAllocateContainer(false);
+      }
+
       setIsGeneratingQuery(true);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
@@ -191,7 +200,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       };
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
-      const response = await fetch("https://copilotorchestrater.azurewebsites.net/generateSQLQuery", {
+      const serverInfo = useNotebook.getState().notebookServerInfo;
+      const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+      const response = await fetch(queryUri, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -201,6 +212,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       });
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
+      if (response.status === 404) {
+        setShouldAllocateContainer(true);
+      }
       if (response.ok) {
         if (generateSQLQueryResponse?.sql) {
           let query = `-- **Prompt:** ${userPrompt}\r\n`;
@@ -533,10 +547,13 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
                 onDismiss={() => {
                   setShowCallout(false);
                   submitFeedback({
-                    generatedQuery: generatedQuery,
-                    likeQuery: likeQuery,
-                    description: "",
-                    userPrompt: userPrompt,
+                    params: {
+                      generatedQuery: generatedQuery,
+                      likeQuery: likeQuery,
+                      description: "",
+                      userPrompt: userPrompt,
+                    },
+                    explorer: explorer,
                   });
                 }}
                 directionalHint={DirectionalHint.topCenter}

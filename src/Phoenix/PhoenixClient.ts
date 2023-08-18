@@ -1,7 +1,9 @@
+import { configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
-import promiseRetry, { AbortError } from "p-retry";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { userContext } from "UserContext";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import promiseRetry, { AbortError } from "p-retry";
 import {
   Areas,
   ConnectionStatusType,
@@ -12,7 +14,6 @@ import {
 } from "../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { configContext } from "../ConfigContext";
 import {
   ContainerConnectionInfo,
   ContainerInfo,
@@ -28,7 +29,6 @@ import {
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {

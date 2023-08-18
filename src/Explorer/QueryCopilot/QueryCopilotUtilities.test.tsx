@@ -3,9 +3,11 @@ import { QueryCopilotSampleContainerSchema } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import * as commonUtils from "Common/dataAccess/queryDocuments";
+import Explorer from "Explorer/Explorer";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
 import DocumentId from "Explorer/Tree/DocumentId";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { querySampleDocuments, readSampleDocument, submitFeedback } from "./QueryCopilotUtilities";
+
 jest.mock("Explorer/Tree/DocumentId", () => {
   return jest.fn().mockImplementation(() => {
     return {
@@ -16,21 +18,19 @@ jest.mock("Explorer/Tree/DocumentId", () => {
 });
 
 jest.mock("Utils/NotificationConsoleUtils", () => ({
-  logConsoleProgress: jest.fn(),
+  logConsoleProgress: jest.fn().mockReturnValue((): void => undefined),
   logConsoleError: jest.fn(),
 }));
 
 jest.mock("@azure/cosmos", () => ({
   FeedOptions: jest.fn(),
   QueryIterator: jest.fn(),
+  Constants: {
+    HttpHeaders: {},
+  },
 }));
-
 jest.mock("Common/ErrorHandlingUtils", () => ({
   handleError: jest.fn(),
-}));
-
-jest.mock("Utils/NotificationConsoleUtils", () => ({
-  logConsoleProgress: jest.fn().mockReturnValue((): void => undefined),
 }));
 
 jest.mock("Common/dataAccess/queryDocuments", () => ({
@@ -41,8 +41,28 @@ jest.mock("Common/SampleDataClient");
 
 jest.mock("node-fetch");
 
+jest.mock("Explorer/Explorer", () => {
+  class MockExplorer {
+    allocateContainer = jest.fn().mockResolvedValueOnce({});
+  }
+  return MockExplorer;
+});
+
+jest.mock("hooks/useQueryCopilot", () => {
+  const mockQueryCopilotStore = {
+    shouldAllocateContainer: true,
+    setShouldAllocateContainer: jest.fn(),
+    correlationId: "mocked-correlation-id",
+  };
+
+  return {
+    useQueryCopilot: jest.fn(() => mockQueryCopilotStore),
+  };
+});
+
 describe("QueryCopilotUtilities", () => {
   beforeEach(() => jest.clearAllMocks());
+
   describe("submitFeedback", () => {
     const payload = {
       like: "like",
@@ -53,28 +73,37 @@ describe("QueryCopilotUtilities", () => {
       containerSchema: QueryCopilotSampleContainerSchema,
     };
 
+    const mockStore = useNotebook.getState();
+    beforeEach(() => {
+      mockStore.notebookServerInfo = {
+        notebookServerEndpoint: "mocked-endpoint",
+        authToken: "mocked-token",
+        forwardingId: "mocked-forwarding-id",
+      };
+    });
+
     it("should call fetch with the payload with like", async () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
-        likeQuery: true,
-        generatedQuery: "GeneratedQuery",
-        userPrompt: "UserPrompt",
-        description: "Description",
-        contact: "Contact",
+        params: {
+          likeQuery: true,
+          generatedQuery: "GeneratedQuery",
+          userPrompt: "UserPrompt",
+          description: "Description",
+          contact: "Contact",
+        },
+        explorer: new Explorer(),
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://copilotorchestrater.azurewebsites.net/feedback",
+        "mocked-endpoint/feedback",
         expect.objectContaining({
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "x-ms-correlationid": useQueryCopilot.getState().correlationId,
-          },
+          headers: expect.objectContaining({
+            "x-ms-correlationid": "mocked-correlation-id",
+          }),
         })
       );
 
@@ -89,23 +118,25 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-      useQueryCopilot.getState().refreshCorrelationId();
 
       await submitFeedback({
-        likeQuery: false,
-        generatedQuery: "GeneratedQuery",
-        userPrompt: "UserPrompt",
-        description: undefined,
-        contact: undefined,
+        params: {
+          likeQuery: false,
+          generatedQuery: "GeneratedQuery",
+          userPrompt: "UserPrompt",
+          description: undefined,
+          contact: undefined,
+        },
+        explorer: new Explorer(),
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://copilotorchestrater.azurewebsites.net/feedback",
+        "mocked-endpoint/feedback",
         expect.objectContaining({
           method: "POST",
           headers: {
             "content-type": "application/json",
-            "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+            "x-ms-correlationid": "mocked-correlation-id",
           },
         })
       );
@@ -118,11 +149,14 @@ describe("QueryCopilotUtilities", () => {
       globalThis.fetch = jest.fn().mockRejectedValueOnce(new Error("Mock error"));
 
       await submitFeedback({
-        likeQuery: true,
-        generatedQuery: "GeneratedQuery",
-        userPrompt: "UserPrompt",
-        description: "Description",
-        contact: "Contact",
+        params: {
+          likeQuery: true,
+          generatedQuery: "GeneratedQuery",
+          userPrompt: "UserPrompt",
+          description: "Description",
+          contact: "Contact",
+        },
+        explorer: new Explorer(),
       }).catch((error) => {
         expect(error.message).toEqual("Mock error");
       });
