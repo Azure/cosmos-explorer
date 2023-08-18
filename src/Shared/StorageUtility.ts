@@ -16,4 +16,5 @@ export enum StorageKey {
   SetPartitionKeyUndefined,
   GalleryCalloutDismissed,
   VisitedAccounts,
+  PriorityLevel,
 }
