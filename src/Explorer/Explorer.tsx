@@ -650,6 +650,8 @@ export default class Explorer {
   private _initSettings() {
     if (!ExplorerSettings.hasSettingsDefined()) {
       ExplorerSettings.createDefaultSettings();
+    } else {
+      ExplorerSettings.ensurePriorityLevel();
     }
   }
 
