@@ -430,6 +430,12 @@ export class JunoEndpoints {
   public static readonly Stage = "https://tools-staging.cosmos.azure.com";
 }
 
+export class PriorityLevel {
+  public static readonly High = "high";
+  public static readonly Low = "low";
+  public static readonly Default = "low";
+}
+
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
