@@ -3,6 +3,7 @@ import {
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   QueryCopilotSampleDatabaseId,
+  ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
@@ -35,7 +36,9 @@ export const submitFeedback = async ({
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
     const { correlationId, shouldAllocateContainer, setShouldAllocateContainer } = useQueryCopilot();
     const payload = {
-      containerSchema: QueryCopilotSampleContainerSchema,
+      containerSchema: userContext.features.enableCopilotFullSchema
+        ? QueryCopilotSampleContainerSchema
+        : ShortenedQueryCopilotSampleContainerSchema,
       like: likeQuery ? "like" : "dislike",
       generatedSql: generatedQuery,
       userPrompt,

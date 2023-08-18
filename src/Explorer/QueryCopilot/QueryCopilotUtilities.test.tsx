@@ -1,5 +1,5 @@
 import { FeedOptions } from "@azure/cosmos";
-import { QueryCopilotSampleContainerSchema } from "Common/Constants";
+import { ShortenedQueryCopilotSampleContainerSchema } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import * as commonUtils from "Common/dataAccess/queryDocuments";
@@ -70,7 +70,7 @@ describe("QueryCopilotUtilities", () => {
       userPrompt: "UserPrompt",
       description: "Description",
       contact: "Contact",
-      containerSchema: QueryCopilotSampleContainerSchema,
+      containerSchema: ShortenedQueryCopilotSampleContainerSchema,
     };
 
     const mockStore = useNotebook.getState();
@@ -86,7 +86,6 @@ describe("QueryCopilotUtilities", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-
       await submitFeedback({
         params: {
           likeQuery: true,
@@ -99,7 +98,7 @@ describe("QueryCopilotUtilities", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "mocked-endpoint/feedback",
+        "https://copilotorchestrater.azurewebsites.net/feedback",
         expect.objectContaining({
           headers: expect.objectContaining({
             "x-ms-correlationid": "mocked-correlation-id",
@@ -131,7 +130,7 @@ describe("QueryCopilotUtilities", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "mocked-endpoint/feedback",
+        "https://copilotorchestrater.azurewebsites.net/feedback",
         expect.objectContaining({
           method: "POST",
           headers: {
