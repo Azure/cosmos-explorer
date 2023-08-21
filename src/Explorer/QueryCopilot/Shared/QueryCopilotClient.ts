@@ -7,12 +7,16 @@ import { FeedbackParams } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfa
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 
-export const SendQueryRequest = async (payload: any): Promise<Response> => {
+export const SendQueryRequest = async (userPrompt: string): Promise<Response> => {
   let response: Response;
   try {
     useQueryCopilot.getState().refreshCorrelationId();
     const serverInfo = useNotebook.getState().notebookServerInfo;
     const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+    const payload = {
+      containerSchema: ShortenedQueryCopilotSampleContainerSchema,
+      userPrompt: userPrompt,
+    };
     response = await fetch(queryUri, {
       method: "POST",
       headers: {
