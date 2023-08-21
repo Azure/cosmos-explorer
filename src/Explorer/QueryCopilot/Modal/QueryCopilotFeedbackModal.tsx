@@ -11,7 +11,7 @@ import {
   TextField,
 } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
-import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { submitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { getUserEmail } from "../../../Utils/UserUtils";

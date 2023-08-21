@@ -1,7 +1,7 @@
 import { Checkbox, ChoiceGroup, DefaultButton, IconButton, PrimaryButton, TextField } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
-import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { submitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { getUserEmail } from "Utils/UserUtils";
 import { shallow } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -10,7 +10,7 @@ import React from "react";
 jest.mock("Utils/UserUtils");
 (getUserEmail as jest.Mock).mockResolvedValue("test@email.com");
 
-jest.mock("Explorer/QueryCopilot/QueryCopilotUtilities");
+jest.mock("Explorer/QueryCopilot/Shared/QueryCopilotClient");
 submitFeedback as jest.Mock;
 
 describe("Query Copilot Feedback Modal snapshot test", () => {

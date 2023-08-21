@@ -1,4 +1,5 @@
 import { Stack } from "@fluentui/react";
+import Explorer from "Explorer/Explorer";
 import { SampleBubble } from "Explorer/QueryCopilot/V2/Bubbles/Sample/SampleBubble";
 import { shallow } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -16,7 +17,7 @@ describe("Query Copilot Sidebar snapshot test", () => {
   it("should render and set copilot used flag ", () => {
     withHooks(() => {
       useQueryCopilot.getState().setShowCopilotSidebar(true);
-      const wrapper = shallow(<QueryCopilotSidebar />);
+      const wrapper = shallow(<QueryCopilotSidebar explorer={new Explorer()} />);
 
       expect(useQueryCopilot.getState().wasCopilotUsed).toBeTruthy();
       expect(wrapper).toMatchSnapshot();
@@ -25,7 +26,7 @@ describe("Query Copilot Sidebar snapshot test", () => {
 
   it("should render and not set copilot used flag ", () => {
     withHooks(() => {
-      const wrapper = shallow(<QueryCopilotSidebar />);
+      const wrapper = shallow(<QueryCopilotSidebar explorer={new Explorer()} />);
 
       expect(useQueryCopilot.getState().wasCopilotUsed).toBeFalsy();
       expect(wrapper).toMatchSnapshot();
@@ -34,8 +35,8 @@ describe("Query Copilot Sidebar snapshot test", () => {
 
   it("should render with chat messages", () => {
     const message = "some test message";
-    useQueryCopilot.getState().setChatMessages([message]);
-    const wrapper = shallow(<QueryCopilotSidebar />);
+    useQueryCopilot.getState().setChatMessages([{ source: 0, message: message }]);
+    const wrapper = shallow(<QueryCopilotSidebar explorer={new Explorer()} />);
 
     const messageContainer = wrapper.find(Stack).findWhere((x) => x.text() === message);
 
@@ -44,7 +45,7 @@ describe("Query Copilot Sidebar snapshot test", () => {
   });
 
   it("should render samples without messages", () => {
-    const wrapper = shallow(<QueryCopilotSidebar />);
+    const wrapper = shallow(<QueryCopilotSidebar explorer={new Explorer()} />);
 
     const sampleBubble = wrapper.find(SampleBubble);
 

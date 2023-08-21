@@ -1,6 +1,10 @@
+import { QueryCopilotSampleContainerSchema, ShortenedQueryCopilotSampleContainerSchema } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
+import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { FeedbackParams } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 
 export const sendQueryRequest = async (payload: {}): Promise<Response> => {
@@ -23,4 +27,48 @@ export const sendQueryRequest = async (payload: {}): Promise<Response> => {
   }
 
   return response;
+};
+
+export const submitFeedback = async ({
+  params,
+  explorer,
+}: {
+  params: FeedbackParams;
+  explorer: Explorer;
+}): Promise<void> => {
+  try {
+    const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
+    const { correlationId, shouldAllocateContainer, setShouldAllocateContainer } = useQueryCopilot();
+    const payload = {
+      containerSchema: userContext.features.enableCopilotFullSchema
+        ? QueryCopilotSampleContainerSchema
+        : ShortenedQueryCopilotSampleContainerSchema,
+      like: likeQuery ? "like" : "dislike",
+      generatedSql: generatedQuery,
+      userPrompt,
+      description: description || "",
+      contact: contact || "",
+    };
+    if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
+      await explorer.allocateContainer();
+      setShouldAllocateContainer(false);
+    }
+    const serverInfo = useNotebook.getState().notebookServerInfo;
+    const feedbackUri = userContext.features.enableCopilotPhoenixGateaway
+      ? createUri(serverInfo.notebookServerEndpoint, "feedback")
+      : createUri("https://copilotorchestrater.azurewebsites.net/", "feedback");
+    const response = await fetch(feedbackUri, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-ms-correlationid": correlationId,
+      },
+      body: JSON.stringify(payload),
+    });
+    if (response.status === 404) {
+      setShouldAllocateContainer(true);
+    }
+  } catch (error) {
+    handleError(error, "copilotSubmitFeedback");
+  }
 };
