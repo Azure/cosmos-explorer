@@ -16,3 +16,11 @@ export interface CopilotMessage {
   message: string;
   explanation?: string;
 }
+
+export interface FeedbackParams {
+  likeQuery: boolean;
+  generatedQuery: string;
+  userPrompt: string;
+  description?: string;
+  contact?: string;
+}

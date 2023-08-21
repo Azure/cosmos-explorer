@@ -11,17 +11,10 @@ import { getPartitionKeyValue } from "Common/dataAccess/getPartitionKeyValue";
 import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { FeedbackParams } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import DocumentId from "Explorer/Tree/DocumentId";
 import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-
-interface FeedbackParams {
-  likeQuery: boolean;
-  generatedQuery: string;
-  userPrompt: string;
-  description?: string;
-  contact?: string;
-}
 
 export const submitFeedback = async ({
   params,
