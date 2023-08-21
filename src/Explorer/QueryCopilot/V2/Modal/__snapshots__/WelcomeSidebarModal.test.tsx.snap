@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Footer snapshot test should render  1`] = `
+exports[`WelcomeSidebarModal snapshot test should render  1`] = `
 <Stack
   style={
     Object {
