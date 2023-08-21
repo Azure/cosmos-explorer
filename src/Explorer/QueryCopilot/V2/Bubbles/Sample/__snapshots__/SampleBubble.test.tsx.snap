@@ -1,6 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Sample Bubble snapshot test should render  1`] = `
+exports[`Sample Bubble snapshot test should render 1`] = `
+<Stack
+  horizontalAlign="end"
+  style={
+    Object {
+      "alignItems": "center",
+      "display": "flex",
+      "margin": "10px",
+      "padding": "10px",
+    }
+  }
+  verticalAlign="end"
+>
+  <Text
+    key="0"
+    onClick={[Function]}
+    style={
+      Object {
+        "border": "1.5px solid #B0BEFF",
+        "borderRadius": "4px",
+        "cursor": "pointer",
+        "marginBottom": "5px",
+        "padding": "2px",
+        "width": "100%",
+      }
+    }
+  >
+    Write a query to return last 10 records in the database
+  </Text>
+  <Text
+    key="1"
+    onClick={[Function]}
+    style={
+      Object {
+        "border": "1.5px solid #B0BEFF",
+        "borderRadius": "4px",
+        "cursor": "pointer",
+        "marginBottom": "5px",
+        "padding": "2px",
+        "width": "100%",
+      }
+    }
+  >
+    Write a query to return all records in this table created in the last thirty days which also have the record owner as "Contoso"
+  </Text>
+</Stack>
+`;
+
+exports[`Sample Bubble snapshot test should render and be clicked 1`] = `
 <Stack
   horizontalAlign="end"
   style={

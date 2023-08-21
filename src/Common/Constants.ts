@@ -430,6 +430,12 @@ export class JunoEndpoints {
   public static readonly Stage = "https://tools-staging.cosmos.azure.com";
 }
 
+export class PriorityLevel {
+  public static readonly High = "high";
+  public static readonly Low = "low";
+  public static readonly Default = "low";
+}
+
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
@@ -601,8 +607,68 @@ export const QueryCopilotSampleContainerSchema = {
   },
 };
 
-export class PriorityLevel {
-  public static readonly High = "high";
-  public static readonly Low = "low";
-  public static readonly Default = "low";
-}
+export const ShortenedQueryCopilotSampleContainerSchema = {
+  containerSchema: {
+    product: {
+      sampleData: {
+        categoryName: "Components, Saddles",
+
+        name: "LL Road Seat/Saddle",
+
+        price: 27.12,
+
+        tags: [
+          {
+            id: "0573D684-9140-4DEE-89AF-4E4A90E65666",
+
+            name: "Tag-113",
+          },
+
+          {
+            id: "6C2F05C8-1E61-4912-BE1A-C67A378429BB",
+
+            name: "Tag-5",
+          },
+        ],
+      },
+
+      schema: {
+        properties: {
+          categoryName: {
+            type: "string",
+          },
+
+          name: {
+            type: "string",
+          },
+
+          price: {
+            type: "number",
+          },
+
+          tags: {
+            items: {
+              properties: {
+                id: {
+                  type: "string",
+                },
+
+                name: {
+                  type: "string",
+                },
+              },
+
+              type: "object",
+            },
+
+            type: "array",
+          },
+        },
+
+        type: "object",
+      },
+    },
+  },
+
+  userPrompt: "find all products",
+};

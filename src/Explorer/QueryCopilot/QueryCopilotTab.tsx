@@ -17,7 +17,11 @@ import {
   TextField,
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import { QueryCopilotSampleContainerId, QueryCopilotSampleContainerSchema } from "Common/Constants";
+import {
+  QueryCopilotSampleContainerId,
+  QueryCopilotSampleContainerSchema,
+  ShortenedQueryCopilotSampleContainerSchema,
+} from "Common/Constants";
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
@@ -174,7 +178,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
 
   const generateSQLQuery = async (): Promise<void> => {
     try {
-      if (shouldAllocateContainer) {
+      if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
         await explorer.allocateContainer();
         setShouldAllocateContainer(false);
       }
@@ -183,13 +187,17 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
       const payload = {
-        containerSchema: QueryCopilotSampleContainerSchema,
+        containerSchema: userContext.features.enableCopilotFullSchema
+          ? QueryCopilotSampleContainerSchema
+          : ShortenedQueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
       };
       setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
       const serverInfo = useNotebook.getState().notebookServerInfo;
-      const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+      const queryUri = userContext.features.enableCopilotPhoenixGateaway
+        ? createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery")
+        : createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {

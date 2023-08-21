@@ -25,7 +25,7 @@ export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: Q
   }, []);
 
   return (
-    <Stack style={{ width: "100%", height: "100%", backgroundColor: "#FAFAFA", overflow: "auto" }}>
+    <Stack style={{ width: "100%", height: "100%", backgroundColor: "#FAFAFA" }}>
       <Header />
       {showWelcomeSidebar ? (
         <WelcomeSidebarModal />
