@@ -1,3 +1,5 @@
+import Explorer from "Explorer/Explorer";
+
 export interface GenerateSQLQueryResponse {
   apiVersion: string;
   sql: string;
@@ -23,4 +25,8 @@ export interface FeedbackParams {
   userPrompt: string;
   description?: string;
   contact?: string;
+}
+
+export interface QueryCopilotProps {
+  explorer: Explorer;
 }

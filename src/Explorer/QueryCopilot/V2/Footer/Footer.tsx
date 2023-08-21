@@ -1,12 +1,12 @@
 import { IButtonStyles, IconButton, Image, Stack, TextField } from "@fluentui/react";
-import Explorer from "Explorer/Explorer";
 import { handleSendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import HintIcon from "../../../../../images/Hint.svg";
 import { SamplePrompts, SamplePromptsProps } from "../../Shared/SamplePrompts/SamplePrompts";
 
-export const Footer = ({ explorer }: { explorer: Explorer }): JSX.Element => {
+export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
   const {
     userPrompt,
     setUserPrompt,

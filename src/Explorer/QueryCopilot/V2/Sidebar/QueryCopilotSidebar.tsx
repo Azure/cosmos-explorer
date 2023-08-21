@@ -1,5 +1,6 @@
 import { Stack } from "@fluentui/react";
-import Explorer from "Explorer/Explorer";
+import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { RetrievingBubble } from "Explorer/QueryCopilot/V2/Bubbles/Retriveing/RetrievingBubble";
 import { SampleBubble } from "Explorer/QueryCopilot/V2/Bubbles/Sample/SampleBubble";
 import { WelcomeBubble } from "Explorer/QueryCopilot/V2/Bubbles/Welcome/WelcomeBubble";
 import { Footer } from "Explorer/QueryCopilot/V2/Footer/Footer";
@@ -8,7 +9,7 @@ import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { WelcomeSidebarModal } from "../Modal/WelcomeSidebarModal";
 
-export const QueryCopilotSidebar = ({ explorer }: { explorer: Explorer }): JSX.Element => {
+export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
   const { setWasCopilotUsed, showCopilotSidebar, chatMessages, showWelcomeSidebar } = useQueryCopilot();
 
   React.useEffect(() => {
@@ -64,6 +65,9 @@ export const QueryCopilotSidebar = ({ explorer }: { explorer: Explorer }): JSX.E
                 </Stack>
               )
             )}
+
+            <RetrievingBubble />
+
             {chatMessages.length === 0 && <SampleBubble />}
           </Stack>
           <Footer explorer={explorer} />
