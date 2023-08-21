@@ -14,17 +14,17 @@ describe("QueryTabComponent", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("should launch Copilot when ALT+C is pressed", () => {
-    let mock: Readonly<IQueryTabComponentProps> = ({
+    const propsMock: Readonly<IQueryTabComponentProps> = ({
       collection: { databaseId: "CopilotSampleDb" },
-      onTabAccessor: () => {},
+      onTabAccessor: () => jest.fn(),
       isExecutionError: false,
       tabId: "mockTabId",
       tabsBaseInstance: {
-        updateNavbarWithTabsButtons: () => {},
+        updateNavbarWithTabsButtons: () => jest.fn(),
       },
     } as unknown) as IQueryTabComponentProps;
 
-    const { container } = render(<QueryTabComponent {...mock} />);
+    const { container } = render(<QueryTabComponent {...propsMock} />);
 
     const launchCopilotButton = container.querySelector(".queryEditorWatermarkText");
     fireEvent.keyDown(launchCopilotButton, { key: "c", altKey: true });
