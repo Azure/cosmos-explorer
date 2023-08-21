@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`QueryCopilotSidebar snapshot test should render and not set copilot used flag  1`] = `
+exports[`Query Copilot Sidebar snapshot test should render and not set copilot used flag  1`] = `
 <Stack
   style={
     Object {
@@ -23,13 +23,14 @@ exports[`QueryCopilotSidebar snapshot test should render and not set copilot use
     }
   >
     <WelcomeBubble />
+    <RetrievingBubble />
     <SampleBubble />
   </Stack>
   <Footer />
 </Stack>
 `;
 
-exports[`Footer snapshot test should render and set copilot used flag  1`] = `
+exports[`Query Copilot Sidebar snapshot test should render and set copilot used flag  1`] = `
 <Stack
   style={
     Object {
@@ -52,13 +53,14 @@ exports[`Footer snapshot test should render and set copilot used flag  1`] = `
     }
   >
     <WelcomeBubble />
+    <RetrievingBubble />
     <SampleBubble />
   </Stack>
   <Footer />
 </Stack>
 `;
 
-exports[`Footer snapshot test should render samples without messages 1`] = `
+exports[`Query Copilot Sidebar snapshot test should render samples without messages 1`] = `
 <Stack
   style={
     Object {
@@ -81,13 +83,14 @@ exports[`Footer snapshot test should render samples without messages 1`] = `
     }
   >
     <WelcomeBubble />
+    <RetrievingBubble />
     <SampleBubble />
   </Stack>
   <Footer />
 </Stack>
 `;
 
-exports[`Footer snapshot test should render with chat messages 1`] = `
+exports[`Query Copilot Sidebar snapshot test should render with chat messages 1`] = `
 <Stack
   style={
     Object {
@@ -130,6 +133,7 @@ exports[`Footer snapshot test should render with chat messages 1`] = `
     >
       some test message
     </Stack>
+    <RetrievingBubble />
   </Stack>
   <Footer />
 </Stack>

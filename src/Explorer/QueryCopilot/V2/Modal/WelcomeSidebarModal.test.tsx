@@ -5,7 +5,7 @@ import { withHooks } from "jest-react-hooks-shallow";
 import React from "react";
 import { WelcomeSidebarModal } from "./WelcomeSidebarModal";
 
-describe("WelcomeSidebarModal snapshot test", () => {
+describe("Welcome Sidebar Modal snapshot test", () => {
   it("should close on button click ", () => {
     withHooks(() => {
       const wrapper = shallow(<WelcomeSidebarModal />);

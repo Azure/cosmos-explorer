@@ -6,7 +6,7 @@ import { withHooks } from "jest-react-hooks-shallow";
 import React from "react";
 import { QueryCopilotSidebar } from "./QueryCopilotSidebar";
 
-describe("QueryCopilotSidebar snapshot test", () => {
+describe("Query Copilot Sidebar snapshot test", () => {
   const initialState = useQueryCopilot.getState();
 
   beforeEach(() => {
