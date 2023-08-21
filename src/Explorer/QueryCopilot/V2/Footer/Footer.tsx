@@ -1,7 +1,10 @@
 import { IButtonStyles, IconButton, Image, Stack, TextField } from "@fluentui/react";
-import { handleSendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
-import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { QueryCopilotSampleContainerSchema } from "Common/Constants";
+import { handleError } from "Common/ErrorHandlingUtils";
+import { sendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { useTabs } from "hooks/useTabs";
 import React from "react";
 import HintIcon from "../../../../../images/Hint.svg";
 import { SamplePrompts, SamplePromptsProps } from "../../Shared/SamplePrompts/SamplePrompts";
@@ -14,6 +17,12 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
     setIsSamplePromptsOpen,
     isGeneratingQuery,
     setIsGeneratingQuery,
+    chatMessages,
+    setChatMessages,
+    shouldAllocateContainer,
+    setShouldAllocateContainer,
+    setGeneratedQueryComments,
+    setGeneratedQuery,
   } = useQueryCopilot();
 
   const promptStyles: IButtonStyles = {
@@ -34,8 +43,57 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
     }
   };
 
+  const handleSentQueryRequest = async (): Promise<void> => {
+    if (userPrompt.trim() !== "") {
+      setIsGeneratingQuery(true);
+      useTabs.getState().setIsTabExecuting(true);
+      useTabs.getState().setIsQueryErrorThrown(false);
+      setChatMessages([...chatMessages, { source: 0, message: userPrompt }]);
+      try {
+        if (shouldAllocateContainer) {
+          await explorer.allocateContainer();
+          setShouldAllocateContainer(false);
+        }
+        const payload = {
+          containerSchema: QueryCopilotSampleContainerSchema,
+          userPrompt: userPrompt,
+        };
+        const response = await sendQueryRequest(payload);
+
+        const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
+        if (response.status === 404) {
+          setShouldAllocateContainer(true);
+        }
+        if (response.ok) {
+          if (generateSQLQueryResponse?.sql) {
+            let query = `Here is a query which will help you with provided prompt.\r\n **Prompt:** ${userPrompt}`;
+            query += `\r\n${generateSQLQueryResponse.sql}`;
+            setChatMessages([
+              ...chatMessages,
+              { source: 0, message: userPrompt },
+              { source: 1, message: query, explanation: generateSQLQueryResponse.explanation },
+            ]);
+            setGeneratedQuery(generateSQLQueryResponse.sql);
+            setGeneratedQueryComments(generateSQLQueryResponse.explanation);
+          }
+        } else {
+          handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
+          useTabs.getState().setIsQueryErrorThrown(true);
+        }
+      } catch (error) {
+        handleError(error, "executeNaturalLanguageQuery");
+        useTabs.getState().setIsQueryErrorThrown(true);
+        throw error;
+      } finally {
+        setUserPrompt("");
+        setIsGeneratingQuery(false);
+        useTabs.getState().setIsTabExecuting(false);
+      }
+    }
+  };
+
   const startSentMessageProcess = async () => {
-    await handleSendQueryRequest({ explorer });
+    await handleSentQueryRequest();
   };
 
   return (
@@ -63,6 +121,7 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
         onKeyDown={handleEnterKeyPress}
         multiline
         resizable={false}
+        disabled={isGeneratingQuery}
         styles={{
           root: {
             width: "100%",

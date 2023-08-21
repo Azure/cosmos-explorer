@@ -10,7 +10,13 @@ import React from "react";
 import { WelcomeSidebarModal } from "../Modal/WelcomeSidebarModal";
 
 export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
-  const { setWasCopilotUsed, showCopilotSidebar, chatMessages, showWelcomeSidebar } = useQueryCopilot();
+  const {
+    setWasCopilotUsed,
+    showCopilotSidebar,
+    chatMessages,
+    showWelcomeSidebar,
+    isGeneratingQuery,
+  } = useQueryCopilot();
 
   React.useEffect(() => {
     if (showCopilotSidebar) {
@@ -68,7 +74,7 @@ export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: Q
 
             <RetrievingBubble />
 
-            {chatMessages.length === 0 && <SampleBubble />}
+            {chatMessages.length === 0 && !isGeneratingQuery && <SampleBubble />}
           </Stack>
           <Footer explorer={explorer} />
         </>
