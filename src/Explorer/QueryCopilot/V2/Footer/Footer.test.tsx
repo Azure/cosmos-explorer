@@ -43,7 +43,7 @@ const mockFetch = jest.fn().mockResolvedValueOnce({
 globalThis.fetch = mockFetch;
 
 jest.mock("Explorer/QueryCopilot/Shared/QueryCopilotClient", () => ({
-  sendQueryRequest: async () => {
+  SendQueryRequest: async () => {
     return mockFetch();
   },
 }));
