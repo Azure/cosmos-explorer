@@ -18,6 +18,15 @@ jest.mock("Common/ErrorHandlingUtils", () => ({
 
 jest.mock("Common/SampleDataClient");
 
+jest.mock("node-fetch");
+
+jest.mock("Explorer/Explorer", () => {
+  class MockExplorer {
+    allocateContainer = jest.fn().mockResolvedValueOnce({});
+  }
+  return MockExplorer;
+});
+
 jest.mock("hooks/useQueryCopilot", () => {
   const mockQueryCopilotStore = {
     shouldAllocateContainer: true,

@@ -1,11 +1,61 @@
 import { IconButton, Image, TextField } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
+import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { shallow } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { Footer } from "./Footer";
 
+jest.mock("@azure/cosmos", () => ({
+  Constants: {
+    HttpHeaders: {},
+  },
+}));
+
+jest.mock("Common/SampleDataClient");
+
+jest.mock("Explorer/Explorer");
+
+jest.mock("node-fetch");
+
+jest.mock("Common/ErrorHandlingUtils", () => ({
+  handleError: jest.fn(),
+  getErrorMessage: jest.fn(),
+}));
+
+const mockResponseData = {
+  apiVersion: "1.0",
+  sql: "SELECT * FROM mock_table",
+  explanation: "Mock explanation",
+  generateStart: "2023-08-21T00:00:00Z",
+  generateEnd: "2023-08-21T01:00:00Z",
+};
+
+const mockFetch = jest.fn().mockResolvedValueOnce({
+  json: () => Promise.resolve(mockResponseData),
+  status: 200,
+  ok: true,
+  headers: {
+    "content-type": "application/json",
+  },
+});
+
+globalThis.fetch = mockFetch;
+
+jest.mock("Explorer/QueryCopilot/Shared/QueryCopilotClient", () => ({
+  sendQueryRequest: async () => {
+    return mockFetch();
+  },
+}));
+
 describe("Footer snapshot test", () => {
+  const testMessage = "test message";
+
+  const mockResponse: CopilotMessage = {
+    message: testMessage,
+    source: 0,
+  };
+
   const initialStoreState = useQueryCopilot.getState();
   beforeEach(() => {
     useQueryCopilot.setState(initialStoreState, true);
@@ -33,7 +83,6 @@ describe("Footer snapshot test", () => {
   });
 
   it("should pass text with enter key", () => {
-    const testMessage = "test message";
     useQueryCopilot.getState().setUserPrompt(testMessage);
     const wrapper = shallow(<Footer explorer={new Explorer()} />);
 
@@ -41,8 +90,8 @@ describe("Footer snapshot test", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     textInput.simulate("keydown", { key: "Enter", shiftKey: false, preventDefault: () => {} });
 
-    expect(useQueryCopilot.getState().chatMessages).toEqual([testMessage]);
-    expect(useQueryCopilot.getState().userPrompt).toEqual("");
+    expect(useQueryCopilot.getState().chatMessages).toEqual([mockResponse]);
+    expect(useQueryCopilot.getState().userPrompt).toEqual(testMessage);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -71,15 +120,14 @@ describe("Footer snapshot test", () => {
   });
 
   it("should pass text with icon button", () => {
-    const testMessage = "test message";
     useQueryCopilot.getState().setUserPrompt(testMessage);
     const wrapper = shallow(<Footer explorer={new Explorer()} />);
 
     const iconButton = wrapper.find(IconButton).first();
     iconButton.simulate("click", {});
 
-    expect(useQueryCopilot.getState().chatMessages).toEqual([testMessage]);
-    expect(useQueryCopilot.getState().userPrompt).toEqual("");
+    expect(useQueryCopilot.getState().chatMessages).toEqual([mockResponse]);
+    expect(useQueryCopilot.getState().userPrompt).toEqual("test message");
     expect(wrapper).toMatchSnapshot();
   });
 });
