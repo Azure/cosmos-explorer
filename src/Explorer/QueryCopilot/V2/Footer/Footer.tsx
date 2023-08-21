@@ -12,6 +12,7 @@ export const Footer: React.FC = (): JSX.Element => {
     setChatMessages,
     isSamplePromptsOpen,
     setIsSamplePromptsOpen,
+    setIsGeneratingQuery,
   } = useQueryCopilot();
 
   const promptStyles: IButtonStyles = {
@@ -36,6 +37,7 @@ export const Footer: React.FC = (): JSX.Element => {
     if (userPrompt.trim() !== "") {
       setChatMessages([...chatMessages, userPrompt]);
       setUserPrompt("");
+      setIsGeneratingQuery(true);
     }
   };
 
