@@ -3,6 +3,7 @@ import {
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   QueryCopilotSampleDatabaseId,
+  ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
@@ -12,6 +13,7 @@ import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import DocumentId from "Explorer/Tree/DocumentId";
+import { userContext } from "UserContext";
 import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 
@@ -34,19 +36,23 @@ export const submitFeedback = async ({
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
     const { correlationId, shouldAllocateContainer, setShouldAllocateContainer } = useQueryCopilot();
     const payload = {
-      containerSchema: QueryCopilotSampleContainerSchema,
+      containerSchema: userContext.features.enableCopilotFullSchema
+        ? QueryCopilotSampleContainerSchema
+        : ShortenedQueryCopilotSampleContainerSchema,
       like: likeQuery ? "like" : "dislike",
       generatedSql: generatedQuery,
       userPrompt,
       description: description || "",
       contact: contact || "",
     };
-    if (shouldAllocateContainer) {
+    if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
       await explorer.allocateContainer();
       setShouldAllocateContainer(false);
     }
     const serverInfo = useNotebook.getState().notebookServerInfo;
-    const feedbackUri = createUri(serverInfo.notebookServerEndpoint, "feedback");
+    const feedbackUri = userContext.features.enableCopilotPhoenixGateaway
+      ? createUri(serverInfo.notebookServerEndpoint, "feedback")
+      : createUri("https://copilotorchestrater.azurewebsites.net/", "feedback");
     const response = await fetch(feedbackUri, {
       method: "POST",
       headers: {

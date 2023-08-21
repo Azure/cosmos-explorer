@@ -1,11 +1,13 @@
 import { FeedOptions } from "@azure/cosmos";
-import { QueryCopilotSampleContainerSchema } from "Common/Constants";
+import { QueryCopilotSampleContainerSchema, ShortenedQueryCopilotSampleContainerSchema } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
+import { createUri } from "Common/UrlUtility";
 import * as commonUtils from "Common/dataAccess/queryDocuments";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import DocumentId from "Explorer/Tree/DocumentId";
+import { userContext } from "UserContext";
 import { querySampleDocuments, readSampleDocument, submitFeedback } from "./QueryCopilotUtilities";
 
 jest.mock("Explorer/Tree/DocumentId", () => {
@@ -70,7 +72,9 @@ describe("QueryCopilotUtilities", () => {
       userPrompt: "UserPrompt",
       description: "Description",
       contact: "Contact",
-      containerSchema: QueryCopilotSampleContainerSchema,
+      containerSchema: userContext.features.enableCopilotFullSchema
+        ? QueryCopilotSampleContainerSchema
+        : ShortenedQueryCopilotSampleContainerSchema,
     };
 
     const mockStore = useNotebook.getState();
@@ -82,11 +86,14 @@ describe("QueryCopilotUtilities", () => {
       };
     });
 
+    const feedbackUri = userContext.features.enableCopilotPhoenixGateaway
+      ? createUri(useNotebook.getState().notebookServerInfo.notebookServerEndpoint, "feedback")
+      : createUri("https://copilotorchestrater.azurewebsites.net/", "feedback");
+
     it("should call fetch with the payload with like", async () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-
       await submitFeedback({
         params: {
           likeQuery: true,
@@ -99,7 +106,7 @@ describe("QueryCopilotUtilities", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "mocked-endpoint/feedback",
+        feedbackUri,
         expect.objectContaining({
           headers: expect.objectContaining({
             "x-ms-correlationid": "mocked-correlation-id",
@@ -131,7 +138,7 @@ describe("QueryCopilotUtilities", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "mocked-endpoint/feedback",
+        feedbackUri,
         expect.objectContaining({
           method: "POST",
           headers: {
