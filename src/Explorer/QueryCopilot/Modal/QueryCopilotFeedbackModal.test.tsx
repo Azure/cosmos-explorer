@@ -1,7 +1,7 @@
 import { Checkbox, ChoiceGroup, DefaultButton, IconButton, PrimaryButton, TextField } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
-import { submitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { getUserEmail } from "Utils/UserUtils";
 import { shallow } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -11,7 +11,7 @@ jest.mock("Utils/UserUtils");
 (getUserEmail as jest.Mock).mockResolvedValue("test@email.com");
 
 jest.mock("Explorer/QueryCopilot/Shared/QueryCopilotClient");
-submitFeedback as jest.Mock;
+SubmitFeedback as jest.Mock;
 
 describe("Query Copilot Feedback Modal snapshot test", () => {
   beforeEach(() => {
@@ -110,8 +110,8 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     submitButton.simulate("click");
     wrapper.setProps({});
 
-    expect(submitFeedback).toHaveBeenCalledTimes(1);
-    expect(submitFeedback).toHaveBeenCalledWith({
+    expect(SubmitFeedback).toHaveBeenCalledTimes(1);
+    expect(SubmitFeedback).toHaveBeenCalledWith({
       params: {
         likeQuery: false,
         generatedQuery: "",

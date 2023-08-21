@@ -7,7 +7,7 @@ import { FeedbackParams } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfa
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 
-export const sendQueryRequest = async (payload: {}): Promise<Response> => {
+export const SendQueryRequest = async (payload: {}): Promise<Response> => {
   let response: Response;
   try {
     useQueryCopilot.getState().refreshCorrelationId();
@@ -29,7 +29,7 @@ export const sendQueryRequest = async (payload: {}): Promise<Response> => {
   return response;
 };
 
-export const submitFeedback = async ({
+export const SubmitFeedback = async ({
   params,
   explorer,
 }: {

@@ -37,7 +37,7 @@ import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import { submitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
@@ -543,7 +543,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
                 target="#likeBtn"
                 onDismiss={() => {
                   setShowCallout(false);
-                  submitFeedback({
+                  SubmitFeedback({
                     params: {
                       generatedQuery: generatedQuery,
                       likeQuery: likeQuery,

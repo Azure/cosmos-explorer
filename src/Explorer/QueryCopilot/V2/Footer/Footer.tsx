@@ -1,7 +1,7 @@
 import { IButtonStyles, IconButton, Image, Stack, TextField } from "@fluentui/react";
 import { ShortenedQueryCopilotSampleContainerSchema } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
-import { sendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { SendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
@@ -58,7 +58,7 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
           containerSchema: ShortenedQueryCopilotSampleContainerSchema,
           userPrompt: userPrompt,
         };
-        const response = await sendQueryRequest(payload);
+        const response = await SendQueryRequest(payload);
 
         const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
         if (response.status === 404) {

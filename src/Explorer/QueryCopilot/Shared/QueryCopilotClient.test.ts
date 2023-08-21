@@ -3,7 +3,7 @@ import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import { submitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { userContext } from "UserContext";
 
 jest.mock("@azure/cosmos", () => ({
@@ -71,7 +71,7 @@ describe("Query Copilot Client", () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
 
       globalThis.fetch = mockFetch;
-      await submitFeedback({
+      await SubmitFeedback({
         params: {
           likeQuery: true,
           generatedQuery: "GeneratedQuery",
@@ -103,7 +103,7 @@ describe("Query Copilot Client", () => {
 
       globalThis.fetch = mockFetch;
 
-      await submitFeedback({
+      await SubmitFeedback({
         params: {
           likeQuery: false,
           generatedQuery: "GeneratedQuery",
@@ -132,7 +132,7 @@ describe("Query Copilot Client", () => {
     it("should handle errors and call handleError", async () => {
       globalThis.fetch = jest.fn().mockRejectedValueOnce(new Error("Mock error"));
 
-      await submitFeedback({
+      await SubmitFeedback({
         params: {
           likeQuery: true,
           generatedQuery: "GeneratedQuery",
