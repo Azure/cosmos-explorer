@@ -1,9 +1,7 @@
 import { IButtonStyles, IconButton, Image, Stack, TextField } from "@fluentui/react";
-import { handleError } from "Common/ErrorHandlingUtils";
 import { SendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
-import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import { useTabs } from "hooks/useTabs";
 import React from "react";
 import HintIcon from "../../../../../images/Hint.svg";
 import { SamplePrompts, SamplePromptsProps } from "../../Shared/SamplePrompts/SamplePrompts";
@@ -15,12 +13,6 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
     isSamplePromptsOpen,
     setIsSamplePromptsOpen,
     isGeneratingQuery,
-    setIsGeneratingQuery,
-    chatMessages,
-    setChatMessages,
-    setShouldAllocateContainer,
-    setGeneratedQueryComments,
-    setGeneratedQuery,
   } = useQueryCopilot();
 
   const promptStyles: IButtonStyles = {
@@ -41,49 +33,8 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
     }
   };
 
-  const handleSentQueryRequest = async (): Promise<void> => {
-    if (userPrompt.trim() !== "") {
-      setIsGeneratingQuery(true);
-      useTabs.getState().setIsTabExecuting(true);
-      useTabs.getState().setIsQueryErrorThrown(false);
-      setChatMessages([...chatMessages, { source: 0, message: userPrompt }]);
-      try {
-        const response = await SendQueryRequest({ userPrompt, explorer });
-
-        const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
-        if (response.status === 404) {
-          setShouldAllocateContainer(true);
-        }
-        if (response.ok) {
-          if (generateSQLQueryResponse?.sql) {
-            let query = `Here is a query which will help you with provided prompt.\r\n **Prompt:** ${userPrompt}`;
-            query += `\r\n${generateSQLQueryResponse.sql}`;
-            setChatMessages([
-              ...chatMessages,
-              { source: 0, message: userPrompt },
-              { source: 1, message: query, explanation: generateSQLQueryResponse.explanation },
-            ]);
-            setGeneratedQuery(generateSQLQueryResponse.sql);
-            setGeneratedQueryComments(generateSQLQueryResponse.explanation);
-          }
-        } else {
-          handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
-          useTabs.getState().setIsQueryErrorThrown(true);
-        }
-      } catch (error) {
-        handleError(error, "executeNaturalLanguageQuery");
-        useTabs.getState().setIsQueryErrorThrown(true);
-        throw error;
-      } finally {
-        setUserPrompt("");
-        setIsGeneratingQuery(false);
-        useTabs.getState().setIsTabExecuting(false);
-      }
-    }
-  };
-
   const startSentMessageProcess = async () => {
-    await handleSentQueryRequest();
+    await SendQueryRequest({ userPrompt, explorer });
   };
 
   return (

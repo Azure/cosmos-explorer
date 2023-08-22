@@ -3,9 +3,10 @@ import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import { FeedbackParams } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { useTabs } from "hooks/useTabs";
 
 export const SendQueryRequest = async ({
   userPrompt,
@@ -13,35 +14,67 @@ export const SendQueryRequest = async ({
 }: {
   userPrompt: string;
   explorer: Explorer;
-}): Promise<Response> => {
-  let response: Response;
-  try {
-    if (useQueryCopilot.getState().shouldAllocateContainer) {
-      await explorer.allocateContainer();
-      useQueryCopilot.getState().setShouldAllocateContainer(false);
+}): Promise<void> => {
+  if (userPrompt.trim() !== "") {
+    useQueryCopilot.getState().setIsGeneratingQuery(true);
+    useTabs.getState().setIsTabExecuting(true);
+    useTabs.getState().setIsQueryErrorThrown(false);
+    useQueryCopilot
+      .getState()
+      .setChatMessages([...useQueryCopilot.getState().chatMessages, { source: 0, message: userPrompt }]);
+    try {
+      if (useQueryCopilot.getState().shouldAllocateContainer) {
+        await explorer.allocateContainer();
+        useQueryCopilot.getState().setShouldAllocateContainer(false);
+      }
+
+      useQueryCopilot.getState().refreshCorrelationId();
+      const serverInfo = useNotebook.getState().notebookServerInfo;
+      const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+      const payload = {
+        containerSchema: ShortenedQueryCopilotSampleContainerSchema,
+        userPrompt: userPrompt,
+      };
+      const response = await fetch(queryUri, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
+      if (response.status === 404) {
+        useQueryCopilot.getState().setShouldAllocateContainer(true);
+      }
+      if (response.ok) {
+        if (generateSQLQueryResponse?.sql) {
+          let query = `Here is a query which will help you with provided prompt.\r\n **Prompt:** ${userPrompt}`;
+          query += `\r\n${generateSQLQueryResponse.sql}`;
+          useQueryCopilot
+            .getState()
+            .setChatMessages([
+              ...useQueryCopilot.getState().chatMessages,
+              { source: 1, message: query, explanation: generateSQLQueryResponse.explanation },
+            ]);
+          useQueryCopilot.getState().setGeneratedQuery(generateSQLQueryResponse.sql);
+          useQueryCopilot.getState().setGeneratedQueryComments(generateSQLQueryResponse.explanation);
+        }
+      } else {
+        handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
+        useTabs.getState().setIsQueryErrorThrown(true);
+      }
+    } catch (error) {
+      handleError(error, "executeNaturalLanguageQuery");
+      useTabs.getState().setIsQueryErrorThrown(true);
+      throw error;
+    } finally {
+      useQueryCopilot.getState().setUserPrompt("");
+      useQueryCopilot.getState().setIsGeneratingQuery(false);
+      useTabs.getState().setIsTabExecuting(false);
     }
-
-    useQueryCopilot.getState().refreshCorrelationId();
-    const serverInfo = useNotebook.getState().notebookServerInfo;
-    const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
-    const payload = {
-      containerSchema: ShortenedQueryCopilotSampleContainerSchema,
-      userPrompt: userPrompt,
-    };
-    response = await fetch(queryUri, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-ms-correlationid": useQueryCopilot.getState().correlationId,
-      },
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    handleError(error, "executeNaturalLanguageQuery");
-    throw error;
   }
-
-  return response;
 };
 
 export const SubmitFeedback = async ({

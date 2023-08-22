@@ -1,6 +1,6 @@
 import { IconButton, Image, TextField } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
-import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { SendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { shallow } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
@@ -24,52 +24,10 @@ jest.mock("Common/ErrorHandlingUtils", () => ({
   getErrorMessage: jest.fn(),
 }));
 
-const mockResponseData = {
-  apiVersion: "1.0",
-  sql: "SELECT * FROM mock_table",
-  explanation: "Mock explanation",
-  generateStart: "2023-08-21T00:00:00Z",
-  generateEnd: "2023-08-21T01:00:00Z",
-};
-
-// const mockFetch = jest.fn().mockResolvedValueOnce({
-//   json: () => Promise.resolve(mockResponseData),
-//   status: 200,
-//   ok: true,
-//   headers: {
-//     "content-type": "application/json",
-//   },
-// });
-
-// globalThis.fetch = mockFetch;
-
-jest.mock("Explorer/QueryCopilot/Shared/QueryCopilotClient", () => ({
-  SendQueryRequest: async () => {
-    return {
-      json: () => Promise.resolve(mockResponseData),
-      status: 200,
-      ok: true,
-      headers: {
-        "content-type": "application/json",
-      },
-    };
-  },
-}));
+jest.mock("Explorer/QueryCopilot/Shared/QueryCopilotClient");
 
 describe("Footer snapshot test", () => {
   const testMessage = "test message";
-
-  const mockRequestMessage: CopilotMessage = {
-    message: testMessage,
-    source: 0,
-  };
-
-  const mockResponseMessage: CopilotMessage = {
-    explanation: "Mock explanation",
-    message:
-      "Here is a query which will help you with provided prompt.\r\n **Prompt:** test message\r\nSELECT * FROM mock_table",
-    source: 1,
-  };
 
   const initialStoreState = useQueryCopilot.getState();
   beforeEach(() => {
@@ -109,8 +67,7 @@ describe("Footer snapshot test", () => {
 
     await Promise.resolve();
 
-    expect(useQueryCopilot.getState().chatMessages).toEqual([mockRequestMessage, mockResponseMessage]);
-    expect(useQueryCopilot.getState().userPrompt).toEqual("");
+    expect(SendQueryRequest).toHaveBeenCalledWith({ userPrompt: testMessage, explorer: expect.any(Explorer) });
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -149,8 +106,7 @@ describe("Footer snapshot test", () => {
 
     await Promise.resolve();
 
-    expect(useQueryCopilot.getState().chatMessages).toEqual([mockRequestMessage, mockResponseMessage]);
-    expect(useQueryCopilot.getState().userPrompt).toEqual("");
+    expect(SendQueryRequest).toHaveBeenCalledWith({ userPrompt: testMessage, explorer: expect.any(Explorer) });
     expect(wrapper).toMatchSnapshot();
   });
 });
