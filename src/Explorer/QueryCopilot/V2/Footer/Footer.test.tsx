@@ -138,7 +138,7 @@ describe("Footer snapshot test", () => {
     const iconButton = wrapper.find(IconButton).first();
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     await act(async () => {
-      iconButton.simulate("click", { preventDefault: () => {} });
+      iconButton.simulate("click", {});
     });
 
     await Promise.resolve();
