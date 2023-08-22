@@ -95,8 +95,8 @@ describe("Footer snapshot test", () => {
     const wrapper = shallow(<Footer explorer={new Explorer()} />);
 
     const textInput = wrapper.find(TextField).first();
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     await act(async () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       textInput.simulate("keydown", { key: "Enter", shiftKey: false, preventDefault: () => {} });
     });
 
@@ -136,7 +136,6 @@ describe("Footer snapshot test", () => {
     const wrapper = shallow(<Footer explorer={new Explorer()} />);
 
     const iconButton = wrapper.find(IconButton).first();
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     await act(async () => {
       iconButton.simulate("click", {});
     });
