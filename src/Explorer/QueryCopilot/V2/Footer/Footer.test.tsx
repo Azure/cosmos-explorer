@@ -32,20 +32,27 @@ const mockResponseData = {
   generateEnd: "2023-08-21T01:00:00Z",
 };
 
-const mockFetch = jest.fn().mockResolvedValueOnce({
-  json: () => Promise.resolve(mockResponseData),
-  status: 200,
-  ok: true,
-  headers: {
-    "content-type": "application/json",
-  },
-});
+// const mockFetch = jest.fn().mockResolvedValueOnce({
+//   json: () => Promise.resolve(mockResponseData),
+//   status: 200,
+//   ok: true,
+//   headers: {
+//     "content-type": "application/json",
+//   },
+// });
 
-globalThis.fetch = mockFetch;
+// globalThis.fetch = mockFetch;
 
 jest.mock("Explorer/QueryCopilot/Shared/QueryCopilotClient", () => ({
   SendQueryRequest: async () => {
-    return mockFetch();
+    return {
+      json: () => Promise.resolve(mockResponseData),
+      status: 200,
+      ok: true,
+      headers: {
+        "content-type": "application/json",
+      },
+    };
   },
 }));
 
