@@ -18,7 +18,6 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
     setIsGeneratingQuery,
     chatMessages,
     setChatMessages,
-    shouldAllocateContainer,
     setShouldAllocateContainer,
     setGeneratedQueryComments,
     setGeneratedQuery,
@@ -49,12 +48,7 @@ export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotPr
       useTabs.getState().setIsQueryErrorThrown(false);
       setChatMessages([...chatMessages, { source: 0, message: userPrompt }]);
       try {
-        if (shouldAllocateContainer) {
-          await explorer.allocateContainer();
-          setShouldAllocateContainer(false);
-        }
-
-        const response = await SendQueryRequest(userPrompt);
+        const response = await SendQueryRequest({ userPrompt, explorer });
 
         const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
         if (response.status === 404) {

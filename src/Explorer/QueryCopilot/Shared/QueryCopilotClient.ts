@@ -7,9 +7,20 @@ import { FeedbackParams } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfa
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 
-export const SendQueryRequest = async (userPrompt: string): Promise<Response> => {
+export const SendQueryRequest = async ({
+  userPrompt,
+  explorer,
+}: {
+  userPrompt: string;
+  explorer: Explorer;
+}): Promise<Response> => {
   let response: Response;
   try {
+    if (useQueryCopilot.getState().shouldAllocateContainer) {
+      await explorer.allocateContainer();
+      useQueryCopilot.getState().setShouldAllocateContainer(false);
+    }
+
     useQueryCopilot.getState().refreshCorrelationId();
     const serverInfo = useNotebook.getState().notebookServerInfo;
     const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
