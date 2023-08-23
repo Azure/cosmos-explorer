@@ -15,13 +15,13 @@ import {
 import {
   ChangeFeedPolicyState,
   GeospatialConfigType,
-  getSanitizedInputValue,
   IsComponentDirtyResult,
-  isDirty,
   TtlOff,
   TtlOn,
   TtlOnNoDefault,
   TtlType,
+  getSanitizedInputValue,
+  isDirty,
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -56,7 +56,11 @@ export interface SubSettingsComponentProps {
   onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
 }
 
-export class SubSettingsComponent extends React.Component<SubSettingsComponentProps> {
+type SubSettingsComponentState = {
+  displayedTtlValue: string;
+};
+
+export class SubSettingsComponent extends React.Component<SubSettingsComponentProps, SubSettingsComponentState> {
   private shouldCheckComponentIsDirty = true;
   private geospatialVisible: boolean;
   private partitionKeyValue: string;
@@ -67,14 +71,24 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.geospatialVisible = userContext.apiType === "SQL";
     this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
     this.partitionKeyValue = this.getPartitionKeyValue();
+    this.state = {
+      displayedTtlValue: ''
+    };
   }
 
   componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate(): void {
+  // componentDidUpdate(): void {
+  //   this.onComponentUpdate();
+  // }
+
+  componentDidUpdate(prevProps: SubSettingsComponentProps) {
     this.onComponentUpdate();
+    if ((prevProps.timeToLive === TtlType.Off || prevProps.timeToLive === TtlType.OnNoDefault) && this.props.timeToLive === TtlType.On && !isDirty(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)) {
+        this.setState({ displayedTtlValue: '' });
+    }
   }
 
   private onComponentUpdate = (): void => {
@@ -138,6 +152,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     newValue?: string
   ): void => {
     const newTimeToLiveSeconds = getSanitizedInputValue(newValue, Int32.Max);
+    this.setState({ displayedTtlValue: newTimeToLiveSeconds.toString() });
     this.props.onTimeToLiveSecondsChange(newTimeToLiveSeconds);
   };
 
@@ -166,51 +181,54 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   ): void =>
     this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState]);
 
-  private getTtlComponent = (): JSX.Element =>
-    userContext.apiType === "Mongo" ? (
-      <MessageBar
-        messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-        styles={{ text: { fontSize: 14 } }}
-      >
-        To enable time-to-live (TTL) for your collection/documents,
-        <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
-          create a TTL index
-        </Link>
-        .
-      </MessageBar>
-    ) : (
-      <Stack {...titleAndInputStackProps}>
-        <ChoiceGroup
-          id="timeToLive"
-          label="Time to Live"
-          selectedKey={this.props.timeToLive}
-          options={this.ttlChoiceGroupOptions}
-          onChange={this.onTtlChange}
-          styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
-        />
-        {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
-          <MessageBar
-            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-            styles={messageBarStyles}
-          >
-            {ttlWarning}
-          </MessageBar>
-        )}
-        {this.props.timeToLive === TtlType.On && (
-          <TextField
-            id="timeToLiveSeconds"
-            styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
-            type="number"
-            required
-            min={1}
-            max={Int32.Max}
-            value={this.props.timeToLiveSeconds?.toString()}
-            onChange={this.onTimeToLiveSecondsChange}
-            suffix="second(s)"
+  private getTtlComponent = (): JSX.Element => {    
+    return (
+      userContext.apiType === "Mongo" ? (
+        <MessageBar
+          messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+          styles={{ text: { fontSize: 14 } }}
+        >
+          To enable time-to-live (TTL) for your collection/documents,
+          <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
+            create a TTL index
+          </Link>
+          .
+        </MessageBar>
+      ) : (
+        <Stack {...titleAndInputStackProps}>
+          <ChoiceGroup
+            id="timeToLive"
+            label="Time to Live"
+            selectedKey={this.props.timeToLive}
+            options={this.ttlChoiceGroupOptions}
+            onChange={this.onTtlChange}
+            styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
           />
-        )}
-      </Stack>
+          {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
+            <MessageBar
+              messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+              styles={messageBarStyles}
+            >
+              {ttlWarning}
+            </MessageBar>
+          )}
+          {this.props.timeToLive === TtlType.On && (
+            <TextField
+              id="timeToLiveSeconds"
+              styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
+              type="number"
+              required
+              min={1}
+              max={Int32.Max}
+              value={this.state.displayedTtlValue}
+              onChange={this.onTimeToLiveSecondsChange}
+              suffix="second(s)"
+            />
+          )}
+        </Stack>
+      )
     );
+  };
 
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off", disabled: true },
