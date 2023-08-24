@@ -34,6 +34,8 @@ export interface QueryCopilotState {
   chatMessages: CopilotMessage[];
   shouldAllocateContainer: boolean;
   shouldIncludeInMessages: boolean;
+  showExplanationBubble: boolean;
+  showQueryExplanation: boolean;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
@@ -63,9 +65,10 @@ export interface QueryCopilotState {
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
   setChatMessages: (chatMessages: CopilotMessage[]) => void;
-
   setShouldAllocateContainer: (shouldAllocateContainer: boolean) => void;
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => void;
+  setShowExplanationBubble: (showExplanationBubble: boolean) => void;
+  setShowQueryExplanation: (showQueryExplanation: boolean) => void;
 
   resetQueryCopilotStates: () => void;
 }
@@ -102,6 +105,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   chatMessages: [],
   shouldAllocateContainer: true,
   shouldIncludeInMessages: true,
+  showExplanationBubble: false,
+  showQueryExplanation: false,
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
@@ -135,6 +140,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
   setShouldAllocateContainer: (shouldAllocateContainer: boolean) => set({ shouldAllocateContainer }),
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
+  setShowExplanationBubble: (showExplanationBubble: boolean) => set({ showExplanationBubble }),
+  setShowQueryExplanation: (showQueryExplanation: boolean) => set({ showQueryExplanation }),
 
   resetQueryCopilotStates: () => {
     set((state) => ({
@@ -167,6 +174,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       chatMessages: [],
       shouldAllocateContainer: true,
       shouldIncludeInMessages: true,
+      showExplanationBubble: false,
+      showQueryExplanation: false,
     }));
   },
 }));

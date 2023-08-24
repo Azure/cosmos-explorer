@@ -1,5 +1,6 @@
 import { Stack } from "@fluentui/react";
 import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { ExplanationBubble } from "Explorer/QueryCopilot/V2/Bubbles/Explanation/ExplanationBubble";
 import { RetrievingBubble } from "Explorer/QueryCopilot/V2/Bubbles/Retriveing/RetrievingBubble";
 import { SampleBubble } from "Explorer/QueryCopilot/V2/Bubbles/Sample/SampleBubble";
 import { WelcomeBubble } from "Explorer/QueryCopilot/V2/Bubbles/Welcome/WelcomeBubble";
@@ -73,6 +74,7 @@ export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: Q
             )}
 
             <RetrievingBubble />
+            <ExplanationBubble />
 
             {chatMessages.length === 0 && !isGeneratingQuery && <SampleBubble />}
           </Stack>
