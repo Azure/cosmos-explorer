@@ -1,5 +1,6 @@
 import { FeedOptions, Item, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import {
+  PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   QueryCopilotSampleDatabaseId,
@@ -46,7 +47,7 @@ export const submitFeedback = async ({
       contact: contact || "",
     };
     if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
-      await explorer.allocateContainer();
+      await explorer.allocateContainer(PoolIdType.QueryCopilot);
       setShouldAllocateContainer(false);
     }
     const serverInfo = useNotebook.getState().notebookServerInfo;

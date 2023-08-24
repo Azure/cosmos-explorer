@@ -18,6 +18,7 @@ import {
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import {
+  PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   ShortenedQueryCopilotSampleContainerSchema,
@@ -191,7 +192,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
   const generateSQLQuery = async (): Promise<void> => {
     try {
       if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
-        await explorer.allocateContainer();
+        await explorer.allocateContainer(PoolIdType.QueryCopilot);
         setShouldAllocateContainer(false);
       }
 
