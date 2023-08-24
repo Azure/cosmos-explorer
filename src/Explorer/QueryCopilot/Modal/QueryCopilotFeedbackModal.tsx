@@ -11,7 +11,7 @@ import {
   TextField,
 } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
-import { submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { getUserEmail } from "../../../Utils/UserUtils";
@@ -101,7 +101,7 @@ export const QueryCopilotFeedbackModal = ({ explorer }: { explorer: Explorer }):
             onClick={() => {
               closeFeedbackModal();
               setHideFeedbackModalForLikedQueries(doNotShowAgainChecked);
-              submitFeedback({
+              SubmitFeedback({
                 params: { generatedQuery, likeQuery, description, userPrompt, contact },
                 explorer: explorer,
               });
