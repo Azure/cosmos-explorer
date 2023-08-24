@@ -1,18 +1,18 @@
 import { IButtonStyles, IconButton, Image, Stack, TextField } from "@fluentui/react";
+import { SendQueryRequest } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import HintIcon from "../../../../../images/Hint.svg";
 import { SamplePrompts, SamplePromptsProps } from "../../Shared/SamplePrompts/SamplePrompts";
 
-export const Footer: React.FC = (): JSX.Element => {
+export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
   const {
     userPrompt,
     setUserPrompt,
-    chatMessages,
-    setChatMessages,
     isSamplePromptsOpen,
     setIsSamplePromptsOpen,
-    setIsGeneratingQuery,
+    isGeneratingQuery,
   } = useQueryCopilot();
 
   const promptStyles: IButtonStyles = {
@@ -29,16 +29,12 @@ export const Footer: React.FC = (): JSX.Element => {
   const handleEnterKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      handleSendMessage();
+      startSentMessageProcess();
     }
   };
 
-  const handleSendMessage = () => {
-    if (userPrompt.trim() !== "") {
-      setChatMessages([...chatMessages, userPrompt]);
-      setUserPrompt("");
-      setIsGeneratingQuery(true);
-    }
+  const startSentMessageProcess = async () => {
+    await SendQueryRequest({ userPrompt, explorer });
   };
 
   return (
@@ -66,6 +62,7 @@ export const Footer: React.FC = (): JSX.Element => {
         onKeyDown={handleEnterKeyPress}
         multiline
         resizable={false}
+        disabled={isGeneratingQuery}
         styles={{
           root: {
             width: "100%",
@@ -79,7 +76,7 @@ export const Footer: React.FC = (): JSX.Element => {
           fieldGroup: { border: "none" },
         }}
       />
-      <IconButton iconProps={{ iconName: "Send" }} onClick={handleSendMessage} />
+      <IconButton disabled={isGeneratingQuery} iconProps={{ iconName: "Send" }} onClick={startSentMessageProcess} />
     </Stack>
   );
 };

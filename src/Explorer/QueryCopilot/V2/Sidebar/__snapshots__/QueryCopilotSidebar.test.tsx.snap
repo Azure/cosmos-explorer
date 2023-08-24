@@ -12,21 +12,6 @@ exports[`Query Copilot Sidebar snapshot test should render and not set copilot u
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <RetrievingBubble />
-    <SampleBubble />
-  </Stack>
-  <Footer />
 </Stack>
 `;
 
@@ -42,21 +27,6 @@ exports[`Query Copilot Sidebar snapshot test should render and set copilot used 
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <RetrievingBubble />
-    <SampleBubble />
-  </Stack>
-  <Footer />
 </Stack>
 `;
 
@@ -72,21 +42,6 @@ exports[`Query Copilot Sidebar snapshot test should render samples without messa
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <RetrievingBubble />
-    <SampleBubble />
-  </Stack>
-  <Footer />
 </Stack>
 `;
 
@@ -102,39 +57,5 @@ exports[`Query Copilot Sidebar snapshot test should render with chat messages 1`
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <Stack
-      horizontalAlign="center"
-      key="0"
-      style={
-        Object {
-          "backgroundColor": "#E0E7FF",
-          "borderRadius": "8px",
-          "margin": "5px 10px",
-          "textAlign": "start",
-        }
-      }
-      tokens={
-        Object {
-          "childrenGap": 8,
-          "padding": 8,
-        }
-      }
-    >
-      some test message
-    </Stack>
-    <RetrievingBubble />
-  </Stack>
-  <Footer />
 </Stack>
 `;

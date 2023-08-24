@@ -49,6 +49,7 @@ exports[`Footer snapshot test should not pass if no text 1`] = `
     />
   </Stack>
   <StyledTextFieldBase
+    disabled={false}
     multiline={true}
     onChange={[Function]}
     onKeyDown={[Function]}
@@ -73,6 +74,7 @@ exports[`Footer snapshot test should not pass if no text 1`] = `
     value=""
   />
   <CustomizedIconButton
+    disabled={false}
     iconProps={
       Object {
         "iconName": "Send",
@@ -132,6 +134,7 @@ exports[`Footer snapshot test should not pass text with non enter key 1`] = `
     />
   </Stack>
   <StyledTextFieldBase
+    disabled={false}
     multiline={true}
     onChange={[Function]}
     onKeyDown={[Function]}
@@ -156,6 +159,7 @@ exports[`Footer snapshot test should not pass text with non enter key 1`] = `
     value=""
   />
   <CustomizedIconButton
+    disabled={false}
     iconProps={
       Object {
         "iconName": "Send",
@@ -215,6 +219,7 @@ exports[`Footer snapshot test should open sample prompts on button click 1`] = `
     />
   </Stack>
   <StyledTextFieldBase
+    disabled={false}
     multiline={true}
     onChange={[Function]}
     onKeyDown={[Function]}
@@ -239,6 +244,7 @@ exports[`Footer snapshot test should open sample prompts on button click 1`] = `
     value=""
   />
   <CustomizedIconButton
+    disabled={false}
     iconProps={
       Object {
         "iconName": "Send",
@@ -298,6 +304,7 @@ exports[`Footer snapshot test should pass text with enter key 1`] = `
     />
   </Stack>
   <StyledTextFieldBase
+    disabled={false}
     multiline={true}
     onChange={[Function]}
     onKeyDown={[Function]}
@@ -322,6 +329,7 @@ exports[`Footer snapshot test should pass text with enter key 1`] = `
     value="test message"
   />
   <CustomizedIconButton
+    disabled={false}
     iconProps={
       Object {
         "iconName": "Send",
@@ -381,6 +389,7 @@ exports[`Footer snapshot test should pass text with icon button 1`] = `
     />
   </Stack>
   <StyledTextFieldBase
+    disabled={false}
     multiline={true}
     onChange={[Function]}
     onKeyDown={[Function]}
@@ -405,6 +414,7 @@ exports[`Footer snapshot test should pass text with icon button 1`] = `
     value="test message"
   />
   <CustomizedIconButton
+    disabled={false}
     iconProps={
       Object {
         "iconName": "Send",
@@ -464,6 +474,7 @@ exports[`Footer snapshot test should update user input 1`] = `
     />
   </Stack>
   <StyledTextFieldBase
+    disabled={false}
     multiline={true}
     onChange={[Function]}
     onKeyDown={[Function]}
@@ -488,6 +499,7 @@ exports[`Footer snapshot test should update user input 1`] = `
     value=""
   />
   <CustomizedIconButton
+    disabled={false}
     iconProps={
       Object {
         "iconName": "Send",

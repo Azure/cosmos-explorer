@@ -30,14 +30,15 @@ import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { QueryResults } from "Contracts/ViewModels";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
-import { querySampleDocuments, submitFeedback } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -61,24 +62,12 @@ interface SuggestedPrompt {
   text: string;
 }
 
-interface QueryCopilotTabProps {
-  explorer: Explorer;
-}
-
-interface GenerateSQLQueryResponse {
-  apiVersion: string;
-  sql: string;
-  explanation: string;
-  generateStart: string;
-  generateEnd: string;
-}
-
 const promptStyles: IButtonStyles = {
   root: { border: 0, selectors: { ":hover": { outline: "1px dashed #605e5c" } } },
   label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
 };
 
-export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: QueryCopilotTabProps): JSX.Element => {
+export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
   const {
@@ -554,7 +543,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
                 target="#likeBtn"
                 onDismiss={() => {
                   setShowCallout(false);
-                  submitFeedback({
+                  SubmitFeedback({
                     params: {
                       generatedQuery: generatedQuery,
                       likeQuery: likeQuery,
