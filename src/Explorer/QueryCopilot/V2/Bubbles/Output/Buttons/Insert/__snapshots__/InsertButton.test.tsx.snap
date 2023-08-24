@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Insert button snapshot tests should click and update state 1`] = `
+<CustomizedActionButton
+  iconProps={
+    Object {
+      "imageProps": Object {
+        "src": Object {},
+      },
+    }
+  }
+  onClick={[Function]}
+  style={
+    Object {
+      "borderColor": "#D1D1D1",
+      "borderRadius": "4px",
+      "borderWidth": "1px",
+      "height": "24px",
+      "paddingBottom": "2px",
+    }
+  }
+>
+  Insert
+</CustomizedActionButton>
+`;

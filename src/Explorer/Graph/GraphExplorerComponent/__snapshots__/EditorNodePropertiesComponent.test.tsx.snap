@@ -128,7 +128,7 @@ exports[`<EditorNodePropertiesComponent /> renders component 1`] = `
         >
           <img
             alt="Delete"
-            src=""
+            src={Object {}}
           />
         </AccessibleElement>
       </td>
@@ -185,7 +185,7 @@ exports[`<EditorNodePropertiesComponent /> renders component 1`] = `
         >
           <img
             alt="Delete"
-            src=""
+            src={Object {}}
           />
         </AccessibleElement>
       </td>
@@ -203,7 +203,7 @@ exports[`<EditorNodePropertiesComponent /> renders component 1`] = `
         >
           <img
             alt="Add"
-            src=""
+            src={Object {}}
           />
            Add Property
         </AccessibleElement>
@@ -317,7 +317,7 @@ exports[`<EditorNodePropertiesComponent /> renders proper unicode 1`] = `
         >
           <img
             alt="Delete"
-            src=""
+            src={Object {}}
           />
         </AccessibleElement>
       </td>
@@ -379,7 +379,7 @@ exports[`<EditorNodePropertiesComponent /> renders proper unicode 1`] = `
         >
           <img
             alt="Delete"
-            src=""
+            src={Object {}}
           />
         </AccessibleElement>
       </td>
@@ -397,7 +397,7 @@ exports[`<EditorNodePropertiesComponent /> renders proper unicode 1`] = `
         >
           <img
             alt="Add"
-            src=""
+            src={Object {}}
           />
            Add Property
         </AccessibleElement>

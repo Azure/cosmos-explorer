@@ -22,7 +22,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="in progress items"
-            src=""
+            src={Object {}}
           />
           <span
             className="numInProgress"
@@ -35,7 +35,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="error items"
-            src=""
+            src={Object {}}
           />
           <span
             className="numErroredItems"
@@ -48,7 +48,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="info items"
-            src=""
+            src={Object {}}
           />
           <span
             className="numInfoItems"
@@ -150,7 +150,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="clear notifications image"
-            src=""
+            src={Object {}}
           />
           Clear Notifications
         </span>
@@ -185,7 +185,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="in progress items"
-            src=""
+            src={Object {}}
           />
           <span
             className="numInProgress"
@@ -198,7 +198,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="error items"
-            src=""
+            src={Object {}}
           />
           <span
             className="numErroredItems"
@@ -211,7 +211,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="info items"
-            src=""
+            src={Object {}}
           />
           <span
             className="numInfoItems"
@@ -315,7 +315,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="clear notifications image"
-            src=""
+            src={Object {}}
           />
           Clear Notifications
         </span>
@@ -330,7 +330,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
           <img
             alt="info"
             className="infoIcon"
-            src=""
+            src={Object {}}
           />
           <span
             className="date"

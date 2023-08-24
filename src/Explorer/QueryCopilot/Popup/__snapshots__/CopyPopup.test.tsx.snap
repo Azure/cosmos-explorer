@@ -40,7 +40,7 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] =
       verticalAlign="center"
     >
       <Image
-        src=""
+        src={Object {}}
         style={
           Object {
             "height": 15,

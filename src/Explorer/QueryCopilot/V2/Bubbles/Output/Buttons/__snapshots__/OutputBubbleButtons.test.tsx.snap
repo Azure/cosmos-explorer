@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Output Bubble Buttons snapshot tests should render 1`] = `
+<Stack
+  horizontal={true}
+>
+  <StackItem
+    style={
+      Object {
+        "paddingTop": "5px",
+      }
+    }
+  >
+    <InsertButton />
+  </StackItem>
+  <StackItem>
+    <CopyButton />
+  </StackItem>
+  <StackItem>
+    <FeedbackButtons />
+  </StackItem>
+  <StackItem>
+    <MoreButton />
+  </StackItem>
+</Stack>
+`;
