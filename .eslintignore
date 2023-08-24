@@ -84,7 +84,6 @@ src/Explorer/Tables/DataTable/DataTableOperationManager.ts
 src/Explorer/Tables/DataTable/DataTableViewModel.ts
 src/Explorer/Tables/DataTable/TableEntityListViewModel.ts
 src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
-src/Explorer/Tables/TableDataClient.ts
 src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
 src/Explorer/Tabs/ConflictsTab.ts
