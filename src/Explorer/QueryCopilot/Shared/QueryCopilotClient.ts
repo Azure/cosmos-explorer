@@ -1,4 +1,8 @@
-import { QueryCopilotSampleContainerSchema, ShortenedQueryCopilotSampleContainerSchema } from "Common/Constants";
+import {
+  PoolIdType,
+  QueryCopilotSampleContainerSchema,
+  ShortenedQueryCopilotSampleContainerSchema,
+} from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
@@ -24,7 +28,7 @@ export const SendQueryRequest = async ({
       .setChatMessages([...useQueryCopilot.getState().chatMessages, { source: 0, message: userPrompt }]);
     try {
       if (useQueryCopilot.getState().shouldAllocateContainer) {
-        await explorer.allocateContainer();
+        await explorer.allocateContainer(PoolIdType.DefaultPoolId);
         useQueryCopilot.getState().setShouldAllocateContainer(false);
       }
 
@@ -98,7 +102,7 @@ export const SubmitFeedback = async ({
       contact: contact || "",
     };
     if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
-      await explorer.allocateContainer();
+      await explorer.allocateContainer(PoolIdType.DefaultPoolId);
       setShouldAllocateContainer(false);
     }
     const serverInfo = useNotebook.getState().notebookServerInfo;

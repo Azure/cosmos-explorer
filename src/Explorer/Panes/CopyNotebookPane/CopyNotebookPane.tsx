@@ -1,12 +1,12 @@
 import { IDropdownOption } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent, useEffect, useState } from "react";
-import { HttpStatusCodes } from "../../../Common/Constants";
+import { HttpStatusCodes, PoolIdType } from "../../../Common/Constants";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import { IPinnedRepo, JunoClient } from "../../../Juno/JunoClient";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import Explorer from "../../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../../Notebook/NotebookContentItem";
 import { useNotebook } from "../../Notebook/useNotebook";
@@ -109,7 +109,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
         };
         isGithubTree = false;
         if (useNotebook.getState().isPhoenixNotebooks) {
-          await container.allocateContainer();
+          await container.allocateContainer(PoolIdType.DefaultPoolId);
         }
         break;
 
