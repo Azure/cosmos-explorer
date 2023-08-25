@@ -11,13 +11,7 @@ import React from "react";
 import { WelcomeSidebarModal } from "../Modal/WelcomeSidebarModal";
 
 export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
-  const {
-    setWasCopilotUsed,
-    showCopilotSidebar,
-    chatMessages,
-    showWelcomeSidebar,
-    isGeneratingQuery,
-  } = useQueryCopilot();
+  const { setWasCopilotUsed, showCopilotSidebar, chatMessages, isGeneratingQuery } = useQueryCopilot();
 
   React.useEffect(() => {
     if (showCopilotSidebar) {
