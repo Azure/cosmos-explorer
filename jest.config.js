@@ -166,7 +166,7 @@ module.exports = {
   transform: {
     "^.+\\.html?$": "html-loader-jest",
     "^.+\\.[t|j]sx?$": "babel-jest",
-    "^.+\\.svg$": "<rootDir>/svgTransform.js"
+    "^.+\\.svg$": "<rootDir>/svgTransform.js",
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
