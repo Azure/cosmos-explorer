@@ -43,6 +43,7 @@ export class JupyterLabAppFactory {
       case "Postgres":
         this.checkShellStarted = this.isPostgresShellStarted;
         break;
+      //CTODO: add vcoremongo case once we know what the returned content will be
     }
   }
 

@@ -4,7 +4,7 @@ import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
 import { AuthType } from "./AuthType";
-import { DatabaseAccount, VCoreMongoDatabaseAccount } from "./Contracts/DataModels";
+import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { Features, extractFeatures } from "./Platform/Hosted/extractFeatures";
 import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constants";
@@ -12,12 +12,12 @@ import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constan
 interface ThroughputDefaults {
   fixed: number;
   unlimited:
-  | number
-  | {
-    collectionThreshold: number;
-    lessThanOrEqualToThreshold: number;
-    greatThanThreshold: number;
-  };
+    | number
+    | {
+        collectionThreshold: number;
+        lessThanOrEqualToThreshold: number;
+        greatThanThreshold: number;
+      };
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;
@@ -39,6 +39,11 @@ export interface PostgresConnectionStrParams {
   nodes: Node[];
   isMarlinServerGroup: boolean;
   isFreeTier: boolean;
+}
+
+export interface VCoreMongoConnectionParams {
+  adminLogin: string;
+  connectionString: string;
 }
 
 interface UserContext {
@@ -71,7 +76,7 @@ interface UserContext {
   readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
-  readonly vcoreMongoDatabaseAccount?: VCoreMongoDatabaseAccount;
+  readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
@@ -165,4 +170,3 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { updateUserContext, userContext };
-

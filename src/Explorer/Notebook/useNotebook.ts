@@ -123,9 +123,8 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       return;
     }
 
-    //CTODO: add exception for VCoreMongo?
     const firstWriteLocation =
-      userContext.apiType === "Postgres"
+      userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo"
         ? databaseAccount?.location
         : databaseAccount?.properties?.writeLocations?.[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
@@ -221,10 +220,10 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     };
     const gitHubNotebooksContentRoot = notebookManager?.gitHubOAuthService?.isLoggedIn()
       ? {
-        name: "GitHub repos",
-        path: "PsuedoDir",
-        type: NotebookContentItemType.Directory,
-      }
+          name: "GitHub repos",
+          path: "PsuedoDir",
+          type: NotebookContentItemType.Directory,
+        }
       : undefined;
 
     set({
@@ -317,9 +316,10 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks === true;
           isPhoenixFeatures =
             isPublicInternetAllowed &&
-            //CTODO: add case for VCoreMongo?
             // phoenix needs to be enabled for Postgres accounts since the PSQL shell requires phoenix containers
-            (userContext.features.phoenixFeatures === true || userContext.apiType === "Postgres");
+            (userContext.features.phoenixFeatures === true ||
+              userContext.apiType === "Postgres" ||
+              userContext.apiType === "VCoreMongo");
         } else {
           isPhoenixNotebooks = isPhoenixFeatures = isPublicInternetAllowed;
         }
