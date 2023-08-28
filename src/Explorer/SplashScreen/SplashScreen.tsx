@@ -166,6 +166,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const mainItems = this.createMainItems();
     return (
       <div className="mainButtonsContainer">
+        {/*CTODO: Add a teaching bubble for vcoremongo?*/}
         {userContext.apiType === "Postgres" &&
           usePostgres.getState().showPostgreTeachingBubble &&
           !usePostgres.getState().showResetPasswordBubble && (
@@ -276,17 +277,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <h1
-                className="title"
-                role="heading"
-                aria-label={title}
-              >
+              <h1 className="title" role="heading" aria-label={title}>
                 {title}
                 <FeaturePanelLauncher />
               </h1>
-              <div className="subtitle">
-                {subtitle}
-              </div>
+              <div className="subtitle">{subtitle}</div>
               {this.getSplashScreenButtons()}
               {useCarousel.getState().showCoachMark && (
                 <Coachmark
@@ -316,7 +311,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </TeachingBubbleContent>
                 </Coachmark>
               )}
-              {userContext.apiType === "Postgres" ? (
+              {userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo" ? (
                 <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 16 }}>
                   <Stack style={{ width: "33%" }}>
                     <Text
@@ -392,16 +387,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
         onClick: () => {
-          switch (userContext.apiType) {
-            case "Postgres":
-              useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-              break;
-            case "VCoreMongo":
-              //CTODO: new kind of tab kind?
-              useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-              break;
-            default:
-              this.container.onNewCollectionClicked({ isQuickstart: true });
+          if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
+            useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+          } else {
+            this.container.onNewCollectionClicked({ isQuickstart: true });
           }
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
@@ -434,6 +423,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           description: "Create a table and interact with data using MongoDB's shell interface",
           onClick: () => this.container.openNotebookTerminal(TerminalKind.VCoreMongo),
         };
+        heroes.push(vcoreMongoBtn);
         break;
       default:
         const newContainerBtn = {
@@ -448,12 +438,16 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         heroes.push(newContainerBtn);
     }
 
+    //CTODO: refactor this. I think it could be just changing icon, title, and description
     if (userContext.apiType === "VCoreMongo") {
       const sampleBtn = {
         iconSrc: ContainersIcon,
         title: "Get started with sample datasets",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        onClick: () => { }
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        onClick: () => {
+          /*CTODO: create a Connect tab for vcoremongo*/
+        },
       };
       heroes.push(sampleBtn);
     } else {
@@ -782,6 +776,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private getNextStepItems(): JSX.Element {
+    //CTODO: get list of items for vcoremongo from Gahl
     const items: { link: string; title: string; description: string }[] = [
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2208312",
@@ -818,6 +813,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private getTipsAndLearnMoreItems(): JSX.Element {
+    //CTODO: get list of items for vcoremongo from Gahl
     const items: { link: string; title: string; description: string }[] = [
       {
         link: "https://go.microsoft.com/fwlink/?linkid=2207226",

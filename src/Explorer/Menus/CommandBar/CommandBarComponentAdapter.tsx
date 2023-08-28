@@ -5,8 +5,8 @@
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import * as React from "react";
 import { userContext } from "UserContext";
+import * as React from "react";
 import create, { UseStore } from "zustand";
 import { ConnectionStatusType, StyleConstants } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
@@ -34,8 +34,13 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const buttons = useCommandBar((state) => state.contextButtons);
   const backgroundColor = StyleConstants.BaseLight;
 
-  if (userContext.apiType === "Postgres") {
-    const buttons = CommandBarComponentButtonFactory.createPostgreButtons(container);
+  if (
+    userContext.apiType === "Postgres" ||
+    userContext.apiType === "VCoreMongo"
+  ) {
+    const buttons = userContext.apiType === "Postgres"
+      ? CommandBarComponentButtonFactory.createPostgreButtons(container)
+      : CommandBarComponentButtonFactory.createVCoreMongoButtons(container);
     return (
       <div className="commandBarContainer">
         <FluentCommandBar

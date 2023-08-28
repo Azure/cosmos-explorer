@@ -14,6 +14,7 @@ export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
   databaseAccount: DataModels.DatabaseAccount;
   tabId: string;
+  username?: string;
 }
 
 export class NotebookTerminalComponent extends React.Component<NotebookTerminalComponentProps> {
@@ -50,7 +51,7 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       return;
     }
 
-    const props: TerminalProps = {
+    let props: TerminalProps = {
       terminalEndpoint: this.tryGetTerminalEndpoint(),
       notebookServerEndpoint: this.props.notebookServerInfo?.notebookServerEndpoint,
       authToken: this.props.notebookServerInfo?.authToken,
@@ -60,6 +61,13 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       databaseAccount: userContext.databaseAccount,
       tabId: this.props.tabId,
     };
+
+    if (this.props.username) {
+      props = {
+        ...props,
+        username: this.props.username,
+      };
+    }
 
     postRobot.send(this.terminalWindow, "props", props, {
       domain: window.location.origin,
@@ -78,6 +86,8 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       terminalEndpoint = this.props.databaseAccount?.properties.cassandraEndpoint;
     } else if (StringUtils.endsWith(notebookServerEndpoint, "postgresql")) {
       return this.props.databaseAccount?.properties.postgresqlEndpoint;
+    } else if (StringUtils.endsWith(notebookServerEndpoint, "mongovcore")) {
+      return this.props.databaseAccount?.properties.vcoreMongoEndpoint;
     }
 
     if (terminalEndpoint) {
