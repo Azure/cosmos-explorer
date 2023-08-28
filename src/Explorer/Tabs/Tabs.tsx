@@ -8,6 +8,7 @@ import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
+import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -252,11 +253,16 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
   switch (activeReactTab) {
     case ReactTabKind.Connect:
+      //CTODO: add vcoremongo connect tab
       return userContext.apiType === "Postgres" ? <PostgresConnectTab /> : <ConnectTab />;
     case ReactTabKind.Home:
       return <SplashScreen explorer={explorer} />;
     case ReactTabKind.Quickstart:
-      return <QuickstartTab explorer={explorer} />;
+      return userContext.apiType === "VCoreMongo" ? (
+        <VcoreMongoQuickstartTab explorer={explorer} />
+      ) : (
+        <QuickstartTab explorer={explorer} />
+      );
     case ReactTabKind.QueryCopilot:
       return <QueryCopilotTab explorer={explorer} />;
     default:

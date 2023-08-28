@@ -105,6 +105,7 @@ async function configureHosted(): Promise<Explorer> {
       }
 
       if (event.data?.type === MessageTypes.CloseTab) {
+        //CTODO: make case for vcoremongo
         if (event.data?.data?.tabId === "QuickstartPSQLShell") {
           useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
         } else {
@@ -300,6 +301,7 @@ async function configurePortal(): Promise<Explorer> {
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         } else if (event.data?.type === MessageTypes.CloseTab) {
+          //CTODO: make case for vcoremongo
           if (event.data?.data?.tabId === "QuickstartPSQLShell") {
             useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
           } else {
@@ -373,10 +375,10 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   }
 
   if (inputs.isVCoreMongoAccount) {
-    if (inputs.vcoreMongoDatabaseAccount) {
+    if (inputs.connectionStringParams) {
       updateUserContext({
         apiType: "VCoreMongo",
-        vcoreMongoDatabaseAccount: inputs.vcoreMongoDatabaseAccount,
+        vcoreMongoConnectionParams: inputs.connectionStringParams,
       });
     }
   }

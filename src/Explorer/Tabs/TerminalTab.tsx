@@ -1,9 +1,9 @@
 import { Spinner, SpinnerSize } from "@fluentui/react";
 import { configContext } from "ConfigContext";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
+import { armRequest } from "Utils/arm/request";
 import * as ko from "knockout";
 import * as React from "react";
-import { armRequest } from "Utils/arm/request";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -115,6 +115,10 @@ export default class TerminalTab extends TabsBase {
         endpointSuffix = "postgresql";
         break;
 
+      case ViewModels.TerminalKind.VCoreMongo:
+        endpointSuffix = "mongovcore";
+        break;
+
       default:
         throw new Error(`Terminal kind: ${options.kind} not supported`);
     }
@@ -136,7 +140,7 @@ export default class TerminalTab extends TabsBase {
       method: "GET",
       apiVersion: "2022-11-08",
     });
-    const firewallRules: DataModels.PostgresFirewallRule[] = response?.data?.value || response?.value || [];
+    const firewallRules: DataModels.FirewallRule[] = response?.data?.value || response?.value || [];
     const isEnabled = firewallRules.some(
       (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"
     );
