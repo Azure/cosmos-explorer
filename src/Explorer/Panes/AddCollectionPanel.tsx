@@ -1426,9 +1426,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
       useSidePanel.getState().closeSidePanel();
       // open NPS Survey Dialog once the collection is created
-      if (userContext.features.enableNPSSurvey) {
         this.props.explorer.openNPSSurveyDialog();
-      }
+      
     } catch (error) {
       const errorMessage: string = getErrorMessage(error);
       this.setState({ isExecuting: false, errorMessage, showErrorDetails: true });
