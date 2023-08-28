@@ -27,16 +27,22 @@ export const SendQueryRequest = async ({
       .getState()
       .setChatMessages([...useQueryCopilot.getState().chatMessages, { source: 0, message: userPrompt }]);
     try {
-      if (useQueryCopilot.getState().shouldAllocateContainer) {
+      if (useQueryCopilot.getState().shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
         await explorer.allocateContainer(PoolIdType.DefaultPoolId);
         useQueryCopilot.getState().setShouldAllocateContainer(false);
       }
 
       useQueryCopilot.getState().refreshCorrelationId();
       const serverInfo = useNotebook.getState().notebookServerInfo;
-      const queryUri = createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+
+      const queryUri = userContext.features.enableCopilotPhoenixGateaway
+        ? createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery")
+        : createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery");
+
       const payload = {
-        containerSchema: ShortenedQueryCopilotSampleContainerSchema,
+        containerSchema: userContext.features.enableCopilotFullSchema
+          ? QueryCopilotSampleContainerSchema
+          : ShortenedQueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
       };
       const response = await fetch(queryUri, {
