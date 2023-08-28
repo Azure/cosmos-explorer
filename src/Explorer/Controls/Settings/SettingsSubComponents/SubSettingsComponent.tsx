@@ -34,6 +34,8 @@ export interface SubSettingsComponentProps {
   timeToLiveSeconds: number;
   timeToLiveSecondsBaseline: number;
   onTimeToLiveSecondsChange: (newTimeToLiveSeconds: number) => void;
+  displayedTtlSeconds: string;
+  onDisplayedTtlSecondsChange: (newDisplayedTtlSeconds: string) => void;
 
   geospatialConfigType: GeospatialConfigType;
   geospatialConfigTypeBaseline: GeospatialConfigType;
@@ -56,11 +58,7 @@ export interface SubSettingsComponentProps {
   onSubSettingsDiscardableChange: (isSubSettingsDiscardable: boolean) => void;
 }
 
-type SubSettingsComponentState = {
-  displayedTtlValue: string;
-};
-
-export class SubSettingsComponent extends React.Component<SubSettingsComponentProps, SubSettingsComponentState> {
+export class SubSettingsComponent extends React.Component<SubSettingsComponentProps> {
   private shouldCheckComponentIsDirty = true;
   private geospatialVisible: boolean;
   private partitionKeyValue: string;
@@ -71,24 +69,17 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.geospatialVisible = userContext.apiType === "SQL";
     this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
     this.partitionKeyValue = this.getPartitionKeyValue();
-    this.state = {
-      displayedTtlValue: ''
-    };
   }
 
   componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  // componentDidUpdate(): void {
-  //   this.onComponentUpdate();
-  // }
-
-  componentDidUpdate(prevProps: SubSettingsComponentProps) {
-    this.onComponentUpdate();
-    if ((prevProps.timeToLive === TtlType.Off || prevProps.timeToLive === TtlType.OnNoDefault) && this.props.timeToLive === TtlType.On && !isDirty(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)) {
-        this.setState({ displayedTtlValue: '' });
+  componentDidUpdate(prevProps: SubSettingsComponentProps) {    
+    if ((prevProps.timeToLive === TtlType.Off || prevProps.timeToLive === TtlType.OnNoDefault) && this.props.timeToLive === TtlType.On && this.props.timeToLiveBaseline !== TtlType.On) {
+        this.props.onDisplayedTtlSecondsChange("");
     }
+    this.onComponentUpdate();
   }
 
   private onComponentUpdate = (): void => {
@@ -107,7 +98,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   public IsComponentDirty = (): IsComponentDirtyResult => {
     if (
       (this.props.timeToLive === TtlType.On && !this.props.timeToLiveSeconds) ||
-      (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds)
+      (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds) ||
+      (this.props.timeToLive === TtlType.On && this.props.displayedTtlSeconds === '')
     ) {
       return { isSaveable: false, isDiscardable: true };
     } else if (
@@ -152,7 +144,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     newValue?: string
   ): void => {
     const newTimeToLiveSeconds = getSanitizedInputValue(newValue, Int32.Max);
-    this.setState({ displayedTtlValue: newTimeToLiveSeconds.toString() });
+    this.props.onDisplayedTtlSecondsChange(newTimeToLiveSeconds.toString());
     this.props.onTimeToLiveSecondsChange(newTimeToLiveSeconds);
   };
 
@@ -220,7 +212,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
               required
               min={1}
               max={Int32.Max}
-              value={this.state.displayedTtlValue}
+              value={this.props.displayedTtlSeconds}
               onChange={this.onTimeToLiveSecondsChange}
               suffix="second(s)"
             />

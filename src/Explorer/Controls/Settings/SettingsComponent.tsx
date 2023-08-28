@@ -5,18 +5,18 @@ import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
@@ -37,15 +37,15 @@ import {
   AddMongoIndexProps,
   ChangeFeedPolicyState,
   GeospatialConfigType,
+  MongoIndexTypes,
+  SettingsV2TabTypes,
+  TtlType,
   getMongoNotification,
   getTabTitle,
   hasDatabaseSharedThroughput,
   isDirty,
-  MongoIndexTypes,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
-  SettingsV2TabTypes,
-  TtlType,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -78,6 +78,8 @@ export interface SettingsComponentState {
   timeToLiveBaseline: TtlType;
   timeToLiveSeconds: number;
   timeToLiveSecondsBaseline: number;
+  displayedTtlSeconds: string;
+  displayedTtlSecondsBaseline: string;
   geospatialConfigType: GeospatialConfigType;
   geospatialConfigTypeBaseline: GeospatialConfigType;
   analyticalStorageTtlSelection: TtlType;
@@ -164,6 +166,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       timeToLiveBaseline: undefined,
       timeToLiveSeconds: undefined,
       timeToLiveSecondsBaseline: undefined,
+      displayedTtlSeconds: undefined,
+      displayedTtlSecondsBaseline: undefined,
       geospatialConfigType: undefined,
       geospatialConfigTypeBaseline: undefined,
       analyticalStorageTtlSelection: undefined,
@@ -369,6 +373,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       throughput: this.state.throughputBaseline,
       timeToLive: this.state.timeToLiveBaseline,
       timeToLiveSeconds: this.state.timeToLiveSecondsBaseline,
+      displayedTtlSeconds: this.state.displayedTtlSecondsBaseline,
       geospatialConfigType: this.state.geospatialConfigTypeBaseline,
       indexingPolicyContent: this.state.indexingPolicyContentBaseline,
       indexesToAdd: [],
@@ -478,6 +483,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onTimeToLiveSecondsChange = (newTimeToLiveSeconds: number): void =>
     this.setState({ timeToLiveSeconds: newTimeToLiveSeconds });
+
+  private onDisplayedTtlChange = (newDisplayedTtlSeconds: string): void =>
+    this.setState({ displayedTtlSeconds: newDisplayedTtlSeconds });
 
   private onGeoSpatialConfigTypeChange = (newGeoSpatialConfigType: GeospatialConfigType): void =>
     this.setState({ geospatialConfigType: newGeoSpatialConfigType });
@@ -608,6 +616,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         break;
     }
 
+    let displayedTtlSeconds: string =  timeToLive === TtlType.On ? timeToLiveSeconds.toString() : "";
+
     let analyticalStorageTtlSelection: TtlType;
     let analyticalStorageTtlSeconds: number;
     if (this.isAnalyticalStorageEnabled) {
@@ -645,6 +655,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       timeToLiveBaseline: timeToLive,
       timeToLiveSeconds: timeToLiveSeconds,
       timeToLiveSecondsBaseline: timeToLiveSeconds,
+      displayedTtlSeconds: displayedTtlSeconds,
+      displayedTtlSecondsBaseline: displayedTtlSeconds,
       analyticalStorageTtlSelection: analyticalStorageTtlSelection,
       analyticalStorageTtlSelectionBaseline: analyticalStorageTtlSelection,
       analyticalStorageTtlSeconds: analyticalStorageTtlSeconds,
@@ -986,6 +998,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       timeToLiveSeconds: this.state.timeToLiveSeconds,
       timeToLiveSecondsBaseline: this.state.timeToLiveSecondsBaseline,
       onTimeToLiveSecondsChange: this.onTimeToLiveSecondsChange,
+      displayedTtlSeconds: this.state.displayedTtlSeconds,
+      onDisplayedTtlSecondsChange: this.onDisplayedTtlChange,
       geospatialConfigType: this.state.geospatialConfigType,
       geospatialConfigTypeBaseline: this.state.geospatialConfigTypeBaseline,
       onGeoSpatialConfigTypeChange: this.onGeoSpatialConfigTypeChange,
