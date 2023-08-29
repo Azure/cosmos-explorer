@@ -1,5 +1,6 @@
 import { Stack } from "@fluentui/react";
 import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { ExplanationBubble } from "Explorer/QueryCopilot/V2/Bubbles/Explanation/ExplanationBubble";
 import { OutputBubble } from "Explorer/QueryCopilot/V2/Bubbles/Output/OutputBubble";
 import { RetrievingBubble } from "Explorer/QueryCopilot/V2/Bubbles/Retriveing/RetrievingBubble";
 import { SampleBubble } from "Explorer/QueryCopilot/V2/Bubbles/Sample/SampleBubble";
@@ -11,7 +12,13 @@ import React from "react";
 import { WelcomeSidebarModal } from "../Modal/WelcomeSidebarModal";
 
 export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
-  const { setWasCopilotUsed, showCopilotSidebar, chatMessages, isGeneratingQuery } = useQueryCopilot();
+  const {
+    setWasCopilotUsed,
+    showCopilotSidebar,
+    chatMessages,
+    isGeneratingQuery,
+    showWelcomeSidebar,
+  } = useQueryCopilot();
 
   React.useEffect(() => {
     if (showCopilotSidebar) {
@@ -22,36 +29,60 @@ export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: Q
   return (
     <Stack style={{ width: "100%", height: "100%", backgroundColor: "#FAFAFA" }}>
       <Header />
-      <WelcomeSidebarModal />
-      <Stack
-        style={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflowY: "auto",
-        }}
-      >
-        <WelcomeBubble />
-        {chatMessages.map((message, index) => (
+      {showWelcomeSidebar ? (
+        <WelcomeSidebarModal />
+      ) : (
+        <>
           <Stack
-            key={index}
-            horizontalAlign="center"
-            tokens={{ padding: 8, childrenGap: 8 }}
             style={{
-              backgroundColor: "#E0E7FF",
-              borderRadius: "8px",
-              margin: "5px 10px",
-              textAlign: "start",
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              overflowY: "auto",
             }}
           >
-            {message}
+            <WelcomeBubble />
+            {chatMessages.map((message, index) =>
+              message.source === 0 ? (
+                <Stack
+                  key={index}
+                  horizontalAlign="center"
+                  tokens={{ padding: 8, childrenGap: 8 }}
+                  style={{
+                    backgroundColor: "#E0E7FF",
+                    borderRadius: "8px",
+                    margin: "5px 10px",
+                    textAlign: "start",
+                  }}
+                >
+                  {message.message}
+                </Stack>
+              ) : (
+                // This part should be wired with OutputBubble
+                <Stack
+                  key={index}
+                  horizontalAlign="center"
+                  tokens={{ padding: 8, childrenGap: 8 }}
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: "8px",
+                    margin: "5px 10px",
+                    textAlign: "start",
+                  }}
+                >
+                  {message.message}
+                </Stack>
+              )
+            )}
+            <OutputBubble />
+            <RetrievingBubble />
+            <ExplanationBubble />
+
+            {chatMessages.length === 0 && !isGeneratingQuery && <SampleBubble />}
           </Stack>
-        ))}
-        <OutputBubble />
-        <RetrievingBubble />
-        {chatMessages.length === 0 && !isGeneratingQuery && <SampleBubble />}
-      </Stack>
-      <Footer explorer={explorer} />
+          <Footer explorer={explorer} />
+        </>
+      )}
     </Stack>
   );
 };
