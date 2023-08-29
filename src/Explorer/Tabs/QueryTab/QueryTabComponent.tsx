@@ -76,6 +76,7 @@ interface IQueryTabStates {
   isExecutionError: boolean;
   isExecuting: boolean;
   showCopilotSidebar: boolean;
+  queryCopilotGeneratedQuery: string;
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
@@ -101,6 +102,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
       showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
+      queryCopilotGeneratedQuery: useQueryCopilot.getState().query,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -334,6 +336,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   public onChangeContent(newContent: string): void {
     this.setState({
       sqlQueryEditorContent: newContent,
+      queryCopilotGeneratedQuery: "",
     });
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
@@ -365,12 +368,23 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
+  public setEditorContent(): string {
+    if (this.state.queryCopilotGeneratedQuery) {
+      return this.state.queryCopilotGeneratedQuery;
+    }
+
+    return this.state.sqlQueryEditorContent;
+  }
+
   private unsubscribeCopilotSidebar: () => void;
 
   componentDidMount(): void {
     this.unsubscribeCopilotSidebar = useQueryCopilot.subscribe((state: QueryCopilotState) => {
       if (this.state.showCopilotSidebar !== state.showCopilotSidebar) {
         this.setState({ showCopilotSidebar: state.showCopilotSidebar });
+      }
+      if (this.state.queryCopilotGeneratedQuery !== state.query) {
+        this.setState({ queryCopilotGeneratedQuery: state.query });
       }
     });
 
@@ -393,7 +407,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 <div className="queryEditor" style={{ height: "100%" }}>
                   <EditorReact
                     language={"sql"}
-                    content={this.state.sqlQueryEditorContent}
+                    content={this.setEditorContent()}
                     isReadOnly={false}
                     ariaLabel={"Editing Query"}
                     lineNumbers={"on"}

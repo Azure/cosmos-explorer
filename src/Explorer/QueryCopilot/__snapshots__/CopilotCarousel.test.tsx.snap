@@ -74,7 +74,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
         To generate queries , just describe the query you want and copilot will generate the query for you.Watch this video to learn more about how to use copilot.
       </Text>
       <Image
-        src=""
+        src={Object {}}
         style={
           Object {
             "margin": "16px auto",

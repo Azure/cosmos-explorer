@@ -20,7 +20,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
         >
           <StackItem>
             <Image
-              src=""
+              src={Object {}}
             />
           </StackItem>
         </Stack>
@@ -84,7 +84,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
               className="imageTextPadding"
             >
               <Image
-                src=""
+                src={Object {}}
               />
             </StackItem>
             <StackItem
@@ -120,7 +120,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
               className="imageTextPadding"
             >
               <Image
-                src=""
+                src={Object {}}
               />
             </StackItem>
             <StackItem
@@ -156,7 +156,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
               className="imageTextPadding"
             >
               <Image
-                src=""
+                src={Object {}}
               />
             </StackItem>
             <StackItem
