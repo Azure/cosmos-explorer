@@ -1,0 +1,666 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Feedback buttons snapshot tests should click dislike and show popup 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn16"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn17"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should click like and dismiss callout 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn2"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn3"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should click like and show callout 1`] = `
+<Stack
+  horizontal={true}
+>
+  <Callout
+    directionalHint={1}
+    onDismiss={[Function]}
+    role="dialog"
+    style={
+      Object {
+        "borderRadius": "4px",
+        "padding": "5px 12px 5px 12px",
+      }
+    }
+    styles={
+      Object {
+        "beakCurtain": Object {
+          "borderRadius": "4px",
+        },
+        "root": Object {
+          "borderRadius": "4px",
+        },
+      }
+    }
+    target="#likeBtn0"
+  >
+    <Text>
+       
+      <Text>
+        Thank you. Need to give
+         
+        <StyledLinkBase
+          onClick={[Function]}
+        >
+          more feedback?
+        </StyledLinkBase>
+      </Text>
+    </Text>
+  </Callout>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn0"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn1"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should click like and submit feedback 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn4"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn5"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should dobule click on dislike 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn26"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn27"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should dobule click on like 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn14"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn15"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over dislike 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn18"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeHover",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn19"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over dislike and click 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn24"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn25"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over like 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeHover",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn6"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn7"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over like and click 1`] = `
+<Stack
+  horizontal={true}
+>
+  <Callout
+    directionalHint={1}
+    onDismiss={[Function]}
+    role="dialog"
+    style={
+      Object {
+        "borderRadius": "4px",
+        "padding": "5px 12px 5px 12px",
+      }
+    }
+    styles={
+      Object {
+        "beakCurtain": Object {
+          "borderRadius": "4px",
+        },
+        "root": Object {
+          "borderRadius": "4px",
+        },
+      }
+    }
+    target="#likeBtn12"
+  >
+    <Text>
+       
+      <Text>
+        Thank you. Need to give
+         
+        <StyledLinkBase
+          onClick={[Function]}
+        >
+          more feedback?
+        </StyledLinkBase>
+      </Text>
+    </Text>
+  </Callout>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn12"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn13"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over pressed dislike and leave 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn22"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn23"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over pressed like and leave 1`] = `
+<Stack
+  horizontal={true}
+>
+  <Callout
+    directionalHint={1}
+    onDismiss={[Function]}
+    role="dialog"
+    style={
+      Object {
+        "borderRadius": "4px",
+        "padding": "5px 12px 5px 12px",
+      }
+    }
+    styles={
+      Object {
+        "beakCurtain": Object {
+          "borderRadius": "4px",
+        },
+        "root": Object {
+          "borderRadius": "4px",
+        },
+      }
+    }
+    target="#likeBtn10"
+  >
+    <Text>
+       
+      <Text>
+        Thank you. Need to give
+         
+        <StyledLinkBase
+          onClick={[Function]}
+        >
+          more feedback?
+        </StyledLinkBase>
+      </Text>
+    </Text>
+  </Callout>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikePressed",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn10"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn11"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over rest dislike and leave 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn20"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn21"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Feedback buttons snapshot tests should hover over rest like and leave 1`] = `
+<Stack
+  horizontal={true}
+>
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+        },
+      }
+    }
+    id="likeBtn8"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+  <CustomizedIconButton
+    iconProps={
+      Object {
+        "imageProps": Object {
+          "src": "LikeRest",
+        },
+        "style": Object {
+          "minHeight": "18px",
+          "transform": "rotate(180deg)",
+        },
+      }
+    }
+    id="dislikeBtn9"
+    onClick={[Function]}
+    onMouseLeave={[Function]}
+    onMouseOver={[Function]}
+  />
+</Stack>
+`;

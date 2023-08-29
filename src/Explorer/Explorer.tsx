@@ -385,7 +385,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public async allocateContainer(): Promise<void> {
+  public async allocateContainer(poolId: PoolIdType): Promise<void> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     const isAllocating = useNotebook.getState().isAllocating;
     if (
@@ -395,7 +395,7 @@ export default class Explorer {
     ) {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
-        poolId: PoolIdType.QueryCopilot,
+        poolId: poolId === PoolIdType.DefaultPoolId ? undefined : poolId,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
@@ -755,7 +755,7 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
     if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer();
+      await this.allocateContainer(PoolIdType.DefaultPoolId);
     }
 
     const notebookTabs = useTabs
@@ -980,7 +980,7 @@ export default class Explorer {
     }
     if (useNotebook.getState().isPhoenixNotebooks) {
       if (isGithubTree) {
-        await this.allocateContainer();
+        await this.allocateContainer(PoolIdType.DefaultPoolId);
         parent = parent || this.resourceTree.myNotebooksContentRoot;
         this.createNewNoteBook(parent, isGithubTree);
       } else {
@@ -989,7 +989,7 @@ export default class Explorer {
           undefined,
           "Create",
           async () => {
-            await this.allocateContainer();
+            await this.allocateContainer(PoolIdType.DefaultPoolId);
             parent = parent || this.resourceTree.myNotebooksContentRoot;
             this.createNewNoteBook(parent, isGithubTree);
           },
@@ -1068,7 +1068,7 @@ export default class Explorer {
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
     if (useNotebook.getState().isPhoenixFeatures) {
-      await this.allocateContainer();
+      await this.allocateContainer(PoolIdType.DefaultPoolId);
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
         this.connectToNotebookTerminal(kind);
@@ -1212,7 +1212,7 @@ export default class Explorer {
       await useNotebook.getState().getPhoenixStatus();
     }
     if (useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer();
+      await this.allocateContainer(PoolIdType.DefaultPoolId);
     }
 
     // We still use github urls like https://github.com/Azure-Samples/cosmos-notebooks/blob/master/CSharp_quickstarts/GettingStarted_CSharp.ipynb
@@ -1249,7 +1249,7 @@ export default class Explorer {
         undefined,
         "Upload",
         async () => {
-          await this.allocateContainer();
+          await this.allocateContainer(PoolIdType.DefaultPoolId);
           parent = parent || this.resourceTree.myNotebooksContentRoot;
           this.uploadFilePanel(parent);
         },

@@ -87,7 +87,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src=""
+          src={Object {}}
           style={
             Object {
               "height": 25,
@@ -191,7 +191,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src=""
+          src={Object {}}
           style={
             Object {
               "height": 25,
@@ -295,7 +295,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src=""
+          src={Object {}}
           style={
             Object {
               "height": 25,
@@ -477,7 +477,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src=""
+          src={Object {}}
           style={
             Object {
               "height": 25,
@@ -581,7 +581,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src=""
+          src={Object {}}
           style={
             Object {
               "height": 25,
@@ -685,7 +685,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src=""
+          src={Object {}}
           style={
             Object {
               "height": 25,

@@ -5,10 +5,10 @@
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import * as React from "react";
 import { userContext } from "UserContext";
+import * as React from "react";
 import create, { UseStore } from "zustand";
-import { ConnectionStatusType, StyleConstants } from "../../../Common/Constants";
+import { ConnectionStatusType, PoolIdType, StyleConstants } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -76,7 +76,9 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     (useNotebook.getState().isPhoenixNotebooks || useNotebook.getState().isPhoenixFeatures) &&
     connectionInfo?.status !== ConnectionStatusType.Connect
   ) {
-    uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
+    uiFabricControlButtons.unshift(
+      CommandBarUtil.createConnectionStatus(container, PoolIdType.DefaultPoolId, "connectionStatus")
+    );
   }
 
   return (

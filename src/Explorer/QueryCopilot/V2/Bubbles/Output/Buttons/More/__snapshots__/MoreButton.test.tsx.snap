@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`More button snapshot tests should render 1`] = `
+<CustomizedIconButton
+  iconProps={
+    Object {
+      "iconName": "More",
+    }
+  }
+  menuIconProps={
+    Object {
+      "hidden": true,
+    }
+  }
+  menuProps={
+    Object {
+      "calloutProps": Object {
+        "styles": Object {
+          "calloutMain": Object {
+            "borderRadius": "4px",
+          },
+          "root": Object {
+            "borderRadius": "4px",
+          },
+        },
+      },
+      "directionalHint": 2,
+      "items": Array [
+        Object {
+          "iconProps": Object {
+            "imageProps": Object {
+              "src": Object {},
+            },
+          },
+          "key": "regenerate",
+          "text": "Regenerate code",
+        },
+        Object {
+          "iconProps": Object {
+            "imageProps": Object {
+              "src": Object {},
+            },
+          },
+          "key": "explain",
+          "text": "Explain code",
+        },
+        Object {
+          "iconProps": Object {
+            "imageProps": Object {
+              "src": Object {},
+            },
+          },
+          "key": "optimize",
+          "text": "Optimize",
+        },
+        Object {
+          "iconProps": Object {
+            "imageProps": Object {
+              "src": Object {},
+            },
+          },
+          "key": "simplify",
+          "text": "Simplify",
+        },
+      ],
+    }
+  }
+/>
+`;

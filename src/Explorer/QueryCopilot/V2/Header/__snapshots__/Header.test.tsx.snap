@@ -18,7 +18,7 @@ exports[`Header snapshot test should close on button click  1`] = `
     verticalAlign="center"
   >
     <Image
-      src=""
+      src={Object {}}
     />
     <Text
       style={

@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Output Bubble snapshot tests should render and update height 1`] = `
+<Stack
+  id="outputBubble"
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "white",
+      "borderRadius": "8px",
+      "display": "flex",
+      "margin": "10px",
+      "padding": "10px",
+    }
+  }
+  tokens={
+    Object {
+      "childrenGap": 8,
+      "padding": 8,
+    }
+  }
+>
+  <StackItem
+    style={
+      Object {
+        "alignSelf": "flex-start",
+        "paddingLeft": "2px",
+      }
+    }
+  >
+    test comments
+  </StackItem>
+  <StackItem
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "flexGrow": 4,
+      }
+    }
+  >
+    <EditorReact
+      ariaLabel="AI Response"
+      content="test query"
+      isReadOnly={true}
+      language="sql"
+      lineDecorationsWidth={0}
+      lineNumbers="on"
+      lineNumbersMinChars={2}
+      minimap={
+        Object {
+          "enabled": false,
+        }
+      }
+      monacoContainerStyles={
+        Object {
+          "borderRadius": "4px",
+          "height": "NaNpx",
+        }
+      }
+      scrollBeyondLastLine={false}
+      wordWrap="on"
+    />
+  </StackItem>
+  <StackItem
+    style={
+      Object {
+        "alignSelf": "flex-start",
+      }
+    }
+  >
+    <OutputBubbleButtons />
+  </StackItem>
+  <StackItem>
+    <Text
+      style={
+        Object {
+          "fontSize": "10px",
+          "fontWeight": 400,
+          "lineHeight": "14px",
+        }
+      }
+    >
+      AI-generated content may be incorrect
+    </Text>
+  </StackItem>
+</Stack>
+`;

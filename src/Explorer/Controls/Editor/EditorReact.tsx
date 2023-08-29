@@ -13,8 +13,14 @@ export interface EditorReactProps {
   ariaLabel: string; // Sets what will be read to the user to define the control
   onContentSelected?: (selectedContent: string) => void; // Called when text is selected
   onContentChanged?: (newContent: string) => void; // Called when text is changed
-  lineNumbers?: monaco.editor.IEditorOptions["lineNumbers"];
   theme?: string; // Monaco editor theme
+  wordWrap?: monaco.editor.IEditorOptions["wordWrap"];
+  lineNumbers?: monaco.editor.IEditorOptions["lineNumbers"];
+  lineNumbersMinChars?: monaco.editor.IEditorOptions["lineNumbersMinChars"];
+  lineDecorationsWidth?: monaco.editor.IEditorOptions["lineDecorationsWidth"];
+  minimap?: monaco.editor.IEditorOptions["minimap"];
+  scrollBeyondLastLine?: monaco.editor.IEditorOptions["scrollBeyondLastLine"];
+  monacoContainerStyles?: React.CSSProperties;
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
@@ -54,7 +60,11 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     return (
       <React.Fragment>
         {!this.state.showEditor && <Spinner size={SpinnerSize.large} className="spinner" />}
-        <div className="jsonEditor" ref={(elt: HTMLElement) => this.setRef(elt)} />
+        <div
+          className="jsonEditor"
+          style={this.props.monacoContainerStyles}
+          ref={(elt: HTMLElement) => this.setRef(elt)}
+        />
       </React.Fragment>
     );
   }
@@ -84,14 +94,19 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
    */
   private async createEditor(createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
     const options: monaco.editor.IEditorConstructionOptions = {
-      value: this.props.content,
       language: this.props.language,
+      value: this.props.content,
       readOnly: this.props.isReadOnly,
-      lineNumbers: this.props.lineNumbers || "off",
-      fontSize: 12,
       ariaLabel: this.props.ariaLabel,
-      theme: this.props.theme,
+      fontSize: 12,
       automaticLayout: true,
+      theme: this.props.theme,
+      wordWrap: this.props.wordWrap || "off",
+      lineNumbers: this.props.lineNumbers || "off",
+      lineNumbersMinChars: this.props.lineNumbersMinChars,
+      lineDecorationsWidth: this.props.lineDecorationsWidth,
+      minimap: this.props.minimap,
+      scrollBeyondLastLine: this.props.scrollBeyondLastLine,
     };
 
     this.rootNode.innerHTML = "";
