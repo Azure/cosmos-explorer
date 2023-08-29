@@ -330,10 +330,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     return [executeQueryBtn, saveQueryBtn];
   };
   const showTeachingBubble = (): void => {
-    const shouldShowTeachingBubble = !inputEdited.current && userPrompt.trim() === "";
-    if (shouldShowTeachingBubble) {
+    if (!inputEdited.current) {
       setTimeout(() => {
-        if (shouldShowTeachingBubble) {
+        if (!inputEdited.current) {
           toggleCopilotTeachingBubbleVisible();
           inputEdited.current = true;
         }
@@ -380,6 +379,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                inputEdited.current = true;
                 startGenerateQueryProcess();
               }
             }}
@@ -450,6 +450,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
                         onClick={() => {
                           setUserPrompt(history);
                           setShowSamplePrompts(false);
+                          inputEdited.current = true;
                         }}
                         onRenderIcon={() => <Image src={RecentIcon} />}
                         styles={promptStyles}
@@ -479,6 +480,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
                         onClick={() => {
                           setUserPrompt(prompt.text);
                           setShowSamplePrompts(false);
+                          inputEdited.current = true;
                         }}
                         onRenderIcon={() => <Image src={HintIcon} />}
                         styles={promptStyles}
