@@ -75,9 +75,13 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.onComponentUpdate();
   }
 
-  componentDidUpdate(prevProps: SubSettingsComponentProps) {    
-    if ((prevProps.timeToLive === TtlType.Off || prevProps.timeToLive === TtlType.OnNoDefault) && this.props.timeToLive === TtlType.On && this.props.timeToLiveBaseline !== TtlType.On) {
-        this.props.onDisplayedTtlSecondsChange("");
+  componentDidUpdate(prevProps: SubSettingsComponentProps) {
+    if (
+      (prevProps.timeToLive === TtlType.Off || prevProps.timeToLive === TtlType.OnNoDefault) &&
+      this.props.timeToLive === TtlType.On &&
+      this.props.timeToLiveBaseline !== TtlType.On
+    ) {
+      this.props.onDisplayedTtlSecondsChange("");
     }
     this.onComponentUpdate();
   }
@@ -99,7 +103,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     if (
       (this.props.timeToLive === TtlType.On && !this.props.timeToLiveSeconds) ||
       (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds) ||
-      (this.props.timeToLive === TtlType.On && this.props.displayedTtlSeconds === '')
+      (this.props.timeToLive === TtlType.On && this.props.displayedTtlSeconds === "")
     ) {
       return { isSaveable: false, isDiscardable: true };
     } else if (

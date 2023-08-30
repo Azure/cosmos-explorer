@@ -616,7 +616,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         break;
     }
 
-    let displayedTtlSeconds: string =  timeToLive === TtlType.On ? timeToLiveSeconds.toString() : "";
+    let displayedTtlSeconds: string = timeToLive === TtlType.On ? timeToLiveSeconds.toString() : "";
 
     let analyticalStorageTtlSelection: TtlType;
     let analyticalStorageTtlSeconds: number;
