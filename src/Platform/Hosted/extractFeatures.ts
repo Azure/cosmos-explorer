@@ -110,7 +110,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enablePriorityBasedThrottling: "true" === get("enableprioritybasedthrottling"),
     enableCopilot: "true" === get("enablecopilot"),
     copilotVersion: get("copilotversion") ?? "v1.0",
-    enableCopilotPhoenixGateaway: "true" === get("enablecopilotphoenixgateaway"),
+    enableCopilotPhoenixGateaway:
+      "true" === get("enablecopilotphoenixgateaway") ? "true" === get("enablecopilotphoenixgateaway") : true,
     enableCopilotFullSchema: "true" === get("enablecopilotfullschema"),
   };
 }
