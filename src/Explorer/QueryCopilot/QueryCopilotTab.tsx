@@ -18,6 +18,7 @@ import {
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import {
+  ContainerStatusType,
   PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
@@ -32,7 +33,6 @@ import { QueryResults } from "Contracts/ViewModels";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
@@ -111,8 +111,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     setShowErrorMessageBar,
     generatedQueryComments,
     setGeneratedQueryComments,
-    shouldAllocateContainer,
-    setShouldAllocateContainer,
   } = useQueryCopilot();
 
   const sampleProps: SamplePromptsProps = {
@@ -180,23 +178,26 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
 
   const generateSQLQuery = async (): Promise<void> => {
     try {
-      if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
-        await explorer.allocateContainer(PoolIdType.QueryCopilot);
-        setShouldAllocateContainer(false);
-      }
-
       setIsGeneratingQuery(true);
+      setShowDeletePopup(false);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
+      console.log("QueryCopilotTab before allocating container: ", useQueryCopilot.getState().containerStatus.status);
+      if (
+        useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
+        userContext.features.enableCopilotPhoenixGateaway
+      ) {
+        await explorer.allocateContainer(PoolIdType.QueryCopilot);
+        console.log("QueryCopilotTab after allocating container: ", useQueryCopilot.getState().containerStatus.status);
+      }
       const payload = {
         containerSchema: userContext.features.enableCopilotFullSchema
           ? QueryCopilotSampleContainerSchema
           : ShortenedQueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
       };
-      setShowDeletePopup(false);
       useQueryCopilot.getState().refreshCorrelationId();
-      const serverInfo = useNotebook.getState().notebookServerInfo;
+      const serverInfo = useQueryCopilot.getState().notebookServerInfo;
       const queryUri = userContext.features.enableCopilotPhoenixGateaway
         ? createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery")
         : createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery");
@@ -210,9 +211,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
       });
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
-      if (response.status === 404) {
-        setShouldAllocateContainer(true);
-      }
       if (response.ok) {
         if (generateSQLQueryResponse?.sql) {
           let query = `-- **Prompt:** ${userPrompt}\r\n`;
