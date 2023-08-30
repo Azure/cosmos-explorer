@@ -1,4 +1,5 @@
 import {
+  ContainerStatusType,
   PoolIdType,
   QueryCopilotSampleContainerSchema,
   ShortenedQueryCopilotSampleContainerSchema,
@@ -6,7 +7,6 @@ import {
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -30,13 +30,15 @@ export const SendQueryRequest = async ({
       .getState()
       .setChatMessages([...useQueryCopilot.getState().chatMessages, { source: 0, message: userPrompt }]);
     try {
-      if (useQueryCopilot.getState().shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
-        await explorer.allocateContainer(PoolIdType.DefaultPoolId);
-        useQueryCopilot.getState().setShouldAllocateContainer(false);
+      if (
+        useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
+        userContext.features.enableCopilotPhoenixGateaway
+      ) {
+        await explorer.allocateContainer(PoolIdType.QueryCopilot);
       }
 
       useQueryCopilot.getState().refreshCorrelationId();
-      const serverInfo = useNotebook.getState().notebookServerInfo;
+      const serverInfo = useQueryCopilot.getState().notebookServerInfo;
 
       const queryUri = userContext.features.enableCopilotPhoenixGateaway
         ? createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery")
@@ -58,9 +60,6 @@ export const SendQueryRequest = async ({
       });
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
-      if (response.status === 404) {
-        useQueryCopilot.getState().setShouldAllocateContainer(true);
-      }
       if (response.ok) {
         if (generateSQLQueryResponse?.sql) {
           let query = `Here is a query which will help you with provided prompt.\r\n **Prompt:** ${userPrompt}`;
@@ -102,7 +101,6 @@ export const SubmitFeedback = async ({
 }): Promise<void> => {
   try {
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
-    const { correlationId, shouldAllocateContainer, setShouldAllocateContainer } = useQueryCopilot();
     const payload = {
       containerSchema: userContext.features.enableCopilotFullSchema
         ? QueryCopilotSampleContainerSchema
@@ -113,25 +111,24 @@ export const SubmitFeedback = async ({
       description: description || "",
       contact: contact || "",
     };
-    if (shouldAllocateContainer && userContext.features.enableCopilotPhoenixGateaway) {
-      await explorer.allocateContainer(PoolIdType.DefaultPoolId);
-      setShouldAllocateContainer(false);
+    if (
+      useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
+      userContext.features.enableCopilotPhoenixGateaway
+    ) {
+      await explorer.allocateContainer(PoolIdType.QueryCopilot);
     }
-    const serverInfo = useNotebook.getState().notebookServerInfo;
+    const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.enableCopilotPhoenixGateaway
       ? createUri(serverInfo.notebookServerEndpoint, "feedback")
       : createUri("https://copilotorchestrater.azurewebsites.net/", "feedback");
-    const response = await fetch(feedbackUri, {
+    await fetch(feedbackUri, {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-ms-correlationid": correlationId,
+        "x-ms-correlationid": useQueryCopilot.getState().correlationId,
       },
       body: JSON.stringify(payload),
     });
-    if (response.status === 404) {
-      setShouldAllocateContainer(true);
-    }
   } catch (error) {
     handleError(error, "copilotSubmitFeedback");
   }

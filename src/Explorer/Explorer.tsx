@@ -5,6 +5,7 @@ import { Platform } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { IGalleryItem } from "Juno/JunoClient";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
@@ -386,8 +387,14 @@ export default class Explorer {
   }
 
   public async allocateContainer(poolId: PoolIdType): Promise<void> {
-    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-    const isAllocating = useNotebook.getState().isAllocating;
+    const shouldUseNotebookStates = poolId === PoolIdType.DefaultPoolId ? true : false;
+    const notebookServerInfo = shouldUseNotebookStates
+      ? useNotebook.getState().notebookServerInfo
+      : useQueryCopilot.getState().notebookServerInfo;
+
+    const isAllocating = shouldUseNotebookStates
+      ? useNotebook.getState().isAllocating
+      : useQueryCopilot.getState().isAllocatingContainer;
     if (
       isAllocating === false &&
       (notebookServerInfo === undefined ||
@@ -395,23 +402,28 @@ export default class Explorer {
     ) {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
-        poolId: poolId === PoolIdType.DefaultPoolId ? undefined : poolId,
+        poolId: shouldUseNotebookStates ? undefined : poolId,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
       };
-      useNotebook.getState().setConnectionInfo(connectionStatus);
+
+      shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
+
       let connectionInfo;
       try {
         TelemetryProcessor.traceStart(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
-        useNotebook.getState().setIsAllocating(true);
+        shouldUseNotebookStates
+          ? useNotebook.getState().setIsAllocating(true)
+          : useQueryCopilot.getState().setIsAllocatingContainer(true);
+
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         if (!connectionInfo?.data?.phoenixServiceUrl) {
           throw new Error(`PhoenixServiceUrl is invalid!`);
         }
-        await this.setNotebookInfo(connectionInfo, connectionStatus);
+        await this.setNotebookInfo(shouldUseNotebookStates, connectionInfo, connectionStatus);
         TelemetryProcessor.traceSuccess(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
@@ -423,7 +435,9 @@ export default class Explorer {
           errorStack: getErrorStack(error),
         });
         connectionStatus.status = ConnectionStatusType.Failed;
-        useNotebook.getState().resetContainerConnection(connectionStatus);
+        shouldUseNotebookStates
+          ? useNotebook.getState().resetContainerConnection(connectionStatus)
+          : useQueryCopilot.getState().resetContainerConnection();
         if (error?.status === HttpStatusCodes.Forbidden && error.message) {
           useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
         } else {
@@ -436,7 +450,9 @@ export default class Explorer {
         }
         throw error;
       } finally {
-        useNotebook.getState().setIsAllocating(false);
+        shouldUseNotebookStates
+          ? useNotebook.getState().setIsAllocating(false)
+          : useQueryCopilot.getState().setIsAllocatingContainer(false);
         this.refreshCommandBarButtons();
         this.refreshNotebookList();
         this._isInitializingNotebooks = false;
@@ -445,6 +461,7 @@ export default class Explorer {
   }
 
   private async setNotebookInfo(
+    shouldUseNotebookStates: boolean,
     connectionInfo: IResponse<IPhoenixServiceInfo>,
     connectionStatus: DataModels.ContainerConnectionInfo
   ) {
@@ -452,21 +469,26 @@ export default class Explorer {
       forwardingId: connectionInfo.data.forwardingId,
       dbAccountName: userContext.databaseAccount.name,
     };
-    await this.phoenixClient.initiateContainerHeartBeat(containerData);
+    await this.phoenixClient.initiateContainerHeartBeat(shouldUseNotebookStates, containerData);
 
     connectionStatus.status = ConnectionStatusType.Connected;
-    useNotebook.getState().setConnectionInfo(connectionStatus);
-    useNotebook.getState().setNotebookServerInfo({
+    shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
+
+    const noteBookServerInfo = {
       notebookServerEndpoint:
         (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
           userContext.features.notebookServerUrl) ||
         connectionInfo.data.phoenixServiceUrl,
       authToken: userContext.features.notebookServerToken || connectionInfo.data.authToken,
       forwardingId: connectionInfo.data.forwardingId,
-    });
-    this.notebookManager?.notebookClient
-      .getMemoryUsage()
-      .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
+    };
+    shouldUseNotebookStates
+      ? useNotebook.getState().setNotebookServerInfo(noteBookServerInfo)
+      : useQueryCopilot.getState().setNotebookServerInfo(noteBookServerInfo);
+    shouldUseNotebookStates &&
+      this.notebookManager?.notebookClient
+        .getMemoryUsage()
+        .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
   }
 
   public resetNotebookWorkspace(): void {
@@ -540,7 +562,7 @@ export default class Explorer {
         throw new Error(`Reset Workspace: PhoenixServiceUrl is invalid!`);
       }
       if (useNotebook.getState().isPhoenixNotebooks) {
-        await this.setNotebookInfo(connectionInfo, connectionStatus);
+        await this.setNotebookInfo(true, connectionInfo, connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
       logConsoleInfo("Successfully reset notebook workspace");

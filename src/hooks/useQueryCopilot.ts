@@ -2,7 +2,10 @@ import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { QueryResults } from "Contracts/ViewModels";
 import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
+import { useTabs } from "hooks/useTabs";
 import create, { UseStore } from "zustand";
+import * as DataModels from "../Contracts/DataModels";
+import { ContainerInfo } from "../Contracts/DataModels";
 
 export interface QueryCopilotState {
   generatedQuery: string;
@@ -32,10 +35,12 @@ export interface QueryCopilotState {
   showWelcomeSidebar: boolean;
   showCopilotSidebar: boolean;
   chatMessages: CopilotMessage[];
-  shouldAllocateContainer: boolean;
   shouldIncludeInMessages: boolean;
   showExplanationBubble: boolean;
   showQueryExplanation: boolean;
+  notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
+  containerStatus: ContainerInfo;
+  isAllocatingContainer: boolean;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
@@ -65,11 +70,14 @@ export interface QueryCopilotState {
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
   setChatMessages: (chatMessages: CopilotMessage[]) => void;
-  setShouldAllocateContainer: (shouldAllocateContainer: boolean) => void;
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => void;
   setShowExplanationBubble: (showExplanationBubble: boolean) => void;
   setShowQueryExplanation: (showQueryExplanation: boolean) => void;
+  setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
+  setContainerStatus: (containerStatus: ContainerInfo) => void;
+  setIsAllocatingContainer: (isAllocatingContainer: boolean) => void;
 
+  resetContainerConnection: () => void;
   resetQueryCopilotStates: () => void;
 }
 
@@ -103,10 +111,20 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showWelcomeSidebar: true,
   showCopilotSidebar: false,
   chatMessages: [],
-  shouldAllocateContainer: true,
   shouldIncludeInMessages: true,
   showExplanationBubble: false,
   showQueryExplanation: false,
+  notebookServerInfo: {
+    notebookServerEndpoint: undefined,
+    authToken: undefined,
+    forwardingId: undefined,
+  },
+  containerStatus: {
+    status: undefined,
+    durationLeftInMinutes: undefined,
+    phoenixServerInfo: undefined,
+  },
+  isAllocatingContainer: false,
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
@@ -138,10 +156,24 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
   setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
-  setShouldAllocateContainer: (shouldAllocateContainer: boolean) => set({ shouldAllocateContainer }),
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
   setShowExplanationBubble: (showExplanationBubble: boolean) => set({ showExplanationBubble }),
   setShowQueryExplanation: (showQueryExplanation: boolean) => set({ showQueryExplanation }),
+  setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
+    set({ notebookServerInfo }),
+  setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
+  setIsAllocatingContainer: (isAllocatingContainer: boolean) => set({ isAllocatingContainer }),
+
+  resetContainerConnection: (): void => {
+    useTabs.getState().closeAllNotebookTabs(true);
+    useQueryCopilot.getState().setNotebookServerInfo(undefined);
+    useQueryCopilot.getState().setIsAllocatingContainer(false);
+    useQueryCopilot.getState().setContainerStatus({
+      status: undefined,
+      durationLeftInMinutes: undefined,
+      phoenixServerInfo: undefined,
+    });
+  },
 
   resetQueryCopilotStates: () => {
     set((state) => ({
@@ -172,10 +204,20 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       wasCopilotUsed: false,
       showCopilotSidebar: false,
       chatMessages: [],
-      shouldAllocateContainer: true,
       shouldIncludeInMessages: true,
       showExplanationBubble: false,
       showQueryExplanation: false,
+      notebookServerInfo: {
+        notebookServerEndpoint: undefined,
+        authToken: undefined,
+        forwardingId: undefined,
+      },
+      containerStatus: {
+        status: undefined,
+        durationLeftInMinutes: undefined,
+        phoenixServerInfo: undefined,
+      },
+      isAllocatingContainer: false,
     }));
   },
 }));

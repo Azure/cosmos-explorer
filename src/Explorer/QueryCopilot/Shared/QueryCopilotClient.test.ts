@@ -2,9 +2,9 @@ import { QueryCopilotSampleContainerSchema, ShortenedQueryCopilotSampleContainer
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { userContext } from "UserContext";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 
 jest.mock("@azure/cosmos", () => ({
   Constants: {
@@ -27,22 +27,10 @@ jest.mock("Explorer/Explorer", () => {
   return MockExplorer;
 });
 
-jest.mock("hooks/useQueryCopilot", () => {
-  const mockQueryCopilotStore = {
-    shouldAllocateContainer: true,
-    setShouldAllocateContainer: jest.fn(),
-    correlationId: "mocked-correlation-id",
-  };
-
-  return {
-    useQueryCopilot: jest.fn(() => mockQueryCopilotStore),
-  };
-});
-
 describe("Query Copilot Client", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  describe("submitFeedback", () => {
+  describe("SubmitFeedback", () => {
     const payload = {
       like: "like",
       generatedSql: "GeneratedQuery",
@@ -54,17 +42,16 @@ describe("Query Copilot Client", () => {
         : ShortenedQueryCopilotSampleContainerSchema,
     };
 
-    const mockStore = useNotebook.getState();
-    beforeEach(() => {
-      mockStore.notebookServerInfo = {
-        notebookServerEndpoint: "mocked-endpoint",
-        authToken: "mocked-token",
-        forwardingId: "mocked-forwarding-id",
-      };
-    });
+    const mockStore = useQueryCopilot.getState();
+    mockStore.correlationId = "mocked-correlation-id";
+    mockStore.notebookServerInfo = {
+      notebookServerEndpoint: "mocked-endpoint",
+      authToken: "mocked-token",
+      forwardingId: "mocked-forwarding-id",
+    };
 
     const feedbackUri = userContext.features.enableCopilotPhoenixGateaway
-      ? createUri(useNotebook.getState().notebookServerInfo.notebookServerEndpoint, "feedback")
+      ? createUri(useQueryCopilot.getState().notebookServerInfo.notebookServerEndpoint, "feedback")
       : createUri("https://copilotorchestrater.azurewebsites.net/", "feedback");
 
     it("should call fetch with the payload with like", async () => {
