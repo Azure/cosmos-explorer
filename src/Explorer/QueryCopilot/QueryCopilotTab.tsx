@@ -182,13 +182,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
       setShowDeletePopup(false);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
-      console.log("QueryCopilotTab before allocating container: ", useQueryCopilot.getState().containerStatus.status);
       if (
         useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
         userContext.features.enableCopilotPhoenixGateaway
       ) {
         await explorer.allocateContainer(PoolIdType.QueryCopilot);
-        console.log("QueryCopilotTab after allocating container: ", useQueryCopilot.getState().containerStatus.status);
       }
       const payload = {
         containerSchema: userContext.features.enableCopilotFullSchema
