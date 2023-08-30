@@ -12,51 +12,6 @@ exports[`Query Copilot Sidebar snapshot test should render and not set copilot u
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <OutputBubble />
-    <RetrievingBubble />
-    <SampleBubble />
-  </Stack>
-  <Footer
-    explorer={
-      Explorer {
-        "_isInitializingNotebooks": false,
-        "_resetNotebookWorkspace": [Function],
-        "isFixedCollectionWithSharedThroughputSupported": [Function],
-        "isTabsContentExpanded": [Function],
-        "onRefreshDatabasesKeyPress": [Function],
-        "onRefreshResourcesClick": [Function],
-        "phoenixClient": PhoenixClient {
-          "armResourceId": undefined,
-          "retryOptions": Object {
-            "maxTimeout": 5000,
-            "minTimeout": 5000,
-            "retries": 3,
-          },
-        },
-        "provideFeedbackEmail": [Function],
-        "queriesClient": QueriesClient {
-          "container": [Circular],
-        },
-        "refreshNotebookList": [Function],
-        "resourceTree": ResourceTreeAdapter {
-          "container": [Circular],
-          "copyNotebook": [Function],
-          "parameters": [Function],
-        },
-      }
-    }
-  />
 </Stack>
 `;
 
@@ -72,51 +27,6 @@ exports[`Query Copilot Sidebar snapshot test should render and set copilot used 
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <OutputBubble />
-    <RetrievingBubble />
-    <SampleBubble />
-  </Stack>
-  <Footer
-    explorer={
-      Explorer {
-        "_isInitializingNotebooks": false,
-        "_resetNotebookWorkspace": [Function],
-        "isFixedCollectionWithSharedThroughputSupported": [Function],
-        "isTabsContentExpanded": [Function],
-        "onRefreshDatabasesKeyPress": [Function],
-        "onRefreshResourcesClick": [Function],
-        "phoenixClient": PhoenixClient {
-          "armResourceId": undefined,
-          "retryOptions": Object {
-            "maxTimeout": 5000,
-            "minTimeout": 5000,
-            "retries": 3,
-          },
-        },
-        "provideFeedbackEmail": [Function],
-        "queriesClient": QueriesClient {
-          "container": [Circular],
-        },
-        "refreshNotebookList": [Function],
-        "resourceTree": ResourceTreeAdapter {
-          "container": [Circular],
-          "copyNotebook": [Function],
-          "parameters": [Function],
-        },
-      }
-    }
-  />
 </Stack>
 `;
 
@@ -132,51 +42,6 @@ exports[`Query Copilot Sidebar snapshot test should render samples without messa
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <OutputBubble />
-    <RetrievingBubble />
-    <SampleBubble />
-  </Stack>
-  <Footer
-    explorer={
-      Explorer {
-        "_isInitializingNotebooks": false,
-        "_resetNotebookWorkspace": [Function],
-        "isFixedCollectionWithSharedThroughputSupported": [Function],
-        "isTabsContentExpanded": [Function],
-        "onRefreshDatabasesKeyPress": [Function],
-        "onRefreshResourcesClick": [Function],
-        "phoenixClient": PhoenixClient {
-          "armResourceId": undefined,
-          "retryOptions": Object {
-            "maxTimeout": 5000,
-            "minTimeout": 5000,
-            "retries": 3,
-          },
-        },
-        "provideFeedbackEmail": [Function],
-        "queriesClient": QueriesClient {
-          "container": [Circular],
-        },
-        "refreshNotebookList": [Function],
-        "resourceTree": ResourceTreeAdapter {
-          "container": [Circular],
-          "copyNotebook": [Function],
-          "parameters": [Function],
-        },
-      }
-    }
-  />
 </Stack>
 `;
 
@@ -192,69 +57,5 @@ exports[`Query Copilot Sidebar snapshot test should render with chat messages 1`
 >
   <Header />
   <WelcomeSidebarModal />
-  <Stack
-    style={
-      Object {
-        "display": "flex",
-        "flexDirection": "column",
-        "flexGrow": 1,
-        "overflowY": "auto",
-      }
-    }
-  >
-    <WelcomeBubble />
-    <Stack
-      horizontalAlign="center"
-      key="0"
-      style={
-        Object {
-          "backgroundColor": "#E0E7FF",
-          "borderRadius": "8px",
-          "margin": "5px 10px",
-          "textAlign": "start",
-        }
-      }
-      tokens={
-        Object {
-          "childrenGap": 8,
-          "padding": 8,
-        }
-      }
-    >
-      <Component />
-    </Stack>
-    <OutputBubble />
-    <RetrievingBubble />
-  </Stack>
-  <Footer
-    explorer={
-      Explorer {
-        "_isInitializingNotebooks": false,
-        "_resetNotebookWorkspace": [Function],
-        "isFixedCollectionWithSharedThroughputSupported": [Function],
-        "isTabsContentExpanded": [Function],
-        "onRefreshDatabasesKeyPress": [Function],
-        "onRefreshResourcesClick": [Function],
-        "phoenixClient": PhoenixClient {
-          "armResourceId": undefined,
-          "retryOptions": Object {
-            "maxTimeout": 5000,
-            "minTimeout": 5000,
-            "retries": 3,
-          },
-        },
-        "provideFeedbackEmail": [Function],
-        "queriesClient": QueriesClient {
-          "container": [Circular],
-        },
-        "refreshNotebookList": [Function],
-        "resourceTree": ResourceTreeAdapter {
-          "container": [Circular],
-          "copyNotebook": [Function],
-          "parameters": [Function],
-        },
-      }
-    }
-  />
 </Stack>
 `;
