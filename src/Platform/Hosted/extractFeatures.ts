@@ -38,7 +38,7 @@ export type Features = {
   readonly enableCopilot: boolean;
   readonly enablePriorityBasedThrottling: boolean;
   readonly copilotVersion?: string;
-  readonly enableCopilotPhoenixGateaway: boolean;
+  readonly disableCopilotPhoenixGateaway: boolean;
   readonly enableCopilotFullSchema: boolean;
 
   // can be set via both flight and feature flag
@@ -110,8 +110,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enablePriorityBasedThrottling: "true" === get("enableprioritybasedthrottling"),
     enableCopilot: "true" === get("enablecopilot"),
     copilotVersion: get("copilotversion") ?? "v1.0",
-    enableCopilotPhoenixGateaway:
-      "true" === get("enablecopilotphoenixgateaway") ? "true" === get("enablecopilotphoenixgateaway") : true,
+    disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
     enableCopilotFullSchema: "true" === get("enablecopilotfullschema"),
   };
 }

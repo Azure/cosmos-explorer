@@ -50,9 +50,9 @@ describe("Query Copilot Client", () => {
       forwardingId: "mocked-forwarding-id",
     };
 
-    const feedbackUri = userContext.features.enableCopilotPhoenixGateaway
-      ? createUri(useQueryCopilot.getState().notebookServerInfo.notebookServerEndpoint, "feedback")
-      : createUri("https://copilotorchestrater.azurewebsites.net/", "feedback");
+    const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
+      ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
+      : createUri(useQueryCopilot.getState().notebookServerInfo.notebookServerEndpoint, "feedback");
 
     it("should call fetch with the payload with like", async () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});
