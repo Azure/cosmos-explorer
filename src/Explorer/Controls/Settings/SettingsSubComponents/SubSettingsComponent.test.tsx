@@ -63,7 +63,6 @@ describe("SubSettingsComponent", () => {
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#timeToLive")).toEqual(true);
     expect(wrapper.exists("#timeToLiveSeconds")).toEqual(true);
-    //expect(wrapper.props().displayedTtlSeconds).toBeDefined();
     expect(wrapper.exists("#geoSpatialConfig")).toEqual(true);
     expect(wrapper.exists("#analyticalStorageTimeToLive")).toEqual(true);
     expect(wrapper.exists("#analyticalStorageTimeToLiveSeconds")).toEqual(true);
@@ -76,7 +75,6 @@ describe("SubSettingsComponent", () => {
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#timeToLive")).toEqual(true);
     expect(wrapper.exists("#timeToLiveSeconds")).toEqual(false);
-    //expect(wrapper.props().displayedTtlSeconds).toEqual("")
   });
 
   it("analyticalTimeToLive hidden", () => {

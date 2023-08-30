@@ -173,54 +173,51 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   ): void =>
     this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState]);
 
-  private getTtlComponent = (): JSX.Element => {    
-    return (
-      userContext.apiType === "Mongo" ? (
-        <MessageBar
-          messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-          styles={{ text: { fontSize: 14 } }}
-        >
-          To enable time-to-live (TTL) for your collection/documents,
-          <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
-            create a TTL index
-          </Link>
-          .
-        </MessageBar>
-      ) : (
-        <Stack {...titleAndInputStackProps}>
-          <ChoiceGroup
-            id="timeToLive"
-            label="Time to Live"
-            selectedKey={this.props.timeToLive}
-            options={this.ttlChoiceGroupOptions}
-            onChange={this.onTtlChange}
-            styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
+  private getTtlComponent = (): JSX.Element =>
+    userContext.apiType === "Mongo" ? (
+      <MessageBar
+        messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+        styles={{ text: { fontSize: 14 } }}
+      >
+        To enable time-to-live (TTL) for your collection/documents,
+        <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
+          create a TTL index
+        </Link>
+        .
+      </MessageBar>
+    ) : (
+      <Stack {...titleAndInputStackProps}>
+        <ChoiceGroup
+          id="timeToLive"
+          label="Time to Live"
+          selectedKey={this.props.timeToLive}
+          options={this.ttlChoiceGroupOptions}
+          onChange={this.onTtlChange}
+          styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
+        />
+        {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
+          <MessageBar
+            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+            styles={messageBarStyles}
+          >
+            {ttlWarning}
+          </MessageBar>
+        )}
+        {this.props.timeToLive === TtlType.On && (
+          <TextField
+            id="timeToLiveSeconds"
+            styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
+            type="number"
+            required
+            min={1}
+            max={Int32.Max}
+            value={this.props.displayedTtlSeconds}
+            onChange={this.onTimeToLiveSecondsChange}
+            suffix="second(s)"
           />
-          {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
-            <MessageBar
-              messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-              styles={messageBarStyles}
-            >
-              {ttlWarning}
-            </MessageBar>
-          )}
-          {this.props.timeToLive === TtlType.On && (
-            <TextField
-              id="timeToLiveSeconds"
-              styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
-              type="number"
-              required
-              min={1}
-              max={Int32.Max}
-              value={this.props.displayedTtlSeconds}
-              onChange={this.onTimeToLiveSecondsChange}
-              suffix="second(s)"
-            />
-          )}
-        </Stack>
-      )
+        )}
+      </Stack>
     );
-  };
 
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off", disabled: true },
