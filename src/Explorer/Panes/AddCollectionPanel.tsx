@@ -798,7 +798,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     iconName="Info"
                     className="panelInfoIcon"
                     tabIndex={0}
-                    ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads."
+                    ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without
+        impacting the performance of transactional workloads."
                   />
                 </TooltipHost>
               </Stack>
