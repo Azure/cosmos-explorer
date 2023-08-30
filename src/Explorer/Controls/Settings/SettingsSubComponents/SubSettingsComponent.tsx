@@ -75,7 +75,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.onComponentUpdate();
   }
 
-  componentDidUpdate(prevProps: SubSettingsComponentProps) {
+  componentDidUpdate(prevProps: SubSettingsComponentProps): void {
     if (
       (prevProps.timeToLive === TtlType.Off || prevProps.timeToLive === TtlType.OnNoDefault) &&
       this.props.timeToLive === TtlType.On &&
