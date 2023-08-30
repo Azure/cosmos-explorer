@@ -21,6 +21,9 @@ export const SendQueryRequest = async ({
 }): Promise<void> => {
   if (userPrompt.trim() !== "") {
     useQueryCopilot.getState().setIsGeneratingQuery(true);
+    useQueryCopilot.getState().setShouldIncludeInMessages(true);
+    useQueryCopilot.getState().setShowQueryExplanation(false);
+    useQueryCopilot.getState().setShowExplanationBubble(false);
     useTabs.getState().setIsTabExecuting(true);
     useTabs.getState().setIsQueryErrorThrown(false);
     useQueryCopilot
@@ -61,14 +64,17 @@ export const SendQueryRequest = async ({
         if (generateSQLQueryResponse?.sql) {
           let query = `Here is a query which will help you with provided prompt.\r\n **Prompt:** ${userPrompt}`;
           query += `\r\n${generateSQLQueryResponse.sql}`;
-          useQueryCopilot
-            .getState()
-            .setChatMessages([
-              ...useQueryCopilot.getState().chatMessages,
-              { source: 1, message: query, explanation: generateSQLQueryResponse.explanation },
-            ]);
-          useQueryCopilot.getState().setGeneratedQuery(generateSQLQueryResponse.sql);
-          useQueryCopilot.getState().setGeneratedQueryComments(generateSQLQueryResponse.explanation);
+          if (useQueryCopilot.getState().shouldIncludeInMessages) {
+            useQueryCopilot
+              .getState()
+              .setChatMessages([
+                ...useQueryCopilot.getState().chatMessages,
+                { source: 1, message: query, explanation: generateSQLQueryResponse.explanation },
+              ]);
+            useQueryCopilot.getState().setShowExplanationBubble(true);
+            useQueryCopilot.getState().setGeneratedQuery(generateSQLQueryResponse.sql);
+            useQueryCopilot.getState().setGeneratedQueryComments(generateSQLQueryResponse.explanation);
+          }
         }
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");

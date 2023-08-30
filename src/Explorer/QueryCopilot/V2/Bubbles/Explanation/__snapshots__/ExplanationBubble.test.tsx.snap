@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Explanation Bubble should render explanation bubble with generated comments 1`] = `
+<Stack
+  horizontalAlign="center"
+  style={
+    Object {
+      "backgroundColor": "white",
+      "borderRadius": "8px",
+      "margin": "5px 10px",
+      "textAlign": "start",
+    }
+  }
+  tokens={
+    Object {
+      "childrenGap": 8,
+      "padding": 8,
+    }
+  }
+/>
+`;
+
+exports[`Explanation Bubble should render nothing when conditions are not met 1`] = `""`;

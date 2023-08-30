@@ -36,6 +36,8 @@ export interface QueryCopilotState {
   showCopilotSidebar: boolean;
   chatMessages: CopilotMessage[];
   shouldIncludeInMessages: boolean;
+  showExplanationBubble: boolean;
+  showQueryExplanation: boolean;
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
   containerStatus: ContainerInfo;
   isAllocatingContainer: boolean;
@@ -69,6 +71,8 @@ export interface QueryCopilotState {
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
   setChatMessages: (chatMessages: CopilotMessage[]) => void;
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => void;
+  setShowExplanationBubble: (showExplanationBubble: boolean) => void;
+  setShowQueryExplanation: (showQueryExplanation: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
   setContainerStatus: (containerStatus: ContainerInfo) => void;
   setIsAllocatingContainer: (isAllocatingContainer: boolean) => void;
@@ -108,6 +112,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showCopilotSidebar: false,
   chatMessages: [],
   shouldIncludeInMessages: true,
+  showExplanationBubble: false,
+  showQueryExplanation: false,
   notebookServerInfo: {
     notebookServerEndpoint: undefined,
     authToken: undefined,
@@ -151,6 +157,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
   setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
+  setShowExplanationBubble: (showExplanationBubble: boolean) => set({ showExplanationBubble }),
+  setShowQueryExplanation: (showQueryExplanation: boolean) => set({ showQueryExplanation }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
     set({ notebookServerInfo }),
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
@@ -197,6 +205,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       showCopilotSidebar: false,
       chatMessages: [],
       shouldIncludeInMessages: true,
+      showExplanationBubble: false,
+      showQueryExplanation: false,
       notebookServerInfo: {
         notebookServerEndpoint: undefined,
         authToken: undefined,
