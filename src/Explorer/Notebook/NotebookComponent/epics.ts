@@ -100,9 +100,6 @@ const addInitialCodeCellEpic = (
  */
 const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string, sessionId?: string): string => {
   const params = new URLSearchParams();
-  if (serverConfig.token) {
-    params.append("token", serverConfig.token);
-  }
   if (sessionId) {
     params.append("session_id", sessionId);
   }
