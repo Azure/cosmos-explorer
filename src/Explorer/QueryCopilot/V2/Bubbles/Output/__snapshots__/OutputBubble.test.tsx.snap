@@ -28,7 +28,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
       }
     }
   >
-    test comments
+    testMessage
   </StackItem>
   <StackItem
     style={
@@ -40,7 +40,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
   >
     <EditorReact
       ariaLabel="AI Response"
-      content="test query"
+      content="testSQL"
       isReadOnly={true}
       language="sql"
       lineDecorationsWidth={0}
@@ -68,7 +68,9 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
       }
     }
   >
-    <OutputBubbleButtons />
+    <OutputBubbleButtons
+      sqlQuery="testSQL"
+    />
   </StackItem>
   <StackItem>
     <Text

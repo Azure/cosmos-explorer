@@ -19,13 +19,12 @@ describe("Explanation Bubble", () => {
   });
 
   it("should render explanation bubble with generated comments", () => {
-    useQueryCopilot.getState().showQueryExplanation = true;
     useQueryCopilot.getState().shouldIncludeInMessages = true;
 
     const wrapper = shallow(<ExplanationBubble />);
 
     expect(wrapper.find("Stack")).toHaveLength(1);
-    expect(wrapper.find("Text")).toHaveLength(0);
+    expect(wrapper.find("Text")).toHaveLength(1);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -33,11 +32,11 @@ describe("Explanation Bubble", () => {
     const mockSetChatMessages = jest.fn();
     const mockSetIsGeneratingExplanation = jest.fn();
     const mockSetShouldIncludeInMessages = jest.fn();
-    const mockSetShowQueryExplanation = jest.fn();
+    const mockSetShowExplanationBubble = jest.fn();
     useQueryCopilot.getState().setChatMessages = mockSetChatMessages;
     useQueryCopilot.getState().setIsGeneratingExplanation = mockSetIsGeneratingExplanation;
     useQueryCopilot.getState().setShouldIncludeInMessages = mockSetShouldIncludeInMessages;
-    useQueryCopilot.getState().setShowQueryExplanation = mockSetShowQueryExplanation;
+    useQueryCopilot.getState().setShowExplanationBubble = mockSetShowExplanationBubble;
 
     const wrapper = shallow(<ExplanationBubble />);
 
@@ -50,12 +49,12 @@ describe("Explanation Bubble", () => {
     ]);
     expect(mockSetIsGeneratingExplanation).toHaveBeenCalledWith(true);
     expect(mockSetShouldIncludeInMessages).toHaveBeenCalledWith(true);
-    expect(mockSetShowQueryExplanation).not.toHaveBeenCalled();
+    expect(mockSetShowExplanationBubble).toHaveBeenCalledWith(false);
 
     jest.advanceTimersByTime(3000);
 
     expect(mockSetIsGeneratingExplanation).toHaveBeenCalledWith(false);
-    expect(mockSetShowQueryExplanation).toHaveBeenCalledWith(true);
+    expect(mockSetChatMessages).toHaveBeenCalled();
   });
 
   it("should render nothing when conditions are not met", () => {

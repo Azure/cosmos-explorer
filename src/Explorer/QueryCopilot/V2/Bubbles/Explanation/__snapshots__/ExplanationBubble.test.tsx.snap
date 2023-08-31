@@ -2,22 +2,31 @@
 
 exports[`Explanation Bubble should render explanation bubble with generated comments 1`] = `
 <Stack
-  horizontalAlign="center"
   style={
     Object {
-      "backgroundColor": "white",
-      "borderRadius": "8px",
-      "margin": "5px 10px",
-      "textAlign": "start",
+      "alignItems": "center",
+      "display": "flex",
+      "margin": "5px",
+      "padding": "5px 5px 5px 50px",
     }
   }
-  tokens={
-    Object {
-      "childrenGap": 8,
-      "padding": 8,
+>
+  <Text
+    onClick={[Function]}
+    style={
+      Object {
+        "border": "1.5px solid #B0BEFF",
+        "borderRadius": "4px",
+        "cursor": "pointer",
+        "marginBottom": "5px",
+        "padding": "2px",
+        "width": "100%",
+      }
     }
-  }
-/>
+  >
+    Explain this query to me
+  </Text>
+</Stack>
 `;
 
 exports[`Explanation Bubble should render nothing when conditions are not met 1`] = `""`;

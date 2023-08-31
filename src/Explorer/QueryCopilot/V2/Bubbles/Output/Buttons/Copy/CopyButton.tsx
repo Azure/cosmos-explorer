@@ -1,12 +1,11 @@
 import { IconButton } from "@fluentui/react";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import CopilotCopy from "../../../../../../../../images/CopilotCopy.svg";
 
-export const CopyButton: React.FC = (): JSX.Element => {
+export const CopyButton = ({ sqlQuery }: { sqlQuery: string }): JSX.Element => {
   const copyGeneratedCode = (): void => {
     const queryElement = document.createElement("textarea");
-    queryElement.value = useQueryCopilot.getState().generatedQuery;
+    queryElement.value = sqlQuery;
     document.body.appendChild(queryElement);
     queryElement.select();
     document.execCommand("copy");
