@@ -1,5 +1,6 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
-import { SampleDataTree } from "Explorer/Tree/SampleDataTree";
+import { BrandVariants, FluentProvider, Theme, Tree, createLightTheme } from "@fluentui/react-components";
+import { buildSampleDataTree } from "Explorer/Tree/SampleDataTree";
 import { getItemName } from "Utils/APITypeUtils";
 import * as React from "react";
 import shallow from "zustand/shallow";
@@ -26,9 +27,8 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
-import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
 import { useDialog } from "../Controls/Dialog";
-import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
+import { TreeNode, TreeNodeComponent, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
@@ -49,6 +49,30 @@ export const GitHubReposTitle = "GitHub repos";
 interface ResourceTreeProps {
   container: Explorer;
 }
+
+
+const cosmosdb: BrandVariants = {
+  10: "#020305",
+  20: "#111723",
+  30: "#16263D",
+  40: "#193253",
+  50: "#1B3F6A",
+  60: "#1B4C82",
+  70: "#18599B",
+  80: "#1267B4",
+  90: "#3174C2",
+  100: "#4F82C8",
+  110: "#6790CF",
+  120: "#7D9ED5",
+  130: "#92ACDC",
+  140: "#A6BAE2",
+  150: "#BAC9E9",
+  160: "#CDD8EF"
+};
+
+const lightTheme: Theme = {
+  ...createLightTheme(cosmosdb),
+};
 
 export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: ResourceTreeProps): JSX.Element => {
   const databases = useDatabases((state) => state.databases);
@@ -118,7 +142,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
   const buildNotebooksTree = (): TreeNode => {
     const notebooksTree: TreeNode = {
-      label: undefined,
+      id: "notebooks",
+      label: "NOTEBOOKS",
       isExpanded: true,
       children: [],
     };
@@ -502,7 +527,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     });
 
     return {
-      label: undefined,
+      id: "data",
+      label: "DATA",
       isExpanded: true,
       children: databaseTreeNodes,
     };
@@ -768,56 +794,30 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const isSampleDataEnabled = userContext.sampleDataConnectionInfo && userContext.apiType === "SQL";
   const sampleDataResourceTokenCollection = useDatabases((state) => state.sampleDataResourceTokenCollection);
 
-  return (
-    <>
-      {!isNotebookEnabled && !isSampleDataEnabled && (
-        <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-      )}
-      {isNotebookEnabled && !isSampleDataEnabled && (
-        <>
-          <AccordionComponent>
-            <AccordionItemComponent title={"DATA"} isExpanded={!gitHubNotebooksContentRoot}>
-              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-            </AccordionItemComponent>
-            <AccordionItemComponent title={"NOTEBOOKS"}>
-              <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
-            </AccordionItemComponent>
-          </AccordionComponent>
+  const treeNodes = React.useMemo(() => {
+    if (!isNotebookEnabled && !isSampleDataEnabled) {
+      return dataRootNode.children;
+    }
 
-          {buildGalleryCallout()}
-        </>
-      )}
-      {!isNotebookEnabled && isSampleDataEnabled && (
-        <>
-          <AccordionComponent>
-            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
-              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-            </AccordionItemComponent>
-            <AccordionItemComponent title={"SAMPLE DATA"} containerStyles={{ display: "table" }}>
-              <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
-            </AccordionItemComponent>
-          </AccordionComponent>
+    const nodes: TreeNode[] = [dataRootNode];
+    if (isSampleDataEnabled) {
+      nodes.push(buildSampleDataTree(sampleDataResourceTokenCollection));
+    }
 
-          {buildGalleryCallout()}
-        </>
-      )}
-      {isNotebookEnabled && isSampleDataEnabled && (
-        <>
-          <AccordionComponent>
-            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
-              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-            </AccordionItemComponent>
-            <AccordionItemComponent title={"SAMPLE DATA"} containerStyles={{ display: "table" }}>
-              <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
-            </AccordionItemComponent>
-            <AccordionItemComponent title={"NOTEBOOKS"}>
-              <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
-            </AccordionItemComponent>
-          </AccordionComponent>
+    if (isNotebookEnabled) {
+      nodes.push(buildNotebooksTree());
+    }
 
-          {buildGalleryCallout()}
-        </>
-      )}
-    </>
-  );
+    return nodes;
+  }, [isNotebookEnabled, isSampleDataEnabled]);
+
+  return (<>
+    <FluentProvider theme={lightTheme}>
+      <Tree openItems={treeNodes.map(node => node.label)}>
+        {treeNodes.map(node => <TreeNodeComponent key={node.id} className="dataResourceTree" node={node} />)}
+      </Tree>
+    </FluentProvider>
+    {(isNotebookEnabled || isSampleDataEnabled) && buildGalleryCallout()}
+  </>);
 };
+

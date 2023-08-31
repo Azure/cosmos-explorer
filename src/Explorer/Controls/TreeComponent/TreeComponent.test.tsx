@@ -1,6 +1,6 @@
-import React from "react";
 import { shallow } from "enzyme";
-import { TreeComponent, TreeNode, TreeNodeComponent } from "./TreeComponent";
+import React from "react";
+import { TreeComponent, TreeNode, TreeNodeComponent_old } from "./TreeComponent";
 
 const buildChildren = (): TreeNode[] => {
   const grandChild11: TreeNode = {
@@ -98,7 +98,7 @@ describe("TreeNodeComponent", () => {
       generation: 12,
       paddingLeft: 23,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<TreeNodeComponent_old {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -113,7 +113,7 @@ describe("TreeNodeComponent", () => {
       generation: 2,
       paddingLeft: 9,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<TreeNodeComponent_old {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -128,7 +128,7 @@ describe("TreeNodeComponent", () => {
       generation: 2,
       paddingLeft: 9,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<TreeNodeComponent_old {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -156,7 +156,7 @@ describe("TreeNodeComponent", () => {
       generation: 12,
       paddingLeft: 23,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<TreeNodeComponent_old {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -172,7 +172,7 @@ describe("TreeNodeComponent", () => {
       generation: 2,
       paddingLeft: 9,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<TreeNodeComponent_old {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

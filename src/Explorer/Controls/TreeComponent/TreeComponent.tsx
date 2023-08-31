@@ -12,6 +12,8 @@ import {
   IContextualMenuItemProps,
   IContextualMenuProps,
 } from "@fluentui/react";
+import { Button, Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Spinner, Tree, TreeItem, TreeItemLayout } from "@fluentui/react-components";
+import { MoreHorizontal20Regular } from "@fluentui/react-icons";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
@@ -20,7 +22,6 @@ import TriangleRightIcon from "../../../../images/Triangle-right.svg";
 import * as Constants from "../../../Common/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-
 export interface TreeNodeMenuItem {
   label: string;
   onClick: () => void;
@@ -58,13 +59,90 @@ export interface TreeComponentProps {
 export class TreeComponent extends React.Component<TreeComponentProps> {
   public render(): JSX.Element {
     return (
-      <div style={this.props.style} className={`treeComponent ${this.props.className}`} role="tree">
-        <TreeNodeComponent paddingLeft={0} node={this.props.rootNode} generation={0} />
-      </div>
+
+      <Tree>
+        <TreeNodeComponent node={this.props.rootNode} />
+      </Tree>
+
     );
   }
 }
 
+export const TreeNodeComponent: React.FC<{ node: TreeNode, className?: string }> = ({ node }): JSX.Element => {
+  const { children } = node;
+  const defaultOpenItems = node.isExpanded ? children?.map((child: TreeNode) => child.label) : undefined;
+
+  const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
+    if (!treeNode || !treeNode.children) {
+      return undefined;
+    }
+
+    const compareFct = (a: TreeNode, b: TreeNode) => a.label.localeCompare(b.label);
+
+    let unsortedChildren;
+    if (treeNode.isLeavesParentsSeparate) {
+      // Separate parents and leave
+      const parents: TreeNode[] = treeNode.children.filter((node) => node.children);
+      const leaves: TreeNode[] = treeNode.children.filter((node) => !node.children);
+
+      if (treeNode.isAlphaSorted) {
+        parents.sort(compareFct);
+        leaves.sort(compareFct);
+      }
+
+      unsortedChildren = parents.concat(leaves);
+    } else {
+      unsortedChildren = treeNode.isAlphaSorted ? treeNode.children.sort(compareFct) : treeNode.children;
+    }
+
+    return unsortedChildren;
+  };
+
+  return (
+    <TreeItem key={node.label} value={node.label} itemType={node.children?.length > 0 || node.isLoading ? "branch" : "leaf"}>
+      <TreeItemLayout
+        className={node.className}
+        onClick={() => node.onClick && node.onClick(false)}
+        actions={node.contextMenu &&
+          <Menu>
+            <MenuTrigger disableButtonEnhancement>
+              <Button aria-label="More options" appearance="subtle" icon={<MoreHorizontal20Regular />} />
+            </MenuTrigger>
+            <MenuPopover>
+              <MenuList>{node.contextMenu.map(menuItem => (
+                <MenuItem disabled={menuItem.isDisabled} key={menuItem.label} onClick={menuItem.onClick}>{menuItem.label}</MenuItem>
+              ))}</MenuList>
+            </MenuPopover>
+          </Menu>
+        }
+        expandIcon={node.isLoading ? <Spinner size="tiny" /> : undefined}
+      >{node.label}</TreeItemLayout>
+      {!node.isLoading && node.children?.length > 0 && <Tree defaultOpenItems={defaultOpenItems}>
+        {getSortedChildren(node).map((childNode: TreeNode) => (
+          <TreeNodeComponent key={childNode.id} node={childNode} />
+        ))}
+      </Tree>}
+    </TreeItem>
+  );
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ------------------------------------------------------------
 /* Tree node is a react component */
 interface TreeNodeComponentProps {
   node: TreeNode;
@@ -76,7 +154,7 @@ interface TreeNodeComponentState {
   isExpanded: boolean;
   isMenuShowing: boolean;
 }
-export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, TreeNodeComponentState> {
+export class TreeNodeComponent_old extends React.Component<TreeNodeComponentProps, TreeNodeComponentState> {
   private static readonly paddingPerGenerationPx = 16;
   private static readonly iconOffset = 22;
   private static readonly transitionDurationMS = 200;
@@ -97,9 +175,9 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     // Only call when expand has actually changed
     if (this.state.isExpanded !== prevState.isExpanded) {
       if (this.state.isExpanded) {
-        this.props.node.onExpanded && setTimeout(this.props.node.onExpanded, TreeNodeComponent.callbackDelayMS);
+        this.props.node.onExpanded && setTimeout(this.props.node.onExpanded, TreeNodeComponent_old.callbackDelayMS);
       } else {
-        this.props.node.onCollapsed && setTimeout(this.props.node.onCollapsed, TreeNodeComponent.callbackDelayMS);
+        this.props.node.onCollapsed && setTimeout(this.props.node.onCollapsed, TreeNodeComponent_old.callbackDelayMS);
       }
     }
     if (this.props.node.isExpanded !== this.isExpanded) {
@@ -145,13 +223,13 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   }
 
   private renderNode(node: TreeNode, generation: number): JSX.Element {
-    let paddingLeft = generation * TreeNodeComponent.paddingPerGenerationPx;
+    let paddingLeft = generation * TreeNodeComponent_old.paddingPerGenerationPx;
     let additionalOffsetPx = 15;
 
     if (node.children) {
       const childrenWithSubChildren = node.children.filter((child: TreeNode) => !!child.children);
       if (childrenWithSubChildren.length > 0) {
-        additionalOffsetPx = TreeNodeComponent.iconOffset;
+        additionalOffsetPx = TreeNodeComponent_old.iconOffset;
       }
     }
 
@@ -159,10 +237,10 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     const showSelected =
       this.props.node.isSelected &&
       this.props.node.isSelected() &&
-      !TreeNodeComponent.isAnyDescendantSelected(this.props.node);
+      !TreeNodeComponent_old.isAnyDescendantSelected(this.props.node);
 
     const headerStyle: React.CSSProperties = { paddingLeft: this.props.paddingLeft };
-    if (TreeNodeComponent.isNodeHeaderBlank(node)) {
+    if (TreeNodeComponent_old.isNodeHeaderBlank(node)) {
       headerStyle.height = 0;
       headerStyle.padding = 0;
     }
@@ -194,10 +272,10 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
           <img className="loadingIcon" src={LoadingIndicator_3Squares} hidden={!this.props.node.isLoading} />
         </div>
         {node.children && (
-          <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
+          <AnimateHeight duration={TreeNodeComponent_old.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
             <div className="nodeChildren" data-test={node.label} role="group">
-              {TreeNodeComponent.getSortedChildren(node).map((childNode: TreeNode) => (
-                <TreeNodeComponent
+              {TreeNodeComponent_old.getSortedChildren(node).map((childNode: TreeNode) => (
+                <TreeNodeComponent_old
                   key={`${childNode.label}-${generation + 1}-${childNode.timestamp}`}
                   node={childNode}
                   generation={generation + 1}
@@ -220,7 +298,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
       node.children &&
       node.children.reduce(
         (previous: boolean, child: TreeNode) =>
-          previous || (child.isSelected && child.isSelected()) || TreeNodeComponent.isAnyDescendantSelected(child),
+          previous || (child.isSelected && child.isSelected()) || TreeNodeComponent_old.isAnyDescendantSelected(child),
         false
       )
     );
@@ -231,7 +309,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   }
 
   private onRightClick = (): void => {
-    this.contextMenuRef.current.firstChild.dispatchEvent(TreeNodeComponent.createClickEvent());
+    this.contextMenuRef.current.firstChild.dispatchEvent(TreeNodeComponent_old.createClickEvent());
   };
 
   private renderContextMenuButton(node: TreeNode): JSX.Element {
@@ -264,7 +342,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
               <div
                 data-test={`treeComponentMenuItemContainer`}
                 className="treeComponentMenuItemContainer"
-                onContextMenu={(e) => e.target.dispatchEvent(TreeNodeComponent.createClickEvent())}
+                onContextMenu={(e) => e.target.dispatchEvent(TreeNodeComponent_old.createClickEvent())}
               >
                 {props.item.onRenderIcon()}
                 <span
@@ -318,7 +396,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     if (node.children) {
       const isExpanded = !this.state.isExpanded;
       // Prevent collapsing if node header is blank
-      if (!(TreeNodeComponent.isNodeHeaderBlank(node) && !isExpanded)) {
+      if (!(TreeNodeComponent_old.isNodeHeaderBlank(node) && !isExpanded)) {
         this.setState({ isExpanded });
       }
     }
