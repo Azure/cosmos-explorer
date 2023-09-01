@@ -30,7 +30,7 @@ export const SendQueryRequest = async ({
     try {
       if (
         useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
-        userContext.features.enableCopilotPhoenixGateaway
+        !userContext.features.disableCopilotPhoenixGateaway
       ) {
         await explorer.allocateContainer(PoolIdType.QueryCopilot);
       }
@@ -38,9 +38,9 @@ export const SendQueryRequest = async ({
       useQueryCopilot.getState().refreshCorrelationId();
       const serverInfo = useQueryCopilot.getState().notebookServerInfo;
 
-      const queryUri = userContext.features.enableCopilotPhoenixGateaway
-        ? createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery")
-        : createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery");
+      const queryUri = userContext.features.disableCopilotPhoenixGateaway
+        ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
+        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
 
       const payload = {
         containerSchema: userContext.features.enableCopilotFullSchema
@@ -113,14 +113,14 @@ export const SubmitFeedback = async ({
     };
     if (
       useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
-      userContext.features.enableCopilotPhoenixGateaway
+      !userContext.features.disableCopilotPhoenixGateaway
     ) {
       await explorer.allocateContainer(PoolIdType.QueryCopilot);
     }
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
-    const feedbackUri = userContext.features.enableCopilotPhoenixGateaway
-      ? createUri(serverInfo.notebookServerEndpoint, "feedback")
-      : createUri("https://copilotorchestrater.azurewebsites.net/", "feedback");
+    const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
+      ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
+      : createUri(serverInfo.notebookServerEndpoint, "feedback");
     await fetch(feedbackUri, {
       method: "POST",
       headers: {
