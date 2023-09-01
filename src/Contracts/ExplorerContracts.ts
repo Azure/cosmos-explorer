@@ -40,6 +40,7 @@ export enum MessageTypes {
   OpenCosmosDBNetworkingBlade,
   DisplayNPSSurvey,
   OpenVCoreMongoNetworkingBlade,
+  OpenVCoreMongoConnectionStringsBlade,
 }
 
 export { ActionContracts, Diagnostics, Versions };
