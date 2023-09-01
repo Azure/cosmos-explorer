@@ -41,6 +41,7 @@ export interface DatabaseAccountExtendedProperties {
   vcoreMongoEndpoint?: string;
 }
 
+//CTODO: Possibly remove all vcore mongo interfaces as I don't think they are used anymore
 export interface VCoreMongoDatabaseAccount extends ArmEntity {
   properties: VCoreMongoClusterProperties;
 }
