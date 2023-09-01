@@ -22,8 +22,10 @@ export const ExplanationBubble: React.FC = (): JSX.Element => {
     setShowExplanationBubble(false);
 
     setTimeout(() => {
-      setIsGeneratingExplanation(false);
-      setChatMessages([...chatMessages, { source: 2, message: generatedQueryComments }]);
+      if (useQueryCopilot.getState().shouldIncludeInMessages) {
+        setIsGeneratingExplanation(false);
+        setChatMessages([...chatMessages, { source: 2, message: generatedQueryComments }]);
+      }
     }, 3000);
   };
 

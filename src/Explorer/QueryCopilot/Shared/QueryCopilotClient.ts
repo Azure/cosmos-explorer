@@ -20,13 +20,13 @@ export const SendQueryRequest = async ({
   explorer: Explorer;
 }): Promise<void> => {
   if (userPrompt.trim() !== "") {
+    useQueryCopilot
+      .getState()
+      .setChatMessages([...useQueryCopilot.getState().chatMessages, { source: 0, message: userPrompt }]);
     useQueryCopilot.getState().setIsGeneratingQuery(true);
     useQueryCopilot.getState().setShouldIncludeInMessages(true);
     useTabs.getState().setIsTabExecuting(true);
     useTabs.getState().setIsQueryErrorThrown(false);
-    useQueryCopilot
-      .getState()
-      .setChatMessages([...useQueryCopilot.getState().chatMessages, { source: 0, message: userPrompt }]);
     try {
       if (
         useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
@@ -60,7 +60,7 @@ export const SendQueryRequest = async ({
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (response.ok) {
         if (generateSQLQueryResponse?.sql) {
-          let bubbleMessage = `Here is a query which will help you with provided prompt.\r\n **Prompt:** "${userPrompt}"`;
+          const bubbleMessage = `Here is a query which will help you with provided prompt.\r\n **Prompt:** "${userPrompt}"`;
           if (useQueryCopilot.getState().shouldIncludeInMessages) {
             useQueryCopilot.getState().setChatMessages([
               ...useQueryCopilot.getState().chatMessages,

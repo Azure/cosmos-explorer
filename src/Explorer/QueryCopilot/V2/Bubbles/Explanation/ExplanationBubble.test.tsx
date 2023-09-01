@@ -29,6 +29,7 @@ describe("Explanation Bubble", () => {
   });
 
   it("should render 'Explain this query' link", () => {
+    useQueryCopilot.getState().shouldIncludeInMessages = true;
     const mockSetChatMessages = jest.fn();
     const mockSetIsGeneratingExplanation = jest.fn();
     const mockSetShouldIncludeInMessages = jest.fn();
