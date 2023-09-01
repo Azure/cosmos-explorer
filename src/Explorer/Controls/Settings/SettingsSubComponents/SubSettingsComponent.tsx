@@ -15,13 +15,13 @@ import {
 import {
   ChangeFeedPolicyState,
   GeospatialConfigType,
-  getSanitizedInputValue,
   IsComponentDirtyResult,
-  isDirty,
   TtlOff,
   TtlOn,
   TtlOnNoDefault,
   TtlType,
+  getSanitizedInputValue,
+  isDirty,
 } from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
@@ -34,6 +34,8 @@ export interface SubSettingsComponentProps {
   timeToLiveSeconds: number;
   timeToLiveSecondsBaseline: number;
   onTimeToLiveSecondsChange: (newTimeToLiveSeconds: number) => void;
+  displayedTtlSeconds: string;
+  onDisplayedTtlSecondsChange: (newDisplayedTtlSeconds: string) => void;
 
   geospatialConfigType: GeospatialConfigType;
   geospatialConfigTypeBaseline: GeospatialConfigType;
@@ -73,7 +75,14 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.onComponentUpdate();
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate(prevProps: SubSettingsComponentProps): void {
+    if (
+      (prevProps.timeToLive === TtlType.Off || prevProps.timeToLive === TtlType.OnNoDefault) &&
+      this.props.timeToLive === TtlType.On &&
+      this.props.timeToLiveBaseline !== TtlType.On
+    ) {
+      this.props.onDisplayedTtlSecondsChange("");
+    }
     this.onComponentUpdate();
   }
 
@@ -93,7 +102,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   public IsComponentDirty = (): IsComponentDirtyResult => {
     if (
       (this.props.timeToLive === TtlType.On && !this.props.timeToLiveSeconds) ||
-      (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds)
+      (this.props.analyticalStorageTtlSelection === TtlType.On && !this.props.analyticalStorageTtlSeconds) ||
+      (this.props.timeToLive === TtlType.On && this.props.displayedTtlSeconds === "")
     ) {
       return { isSaveable: false, isDiscardable: true };
     } else if (
@@ -138,6 +148,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     newValue?: string
   ): void => {
     const newTimeToLiveSeconds = getSanitizedInputValue(newValue, Int32.Max);
+    this.props.onDisplayedTtlSecondsChange(newTimeToLiveSeconds.toString());
     this.props.onTimeToLiveSecondsChange(newTimeToLiveSeconds);
   };
 
@@ -204,7 +215,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             required
             min={1}
             max={Int32.Max}
-            value={this.props.timeToLiveSeconds?.toString()}
+            value={this.props.displayedTtlSeconds}
             onChange={this.onTimeToLiveSecondsChange}
             suffix="second(s)"
           />
