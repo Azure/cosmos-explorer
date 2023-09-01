@@ -20,6 +20,10 @@ describe("SubSettingsComponent", () => {
     onTimeToLiveSecondsChange: () => {
       return;
     },
+    displayedTtlSeconds: "1000",
+    onDisplayedTtlSecondsChange: () => {
+      return;
+    },
 
     geospatialConfigType: GeospatialConfigType.Geography,
     geospatialConfigTypeBaseline: GeospatialConfigType.Geography,

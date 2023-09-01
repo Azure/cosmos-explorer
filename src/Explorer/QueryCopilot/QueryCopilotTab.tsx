@@ -184,7 +184,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
       useTabs.getState().setIsQueryErrorThrown(false);
       if (
         useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
-        userContext.features.enableCopilotPhoenixGateaway
+        !userContext.features.disableCopilotPhoenixGateaway
       ) {
         await explorer.allocateContainer(PoolIdType.QueryCopilot);
       }
@@ -196,9 +196,9 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
       };
       useQueryCopilot.getState().refreshCorrelationId();
       const serverInfo = useQueryCopilot.getState().notebookServerInfo;
-      const queryUri = userContext.features.enableCopilotPhoenixGateaway
-        ? createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery")
-        : createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery");
+      const queryUri = userContext.features.disableCopilotPhoenixGateaway
+        ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
+        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {

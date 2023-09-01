@@ -150,12 +150,14 @@ exports[`SettingsComponent renders 1`] = `
               "usageSizeInKB": [Function],
             }
           }
+          displayedTtlSeconds="5"
           geospatialConfigType="Geometry"
           geospatialConfigTypeBaseline="Geometry"
           isAnalyticalStorageEnabled={false}
           onAnalyticalStorageTtlSecondsChange={[Function]}
           onAnalyticalStorageTtlSelectionChange={[Function]}
           onChangeFeedPolicyChange={[Function]}
+          onDisplayedTtlSecondsChange={[Function]}
           onGeoSpatialConfigTypeChange={[Function]}
           onSubSettingsDiscardableChange={[Function]}
           onSubSettingsSaveableChange={[Function]}
