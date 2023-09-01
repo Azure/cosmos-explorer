@@ -39,6 +39,8 @@ export enum MessageTypes {
   OpenPostgresNetworkingBlade,
   OpenCosmosDBNetworkingBlade,
   DisplayNPSSurvey,
+  OpenVCoreMongoNetworkingBlade,
 }
 
-export { Versions, ActionContracts, Diagnostics };
+export { ActionContracts, Diagnostics, Versions };
+
