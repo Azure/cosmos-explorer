@@ -426,7 +426,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         const vcoreMongoBtn = {
           iconSrc: PowerShellIcon,
           title: "Mongo Shell",
-          description: "Create a table and interact with data using MongoDB's shell interface",
+          description: "Create a collection and interact with data using MongoDB's shell interface",
           onClick: () => this.container.openNotebookTerminal(TerminalKind.VCoreMongo),
         };
         heroes.push(vcoreMongoBtn);
