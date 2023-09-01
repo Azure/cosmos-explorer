@@ -18,6 +18,7 @@ export interface TerminalTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
   container: Explorer;
   kind: ViewModels.TerminalKind;
+  username?: string;
 }
 
 /**
@@ -30,6 +31,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
     private getNotebookServerInfo: () => DataModels.NotebookWorkspaceConnectionInfo,
     private getDatabaseAccount: () => DataModels.DatabaseAccount,
     private getTabId: () => string,
+    private getUsername: () => string,
     private isAllPublicIPAddressesEnabled: ko.Observable<boolean>
   ) {}
 
@@ -43,6 +45,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
         notebookServerInfo={this.getNotebookServerInfo()}
         databaseAccount={this.getDatabaseAccount()}
         tabId={this.getTabId()}
+        username={this.getUsername()}
       />
     ) : (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
@@ -64,6 +67,7 @@ export default class TerminalTab extends TabsBase {
       () => this.getNotebookServerInfo(options),
       () => userContext?.databaseAccount,
       () => this.tabId,
+      () => this.getUsername(),
       this.isAllPublicIPAddressesEnabled
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
@@ -131,6 +135,7 @@ export default class TerminalTab extends TabsBase {
     };
   }
 
+  //CTODO: add case for mongo vcore - refactor to include CheckFirewallRules() in QuickstartTab and VCoreMongoQuickstartTab
   private async checkPostgresFirewallRules(): Promise<void> {
     const firewallRulesUri = `${userContext.databaseAccount.id}/firewallRules`;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -150,5 +155,13 @@ export default class TerminalTab extends TabsBase {
     if (!isEnabled) {
       setTimeout(() => this.checkPostgresFirewallRules(), 30000);
     }
+  }
+
+  private getUsername(): string {
+    if (userContext.apiType != "VCoreMongo" || !userContext?.vcoreMongoConnectionParams?.adminLogin) {
+      return undefined;
+    }
+
+    return userContext.vcoreMongoConnectionParams.adminLogin;
   }
 }
