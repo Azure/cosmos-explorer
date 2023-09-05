@@ -60,7 +60,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     />
     <StyledTextFieldBase
-      ariaLabel="Time to live on 1000 seconds"
+      ariaLabel="Time to live in seconds"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
@@ -285,7 +285,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     />
     <StyledTextFieldBase
-      ariaLabel="Time to live on 1000 seconds"
+      ariaLabel="Time to live in seconds"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
@@ -563,7 +563,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     />
     <StyledTextFieldBase
-      ariaLabel="Time to live on 1000 seconds"
+      ariaLabel="Time to live in seconds"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
@@ -803,7 +803,7 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     />
     <StyledTextFieldBase
-      ariaLabel="Time to live on 1000 seconds"
+      ariaLabel="Time to live in seconds"
       id="timeToLiveSeconds"
       max={2147483647}
       min={1}
