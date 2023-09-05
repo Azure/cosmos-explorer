@@ -1,5 +1,6 @@
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
+import { useDatabases } from "Explorer/useDatabases";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import CollectionIcon from "../../../images/tree-collection.svg";
@@ -84,10 +85,12 @@ export const buildCollectionNode = (
     children.push(schemaNode);
   }
 
+  const onUpdateDatabase = () => useDatabases.getState().updateDatabase(database);
+
   if (showScriptNodes) {
-    children.push(buildStoredProcedureNode(collection, container, refreshActiveTab));
-    children.push(buildUserDefinedFunctionsNode(collection, container, refreshActiveTab));
-    children.push(buildTriggerNode(collection, container, refreshActiveTab));
+    children.push(buildStoredProcedureNode(collection, container, refreshActiveTab, onUpdateDatabase));
+    children.push(buildUserDefinedFunctionsNode(collection, container, refreshActiveTab, onUpdateDatabase));
+    children.push(buildTriggerNode(collection, container, refreshActiveTab, onUpdateDatabase));
   }
 
   // This is a rewrite of showConflicts
@@ -141,7 +144,8 @@ export const buildCollectionNode = (
 const buildStoredProcedureNode = (
   collection: ViewModels.Collection,
   container: Explorer,
-  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
+  onUpdateDatabase: () => void
 ): TreeNode => {
   return {
     label: "Stored Procedures",
@@ -161,6 +165,7 @@ const buildStoredProcedureNode = (
         (tab: TabsBase) =>
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
       );
+      onUpdateDatabase();
     },
   };
 };
@@ -168,7 +173,8 @@ const buildStoredProcedureNode = (
 const buildUserDefinedFunctionsNode = (
   collection: ViewModels.Collection,
   container: Explorer,
-  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
+  onUpdateDatabase: () => void
 ): TreeNode => {
   return {
     label: "User Defined Functions",
@@ -190,6 +196,7 @@ const buildUserDefinedFunctionsNode = (
         (tab: TabsBase) =>
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
       );
+      onUpdateDatabase();
     },
   };
 };
@@ -197,7 +204,8 @@ const buildUserDefinedFunctionsNode = (
 const buildTriggerNode = (
   collection: ViewModels.Collection,
   container: Explorer,
-  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
+  onUpdateDatabase: () => void
 ): TreeNode => {
   return {
     label: "Triggers",
@@ -217,6 +225,7 @@ const buildTriggerNode = (
         (tab: TabsBase) =>
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
       );
+      onUpdateDatabase();
     },
   };
 };

@@ -40,18 +40,18 @@ export interface TreeNode2ComponentProps {
 const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 20, height: 20 }} />;
 
 export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({ node, treeNodeId, globalOpenIds }: TreeNode2ComponentProps): JSX.Element => {
-  const { children } = node;
   // const defaultOpenItems = node.isExpanded ? children?.map((child: TreeNode2) => child.label) : undefined;
   const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
 
   // Compute whether node is expanded
-  React.useEffect(() => setIsExpanded(globalOpenIds && globalOpenIds.includes(treeNodeId)), [globalOpenIds, treeNodeId]);
-
   React.useEffect(() => {
-    if (isExpanded) {
+    const isNowExpanded = globalOpenIds && globalOpenIds.includes(treeNodeId);
+    if (!isExpanded && isNowExpanded) {
+      // Catch the transition non-expanded to expanded
       node.onExpanded?.();
     }
-  }, [isExpanded, node]);
+    setIsExpanded(isNowExpanded);
+  }, [globalOpenIds, treeNodeId, node, isExpanded]);
 
   const getSortedChildren = (treeNode: TreeNode2): TreeNode2[] => {
     if (!treeNode || !treeNode.children) {
@@ -95,7 +95,7 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({ node, tr
             </MenuPopover>
           </Menu>
         }
-        expandIcon={node.isLoading ? <Spinner size="tiny" /> : undefined}
+        expandIcon={node.isLoading ? <Spinner size="extra-tiny" /> : undefined}
         iconBefore={node.iconSrc && getTreeIcon(node.iconSrc)}
       ><span onClick={() => node.onClick?.()}>{node.label}</span></TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
