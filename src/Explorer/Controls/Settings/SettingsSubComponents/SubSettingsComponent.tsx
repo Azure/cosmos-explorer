@@ -207,7 +207,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             value={this.props.timeToLiveSeconds?.toString()}
             onChange={this.onTimeToLiveSecondsChange}
             suffix="second(s)"
-            ariaLabel={`Time to live on ${this.props.timeToLiveSeconds} seconds`}
+            ariaLabel={`Time to live in seconds`}
           />
         )}
       </Stack>
