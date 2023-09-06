@@ -66,7 +66,9 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
     id: "data",
     label: DATA_TREE_LABEL,
     isExpanded: true,
+    className: "accordionItemHeader",
     children: databaseTreeNodes,
+    isScrollable: true,
   };
 
   const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
@@ -74,18 +76,15 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
   const handleOpenChange = (
     event: TreeOpenChangeEvent,
     data: TreeOpenChangeData
-  ) => {
-    console.log("handleOpenChange", data.openItems)
-    setOpenItems(data.openItems);
-  };
-
-
+  ) => setOpenItems(data.openItems);
 
   return (<>
-    <FluentProvider theme={lightTheme}>
+    <FluentProvider theme={lightTheme} style={{ overflow: "hidden" }}>
       <Tree aria-label="CosmosDB resources"
         openItems={openItems}
         onOpenChange={handleOpenChange}
+        size="small"
+        style={{ height: "100%" }}
       >
         {[dataNodeTree].map(node => <TreeNode2Component
           key={node.label}

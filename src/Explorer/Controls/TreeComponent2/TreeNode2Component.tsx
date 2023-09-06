@@ -23,6 +23,7 @@ export interface TreeNode2 {
   timestamp?: number;
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
   isLoading?: boolean;
+  isScrollable?: boolean;
   isSelected?: () => boolean;
   onClick?: () => void; // Only if a leaf, other click will expand/collapse
   onExpanded?: () => void;
@@ -80,7 +81,9 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({ node, tr
   };
 
   return (
-    <TreeItem value={treeNodeId} itemType={node.children !== undefined ? "branch" : "leaf"}>
+    <TreeItem value={treeNodeId} itemType={node.children !== undefined ? "branch" : "leaf"}
+      style={{ height: "100%" }}
+    >
       <TreeItemLayout
         className={node.className}
         actions={node.contextMenu &&
@@ -100,7 +103,8 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({ node, tr
       ><span onClick={() => node.onClick?.()}>{node.label}</span></TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
         <Tree
-        // defaultOpenItems={defaultOpenItems}
+          // defaultOpenItems={defaultOpenItems}
+          style={{ overflow: node.isScrollable ? "auto" : undefined }}
         >
           {getSortedChildren(node).map((childNode: TreeNode2) => (
             <TreeNode2Component
