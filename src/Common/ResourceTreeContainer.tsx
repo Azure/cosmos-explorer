@@ -1,4 +1,4 @@
-import { ResourceTree2 } from "Explorer/Tree2/ResourceTree";
+import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import refreshImg from "../../images/refresh-cosmos.svg";
@@ -77,7 +77,9 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
         ) : userContext.features.enableKoResourceTree ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
         ) : (
-          <ResourceTree2 container={container} />
+          <ResourceTree container={container} />
+          // Uncomment the following line to use the fluent ui tree
+          // <ResourceTree2 container={container} />
         )}
       </div>
       {/*  Collections Window - End */}
