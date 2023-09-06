@@ -294,6 +294,9 @@ async function configurePortal(): Promise<Explorer> {
           updateContextsFromPortalMessage(inputs);
           explorer = new Explorer();
           resolve(explorer);
+          if (userContext.apiType === "Postgres") {
+            explorer.openNPSSurveyDialog();
+          }
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
