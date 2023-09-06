@@ -1,4 +1,15 @@
-import { Button, Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Spinner, Tree, TreeItem, TreeItemLayout } from "@fluentui/react-components";
+import {
+  Button,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  Spinner,
+  Tree,
+  TreeItem,
+  TreeItemLayout,
+} from "@fluentui/react-components";
 import { MoreHorizontal20Regular } from "@fluentui/react-icons";
 import * as React from "react";
 
@@ -19,7 +30,7 @@ export interface TreeNode2 {
   // isExpanded?: boolean;
   className?: string;
   isAlphaSorted?: boolean;
-  data?: any; // Piece of data corresponding to this node
+  // data?: any; // Piece of data corresponding to this node
   timestamp?: number;
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
   isLoading?: boolean;
@@ -40,7 +51,11 @@ export interface TreeNode2ComponentProps {
 
 const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 20, height: 20 }} />;
 
-export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({ node, treeNodeId, globalOpenIds }: TreeNode2ComponentProps): JSX.Element => {
+export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
+  node,
+  treeNodeId,
+  globalOpenIds,
+}: TreeNode2ComponentProps): JSX.Element => {
   // const defaultOpenItems = node.isExpanded ? children?.map((child: TreeNode2) => child.label) : undefined;
   const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
 
@@ -81,26 +96,32 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({ node, tr
   };
 
   return (
-    <TreeItem value={treeNodeId} itemType={node.children !== undefined ? "branch" : "leaf"}
-      style={{ height: "100%" }}
-    >
+    <TreeItem value={treeNodeId} itemType={node.children !== undefined ? "branch" : "leaf"} style={{ height: "100%" }}>
       <TreeItemLayout
         className={node.className}
-        actions={node.contextMenu &&
-          <Menu>
-            <MenuTrigger disableButtonEnhancement>
-              <Button aria-label="More options" appearance="subtle" icon={<MoreHorizontal20Regular />} />
-            </MenuTrigger>
-            <MenuPopover>
-              <MenuList>{node.contextMenu.map(menuItem => (
-                <MenuItem disabled={menuItem.isDisabled} key={menuItem.label} onClick={menuItem.onClick}>{menuItem.label}</MenuItem>
-              ))}</MenuList>
-            </MenuPopover>
-          </Menu>
+        actions={
+          node.contextMenu && (
+            <Menu>
+              <MenuTrigger disableButtonEnhancement>
+                <Button aria-label="More options" appearance="subtle" icon={<MoreHorizontal20Regular />} />
+              </MenuTrigger>
+              <MenuPopover>
+                <MenuList>
+                  {node.contextMenu.map((menuItem) => (
+                    <MenuItem disabled={menuItem.isDisabled} key={menuItem.label} onClick={menuItem.onClick}>
+                      {menuItem.label}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </MenuPopover>
+            </Menu>
+          )
         }
         expandIcon={node.isLoading ? <Spinner size="extra-tiny" /> : undefined}
         iconBefore={node.iconSrc && getTreeIcon(node.iconSrc)}
-      ><span onClick={() => node.onClick?.()}>{node.label}</span></TreeItemLayout>
+      >
+        <span onClick={() => node.onClick?.()}>{node.label}</span>
+      </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
         <Tree
           // defaultOpenItems={defaultOpenItems}
