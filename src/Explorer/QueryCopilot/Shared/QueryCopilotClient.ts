@@ -20,15 +20,13 @@ export const SendQueryRequest = async ({
   explorer: Explorer;
 }): Promise<void> => {
   if (userPrompt.trim() !== "") {
-    useQueryCopilot.getState().setIsGeneratingQuery(true);
-    useQueryCopilot.getState().setShouldIncludeInMessages(true);
-    useQueryCopilot.getState().setShowQueryExplanation(false);
-    useQueryCopilot.getState().setShowExplanationBubble(false);
-    useTabs.getState().setIsTabExecuting(true);
-    useTabs.getState().setIsQueryErrorThrown(false);
     useQueryCopilot
       .getState()
       .setChatMessages([...useQueryCopilot.getState().chatMessages, { source: 0, message: userPrompt }]);
+    useQueryCopilot.getState().setIsGeneratingQuery(true);
+    useQueryCopilot.getState().setShouldIncludeInMessages(true);
+    useTabs.getState().setIsTabExecuting(true);
+    useTabs.getState().setIsQueryErrorThrown(false);
     try {
       if (
         useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
@@ -62,15 +60,17 @@ export const SendQueryRequest = async ({
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (response.ok) {
         if (generateSQLQueryResponse?.sql) {
-          let query = `Here is a query which will help you with provided prompt.\r\n **Prompt:** ${userPrompt}`;
-          query += `\r\n${generateSQLQueryResponse.sql}`;
+          const bubbleMessage = `Here is a query which will help you with provided prompt.\r\n **Prompt:** "${userPrompt}"`;
           if (useQueryCopilot.getState().shouldIncludeInMessages) {
-            useQueryCopilot
-              .getState()
-              .setChatMessages([
-                ...useQueryCopilot.getState().chatMessages,
-                { source: 1, message: query, explanation: generateSQLQueryResponse.explanation },
-              ]);
+            useQueryCopilot.getState().setChatMessages([
+              ...useQueryCopilot.getState().chatMessages,
+              {
+                source: 1,
+                message: bubbleMessage,
+                sqlQuery: generateSQLQueryResponse.sql,
+                explanation: generateSQLQueryResponse.explanation,
+              },
+            ]);
             useQueryCopilot.getState().setShowExplanationBubble(true);
             useQueryCopilot.getState().setGeneratedQuery(generateSQLQueryResponse.sql);
             useQueryCopilot.getState().setGeneratedQueryComments(generateSQLQueryResponse.explanation);

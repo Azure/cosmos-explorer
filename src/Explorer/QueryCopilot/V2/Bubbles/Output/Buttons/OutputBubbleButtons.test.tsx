@@ -4,7 +4,7 @@ import React from "react";
 
 describe("Output Bubble Buttons snapshot tests", () => {
   it("should render", () => {
-    const wrapper = shallow(<OutputBubbleButtons />);
+    const wrapper = shallow(<OutputBubbleButtons sqlQuery={""} />);
 
     expect(wrapper).toMatchSnapshot();
   });
