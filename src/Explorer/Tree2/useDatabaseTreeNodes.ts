@@ -1,4 +1,4 @@
-import { TreeNode } from "Explorer/Controls/TreeComponent/TreeComponent";
+import { TreeNode2 } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import { buildCollectionNode } from "Explorer/Tree2/containerTreeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
@@ -10,15 +10,14 @@ import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "../useSelectedNode";
 
-export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boolean): TreeNode[] => {
+export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boolean): TreeNode2[] => {
   const databases = useDatabases((state) => state.databases);
   const { refreshActiveTab } = useTabs();
 
-  const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
-    const databaseNode: TreeNode = {
+  const databaseTreeNodes: TreeNode2[] = databases.map((database: ViewModels.Database) => {
+    const databaseNode: TreeNode2 = {
       label: database.id(),
       iconSrc: CosmosDBIcon,
-      isExpanded: database.isDatabaseExpanded(),
       className: "databaseHeader",
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
@@ -58,7 +57,7 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
       );
 
     if (database.collectionsContinuationToken) {
-      const loadMoreNode: TreeNode = {
+      const loadMoreNode: TreeNode2 = {
         label: "load more",
         className: "loadMoreHeader",
         onClick: async () => {

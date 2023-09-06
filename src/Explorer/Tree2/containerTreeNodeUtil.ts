@@ -1,5 +1,8 @@
-import { TreeNode } from "Explorer/Controls/TreeComponent/TreeComponent";
+import { TreeNode2 } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
 import TabsBase from "Explorer/Tabs/TabsBase";
+import StoredProcedure from "Explorer/Tree/StoredProcedure";
+import Trigger from "Explorer/Tree/Trigger";
+import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
 import { useDatabases } from "Explorer/useDatabases";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
@@ -14,9 +17,6 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
-import StoredProcedure from "./StoredProcedure";
-import Trigger from "./Trigger";
-import UserDefinedFunction from "./UserDefinedFunction";
 
 export const buildCollectionNode = (
   database: ViewModels.Database,
@@ -24,9 +24,9 @@ export const buildCollectionNode = (
   isNotebookEnabled: boolean,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
-): TreeNode => {
+): TreeNode2 => {
   const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
-  const children: TreeNode[] = [];
+  const children: TreeNode2[] = [];
   children.push({
     label: getItemName(),
     id: collection.isSampleCollection ? "sampleItems" : "",
@@ -80,7 +80,7 @@ export const buildCollectionNode = (
     });
   }
 
-  const schemaNode: TreeNode = buildSchemaNode(collection, container, refreshActiveTab);
+  const schemaNode: TreeNode2 = buildSchemaNode(collection, container, refreshActiveTab);
   if (schemaNode) {
     children.push(schemaNode);
   }
@@ -113,7 +113,6 @@ export const buildCollectionNode = (
   return {
     label: collection.id(),
     iconSrc: CollectionIcon,
-    isExpanded: collection.isCollectionExpanded(),
     children: children,
     className: "collectionHeader",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
@@ -129,13 +128,6 @@ export const buildCollectionNode = (
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
       );
     },
-    // onExpanded: () => {
-    //   if (showScriptNodes) {
-    //     collection.loadStoredProcedures();
-    //     collection.loadUserDefinedFunctions();
-    //     collection.loadTriggers();
-    //   }
-    // },
     isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
     onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
   };
@@ -146,7 +138,7 @@ const buildStoredProcedureNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void
-): TreeNode => {
+): TreeNode2 => {
   return {
     label: "Stored Procedures",
     children: collection.storedProcedures().map((sp: StoredProcedure) => ({
@@ -175,7 +167,7 @@ const buildUserDefinedFunctionsNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void
-): TreeNode => {
+): TreeNode2 => {
   return {
     label: "User Defined Functions",
     children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
@@ -206,7 +198,7 @@ const buildTriggerNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void
-): TreeNode => {
+): TreeNode2 => {
   return {
     label: "Triggers",
     children: collection.triggers().map((trigger: Trigger) => ({
@@ -234,7 +226,7 @@ const buildSchemaNode = (
   collection: ViewModels.Collection,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
-): TreeNode => {
+): TreeNode2 => {
   if (collection.analyticalStorageTtl() === undefined) {
     return undefined;
   }
@@ -253,7 +245,7 @@ const buildSchemaNode = (
   };
 };
 
-const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode[] => {
+const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode2[] => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const schema: any = {};
 
@@ -287,8 +279,8 @@ const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode[] => {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const traverse = (obj: any): TreeNode[] => {
-    const children: TreeNode[] = [];
+  const traverse = (obj: any): TreeNode2[] => {
+    const children: TreeNode2[] = [];
 
     if (obj !== undefined && !Array.isArray(obj) && typeof obj === "object") {
       Object.entries(obj).forEach(([key, value]) => {

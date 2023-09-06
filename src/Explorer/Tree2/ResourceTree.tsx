@@ -46,10 +46,10 @@ export const DATA_TREE_LABEL = "DATA";
 export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: ResourceTreeProps): JSX.Element => {
   const {
     isNotebookEnabled,
-    myNotebooksContentRoot,
-    galleryContentRoot,
-    gitHubNotebooksContentRoot,
-    updateNotebookItem,
+    // myNotebooksContentRoot,
+    // galleryContentRoot,
+    // gitHubNotebooksContentRoot,
+    // updateNotebookItem,
   } = useNotebook(
     (state) => ({
       isNotebookEnabled: state.isNotebookEnabled,
