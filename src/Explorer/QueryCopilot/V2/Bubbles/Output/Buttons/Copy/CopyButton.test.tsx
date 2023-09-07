@@ -10,7 +10,7 @@ describe("Copy button snapshot tests", () => {
   it("should render and click copy", async () => {
     const testInput = "test input query";
     useQueryCopilot.getState().setGeneratedQuery(testInput);
-    const wrapper = shallow(<CopyButton />);
+    const wrapper = shallow(<CopyButton sqlQuery={""} />);
 
     const button = wrapper.find(IconButton).first();
     button.simulate("click", {});

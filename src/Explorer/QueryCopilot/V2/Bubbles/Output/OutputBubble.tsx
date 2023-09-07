@@ -1,10 +1,10 @@
 import { Stack, Text } from "@fluentui/react";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { OutputBubbleButtons } from "Explorer/QueryCopilot/V2/Bubbles/Output/Buttons/OutputBubbleButtons";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { useState } from "react";
 
-export const OutputBubble: React.FC = (): JSX.Element => {
+export const OutputBubble = ({ copilotMessage }: { copilotMessage: CopilotMessage }): JSX.Element => {
   const [windowHeight, setWindowHeight] = useState<string>();
 
   const calculateQueryWindowHeight = (): string => {
@@ -29,13 +29,11 @@ export const OutputBubble: React.FC = (): JSX.Element => {
       }}
       tokens={{ padding: 8, childrenGap: 8 }}
     >
-      <Stack.Item style={{ alignSelf: "flex-start", paddingLeft: "2px" }}>
-        {useQueryCopilot.getState()?.generatedQueryComments}
-      </Stack.Item>
+      <Stack.Item style={{ alignSelf: "flex-start", paddingLeft: "2px" }}>{copilotMessage.message}</Stack.Item>
       <Stack.Item style={{ alignSelf: "stretch", flexGrow: 4 }}>
         <EditorReact
           language={"sql"}
-          content={useQueryCopilot.getState()?.generatedQuery}
+          content={copilotMessage.sqlQuery}
           isReadOnly={true}
           ariaLabel={"AI Response"}
           wordWrap="on"
@@ -48,7 +46,7 @@ export const OutputBubble: React.FC = (): JSX.Element => {
         />
       </Stack.Item>
       <Stack.Item style={{ alignSelf: "flex-start" }}>
-        <OutputBubbleButtons />
+        <OutputBubbleButtons sqlQuery={copilotMessage.sqlQuery} />
       </Stack.Item>
       <Stack.Item>
         <Text style={{ fontWeight: 400, fontSize: "10px", lineHeight: "14px" }}>

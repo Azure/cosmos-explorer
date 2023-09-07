@@ -5,17 +5,17 @@ import { InsertButton } from "Explorer/QueryCopilot/V2/Bubbles/Output/Buttons/In
 import { MoreButton } from "Explorer/QueryCopilot/V2/Bubbles/Output/Buttons/More/MoreButton";
 import React from "react";
 
-export const OutputBubbleButtons: React.FC = (): JSX.Element => {
+export const OutputBubbleButtons = ({ sqlQuery }: { sqlQuery: string }): JSX.Element => {
   return (
     <Stack horizontal>
       <Stack.Item style={{ paddingTop: "5px" }}>
-        <InsertButton />
+        <InsertButton sqlQuery={sqlQuery} />
       </Stack.Item>
       <Stack.Item>
-        <CopyButton />
+        <CopyButton sqlQuery={sqlQuery} />
       </Stack.Item>
       <Stack.Item>
-        <FeedbackButtons />
+        <FeedbackButtons sqlQuery={sqlQuery} />
       </Stack.Item>
       <Stack.Item>
         <MoreButton />

@@ -43,13 +43,13 @@ export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: Q
           >
             <WelcomeBubble />
             {chatMessages.map((message, index) =>
-              message.source === 0 ? (
+              message.source === 0 || message.source === 2 ? (
                 <Stack
                   key={index}
                   horizontalAlign="center"
                   tokens={{ padding: 8, childrenGap: 8 }}
                   style={{
-                    backgroundColor: "#E0E7FF",
+                    backgroundColor: message.source === 0 ? "#E0E7FF" : "white",
                     borderRadius: "8px",
                     margin: "5px 10px",
                     textAlign: "start",
@@ -58,23 +58,9 @@ export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: Q
                   {message.message}
                 </Stack>
               ) : (
-                // This part should be wired with OutputBubble
-                <Stack
-                  key={index}
-                  horizontalAlign="center"
-                  tokens={{ padding: 8, childrenGap: 8 }}
-                  style={{
-                    backgroundColor: "white",
-                    borderRadius: "8px",
-                    margin: "5px 10px",
-                    textAlign: "start",
-                  }}
-                >
-                  {message.message}
-                </Stack>
+                <OutputBubble key={index} copilotMessage={message} />
               )
             )}
-            <OutputBubble />
             <RetrievingBubble />
             <ExplanationBubble />
 
