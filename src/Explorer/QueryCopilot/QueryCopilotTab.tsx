@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { FeedOptions } from "@azure/cosmos";
 import {
   Callout,
   CommandBarButton,
@@ -20,16 +19,11 @@ import { useBoolean } from "@fluentui/react-hooks";
 import {
   ContainerStatusType,
   PoolIdType,
-  QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
-import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
-import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
-import { MinimalQueryIterator } from "Common/IteratorUtilities";
+import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
-import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
-import { QueryResults } from "Contracts/ViewModels";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -37,15 +31,11 @@ import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
-import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { OnExecuteQueryClick, SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
-import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
-import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
-import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useRef, useState } from "react";
@@ -83,8 +73,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     setSelectedQuery,
     isGeneratingQuery,
     setIsGeneratingQuery,
-    isExecuting,
-    setIsExecuting,
     likeQuery,
     setLikeQuery,
     dislikeQuery,
@@ -93,12 +81,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     setShowCallout,
     showSamplePrompts,
     setShowSamplePrompts,
-    queryIterator,
-    setQueryIterator,
-    queryResults,
-    setQueryResults,
-    errorMessage,
-    setErrorMessage,
     isSamplePromptsOpen,
     setIsSamplePromptsOpen,
     showDeletePopup,
@@ -109,7 +91,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     setshowCopyPopup,
     showErrorMessageBar,
     setShowErrorMessageBar,
-    generatedQueryComments,
     setGeneratedQueryComments,
   } = useQueryCopilot();
 
@@ -238,64 +219,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     }
   };
 
-  const onExecuteQueryClick = async (): Promise<void> => {
-    traceStart(Action.ExecuteQueryGeneratedFromQueryCopilot, {
-      correlationId: useQueryCopilot.getState().correlationId,
-      userPrompt: userPrompt,
-      generatedQuery: generatedQuery,
-      generatedQueryComments: generatedQueryComments,
-      executedQuery: selectedQuery || query,
-    });
-    const queryToExecute = selectedQuery || query;
-    const queryIterator = querySampleDocuments(queryToExecute, {
-      enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
-    } as FeedOptions);
-    setQueryIterator(queryIterator);
-
-    setTimeout(async () => {
-      await queryDocumentsPerPage(0, queryIterator);
-    }, 100);
-  };
-
-  const queryDocumentsPerPage = async (firstItemIndex: number, queryIterator: MinimalQueryIterator): Promise<void> => {
-    try {
-      setIsExecuting(true);
-      useTabs.getState().setIsTabExecuting(true);
-      useTabs.getState().setIsQueryErrorThrown(false);
-      const queryResults: QueryResults = await queryPagesUntilContentPresent(
-        firstItemIndex,
-        async (firstItemIndex: number) =>
-          queryDocumentsPage(QueryCopilotSampleContainerId, queryIterator, firstItemIndex)
-      );
-
-      setQueryResults(queryResults);
-      setErrorMessage("");
-      setShowErrorMessageBar(false);
-      traceSuccess(Action.ExecuteQueryGeneratedFromQueryCopilot, {
-        correlationId: useQueryCopilot.getState().correlationId,
-      });
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      traceFailure(Action.ExecuteQueryGeneratedFromQueryCopilot, {
-        correlationId: useQueryCopilot.getState().correlationId,
-        errorMessage: errorMessage,
-      });
-      setErrorMessage(errorMessage);
-      handleError(errorMessage, "executeQueryCopilotTab");
-      useTabs.getState().setIsQueryErrorThrown(true);
-      setShowErrorMessageBar(true);
-    } finally {
-      setIsExecuting(false);
-      useTabs.getState().setIsTabExecuting(false);
-    }
-  };
-
   const getCommandbarButtons = (): CommandButtonComponentProps[] => {
     const executeQueryBtnLabel = selectedQuery ? "Execute Selection" : "Execute Query";
     const executeQueryBtn = {
       iconSrc: ExecuteQueryIcon,
       iconAlt: executeQueryBtnLabel,
-      onCommandClick: () => onExecuteQueryClick(),
+      onCommandClick: () => OnExecuteQueryClick(),
       commandButtonLabel: executeQueryBtnLabel,
       ariaLabel: executeQueryBtnLabel,
       hasPopup: false,
@@ -622,16 +551,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
               onContentChanged={(newQuery: string) => setQuery(newQuery)}
               onContentSelected={(selectedQuery: string) => setSelectedQuery(selectedQuery)}
             />
-            <QueryResultSection
-              isMongoDB={false}
-              queryEditorContent={selectedQuery || query}
-              error={errorMessage}
-              queryResults={queryResults}
-              isExecuting={isExecuting}
-              executeQueryDocumentsPage={(firstItemIndex: number) =>
-                queryDocumentsPerPage(firstItemIndex, queryIterator)
-              }
-            />
+            <QueryCopilotResults />
           </SplitterLayout>
         </Stack>
         <WelcomeModal visible={localStorage.getItem("hideWelcomeModal") !== "true"} />
