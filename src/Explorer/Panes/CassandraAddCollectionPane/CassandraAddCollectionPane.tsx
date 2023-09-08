@@ -307,7 +307,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             multiline
             id="editor-area"
             rows={5}
-            aria-label="Table Schema"
+            ariaLabel="Table Schema"
             value={userTableQuery}
             onChange={(e, newValue) => setUserTableQuery(newValue)}
           />
