@@ -40,6 +40,7 @@ export type Features = {
   readonly copilotVersion?: string;
   readonly disableCopilotPhoenixGateaway: boolean;
   readonly enableCopilotFullSchema: boolean;
+  readonly copilotChatFixedMonacoEditorHeight: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -112,6 +113,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     copilotVersion: get("copilotversion") ?? "v1.0",
     disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
     enableCopilotFullSchema: "true" === get("enablecopilotfullschema", "true"),
+    copilotChatFixedMonacoEditorHeight: "true" === get("copilotchatfixedmonacoeditorheight"),
   };
 }
 
