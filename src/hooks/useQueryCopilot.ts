@@ -88,7 +88,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showFeedbackModal: false,
   hideFeedbackModalForLikedQueries: false,
   correlationId: "",
-  query: "",
+  query: "SELECT * FROM c",
   selectedQuery: "",
   isGeneratingQuery: false,
   isGeneratingExplanation: false,

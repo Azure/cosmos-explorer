@@ -1,4 +1,6 @@
 import { FeedOptions } from "@azure/cosmos";
+import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
@@ -276,7 +278,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
-        onCommandClick: this.onExecuteQueryClick,
+        onCommandClick: this.isCopilotTabActive ? () => OnExecuteQueryClick() : this.onExecuteQueryClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -365,11 +367,18 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         selectedContent: "",
       });
     }
+
+    if (this.isCopilotTabActive) {
+      selectedContent.trim().length > 0
+        ? useQueryCopilot.getState().setSelectedQuery(selectedContent)
+        : useQueryCopilot.getState().setSelectedQuery("");
+    }
+
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
   public setEditorContent(): string {
-    if (this.state.queryCopilotGeneratedQuery) {
+    if (this.isCopilotTabActive && this.state.queryCopilotGeneratedQuery) {
       return this.state.queryCopilotGeneratedQuery;
     }
 
@@ -416,14 +425,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                   />
                 </div>
               </Fragment>
-              <QueryResultSection
-                isMongoDB={this.props.isPreferredApiMongoDB}
-                queryEditorContent={this.state.sqlQueryEditorContent}
-                error={this.state.error}
-                queryResults={this.state.queryResults}
-                isExecuting={this.state.isExecuting}
-                executeQueryDocumentsPage={(firstItemIndex: number) => this._executeQueryDocumentsPage(firstItemIndex)}
-              />
+              {this.isCopilotTabActive ? (
+                <QueryCopilotResults />
+              ) : (
+                <QueryResultSection
+                  isMongoDB={this.props.isPreferredApiMongoDB}
+                  queryEditorContent={this.state.sqlQueryEditorContent}
+                  error={this.state.error}
+                  queryResults={this.state.queryResults}
+                  isExecuting={this.state.isExecuting}
+                  executeQueryDocumentsPage={(firstItemIndex: number) =>
+                    this._executeQueryDocumentsPage(firstItemIndex)
+                  }
+                />
+              )}
             </SplitterLayout>
           </div>
         </div>

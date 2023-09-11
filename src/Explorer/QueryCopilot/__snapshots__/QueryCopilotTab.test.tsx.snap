@@ -125,24 +125,25 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       >
         <EditorReact
           ariaLabel="Editing Query"
-          content=""
+          content="SELECT * FROM c"
           isReadOnly={false}
           language="sql"
           lineNumbers="on"
           onContentChanged={[Function]}
           onContentSelected={[Function]}
         />
-        <QueryResultSection
-          error=""
-          executeQueryDocumentsPage={[Function]}
-          isExecuting={false}
-          isMongoDB={false}
-          queryEditorContent=""
-        />
+        <QueryCopilotResults />
       </t>
     </Stack>
     <WelcomeModal
       visible={true}
+    />
+    <DeletePopup
+      clearFeedback={[Function]}
+      setQuery={[Function]}
+      setShowDeletePopup={[Function]}
+      showDeletePopup={false}
+      showFeedbackBar={[Function]}
     />
     <CopyPopup
       setShowCopyPopup={[Function]}
