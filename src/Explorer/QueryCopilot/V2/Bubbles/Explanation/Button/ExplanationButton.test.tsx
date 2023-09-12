@@ -2,7 +2,7 @@ import { Text } from "@fluentui/react";
 import { shallow } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
-import { ExplanationBubble } from "./ExplanationBubble";
+import { ExplanationButton } from "./ExplanationButton";
 
 describe("Explanation Bubble", () => {
   const initialStoreState = useQueryCopilot.getState();
@@ -21,7 +21,7 @@ describe("Explanation Bubble", () => {
   it("should render explanation bubble with generated comments", () => {
     useQueryCopilot.getState().shouldIncludeInMessages = true;
 
-    const wrapper = shallow(<ExplanationBubble />);
+    const wrapper = shallow(<ExplanationButton />);
 
     expect(wrapper.find("Stack")).toHaveLength(1);
     expect(wrapper.find("Text")).toHaveLength(1);
@@ -39,7 +39,7 @@ describe("Explanation Bubble", () => {
     useQueryCopilot.getState().setShouldIncludeInMessages = mockSetShouldIncludeInMessages;
     useQueryCopilot.getState().setShowExplanationBubble = mockSetShowExplanationBubble;
 
-    const wrapper = shallow(<ExplanationBubble />);
+    const wrapper = shallow(<ExplanationButton />);
 
     const textElement = wrapper.find(Text);
     textElement.simulate("click");
@@ -61,7 +61,7 @@ describe("Explanation Bubble", () => {
   it("should render nothing when conditions are not met", () => {
     useQueryCopilot.getState().showExplanationBubble = false;
 
-    const wrapper = shallow(<ExplanationBubble />);
+    const wrapper = shallow(<ExplanationButton />);
 
     expect(wrapper.isEmptyRender()).toBe(true);
     expect(wrapper).toMatchSnapshot();
