@@ -60,6 +60,10 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
         } else if (platform === Platform.Portal) {
           const explorer = await configurePortal();
           setExplorer(explorer);
+        } else if (platform === Platform.Fabric) {
+          //TODO: need Fabric specific implementation similar to portal
+          const explorer = await configureHosted();
+          setExplorer(explorer);
         }
       }
     };
