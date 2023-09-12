@@ -111,7 +111,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableCopilot: "true" === get("enablecopilot"),
     copilotVersion: get("copilotversion") ?? "v1.0",
     disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
-    enableCopilotFullSchema: "true" === get("enablecopilotfullschema"),
+    enableCopilotFullSchema: "false" === get("enablecopilotfullschema") ? false : true,
   };
 }
 
