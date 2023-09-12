@@ -1,14 +1,24 @@
+import { FeedOptions } from "@azure/cosmos";
 import {
   ContainerStatusType,
   PoolIdType,
+  QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
-import { handleError } from "Common/ErrorHandlingUtils";
+import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
+import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
+import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
+import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
+import { QueryResults } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
+import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 
@@ -131,5 +141,59 @@ export const SubmitFeedback = async ({
     });
   } catch (error) {
     handleError(error, "copilotSubmitFeedback");
+  }
+};
+
+export const OnExecuteQueryClick = async (): Promise<void> => {
+  traceStart(Action.ExecuteQueryGeneratedFromQueryCopilot, {
+    correlationId: useQueryCopilot.getState().correlationId,
+    userPrompt: useQueryCopilot.getState().userPrompt,
+    generatedQuery: useQueryCopilot.getState().generatedQuery,
+    generatedQueryComments: useQueryCopilot.getState().generatedQueryComments,
+    executedQuery: useQueryCopilot.getState().selectedQuery || useQueryCopilot.getState().query,
+  });
+  const queryToExecute = useQueryCopilot.getState().selectedQuery || useQueryCopilot.getState().query;
+  const queryIterator = querySampleDocuments(queryToExecute, {
+    enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
+  } as FeedOptions);
+  useQueryCopilot.getState().setQueryIterator(queryIterator);
+
+  setTimeout(async () => {
+    await QueryDocumentsPerPage(0, queryIterator);
+  }, 100);
+};
+
+export const QueryDocumentsPerPage = async (
+  firstItemIndex: number,
+  queryIterator: MinimalQueryIterator
+): Promise<void> => {
+  try {
+    useQueryCopilot.getState().setIsExecuting(true);
+    useTabs.getState().setIsTabExecuting(true);
+    useTabs.getState().setIsQueryErrorThrown(false);
+    const queryResults: QueryResults = await queryPagesUntilContentPresent(
+      firstItemIndex,
+      async (firstItemIndex: number) => queryDocumentsPage(QueryCopilotSampleContainerId, queryIterator, firstItemIndex)
+    );
+
+    useQueryCopilot.getState().setQueryResults(queryResults);
+    useQueryCopilot.getState().setErrorMessage("");
+    useQueryCopilot.getState().setShowErrorMessageBar(false);
+    traceSuccess(Action.ExecuteQueryGeneratedFromQueryCopilot, {
+      correlationId: useQueryCopilot.getState().correlationId,
+    });
+  } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    traceFailure(Action.ExecuteQueryGeneratedFromQueryCopilot, {
+      correlationId: useQueryCopilot.getState().correlationId,
+      errorMessage: errorMessage,
+    });
+    useQueryCopilot.getState().setErrorMessage(errorMessage);
+    handleError(errorMessage, "executeQueryCopilotTab");
+    useTabs.getState().setIsQueryErrorThrown(true);
+    useQueryCopilot.getState().setShowErrorMessageBar(true);
+  } finally {
+    useQueryCopilot.getState().setIsExecuting(false);
+    useTabs.getState().setIsTabExecuting(false);
   }
 };

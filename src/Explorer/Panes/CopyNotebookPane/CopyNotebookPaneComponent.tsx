@@ -9,11 +9,11 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
+import { GitHubReposTitle } from "Explorer/Tree/ResourceTree";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { useNotebook } from "../../Notebook/useNotebook";
-import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";
@@ -65,7 +65,7 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
 
       options.push({
         key: "GitHub-Header",
-        text: ResourceTreeAdapter.GitHubReposTitle,
+        text: GitHubReposTitle,
         itemType: SelectableOptionMenuItemType.Header,
       });
 
