@@ -105,8 +105,10 @@ async function configureHosted(): Promise<Explorer> {
       }
 
       if (event.data?.type === MessageTypes.CloseTab) {
-        //CTODO: make case for vcoremongo
-        if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+        if (
+          event.data?.data?.tabId === "QuickstartPSQLShell" ||
+          event.data?.data?.tabId === "QuickstartVcoreMongoShell"
+        ) {
           useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
         } else {
           useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
@@ -304,8 +306,10 @@ async function configurePortal(): Promise<Explorer> {
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         } else if (event.data?.type === MessageTypes.CloseTab) {
-          //CTODO: make case for vcoremongo
-          if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+          if (
+            event.data?.data?.tabId === "QuickstartPSQLShell" ||
+            event.data?.data?.tabId === "QuickstartVcoreMongoShell"
+          ) {
             useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
           } else {
             useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
@@ -386,8 +390,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  const warningMessage = getNetworkSettingsWarningMessage();
-  useTabs.getState().setNetworkSettingsWarning(warningMessage);
+  getNetworkSettingsWarningMessage(useTabs.getState().setNetworkSettingsWarning);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));

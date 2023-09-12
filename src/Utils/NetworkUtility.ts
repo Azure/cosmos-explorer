@@ -1,3 +1,4 @@
+import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
 
 const PortalIPs: { [key: string]: string[] } = {
@@ -10,40 +11,58 @@ const PortalIPs: { [key: string]: string[] } = {
   usnat: ["7.28.202.68"],
 };
 
-export const getNetworkSettingsWarningMessage = (): string => {
+export const getNetworkSettingsWarningMessage = async (
+  setStateFunc: (warningMessage: string) => void
+): Promise<void> => {
   const accountProperties = userContext.databaseAccount?.properties;
+  const accessMessage =
+    "The Network settings for this account are preventing access from Data Explorer. Please allow access from Azure Portal to proceed.";
+  const publicAccessMessage =
+    "The Network settings for this account are preventing access from Data Explorer. Please enable public access to proceed.";
 
-  if (!accountProperties) {
-    return "";
-  }
+  if (userContext.apiType === "Postgres") {
+    checkFirewallRules(
+      "2022-11-08",
+      (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
+      undefined,
+      setStateFunc,
+      accessMessage
+    );
+  } else if (userContext.apiType === "VCoreMongo") {
+    checkFirewallRules(
+      "2023-03-01-preview",
+      (rule) =>
+        rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
+        (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
+      undefined,
+      setStateFunc,
+      accessMessage
+    );
+  } else if (accountProperties) {
+    // public network access is disabled
+    if (
+      accountProperties.publicNetworkAccess !== "Enabled" &&
+      accountProperties.publicNetworkAccess !== "SecuredByPerimeter"
+    ) {
+      setStateFunc(publicAccessMessage);
+    }
 
-  // public network access is disabled
-  if (
-    accountProperties.publicNetworkAccess !== "Enabled" &&
-    accountProperties.publicNetworkAccess !== "SecuredByPerimeter"
-  ) {
-    return "The Network settings for this account are preventing access from Data Explorer. Please enable public access to proceed.";
-  }
+    const ipRules = accountProperties.ipRules;
+    // public network access is NOT set to "All networks"
+    if (ipRules.length > 0) {
+      if (userContext.apiType === "Cassandra" || userContext.apiType === "Mongo") {
+        const portalIPs = PortalIPs[userContext.portalEnv];
+        let numberOfMatches = 0;
+        ipRules.forEach((ipRule) => {
+          if (portalIPs.indexOf(ipRule.ipAddressOrRange) !== -1) {
+            numberOfMatches++;
+          }
+        });
 
-  const ipRules = accountProperties.ipRules;
-  // public network access is set to "All networks"
-  if (ipRules.length === 0) {
-    return "";
-  }
-
-  if (userContext.apiType === "Cassandra" || userContext.apiType === "Mongo") {
-    const portalIPs = PortalIPs[userContext.portalEnv];
-    let numberOfMatches = 0;
-    ipRules.forEach((ipRule) => {
-      if (portalIPs.indexOf(ipRule.ipAddressOrRange) !== -1) {
-        numberOfMatches++;
+        if (numberOfMatches !== portalIPs.length) {
+          setStateFunc(accessMessage);
+        }
       }
-    });
-
-    if (numberOfMatches !== portalIPs.length) {
-      return "The Network settings for this account are preventing access from Data Explorer. Please allow access from Azure Portal to proceed.";
     }
   }
-
-  return "";
 };

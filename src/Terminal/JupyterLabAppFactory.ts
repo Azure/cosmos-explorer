@@ -28,6 +28,10 @@ export class JupyterLabAppFactory {
     this.isShellStarted = content?.includes("citus=>");
   }
 
+  private isVCoreMongoShellStarted(content: string | undefined) {
+    this.isShellStarted = content?.includes("Enter password");
+  }
+
   constructor(closeTab: () => void) {
     this.onShellExited = closeTab;
     this.isShellStarted = false;
@@ -43,7 +47,9 @@ export class JupyterLabAppFactory {
       case "Postgres":
         this.checkShellStarted = this.isPostgresShellStarted;
         break;
-      //CTODO: add vcoremongo case once we know what the returned content will be
+      case "VCoreMongo":
+        this.checkShellStarted = this.isVCoreMongoShellStarted;
+        break;
     }
   }
 

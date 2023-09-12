@@ -15,7 +15,7 @@ const createServerSettings = (props: TerminalProps): ServerConnection.ISettings 
   let body: BodyInit | undefined;
   let headers: HeadersInit | undefined;
   if (props.terminalEndpoint) {
-    let bodyObj: any = {
+    let bodyObj: { endpoint: string; username?: string } = {
       endpoint: props.terminalEndpoint,
     };
     if (props.username) {

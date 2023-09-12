@@ -1,15 +1,16 @@
 import { Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
-import { configContext } from "ConfigContext";
-import { FirewallRule, NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
+import { PoolIdType } from "Common/Constants";
+import { NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
 import { VcoreMongoQuickstartGuide } from "Explorer/Quickstart/VCoreMongoQuickstartGuide";
+import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
-import { armRequest } from "Utils/arm/request";
-import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React, { useEffect, useState } from "react";
+import FirewallRuleScreenshot from "../../../images/vcoreMongoFirewallRule.png";
 
 interface VCoreMongoQuickstartTabProps {
   explorer: Explorer;
@@ -27,35 +28,18 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
     forwardingId: notebookServerInfo.forwardingId,
   });
 
-  const checkFirewallRules = async (): Promise<void> => {
-    const firewallRulesUri = `${userContext.databaseAccount.id}/firewallRules`;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any = await armRequest({
-      host: configContext.ARM_ENDPOINT,
-      path: firewallRulesUri,
-      method: "GET",
-      apiVersion: "2023-03-01-preview",
-    });
-    const firewallRules: FirewallRule[] = response?.data?.value || response?.value || [];
-    const isEnabled = firewallRules.some(
+  useEffect(() => {
+    checkFirewallRules(
+      "2023-03-01-preview",
       (rule) =>
         rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
-        (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255")
+        (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
+      setIsAllPublicIPAddressEnabled
     );
-    setIsAllPublicIPAddressEnabled(isEnabled);
-
-    // If the firewall rule is not added, check every 30 seconds to see if the user has added the rule
-    if (!isEnabled && useTabs.getState().activeReactTab === ReactTabKind.Quickstart) {
-      setTimeout(checkFirewallRules, 30000);
-    }
-  };
-
-  useEffect(() => {
-    checkFirewallRules();
   });
 
   useEffect(() => {
-    explorer.allocateContainer();
+    explorer.allocateContainer(PoolIdType.DefaultPoolId);
   }, []);
 
   return (
@@ -64,8 +48,13 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
         <VcoreMongoQuickstartGuide />
       </Stack>
       <Stack style={{ width: "50%", borderLeft: "black solid 1px" }}>
-        {/* CTODO: refactor QuickstartFirewallNotification to allow for both Mongo and Postgres */}
-        {!isAllPublicIPAddressEnabled && <QuickstartFirewallNotification />}
+        {!isAllPublicIPAddressEnabled && (
+          <QuickstartFirewallNotification
+            messageType={MessageTypes.OpenVCoreMongoNetworkingBlade}
+            screenshot={FirewallRuleScreenshot}
+            shellName="MongoDB"
+          />
+        )}
         {isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
           <NotebookTerminalComponent
             notebookServerInfo={getNotebookServerInfo()}

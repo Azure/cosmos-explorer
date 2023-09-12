@@ -499,8 +499,11 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
   };
 }
 
-function createOpenTerminalButtonByKind(container: Explorer, terminalKind: ViewModels.TerminalKind): CommandButtonComponentProps {
-  const terminalFirendlyName = (function () {
+function createOpenTerminalButtonByKind(
+  container: Explorer,
+  terminalKind: ViewModels.TerminalKind
+): CommandButtonComponentProps {
+  const terminalFirendlyName = (): string => {
     switch (terminalKind) {
       case ViewModels.TerminalKind.Cassandra:
         return "Cassandra";
@@ -513,7 +516,7 @@ function createOpenTerminalButtonByKind(container: Explorer, terminalKind: ViewM
       default:
         return "";
     }
-  })();
+  };
   const label = `Open ${terminalFirendlyName} shell`;
   const tooltip =
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
@@ -532,7 +535,7 @@ function createOpenTerminalButtonByKind(container: Explorer, terminalKind: ViewM
     disabled: disableButton,
     ariaLabel: label,
     tooltipText: !disableButton ? "" : tooltip,
-  }
+  };
 }
 
 function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonComponentProps {

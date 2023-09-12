@@ -1,9 +1,6 @@
 import {
   DefaultButton,
-  Icon,
   IconButton,
-  Image,
-  IPivotItemProps,
   Link,
   Pivot,
   PivotItem,
@@ -12,16 +9,9 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-//   import {
-//     distributeTableCommand,
-//     distributeTableCommandForDisplay,
-//     loadDataCommand,
-//     loadDataCommandForDisplay,
-//     newTableCommand,
-//     newTableCommandForDisplay,
-//     queryCommand,
-//     queryCommandForDisplay,
-//   } from "Explorer/Quickstart/PostgreQuickstartCommands";
+import { sendMessage } from "Common/MessageHandler";
+import { MessageTypes } from "Contracts/ExplorerContracts";
+import { customPivotHeaderRenderer } from "Explorer/Quickstart/Shared/QuickstartRenderUtilities";
 import {
   loadDataCommand,
   newDbAndCollectionCommand,
@@ -31,15 +21,6 @@ import {
 } from "Explorer/Quickstart/VCoreMongoQuickstartCommands";
 import { useTerminal } from "hooks/useTerminal";
 import React, { useState } from "react";
-import Pivot1SelectedIcon from "../../../images/Pivot1_selected.svg";
-import Pivot2Icon from "../../../images/Pivot2.svg";
-import Pivot2SelectedIcon from "../../../images/Pivot2_selected.svg";
-import Pivot3Icon from "../../../images/Pivot3.svg";
-import Pivot3SelectedIcon from "../../../images/Pivot3_selected.svg";
-import Pivot4Icon from "../../../images/Pivot4.svg";
-import Pivot4SelectedIcon from "../../../images/Pivot4_selected.svg";
-import Pivot5Icon from "../../../images/Pivot5.svg";
-import Pivot5SelectedIcon from "../../../images/Pivot5_selected.svg";
 import { ReactTabKind, useTabs } from "../../hooks/useTabs";
 
 enum GuideSteps {
@@ -59,45 +40,6 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
     document.execCommand("copy");
   };
 
-  const getPivotHeaderIcon = (step: number): string => {
-    switch (step) {
-      case 0:
-        return Pivot1SelectedIcon;
-      case 1:
-        return step === currentStep ? Pivot2SelectedIcon : Pivot2Icon;
-      case 2:
-        return step === currentStep ? Pivot3SelectedIcon : Pivot3Icon;
-      case 3:
-        return step === currentStep ? Pivot4SelectedIcon : Pivot4Icon;
-      case 4:
-        return step === currentStep ? Pivot5SelectedIcon : Pivot5Icon;
-      default:
-        return "";
-    }
-  };
-
-  //CTODO: move this method to a common file (same with QuickstartGuide.tsx)
-  const customPivotHeaderRenderer = (
-    link: IPivotItemProps,
-    defaultRenderer: (link?: IPivotItemProps) => JSX.Element | null,
-    step: number
-  ): JSX.Element | null => {
-    if (!link || !defaultRenderer) {
-      return null;
-    }
-
-    return (
-      <Stack horizontal verticalAlign="center">
-        {currentStep > step ? (
-          <Icon iconName="CompletedSolid" style={{ color: "#57A300", marginRight: 8 }} />
-        ) : (
-          <Image style={{ marginRight: 8 }} src={getPivotHeaderIcon(step)} />
-        )}
-        {defaultRenderer({ ...link, itemIcon: undefined })}
-      </Stack>
-    );
-  };
-
   return (
     <Stack style={{ paddingTop: 8, height: "100%", width: "100%" }}>
       <Stack style={{ flexGrow: 1, padding: "0 20px", overflow: "auto" }}>
@@ -111,7 +53,9 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
           >
             <PivotItem
               headerText="Connect"
-              onRenderItemLink={(props, defaultRenderer) => customPivotHeaderRenderer(props, defaultRenderer, 0)}
+              onRenderItemLink={(props, defaultRenderer) =>
+                customPivotHeaderRenderer(props, defaultRenderer, currentStep, 0)
+              }
               itemKey={GuideSteps[0]}
               onClick={() => {
                 setCurrentStep(0);
@@ -127,22 +71,28 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   using your connection string.
                   <br />
                   <br />
-                  {/*CTODO: fix href */}
-                  <Link aria-label="View connection string" href="">
+                  <Link
+                    aria-label="View connection string"
+                    href=""
+                    onClick={() => sendMessage({ type: MessageTypes.OpenVCoreMongoConnectionStringsBlade })}
+                  >
                     View connection string
                   </Link>
                   <br />
                   <br />
                   This string contains placeholders for &lt;user&gt; and &lt;password&gt;. Replace them with your chosen
                   username and password to establish a secure connection to your cluster. Depending on your environment,
-                  you may need to adjust firewall rules or configure private endpoints in the 'Networking' tab of your
-                  database settings, or modify your own network's firewall settings, to successfully connect.
+                  you may need to adjust firewall rules or configure private endpoints in the &lsquo;Networking&rsquo;
+                  tab of your database settings, or modify your own network&apos;s firewall settings, to successfully
+                  connect.
                 </Text>
               </Stack>
             </PivotItem>
             <PivotItem
               headerText="New collection"
-              onRenderItemLink={(props, defaultRenderer) => customPivotHeaderRenderer(props, defaultRenderer, 1)}
+              onRenderItemLink={(props, defaultRenderer) =>
+                customPivotHeaderRenderer(props, defaultRenderer, currentStep, 1)
+              }
               itemKey={GuideSteps[1]}
               onClick={() => setCurrentStep(1)}
             >
@@ -153,9 +103,10 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   documents are similar to the columns in a relational database table. One key advantage of MongoDB is
                   that these documents within a collection can have different fields.
                   <br />
-                  You're now going to create a new database and a collection within that database using the Mongo shell.
-                  In MongoDB, creating a database or a collection is implicit. This means that databases and collections
-                  are created when you first reference them in a command, so no explicit creation command is necessary.
+                  You&apos;re now going to create a new database and a collection within that database using the Mongo
+                  shell. In MongoDB, creating a database or a collection is implicit. This means that databases and
+                  collections are created when you first reference them in a command, so no explicit creation command is
+                  necessary.
                 </Text>
                 <DefaultButton
                   style={{ marginTop: 16, width: 270 }}
@@ -190,18 +141,20 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
             </PivotItem>
             <PivotItem
               headerText="Load data"
-              onRenderItemLink={(props, defaultRenderer) => customPivotHeaderRenderer(props, defaultRenderer, 2)}
+              onRenderItemLink={(props, defaultRenderer) =>
+                customPivotHeaderRenderer(props, defaultRenderer, currentStep, 2)
+              }
               itemKey={GuideSteps[2]}
               onClick={() => setCurrentStep(2)}
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>
-                  Now that you've created your database and collection, it's time to populate your collection with data.
-                  In MongoDB, data is stored as documents, which are structured as field and value pairs.
+                  Now that you&apos;ve created your database and collection, it&apos;s time to populate your collection
+                  with data. In MongoDB, data is stored as documents, which are structured as field and value pairs.
                   <br />
                   <br />
-                  Let's populate your sampleCollection with data. We'll add 10 documents representing books, each with a
-                  title, author, and number of pages, to your sampleCollection in the quickstartDB database.
+                  Let&apos;s populate your sampleCollection with data. We&apos;ll add 10 documents representing books,
+                  each with a title, author, and number of pages, to your sampleCollection in the quickstartDB database.
                 </Text>
                 <DefaultButton
                   style={{ marginTop: 16, width: 200 }}
@@ -236,7 +189,9 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
             </PivotItem>
             <PivotItem
               headerText="Queries"
-              onRenderItemLink={(props, defaultRenderer) => customPivotHeaderRenderer(props, defaultRenderer, 3)}
+              onRenderItemLink={(props, defaultRenderer) =>
+                customPivotHeaderRenderer(props, defaultRenderer, currentStep, 3)
+              }
               itemKey={GuideSteps[3]}
               onClick={() => setCurrentStep(3)}
             >
@@ -279,7 +234,9 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
             </PivotItem>
             <PivotItem
               headerText="Integrations"
-              onRenderItemLink={(props, defaultRenderer) => customPivotHeaderRenderer(props, defaultRenderer, 4)}
+              onRenderItemLink={(props, defaultRenderer) =>
+                customPivotHeaderRenderer(props, defaultRenderer, currentStep, 4)
+              }
               itemKey={GuideSteps[4]}
               onClick={() => setCurrentStep(4)}
             >

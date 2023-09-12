@@ -1,9 +1,10 @@
 import { Spinner, SpinnerSize } from "@fluentui/react";
-import { configContext } from "ConfigContext";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
-import { armRequest } from "Utils/arm/request";
+import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import * as ko from "knockout";
 import * as React from "react";
+import FirewallRuleScreenshot from "../../../images/firewallRule.png";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -37,7 +38,13 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
 
   public renderComponent(): JSX.Element {
     if (!this.isAllPublicIPAddressesEnabled()) {
-      return <QuickstartFirewallNotification />;
+      return (
+        <QuickstartFirewallNotification
+          messageType={MessageTypes.OpenPostgresNetworkingBlade}
+          screenshot={FirewallRuleScreenshot}
+          shellName="PostgreSQL"
+        />
+      );
     }
 
     return this.parameters() ? (
@@ -83,7 +90,21 @@ export default class TerminalTab extends TabsBase {
     });
 
     if (options.kind === ViewModels.TerminalKind.Postgres) {
-      this.checkPostgresFirewallRules();
+      checkFirewallRules(
+        "2022-11-08",
+        (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
+        this.isAllPublicIPAddressesEnabled
+      );
+    }
+
+    if (options.kind === ViewModels.TerminalKind.VCoreMongo) {
+      checkFirewallRules(
+        "2023-03-01-preview",
+        (rule) =>
+          rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
+          (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
+        this.isAllPublicIPAddressesEnabled
+      );
     }
   }
 
@@ -135,30 +156,8 @@ export default class TerminalTab extends TabsBase {
     };
   }
 
-  //CTODO: add case for mongo vcore - refactor to include CheckFirewallRules() in QuickstartTab and VCoreMongoQuickstartTab
-  private async checkPostgresFirewallRules(): Promise<void> {
-    const firewallRulesUri = `${userContext.databaseAccount.id}/firewallRules`;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any = await armRequest({
-      host: configContext.ARM_ENDPOINT,
-      path: firewallRulesUri,
-      method: "GET",
-      apiVersion: "2022-11-08",
-    });
-    const firewallRules: DataModels.FirewallRule[] = response?.data?.value || response?.value || [];
-    const isEnabled = firewallRules.some(
-      (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"
-    );
-    this.isAllPublicIPAddressesEnabled(isEnabled);
-
-    // If the firewall rule is not added, check every 30 seconds to see if the user has added the rule
-    if (!isEnabled) {
-      setTimeout(() => this.checkPostgresFirewallRules(), 30000);
-    }
-  }
-
   private getUsername(): string {
-    if (userContext.apiType != "VCoreMongo" || !userContext?.vcoreMongoConnectionParams?.adminLogin) {
+    if (userContext.apiType !== "VCoreMongo" || !userContext?.vcoreMongoConnectionParams?.adminLogin) {
       return undefined;
     }
 
