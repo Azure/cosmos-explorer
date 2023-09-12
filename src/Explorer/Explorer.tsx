@@ -1321,10 +1321,11 @@ export default class Explorer {
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
-    const isNotebookEnabled = configContext.platform != Platform.Fabric && (
-      userContext.features.notebooksDownBanner ||
-      useNotebook.getState().isPhoenixNotebooks ||
-      useNotebook.getState().isPhoenixFeatures);
+    const isNotebookEnabled =
+      configContext.platform !== Platform.Fabric &&
+      (userContext.features.notebooksDownBanner ||
+        useNotebook.getState().isPhoenixNotebooks ||
+        useNotebook.getState().isPhoenixFeatures);
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook
       .getState()

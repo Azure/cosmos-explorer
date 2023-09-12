@@ -144,14 +144,15 @@ const App: React.FunctionComponent = () => {
 ReactDOM.render(<App />, document.body);
 
 function LoadFabricOverrides(): JSX.Element {
-
-  if (configContext.platform == Platform.Fabric) {
+  if (configContext.platform === Platform.Fabric) {
     const FabricStyle = React.lazy(() => import("./Platform/Fabric/FabricPlatform"));
     return (
-      <React.Suspense fallback={<div></div>}><FabricStyle /></React.Suspense>
-    )
+      <React.Suspense fallback={<div></div>}>
+        <FabricStyle />
+      </React.Suspense>
+    );
   } else {
-    return (<></>);
+    return <></>;
   }
 }
 

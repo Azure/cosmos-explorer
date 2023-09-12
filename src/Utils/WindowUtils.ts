@@ -5,7 +5,8 @@ export const getDataExplorerWindow = (currentWindow: Window): Window | undefined
       if (currentWindow.parent === currentWindow) {
         return undefined;
       }
-      if (currentWindow.parent.parent === currentWindow.top) { // Fabric
+      if (currentWindow.parent.parent === currentWindow.top) {
+        // Fabric
         return currentWindow;
       }
       if (currentWindow.parent === currentWindow.top) {

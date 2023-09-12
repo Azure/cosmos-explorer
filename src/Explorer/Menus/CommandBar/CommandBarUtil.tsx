@@ -26,7 +26,8 @@ import { MemoryTracker } from "./MemoryTrackerComponent";
 export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
   const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
 
-  const hoverColor = configContext.platform == Platform.Fabric ? StyleConstants.FabricAccentLight : StyleConstants.AccentLight;
+  const hoverColor =
+    configContext.platform == Platform.Fabric ? StyleConstants.FabricAccentLight : StyleConstants.AccentLight;
 
   const getFilter = (isDisabled: boolean): string => {
     if (isDisabled) {

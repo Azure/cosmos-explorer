@@ -54,7 +54,12 @@ export function createStaticCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   buttons.push(newCollectionBtn);
-  if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra" && configContext.platform != Platform.Fabric) {
+  if (
+    configContext.platform !== Platform.Fabric &&
+    userContext.apiType !== "Tables" &&
+    userContext.apiType !== "Cassandra"
+
+  ) {
     const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
     if (addSynapseLink) {
@@ -257,7 +262,9 @@ export function createDivider(): CommandButtonComponentProps {
 }
 
 function areScriptsSupported(): boolean {
-  return configContext.platform != Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+  return (
+    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+  );
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {

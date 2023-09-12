@@ -1,9 +1,9 @@
 import { Platform, configContext } from "../ConfigContext";
 
-export let StyleConstants = require("less-vars-loader!../../less/Common/Constants.less");
+export const StyleConstants = require("less-vars-loader!../../less/Common/Constants.less");
 
 export function updateStyles(): void {
-  if (configContext.platform == Platform.Fabric) {
+  if (configContext.platform === Platform.Fabric) {
     StyleConstants.AccentMediumHigh = StyleConstants.FabricAccentMediumHigh;
     StyleConstants.AccentMedium = StyleConstants.FabricAccentMedium;
     StyleConstants.AccentLight = StyleConstants.FabricAccentLight;
