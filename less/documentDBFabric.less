@@ -1,0 +1,144 @@
+@import "./Common/Constants";
+
+body {
+  background-color: #f5f5f5;
+}
+
+#divExplorer {
+  background-color: #f5f5f5;
+}
+
+.resourceTreeAndTabs {
+  border-radius: @FabricBoxBorderRadius;
+  box-shadow: @FabricBoxBorderShadow;
+  margin: @FabricBoxMargin;
+  margin-top: 4px;
+  background-color: #ffffff;
+}
+
+.tabsManagerContainer {
+  background-color: #fafafa
+}
+
+.nav-tabs-margin {
+  padding-top: 8px;
+  background-color: #fafafa
+}
+
+.commandBarContainer {
+  background-color: #ffffff;
+  border-bottom: none;
+  border-radius: @FabricBoxBorderRadius;
+  box-shadow: @FabricBoxBorderShadow;
+  margin: @FabricBoxMargin;
+  padding-top: 2px;
+}
+
+.dividerContainer {
+  padding: @SmallSpace 0px @SmallSpace 0px;
+  .flex-display();
+
+  span {
+    border-left: @ButtonBorderWidth solid @BaseMedium;
+    margin: 0 10px 0 10px;
+  }
+}
+
+.nav-tabs>li.active>.tabNavContentContainer,
+.nav-tabs>li.active>.tabNavContentContainer:focus,
+.nav-tabs>li.active>.tabNavContentContainer:hover {
+  color: #555;
+  cursor: default;
+  background-color: @BaseLight;
+  border-color: @BaseMedium;
+  border-bottom-color: @BaseLight;
+  border-style: solid;
+  border-width: 1px;
+  height: @ActiveTabHeight;
+  width: @ActiveTabWidth;
+}
+
+
+.resourceTree {
+  padding: 12px;
+}
+
+.accordion {
+  .accordionItemContainer {
+    .accordionItemHeader {
+      border-radius: 4px;
+    }
+  }
+}
+
+.treeComponent {
+  .nodeItem {
+    &:focus {
+      outline: 2px @FabricAccentMedium;
+    }
+
+    .treeNodeHeader {
+      padding: 5px 5px;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: @FabricAccentLight;
+
+        .treeMenuEllipsis {
+          opacity: 1;
+        }
+      }
+
+      &.showingMenu {
+        background-color: #eee;
+      }
+    }
+
+    .selected {
+      &>.treeNodeHeader {
+        background-color: @FabricAccentExtra;
+      }
+    }
+  }
+}
+
+
+.dataExplorerErrorConsoleContainer {
+  border-radius: @FabricBoxBorderRadius;
+  box-shadow: @FabricBoxBorderShadow;
+  margin: @FabricBoxMargin;
+  width: auto;
+  align-self: auto;
+}
+
+
+
+.filterbtnstyle {
+  background: #fff;
+  color: #000;
+  border: solid 1px #d1d1d1;
+  border-radius: 4px;
+}
+
+.filterbtnstyle:hover {
+  background: @FabricAccentLight;
+  color: #000;
+  border: solid 1px #d1d1d1;
+}
+
+.filterbtnstyle:active {
+  background: @FabricAccentLight;
+  color: #000;
+  border: solid 1px #d1d1d1;
+}
+
+.filterbtnstyle:focus {
+  background: #fff;
+  color: #000;
+  border: solid 1px #d1d1d1;
+}
+
+
+.gridRowSelected .tabdocumentsGridElement:hover {
+  background-color: @FabricAccentLight !important;
+}

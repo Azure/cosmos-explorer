@@ -10,6 +10,7 @@
 @DataExplorerFont: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
 @SemiboldFont: "Segoe UI Semibold", "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
 @GrayScale: "grayscale()";
+@NoColor: "brightness(0) saturate(100%)";
 
 @xSmallFontSize: 4px;
 @smallFontSize: 8px;
@@ -148,13 +149,38 @@
 @CommandBarButtonHeight: 40px;
 
 /**********************************************************************************
+                              Portal Consts
+/**********************************************************************************/
+
+@PortalAccentMediumHigh: #0058ad;
+@PortalAccentMedium: #004e87;
+@PortalAccentLight: #eef7ff;
+@PortalAccentAccentExtra: #ddf0ff;
+
+/**********************************************************************************
+                              Fabric Consts
+/**********************************************************************************/
+
+@FabricBoxBorderRadius: 8px;
+@FabricBoxBorderShadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.14);
+@FabricBoxMargin: 8px;
+
+@FabricAccentMediumHigh: #0c695a;
+@FabricAccentMedium: #117865;
+@FabricAccentLight: #f5f5f5;
+@FabricAccentExtra: #ebebeb;
+
+@FabricButtonBorderRadius: 4px;
+
+
+/**********************************************************************************
                               Common Flex Property
 /**********************************************************************************/
 
 .flex-display(@display: flex) {
-  display: ~"-webkit-@{display}";
-  display: ~"-ms-@{display}box"; // IE10 uses -ms-flexbox
-  display: ~"-ms-@{display}"; // IE11
+  display:~"-webkit-@{display}";
+  display:~"-ms-@{display}box"; // IE10 uses -ms-flexbox
+  display:~"-ms-@{display}"; // IE11
   display: @display;
 }
 
@@ -168,13 +194,15 @@
                                  High contrast mode active
 **************************************************************************************/
 
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+@media all and (-ms-high-contrast: none),
+(-ms-high-contrast: active) {
+
   .selectedRadio,
   .selectedRadio:hover,
   .selectedRadio:active,
   .selectedRadio.dirty,
-  .tab [type="radio"]:checked ~ label,
-  .tab [type="radio"]:checked ~ label:hover {
+  .tab [type="radio"]:checked~label,
+  .tab [type="radio"]:checked~label:hover {
     -ms-high-contrast-adjust: none;
     -webkit-text-fill-color: HighlightText;
     color: HighlightText;
@@ -183,6 +211,7 @@
   }
 
   .queryMetricsSummaryTuple {
+
     th,
     td {
       &:nth-child(2) {
