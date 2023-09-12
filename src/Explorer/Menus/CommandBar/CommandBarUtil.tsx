@@ -11,6 +11,7 @@ import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
 import { PoolIdType } from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/StyleConstants";
+import { configContext, Platform } from "../../../ConfigContext";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
@@ -25,11 +26,13 @@ import { MemoryTracker } from "./MemoryTrackerComponent";
 export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
   const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
 
+  const hoverColor = configContext.platform == Platform.Fabric ? StyleConstants.FabricAccentLight : StyleConstants.AccentLight;
+
   const getFilter = (isDisabled: boolean): string => {
     if (isDisabled) {
       return StyleConstants.GrayScale;
     }
-    return undefined;
+    return configContext.platform == Platform.Fabric ? StyleConstants.NoColor : undefined;
   };
 
   return btns
@@ -69,6 +72,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               height: buttonHeightPx,
               paddingRight: 0,
               paddingLeft: 0,
+              borderRadius: configContext.platform == Platform.Fabric ? StyleConstants.FabricButtonBorderRadius : "0px",
               minWidth: 24,
               marginLeft: isSplit ? 0 : 5,
               marginRight: isSplit ? 0 : 5,
@@ -80,17 +84,17 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             splitButtonMenuButton: {
               backgroundColor: backgroundColor,
               selectors: {
-                ":hover": { backgroundColor: StyleConstants.AccentLight },
+                ":hover": { backgroundColor: hoverColor },
               },
               width: 16,
             },
             label: { fontSize: StyleConstants.mediumFontSize },
-            rootHovered: { backgroundColor: StyleConstants.AccentLight },
-            rootPressed: { backgroundColor: StyleConstants.AccentLight },
+            rootHovered: { backgroundColor: hoverColor },
+            rootPressed: { backgroundColor: hoverColor },
             splitButtonMenuButtonExpanded: {
               backgroundColor: StyleConstants.AccentExtra,
               selectors: {
-                ":hover": { backgroundColor: StyleConstants.AccentLight },
+                ":hover": { backgroundColor: hoverColor },
               },
             },
             splitButtonDivider: {
@@ -121,7 +125,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
                 // TODO Remove all this crazy styling once we adopt Ui-Fabric Azure themes
                 selectors: {
                   ".ms-ContextualMenu-itemText": { fontSize: StyleConstants.mediumFontSize },
-                  ".ms-ContextualMenu-link:hover": { backgroundColor: StyleConstants.AccentLight },
+                  ".ms-ContextualMenu-link:hover": { backgroundColor: hoverColor },
                   ".ms-ContextualMenu-icon": { width: 16, height: 16 },
                 },
               },
