@@ -103,7 +103,6 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddStoredProcedureIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
       },
       label: "New Stored Procedure",
@@ -112,7 +111,6 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddUdfIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
       },
       label: "New UDF",
@@ -121,7 +119,6 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddTriggerIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, undefined);
       },
       label: "New Trigger",
@@ -130,13 +127,15 @@ export const createCollectionContextMenuButton = (
 
   items.push({
     iconSrc: DeleteCollectionIcon,
-    onClick: () =>
+    onClick: () => {
+      useSelectedNode.getState().setSelectedNode(selectedCollection);
       useSidePanel
         .getState()
         .openSidePanel(
           "Delete " + getCollectionName(),
           <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
-        ),
+        );
+    },
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });
