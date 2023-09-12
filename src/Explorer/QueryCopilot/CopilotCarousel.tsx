@@ -11,8 +11,9 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
-import { QueryCopilotSampleDatabaseId, StyleConstants } from "Common/Constants";
+import { QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
+import { StyleConstants } from "Common/StyleConstants";
 import { createCollection } from "Common/dataAccess/createCollection";
 import * as DataModels from "Contracts/DataModels";
 import { ContainerSampleGenerator } from "Explorer/DataSamples/ContainerSampleGenerator";

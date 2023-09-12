@@ -23,7 +23,8 @@ import {
   Text,
 } from "@fluentui/react";
 import * as React from "react";
-import { StyleConstants, Urls } from "../../../Common/Constants";
+import { Urls } from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/StyleConstants";
 import { hoursInAMonth } from "../../../Shared/Constants";
 import {
   computeRUUsagePriceHourly,
@@ -338,10 +339,10 @@ const getCurrentThroughput = (
     if (throughput) {
       return isAutoscale
         ? `, Current autoscale throughput: ${Math.round(
-            throughput / 10
-          )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-            targetThroughput / 10
-          )} - ${targetThroughput} ${throughputUnit}`
+          throughput / 10
+        )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
+          targetThroughput / 10
+        )} - ${targetThroughput} ${throughputUnit}`
         : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
     } else {
       return isAutoscale

@@ -9,7 +9,8 @@ import {
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
-import { PoolIdType, StyleConstants } from "../../../Common/Constants";
+import { PoolIdType } from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/StyleConstants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";

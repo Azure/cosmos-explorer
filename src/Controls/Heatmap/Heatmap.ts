@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import * as Plotly from "plotly.js-cartesian-dist-min";
-import { StyleConstants } from "../../Common/Constants";
 import { sendCachedDataMessage, sendReadyMessage } from "../../Common/MessageHandler";
+import { StyleConstants } from "../../Common/StyleConstants";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import "./Heatmap.less";
