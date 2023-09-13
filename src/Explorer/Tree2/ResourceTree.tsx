@@ -90,7 +90,7 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
           openItems={openItems}
           onOpenChange={handleOpenChange}
           size="small"
-          style={{ height: "100%" }}
+          style={{ height: "100%", width: "290px" }}
         >
           {[dataNodeTree].map((node) => (
             <TreeNode2Component
