@@ -503,7 +503,7 @@ function createOpenTerminalButtonByKind(
   container: Explorer,
   terminalKind: ViewModels.TerminalKind
 ): CommandButtonComponentProps {
-  const terminalFirendlyName = (): string => {
+  const terminalFriendlyName = (): string => {
     switch (terminalKind) {
       case ViewModels.TerminalKind.Cassandra:
         return "Cassandra";
@@ -517,7 +517,7 @@ function createOpenTerminalButtonByKind(
         return "";
     }
   };
-  const label = `Open ${terminalFirendlyName()} shell`;
+  const label = `Open ${terminalFriendlyName()} shell`;
   const tooltip =
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
   const disableButton =
