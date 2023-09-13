@@ -1127,6 +1127,10 @@ export default class Explorer {
         title = "PSQL Shell";
         break;
 
+      case ViewModels.TerminalKind.VCoreMongo:
+        title = "VCoreMongo Shell";
+        break;
+
       default:
         throw new Error("Terminal kind: ${kind} not supported");
     }
@@ -1313,7 +1317,7 @@ export default class Explorer {
   }
 
   public async refreshExplorer(): Promise<void> {
-    if (userContext.apiType !== "Postgres") {
+    if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
       userContext.authType === AuthType.ResourceToken
         ? this.refreshDatabaseForResourceToken()
         : this.refreshAllDatabases();

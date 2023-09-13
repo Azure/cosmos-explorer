@@ -260,30 +260,33 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   };
 
   public render(): JSX.Element {
+    let title: string;
+    let subtitle: string;
+
+    switch (userContext.apiType) {
+      case "Postgres":
+        title = "Welcome to Azure Cosmos DB for PostgreSQL";
+        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+        break;
+      case "VCoreMongo":
+        title = "Welcome to Azure Cosmos DB for MongoDB (vCore)";
+        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+        break;
+      default:
+        title = "Welcome to Azure Cosmos DB";
+        subtitle = "Globally distributed, multi-model database service for any scale";
+    }
+
     return (
       <div className="connectExplorerContainer">
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <h1
-                className="title"
-                role="heading"
-                aria-label={
-                  userContext.apiType === "Postgres"
-                    ? "Welcome to Azure Cosmos DB for PostgreSQL"
-                    : "Welcome to Azure Cosmos DB"
-                }
-              >
-                {userContext.apiType === "Postgres"
-                  ? "Welcome to Azure Cosmos DB for PostgreSQL"
-                  : "Welcome to Azure Cosmos DB"}
+              <h1 className="title" role="heading" aria-label={title}>
+                {title}
                 <FeaturePanelLauncher />
               </h1>
-              <div className="subtitle">
-                {userContext.apiType === "Postgres"
-                  ? "Get started with our sample datasets, documentation, and additional tools."
-                  : "Globally distributed, multi-model database service for any scale"}
-              </div>
+              <div className="subtitle">{subtitle}</div>
               {this.getSplashScreenButtons()}
               {useCarousel.getState().showCoachMark && (
                 <Coachmark
@@ -313,7 +316,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </TeachingBubbleContent>
                 </Coachmark>
               )}
-              {userContext.apiType === "Postgres" ? (
+              {userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo" ? (
                 <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 16 }}>
                   <Stack style={{ width: "33%" }}>
                     <Text
@@ -380,7 +383,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     if (
       userContext.apiType === "SQL" ||
       userContext.apiType === "Mongo" ||
-      (userContext.apiType === "Postgres" && !userContext.isReplica)
+      (userContext.apiType === "Postgres" && !userContext.isReplica) ||
+      userContext.apiType === "VCoreMongo"
     ) {
       const launchQuickstartBtn = {
         id: "quickstartDescription",
@@ -388,9 +392,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
         onClick: () => {
-          userContext.apiType === "Postgres"
-            ? useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart)
-            : this.container.onNewCollectionClicked({ isQuickstart: true });
+          if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
+            useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+          } else {
+            this.container.onNewCollectionClicked({ isQuickstart: true });
+          }
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
       };
@@ -405,39 +411,65 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       heroes.push(newNotebookBtn);
     }
 
+    heroes.push(this.getShellCard());
+    heroes.push(this.getThirdCard());
+    return heroes;
+  }
+
+  private getShellCard() {
     if (userContext.apiType === "Postgres") {
-      const postgreShellBtn = {
+      return {
         iconSrc: PowerShellIcon,
         title: "PostgreSQL Shell",
         description: "Create table and interact with data using PostgreSQL’s shell interface",
         onClick: () => this.container.openNotebookTerminal(TerminalKind.Postgres),
       };
-      heroes.push(postgreShellBtn);
-    } else {
-      const newContainerBtn = {
-        iconSrc: ContainersIcon,
-        title: `New ${getCollectionName()}`,
-        description: "Create a new container for storage and throughput",
-        onClick: () => {
-          this.container.onNewCollectionClicked();
-          traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
-        },
-      };
-      heroes.push(newContainerBtn);
     }
 
-    const connectBtn = {
-      iconSrc: ConnectIcon,
-      title: userContext.apiType === "Postgres" ? "Connect with pgAdmin" : "Connect",
-      description:
-        userContext.apiType === "Postgres"
-          ? "Prefer pgAdmin? Find your connection strings here"
-          : "Prefer using your own choice of tooling? Find the connection string you need to connect",
-      onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
-    };
-    heroes.push(connectBtn);
+    if (userContext.apiType === "VCoreMongo") {
+      return {
+        iconSrc: PowerShellIcon,
+        title: "Mongo Shell",
+        description: "Create a collection and interact with data using MongoDB's shell interface",
+        onClick: () => this.container.openNotebookTerminal(TerminalKind.VCoreMongo),
+      };
+    }
 
-    return heroes;
+    return {
+      iconSrc: ContainersIcon,
+      title: `New ${getCollectionName()}`,
+      description: "Create a new container for storage and throughput",
+      onClick: () => {
+        this.container.onNewCollectionClicked();
+        traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+      },
+    };
+  }
+
+  private getThirdCard() {
+    let icon = ConnectIcon;
+    let title = "Connect";
+    let description = "Prefer using your own choice of tooling? Find the connection string you need to connect";
+    let onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+
+    if (userContext.apiType === "Postgres") {
+      title = "Connect with pgAdmin";
+      description = "Prefer pgAdmin? Find your connection strings here";
+    }
+
+    if (userContext.apiType === "VCoreMongo") {
+      icon = ContainersIcon;
+      title = "Connect with Studio 3T";
+      description = "Prefer Studio 3T? Find your connection strings here";
+      onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+    }
+
+    return {
+      iconSrc: icon,
+      title: title,
+      description: description,
+      onClick: onClick,
+    };
   }
 
   private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
@@ -587,6 +619,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           },
         ];
         break;
+      default:
+        break;
     }
     return (
       <Stack>
@@ -724,6 +758,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           cdbLiveTv,
         ];
         break;
+      default:
+        break;
     }
     return (
       <Stack>
@@ -749,24 +785,46 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     );
   }
 
+  private postgresNextStepItems: { link: string; title: string; description: string }[] = [
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2208312",
+      title: "Data Modeling",
+      description: "",
+    },
+    {
+      link: " https://go.microsoft.com/fwlink/?linkid=2206941 ",
+      title: "How to choose a Distribution Column",
+      description: "",
+    },
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2207425",
+      title: "Build Apps with Python/Java/Django",
+      description: "",
+    },
+  ];
+
+  private vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
+    {
+      link:
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-migrate-native-tools?tabs=export-import",
+      title: "Migrate Data",
+      description: "",
+    },
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/vector-search-ai",
+      title: "Build AI apps with Vector Search",
+      description: "",
+    },
+    {
+      link:
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/tutorial-nodejs-web-app?tabs=github-codespaces",
+      title: "Build Apps with Nodejs",
+      description: "",
+    },
+  ];
+
   private getNextStepItems(): JSX.Element {
-    const items: { link: string; title: string; description: string }[] = [
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2208312",
-        title: "Data Modeling",
-        description: "",
-      },
-      {
-        link: " https://go.microsoft.com/fwlink/?linkid=2206941 ",
-        title: "How to choose a Distribution Column",
-        description: "",
-      },
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2207425",
-        title: "Build Apps with Python/Java/Django",
-        description: "",
-      },
-    ];
+    const items = userContext.apiType === "Postgres" ? this.postgresNextStepItems : this.vcoreMongoNextStepItems;
 
     return (
       <Stack style={{ minWidth: 124, maxWidth: 296 }}>
@@ -785,24 +843,44 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     );
   }
 
+  private postgresLearnMoreItems: { link: string; title: string; description: string }[] = [
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2207226",
+      title: "Performance Tuning",
+      description: "",
+    },
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2208037",
+      title: "Useful Diagnostic Queries",
+      description: "",
+    },
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2205270",
+      title: "Distributed SQL Reference",
+      description: "",
+    },
+  ];
+
+  private vcoreMongoLearnMoreItems: { link: string; title: string; description: string }[] = [
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/vector-search",
+      title: "Vector Search",
+      description: "",
+    },
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-create-text-index",
+      title: "Text Indexing",
+      description: "",
+    },
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/troubleshoot-common-issues",
+      title: "Troubleshoot common issues",
+      description: "",
+    },
+  ];
+
   private getTipsAndLearnMoreItems(): JSX.Element {
-    const items: { link: string; title: string; description: string }[] = [
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2207226",
-        title: "Performance Tuning",
-        description: "",
-      },
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2208037",
-        title: "Useful Diagnostic Queries",
-        description: "",
-      },
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2205270",
-        title: "Distributed SQL Reference",
-        description: "",
-      },
-    ];
+    const items = userContext.apiType === "Postgres" ? this.postgresLearnMoreItems : this.vcoreMongoLearnMoreItems;
 
     return (
       <Stack style={{ minWidth: 124, maxWidth: 296 }}>

@@ -372,6 +372,7 @@ export enum TerminalKind {
   Mongo = 1,
   Cassandra = 2,
   Postgres = 3,
+  VCoreMongo = 4,
 }
 
 export interface DataExplorerInputsFrame {
@@ -397,6 +398,7 @@ export interface DataExplorerInputsFrame {
   defaultCollectionThroughput?: CollectionCreationDefaults;
   isPostgresAccount?: boolean;
   isReplica?: boolean;
+  isVCoreMongoAccount?: boolean;
   clientIpAddress?: string;
   // TODO: Update this param in the OSS extension to remove isFreeTier, isMarlinServerGroup, and make nodes a flat array instead of an nested array
   connectionStringParams?: any;

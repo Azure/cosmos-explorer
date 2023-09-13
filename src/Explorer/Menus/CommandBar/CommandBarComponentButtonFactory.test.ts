@@ -142,8 +142,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
   });
 
-  describe("Open Mongo Shell button", () => {
-    const openMongoShellBtnLabel = "Open Mongo Shell";
+  describe("Open Mongo shell button", () => {
+    const openMongoShellBtnLabel = "Open Mongo shell";
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
@@ -247,8 +247,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
   });
 
-  describe("Open Cassandra Shell button", () => {
-    const openCassandraShellBtnLabel = "Open Cassandra Shell";
+  describe("Open Cassandra shell button", () => {
+    const openCassandraShellBtnLabel = "Open Cassandra shell";
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
