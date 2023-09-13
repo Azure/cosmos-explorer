@@ -129,7 +129,6 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
           </span>
           <span
             className="tabNavText"
-            style={active ? { fontWeight: "bolder", borderBottom: "2px solid rgba(0,120,212,1)" } : {}}
           >
             {useObservable(tab?.tabTitle || getReactTabTitle())}
           </span>
