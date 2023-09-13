@@ -39,6 +39,7 @@ import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
+import { Platform, configContext } from "./../../ConfigContext";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
@@ -69,7 +70,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     shallow
   );
   const { activeTab, refreshActiveTab } = useTabs();
-  const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+  const showScriptNodes =
+    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
   const pseudoDirPath = "PsuedoDir";
 
   const buildGalleryCallout = (): JSX.Element => {

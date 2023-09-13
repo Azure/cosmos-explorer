@@ -17,6 +17,7 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
+import { Platform, configContext } from "./../../ConfigContext";
 
 export const buildCollectionNode = (
   database: ViewModels.Database,
@@ -25,7 +26,8 @@ export const buildCollectionNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
 ): TreeNode2 => {
-  const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+  const showScriptNodes =
+    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
   const children: TreeNode2[] = [];
   children.push({
     label: getItemName(),
