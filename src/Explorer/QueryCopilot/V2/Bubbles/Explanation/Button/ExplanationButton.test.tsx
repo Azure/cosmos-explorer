@@ -4,7 +4,7 @@ import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { ExplanationButton } from "./ExplanationButton";
 
-describe("Explanation Bubble", () => {
+describe("Explanation Button", () => {
   const initialStoreState = useQueryCopilot.getState();
   beforeEach(() => {
     useQueryCopilot.setState(initialStoreState, true);

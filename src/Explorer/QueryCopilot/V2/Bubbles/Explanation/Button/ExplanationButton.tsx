@@ -8,6 +8,7 @@ export const ExplanationButton: React.FC = (): JSX.Element => {
     isGeneratingQuery,
     chatMessages,
     setChatMessages,
+    generatedQuery,
     generatedQueryComments,
     isGeneratingExplanation,
     setIsGeneratingExplanation,
@@ -24,7 +25,7 @@ export const ExplanationButton: React.FC = (): JSX.Element => {
     setTimeout(() => {
       if (useQueryCopilot.getState().shouldIncludeInMessages) {
         setIsGeneratingExplanation(false);
-        setChatMessages([...chatMessages, { source: 2, message: generatedQueryComments }]);
+        setChatMessages([...chatMessages, { source: 2, message: generatedQueryComments, sqlQuery: generatedQuery }]);
       }
     }, 3000);
   };
@@ -41,27 +42,19 @@ export const ExplanationButton: React.FC = (): JSX.Element => {
           margin: "5px",
         }}
       >
-        <Stack.Item>
-          <Text
-            onClick={showExplanation}
-            style={{
-              cursor: "pointer",
-              border: "1.5px solid #B0BEFF",
-              width: "100%",
-              padding: "2px",
-              borderRadius: "4px",
-              marginBottom: "5px",
-            }}
-          >
-            Explain this query to me
-          </Text>
-        </Stack.Item>
-        <Stack.Item>Here will be implementation of the buttons</Stack.Item>
-        <Stack.Item>
-          <Text style={{ fontWeight: 400, fontSize: "10px", lineHeight: "14px" }}>
-            AI-generated content may be incorrect
-          </Text>
-        </Stack.Item>
+        <Text
+          onClick={showExplanation}
+          style={{
+            cursor: "pointer",
+            border: "1.5px solid #B0BEFF",
+            width: "100%",
+            padding: "2px",
+            borderRadius: "4px",
+            marginBottom: "5px",
+          }}
+        >
+          Explain this query to me
+        </Text>
       </Stack>
     )
   );
