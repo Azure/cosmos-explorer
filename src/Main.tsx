@@ -70,7 +70,7 @@ const App: React.FunctionComponent = () => {
   const shouldShowModal = useQueryCopilot((state) => state.showFeedbackModal);
 
   const config = useConfig();
-  if (config?.platform == Platform.Fabric) {
+  if (config?.platform === Platform.Fabric) {
     loadTheme(appThemeFabric);
   }
   StyleConstants.updateStyles();
