@@ -4,6 +4,17 @@ body {
   background-color: #f5f5f5;
 }
 
+a {
+  color: @FabricAccentMedium;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: @FabricAccentMediumHigh;
+  text-decoration: underline;
+}
+
 #divExplorer {
   background-color: #f5f5f5;
 }
@@ -154,5 +165,9 @@ body {
 }
 
 .refreshcol1 {
+  filter: brightness(0) saturate(100%);
+}
+
+.fileImportImg img {
   filter: brightness(0) saturate(100%);
 }
