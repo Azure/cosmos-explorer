@@ -279,7 +279,7 @@ export default class Explorer {
     );
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
 
-    if (lastSubmitted != null) {
+    if (lastSubmitted !== null) {
       let lastSubmittedDate: number = parseInt(lastSubmitted);
       if (isNaN(lastSubmittedDate)) {
         lastSubmittedDate = 0;
