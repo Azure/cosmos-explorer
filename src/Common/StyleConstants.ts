@@ -1,5 +1,6 @@
 import { Platform, configContext } from "../ConfigContext";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 export const StyleConstants = require("less-vars-loader!../../less/Common/Constants.less");
 
 export function updateStyles(): void {
