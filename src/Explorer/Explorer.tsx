@@ -277,6 +277,20 @@ export default class Explorer {
       userContext.databaseAccount?.systemData?.createdAt || "",
       NINETY_DAYS_IN_MS
     );
+    const lastSubmitted: string = localStorage.getItem("lastSubmitted");
+
+    if (lastSubmitted !== null) {
+      let lastSubmittedDate: number = parseInt(lastSubmitted);
+      if (isNaN(lastSubmittedDate)) {
+        lastSubmittedDate = 0;
+      }
+
+      const nowMs: number = Date.now();
+      const millisecsSinceLastSubmitted = nowMs - lastSubmittedDate;
+      if (millisecsSinceLastSubmitted < NINETY_DAYS_IN_MS) {
+        return;
+      }
+    }
 
     // Try Cosmos DB subscription - survey shown to random 25% of users at day 1 in Data Explorer.
     if (userContext.isTryCosmosDBSubscription) {
@@ -285,17 +299,20 @@ export default class Explorer {
         this.getRandomInt(100) < 25
       ) {
         sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+        localStorage.setItem("lastSubmitted", Date.now().toString());
       }
     } else {
       // An existing account is lesser than 90 days old. For existing account show to random 10 % of users in Data Explorer.
       if (isAccountNewerThanNinetyDays) {
         if (this.getRandomInt(100) < 10) {
           sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+          localStorage.setItem("lastSubmitted", Date.now().toString());
         }
       } else {
         // An existing account is greater than 90 days. For existing account show to random 25 % of users in Data Explorer.
         if (this.getRandomInt(100) < 25) {
           sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+          localStorage.setItem("lastSubmitted", Date.now().toString());
         }
       }
     }
