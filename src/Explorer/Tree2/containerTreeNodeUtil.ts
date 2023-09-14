@@ -26,7 +26,7 @@ export const buildCollectionNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
 ): TreeNode2 => {
-  let children: TreeNode2[] = undefined;
+  let children: TreeNode2[];
 
   // Flat Tree for Fabric
   if (configContext.platform !== Platform.Fabric) {
@@ -152,7 +152,7 @@ const buildCollectionNodeChildren = (
   }
 
   return children;
-}
+};
 
 const buildStoredProcedureNode = (
   collection: ViewModels.Collection,

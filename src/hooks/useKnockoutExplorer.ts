@@ -64,9 +64,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           setExplorer(explorer);
         } else if (platform === Platform.Fabric) {
           // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
-          const connectionString = sessionStorage.getItem('connectionString');
+          const connectionString = sessionStorage.getItem("connectionString");
           if (!connectionString) {
-            console.error('No connection string found in session storage');
+            console.error("No connection string found in session storage");
             return;
           }
           const encryptedToken = await fetchEncryptedToken(connectionString);
@@ -77,7 +77,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           win.hostedConfig = {
             authType: AuthType.EncryptedToken,
             encryptedToken,
-            encryptedTokenMetadata
+            encryptedTokenMetadata,
           };
 
           const explorer = await configureHosted();
