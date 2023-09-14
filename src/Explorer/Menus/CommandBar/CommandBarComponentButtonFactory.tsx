@@ -58,7 +58,6 @@ export function createStaticCommandBarButtons(
     configContext.platform !== Platform.Fabric &&
     userContext.apiType !== "Tables" &&
     userContext.apiType !== "Cassandra"
-
   ) {
     const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
