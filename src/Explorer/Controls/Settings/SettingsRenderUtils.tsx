@@ -339,10 +339,10 @@ const getCurrentThroughput = (
     if (throughput) {
       return isAutoscale
         ? `, Current autoscale throughput: ${Math.round(
-          throughput / 10
-        )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-          targetThroughput / 10
-        )} - ${targetThroughput} ${throughputUnit}`
+            throughput / 10
+          )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
+            targetThroughput / 10
+          )} - ${targetThroughput} ${throughputUnit}`
         : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
     } else {
       return isAutoscale
