@@ -286,8 +286,8 @@ export default class Explorer {
       }
 
       const nowMs: number = Date.now();
-      const millisecsSinceAccountCreation = nowMs - lastSubmittedDate;
-      if (millisecsSinceAccountCreation < NINETY_DAYS_IN_MS) {
+      const millisecsSinceLastSubmitted = nowMs - lastSubmittedDate;
+      if (millisecsSinceLastSubmitted < NINETY_DAYS_IN_MS) {
         return;
       }
     }
