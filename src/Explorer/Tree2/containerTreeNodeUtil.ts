@@ -26,8 +26,47 @@ export const buildCollectionNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
 ): TreeNode2 => {
-  const showScriptNodes =
-    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+  let children: TreeNode2[] = undefined;
+
+  // Flat Tree for Fabric
+  if (configContext.platform !== Platform.Fabric) {
+    children = buildCollectionNodeChildren(database, collection, isNotebookEnabled, container, refreshActiveTab);
+  }
+
+  return {
+    label: collection.id(),
+    iconSrc: CollectionIcon,
+    children: children,
+    className: "collectionHeader",
+    contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
+    onClick: () => {
+      useSelectedNode.getState().setSelectedNode(collection);
+      collection.openTab();
+      // push to most recent
+      mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
+    },
+    onExpanded: () => {
+      // Rewritten version of expandCollapseCollection
+      useSelectedNode.getState().setSelectedNode(collection);
+      useCommandBar.getState().setContextButtons([]);
+      refreshActiveTab(
+        (tab: TabsBase) =>
+          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+      );
+    },
+    isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
+    onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
+  };
+};
+
+const buildCollectionNodeChildren = (
+  database: ViewModels.Database,
+  collection: ViewModels.Collection,
+  isNotebookEnabled: boolean,
+  container: Explorer,
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
+): TreeNode2[] => {
+  const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   const children: TreeNode2[] = [];
   children.push({
     label: getItemName(),
@@ -112,28 +151,8 @@ export const buildCollectionNode = (
     });
   }
 
-  return {
-    label: collection.id(),
-    iconSrc: CollectionIcon,
-    children: children,
-    className: "collectionHeader",
-    contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
-    onClick: () => {
-      useSelectedNode.getState().setSelectedNode(collection);
-    },
-    onExpanded: () => {
-      // Rewritten version of expandCollapseCollection
-      useSelectedNode.getState().setSelectedNode(collection);
-      useCommandBar.getState().setContextButtons([]);
-      refreshActiveTab(
-        (tab: TabsBase) =>
-          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
-      );
-    },
-    isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
-    onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
-  };
-};
+  return children;
+}
 
 const buildStoredProcedureNode = (
   collection: ViewModels.Collection,
