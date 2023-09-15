@@ -60,23 +60,52 @@ a:focus {
   }
 }
 
-.nav-tabs>li.active>.tabNavContentContainer,
-.nav-tabs>li.active>.tabNavContentContainer:focus,
-.nav-tabs>li.active>.tabNavContentContainer:hover {
-  color: #555;
-  cursor: default;
-  background-color: @BaseLight;
-  border-color: @BaseMedium;
-  border-bottom-color: @BaseLight;
-  border-style: solid;
-  border-width: 1px;
-  height: @ActiveTabHeight;
-  width: @ActiveTabWidth;
+
+.nav-tabs>li>.tabNavContentContainer>.tab_Content:hover {
+  border-bottom: 2px solid #e0e0e0;
 }
 
-.nav-tabs>li.active>.tabNavContentContainer>.tab_Content>.tabNavText {
-  font-weight: "bolder";
+.nav-tabs>li.active>.tabNavContentContainer>.tab_Content,
+.nav-tabs>li.active>.tabNavContentContainer>.tab_Content:hover {
   border-bottom: 2px solid @FabricAccentMedium;
+}
+
+.tabNavContentContainer {
+  padding: @SmallSpace 0px @SmallSpace 0px;
+
+  &:hover {
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .tab_Content {
+    border-right: 0px none transparent;
+    margin: 0px @SmallSpace 0px @SmallSpace;
+    width: calc(@TabsWidth - (@SmallSpace * 2));
+    padding-bottom: @SmallSpace;
+
+    .statusIconContainer {
+      margin-left: 0px;
+    }
+
+    .tabIconSection {
+      .cancelButton {
+        padding: 0px 0px 0px @SmallSpace;
+
+        &:hover {
+          background-color: transparent;
+        }
+
+        &:focus {
+          background-color: transparent;
+        }
+
+        &:active {
+          background-color: transparent;
+        }
+      }
+    }
+  }
 }
 
 
