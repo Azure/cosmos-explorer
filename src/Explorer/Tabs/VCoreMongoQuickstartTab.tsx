@@ -6,30 +6,34 @@ import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTe
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
-import { QuickstartGuide } from "Explorer/Quickstart/QuickstartGuide";
+import { VcoreMongoQuickstartGuide } from "Explorer/Quickstart/VCoreMongoQuickstartGuide";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
 import React, { useEffect, useState } from "react";
-import FirewallRuleScreenshot from "../../../images/firewallRule.png";
+import FirewallRuleScreenshot from "../../../images/vcoreMongoFirewallRule.png";
 
-interface QuickstartTabProps {
+interface VCoreMongoQuickstartTabProps {
   explorer: Explorer;
 }
 
-export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: QuickstartTabProps): JSX.Element => {
+export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = ({
+  explorer,
+}: VCoreMongoQuickstartTabProps): JSX.Element => {
   const notebookServerInfo = useNotebook((state) => state.notebookServerInfo);
   const [isAllPublicIPAddressEnabled, setIsAllPublicIPAddressEnabled] = useState<boolean>(true);
 
   const getNotebookServerInfo = (): NotebookWorkspaceConnectionInfo => ({
     authToken: notebookServerInfo.authToken,
-    notebookServerEndpoint: `${notebookServerInfo.notebookServerEndpoint?.replace(/\/+$/, "")}/postgresql`,
+    notebookServerEndpoint: `${notebookServerInfo.notebookServerEndpoint?.replace(/\/+$/, "")}/mongovcore`,
     forwardingId: notebookServerInfo.forwardingId,
   });
 
   useEffect(() => {
     checkFirewallRules(
-      "2022-11-08",
-      (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
+      "2023-03-01-preview",
+      (rule) =>
+        rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
+        (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
       setIsAllPublicIPAddressEnabled
     );
   });
@@ -41,27 +45,28 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
   return (
     <Stack style={{ width: "100%" }} horizontal>
       <Stack style={{ width: "50%" }}>
-        <QuickstartGuide />
+        <VcoreMongoQuickstartGuide />
       </Stack>
       <Stack style={{ width: "50%", borderLeft: "black solid 1px" }}>
         {!isAllPublicIPAddressEnabled && (
           <QuickstartFirewallNotification
-            messageType={MessageTypes.OpenPostgresNetworkingBlade}
+            messageType={MessageTypes.OpenVCoreMongoNetworkingBlade}
             screenshot={FirewallRuleScreenshot}
-            shellName="PostgreSQL"
+            shellName="MongoDB"
           />
         )}
         {isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
           <NotebookTerminalComponent
             notebookServerInfo={getNotebookServerInfo()}
             databaseAccount={userContext.databaseAccount}
-            tabId="QuickstartPSQLShell"
+            tabId="QuickstartVcoreMongoShell"
+            username={userContext.vcoreMongoConnectionParams.adminLogin}
           />
         )}
         {isAllPublicIPAddressEnabled && !notebookServerInfo?.notebookServerEndpoint && (
           <Stack style={{ margin: "auto 0" }}>
             <Text block style={{ margin: "auto" }}>
-              Connecting to the PostgreSQL shell.
+              Connecting to the Mongo shell.
             </Text>
             <Text block style={{ margin: "auto" }}>
               If the cluster was just created, this could take up to a minute.

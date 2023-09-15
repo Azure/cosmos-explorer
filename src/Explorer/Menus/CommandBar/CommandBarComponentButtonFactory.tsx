@@ -98,9 +98,9 @@ export function createStaticCommandBarButtons(
     ) {
       notebookButtons.push(createDivider());
       if (userContext.apiType === "Cassandra") {
-        notebookButtons.push(createOpenCassandraTerminalButton(container));
+        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Cassandra));
       } else {
-        notebookButtons.push(createOpenMongoTerminalButton(container));
+        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Mongo));
       }
     }
 
@@ -505,8 +505,25 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
   };
 }
 
-function createOpenMongoTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open Mongo Shell";
+function createOpenTerminalButtonByKind(
+  container: Explorer,
+  terminalKind: ViewModels.TerminalKind
+): CommandButtonComponentProps {
+  const terminalFriendlyName = (): string => {
+    switch (terminalKind) {
+      case ViewModels.TerminalKind.Cassandra:
+        return "Cassandra";
+      case ViewModels.TerminalKind.Mongo:
+        return "Mongo";
+      case ViewModels.TerminalKind.Postgres:
+        return "PSQL";
+      case ViewModels.TerminalKind.VCoreMongo:
+        return "MongoDB (vcore)";
+      default:
+        return "";
+    }
+  };
+  const label = `Open ${terminalFriendlyName()} shell`;
   const tooltip =
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
   const disableButton =
@@ -516,7 +533,7 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
     iconAlt: label,
     onCommandClick: () => {
       if (useNotebook.getState().isNotebookEnabled) {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+        container.openNotebookTerminal(terminalKind);
       }
     },
     commandButtonLabel: label,
@@ -524,51 +541,6 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
     disabled: disableButton,
     ariaLabel: label,
     tooltipText: !disableButton ? "" : tooltip,
-  };
-}
-
-function createOpenCassandraTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open Cassandra Shell";
-  const tooltip =
-    "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
-  const disableButton =
-    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
-  return {
-    iconSrc: HostedTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      if (useNotebook.getState().isNotebookEnabled) {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
-      }
-    },
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: disableButton,
-    ariaLabel: label,
-    tooltipText: !disableButton ? "" : tooltip,
-  };
-}
-
-function createOpenPsqlTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open PSQL Shell";
-  const disableButton =
-    (!useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled) ||
-    useSelectedNode.getState().isQueryCopilotCollectionSelected();
-  return {
-    iconSrc: HostedTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      if (useNotebook.getState().isNotebookEnabled) {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Postgres);
-      }
-    },
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: disableButton,
-    ariaLabel: label,
-    tooltipText: !disableButton
-      ? ""
-      : "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.",
   };
 }
 
@@ -636,7 +608,13 @@ function createStaticCommandBarButtonsForResourceToken(
 }
 
 export function createPostgreButtons(container: Explorer): CommandButtonComponentProps[] {
-  const openPostgreShellBtn = createOpenPsqlTerminalButton(container);
+  const openPostgreShellBtn = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Postgres);
 
   return [openPostgreShellBtn];
+}
+
+export function createVCoreMongoButtons(container: Explorer): CommandButtonComponentProps[] {
+  const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.VCoreMongo);
+
+  return [openVCoreMongoTerminalButton];
 }

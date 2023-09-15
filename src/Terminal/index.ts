@@ -7,17 +7,24 @@ import { HttpHeaders } from "../Common/Constants";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../UserContext";
-import "./index.css";
 import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 import { TerminalProps } from "./TerminalProps";
+import "./index.css";
 
 const createServerSettings = (props: TerminalProps): ServerConnection.ISettings => {
   let body: BodyInit | undefined;
   let headers: HeadersInit | undefined;
   if (props.terminalEndpoint) {
-    body = JSON.stringify({
+    let bodyObj: { endpoint: string; username?: string } = {
       endpoint: props.terminalEndpoint,
-    });
+    };
+    if (props.username) {
+      bodyObj = {
+        ...bodyObj,
+        username: props.username,
+      };
+    }
+    body = JSON.stringify(bodyObj);
     headers = {
       [HttpHeaders.contentType]: "application/json",
     };

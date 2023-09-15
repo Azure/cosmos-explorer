@@ -36,8 +36,11 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const buttons = useCommandBar((state) => state.contextButtons);
   const backgroundColor = StyleConstants.BaseLight;
 
-  if (userContext.apiType === "Postgres") {
-    const buttons = CommandBarComponentButtonFactory.createPostgreButtons(container);
+  if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
+    const buttons =
+      userContext.apiType === "Postgres"
+        ? CommandBarComponentButtonFactory.createPostgreButtons(container)
+        : CommandBarComponentButtonFactory.createVCoreMongoButtons(container);
     return (
       <div className="commandBarContainer">
         <FluentCommandBar
