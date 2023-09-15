@@ -23,7 +23,8 @@ import {
   Text,
 } from "@fluentui/react";
 import * as React from "react";
-import { StyleConstants, Urls } from "../../../Common/Constants";
+import { Urls } from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/StyleConstants";
 import { hoursInAMonth } from "../../../Shared/Constants";
 import {
   computeRUUsagePriceHourly,

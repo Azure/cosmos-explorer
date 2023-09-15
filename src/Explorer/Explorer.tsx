@@ -1,7 +1,7 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
-import { Platform } from "ConfigContext";
+import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { IGalleryItem } from "Juno/JunoClient";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
@@ -1343,9 +1343,10 @@ export default class Explorer {
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
-      userContext.features.notebooksDownBanner ||
-      useNotebook.getState().isPhoenixNotebooks ||
-      useNotebook.getState().isPhoenixFeatures;
+      configContext.platform !== Platform.Fabric &&
+      (userContext.features.notebooksDownBanner ||
+        useNotebook.getState().isPhoenixNotebooks ||
+        useNotebook.getState().isPhoenixFeatures);
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook
       .getState()
