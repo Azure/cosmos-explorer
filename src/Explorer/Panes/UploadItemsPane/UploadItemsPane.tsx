@@ -1,8 +1,8 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode, TooltipHost } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
-import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -52,6 +52,23 @@ export const UploadItemsPane: FunctionComponent = () => {
     onSubmit,
   };
 
+  const renderStatusCell = (item: UploadDetailsRecord) => {
+    const tooltipContent = `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
+    return (
+      <TooltipHost content={tooltipContent}>
+        <span>{tooltipContent}</span>
+      </TooltipHost>
+    );
+  };
+
+  const renderFileNameCell = (item: UploadDetailsRecord) => {
+    return (
+      <TooltipHost content={item.fileName}>
+        <span>{item.fileName}</span>
+      </TooltipHost>
+    );
+  };
+
   const columns: IColumn[] = [
     {
       key: "fileName",
@@ -59,6 +76,11 @@ export const UploadItemsPane: FunctionComponent = () => {
       fieldName: "fileName",
       minWidth: 140,
       maxWidth: 140,
+      isRowHeader: true,
+      isResizable: true,
+      data: "string",
+      isPadded: true,
+      onRender: renderFileNameCell,
     },
     {
       key: "status",
@@ -70,6 +92,7 @@ export const UploadItemsPane: FunctionComponent = () => {
       isResizable: true,
       data: "string",
       isPadded: true,
+      onRender: renderStatusCell,
     },
   ];
 
