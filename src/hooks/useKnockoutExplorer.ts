@@ -1,4 +1,5 @@
 import { createUri } from "Common/UrlUtility";
+import { FabricMessage } from "Contracts/FabricMessage";
 import Explorer from "Explorer/Explorer";
 import { fetchEncryptedToken } from "Platform/Hosted/Components/ConnectExplorer";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -63,24 +64,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           const explorer = await configurePortal();
           setExplorer(explorer);
         } else if (platform === Platform.Fabric) {
-          // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
-          const connectionString = sessionStorage.getItem("connectionString");
-          if (!connectionString) {
-            console.error("No connection string found in session storage");
-            return;
-          }
-          const encryptedToken = await fetchEncryptedToken(connectionString);
-          // TODO Duplicated from useTokenMetadata
-          const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
-
-          const win = (window as unknown) as HostedExplorerChildFrame;
-          win.hostedConfig = {
-            authType: AuthType.EncryptedToken,
-            encryptedToken,
-            encryptedTokenMetadata,
-          };
-
-          const explorer = await configureHosted();
+          const explorer = await configureFabric();
           setExplorer(explorer);
         }
       }
@@ -96,6 +80,51 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
       }
     }
   }, [explorer]);
+
+  return explorer;
+}
+
+async function configureFabric(): Promise<Explorer> {
+  // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
+  const connectionString = sessionStorage.getItem('connectionString');
+  if (!connectionString) {
+    console.error('No connection string found in session storage');
+    return undefined;
+  }
+  const encryptedToken = await fetchEncryptedToken(connectionString);
+  // TODO Duplicated from useTokenMetadata
+  const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
+
+  const hostedConfig: EncryptedToken = {
+    authType: AuthType.EncryptedToken,
+    encryptedToken,
+    encryptedTokenMetadata
+  };
+
+  const explorer = await configureHostedWithEncryptedToken(hostedConfig);
+
+  window.addEventListener(
+    "message",
+    (event) => {
+
+      console.log('iframe Received message', event);
+
+      if (isInvalidParentFrameOrigin(event)) {
+        return;
+      }
+
+      if (!shouldProcessMessage(event)) {
+        return;
+      }
+
+      const data: FabricMessage = event.data?.data;
+      window.parent.postMessage(
+        { action: "echo", data, signature: "pcIframe" },
+        window.document.referrer
+      );
+    },
+    false
+  );
 
   return explorer;
 }
