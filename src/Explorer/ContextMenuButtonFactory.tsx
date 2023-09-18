@@ -18,6 +18,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
+import { Platform, configContext } from "./../ConfigContext";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
 import { useNotebook } from "./Notebook/useNotebook";
@@ -99,7 +100,10 @@ export const createCollectionContextMenuButton = (
     });
   }
 
-  if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
+  if (
+    configContext.platform !== Platform.Fabric &&
+    (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+  ) {
     items.push({
       iconSrc: AddStoredProcedureIcon,
       onClick: () => {

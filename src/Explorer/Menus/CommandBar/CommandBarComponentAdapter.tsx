@@ -8,7 +8,9 @@ import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { userContext } from "UserContext";
 import * as React from "react";
 import create, { UseStore } from "zustand";
-import { ConnectionStatusType, PoolIdType, StyleConstants } from "../../../Common/Constants";
+import { ConnectionStatusType, PoolIdType } from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/StyleConstants";
+import { Platform, configContext } from "../../../ConfigContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -84,15 +86,27 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     );
   }
 
+  const rootStyle =
+    configContext.platform === Platform.Fabric
+      ? {
+          root: {
+            backgroundColor: "transparent",
+            padding: "0px 14px 0px 14px",
+          },
+        }
+      : {
+          root: {
+            backgroundColor: backgroundColor,
+          },
+        };
+
   return (
     <div className="commandBarContainer">
       <FluentCommandBar
         ariaLabel="Use left and right arrow keys to navigate between commands"
         items={uiFabricStaticButtons.concat(uiFabricTabsButtons)}
         farItems={uiFabricControlButtons}
-        styles={{
-          root: { backgroundColor: backgroundColor },
-        }}
+        styles={rootStyle}
         overflowButtonProps={{ ariaLabel: "More commands" }}
       />
     </div>

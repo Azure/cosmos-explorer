@@ -9,6 +9,7 @@ import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFacto
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "../useSelectedNode";
+import { Platform, configContext } from "./../../ConfigContext";
 
 export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boolean): TreeNode2[] => {
   const databases = useDatabases((state) => state.databases);
@@ -35,7 +36,7 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
       onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
     };
 
-    if (database.isDatabaseShared()) {
+    if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
       databaseNode.children.push({
         id: database.isSampleDB ? "sampleScaleSettings" : "",
         label: "Scale",
