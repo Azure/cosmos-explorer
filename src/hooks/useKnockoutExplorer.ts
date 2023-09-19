@@ -1,6 +1,8 @@
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
+import { fetchEncryptedToken } from "Platform/Hosted/Components/ConnectExplorer";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { fetchAccessData } from "hooks/usePortalAccessToken";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
@@ -60,6 +62,26 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
         } else if (platform === Platform.Portal) {
           const explorer = await configurePortal();
           setExplorer(explorer);
+        } else if (platform === Platform.Fabric) {
+          // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
+          const connectionString = sessionStorage.getItem("connectionString");
+          if (!connectionString) {
+            console.error("No connection string found in session storage");
+            return;
+          }
+          const encryptedToken = await fetchEncryptedToken(connectionString);
+          // TODO Duplicated from useTokenMetadata
+          const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
+
+          const win = (window as unknown) as HostedExplorerChildFrame;
+          win.hostedConfig = {
+            authType: AuthType.EncryptedToken,
+            encryptedToken,
+            encryptedTokenMetadata,
+          };
+
+          const explorer = await configureHosted();
+          setExplorer(explorer);
         }
       }
     };
@@ -105,7 +127,10 @@ async function configureHosted(): Promise<Explorer> {
       }
 
       if (event.data?.type === MessageTypes.CloseTab) {
-        if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+        if (
+          event.data?.data?.tabId === "QuickstartPSQLShell" ||
+          event.data?.data?.tabId === "QuickstartVcoreMongoShell"
+        ) {
           useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
         } else {
           useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
@@ -294,13 +319,19 @@ async function configurePortal(): Promise<Explorer> {
           updateContextsFromPortalMessage(inputs);
           explorer = new Explorer();
           resolve(explorer);
+          if (userContext.apiType === "Postgres") {
+            explorer.openNPSSurveyDialog();
+          }
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         } else if (event.data?.type === MessageTypes.CloseTab) {
-          if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+          if (
+            event.data?.data?.tabId === "QuickstartPSQLShell" ||
+            event.data?.data?.tabId === "QuickstartVcoreMongoShell"
+          ) {
             useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
           } else {
             useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
@@ -372,8 +403,16 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  const warningMessage = getNetworkSettingsWarningMessage();
-  useTabs.getState().setNetworkSettingsWarning(warningMessage);
+  if (inputs.isVCoreMongoAccount) {
+    if (inputs.connectionStringParams) {
+      updateUserContext({
+        apiType: "VCoreMongo",
+        vcoreMongoConnectionParams: inputs.connectionStringParams,
+      });
+    }
+  }
+
+  getNetworkSettingsWarningMessage(useTabs.getState().setNetworkSettingsWarning);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));

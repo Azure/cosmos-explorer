@@ -16,6 +16,7 @@ export enum Platform {
   Portal = "Portal",
   Hosted = "Hosted",
   Emulator = "Emulator",
+  Fabric = "Fabric",
 }
 
 export interface ConfigContext {
@@ -187,6 +188,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
           console.error(`Invalid platform query parameter: ${platform}`);
           break;
         case Platform.Portal:
+        case Platform.Fabric:
         case Platform.Hosted:
         case Platform.Emulator:
           updateConfigContext({ platform });

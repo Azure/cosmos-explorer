@@ -11,11 +11,13 @@ export interface GenerateSQLQueryResponse {
 enum MessageSource {
   User,
   AI,
+  AIExplanation,
 }
 
 export interface CopilotMessage {
   source: MessageSource;
   message: string;
+  sqlQuery?: string;
   explanation?: string;
 }
 

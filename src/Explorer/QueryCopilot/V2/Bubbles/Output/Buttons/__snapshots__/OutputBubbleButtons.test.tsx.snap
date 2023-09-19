@@ -11,13 +11,19 @@ exports[`Output Bubble Buttons snapshot tests should render 1`] = `
       }
     }
   >
-    <InsertButton />
+    <InsertButton
+      sqlQuery=""
+    />
   </StackItem>
   <StackItem>
-    <CopyButton />
+    <CopyButton
+      sqlQuery=""
+    />
   </StackItem>
   <StackItem>
-    <FeedbackButtons />
+    <FeedbackButtons
+      sqlQuery=""
+    />
   </StackItem>
   <StackItem>
     <MoreButton />

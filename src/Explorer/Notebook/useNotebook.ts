@@ -1,6 +1,6 @@
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
-import { cloneDeep } from "lodash";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
+import { cloneDeep } from "lodash";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
@@ -10,13 +10,13 @@ import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { ContainerConnectionInfo, ContainerInfo, PhoenixErrorType } from "../../Contracts/DataModels";
-import { useTabs } from "../../hooks/useTabs";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
+import { useTabs } from "../../hooks/useTabs";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
 
@@ -124,7 +124,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     }
 
     const firstWriteLocation =
-      userContext.apiType === "Postgres"
+      userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo"
         ? databaseAccount?.location
         : databaseAccount?.properties?.writeLocations?.[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
@@ -316,8 +316,10 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           isPhoenixNotebooks = isPublicInternetAllowed && userContext.features.phoenixNotebooks === true;
           isPhoenixFeatures =
             isPublicInternetAllowed &&
-            // phoenix needs to be enabled for Postgres accounts since the PSQL shell requires phoenix containers
-            (userContext.features.phoenixFeatures === true || userContext.apiType === "Postgres");
+            // phoenix needs to be enabled for Postgres and VCoreMongo accounts since the PSQL and mongo shell requires phoenix containers
+            (userContext.features.phoenixFeatures === true ||
+              userContext.apiType === "Postgres" ||
+              userContext.apiType === "VCoreMongo");
         } else {
           isPhoenixNotebooks = isPhoenixFeatures = isPublicInternetAllowed;
         }

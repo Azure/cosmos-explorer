@@ -40,6 +40,7 @@ import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
+import { Platform, configContext } from "./../../ConfigContext";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
@@ -249,7 +250,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
    * @param container
    */
   private static showScriptNodes(container: Explorer): boolean {
-    return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+    return (
+      configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+    );
   }
 
   private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): TreeNode {

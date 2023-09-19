@@ -20,7 +20,7 @@ beforeEach(() => {
 
 describe("Feedback buttons snapshot tests", () => {
   it("should click like and show callout", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let likeButton = wrapper.find(IconButton).first();
     const dislikeButton = wrapper.find(IconButton).last();
@@ -35,7 +35,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should click like and dismiss callout", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     const likeButton = wrapper.find(IconButton).first();
     likeButton.simulate("click");
@@ -49,7 +49,7 @@ describe("Feedback buttons snapshot tests", () => {
 
   it("should click like and submit feedback", () => {
     const spy = jest.spyOn(useQueryCopilot.getState(), "openFeedbackModal");
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     const likeButton = wrapper.find(IconButton).first();
     likeButton.simulate("click");
@@ -61,7 +61,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over like", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let likeButton = wrapper.find(IconButton).first();
     likeButton.simulate("mouseover");
@@ -72,7 +72,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over rest like and leave", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let likeButton = wrapper.find(IconButton).first();
     likeButton.simulate("mouseover");
@@ -84,7 +84,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over pressed like and leave", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let likeButton = wrapper.find(IconButton).first();
     likeButton.simulate("click");
@@ -97,7 +97,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over like and click", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let likeButton = wrapper.find(IconButton).first();
     likeButton.simulate("mouseover");
@@ -109,7 +109,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should dobule click on like", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let likeButton = wrapper.find(IconButton).first();
     likeButton.simulate("click");
@@ -124,7 +124,7 @@ describe("Feedback buttons snapshot tests", () => {
 
   it("should click dislike and show popup", () => {
     const spy = jest.spyOn(useQueryCopilot.getState(), "openFeedbackModal");
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     const likeButton = wrapper.find(IconButton).first();
     let dislikeButton = wrapper.find(IconButton).last();
@@ -140,7 +140,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over dislike", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let dislikeButton = wrapper.find(IconButton).last();
     dislikeButton.simulate("mouseover");
@@ -151,7 +151,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over rest dislike and leave", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let dislikeButton = wrapper.find(IconButton).last();
     dislikeButton.simulate("mouseover");
@@ -163,7 +163,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over pressed dislike and leave", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let dislikeButton = wrapper.find(IconButton).last();
     dislikeButton.simulate("click");
@@ -178,7 +178,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should hover over dislike and click", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let dislikeButton = wrapper.find(IconButton).last();
     dislikeButton.simulate("mouseover");
@@ -190,7 +190,7 @@ describe("Feedback buttons snapshot tests", () => {
   });
 
   it("should dobule click on dislike", () => {
-    const wrapper = shallow(<FeedbackButtons />);
+    const wrapper = shallow(<FeedbackButtons sqlQuery={""} />);
 
     let dislikeButton = wrapper.find(IconButton).last();
     dislikeButton.simulate("click");

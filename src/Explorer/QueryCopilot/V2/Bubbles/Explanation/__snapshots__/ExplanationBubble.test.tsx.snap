@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Explanation Bubble should render explanation bubble with generated comments 1`] = `
+exports[`Explanation Bubble snapshot tests should render 1`] = `
 <Stack
-  horizontalAlign="center"
+  horizontalAlign="start"
   style={
     Object {
       "backgroundColor": "white",
@@ -17,7 +17,22 @@ exports[`Explanation Bubble should render explanation bubble with generated comm
       "padding": 8,
     }
   }
-/>
+  verticalAlign="start"
+>
+  <Text>
+    Mock message
+  </Text>
+  <FeedbackButtons />
+  <Text
+    style={
+      Object {
+        "fontSize": "10px",
+        "fontWeight": 400,
+        "lineHeight": "14px",
+      }
+    }
+  >
+    AI-generated content may be incorrect
+  </Text>
+</Stack>
 `;
-
-exports[`Explanation Bubble should render nothing when conditions are not met 1`] = `""`;

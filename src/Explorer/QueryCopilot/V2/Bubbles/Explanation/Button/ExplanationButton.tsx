@@ -2,57 +2,44 @@ import { Stack, Text } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 
-export const ExplanationBubble: React.FC = (): JSX.Element => {
+export const ExplanationButton: React.FC = (): JSX.Element => {
   const {
     showExplanationBubble,
     isGeneratingQuery,
-    showQueryExplanation,
-    setShowQueryExplanation,
     chatMessages,
     setChatMessages,
+    generatedQuery,
     generatedQueryComments,
     isGeneratingExplanation,
     setIsGeneratingExplanation,
-    shouldIncludeInMessages,
     setShouldIncludeInMessages,
+    setShowExplanationBubble,
   } = useQueryCopilot();
 
   const showExplanation = () => {
     setChatMessages([...chatMessages, { source: 0, message: "Explain this query to me" }]);
     setIsGeneratingExplanation(true);
     setShouldIncludeInMessages(true);
+    setShowExplanationBubble(false);
 
     setTimeout(() => {
-      setIsGeneratingExplanation(false);
-      setShowQueryExplanation(true);
+      if (useQueryCopilot.getState().shouldIncludeInMessages) {
+        setIsGeneratingExplanation(false);
+        setChatMessages([...chatMessages, { source: 2, message: generatedQueryComments, sqlQuery: generatedQuery }]);
+      }
     }, 3000);
   };
 
   return (
     showExplanationBubble &&
     !isGeneratingQuery &&
-    !isGeneratingExplanation &&
-    (showQueryExplanation && shouldIncludeInMessages ? (
-      <Stack
-        horizontalAlign="center"
-        tokens={{ padding: 8, childrenGap: 8 }}
-        style={{
-          backgroundColor: "white",
-          borderRadius: "8px",
-          margin: "5px 10px",
-          textAlign: "start",
-        }}
-      >
-        {generatedQueryComments}
-      </Stack>
-    ) : (
+    !isGeneratingExplanation && (
       <Stack
         style={{
           display: "flex",
           alignItems: "center",
-          padding: "5px 5px 5px 40px",
+          padding: "5px 5px 5px 50px",
           margin: "5px",
-          width: "100%",
         }}
       >
         <Text
@@ -69,6 +56,6 @@ export const ExplanationBubble: React.FC = (): JSX.Element => {
           Explain this query to me
         </Text>
       </Stack>
-    ))
+    )
   );
 };

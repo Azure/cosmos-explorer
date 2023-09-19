@@ -18,6 +18,7 @@ import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squa
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
 import * as Constants from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/StyleConstants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
@@ -237,7 +238,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   private renderContextMenuButton(node: TreeNode): JSX.Element {
     const menuItemLabel = "More";
     const buttonStyles: Partial<IButtonStyles> = {
-      rootFocused: { outline: `1px dashed ${Constants.StyleConstants.FocusColor}` },
+      rootFocused: { outline: `1px dashed ${StyleConstants.FocusColor}` },
     };
 
     return (

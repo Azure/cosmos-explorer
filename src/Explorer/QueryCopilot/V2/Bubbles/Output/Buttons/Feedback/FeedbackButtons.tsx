@@ -6,8 +6,8 @@ import LikeHover from "../../../../../../../../images/CopilotLikeHover.svg";
 import LikePressed from "../../../../../../../../images/CopilotLikePressed.svg";
 import LikeRest from "../../../../../../../../images/CopilotLikeRest.svg";
 
-export const FeedbackButtons: React.FC = (): JSX.Element => {
-  const { generatedQuery, userPrompt } = useQueryCopilot();
+export const FeedbackButtons = ({ sqlQuery }: { sqlQuery: string }): JSX.Element => {
+  const { userPrompt } = useQueryCopilot();
 
   const [likeQuery, setLikeQuery] = useState<boolean>(false);
   const [dislikeQuery, setDislikeQuery] = useState<boolean>(false);
@@ -35,7 +35,7 @@ export const FeedbackButtons: React.FC = (): JSX.Element => {
               <Link
                 onClick={() => {
                   setCalloutVisible(false);
-                  useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userPrompt);
+                  useQueryCopilot.getState().openFeedbackModal(sqlQuery, true, userPrompt);
                 }}
               >
                 more feedback?
@@ -82,7 +82,7 @@ export const FeedbackButtons: React.FC = (): JSX.Element => {
             setLikeQuery(false);
             setDislikeImageLink(LikePressed);
             setLikeImageLink(LikeRest);
-            useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
+            useQueryCopilot.getState().openFeedbackModal(sqlQuery, false, userPrompt);
           }
         }}
         onMouseOver={() => setDislikeImageLink(LikeHover)}

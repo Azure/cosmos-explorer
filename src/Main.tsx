@@ -1,5 +1,5 @@
 // CSS Dependencies
-import { initializeIcons } from "@fluentui/react";
+import { initializeIcons, loadTheme } from "@fluentui/react";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
@@ -26,6 +26,8 @@ import "../less/TableStyles/CustomizeColumns.less";
 import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
+import * as StyleConstants from "./Common/StyleConstants";
+import { configContext, Platform } from "ConfigContext";
 import "../less/documentDB.less";
 import "../less/forms.less";
 import "../less/infobox.less";
@@ -57,6 +59,7 @@ import "./Libs/jquery";
 import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
+import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 
 initializeIcons();
 
@@ -67,6 +70,10 @@ const App: React.FunctionComponent = () => {
   const shouldShowModal = useQueryCopilot((state) => state.showFeedbackModal);
 
   const config = useConfig();
+  if (config?.platform === Platform.Fabric) {
+    loadTheme(appThemeFabric);
+  }
+  StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
 
   const toggleLeftPaneExpanded = () => {
@@ -84,6 +91,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer" aria-hidden="false">
+      <LoadFabricOverrides />
       <div id="divExplorer" className="flexContainer hideOverflows">
         <div id="freeTierTeachingBubble"> </div>
         {/* Main Command Bar - Start */}
@@ -91,7 +99,7 @@ const App: React.FunctionComponent = () => {
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
           {/* Collections Tree - Start */}
-          {userContext.apiType !== "Postgres" && (
+          {userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo" && (
             <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
               <div className="collectionsTreeWithSplitter">
                 {/* Collections Tree Expanded - Start */}
@@ -134,6 +142,19 @@ const App: React.FunctionComponent = () => {
 };
 
 ReactDOM.render(<App />, document.body);
+
+function LoadFabricOverrides(): JSX.Element {
+  if (configContext.platform === Platform.Fabric) {
+    const FabricStyle = React.lazy(() => import("./Platform/Fabric/FabricPlatform"));
+    return (
+      <React.Suspense fallback={<div></div>}>
+        <FabricStyle />
+      </React.Suspense>
+    );
+  } else {
+    return <></>;
+  }
+}
 
 function LoadingExplorer(): JSX.Element {
   return (
