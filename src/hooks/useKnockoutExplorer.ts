@@ -1,6 +1,8 @@
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
+import { fetchEncryptedToken } from "Platform/Hosted/Components/ConnectExplorer";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { fetchAccessData } from "hooks/usePortalAccessToken";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
@@ -59,6 +61,26 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           setExplorer(explorer);
         } else if (platform === Platform.Portal) {
           const explorer = await configurePortal();
+          setExplorer(explorer);
+        } else if (platform === Platform.Fabric) {
+          // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
+          const connectionString = sessionStorage.getItem("connectionString");
+          if (!connectionString) {
+            console.error("No connection string found in session storage");
+            return;
+          }
+          const encryptedToken = await fetchEncryptedToken(connectionString);
+          // TODO Duplicated from useTokenMetadata
+          const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
+
+          const win = (window as unknown) as HostedExplorerChildFrame;
+          win.hostedConfig = {
+            authType: AuthType.EncryptedToken,
+            encryptedToken,
+            encryptedTokenMetadata,
+          };
+
+          const explorer = await configureHosted();
           setExplorer(explorer);
         }
       }

@@ -37,6 +37,7 @@ import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
+import { Platform, configContext } from "./../../ConfigContext";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -205,7 +206,8 @@ export default class Collection implements ViewModels.Collection {
         .map((node) => <Trigger>node);
     });
 
-    const showScriptsMenus: boolean = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+    const showScriptsMenus: boolean =
+      configContext.platform != Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
     this.showStoredProcedures = ko.observable<boolean>(showScriptsMenus);
     this.showTriggers = ko.observable<boolean>(showScriptsMenus);
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);

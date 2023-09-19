@@ -1,3 +1,5 @@
+import { Platform, configContext } from "./../ConfigContext";
+
 export const getDataExplorerWindow = (currentWindow: Window): Window | undefined => {
   // Data explorer is always loaded in an iframe, so traverse the parents until we hit the top and return the first child window.
   try {
@@ -5,7 +7,11 @@ export const getDataExplorerWindow = (currentWindow: Window): Window | undefined
       if (currentWindow.parent === currentWindow) {
         return undefined;
       }
-      if (currentWindow.parent === currentWindow.top) {
+      if (configContext.platform === Platform.Fabric && currentWindow.parent.parent === currentWindow.top) {
+        // in Fabric data explorer is inside an extension iframe, so we have two parent iframes
+        return currentWindow;
+      }
+      if (configContext.platform !== Platform.Fabric && currentWindow.parent === currentWindow.top) {
         return currentWindow;
       }
       currentWindow = currentWindow.parent;

@@ -4,7 +4,7 @@
 import { DefaultButton, IButtonStyles, IContextualMenuItem } from "@fluentui/react";
 import * as React from "react";
 import { FunctionComponent, useEffect, useState } from "react";
-import { StyleConstants } from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/StyleConstants";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
