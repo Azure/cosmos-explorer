@@ -52,7 +52,7 @@ export const SettingsPane: FunctionComponent = () => {
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption =
-    userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL";
+    userContext.features.enablePriorityBasedExecution && userContext.apiType === "SQL";
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     setIsExecuting(true);
 

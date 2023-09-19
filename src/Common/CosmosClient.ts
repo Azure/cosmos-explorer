@@ -109,7 +109,7 @@ export function client(): Cosmos.CosmosClient {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
 
-  if (userContext.features.enablePriorityBasedThrottling && userContext.apiType === "SQL") {
+  if (userContext.features.enablePriorityBasedExecution && userContext.apiType === "SQL") {
     const plugins = (options as any).plugins || [];
     plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
     (options as any).plugins = plugins;
