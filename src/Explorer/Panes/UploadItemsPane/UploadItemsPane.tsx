@@ -66,10 +66,6 @@ export const UploadItemsPane: FunctionComponent = () => {
       fieldName: "fileName",
       minWidth: 140,
       maxWidth: 140,
-      isRowHeader: true,
-      isResizable: true,
-      data: "string",
-      isPadded: true,
     },
     {
       key: "status",
