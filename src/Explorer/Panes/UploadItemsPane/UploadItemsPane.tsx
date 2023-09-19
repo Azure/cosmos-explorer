@@ -1,4 +1,4 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode, TooltipHost } from "@fluentui/react";
+import { DetailsList, DetailsListLayoutMode, DirectionalHint, IColumn, SelectionMode, TooltipHost } from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
@@ -52,23 +52,6 @@ export const UploadItemsPane: FunctionComponent = () => {
     onSubmit,
   };
 
-  const renderStatusCell = (item: UploadDetailsRecord) => {
-    const tooltipContent = `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
-    return (
-      <TooltipHost content={tooltipContent}>
-        <span>{tooltipContent}</span>
-      </TooltipHost>
-    );
-  };
-
-  const renderFileNameCell = (item: UploadDetailsRecord) => {
-    return (
-      <TooltipHost content={item.fileName}>
-        <span>{item.fileName}</span>
-      </TooltipHost>
-    );
-  };
-
   const columns: IColumn[] = [
     {
       key: "fileName",
@@ -80,7 +63,6 @@ export const UploadItemsPane: FunctionComponent = () => {
       isResizable: true,
       data: "string",
       isPadded: true,
-      onRender: renderFileNameCell,
     },
     {
       key: "status",
@@ -92,17 +74,25 @@ export const UploadItemsPane: FunctionComponent = () => {
       isResizable: true,
       data: "string",
       isPadded: true,
-      onRender: renderStatusCell,
     },
   ];
 
   const _renderItemColumn = (item: UploadDetailsRecord, index: number, column: IColumn) => {
+    let fieldContent: string;
+    const tooltipId = `tooltip-${index}-${column.key}`;
+
     switch (column.key) {
       case "status":
-        return `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
+        fieldContent = `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
+        break;
       default:
-        return item.fileName;
+        fieldContent = item.fileName;
     }
+    return (
+        <TooltipHost content={fieldContent} id={tooltipId} directionalHint={DirectionalHint.rightCenter}>
+        {fieldContent}
+        </TooltipHost>
+    );
   };
 
   return (
