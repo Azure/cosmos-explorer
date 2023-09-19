@@ -32,6 +32,20 @@ const testCassandraAccount: DataModels.DatabaseAccount = {
   },
 };
 
+const testPostgresAccount: DataModels.DatabaseAccount = {
+  ...testAccount,
+  properties: {
+    postgresqlEndpoint: "https://testPostgresEndpoint.azure.com/",
+  },
+};
+
+const testVCoreMongoAccount: DataModels.DatabaseAccount = {
+  ...testAccount,
+  properties: {
+    vcoreMongoEndpoint: "https://testVCoreMongoEndpoint.azure.com/",
+  },
+};
+
 const testNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
   authToken: "authToken",
   notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com",
@@ -47,6 +61,18 @@ const testMongoNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = 
 const testCassandraNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
   authToken: "authToken",
   notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/cassandra",
+  forwardingId: "Id",
+};
+
+const testPostgresNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
+  authToken: "authToken",
+  notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/postgresql",
+  forwardingId: "Id",
+};
+
+const testVCoreMongoNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
+  authToken: "authToken",
+  notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongovcore",
   forwardingId: "Id",
 };
 
@@ -89,6 +115,29 @@ describe("NotebookTerminalComponent", () => {
       databaseAccount: testCassandraAccount,
       notebookServerInfo: testCassandraNotebookServerInfo,
       tabId: undefined,
+    };
+
+    const wrapper = shallow(<NotebookTerminalComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("renders Postgres shell", () => {
+    const props: NotebookTerminalComponentProps = {
+      databaseAccount: testPostgresAccount,
+      notebookServerInfo: testPostgresNotebookServerInfo,
+      tabId: undefined,
+    };
+
+    const wrapper = shallow(<NotebookTerminalComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("renders vCore Mongo shell", () => {
+    const props: NotebookTerminalComponentProps = {
+      databaseAccount: testVCoreMongoAccount,
+      notebookServerInfo: testVCoreMongoNotebookServerInfo,
+      tabId: undefined,
+      username: "username",
     };
 
     const wrapper = shallow(<NotebookTerminalComponent {...props} />);

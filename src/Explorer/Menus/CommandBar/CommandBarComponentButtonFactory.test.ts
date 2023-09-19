@@ -343,6 +343,31 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
   });
 
+  describe("Open Postgres and vCore Mongo buttons", () => {
+    const openPostgresShellButtonLabel = "Open PSQL shell";
+    const openVCoreMongoShellButtonLabel = "Open MongoDB (vcore) shell";
+
+    beforeAll(() => {
+      mockExplorer = {} as Explorer;
+    });
+
+    it("creates Postgres shell button", () => {
+      const buttons = CommandBarComponentButtonFactory.createPostgreButtons(mockExplorer);
+      const openPostgresShellButton = buttons.find(
+        (button) => button.commandButtonLabel === openPostgresShellButtonLabel
+      );
+      expect(openPostgresShellButton).toBeDefined();
+    });
+
+    it("creates vCore Mongo shell button", () => {
+      const buttons = CommandBarComponentButtonFactory.createVCoreMongoButtons(mockExplorer);
+      const openVCoreMongoShellButton = buttons.find(
+        (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel
+      );
+      expect(openVCoreMongoShellButton).toBeDefined();
+    });
+  });
+
   describe("GitHub buttons", () => {
     const connectToGitHubBtnLabel = "Connect to GitHub";
     const manageGitHubSettingsBtnLabel = "Manage GitHub settings";
