@@ -1,4 +1,11 @@
-import { DetailsList, DetailsListLayoutMode, DirectionalHint, IColumn, SelectionMode, TooltipHost } from "@fluentui/react";
+import {
+  DetailsList,
+  DetailsListLayoutMode,
+  DirectionalHint,
+  IColumn,
+  SelectionMode,
+  TooltipHost,
+} from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
@@ -89,9 +96,9 @@ export const UploadItemsPane: FunctionComponent = () => {
         fieldContent = item.fileName;
     }
     return (
-        <TooltipHost content={fieldContent} id={tooltipId} directionalHint={DirectionalHint.rightCenter}>
+      <TooltipHost content={fieldContent} id={tooltipId} directionalHint={DirectionalHint.rightCenter}>
         {fieldContent}
-        </TooltipHost>
+      </TooltipHost>
     );
   };
 
