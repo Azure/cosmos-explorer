@@ -60,7 +60,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               <Text>
                 Ask Copilot to generate a query by describing the query in your words.
                 <br />
-                <Link href="http://aka.ms/cdb-copilot-learn-more">Learn more</Link>
+                <Link href="https://aka.ms/cdb-copilot-learn-more">Learn more</Link>
               </Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
@@ -78,7 +78,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               <Text>
                 AI-generated content can have mistakes. Make sure it’s accurate and appropriate before using it.
                 <br />
-                <Link href="http://aka.ms/cdb-copilot-preview-terms">Read preview terms</Link>
+                <Link href="https://aka.ms/cdb-copilot-preview-terms">Read preview terms</Link>
               </Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
@@ -97,7 +97,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 While in Private Preview, Query Copilot is setup to work on sample database we have configured for you
                 at no cost.
                 <br />
-                <Link href="http://aka.ms/cdb-copilot-learn-more">Learn more</Link>
+                <Link href="https://aka.ms/cdb-copilot-learn-more">Learn more</Link>
               </Text>
             </Stack.Item>
           </Stack>
