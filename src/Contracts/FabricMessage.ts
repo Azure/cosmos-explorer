@@ -1,3 +1,8 @@
-export interface FabricMessage {
+export type FabricMessage = {
+    action: "newContainer";
+    databaseName: string;
+    collectionName: string;
+} | {
+    action: "initialize";
     connectionString: string;
-}   
+};

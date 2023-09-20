@@ -118,6 +118,16 @@ async function configureFabric(): Promise<Explorer> {
       }
 
       const data: FabricMessage = event.data?.data;
+
+      if (!data) {
+        return;
+      }
+
+      if (data.action === "newContainer") {
+        explorer.onNewCollectionClicked();
+        return;
+      }
+
       window.parent.postMessage(
         { action: "echo", data, signature: "pcIframe" },
         window.document.referrer
