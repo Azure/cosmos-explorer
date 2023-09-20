@@ -123,7 +123,7 @@ async function configureFabric(): Promise<Explorer> {
         return;
       }
 
-      if (data.action === "newContainer") {
+      if (data.type === "newContainer") {
         explorer.onNewCollectionClicked();
         return;
       }

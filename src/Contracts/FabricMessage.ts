@@ -1,8 +1,8 @@
 export type FabricMessage = {
-    action: "newContainer";
+    type: "newContainer";
     databaseName: string;
     collectionName: string;
 } | {
-    action: "initialize";
+    type: "initialize";
     connectionString: string;
 };
