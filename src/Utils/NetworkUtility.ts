@@ -1,15 +1,7 @@
+import { configContext } from "ConfigContext";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
-
-const PortalIPs: { [key: string]: string[] } = {
-  prod1: ["104.42.195.92", "40.76.54.131"],
-  prod2: ["104.42.196.69"],
-  mooncake: ["139.217.8.252"],
-  blackforest: ["51.4.229.218"],
-  fairfax: ["52.244.48.71"],
-  ussec: ["29.26.26.67", "29.26.26.66"],
-  usnat: ["7.28.202.68"],
-};
+import { PortalBackendIPs } from "Utils/EndpointValidation";
 
 export const getNetworkSettingsWarningMessage = async (
   setStateFunc: (warningMessage: string) => void
@@ -28,6 +20,7 @@ export const getNetworkSettingsWarningMessage = async (
       setStateFunc,
       accessMessage
     );
+    return;
   } else if (userContext.apiType === "VCoreMongo") {
     checkFirewallRules(
       "2023-03-01-preview",
@@ -38,6 +31,7 @@ export const getNetworkSettingsWarningMessage = async (
       setStateFunc,
       accessMessage
     );
+    return;
   } else if (accountProperties) {
     // public network access is disabled
     if (
@@ -45,13 +39,14 @@ export const getNetworkSettingsWarningMessage = async (
       accountProperties.publicNetworkAccess !== "SecuredByPerimeter"
     ) {
       setStateFunc(publicAccessMessage);
+      return;
     }
 
     const ipRules = accountProperties.ipRules;
     // public network access is NOT set to "All networks"
-    if (ipRules.length > 0) {
+    if (ipRules?.length > 0) {
       if (userContext.apiType === "Cassandra" || userContext.apiType === "Mongo") {
-        const portalIPs = PortalIPs[userContext.portalEnv];
+        const portalIPs = PortalBackendIPs[configContext.BACKEND_ENDPOINT];
         let numberOfMatches = 0;
         ipRules.forEach((ipRule) => {
           if (portalIPs.indexOf(ipRule.ipAddressOrRange) !== -1) {
