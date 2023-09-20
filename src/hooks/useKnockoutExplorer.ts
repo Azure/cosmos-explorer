@@ -86,9 +86,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 
 async function configureFabric(): Promise<Explorer> {
   // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
-  const connectionString = sessionStorage.getItem('connectionString');
+  const connectionString = sessionStorage.getItem("connectionString");
   if (!connectionString) {
-    console.error('No connection string found in session storage');
+    console.error("No connection string found in session storage");
     return undefined;
   }
   const encryptedToken = await fetchEncryptedToken(connectionString);
@@ -98,7 +98,7 @@ async function configureFabric(): Promise<Explorer> {
   const hostedConfig: EncryptedToken = {
     authType: AuthType.EncryptedToken,
     encryptedToken,
-    encryptedTokenMetadata
+    encryptedTokenMetadata,
   };
 
   const explorer = await configureHostedWithEncryptedToken(hostedConfig);
@@ -106,8 +106,7 @@ async function configureFabric(): Promise<Explorer> {
   window.addEventListener(
     "message",
     (event) => {
-
-      console.log('iframe Received message', event);
+      console.log("iframe Received message", event);
 
       if (isInvalidParentFrameOrigin(event)) {
         return;
@@ -128,10 +127,7 @@ async function configureFabric(): Promise<Explorer> {
         return;
       }
 
-      window.parent.postMessage(
-        { action: "echo", data, signature: "pcIframe" },
-        window.document.referrer
-      );
+      window.parent.postMessage({ action: "echo", data, signature: "pcIframe" }, window.document.referrer);
     },
     false
   );
