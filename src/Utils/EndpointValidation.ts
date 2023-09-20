@@ -78,7 +78,7 @@ export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localho
 
 export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
 
-export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.microsoft.net"];
+export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.microsoft.com"];
 
 export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspaceartifacts.projectarcadia.net"];
 
