@@ -3,25 +3,31 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/2023-04-15/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-09-15-preview/cosmos-db.json
 */
 
-import { armRequest } from "../../request";
-import * as Types from "./types";
+import { armRequest } from "../../request"
+import * as Types from "./types"
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2023-04-15";
+const apiVersion = "2023-09-15-preview"
 
-/* List Cosmos DB locations and their properties */
-export async function list(subscriptionId: string): Promise<Types.LocationListResult | Types.CloudError> {
-  const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
-}
 
-/* Get the properties of an existing Cosmos DB location */
-export async function get(
-  subscriptionId: string,
-  location: string
-): Promise<Types.LocationGetResult | Types.CloudError> {
-  const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
-}
+          /* List Cosmos DB locations and their properties */
+          export async function list (
+            subscriptionId: string
+            
+          ) : Promise<Types.LocationListResult | Types.CloudError> {
+            const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations`
+            return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
+          }
+          
+          /* Get the properties of an existing Cosmos DB location */
+          export async function get (
+            subscriptionId: string,
+location: string
+            
+          ) : Promise<Types.LocationGetResult | Types.CloudError> {
+            const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}`
+            return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
+          }
+          

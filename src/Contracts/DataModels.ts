@@ -35,6 +35,7 @@ export interface DatabaseAccountExtendedProperties {
   locations?: DatabaseAccountResponseLocation[];
   postgresqlEndpoint?: string;
   publicNetworkAccess?: string;
+  enablePriorityBasedExecution?: boolean;
 }
 
 export interface DatabaseAccountResponseLocation {

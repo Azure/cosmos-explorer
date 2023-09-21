@@ -36,7 +36,6 @@ export type Features = {
   readonly enableLegacyMongoShellV2Debug: boolean;
   readonly loadLegacyMongoShellFromBE: boolean;
   readonly enableCopilot: boolean;
-  readonly enablePriorityBasedExecution: boolean;
   readonly copilotVersion?: string;
   readonly disableCopilotPhoenixGateaway: boolean;
   readonly enableCopilotFullSchema: boolean;
@@ -107,7 +106,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableLegacyMongoShellV2: "true" === get("enablelegacymongoshellv2"),
     enableLegacyMongoShellV2Debug: "true" === get("enablelegacymongoshellv2debug"),
     loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
-    enablePriorityBasedExecution: "true" === get("enablePriorityBasedExecution"),
     enableCopilot: "true" === get("enablecopilot"),
     copilotVersion: get("copilotversion") ?? "v1.0",
     disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
