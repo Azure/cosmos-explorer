@@ -113,6 +113,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
         },
         startKey
       );
+      closeSidePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       traceFailure(

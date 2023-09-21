@@ -317,7 +317,7 @@ export interface CreateCollectionParams {
   collectionId: string;
   databaseId: string;
   databaseLevelThroughput: boolean;
-  offerThroughput: number;
+  offerThroughput?: number;
   analyticalStorageTtl?: number;
   autoPilotMaxThroughput?: number;
   indexingPolicy?: IndexingPolicy;
