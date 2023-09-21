@@ -106,8 +106,6 @@ async function configureFabric(): Promise<Explorer> {
   window.addEventListener(
     "message",
     (event) => {
-      console.log("iframe Received message", event);
-
       if (isInvalidParentFrameOrigin(event)) {
         return;
       }
