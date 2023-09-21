@@ -8,6 +8,8 @@ import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
+import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
+import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -35,7 +37,16 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
         <MessageBar
           messageBarType={MessageBarType.warning}
           actions={
-            <MessageBarButton onClick={() => sendMessage({ type: MessageTypes.OpenPostgresNetworkingBlade })}>
+            <MessageBarButton
+              onClick={() =>
+                sendMessage({
+                  type:
+                    userContext.apiType === "VCoreMongo"
+                      ? MessageTypes.OpenVCoreMongoNetworkingBlade
+                      : MessageTypes.OpenPostgresNetworkingBlade,
+                })
+              }
+            >
               Change network settings
             </MessageBarButton>
           }
@@ -127,12 +138,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
               />
             )}
           </span>
-          <span
-            className="tabNavText"
-            style={active ? { fontWeight: "bolder", borderBottom: "2px solid rgba(0,120,212,1)" } : {}}
-          >
-            {useObservable(tab?.tabTitle || getReactTabTitle())}
-          </span>
+          <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           {tabKind !== ReactTabKind.Home && (
             <span className="tabIconSection">
               <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
@@ -252,11 +258,21 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
   switch (activeReactTab) {
     case ReactTabKind.Connect:
-      return userContext.apiType === "Postgres" ? <PostgresConnectTab /> : <ConnectTab />;
+      return userContext.apiType === "VCoreMongo" ? (
+        <VcoreMongoConnectTab />
+      ) : userContext.apiType === "Postgres" ? (
+        <PostgresConnectTab />
+      ) : (
+        <ConnectTab />
+      );
     case ReactTabKind.Home:
       return <SplashScreen explorer={explorer} />;
     case ReactTabKind.Quickstart:
-      return <QuickstartTab explorer={explorer} />;
+      return userContext.apiType === "VCoreMongo" ? (
+        <VcoreMongoQuickstartTab explorer={explorer} />
+      ) : (
+        <QuickstartTab explorer={explorer} />
+      );
     case ReactTabKind.QueryCopilot:
       return <QueryCopilotTab explorer={explorer} />;
     default:

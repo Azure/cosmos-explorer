@@ -85,6 +85,8 @@ jobs:
           path: .cache
           key: ${{ runner.os }}-build-cache
       - run: npm run pack:prod
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
       - run: cp -r ./Contracts ./dist/contracts
       - run: cp -r ./configs ./dist/configs
       - uses: actions/upload-artifact@v2

@@ -1,7 +1,7 @@
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
-import ErrorImage from "../../../../images/error.svg";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
+import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
 import { HttpHeaders } from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
@@ -15,6 +15,19 @@ interface Props {
   setConnectionString: (connectionString: string) => void;
   setAuthType: (authType: AuthType) => void;
 }
+
+export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
+  const headers = new Headers();
+  headers.append(HttpHeaders.connectionString, connectionString);
+  const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
+  const response = await fetch(url, { headers, method: "POST" });
+  if (!response.ok) {
+    throw response;
+  }
+  // This API has a quirk where it must be parsed twice
+  const result: GenerateTokenResponse = JSON.parse(await response.json());
+  return decodeURIComponent(result.readWrite || result.read);
+};
 
 export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setEncryptedToken,
@@ -44,16 +57,8 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   return;
                 }
 
-                const headers = new Headers();
-                headers.append(HttpHeaders.connectionString, connectionString);
-                const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
-                const response = await fetch(url, { headers, method: "POST" });
-                if (!response.ok) {
-                  throw response;
-                }
-                // This API has a quirk where it must be parsed twice
-                const result: GenerateTokenResponse = JSON.parse(await response.json());
-                setEncryptedToken(decodeURIComponent(result.readWrite || result.read));
+                const encryptedToken = await fetchEncryptedToken(connectionString);
+                setEncryptedToken(encryptedToken);
                 setAuthType(AuthType.ConnectionString);
               }}
             >

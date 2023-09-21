@@ -55,6 +55,17 @@ export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
   "https://localhost:1234",
 ];
 
+export const PortalBackendIPs: { [key: string]: string[] } = {
+  "https://main.documentdb.ext.azure.com": ["104.42.195.92", "40.76.54.131"],
+  // DE doesn't talk to prod2 (main2) but it might be added
+  //"https://main2.documentdb.ext.azure.com": ["104.42.196.69"],
+  "https://main.documentdb.ext.azure.cn": ["139.217.8.252"],
+  "https://main.documentdb.ext.azure.us": ["52.244.48.71"],
+  // Add ussec and usnat when endpoint address is known:
+  //ussec: ["29.26.26.67", "29.26.26.66"],
+  //usnat: ["7.28.202.68"],
+};
+
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
   "https://main.documentdb.ext.azure.cn",
@@ -67,7 +78,7 @@ export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localho
 
 export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
 
-export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.windows.net"];
+export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.microsoft.com"];
 
 export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspaceartifacts.projectarcadia.net"];
 

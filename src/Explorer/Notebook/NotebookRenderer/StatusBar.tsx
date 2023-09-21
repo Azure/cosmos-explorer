@@ -3,7 +3,7 @@ import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { StyleConstants } from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/StyleConstants";
 
 interface Props {
   lastSaved?: Date | null;

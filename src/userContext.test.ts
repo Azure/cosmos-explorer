@@ -57,4 +57,22 @@ describe("shouldShowQueryPageOptions()", () => {
     });
     expect(userContext.apiType).toBe("Mongo");
   });
+
+  it("should be 'Postgres' for Postgres API", () => {
+    updateUserContext({
+      databaseAccount: {
+        kind: "Postgres",
+      } as DatabaseAccount,
+    });
+    expect(userContext.apiType).toBe("Postgres");
+  });
+
+  it("should be 'VCoreMongo' for vCore Mongo", () => {
+    updateUserContext({
+      databaseAccount: {
+        kind: "VCoreMongo",
+      } as DatabaseAccount,
+    });
+    expect(userContext.apiType).toBe("VCoreMongo");
+  });
 });
