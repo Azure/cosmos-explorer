@@ -1,6 +1,7 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricMessage } from "Contracts/FabricMessage";
+import { FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
+import { useSelectedNode } from "Explorer/useSelectedNode";
 import { fetchEncryptedToken } from "Platform/Hosted/Components/ConnectExplorer";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { fetchAccessData } from "hooks/usePortalAccessToken";
@@ -11,7 +12,7 @@ import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { Platform, configContext, updateConfigContext } from "../ConfigContext";
-import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
+import { ActionType, DataExplorerAction, TabKind } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import { handleOpenAction } from "../Explorer/OpenActions/OpenActions";
@@ -85,53 +86,77 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 }
 
 async function configureFabric(): Promise<Explorer> {
-  // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
-  const connectionString = sessionStorage.getItem("connectionString");
-  if (!connectionString) {
-    console.error("No connection string found in session storage");
-    return undefined;
-  }
-  const encryptedToken = await fetchEncryptedToken(connectionString);
-  // TODO Duplicated from useTokenMetadata
-  const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
+  let explorer: Explorer;
+  return new Promise<Explorer>((resolve) => {
+    window.addEventListener(
+      "message",
+      async (event) => {
+        if (isInvalidParentFrameOrigin(event)) {
+          return;
+        }
 
-  const hostedConfig: EncryptedToken = {
-    authType: AuthType.EncryptedToken,
-    encryptedToken,
-    encryptedTokenMetadata,
-  };
+        if (!shouldProcessMessage(event)) {
+          return;
+        }
 
-  const explorer = await configureHostedWithEncryptedToken(hostedConfig);
+        const data: FabricMessage = event.data?.data;
 
-  window.addEventListener(
-    "message",
-    (event) => {
-      if (isInvalidParentFrameOrigin(event)) {
-        return;
-      }
+        if (!data) {
+          return;
+        }
 
-      if (!shouldProcessMessage(event)) {
-        return;
-      }
+        switch (data.type) {
+          case "initialize": {
+            // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
+            const connectionString = sessionStorage.getItem("connectionString");
+            if (!connectionString) {
+              console.error("No connection string found in session storage");
+              return undefined;
+            }
+            const encryptedToken = await fetchEncryptedToken(connectionString);
+            // TODO Duplicated from useTokenMetadata
+            const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
 
-      const data: FabricMessage = event.data?.data;
+            const hostedConfig: EncryptedToken = {
+              authType: AuthType.EncryptedToken,
+              encryptedToken,
+              encryptedTokenMetadata,
+            };
 
-      if (!data) {
-        return;
-      }
+            explorer = await configureHostedWithEncryptedToken(hostedConfig);
+            resolve(explorer);
+            break;
+          }
+          case "newContainer":
+            explorer.onNewCollectionClicked();
+            break;
+          case "openTab": {
+            // Expand database first
+            const database = useDatabases.getState().databases.find((db) => db.id() === data.databaseName);
+            if (database) {
+              await database.expandDatabase();
+              useSelectedNode.getState().setSelectedNode(database);
+              handleOpenAction({
+                actionType: ActionType.OpenCollectionTab,
+                databaseResourceId: data.databaseName,
+                collectionResourceId: data.collectionName,
+                tabKind: TabKind.SQLDocuments,
+              } as DataExplorerAction, useDatabases.getState().databases, explorer);
+            }
 
-      if (data.type === "newContainer") {
-        explorer.onNewCollectionClicked();
-        return;
-      }
+            break;
+          }
+          default:
+            console.error(`Unknown Fabric message type: ${JSON.stringify(data)}`);
+            break;
+        }
+      },
+      false
+    );
 
-      window.parent.postMessage({ action: "echo", data, signature: "pcIframe" }, window.document.referrer);
-    },
-    false
-  );
-
-  return explorer;
-}
+    sendReadyMessage();
+  });
+};
 
 async function configureHosted(): Promise<Explorer> {
   const win = (window as unknown) as HostedExplorerChildFrame;
