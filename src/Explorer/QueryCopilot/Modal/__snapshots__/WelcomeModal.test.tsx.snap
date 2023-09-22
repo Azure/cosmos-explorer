@@ -102,7 +102,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             Ask Copilot to generate a query by describing the query in your words.
             <br />
             <StyledLinkBase
-              href="http://aka.ms/cdb-copilot-learn-more"
+              href="https://aka.ms/cdb-copilot-learn-more"
             >
               Learn more
             </StyledLinkBase>
@@ -138,7 +138,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             AI-generated content can have mistakes. Make sure it’s accurate and appropriate before using it.
             <br />
             <StyledLinkBase
-              href="http://aka.ms/cdb-copilot-preview-terms"
+              href="https://aka.ms/cdb-copilot-preview-terms"
             >
               Read preview terms
             </StyledLinkBase>
@@ -174,7 +174,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             While in Private Preview, Query Copilot is setup to work on sample database we have configured for you at no cost.
             <br />
             <StyledLinkBase
-              href="http://aka.ms/cdb-copilot-learn-more"
+              href="https://aka.ms/cdb-copilot-learn-more"
             >
               Learn more
             </StyledLinkBase>

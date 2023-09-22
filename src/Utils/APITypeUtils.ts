@@ -2,7 +2,6 @@ import { userContext } from "../UserContext";
 
 export const getCollectionName = (isPlural?: boolean): string => {
   let collectionName: string;
-  let unknownApiType: never;
   switch (userContext.apiType) {
     case "SQL":
       collectionName = "Container";
@@ -20,8 +19,7 @@ export const getCollectionName = (isPlural?: boolean): string => {
     case "Postgres":
       return "";
     default:
-      unknownApiType = userContext.apiType;
-      throw new Error(`Unknown API type: ${unknownApiType}`);
+      throw new Error(`Unknown API type: ${userContext.apiType}`);
   }
 
   if (isPlural) {
@@ -72,6 +70,8 @@ export const getApiShortDisplayName = (): string => {
       return "NoSQL API";
     case "Tables":
       return "Table API";
+    case "VCoreMongo":
+      return "MongoDB (vCore) API";
   }
 };
 

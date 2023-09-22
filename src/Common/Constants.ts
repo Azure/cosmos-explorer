@@ -365,9 +365,6 @@ export const EmulatorMasterKey =
   //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Well known public masterKey for emulator")]
   "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
-// A variable @MyVariable defined in Constants.less is accessible as StyleConstants.MyVariable
-export const StyleConstants = require("less-vars-loader!../../less/Common/Constants.less");
-
 export class Notebook {
   public static readonly defaultBasePath = "./notebooks";
   public static readonly heartbeatDelayMs = 60000;

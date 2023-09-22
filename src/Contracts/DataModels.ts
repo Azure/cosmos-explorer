@@ -1,11 +1,14 @@
 import { ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
 
-export interface DatabaseAccount {
+export interface ArmEntity {
   id: string;
   name: string;
   location: string;
   type: string;
   kind: string;
+}
+
+export interface DatabaseAccount extends ArmEntity {
   properties: DatabaseAccountExtendedProperties;
   systemData?: DatabaseAccountSystemData;
 }
@@ -36,6 +39,7 @@ export interface DatabaseAccountExtendedProperties {
   postgresqlEndpoint?: string;
   publicNetworkAccess?: string;
   enablePriorityBasedExecution?: boolean;
+  vcoreMongoEndpoint?: string;
 }
 
 export interface DatabaseAccountResponseLocation {
@@ -576,7 +580,7 @@ export interface ContainerConnectionInfo {
   //need to add ram and rom info
 }
 
-export interface PostgresFirewallRule {
+export interface FirewallRule {
   id: string;
   name: string;
   type: string;

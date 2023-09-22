@@ -142,8 +142,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
   });
 
-  describe("Open Mongo Shell button", () => {
-    const openMongoShellBtnLabel = "Open Mongo Shell";
+  describe("Open Mongo shell button", () => {
+    const openMongoShellBtnLabel = "Open Mongo shell";
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
@@ -247,8 +247,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
   });
 
-  describe("Open Cassandra Shell button", () => {
-    const openCassandraShellBtnLabel = "Open Cassandra Shell";
+  describe("Open Cassandra shell button", () => {
+    const openCassandraShellBtnLabel = "Open Cassandra shell";
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
@@ -340,6 +340,31 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openCassandraShellBtn.disabled).toBe(true);
       //expect(openCassandraShellBtn.disabled).toBe(false);
       //expect(openCassandraShellBtn.tooltipText).toBe("");
+    });
+  });
+
+  describe("Open Postgres and vCore Mongo buttons", () => {
+    const openPostgresShellButtonLabel = "Open PSQL shell";
+    const openVCoreMongoShellButtonLabel = "Open MongoDB (vcore) shell";
+
+    beforeAll(() => {
+      mockExplorer = {} as Explorer;
+    });
+
+    it("creates Postgres shell button", () => {
+      const buttons = CommandBarComponentButtonFactory.createPostgreButtons(mockExplorer);
+      const openPostgresShellButton = buttons.find(
+        (button) => button.commandButtonLabel === openPostgresShellButtonLabel
+      );
+      expect(openPostgresShellButton).toBeDefined();
+    });
+
+    it("creates vCore Mongo shell button", () => {
+      const buttons = CommandBarComponentButtonFactory.createVCoreMongoButtons(mockExplorer);
+      const openVCoreMongoShellButton = buttons.find(
+        (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel
+      );
+      expect(openVCoreMongoShellButton).toBeDefined();
     });
   });
 

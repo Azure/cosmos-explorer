@@ -16,6 +16,7 @@ export enum Platform {
   Portal = "Portal",
   Hosted = "Hosted",
   Emulator = "Emulator",
+  Fabric = "Fabric",
 }
 
 export interface ConfigContext {
@@ -67,7 +68,7 @@ let configContext: Readonly<ConfigContext> = {
   ARM_AUTH_AREA: "https://management.azure.com/",
   ARM_ENDPOINT: "https://management.azure.com/",
   ARM_API_VERSION: "2016-06-01",
-  GRAPH_ENDPOINT: "https://graph.windows.net",
+  GRAPH_ENDPOINT: "https://graph.microsoft.com",
   GRAPH_API_VERSION: "1.6",
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
@@ -187,6 +188,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
           console.error(`Invalid platform query parameter: ${platform}`);
           break;
         case Platform.Portal:
+        case Platform.Fabric:
         case Platform.Hosted:
         case Platform.Emulator:
           updateConfigContext({ platform });
