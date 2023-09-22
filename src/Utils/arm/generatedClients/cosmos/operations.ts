@@ -6,18 +6,13 @@
   Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-09-15-preview/cosmos-db.json
 */
 
-import { armRequest } from "../../request"
-import * as Types from "./types"
+import { armRequest } from "../../request";
+import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2023-09-15-preview"
+const apiVersion = "2023-09-15-preview";
 
-
-          /* Lists all of the available Cosmos DB Resource Provider operations. */
-          export async function list (
-            
-            
-          ) : Promise<Types.OperationListResult> {
-            const path = `/providers/Microsoft.DocumentDB/operations`
-            return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion,  })
-          }
-          
+/* Lists all of the available Cosmos DB Resource Provider operations. */
+export async function list(): Promise<Types.OperationListResult> {
+  const path = `/providers/Microsoft.DocumentDB/operations`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
+}
