@@ -51,7 +51,8 @@ export const SettingsPane: FunctionComponent = () => {
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-  const shouldShowPriorityLevelOption = userContext.databaseAccount?.properties?.enablePriorityBasedExecution && userContext.apiType === "SQL";
+  const shouldShowPriorityLevelOption =
+    userContext.databaseAccount?.properties?.enablePriorityBasedExecution && userContext.apiType === "SQL";
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     setIsExecuting(true);
 
