@@ -123,7 +123,7 @@ async function configureFabric(): Promise<Explorer> {
               encryptedTokenMetadata,
             };
 
-            explorer = await configureHostedWithEncryptedToken(hostedConfig);
+            explorer = await configureWithEncryptedToken(hostedConfig);
             resolve(explorer);
             break;
           }
@@ -162,7 +162,7 @@ async function configureHosted(): Promise<Explorer> {
   const win = (window as unknown) as HostedExplorerChildFrame;
   let explorer: Explorer;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
-    explorer = configureHostedWithEncryptedToken(win.hostedConfig);
+    explorer = configureWithEncryptedToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
     explorer = configureHostedWithResourceToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
@@ -295,7 +295,7 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function configureHostedWithEncryptedToken(config: EncryptedToken): Explorer {
+function configureWithEncryptedToken(config: EncryptedToken): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   updateUserContext({
     authType: AuthType.EncryptedToken,
