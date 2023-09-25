@@ -233,6 +233,7 @@
   },
   "homepage": "https://github.com/Azure/cosmos-explorer",
   "prettier": {
-    "printWidth": 120
+    "printWidth": 120,
+    "endOfLine": "auto"
   }
 }
