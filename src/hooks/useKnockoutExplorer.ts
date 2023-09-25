@@ -136,12 +136,16 @@ async function configureFabric(): Promise<Explorer> {
             if (database) {
               await database.expandDatabase();
               useSelectedNode.getState().setSelectedNode(database);
-              handleOpenAction({
-                actionType: ActionType.OpenCollectionTab,
-                databaseResourceId: data.databaseName,
-                collectionResourceId: data.collectionName,
-                tabKind: TabKind.SQLDocuments,
-              } as DataExplorerAction, useDatabases.getState().databases, explorer);
+              handleOpenAction(
+                {
+                  actionType: ActionType.OpenCollectionTab,
+                  databaseResourceId: data.databaseName,
+                  collectionResourceId: data.collectionName,
+                  tabKind: TabKind.SQLDocuments,
+                } as DataExplorerAction,
+                useDatabases.getState().databases,
+                explorer
+              );
             }
 
             break;
@@ -156,7 +160,7 @@ async function configureFabric(): Promise<Explorer> {
 
     sendReadyMessage();
   });
-};
+}
 
 async function configureHosted(): Promise<Explorer> {
   const win = (window as unknown) as HostedExplorerChildFrame;
