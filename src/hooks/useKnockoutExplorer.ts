@@ -108,7 +108,7 @@ async function configureFabric(): Promise<Explorer> {
         switch (data.type) {
           case "initialize": {
             // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
-            const connectionString = sessionStorage.getItem("connectionString");
+            const connectionString = data.connectionString ?? sessionStorage.getItem("connectionString");
             if (!connectionString) {
               console.error("No connection string found in session storage");
               return undefined;
