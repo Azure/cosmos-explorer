@@ -4,7 +4,6 @@ import { traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
-import Youtube from "react-youtube";
 import Image1 from "../../../images/CarouselImage1.svg";
 import Image2 from "../../../images/CarouselImage2.svg";
 
@@ -79,7 +78,15 @@ const getHeaderText = (page: number): string => {
 const getContent = (page: number): JSX.Element => {
   switch (page) {
     case 1:
-      return <Youtube videoId="Jvgh64rvdXU" onPlay={() => traceSuccess(Action.PlayCarouselVideo)} />;
+      return (
+        <video controls width="640" height="360" controlsList="nofullscreen nodownload ">
+          <source
+            src="src/Explorer/Quickstart/Videos/MAS4.1.2-Screen%20Reader%20announces%20incorrect%20name%20as%20'F'%20for%20full-screen%20button%20present%20in%20'YouTube'%20video.%20(4).mp4"
+            type="video/mp4"
+          ></source>
+          Your browser does not support the video tag.
+        </video>
+      );
     case 2:
       return <Image style={{ width: 640 }} src={Image1} />;
     case 3:
