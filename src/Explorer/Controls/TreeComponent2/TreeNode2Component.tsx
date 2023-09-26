@@ -11,6 +11,7 @@ import {
   TreeItemLayout,
 } from "@fluentui/react-components";
 import { MoreHorizontal20Regular } from "@fluentui/react-icons";
+import { tokens } from '@fluentui/react-theme';
 import * as React from "react";
 
 export interface TreeNode2MenuItem {
@@ -119,6 +120,7 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
         }
         expandIcon={node.isLoading ? <Spinner size="extra-tiny" /> : undefined}
         iconBefore={node.iconSrc && getTreeIcon(node.iconSrc)}
+        style={{ backgroundColor: node.isSelected && node.isSelected() ? tokens.colorNeutralBackground1Selected : undefined }}
       >
         <span onClick={() => node.onClick?.()}>{node.label}</span>
       </TreeItemLayout>
