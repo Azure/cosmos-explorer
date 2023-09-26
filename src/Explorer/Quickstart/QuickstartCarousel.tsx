@@ -18,7 +18,7 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
   return (
     <Modal
       styles={{ main: { width: 640 } }}
-      isOpen={isOpen && page < 4}
+      isOpen={true && page < 4}
       onDismissed={() => userContext.apiType === "SQL" && useCarousel.getState().setShowCoachMark(true)}
     >
       <Stack>
@@ -80,10 +80,7 @@ const getContent = (page: number): JSX.Element => {
     case 1:
       return (
         <video controls width="640" height="360" controlsList="nofullscreen nodownload ">
-          <source
-            src="src/Explorer/Quickstart/Videos/MAS4.1.2-Screen%20Reader%20announces%20incorrect%20name%20as%20'F'%20for%20full-screen%20button%20present%20in%20'YouTube'%20video.%20(4).mp4"
-            type="video/mp4"
-          ></source>
+          <source src="src\Explorer\Quickstart\Videos\Cosmos-db-turorial.mp4" type="video/mp4"></source>
           Your browser does not support the video tag.
         </video>
       );
