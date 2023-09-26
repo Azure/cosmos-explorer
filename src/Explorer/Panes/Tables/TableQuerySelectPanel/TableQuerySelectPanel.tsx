@@ -128,9 +128,8 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
               label="Available Columns"
               checked={isAvailableColumnChecked}
               onChange={availableColumnsCheckboxClick}
-              ariaPositionInSet={0}
             />
-            {columnOptions.map((column, index) => {
+            {columnOptions.map((column) => {
               return (
                 <Checkbox
                   label={column.columnName}
@@ -138,7 +137,6 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
                   key={column.columnName}
                   checked={column.selected}
                   disabled={!column.editable}
-                  ariaPositionInSet={index + 1}
                 />
               );
             })}
