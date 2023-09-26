@@ -1,17 +1,25 @@
 export type FabricMessage =
   | {
-      type: "newContainer";
-      databaseName: string;
-    }
+    type: "newContainer";
+    databaseName: string;
+  }
   | {
-      type: "initialize";
-      connectionString: string;
-      openDatabaseName?: string; // optional Database name to open
-    }
+    type: "initialize";
+    connectionString: string | undefined;
+  }
   | {
-      type: "openTab";
-      databaseName: string;
-      collectionName: string;
-    };
+    type: "openTab";
+    databaseName: string;
+    collectionName: string | undefined;
+  };
 
-export type DataExploreMessage = "ready";
+export type DataExploreMessage =
+  | "ready"
+  | {
+    type: number;
+    data: {
+      action: "LoadDatabases";
+      actionModifier: "success" | "start";
+      defaultExperience: "SQL";
+    };
+  };

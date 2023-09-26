@@ -136,16 +136,25 @@ async function configureFabric(): Promise<Explorer> {
             if (database) {
               await database.expandDatabase();
               useSelectedNode.getState().setSelectedNode(database);
-              handleOpenAction(
-                {
-                  actionType: ActionType.OpenCollectionTab,
-                  databaseResourceId: data.databaseName,
-                  collectionResourceId: data.collectionName,
-                  tabKind: TabKind.SQLDocuments,
-                } as DataExplorerAction,
-                useDatabases.getState().databases,
-                explorer
-              );
+
+              let collectionResourceId = data.collectionName;
+              if (collectionResourceId === undefined) {
+                // Pick first collection if collectionName not specified in message
+                collectionResourceId = database.collections()[0]?.id();
+              }
+
+              if (collectionResourceId !== undefined) {
+                handleOpenAction(
+                  {
+                    actionType: ActionType.OpenCollectionTab,
+                    databaseResourceId: data.databaseName,
+                    collectionResourceId: data.collectionName,
+                    tabKind: TabKind.SQLDocuments,
+                  } as DataExplorerAction,
+                  useDatabases.getState().databases,
+                  explorer
+                );
+              }
             }
 
             break;
