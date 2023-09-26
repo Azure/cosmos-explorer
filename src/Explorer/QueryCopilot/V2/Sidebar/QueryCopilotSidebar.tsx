@@ -1,6 +1,7 @@
 import { Stack } from "@fluentui/react";
 import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
-import { ExplanationBubble } from "Explorer/QueryCopilot/V2/Bubbles/Explanation/ExplanationBubble";
+import { ExplanationButton } from "Explorer/QueryCopilot/V2/Bubbles/Explanation/Button/ExplanationButton";
+import { ExplanationBubble } from "Explorer/QueryCopilot/V2/Bubbles/Explanation/ExplainationBubble";
 import { OutputBubble } from "Explorer/QueryCopilot/V2/Bubbles/Output/OutputBubble";
 import { RetrievingBubble } from "Explorer/QueryCopilot/V2/Bubbles/Retriveing/RetrievingBubble";
 import { SampleBubble } from "Explorer/QueryCopilot/V2/Bubbles/Sample/SampleBubble";
@@ -42,27 +43,34 @@ export const QueryCopilotSidebar: React.FC<QueryCopilotProps> = ({ explorer }: Q
             }}
           >
             <WelcomeBubble />
-            {chatMessages.map((message, index) =>
-              message.source === 0 || message.source === 2 ? (
-                <Stack
-                  key={index}
-                  horizontalAlign="center"
-                  tokens={{ padding: 8, childrenGap: 8 }}
-                  style={{
-                    backgroundColor: message.source === 0 ? "#E0E7FF" : "white",
-                    borderRadius: "8px",
-                    margin: "5px 10px",
-                    textAlign: "start",
-                  }}
-                >
-                  {message.message}
-                </Stack>
-              ) : (
-                <OutputBubble key={index} copilotMessage={message} />
-              )
-            )}
+            {chatMessages.map((message, index) => {
+              switch (message.source) {
+                case 0:
+                  return (
+                    <Stack
+                      key={index}
+                      horizontalAlign="center"
+                      tokens={{ padding: 8, childrenGap: 8 }}
+                      style={{
+                        backgroundColor: "#E0E7FF",
+                        borderRadius: "8px",
+                        margin: "5px 10px",
+                        textAlign: "start",
+                      }}
+                    >
+                      {message.message}
+                    </Stack>
+                  );
+                case 1:
+                  return <OutputBubble key={index} copilotMessage={message} />;
+                case 2:
+                  return <ExplanationBubble key={index} copilotMessage={message} />;
+                default:
+                  return <></>;
+              }
+            })}
             <RetrievingBubble />
-            <ExplanationBubble />
+            <ExplanationButton />
 
             {chatMessages.length === 0 && !isGeneratingQuery && <SampleBubble />}
           </Stack>

@@ -434,7 +434,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
                       }}
                     >
                       Learn about{" "}
-                      <Link target="_blank" href="http://aka.ms/cdb-copilot-writing">
+                      <Link target="_blank" href="https://aka.ms/cdb-copilot-writing">
                         writing effective prompts
                       </Link>
                     </Text>
@@ -448,7 +448,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
         <Stack style={{ marginTop: 8, marginBottom: 24 }}>
           <Text style={{ fontSize: 12 }}>
             AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
-            <Link href="http://aka.ms/cdb-copilot-preview-terms" target="_blank">
+            <Link href="https://aka.ms/cdb-copilot-preview-terms" target="_blank">
               Read preview terms
             </Link>
             {showErrorMessageBar && (

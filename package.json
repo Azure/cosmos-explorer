@@ -199,6 +199,7 @@
     "pack:fast": "webpack  --mode development --progress",
     "copyToConsumers": "node copyToConsumers",
     "test": "rimraf coverage && jest",
+    "test:debug": "jest --runInBand",
     "test:e2e": "jest -c ./jest.config.playwright.js --detectOpenHandles",
     "watch": "npm run start",
     "wait-for-server": "wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/",
@@ -232,6 +233,7 @@
   },
   "homepage": "https://github.com/Azure/cosmos-explorer",
   "prettier": {
-    "printWidth": 120
+    "printWidth": 120,
+    "endOfLine": "auto"
   }
 }

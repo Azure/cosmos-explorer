@@ -2,12 +2,13 @@ import { Stack, Text } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 
-export const ExplanationBubble: React.FC = (): JSX.Element => {
+export const ExplanationButton: React.FC = (): JSX.Element => {
   const {
     showExplanationBubble,
     isGeneratingQuery,
     chatMessages,
     setChatMessages,
+    generatedQuery,
     generatedQueryComments,
     isGeneratingExplanation,
     setIsGeneratingExplanation,
@@ -24,7 +25,7 @@ export const ExplanationBubble: React.FC = (): JSX.Element => {
     setTimeout(() => {
       if (useQueryCopilot.getState().shouldIncludeInMessages) {
         setIsGeneratingExplanation(false);
-        setChatMessages([...chatMessages, { source: 2, message: generatedQueryComments }]);
+        setChatMessages([...chatMessages, { source: 2, message: generatedQueryComments, sqlQuery: generatedQuery }]);
       }
     }, 3000);
   };
