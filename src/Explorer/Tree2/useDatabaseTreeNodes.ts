@@ -25,15 +25,22 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
       contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
       onExpanded: async () => {
         useSelectedNode.getState().setSelectedNode(database);
-        if (databaseNode.children?.length === 0) {
+        if (!databaseNode.children || databaseNode.children?.length === 0) {
           databaseNode.isLoading = true;
         }
         await database.expandDatabase();
         databaseNode.isLoading = false;
         useCommandBar.getState().setContextButtons([]);
         refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
+        useDatabases.getState().updateDatabase(database);
       },
       onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
+      isExpanded: database.isDatabaseExpanded(),
+      onCollapsed: () => {
+        database.collapseDatabase();
+        // useCommandBar.getState().setContextButtons([]);
+        useDatabases.getState().updateDatabase(database);
+      },
     };
 
     if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {

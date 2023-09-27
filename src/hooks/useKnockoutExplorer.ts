@@ -135,6 +135,7 @@ async function configureFabric(): Promise<Explorer> {
             const database = useDatabases.getState().databases.find((db) => db.id() === data.databaseName);
             if (database) {
               await database.expandDatabase();
+              useDatabases.getState().updateDatabase(database);
               useSelectedNode.getState().setSelectedNode(database);
 
               let collectionResourceId = data.collectionName;
@@ -144,6 +145,11 @@ async function configureFabric(): Promise<Explorer> {
               }
 
               if (collectionResourceId !== undefined) {
+                // Expand collection
+                const collection = database.collections().find((coll) => coll.id() === collectionResourceId);
+                collection.expandCollection();
+                useSelectedNode.getState().setSelectedNode(collection);
+
                 handleOpenAction(
                   {
                     actionType: ActionType.OpenCollectionTab,

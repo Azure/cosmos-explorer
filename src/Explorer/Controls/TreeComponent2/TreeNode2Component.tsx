@@ -9,6 +9,8 @@ import {
   Tree,
   TreeItem,
   TreeItemLayout,
+  TreeOpenChangeData,
+  TreeOpenChangeEvent,
 } from "@fluentui/react-components";
 import { MoreHorizontal20Regular } from "@fluentui/react-icons";
 import { tokens } from "@fluentui/react-theme";
@@ -28,7 +30,7 @@ export interface TreeNode2 {
   children?: TreeNode2[];
   contextMenu?: TreeNode2MenuItem[];
   iconSrc?: string;
-  // isExpanded?: boolean;
+  isExpanded?: boolean;
   className?: string;
   isAlphaSorted?: boolean;
   // data?: any; // Piece of data corresponding to this node
@@ -38,7 +40,7 @@ export interface TreeNode2 {
   isScrollable?: boolean;
   isSelected?: () => boolean;
   onClick?: () => void; // Only if a leaf, other click will expand/collapse
-  onExpanded?: () => void;
+  onExpanded?: () => Promise<void>;
   onCollapsed?: () => void;
   onContextMenuOpen?: () => void;
 }
@@ -47,7 +49,6 @@ export interface TreeNode2ComponentProps {
   node: TreeNode2;
   className?: string;
   treeNodeId: string;
-  globalOpenIds: string[];
 }
 
 const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 20, height: 20 }} />;
@@ -55,20 +56,8 @@ const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" 
 export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
   node,
   treeNodeId,
-  globalOpenIds,
 }: TreeNode2ComponentProps): JSX.Element => {
-  // const defaultOpenItems = node.isExpanded ? children?.map((child: TreeNode2) => child.label) : undefined;
-  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
-
-  // Compute whether node is expanded
-  React.useEffect(() => {
-    const isNowExpanded = globalOpenIds && globalOpenIds.includes(treeNodeId);
-    if (!isExpanded && isNowExpanded) {
-      // Catch the transition non-expanded to expanded
-      node.onExpanded?.();
-    }
-    setIsExpanded(isNowExpanded);
-  }, [globalOpenIds, treeNodeId, node, isExpanded]);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const getSortedChildren = (treeNode: TreeNode2): TreeNode2[] => {
     if (!treeNode || !treeNode.children) {
@@ -96,8 +85,24 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
     return unsortedChildren;
   };
 
+  const onOpenChange = (_: TreeOpenChangeEvent, data: TreeOpenChangeData) => {
+    if (!node.isExpanded && data.open && node.onExpanded) {
+      // Catch the transition non-expanded to expanded
+      setIsLoading(true);
+      node.onExpanded?.().then(() => setIsLoading(false));
+    } else if (node.isExpanded && !data.open && node.onCollapsed) {
+      // Catch the transition expanded to non-expanded
+      node.onCollapsed?.();
+    }
+  };
+
   return (
-    <TreeItem value={treeNodeId} itemType={node.children !== undefined ? "branch" : "leaf"} style={{ height: "100%" }}>
+    <TreeItem
+      value={treeNodeId}
+      itemType={node.children !== undefined ? "branch" : "leaf"}
+      style={{ height: "100%" }}
+      onOpenChange={onOpenChange}
+    >
       <TreeItemLayout
         className={node.className}
         actions={
@@ -118,7 +123,7 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
             </Menu>
           )
         }
-        expandIcon={node.isLoading ? <Spinner size="extra-tiny" /> : undefined}
+        expandIcon={isLoading ? <Spinner size="extra-tiny" /> : undefined}
         iconBefore={node.iconSrc && getTreeIcon(node.iconSrc)}
         style={{
           backgroundColor: node.isSelected && node.isSelected() ? tokens.colorNeutralBackground1Selected : undefined,
@@ -127,16 +132,12 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
         <span onClick={() => node.onClick?.()}>{node.label}</span>
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
-        <Tree
-          // defaultOpenItems={defaultOpenItems}
-          style={{ overflow: node.isScrollable ? "auto" : undefined }}
-        >
+        <Tree style={{ overflow: node.isScrollable ? "auto" : undefined }}>
           {getSortedChildren(node).map((childNode: TreeNode2) => (
             <TreeNode2Component
               key={childNode.label}
               node={childNode}
               treeNodeId={`${treeNodeId}/${childNode.label}`}
-              globalOpenIds={globalOpenIds}
             />
           ))}
         </Tree>

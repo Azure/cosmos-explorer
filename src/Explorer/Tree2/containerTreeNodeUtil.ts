@@ -45,7 +45,7 @@ export const buildCollectionNode = (
       // push to most recent
       mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
     },
-    onExpanded: () => {
+    onExpanded: async () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
       useCommandBar.getState().setContextButtons([]);
@@ -53,9 +53,16 @@ export const buildCollectionNode = (
         (tab: TabsBase) =>
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
       );
+      useDatabases.getState().updateDatabase(database);
     },
     isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
     onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
+    onCollapsed() {
+      collection.collapseCollection();
+      // useCommandBar.getState().setContextButtons([]);
+      useDatabases.getState().updateDatabase(database);
+    },
+    isExpanded: collection.isCollectionExpanded(),
   };
 };
 
