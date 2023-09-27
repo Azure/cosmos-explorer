@@ -7,7 +7,7 @@ import {
   SelectionMode,
   Stack,
   Text,
-  IconButton
+  IconButton,
 } from "@fluentui/react";
 import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
@@ -299,8 +299,9 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
         },
         {
           metric: "User defined function execution time",
-          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
-            } ms`,
+          value: `${
+            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+          } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
@@ -331,8 +332,8 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   };
 
   const onClickCopyResults = (): void => {
-    copy(queryResultsString)
-  }
+    copy(queryResultsString);
+  };
 
   return (
     <Stack style={{ height: "100%" }}>
