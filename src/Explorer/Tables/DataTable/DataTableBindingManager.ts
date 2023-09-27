@@ -213,7 +213,7 @@ function selectionChanged(element: any, valueAccessor: any, allBindings: any, vi
     });
   //selected = bindingContext.$data.selected();
 }
-function handlearrowkey(
+function handleArrowKey(
   element: any,
   valueAccessor: any,
   allBindings: any,
