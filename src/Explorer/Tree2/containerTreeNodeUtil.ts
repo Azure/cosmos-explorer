@@ -57,7 +57,7 @@ export const buildCollectionNode = (
     },
     isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
     onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
-    onCollapsed() {
+    onCollapsed: () => {
       collection.collapseCollection();
       // useCommandBar.getState().setContextButtons([]);
       useDatabases.getState().updateDatabase(database);
