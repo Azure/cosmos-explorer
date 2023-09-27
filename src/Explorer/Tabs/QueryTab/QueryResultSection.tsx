@@ -2,15 +2,17 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
+  Icon,
+  Link,
   Pivot,
   PivotItem,
   SelectionMode,
   Stack,
   Text,
+  TooltipHost,
 } from "@fluentui/react";
 import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
-import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
@@ -51,11 +53,33 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
 
   const onRender = (item: IDocument): JSX.Element => (
     <>
-      <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>
       <Text style={{ paddingLeft: 10, margin: 0 }}>{`${item.metric}`}</Text>
     </>
   );
   const columns: IColumn[] = [
+    {
+      key: "column1",
+      name: "",
+      minWidth: 10,
+      maxWidth: 12,
+      data: String,
+      fieldName: "",
+      onRender: (item: IDocument) => {
+        if (item.toolTip !== "") {
+          return (
+            <>
+              <TooltipHost content={`${item.toolTip}`}>
+                <Link style={{ color: "#323130" }}>
+                  <Icon iconName="Info" ariaLabel={`${item.toolTip}`} className="panelInfoIcon" tabIndex={0} />
+                </Link>
+              </TooltipHost>
+            </>
+          );
+        } else {
+          return undefined;
+        }
+      },
+    },
     {
       key: "column2",
       name: "METRIC",
