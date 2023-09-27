@@ -14,7 +14,7 @@ test("Tables CRUD", async () => {
 
   await page.waitForSelector('text="Querying databases"', { state: "detached" });
   await explorer.click('[data-test="New Table"]');
-  await explorer.fill('[aria-label="Table id"]', tableId);
+  await explorer.fill('[aria-label="Table id, Example Table1"]', tableId);
   await explorer.click("#sidePanelOkButton");
   await explorer.click(`[data-test="TablesDB"]`);
   await explorer.click(`[data-test="${tableId}"] [aria-label="More"]`);
