@@ -80,7 +80,7 @@ const getContent = (page: number): JSX.Element => {
     case 1:
       return (
         <video controls width="640" height="360" controlsList="nofullscreen nodownload ">
-          <source src="src\Explorer\Quickstart\Videos\Cosmos-db-turorial.mp4" type="video/mp4"></source>
+          <source src="src/Explorer/Quickstart/Videos/Cosmos-db-turorial.mp4" type="video/mp4"></source>
           Your browser does not support the video tag.
         </video>
       );
