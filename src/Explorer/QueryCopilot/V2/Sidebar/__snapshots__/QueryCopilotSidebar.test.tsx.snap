@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Query Copilot Sidebar snapshot test should render and not set copilot used flag  1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+</Stack>
+`;
+
+exports[`Query Copilot Sidebar snapshot test should render and set copilot used flag  1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+</Stack>
+`;
+
+exports[`Query Copilot Sidebar snapshot test should render samples without messages 1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+</Stack>
+`;
+
+exports[`Query Copilot Sidebar snapshot test should render with chat messages 1`] = `
+<Stack
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <Header />
+  <WelcomeSidebarModal />
+</Stack>
+`;

@@ -3,6 +3,9 @@ import { useNotebook } from "Explorer/Notebook/useNotebook";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import { bulkCreateDocument } from "../../Common/dataAccess/bulkCreateDocument";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
@@ -10,19 +13,16 @@ import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer
 import { readStoredProcedures } from "../../Common/dataAccess/readStoredProcedures";
 import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import * as Logger from "../../Common/Logger";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { UploadDetailsRecord } from "../../Contracts/ViewModels";
-import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
+import { useTabs } from "../../hooks/useTabs";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
@@ -37,6 +37,7 @@ import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
+import { Platform, configContext } from "./../../ConfigContext";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -205,7 +206,8 @@ export default class Collection implements ViewModels.Collection {
         .map((node) => <Trigger>node);
     });
 
-    const showScriptsMenus: boolean = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+    const showScriptsMenus: boolean =
+      configContext.platform != Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
     this.showStoredProcedures = ko.observable<boolean>(showScriptsMenus);
     this.showTriggers = ko.observable<boolean>(showScriptsMenus);
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);
@@ -526,7 +528,7 @@ export default class Collection implements ViewModels.Collection {
 
   public onSchemaAnalyzerClick = async () => {
     if (useNotebook.getState().isPhoenixFeatures) {
-      await this.container.allocateContainer();
+      await this.container.allocateContainer(Constants.PoolIdType.DefaultPoolId);
     }
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);

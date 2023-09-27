@@ -4340,7 +4340,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   id="deleteparam"
                   onClick={[Function]}
                   role="button"
-                  src=""
+                  src={Object {}}
                   width={20}
                 >
                   <ImageBase
@@ -4350,7 +4350,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     id="deleteparam"
                     onClick={[Function]}
                     role="button"
-                    src=""
+                    src={Object {}}
                     styles={[Function]}
                     theme={
                       Object {
@@ -4640,12 +4640,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         alt="Delete param"
                         className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
                         id="deleteparam"
-                        key="fabricImage"
+                        key="fabricImage[object Object]"
                         onClick={[Function]}
                         onError={[Function]}
                         onLoad={[Function]}
                         role="button"
-                        src=""
+                        src={Object {}}
                       />
                     </div>
                   </ImageBase>
@@ -4661,7 +4661,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   id="addparam"
                   onClick={[Function]}
                   role="button"
-                  src=""
+                  src={Object {}}
                   width={20}
                 >
                   <ImageBase
@@ -4671,7 +4671,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     id="addparam"
                     onClick={[Function]}
                     role="button"
-                    src=""
+                    src={Object {}}
                     styles={[Function]}
                     theme={
                       Object {
@@ -4961,12 +4961,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         alt="Add param"
                         className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
                         id="addparam"
-                        key="fabricImage"
+                        key="fabricImage[object Object]"
                         onClick={[Function]}
                         onError={[Function]}
                         onLoad={[Function]}
                         role="button"
-                        src=""
+                        src={Object {}}
                       />
                     </div>
                   </ImageBase>
@@ -4989,13 +4989,13 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               alt="Add param"
               height={30}
               key=".0:$.0"
-              src=""
+              src={Object {}}
               width={20}
             >
               <ImageBase
                 alt="Add param"
                 height={30}
-                src=""
+                src={Object {}}
                 styles={[Function]}
                 theme={
                   Object {
@@ -5284,10 +5284,10 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   <img
                     alt="Add param"
                     className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
-                    key="fabricImage"
+                    key="fabricImage[object Object]"
                     onError={[Function]}
                     onLoad={[Function]}
-                    src=""
+                    src={Object {}}
                   />
                 </div>
               </ImageBase>

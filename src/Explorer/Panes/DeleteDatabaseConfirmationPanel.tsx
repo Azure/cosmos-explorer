@@ -1,18 +1,18 @@
 import { Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import { Areas } from "Common/Constants";
-import { deleteDatabase } from "Common/dataAccess/deleteDatabase";
 import DeleteFeedback from "Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { deleteDatabase } from "Common/dataAccess/deleteDatabase";
 import { Collection, Database } from "Contracts/ViewModels";
-import { useSidePanel } from "hooks/useSidePanel";
-import { useTabs } from "hooks/useTabs";
-import React, { FunctionComponent, useState } from "react";
 import { DefaultExperienceUtility } from "Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import { useSidePanel } from "hooks/useSidePanel";
+import { useTabs } from "hooks/useTabs";
+import React, { FunctionComponent, useState } from "react";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
@@ -36,8 +36,13 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
 
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
-      setFormError("Input database name does not match the selected database");
+      setFormError(
+        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`
+      );
       logConsoleError(`Error while deleting collection ${selectedDatabase && selectedDatabase.id()}`);
+      logConsoleError(
+        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`
+      );
       return;
     }
     setFormError("");
@@ -135,6 +140,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
               setDatabaseInput(newInput);
             }}
             ariaLabel={confirmDatabase}
+            required
           />
         </div>
         {isLastNonEmptyDatabase() && (

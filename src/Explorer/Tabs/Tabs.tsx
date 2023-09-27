@@ -3,16 +3,21 @@ import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
+import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
+import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { userContext } from "UserContext";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
+import errorQuery from "../../../images/error_no_outline.svg";
 import { useObservable } from "../../hooks/useObservable";
 import { ReactTabKind, useTabs } from "../../hooks/useTabs";
 import TabsBase from "./TabsBase";
@@ -32,7 +37,16 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
         <MessageBar
           messageBarType={MessageBarType.warning}
           actions={
-            <MessageBarButton onClick={() => sendMessage({ type: MessageTypes.OpenPostgresNetworkingBlade })}>
+            <MessageBarButton
+              onClick={() =>
+                sendMessage({
+                  type:
+                    userContext.apiType === "VCoreMongo"
+                      ? MessageTypes.OpenVCoreMongoNetworkingBlade
+                      : MessageTypes.OpenPostgresNetworkingBlade,
+                })
+              }
+            >
               Change network settings
             </MessageBarButton>
           }
@@ -66,7 +80,14 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
 function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?: ReactTabKind }) {
   const [hovering, setHovering] = useState(false);
   const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
-  const tabId = tab ? tab.tabId : "connect";
+  const tabId = tab ? tab.tabId : "";
+
+  const getReactTabTitle = (): ko.Observable<string> => {
+    if (tabKind === ReactTabKind.QueryCopilot) {
+      return ko.observable("Query");
+    }
+    return ko.observable(ReactTabKind[tabKind]);
+  };
 
   useEffect(() => {
     if (active && focusTab.current) {
@@ -105,11 +126,19 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
         <div className="tab_Content">
           <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
             {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-            {useObservable(tab?.isExecuting || ko.observable(false)) && (
+            {isTabExecuting(tab, tabKind) && (
               <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
             )}
+            {isQueryErrorThrown(tab, tabKind) && (
+              <img
+                src={errorQuery}
+                title="Error"
+                alt="Error"
+                style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
+              />
+            )}
           </span>
-          <span className="tabNavText">{useObservable(tab?.tabTitle || ko.observable(ReactTabKind[tabKind]))}</span>
+          <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           {tabKind !== ReactTabKind.Home && (
             <span className="tabIconSection">
               <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
@@ -141,6 +170,7 @@ const CloseButton = ({
     onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
       event.stopPropagation();
       tab ? tab.onCloseTabButtonClick() : useTabs.getState().closeReactTab(tabKind);
+      tabKind === ReactTabKind.QueryCopilot && useQueryCopilot.getState().resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
     onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
@@ -203,14 +233,48 @@ const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
   }
 };
 
+const isTabExecuting = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
+  if (useObservable(tab?.isExecuting || ko.observable(false))) {
+    return true;
+  } else if (tabKind !== undefined && tabKind !== ReactTabKind.Home && useTabs.getState()?.isTabExecuting) {
+    return true;
+  }
+  return false;
+};
+
+const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
+  if (
+    !tab?.isExecuting &&
+    tabKind !== undefined &&
+    tabKind !== ReactTabKind.Home &&
+    useTabs.getState()?.isQueryErrorThrown &&
+    !useTabs.getState()?.isTabExecuting
+  ) {
+    return true;
+  }
+  return false;
+};
+
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
   switch (activeReactTab) {
     case ReactTabKind.Connect:
-      return userContext.apiType === "Postgres" ? <PostgresConnectTab /> : <ConnectTab />;
+      return userContext.apiType === "VCoreMongo" ? (
+        <VcoreMongoConnectTab />
+      ) : userContext.apiType === "Postgres" ? (
+        <PostgresConnectTab />
+      ) : (
+        <ConnectTab />
+      );
     case ReactTabKind.Home:
       return <SplashScreen explorer={explorer} />;
     case ReactTabKind.Quickstart:
-      return <QuickstartTab explorer={explorer} />;
+      return userContext.apiType === "VCoreMongo" ? (
+        <VcoreMongoQuickstartTab explorer={explorer} />
+      ) : (
+        <QuickstartTab explorer={explorer} />
+      );
+    case ReactTabKind.QueryCopilot:
+      return <QueryCopilotTab explorer={explorer} />;
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }

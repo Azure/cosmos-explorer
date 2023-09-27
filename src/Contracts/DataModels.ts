@@ -1,11 +1,14 @@
 import { ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
 
-export interface DatabaseAccount {
+export interface ArmEntity {
   id: string;
   name: string;
   location: string;
   type: string;
   kind: string;
+}
+
+export interface DatabaseAccount extends ArmEntity {
   properties: DatabaseAccountExtendedProperties;
   systemData?: DatabaseAccountSystemData;
 }
@@ -35,6 +38,8 @@ export interface DatabaseAccountExtendedProperties {
   locations?: DatabaseAccountResponseLocation[];
   postgresqlEndpoint?: string;
   publicNetworkAccess?: string;
+  enablePriorityBasedExecution?: boolean;
+  vcoreMongoEndpoint?: string;
 }
 
 export interface DatabaseAccountResponseLocation {
@@ -242,6 +247,8 @@ export interface Offer {
   minimumThroughput: number | undefined;
   offerDefinition?: SDKOfferDefinition;
   offerReplacePending: boolean;
+  instantMaximumThroughput?: number;
+  softAllowedMaximumThroughput?: number;
 }
 
 export interface SDKOfferDefinition extends Resource {
@@ -573,7 +580,7 @@ export interface ContainerConnectionInfo {
   //need to add ram and rom info
 }
 
-export interface PostgresFirewallRule {
+export interface FirewallRule {
   id: string;
   name: string;
   type: string;

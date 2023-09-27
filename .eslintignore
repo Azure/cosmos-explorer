@@ -145,3 +145,4 @@ src/Explorer/Notebook/temp/inputs/connected-editors/codemirror.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTree.tsx
+src/Utils/PriorityBasedExecutionUtils.ts

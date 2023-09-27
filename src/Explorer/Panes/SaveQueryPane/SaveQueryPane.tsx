@@ -4,11 +4,11 @@ import React, { FunctionComponent, useState } from "react";
 import { Areas, SavedQueries } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Query } from "../../../Contracts/DataModels";
-import { useSidePanel } from "../../../hooks/useSidePanel";
-import { useTabs } from "../../../hooks/useTabs";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
+import { useSidePanel } from "../../../hooks/useSidePanel";
+import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
 import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
 import { useDatabases } from "../../useDatabases";
@@ -16,9 +16,13 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 interface SaveQueryPaneProps {
   explorer: Explorer;
+  queryToSave?: string;
 }
 
-export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer }: SaveQueryPaneProps): JSX.Element => {
+export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
+  explorer,
+  queryToSave,
+}: SaveQueryPaneProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
@@ -36,7 +40,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
     }
 
     const queryTab = useTabs.getState().activeTab as NewQueryTab;
-    const query: string = queryTab && queryTab.iTabAccessor.onSaveClickEvent();
+    const query: string = queryToSave || queryTab?.iTabAccessor.onSaveClickEvent();
 
     if (!queryName || queryName.length === 0) {
       setFormError("No query name specified");
@@ -62,8 +66,8 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
     try {
       await explorer.queriesClient.saveQuery(queryParam);
       setLoadingFalse();
-      queryTab.tabTitle(queryParam.queryName);
-      queryTab.tabPath(`${queryTab.collection.databaseId}>${queryTab.collection.id()}>${queryParam.queryName}`);
+      queryTab?.tabTitle(queryParam.queryName);
+      queryTab?.tabPath(`${queryTab.collection.databaseId}>${queryTab.collection.id()}>${queryParam.queryName}`);
       traceSuccess(
         Action.SaveQuery,
         {
@@ -135,10 +139,11 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
     onSubmit: () => {
       isSaveQueryEnabled() ? submit() : setupQueries();
     },
+    footerStyle: isSaveQueryEnabled() ? { flexGrow: 0 } : {},
   };
   return (
     <RightPaneForm {...props}>
-      <div className="panelFormWrapper">
+      <div className="panelFormWrapper" style={{ flexGrow: 1 }}>
         <div className="panelMainContent">
           {!isSaveQueryEnabled() ? (
             <Text variant="small">{setupSaveQueriesText}</Text>

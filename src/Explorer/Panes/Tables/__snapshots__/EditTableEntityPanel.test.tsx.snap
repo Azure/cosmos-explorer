@@ -39,13 +39,13 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
               alt="Add Entity"
               height={30}
               key=".0:$.0"
-              src=""
+              src={Object {}}
               width={16}
             >
               <ImageBase
                 alt="Add Entity"
                 height={30}
-                src=""
+                src={Object {}}
                 styles={[Function]}
                 theme={
                   Object {
@@ -334,10 +334,10 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                   <img
                     alt="Add Entity"
                     className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-55"
-                    key="fabricImage"
+                    key="fabricImage[object Object]"
                     onError={[Function]}
                     onLoad={[Function]}
-                    src=""
+                    src={Object {}}
                   />
                 </div>
               </ImageBase>

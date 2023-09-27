@@ -1,15 +1,16 @@
 import { Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
-import { configContext } from "ConfigContext";
-import { NotebookWorkspaceConnectionInfo, PostgresFirewallRule } from "Contracts/DataModels";
+import { PoolIdType } from "Common/Constants";
+import { NotebookWorkspaceConnectionInfo } from "Contracts/DataModels";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { NotebookTerminalComponent } from "Explorer/Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "Explorer/Explorer";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { QuickstartFirewallNotification } from "Explorer/Quickstart/QuickstartFirewallNotification";
 import { QuickstartGuide } from "Explorer/Quickstart/QuickstartGuide";
-import { ReactTabKind, useTabs } from "hooks/useTabs";
-import React, { useEffect, useState } from "react";
+import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
-import { armRequest } from "Utils/arm/request";
+import React, { useEffect, useState } from "react";
+import FirewallRuleScreenshot from "../../../images/firewallRule.png";
 
 interface QuickstartTabProps {
   explorer: Explorer;
@@ -25,33 +26,16 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
     forwardingId: notebookServerInfo.forwardingId,
   });
 
-  const checkFirewallRules = async (): Promise<void> => {
-    const firewallRulesUri = `${userContext.databaseAccount.id}/firewallRules`;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any = await armRequest({
-      host: configContext.ARM_ENDPOINT,
-      path: firewallRulesUri,
-      method: "GET",
-      apiVersion: "2020-10-05-privatepreview",
-    });
-    const firewallRules: PostgresFirewallRule[] = response?.data?.value || response?.value || [];
-    const isEnabled = firewallRules.some(
-      (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"
-    );
-    setIsAllPublicIPAddressEnabled(isEnabled);
-
-    // If the firewall rule is not added, check every 30 seconds to see if the user has added the rule
-    if (!isEnabled && useTabs.getState().activeReactTab === ReactTabKind.Quickstart) {
-      setTimeout(checkFirewallRules, 30000);
-    }
-  };
-
   useEffect(() => {
-    checkFirewallRules();
+    checkFirewallRules(
+      "2022-11-08",
+      (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
+      setIsAllPublicIPAddressEnabled
+    );
   });
 
   useEffect(() => {
-    explorer.allocateContainer();
+    explorer.allocateContainer(PoolIdType.DefaultPoolId);
   }, []);
 
   return (
@@ -60,7 +44,13 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
         <QuickstartGuide />
       </Stack>
       <Stack style={{ width: "50%", borderLeft: "black solid 1px" }}>
-        {!isAllPublicIPAddressEnabled && <QuickstartFirewallNotification />}
+        {!isAllPublicIPAddressEnabled && (
+          <QuickstartFirewallNotification
+            messageType={MessageTypes.OpenPostgresNetworkingBlade}
+            screenshot={FirewallRuleScreenshot}
+            shellName="PostgreSQL"
+          />
+        )}
         {isAllPublicIPAddressEnabled && notebookServerInfo?.notebookServerEndpoint && (
           <NotebookTerminalComponent
             notebookServerInfo={getNotebookServerInfo()}

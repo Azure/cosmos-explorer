@@ -1,7 +1,10 @@
+import { configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
-import promiseRetry, { AbortError } from "p-retry";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { userContext } from "UserContext";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
+import promiseRetry, { AbortError } from "p-retry";
 import {
   Areas,
   ConnectionStatusType,
@@ -12,7 +15,6 @@ import {
 } from "../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { configContext } from "../ConfigContext";
 import {
   ContainerConnectionInfo,
   ContainerInfo,
@@ -28,7 +30,6 @@ import {
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
@@ -96,20 +97,27 @@ export class PhoenixClient {
     }
   }
 
-  public async initiateContainerHeartBeat(containerData: IContainerData) {
+  public async initiateContainerHeartBeat(shouldUseNotebookStates: boolean, containerData: IContainerData) {
     if (this.containerHealthHandler) {
       clearTimeout(this.containerHealthHandler);
     }
-    await this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
+    await this.getContainerHealth(shouldUseNotebookStates, Notebook.containerStatusHeartbeatDelayMs, containerData);
   }
 
-  private scheduleContainerHeartbeat(delayMs: number, containerData: IContainerData): void {
+  private scheduleContainerHeartbeat(
+    shouldUseNotebookStates: boolean,
+    delayMs: number,
+    containerData: IContainerData
+  ): void {
     this.containerHealthHandler = setTimeout(async () => {
-      await this.getContainerHealth(delayMs, containerData);
+      await this.getContainerHealth(shouldUseNotebookStates, delayMs, containerData);
     }, delayMs);
   }
 
-  private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
+  private async getContainerStatusAsync(
+    shouldUseNotebookStates: boolean,
+    containerData: IContainerData
+  ): Promise<ContainerInfo> {
     try {
       const runContainerStatusAsync = async () => {
         const response = await window.fetch(
@@ -136,14 +144,17 @@ export class PhoenixClient {
             dataExplorerArea: Areas.Notebook,
             message: getErrorMessage(error),
           });
-          useNotebook.getState().resetContainerConnection(connectionStatus);
-          useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-          useDialog
-            .getState()
-            .showOkModalDialog(
-              "Disconnected",
-              "Disconnected from temporary workspace. Please click on connect button to connect to temporary workspace."
-            );
+          shouldUseNotebookStates
+            ? useNotebook.getState().resetContainerConnection(connectionStatus)
+            : useQueryCopilot.getState().resetContainerConnection();
+          shouldUseNotebookStates && useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+          shouldUseNotebookStates &&
+            useDialog
+              .getState()
+              .showOkModalDialog(
+                "Disconnected",
+                "Disconnected from temporary workspace. Please click on connect button to connect to temporary workspace."
+              );
           throw new AbortError(response.statusText);
         } else if (response?.status === HttpStatusCodes.Forbidden) {
           const validationMessage = this.ConvertToForbiddenErrorString(await response.json());
@@ -163,8 +174,10 @@ export class PhoenixClient {
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
-      useNotebook.getState().resetContainerConnection(connectionStatus);
-      useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+      shouldUseNotebookStates
+        ? useNotebook.getState().resetContainerConnection(connectionStatus)
+        : useQueryCopilot.getState().resetContainerConnection();
+      shouldUseNotebookStates && useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       return {
         durationLeftInMinutes: undefined,
         phoenixServerInfo: undefined,
@@ -173,11 +186,17 @@ export class PhoenixClient {
     }
   }
 
-  private async getContainerHealth(delayMs: number, containerData: IContainerData) {
-    const containerInfo = await this.getContainerStatusAsync(containerData);
-    useNotebook.getState().setContainerStatus(containerInfo);
-    if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
-      this.scheduleContainerHeartbeat(delayMs, containerData);
+  private async getContainerHealth(shouldUseNotebookStates: boolean, delayMs: number, containerData: IContainerData) {
+    const containerInfo = await this.getContainerStatusAsync(shouldUseNotebookStates, containerData);
+    shouldUseNotebookStates
+      ? useNotebook.getState().setContainerStatus(containerInfo)
+      : useQueryCopilot.getState().setContainerStatus(containerInfo);
+
+    const containerStatus = shouldUseNotebookStates
+      ? useNotebook.getState().containerStatus?.status
+      : useQueryCopilot.getState().containerStatus?.status;
+    if (containerStatus === ContainerStatusType.Active) {
+      this.scheduleContainerHeartbeat(shouldUseNotebookStates, delayMs, containerData);
     }
   }
 

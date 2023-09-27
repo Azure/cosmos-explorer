@@ -1,14 +1,14 @@
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
-  allowedArmEndpoints,
-  allowedBackendEndpoints,
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
   allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
+  defaultAllowedArmEndpoints,
+  defaultAllowedBackendEndpoints,
   validateEndpoint,
 } from "Utils/EndpointValidation";
 
@@ -16,10 +16,13 @@ export enum Platform {
   Portal = "Portal",
   Hosted = "Hosted",
   Emulator = "Emulator",
+  Fabric = "Fabric",
 }
 
 export interface ConfigContext {
   platform: Platform;
+  allowedArmEndpoints: ReadonlyArray<string>;
+  allowedBackendEndpoints: ReadonlyArray<string>;
   allowedParentFrameOrigins: ReadonlyArray<string>;
   gitSha?: string;
   proxyPath?: string;
@@ -49,6 +52,8 @@ export interface ConfigContext {
 // Default configuration
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
+  allowedArmEndpoints: defaultAllowedArmEndpoints,
+  allowedBackendEndpoints: defaultAllowedBackendEndpoints,
   allowedParentFrameOrigins: [
     `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
@@ -77,7 +82,7 @@ let configContext: Readonly<ConfigContext> = {
 
 export function resetConfigContext(): void {
   if (process.env.NODE_ENV !== "test") {
-    throw new Error("resetConfigContext can only becalled in a test environment");
+    throw new Error("resetConfigContext can only be called in a test environment");
   }
   configContext = {} as ConfigContext;
 }
@@ -87,7 +92,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     return;
   }
 
-  if (!validateEndpoint(newContext.ARM_ENDPOINT, allowedArmEndpoints)) {
+  if (!validateEndpoint(newContext.ARM_ENDPOINT, configContext.allowedArmEndpoints || defaultAllowedArmEndpoints)) {
     delete newContext.ARM_ENDPOINT;
   }
 
@@ -107,7 +112,12 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.ARCADIA_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.BACKEND_ENDPOINT, allowedBackendEndpoints)) {
+  if (
+    !validateEndpoint(
+      newContext.BACKEND_ENDPOINT,
+      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints
+    )
+  ) {
     delete newContext.BACKEND_ENDPOINT;
   }
 
@@ -130,7 +140,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
   Object.assign(configContext, newContext);
 }
 
-// Injected for local develpment. These will be removed in the production bundle by webpack
+// Injected for local development. These will be removed in the production bundle by webpack
 if (process.env.NODE_ENV === "development") {
   const port: string = process.env.PORT || "1234";
   updateConfigContext({
@@ -178,6 +188,7 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
           console.error(`Invalid platform query parameter: ${platform}`);
           break;
         case Platform.Portal:
+        case Platform.Fabric:
         case Platform.Hosted:
         case Platform.Emulator:
           updateConfigContext({ platform });

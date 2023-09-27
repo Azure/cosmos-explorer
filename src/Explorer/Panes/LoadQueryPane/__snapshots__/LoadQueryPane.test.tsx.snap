@@ -39,7 +39,7 @@ exports[`Load Query Pane should render Default properly 1`] = `
             className="fileIcon"
             height={20}
             imageFit={4}
-            src=""
+            src={Object {}}
             width={20}
           />
           <input

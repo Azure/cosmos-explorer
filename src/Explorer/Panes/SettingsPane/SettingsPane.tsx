@@ -2,12 +2,12 @@ import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
-import { useSidePanel } from "hooks/useSidePanel";
-import React, { FunctionComponent, MouseEvent, useState } from "react";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
+import { useSidePanel } from "hooks/useSidePanel";
+import React, { FunctionComponent, MouseEvent, useState } from "react";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export const SettingsPane: FunctionComponent = () => {
@@ -29,7 +29,7 @@ export const SettingsPane: FunctionComponent = () => {
   const [crossPartitionQueryEnabled, setCrossPartitionQueryEnabled] = useState<boolean>(
     LocalStorageUtility.hasItem(StorageKey.IsCrossPartitionQueryEnabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
-      : true
+      : false
   );
   const [graphAutoVizDisabled, setGraphAutoVizDisabled] = useState<string>(
     LocalStorageUtility.hasItem(StorageKey.IsGraphAutoVizDisabled)
@@ -41,12 +41,18 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism)
       : Constants.Queries.DefaultMaxDegreeOfParallelism
   );
+  const [priorityLevel, setPriorityLevel] = useState<string>(
+    LocalStorageUtility.hasItem(StorageKey.PriorityLevel)
+      ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
+      : Constants.PriorityLevel.Default
+  );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-
+  const shouldShowPriorityLevelOption =
+    userContext.databaseAccount?.properties?.enablePriorityBasedExecution && userContext.apiType === "SQL";
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     setIsExecuting(true);
 
@@ -58,6 +64,7 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
+    LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
 
     if (shouldShowGraphAutoVizOption) {
       LocalStorageUtility.setEntryBoolean(
@@ -76,6 +83,7 @@ export const SettingsPane: FunctionComponent = () => {
         StorageKey.MaxDegreeOfParellism
       )}`
     );
+    logConsoleInfo(`Updated priority level setting to ${LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)}`);
 
     if (shouldShowGraphAutoVizOption) {
       logConsoleInfo(
@@ -115,6 +123,18 @@ export const SettingsPane: FunctionComponent = () => {
     { key: "false", text: "Graph" },
     { key: "true", text: "JSON" },
   ];
+
+  const priorityLevelOptionList: IChoiceGroupOption[] = [
+    { key: Constants.PriorityLevel.Low, text: "Low" },
+    { key: Constants.PriorityLevel.High, text: "High" },
+  ];
+
+  const handleOnPriorityLevelOptionChange = (
+    ev: React.FormEvent<HTMLInputElement>,
+    option: IChoiceGroupOption
+  ): void => {
+    setPriorityLevel(option.key);
+  };
 
   const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
     setPageOption(option.key);
@@ -257,6 +277,29 @@ export const SettingsPane: FunctionComponent = () => {
                 onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                 ariaLabel="Max degree of parallelism"
               />
+            </div>
+          </div>
+        )}
+        {shouldShowPriorityLevelOption && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart">
+              <fieldset>
+                <legend id="priorityLevel" className="settingsSectionLabel legendLabel">
+                  Priority Level
+                </legend>
+                <InfoTooltip>
+                  Sets the priority level for data-plane requests from Data Explorer when using Priority-Based
+                  Execution. If &quot;None&quot; is selected, Data Explorer will not specify priority level, and the
+                  server-side default priority level will be used.
+                </InfoTooltip>
+                <ChoiceGroup
+                  ariaLabelledBy="priorityLevel"
+                  selectedKey={priorityLevel}
+                  options={priorityLevelOptionList}
+                  styles={choiceButtonStyles}
+                  onChange={handleOnPriorityLevelOptionChange}
+                />
+              </fieldset>
             </div>
           </div>
         )}

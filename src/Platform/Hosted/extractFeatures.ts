@@ -35,6 +35,11 @@ export type Features = {
   readonly enableLegacyMongoShellV2: boolean;
   readonly enableLegacyMongoShellV2Debug: boolean;
   readonly loadLegacyMongoShellFromBE: boolean;
+  readonly enableCopilot: boolean;
+  readonly copilotVersion?: string;
+  readonly disableCopilotPhoenixGateaway: boolean;
+  readonly enableCopilotFullSchema: boolean;
+  readonly copilotChatFixedMonacoEditorHeight: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -102,6 +107,11 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableLegacyMongoShellV2: "true" === get("enablelegacymongoshellv2"),
     enableLegacyMongoShellV2Debug: "true" === get("enablelegacymongoshellv2debug"),
     loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
+    enableCopilot: "true" === get("enablecopilot", "true"),
+    copilotVersion: get("copilotversion") ?? "v1.0",
+    disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
+    enableCopilotFullSchema: "true" === get("enablecopilotfullschema", "true"),
+    copilotChatFixedMonacoEditorHeight: "true" === get("copilotchatfixedmonacoeditorheight"),
   };
 }
 

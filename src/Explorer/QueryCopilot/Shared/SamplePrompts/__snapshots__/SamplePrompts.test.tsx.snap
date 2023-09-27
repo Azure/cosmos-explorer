@@ -1,0 +1,781 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sample Prompts snapshot test should render properly if isSamplePromptsOpen is false 1`] = `
+<Modal
+  isOpen={false}
+>
+  <Stack
+    aria-modal="true"
+    role="dialog"
+    style={
+      Object {
+        "maxHeight": "calc(100vh - 120px)",
+        "overflowY": "auto",
+        "padding": "16px 24px",
+      }
+    }
+  >
+    <Stack>
+      <Stack
+        horizontal={true}
+        style={
+          Object {
+            "display": "flex",
+            "justifyContent": "space-between",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 24,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Sample Prompts
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+          styles={
+            Object {
+              "root": Object {
+                "backgroundColor": "transparent",
+                "border": "none",
+                "padding": 0,
+                "selectors": Object {
+                  "&:focus": Object {
+                    "outline": "none",
+                  },
+                  "&:hover": Object {
+                    "backgroundColor": "transparent",
+                    "color": "#000",
+                  },
+                },
+              },
+            }
+          }
+        />
+      </Stack>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "fontWeight": 400,
+            "marginTop": 10,
+          }
+        }
+      >
+        Here are some sample prompts for writing queries in NoSQL, ranging from simple to complex
+      </Text>
+    </Stack>
+    <Stack
+      style={
+        Object {
+          "display": "flex",
+          "marginTop": 30,
+        }
+      }
+    >
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <Image
+          src={Object {}}
+          style={
+            Object {
+              "height": 25,
+              "width": 25,
+            }
+          }
+        />
+        <Text
+          style={
+            Object {
+              "fontSize": 14,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Simple Prompts
+        </Text>
+      </Stack>
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        Object {
+          "gap": 35,
+        }
+      }
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show me products less than 100 dolars
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show schema
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+    </Stack>
+    <Stack
+      style={
+        Object {
+          "display": "flex",
+          "marginTop": 30,
+        }
+      }
+    >
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <Image
+          src={Object {}}
+          style={
+            Object {
+              "height": 25,
+              "width": 25,
+            }
+          }
+        />
+        <Text
+          style={
+            Object {
+              "fontSize": 14,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Intermediate Prompts
+        </Text>
+      </Stack>
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        Object {
+          "gap": 35,
+        }
+      }
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show items with a description that contains a number between 0 and 99 inclusive.
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Write a query to return all records in this table created in the last thirty days
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+    </Stack>
+    <Stack
+      style={
+        Object {
+          "display": "flex",
+          "marginTop": 30,
+        }
+      }
+    >
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <Image
+          src={Object {}}
+          style={
+            Object {
+              "height": 25,
+              "width": 25,
+            }
+          }
+        />
+        <Text
+          style={
+            Object {
+              "fontSize": 14,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Complex Prompts
+        </Text>
+      </Stack>
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        Object {
+          "gap": 35,
+        }
+      }
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show all the products that customer Bob has reviewed.
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Which computers are more than 300 dollars and less than 400 dollars?
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+    </Stack>
+  </Stack>
+</Modal>
+`;
+
+exports[`Sample Prompts snapshot test should render properly if isSamplePromptsOpen is true 1`] = `
+<Modal
+  isOpen={true}
+>
+  <Stack
+    aria-modal="true"
+    role="dialog"
+    style={
+      Object {
+        "maxHeight": "calc(100vh - 120px)",
+        "overflowY": "auto",
+        "padding": "16px 24px",
+      }
+    }
+  >
+    <Stack>
+      <Stack
+        horizontal={true}
+        style={
+          Object {
+            "display": "flex",
+            "justifyContent": "space-between",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 24,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Sample Prompts
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+          styles={
+            Object {
+              "root": Object {
+                "backgroundColor": "transparent",
+                "border": "none",
+                "padding": 0,
+                "selectors": Object {
+                  "&:focus": Object {
+                    "outline": "none",
+                  },
+                  "&:hover": Object {
+                    "backgroundColor": "transparent",
+                    "color": "#000",
+                  },
+                },
+              },
+            }
+          }
+        />
+      </Stack>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "fontWeight": 400,
+            "marginTop": 10,
+          }
+        }
+      >
+        Here are some sample prompts for writing queries in NoSQL, ranging from simple to complex
+      </Text>
+    </Stack>
+    <Stack
+      style={
+        Object {
+          "display": "flex",
+          "marginTop": 30,
+        }
+      }
+    >
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <Image
+          src={Object {}}
+          style={
+            Object {
+              "height": 25,
+              "width": 25,
+            }
+          }
+        />
+        <Text
+          style={
+            Object {
+              "fontSize": 14,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Simple Prompts
+        </Text>
+      </Stack>
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        Object {
+          "gap": 35,
+        }
+      }
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show me products less than 100 dolars
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show schema
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+    </Stack>
+    <Stack
+      style={
+        Object {
+          "display": "flex",
+          "marginTop": 30,
+        }
+      }
+    >
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <Image
+          src={Object {}}
+          style={
+            Object {
+              "height": 25,
+              "width": 25,
+            }
+          }
+        />
+        <Text
+          style={
+            Object {
+              "fontSize": 14,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Intermediate Prompts
+        </Text>
+      </Stack>
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        Object {
+          "gap": 35,
+        }
+      }
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show items with a description that contains a number between 0 and 99 inclusive.
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Write a query to return all records in this table created in the last thirty days
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+    </Stack>
+    <Stack
+      style={
+        Object {
+          "display": "flex",
+          "marginTop": 30,
+        }
+      }
+    >
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <Image
+          src={Object {}}
+          style={
+            Object {
+              "height": 25,
+              "width": 25,
+            }
+          }
+        />
+        <Text
+          style={
+            Object {
+              "fontSize": 14,
+              "fontWeight": 600,
+            }
+          }
+        >
+          Complex Prompts
+        </Text>
+      </Stack>
+    </Stack>
+    <Stack
+      horizontal={true}
+      style={
+        Object {
+          "gap": 35,
+        }
+      }
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Show all the products that customer Bob has reviewed.
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "background": "#F6F6F7",
+            "height": 135,
+            "width": 352,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 13,
+              "height": 80,
+            }
+          }
+        >
+          Which computers are more than 300 dollars and less than 400 dollars?
+        </Text>
+        <FontIcon
+          aria-label="Forward"
+          iconName="Forward"
+          style={
+            Object {
+              "left": "92.61%",
+              "position": "absolute",
+            }
+          }
+        />
+      </CustomizedDefaultButton>
+    </Stack>
+  </Stack>
+</Modal>
+`;

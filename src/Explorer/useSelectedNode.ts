@@ -1,9 +1,8 @@
-import { ConnectionStatusType } from "Common/Constants";
+import { ConnectionStatusType, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { useTabs } from "../hooks/useTabs";
-
 export interface SelectedNodeState {
   selectedNode: ViewModels.TreeNode;
   setSelectedNode: (node: ViewModels.TreeNode) => void;
@@ -15,6 +14,7 @@ export interface SelectedNodeState {
     subnodeKinds?: ViewModels.CollectionTabKind[]
   ) => boolean;
   isConnectedToContainer: () => boolean;
+  isQueryCopilotCollectionSelected: () => boolean;
 }
 
 export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) => ({
@@ -64,5 +64,17 @@ export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) =>
   },
   isConnectedToContainer: (): boolean => {
     return useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Connected;
+  },
+  isQueryCopilotCollectionSelected: (): boolean => {
+    const selectedNode = get().selectedNode as ViewModels.CollectionBase;
+    if (
+      selectedNode &&
+      selectedNode.isSampleCollection &&
+      selectedNode.id() === QueryCopilotSampleContainerId &&
+      selectedNode.databaseId === QueryCopilotSampleDatabaseId
+    ) {
+      return true;
+    }
+    return false;
   },
 }));

@@ -39,7 +39,7 @@ test("Resource token", async () => {
   await page.type("input[class='inputToken']", resourceTokenConnectionString);
   await page.click("input[value='Connect']");
   await page.waitForSelector("iframe");
-  const explorer = page.frame({
+  const explorer = await page.frame({
     name: "explorer",
   });
   await explorer.textContent(`css=.dataResourceTree >> "${collectionId}"`);

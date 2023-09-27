@@ -1,39 +1,43 @@
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
+import { sendMessage } from "Common/MessageHandler";
+import { Platform, configContext } from "ConfigContext";
+import { MessageTypes } from "Contracts/ExplorerContracts";
 import { IGalleryItem } from "Juno/JunoClient";
+import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
-import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
 import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook, PoolIdType } from "../Common/Constants";
-import { readCollection } from "../Common/dataAccess/readCollection";
-import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
+import { readCollection, readSampleCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
 import * as DataModels from "../Contracts/DataModels";
 import { ContainerConnectionInfo, IPhoenixServiceInfo, IProvisionData, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
-import { useSidePanel } from "../hooks/useSidePanel";
-import { useTabs } from "../hooks/useTabs";
 import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
+import { isAccountNewerThanThresholdInMs, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
-import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
+import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
+import { useSidePanel } from "../hooks/useSidePanel";
+import { useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
 import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
@@ -258,6 +262,62 @@ export default class Explorer {
     // TODO: return result
   }
 
+  private getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
+  }
+
+  public openNPSSurveyDialog(): void {
+    if (!Platform.Portal) {
+      return;
+    }
+
+    const NINETY_DAYS_IN_MS = 7776000000;
+    const ONE_DAY_IN_MS = 86400000;
+    const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
+      userContext.databaseAccount?.systemData?.createdAt || "",
+      NINETY_DAYS_IN_MS
+    );
+    const lastSubmitted: string = localStorage.getItem("lastSubmitted");
+
+    if (lastSubmitted !== null) {
+      let lastSubmittedDate: number = parseInt(lastSubmitted);
+      if (isNaN(lastSubmittedDate)) {
+        lastSubmittedDate = 0;
+      }
+
+      const nowMs: number = Date.now();
+      const millisecsSinceLastSubmitted = nowMs - lastSubmittedDate;
+      if (millisecsSinceLastSubmitted < NINETY_DAYS_IN_MS) {
+        return;
+      }
+    }
+
+    // Try Cosmos DB subscription - survey shown to random 25% of users at day 1 in Data Explorer.
+    if (userContext.isTryCosmosDBSubscription) {
+      if (
+        isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS) &&
+        this.getRandomInt(100) < 25
+      ) {
+        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+        localStorage.setItem("lastSubmitted", Date.now().toString());
+      }
+    } else {
+      // An existing account is lesser than 90 days old. For existing account show to random 10 % of users in Data Explorer.
+      if (isAccountNewerThanNinetyDays) {
+        if (this.getRandomInt(100) < 10) {
+          sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+          localStorage.setItem("lastSubmitted", Date.now().toString());
+        }
+      } else {
+        // An existing account is greater than 90 days. For existing account show to random 25 % of users in Data Explorer.
+        if (this.getRandomInt(100) < 25) {
+          sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+          localStorage.setItem("lastSubmitted", Date.now().toString());
+        }
+      }
+    }
+  }
+
   public async refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
@@ -343,9 +403,15 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public async allocateContainer(): Promise<void> {
-    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-    const isAllocating = useNotebook.getState().isAllocating;
+  public async allocateContainer(poolId: PoolIdType): Promise<void> {
+    const shouldUseNotebookStates = poolId === PoolIdType.DefaultPoolId ? true : false;
+    const notebookServerInfo = shouldUseNotebookStates
+      ? useNotebook.getState().notebookServerInfo
+      : useQueryCopilot.getState().notebookServerInfo;
+
+    const isAllocating = shouldUseNotebookStates
+      ? useNotebook.getState().isAllocating
+      : useQueryCopilot.getState().isAllocatingContainer;
     if (
       isAllocating === false &&
       (notebookServerInfo === undefined ||
@@ -353,23 +419,28 @@ export default class Explorer {
     ) {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
-        poolId: PoolIdType.DefaultPoolId,
+        poolId: shouldUseNotebookStates ? undefined : poolId,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
       };
-      useNotebook.getState().setConnectionInfo(connectionStatus);
+
+      shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
+
       let connectionInfo;
       try {
         TelemetryProcessor.traceStart(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
-        useNotebook.getState().setIsAllocating(true);
+        shouldUseNotebookStates
+          ? useNotebook.getState().setIsAllocating(true)
+          : useQueryCopilot.getState().setIsAllocatingContainer(true);
+
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         if (!connectionInfo?.data?.phoenixServiceUrl) {
           throw new Error(`PhoenixServiceUrl is invalid!`);
         }
-        await this.setNotebookInfo(connectionInfo, connectionStatus);
+        await this.setNotebookInfo(shouldUseNotebookStates, connectionInfo, connectionStatus);
         TelemetryProcessor.traceSuccess(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
@@ -381,7 +452,9 @@ export default class Explorer {
           errorStack: getErrorStack(error),
         });
         connectionStatus.status = ConnectionStatusType.Failed;
-        useNotebook.getState().resetContainerConnection(connectionStatus);
+        shouldUseNotebookStates
+          ? useNotebook.getState().resetContainerConnection(connectionStatus)
+          : useQueryCopilot.getState().resetContainerConnection();
         if (error?.status === HttpStatusCodes.Forbidden && error.message) {
           useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
         } else {
@@ -394,7 +467,9 @@ export default class Explorer {
         }
         throw error;
       } finally {
-        useNotebook.getState().setIsAllocating(false);
+        shouldUseNotebookStates
+          ? useNotebook.getState().setIsAllocating(false)
+          : useQueryCopilot.getState().setIsAllocatingContainer(false);
         this.refreshCommandBarButtons();
         this.refreshNotebookList();
         this._isInitializingNotebooks = false;
@@ -403,6 +478,7 @@ export default class Explorer {
   }
 
   private async setNotebookInfo(
+    shouldUseNotebookStates: boolean,
     connectionInfo: IResponse<IPhoenixServiceInfo>,
     connectionStatus: DataModels.ContainerConnectionInfo
   ) {
@@ -410,21 +486,26 @@ export default class Explorer {
       forwardingId: connectionInfo.data.forwardingId,
       dbAccountName: userContext.databaseAccount.name,
     };
-    await this.phoenixClient.initiateContainerHeartBeat(containerData);
+    await this.phoenixClient.initiateContainerHeartBeat(shouldUseNotebookStates, containerData);
 
     connectionStatus.status = ConnectionStatusType.Connected;
-    useNotebook.getState().setConnectionInfo(connectionStatus);
-    useNotebook.getState().setNotebookServerInfo({
+    shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
+
+    const noteBookServerInfo = {
       notebookServerEndpoint:
         (validateEndpoint(userContext.features.notebookServerUrl, allowedNotebookServerUrls) &&
           userContext.features.notebookServerUrl) ||
         connectionInfo.data.phoenixServiceUrl,
       authToken: userContext.features.notebookServerToken || connectionInfo.data.authToken,
       forwardingId: connectionInfo.data.forwardingId,
-    });
-    this.notebookManager?.notebookClient
-      .getMemoryUsage()
-      .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
+    };
+    shouldUseNotebookStates
+      ? useNotebook.getState().setNotebookServerInfo(noteBookServerInfo)
+      : useQueryCopilot.getState().setNotebookServerInfo(noteBookServerInfo);
+    shouldUseNotebookStates &&
+      this.notebookManager?.notebookClient
+        .getMemoryUsage()
+        .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
   }
 
   public resetNotebookWorkspace(): void {
@@ -498,7 +579,7 @@ export default class Explorer {
         throw new Error(`Reset Workspace: PhoenixServiceUrl is invalid!`);
       }
       if (useNotebook.getState().isPhoenixNotebooks) {
-        await this.setNotebookInfo(connectionInfo, connectionStatus);
+        await this.setNotebookInfo(true, connectionInfo, connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
       logConsoleInfo("Successfully reset notebook workspace");
@@ -608,6 +689,8 @@ export default class Explorer {
   private _initSettings() {
     if (!ExplorerSettings.hasSettingsDefined()) {
       ExplorerSettings.createDefaultSettings();
+    } else {
+      ExplorerSettings.ensurePriorityLevel();
     }
   }
 
@@ -711,7 +794,7 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
     if (notebookContentItem.type === NotebookContentItemType.Notebook && useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer();
+      await this.allocateContainer(PoolIdType.DefaultPoolId);
     }
 
     const notebookTabs = useTabs
@@ -936,7 +1019,7 @@ export default class Explorer {
     }
     if (useNotebook.getState().isPhoenixNotebooks) {
       if (isGithubTree) {
-        await this.allocateContainer();
+        await this.allocateContainer(PoolIdType.DefaultPoolId);
         parent = parent || this.resourceTree.myNotebooksContentRoot;
         this.createNewNoteBook(parent, isGithubTree);
       } else {
@@ -945,7 +1028,7 @@ export default class Explorer {
           undefined,
           "Create",
           async () => {
-            await this.allocateContainer();
+            await this.allocateContainer(PoolIdType.DefaultPoolId);
             parent = parent || this.resourceTree.myNotebooksContentRoot;
             this.createNewNoteBook(parent, isGithubTree);
           },
@@ -1024,7 +1107,7 @@ export default class Explorer {
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
     if (useNotebook.getState().isPhoenixFeatures) {
-      await this.allocateContainer();
+      await this.allocateContainer(PoolIdType.DefaultPoolId);
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
         this.connectToNotebookTerminal(kind);
@@ -1059,6 +1142,10 @@ export default class Explorer {
 
       case ViewModels.TerminalKind.Postgres:
         title = "PSQL Shell";
+        break;
+
+      case ViewModels.TerminalKind.VCoreMongo:
+        title = "VCoreMongo Shell";
         break;
 
       default:
@@ -1168,7 +1255,7 @@ export default class Explorer {
       await useNotebook.getState().getPhoenixStatus();
     }
     if (useNotebook.getState().isPhoenixNotebooks) {
-      await this.allocateContainer();
+      await this.allocateContainer(PoolIdType.DefaultPoolId);
     }
 
     // We still use github urls like https://github.com/Azure-Samples/cosmos-notebooks/blob/master/CSharp_quickstarts/GettingStarted_CSharp.ipynb
@@ -1205,7 +1292,7 @@ export default class Explorer {
         undefined,
         "Upload",
         async () => {
-          await this.allocateContainer();
+          await this.allocateContainer(PoolIdType.DefaultPoolId);
           parent = parent || this.resourceTree.myNotebooksContentRoot;
           this.uploadFilePanel(parent);
         },
@@ -1247,7 +1334,7 @@ export default class Explorer {
   }
 
   public async refreshExplorer(): Promise<void> {
-    if (userContext.apiType !== "Postgres") {
+    if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
       userContext.authType === AuthType.ResourceToken
         ? this.refreshDatabaseForResourceToken()
         : this.refreshAllDatabases();
@@ -1256,9 +1343,10 @@ export default class Explorer {
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
-      userContext.features.notebooksDownBanner ||
-      useNotebook.getState().isPhoenixNotebooks ||
-      useNotebook.getState().isPhoenixFeatures;
+      configContext.platform !== Platform.Fabric &&
+      (userContext.features.notebooksDownBanner ||
+        useNotebook.getState().isPhoenixNotebooks ||
+        useNotebook.getState().isPhoenixFeatures);
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook
       .getState()
@@ -1272,5 +1360,26 @@ export default class Explorer {
     if (useNotebook.getState().isPhoenixNotebooks) {
       await this.initNotebooks(userContext.databaseAccount);
     }
+
+    await this.refreshSampleData();
+  }
+
+  public async refreshSampleData(): Promise<void> {
+    if (!userContext.sampleDataConnectionInfo) {
+      return;
+    }
+
+    const collection: DataModels.Collection = await readSampleCollection();
+    if (!collection) {
+      return;
+    }
+
+    const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
+    if (!databaseId) {
+      return;
+    }
+
+    const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
+    useDatabases.setState({ sampleDataResourceTokenCollection });
   }
 }

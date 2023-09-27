@@ -1,5 +1,6 @@
 import { CellId } from "@nteract/commutable";
 import { AppState } from "@nteract/core";
+import { MessageType } from "@nteract/messaging";
 import * as Immutable from "immutable";
 import { Notebook } from "../../../Common/Constants";
 
@@ -53,3 +54,26 @@ export const makeCdbRecord = Immutable.Record<CdbRecordProps>({
   pendingSnapshotRequest: undefined,
   notebookSnapshotError: undefined,
 });
+
+export interface JupyterMessage<MT extends MessageType = MessageType, C = any> {
+  header: JupyterMessageHeader<MT>;
+  parent_header:
+    | JupyterMessageHeader<any>
+    | {
+        msg_id?: string;
+      };
+  metadata: object;
+  content: C;
+  channel: string;
+  buffers?: Uint8Array | null;
+}
+
+export interface JupyterMessageHeader<MT extends MessageType = MessageType> {
+  msg_id: string;
+  username: string;
+  date: string;
+  msg_type: MT;
+  version: string;
+  session: string;
+  token: string;
+}

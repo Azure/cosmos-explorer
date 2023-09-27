@@ -108,7 +108,7 @@ table.storage thead td {
     background-color: @BaseLight;
     /*[{datatable-header-background}]*/
     text-align: left;
-    color: #808080;
+    color: #333333;
     /*[{datatable-header-text}]*/
     outline: none;
 }
@@ -124,12 +124,13 @@ table.dataTable thead td:active {
 
 table.dataTable thead th:focus,
 table.dataTable thead td:focus {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #007ACC;
+    outline: 1px dashed #605E5C;
+    outline-offset: -2px;
     /*[{datatable-header-cell-focus-background}]*/
 }
-
+table.dataTable tbody tr:focus{
+    outline: 1px dashed #605E5C;
+}
 table.dataTable thead th:hover,
 table.dataTable thead td:hover {
     border: 1px solid #007ACC;

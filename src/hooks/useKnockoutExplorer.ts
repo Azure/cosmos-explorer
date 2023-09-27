@@ -1,13 +1,15 @@
+import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
+import { fetchEncryptedToken } from "Platform/Hosted/Components/ConnectExplorer";
+import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { fetchAccessData } from "hooks/usePortalAccessToken";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
-import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
-import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
-import { configContext, Platform, updateConfigContext } from "../ConfigContext";
+import { Platform, configContext, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
@@ -21,19 +23,20 @@ import {
   ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
-import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
+import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
+import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
+import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
-import { getMsalInstance } from "../Utils/AuthorizationUtils";
-import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
+import { applyExplorerBindings } from "../applyExplorerBindings";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -59,6 +62,26 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
         } else if (platform === Platform.Portal) {
           const explorer = await configurePortal();
           setExplorer(explorer);
+        } else if (platform === Platform.Fabric) {
+          // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
+          const connectionString = sessionStorage.getItem("connectionString");
+          if (!connectionString) {
+            console.error("No connection string found in session storage");
+            return;
+          }
+          const encryptedToken = await fetchEncryptedToken(connectionString);
+          // TODO Duplicated from useTokenMetadata
+          const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
+
+          const win = (window as unknown) as HostedExplorerChildFrame;
+          win.hostedConfig = {
+            authType: AuthType.EncryptedToken,
+            encryptedToken,
+            encryptedTokenMetadata,
+          };
+
+          const explorer = await configureHosted();
+          setExplorer(explorer);
         }
       }
     };
@@ -68,6 +91,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
+      if (userContext.features.enableCopilot) {
+        updateContextForSampleData(explorer);
+      }
     }
   }, [explorer]);
 
@@ -101,7 +127,10 @@ async function configureHosted(): Promise<Explorer> {
       }
 
       if (event.data?.type === MessageTypes.CloseTab) {
-        if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+        if (
+          event.data?.data?.tabId === "QuickstartPSQLShell" ||
+          event.data?.data?.tabId === "QuickstartVcoreMongoShell"
+        ) {
           useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
         } else {
           useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
@@ -290,13 +319,19 @@ async function configurePortal(): Promise<Explorer> {
           updateContextsFromPortalMessage(inputs);
           explorer = new Explorer();
           resolve(explorer);
+          if (userContext.apiType === "Postgres") {
+            explorer.openNPSSurveyDialog();
+          }
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         } else if (event.data?.type === MessageTypes.CloseTab) {
-          if (event.data?.data?.tabId === "QuickstartPSQLShell") {
+          if (
+            event.data?.data?.tabId === "QuickstartPSQLShell" ||
+            event.data?.data?.tabId === "QuickstartVcoreMongoShell"
+          ) {
             useTabs.getState().closeReactTab(ReactTabKind.Quickstart);
           } else {
             useTabs.getState().closeTabsByComparator((tab) => tab.tabId === event.data?.data?.tabId);
@@ -368,8 +403,16 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  const warningMessage = getNetworkSettingsWarningMessage();
-  useTabs.getState().setNetworkSettingsWarning(warningMessage);
+  if (inputs.isVCoreMongoAccount) {
+    if (inputs.connectionStringParams) {
+      updateUserContext({
+        apiType: "VCoreMongo",
+        vcoreMongoConnectionParams: inputs.connectionStringParams,
+      });
+    }
+  }
+
+  getNetworkSettingsWarningMessage(useTabs.getState().setNetworkSettingsWarning);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
@@ -408,4 +451,32 @@ interface PortalMessage {
   actionType?: ActionType;
   type?: MessageTypes;
   inputs?: DataExplorerInputsFrame;
+}
+
+async function updateContextForSampleData(explorer: Explorer): Promise<void> {
+  if (!userContext.features.enableCopilot) {
+    return;
+  }
+
+  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, `/api/tokens/sampledataconnection`);
+  const authorizationHeader = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  const response = await window.fetch(url, {
+    headers,
+  });
+
+  if (!response.ok) {
+    return undefined;
+  }
+
+  const data: SampledataconnectionResponse = await response.json();
+  const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
+  updateUserContext({ sampleDataConnectionInfo });
+
+  await explorer.refreshSampleData();
+}
+
+interface SampledataconnectionResponse {
+  connectionString: string;
 }

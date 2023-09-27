@@ -55,7 +55,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src=""
+      src={Object {}}
       tabIndex={0}
     />
     <span
@@ -158,7 +158,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src=""
+      src={Object {}}
       tabIndex={0}
     />
     <span
@@ -309,7 +309,7 @@ exports[`TreeNodeComponent renders loading icon 1`] = `
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src=""
+      src={Object {}}
       tabIndex={0}
     />
     <span
@@ -383,7 +383,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src=""
+      src={Object {}}
       tabIndex={0}
     />
     <span
@@ -553,7 +553,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src=""
+      src={Object {}}
       tabIndex={0}
     />
     <span

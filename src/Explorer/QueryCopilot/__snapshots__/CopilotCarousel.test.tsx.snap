@@ -1,0 +1,198 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Query Copilot Carousel snapshot test should render when isOpen is true 1`] = `
+<Modal
+  isOpen={true}
+  styles={
+    Object {
+      "main": Object {
+        "width": 880,
+      },
+    }
+  }
+>
+  <Stack
+    style={
+      Object {
+        "padding": 16,
+      }
+    }
+  >
+    <Stack
+      horizontal={true}
+      horizontalAlign="space-between"
+    >
+      <Text
+        variant="xLarge"
+      >
+        What exactly is copilot?
+      </Text>
+      <CustomizedIconButton
+        iconProps={
+          Object {
+            "iconName": "Cancel",
+          }
+        }
+        onClick={[Function]}
+      />
+    </Stack>
+    <Stack
+      style={
+        Object {
+          "marginTop": 8,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+          }
+        }
+      >
+        A couple of lines about copilot and the background about it. The idea is to have some text to give context to the user.
+      </Text>
+      <Text
+        style={
+          Object {
+            "fontSize": 14,
+            "fontWeight": 600,
+            "marginTop": 16,
+          }
+        }
+      >
+        How do you use copilot
+      </Text>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "marginTop": 8,
+          }
+        }
+      >
+        To generate queries , just describe the query you want and copilot will generate the query for you.Watch this video to learn more about how to use copilot.
+      </Text>
+      <Image
+        src={Object {}}
+        style={
+          Object {
+            "margin": "16px auto",
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 14,
+            "fontWeight": 600,
+          }
+        }
+      >
+        What is copilot good at
+      </Text>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "marginTop": 8,
+          }
+        }
+      >
+        A couple of lines about what copilot can do and its capablites with a link to
+         
+        <StyledLinkBase
+          href=""
+          target="_blank"
+        >
+          documentation
+        </StyledLinkBase>
+         
+        if possible.
+      </Text>
+      <Text
+        style={
+          Object {
+            "fontSize": 14,
+            "fontWeight": 600,
+            "marginTop": 16,
+          }
+        }
+      >
+        What are its limitations
+      </Text>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "marginTop": 8,
+          }
+        }
+      >
+        A couple of lines about what copilot cant do and its limitations.
+         
+        <StyledLinkBase
+          href=""
+          target="_blank"
+        >
+          Link to documentation
+        </StyledLinkBase>
+      </Text>
+      <Text
+        style={
+          Object {
+            "fontSize": 14,
+            "fontWeight": 600,
+            "marginTop": 16,
+          }
+        }
+      >
+        Disclaimer
+      </Text>
+      <Text
+        style={
+          Object {
+            "fontSize": 13,
+            "marginTop": 8,
+          }
+        }
+      >
+        AI-generated content can have mistakes. Make sure it's accurate and appropriate before using it.
+         
+        <StyledLinkBase
+          href=""
+          target="_blank"
+        >
+          Read preview terms
+        </StyledLinkBase>
+      </Text>
+    </Stack>
+    <Separator
+      styles={
+        Object {
+          "root": Object {
+            "height": 1,
+            "padding": "16px 0",
+            "selectors": Object {
+              "::before": Object {
+                "background": undefined,
+              },
+            },
+          },
+        }
+      }
+    />
+    <Stack
+      horizontal={true}
+      horizontalAlign="start"
+      verticalAlign="center"
+    >
+      <CustomizedPrimaryButton
+        disabled={false}
+        onClick={[Function]}
+        text="Next"
+      />
+    </Stack>
+  </Stack>
+</Modal>
+`;

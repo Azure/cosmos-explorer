@@ -1,0 +1,157 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delete Popup snapshot test should not render when showDeletePopup is false 1`] = `
+<Modal
+  isOpen={false}
+  styles={
+    Object {
+      "main": Object {
+        "minHeight": "122px",
+        "minWidth": "880px",
+      },
+    }
+  }
+>
+  <Stack
+    style={
+      Object {
+        "height": "auto",
+        "padding": "16px 24px",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "fontSize": "18px",
+          "height": 24,
+        }
+      }
+    >
+      <b>
+        Delete code?
+      </b>
+    </Text>
+    <Text
+      style={
+        Object {
+          "marginBottom": 20,
+          "marginTop": 10,
+        }
+      }
+    >
+      This will clear the query from the query builder pane along with all comments and also reset the prompt pane
+    </Text>
+    <Stack
+      horizontal={true}
+      horizontalAlign="start"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <CustomizedPrimaryButton
+        onClick={[Function]}
+        style={
+          Object {
+            "height": 24,
+            "padding": "0px 20px",
+          }
+        }
+      >
+        Delete
+      </CustomizedPrimaryButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "height": 24,
+            "padding": "0px 20px",
+          }
+        }
+      >
+        Close
+      </CustomizedDefaultButton>
+    </Stack>
+  </Stack>
+</Modal>
+`;
+
+exports[`Delete Popup snapshot test should render when showDeletePopup is true 1`] = `
+<Modal
+  isOpen={true}
+  styles={
+    Object {
+      "main": Object {
+        "minHeight": "122px",
+        "minWidth": "880px",
+      },
+    }
+  }
+>
+  <Stack
+    style={
+      Object {
+        "height": "auto",
+        "padding": "16px 24px",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "fontSize": "18px",
+          "height": 24,
+        }
+      }
+    >
+      <b>
+        Delete code?
+      </b>
+    </Text>
+    <Text
+      style={
+        Object {
+          "marginBottom": 20,
+          "marginTop": 10,
+        }
+      }
+    >
+      This will clear the query from the query builder pane along with all comments and also reset the prompt pane
+    </Text>
+    <Stack
+      horizontal={true}
+      horizontalAlign="start"
+      tokens={
+        Object {
+          "childrenGap": 10,
+        }
+      }
+    >
+      <CustomizedPrimaryButton
+        onClick={[Function]}
+        style={
+          Object {
+            "height": 24,
+            "padding": "0px 20px",
+          }
+        }
+      >
+        Delete
+      </CustomizedPrimaryButton>
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        style={
+          Object {
+            "height": 24,
+            "padding": "0px 20px",
+          }
+        }
+      >
+        Close
+      </CustomizedDefaultButton>
+    </Stack>
+  </Stack>
+</Modal>
+`;

@@ -1,0 +1,183 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RetrievingBubble should render properly when isGeneratingExplanation is true 1`] = `
+<Fragment>
+  <Stack
+    horizontalAlign="end"
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#FAFAFA",
+        "borderRadius": "8px",
+        "display": "flex",
+        "margin": "10px",
+        "padding": "10px",
+      }
+    }
+    verticalAlign="end"
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "white",
+          "borderRadius": "8px",
+          "fontWeight": "bold",
+          "gap": "12px",
+          "height": "46px",
+          "padding": "12px 16px 16px 16px",
+          "width": "100%",
+        }
+      }
+    >
+      Retriveing 
+      explanation
+    </Text>
+    <div
+      style={
+        Object {
+          "backgroundColor": "#E6E6E6",
+          "borderRadius": "4px",
+          "height": "4px",
+          "overflow": "hidden",
+          "width": "100%",
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "animation": "loadingAnimation 2s linear infinite",
+            "backgroundColor": "#0078D4",
+            "height": "100%",
+            "width": "50%",
+          }
+        }
+      />
+    </div>
+    <Stack
+      horizontalAlign="center"
+      style={
+        Object {
+          "alignItems": "center",
+          "gap": "8px",
+          "marginTop": "8px",
+        }
+      }
+      verticalAlign="center"
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        onRenderIcon={[Function]}
+        style={
+          Object {
+            "color": "#424242",
+          }
+        }
+        styles={
+          Object {
+            "root": Object {
+              "background": "none",
+              "border": "none",
+              "color": "#424242",
+              "padding": 0,
+            },
+          }
+        }
+      >
+        Stop generating
+      </CustomizedDefaultButton>
+    </Stack>
+  </Stack>
+</Fragment>
+`;
+
+exports[`RetrievingBubble should render properly when isGeneratingQuery is true 1`] = `
+<Fragment>
+  <Stack
+    horizontalAlign="end"
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#FAFAFA",
+        "borderRadius": "8px",
+        "display": "flex",
+        "margin": "10px",
+        "padding": "10px",
+      }
+    }
+    verticalAlign="end"
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "white",
+          "borderRadius": "8px",
+          "fontWeight": "bold",
+          "gap": "12px",
+          "height": "46px",
+          "padding": "12px 16px 16px 16px",
+          "width": "100%",
+        }
+      }
+    >
+      Retriveing 
+      queries
+    </Text>
+    <div
+      style={
+        Object {
+          "backgroundColor": "#E6E6E6",
+          "borderRadius": "4px",
+          "height": "4px",
+          "overflow": "hidden",
+          "width": "100%",
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "animation": "loadingAnimation 2s linear infinite",
+            "backgroundColor": "#0078D4",
+            "height": "100%",
+            "width": "50%",
+          }
+        }
+      />
+    </div>
+    <Stack
+      horizontalAlign="center"
+      style={
+        Object {
+          "alignItems": "center",
+          "gap": "8px",
+          "marginTop": "8px",
+        }
+      }
+      verticalAlign="center"
+    >
+      <CustomizedDefaultButton
+        onClick={[Function]}
+        onRenderIcon={[Function]}
+        style={
+          Object {
+            "color": "#424242",
+          }
+        }
+        styles={
+          Object {
+            "root": Object {
+              "background": "none",
+              "border": "none",
+              "color": "#424242",
+              "padding": 0,
+            },
+          }
+        }
+      >
+        Stop generating
+      </CustomizedDefaultButton>
+    </Stack>
+  </Stack>
+</Fragment>
+`;

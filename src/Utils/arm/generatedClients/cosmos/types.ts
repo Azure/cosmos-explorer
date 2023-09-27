@@ -3,13 +3,25 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/2021-04-15/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-09-15-preview/cosmos-db.json
 */
+
+/* The List operation response, that contains the client encryption keys and their properties. */
+export interface ClientEncryptionKeysListResult {
+  /* List of client encryption keys and their properties. */
+  readonly value?: ClientEncryptionKeyGetResults[];
+}
 
 /* The List operation response, that contains the database accounts and their properties. */
 export interface DatabaseAccountsListResult {
   /* List of database account and their properties. */
   readonly value?: DatabaseAccountGetResults[];
+}
+
+/* The List operation response, that contains the Graph resource and their properties. */
+export interface GraphResourcesListResult {
+  /* List of Graph resource and their properties. */
+  readonly value?: GraphResourceGetResults[];
 }
 
 /* The List operation response, that contains the SQL databases and their properties. */
@@ -84,6 +96,12 @@ export interface GremlinGraphListResult {
   readonly value?: GremlinGraphGetResults[];
 }
 
+/* The List operation response, that contains the Cassandra views and their properties. */
+export interface CassandraViewListResult {
+  /* List of Cassandra views and their properties. */
+  readonly value?: CassandraViewGetResults[];
+}
+
 /* Error Response. */
 export interface ErrorResponse {
   /* Error code. */
@@ -149,6 +167,9 @@ export interface ARMResourceProperties {
   location?: string;
   /* undocumented */
   tags?: Tags;
+
+  /* undocumented */
+  identity?: ManagedServiceIdentity;
 }
 
 /* The resource model definition for a ARM proxy resource. It will have everything other than required location and tags */
@@ -161,6 +182,30 @@ export interface ARMProxyResource {
   readonly type?: string;
 }
 
+/* Parameters to create and update ClientEncryptionKey. */
+export interface ClientEncryptionKeyCreateUpdateParameters {
+  /* Properties to create and update ClientEncryptionKey. */
+  properties: ClientEncryptionKeyCreateUpdateProperties;
+}
+
+/* Properties to create and update ClientEncryptionKey. */
+export interface ClientEncryptionKeyCreateUpdateProperties {
+  /* The standard JSON format of a ClientEncryptionKey */
+  resource: ClientEncryptionKeyResource;
+}
+
+/* Client Encryption Key. */
+export type ClientEncryptionKeyGetResults = ARMProxyResource & {
+  /* The properties of a ClientEncryptionKey */
+  properties?: ClientEncryptionKeyGetProperties;
+};
+
+/* The properties of a ClientEncryptionKey resource */
+export interface ClientEncryptionKeyGetProperties {
+  /* undocumented */
+  resource?: ClientEncryptionKeyResource & ExtendedResourceProperties;
+}
+
 /* An Azure Cosmos DB database account. */
 export type DatabaseAccountGetResults = ARMResourceProperties & {
   /* Indicates the type of database account. This can only be set at database account creation. */
@@ -171,6 +216,9 @@ export type DatabaseAccountGetResults = ARMResourceProperties & {
 
   /* undocumented */
   properties?: DatabaseAccountGetProperties;
+
+  /* The system meta data relating to this resource. */
+  readonly systemData?: unknown;
 };
 
 /* The system generated resource properties associated with SQL databases, SQL containers, Gremlin databases and Gremlin graphs. */
@@ -199,6 +247,20 @@ export interface ThroughputSettingsGetProperties {
 export type SqlDatabaseGetResults = ARMResourceProperties & {
   /* The properties of an Azure Cosmos DB SQL database */
   properties?: SqlDatabaseGetProperties;
+};
+
+/* The properties of an Azure Cosmos DB SQL database */
+export interface GraphResourceGetProperties {
+  /* undocumented */
+  resource?: GraphResource;
+  /* undocumented */
+  options?: OptionsResource;
+}
+
+/* An Azure Cosmos DB Graph resource. */
+export type GraphResourceGetResults = ARMResourceProperties & {
+  /* The properties of an Azure Cosmos DB Graph resource. */
+  properties?: GraphResourceGetProperties;
 };
 
 /* The properties of an Azure Cosmos DB SQL database */
@@ -357,6 +419,20 @@ export interface GremlinGraphGetProperties {
   options?: OptionsResource;
 }
 
+/* An Azure Cosmos DB Cassandra view. */
+export type CassandraViewGetResults = ARMResourceProperties & {
+  /* The properties of an Azure Cosmos DB Cassandra view */
+  properties?: CassandraViewGetProperties;
+};
+
+/* The properties of an Azure Cosmos DB Cassandra view */
+export interface CassandraViewGetProperties {
+  /* undocumented */
+  resource?: CassandraViewResource & ExtendedResourceProperties;
+  /* undocumented */
+  options?: OptionsResource;
+}
+
 /* The consistency policy for the Cosmos DB database account. */
 export interface ConsistencyPolicy {
   /* The default consistency level and configuration settings of the Cosmos DB account. */
@@ -446,6 +522,17 @@ export interface DatabaseAccountGetProperties {
 
   /* Flag to indicate whether to enable storage analytics. */
   enableAnalyticalStorage?: boolean;
+  /* Analytical storage specific properties. */
+  analyticalStorageConfiguration?: AnalyticalStorageConfiguration;
+
+  /* A unique identifier assigned to the database account */
+  readonly instanceId?: string;
+  /* Enum to indicate the mode of account creation. */
+  createMode?: CreateMode;
+
+  /* Parameters to indicate the information about the restore. */
+  restoreParameters?: RestoreParameters;
+
   /* The object representing the policy for taking backups on an account. */
   backupPolicy?: BackupPolicy;
 
@@ -457,6 +544,34 @@ export interface DatabaseAccountGetProperties {
 
   /* An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account. */
   networkAclBypassResourceIds?: unknown[];
+
+  /* The Object representing the different Diagnostic log settings for the Cosmos DB Account. */
+  diagnosticLogSettings?: DiagnosticLogSettings;
+
+  /* Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. */
+  disableLocalAuth?: boolean;
+  /* The object that represents all properties related to capacity enforcement on an account. */
+  capacity?: Capacity;
+
+  /* Flag to indicate whether to enable MaterializedViews on the Cosmos DB account */
+  enableMaterializedViews?: boolean;
+  /* The object that represents the metadata for the Account Keys of the Cosmos DB account. */
+  keysMetadata?: DatabaseAccountKeysMetadata;
+
+  /* Flag to indicate enabling/disabling of Partition Merge feature on the account */
+  enablePartitionMerge?: boolean;
+  /* Flag to indicate enabling/disabling of Burst Capacity Preview feature on the account */
+  enableBurstCapacity?: boolean;
+  /* Indicates the minimum allowed Tls version. The default is Tls 1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. */
+  minimalTlsVersion?: MinimalTlsVersion;
+
+  /* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
+  customerManagedKeyStatus?: CustomerManagedKeyStatus;
+
+  /* Flag to indicate enabling/disabling of Priority Based Execution Preview feature on the account */
+  enablePriorityBasedExecution?: boolean;
+  /* Enum to indicate default Priority Level of request for Priority Based Execution. */
+  defaultPriorityLevel?: DefaultPriorityLevel;
 }
 
 /* Properties to create and update Azure Cosmos DB database accounts. */
@@ -506,6 +621,12 @@ export interface DatabaseAccountCreateUpdateProperties {
 
   /* Flag to indicate whether to enable storage analytics. */
   enableAnalyticalStorage?: boolean;
+  /* Analytical storage specific properties. */
+  analyticalStorageConfiguration?: AnalyticalStorageConfiguration;
+
+  /* Enum to indicate the mode of account creation. */
+  createMode?: CreateMode;
+
   /* The object representing the policy for taking backups on an account. */
   backupPolicy?: BackupPolicy;
 
@@ -517,6 +638,37 @@ export interface DatabaseAccountCreateUpdateProperties {
 
   /* An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account. */
   networkAclBypassResourceIds?: unknown[];
+
+  /* The Object representing the different Diagnostic log settings for the Cosmos DB Account. */
+  diagnosticLogSettings?: DiagnosticLogSettings;
+
+  /* Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. */
+  disableLocalAuth?: boolean;
+  /* Parameters to indicate the information about the restore. */
+  restoreParameters?: RestoreParameters;
+
+  /* The object that represents all properties related to capacity enforcement on an account. */
+  capacity?: Capacity;
+
+  /* Flag to indicate whether to enable MaterializedViews on the Cosmos DB account */
+  enableMaterializedViews?: boolean;
+  /* This property is ignored during the update/create operation, as the metadata is read-only. The object represents the metadata for the Account Keys of the Cosmos DB account. */
+  keysMetadata?: DatabaseAccountKeysMetadata;
+
+  /* Flag to indicate enabling/disabling of Partition Merge feature on the account */
+  enablePartitionMerge?: boolean;
+  /* Flag to indicate enabling/disabling of Burst Capacity Preview feature on the account */
+  enableBurstCapacity?: boolean;
+  /* Indicates the minimum allowed Tls version. The default is Tls 1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. */
+  minimalTlsVersion?: MinimalTlsVersion;
+
+  /* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
+  customerManagedKeyStatus?: CustomerManagedKeyStatus;
+
+  /* Flag to indicate enabling/disabling of Priority Based Execution Preview feature on the account */
+  enablePriorityBasedExecution?: boolean;
+  /* Enum to indicate default Priority Level of request for Priority Based Execution. */
+  defaultPriorityLevel?: DefaultPriorityLevel;
 }
 
 /* Parameters to create and update Cosmos DB database accounts. */
@@ -575,6 +727,9 @@ export interface DatabaseAccountUpdateProperties {
 
   /* Flag to indicate whether to enable storage analytics. */
   enableAnalyticalStorage?: boolean;
+  /* Analytical storage specific properties. */
+  analyticalStorageConfiguration?: AnalyticalStorageConfiguration;
+
   /* The object representing the policy for taking backups on an account. */
   backupPolicy?: BackupPolicy;
 
@@ -586,6 +741,34 @@ export interface DatabaseAccountUpdateProperties {
 
   /* An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account. */
   networkAclBypassResourceIds?: unknown[];
+
+  /* The Object representing the different Diagnostic log settings for the Cosmos DB Account. */
+  diagnosticLogSettings?: DiagnosticLogSettings;
+
+  /* Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. */
+  disableLocalAuth?: boolean;
+  /* The object that represents all properties related to capacity enforcement on an account. */
+  capacity?: Capacity;
+
+  /* Flag to indicate whether to enable MaterializedViews on the Cosmos DB account */
+  enableMaterializedViews?: boolean;
+  /* This property is ignored during the update operation, as the metadata is read-only. The object represents the metadata for the Account Keys of the Cosmos DB account. */
+  keysMetadata?: DatabaseAccountKeysMetadata;
+
+  /* Flag to indicate enabling/disabling of Partition Merge feature on the account */
+  enablePartitionMerge?: boolean;
+  /* Flag to indicate enabling/disabling of Burst Capacity Preview feature on the account */
+  enableBurstCapacity?: boolean;
+  /* Indicates the minimum allowed Tls version. The default is Tls 1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. */
+  minimalTlsVersion?: MinimalTlsVersion;
+
+  /* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
+  customerManagedKeyStatus?: CustomerManagedKeyStatus;
+
+  /* Flag to indicate enabling/disabling of Priority Based Execution Preview feature on the account */
+  enablePriorityBasedExecution?: boolean;
+  /* Enum to indicate default Priority Level of request for Priority Based Execution. */
+  defaultPriorityLevel?: DefaultPriorityLevel;
 }
 
 /* Parameters for patching Azure Cosmos DB database account properties. */
@@ -624,6 +807,20 @@ export interface DatabaseAccountConnectionString {
   readonly connectionString?: string;
   /* Description of the connection string */
   readonly description?: string;
+  /* Kind of the connection string key */
+  readonly keyKind?: "Primary" | "Secondary" | "PrimaryReadonly" | "SecondaryReadonly";
+
+  /* Type of the connection string */
+  readonly type?:
+    | "Sql"
+    | "Table"
+    | "MongoDB"
+    | "Cassandra"
+    | "CassandraConnectorMetadata"
+    | "Gremlin"
+    | "SqlDedicatedGateway"
+    | "GremlinV2"
+    | "Undefined";
 }
 
 /* The connection strings for the given database account. */
@@ -651,6 +848,27 @@ export type ThroughputSettingsUpdateParameters = ARMResourceProperties & {
 export interface ThroughputSettingsUpdateProperties {
   /* The standard JSON format of a resource throughput */
   resource: ThroughputSettingsResource;
+}
+
+/* Parameters to create and update Cosmos DB Graph resource. */
+export type GraphResourceCreateUpdateParameters = ARMResourceProperties & {
+  /* Properties to create and update Azure Cosmos DB Graph resource. */
+  properties: GraphResourceCreateUpdateProperties;
+};
+
+/* Properties to create and update Azure Cosmos DB Graph resource. */
+export interface GraphResourceCreateUpdateProperties {
+  /* The standard JSON format of a Graph resource */
+  resource: GraphResource;
+
+  /* A key-value pair of options to be applied for the request. This corresponds to the headers sent with the request. */
+  options?: CreateUpdateOptions;
+}
+
+/* Cosmos DB Graph resource object */
+export interface GraphResource {
+  /* Name of the Cosmos DB Graph */
+  id: string;
 }
 
 /* Parameters to create and update Cosmos DB SQL database. */
@@ -833,6 +1051,21 @@ export interface GremlinGraphCreateUpdateProperties {
   options?: CreateUpdateOptions;
 }
 
+/* Parameters to create and update Cosmos DB Cassandra view. */
+export type CassandraViewCreateUpdateParameters = ARMResourceProperties & {
+  /* Properties to create and update Azure Cosmos DB Cassandra view. */
+  properties: CassandraViewCreateUpdateProperties;
+};
+
+/* Properties to create and update Azure Cosmos DB Cassandra view. */
+export interface CassandraViewCreateUpdateProperties {
+  /* The standard JSON format of a Cassandra view */
+  resource: CassandraViewResource;
+
+  /* A key-value pair of options to be applied for the request. This corresponds to the headers sent with the request. */
+  options?: CreateUpdateOptions;
+}
+
 /* Cosmos DB resource throughput object. Either throughput is required or autoscaleSettings is required, but not both. */
 export interface ThroughputSettingsResource {
   /* Value of the Cosmos DB resource throughput. Either throughput is required or autoscaleSettings is required, but not both. */
@@ -844,6 +1077,10 @@ export interface ThroughputSettingsResource {
   readonly minimumThroughput?: string;
   /* The throughput replace is pending */
   readonly offerReplacePending?: string;
+  /* The offer throughput value to instantly scale up without triggering splits */
+  readonly instantMaximumThroughput?: string;
+  /* The maximum throughput value or the maximum maxThroughput value (for autoscale) that can be specified */
+  readonly softAllowedMaximumThroughput?: string;
 }
 
 /* Cosmos DB provisioned throughput settings object */
@@ -879,10 +1116,113 @@ export interface OptionsResource {
   autoscaleSettings?: AutoscaleSettings;
 }
 
+/* Cosmos DB redistribute throughput parameters object */
+export type RedistributeThroughputParameters = ARMResourceProperties & {
+  /* Properties to redistribute throughput parameters object */
+  properties: RedistributeThroughputProperties;
+};
+
+/* Properties to redistribute throughput for Azure Cosmos DB resource. */
+export interface RedistributeThroughputProperties {
+  /* The standard JSON format of a resource throughput */
+  resource: RedistributeThroughputPropertiesResource;
+}
+
+/* Resource to redistribute throughput for Azure Cosmos DB resource */
+export interface RedistributeThroughputPropertiesResource {
+  /* ThroughputPolicy to apply for throughput redistribution */
+  throughputPolicy: "none" | "equal" | "custom";
+
+  /* Array of PhysicalPartitionThroughputInfoResource objects. */
+  targetPhysicalPartitionThroughputInfo: PhysicalPartitionThroughputInfoResource[];
+
+  /* Array of PhysicalPartitionThroughputInfoResource objects. */
+  sourcePhysicalPartitionThroughputInfo: PhysicalPartitionThroughputInfoResource[];
+}
+
+/* Cosmos DB retrieve throughput parameters object */
+export type RetrieveThroughputParameters = ARMResourceProperties & {
+  /* Properties to retrieve throughput parameters object */
+  properties: RetrieveThroughputProperties;
+};
+
+/* Properties to retrieve throughput for Azure Cosmos DB resource. */
+export interface RetrieveThroughputProperties {
+  /* The standard JSON format of a resource throughput */
+  resource: RetrieveThroughputPropertiesResource;
+}
+
+/* Resource to retrieve throughput information for Cosmos DB resource */
+export interface RetrieveThroughputPropertiesResource {
+  /* Array of PhysicalPartitionId objects. */
+  physicalPartitionIds: PhysicalPartitionId[];
+}
+
+/* PhysicalPartitionId object */
+export interface PhysicalPartitionId {
+  /* Id of a physical partition */
+  id: string;
+}
+
+/* An Azure Cosmos DB PhysicalPartitionThroughputInfoResult object. */
+export type PhysicalPartitionThroughputInfoResult = ARMResourceProperties & {
+  /* The properties of an Azure Cosmos DB PhysicalPartitionThroughputInfoResult object */
+  properties?: PhysicalPartitionThroughputInfoResultProperties;
+};
+
+/* The properties of an Azure Cosmos DB PhysicalPartitionThroughputInfoResult object */
+export interface PhysicalPartitionThroughputInfoResultProperties {
+  /* properties of physical partition throughput info */
+  resource?: PhysicalPartitionThroughputInfoProperties;
+}
+
+/* The properties of an Azure Cosmos DB PhysicalPartitionThroughputInfoProperties object */
+export interface PhysicalPartitionThroughputInfoProperties {
+  /* Array of physical partition throughput info objects */
+  physicalPartitionThroughputInfo?: PhysicalPartitionThroughputInfoResource[];
+}
+
+/* PhysicalPartitionThroughputInfo object */
+export interface PhysicalPartitionThroughputInfoResource {
+  /* Id of a physical partition */
+  id: string;
+  /* Throughput of a physical partition */
+  throughput?: number;
+}
+
+/* Cosmos DB client encryption key resource object. */
+export interface ClientEncryptionKeyResource {
+  /* Name of the ClientEncryptionKey */
+  id?: string;
+  /* Encryption algorithm that will be used along with this client encryption key to encrypt/decrypt data. */
+  encryptionAlgorithm?: string;
+  /* Wrapped (encrypted) form of the key represented as a byte array. */
+  wrappedDataEncryptionKey?: string;
+  /* Metadata for the wrapping provider that can be used to unwrap the wrapped client encryption key. */
+  keyWrapMetadata?: KeyWrapMetadata;
+}
+
+/* Represents key wrap metadata that a key wrapping provider can use to wrap/unwrap a client encryption key. */
+export interface KeyWrapMetadata {
+  /* The name of associated KeyEncryptionKey (aka CustomerManagedKey). */
+  name?: string;
+  /* ProviderName of KeyStoreProvider. */
+  type?: string;
+  /* Reference / link to the KeyEncryptionKey. */
+  value?: string;
+  /* Algorithm used in wrapping and unwrapping of the data encryption key. */
+  algorithm?: string;
+}
+
 /* Cosmos DB SQL database resource object */
 export interface SqlDatabaseResource {
   /* Name of the Cosmos DB SQL database */
   id: string;
+  /* Parameters to indicate the information about the restore */
+  restoreParameters?: ResourceRestoreParameters;
+
+  /* Enum to indicate the mode of resource creation. */
+  createMode?: CreateMode;
 }
 
 /* Cosmos DB SQL container resource object */
@@ -903,8 +1243,19 @@ export interface SqlContainerResource {
   /* The conflict resolution policy for the container. */
   conflictResolutionPolicy?: ConflictResolutionPolicy;
 
+  /* The client encryption policy for the container. */
+  clientEncryptionPolicy?: ClientEncryptionPolicy;
+
   /* Analytical TTL. */
   analyticalStorageTtl?: number;
+  /* Parameters to indicate the information about the restore */
+  restoreParameters?: ResourceRestoreParameters;
+
+  /* Enum to indicate the mode of resource creation. */
+  createMode?: CreateMode;
+
+  /* The configuration for defining Materialized Views. This must be specified only for creating a Materialized View container. */
+  materializedViewDefinition?: MaterializedViewDefinition;
 }
 
 /* Cosmos DB indexing policy */
@@ -1014,6 +1365,37 @@ export interface ConflictResolutionPolicy {
   conflictResolutionProcedure?: string;
 }
 
+/* Cosmos DB client encryption policy. */
+export interface ClientEncryptionPolicy {
+  /* Paths of the item that need encryption along with path-specific settings. */
+  includedPaths: ClientEncryptionIncludedPath[];
+
+  /* Version of the client encryption policy definition. Supported versions are 1 and 2. Version 2 supports id and partition key path encryption.  */
+  policyFormatVersion: number;
+}
+
+/* . */
+export interface ClientEncryptionIncludedPath {
+  /* Path that needs to be encrypted. */
+  path: string;
+  /* The identifier of the Client Encryption Key to be used to encrypt the path. */
+  clientEncryptionKeyId: string;
+  /* The type of encryption to be performed. Eg - Deterministic, Randomized. */
+  encryptionType: string;
+  /* The encryption algorithm which will be used. Eg - AEAD_AES_256_CBC_HMAC_SHA256. */
+  encryptionAlgorithm: string;
+}
+
+/* Materialized View definition for the container. */
+export interface MaterializedViewDefinition {
+  /* An unique identifier for the source collection. This is a system generated property. */
+  readonly sourceCollectionRid?: string;
+  /* The name of the source container on which the Materialized View will be created. */
+  sourceCollectionId: string;
+  /* The definition should be an SQL query which would be used to fetch data from the source container to populate into the Materialized View container. */
+  definition: string;
+}
+
 /* Cosmos DB SQL storedProcedure resource object */
 export interface SqlStoredProcedureResource {
   /* Name of the Cosmos DB SQL storedProcedure */
@@ -1035,7 +1417,7 @@ export interface SqlTriggerResource {
   /* Name of the Cosmos DB SQL trigger */
   id: string;
   /* Body of the Trigger */
-  body: string;
+  body?: string;
   /* Type of the Trigger */
   triggerType?: "Pre" | "Post";
 
@@ -1047,6 +1429,11 @@ export interface SqlTriggerResource {
 export interface MongoDBDatabaseResource {
   /* Name of the Cosmos DB MongoDB database */
   id: string;
+  /* Parameters to indicate the information about the restore */
+  restoreParameters?: ResourceRestoreParameters;
+
+  /* Enum to indicate the mode of resource creation. */
+  createMode?: CreateMode;
 }
 
 /* Cosmos DB MongoDB collection resource object */
@@ -1061,6 +1448,11 @@ export interface MongoDBCollectionResource {
 
   /* Analytical TTL. */
   analyticalStorageTtl?: number;
+  /* Parameters to indicate the information about the restore */
+  restoreParameters?: ResourceRestoreParameters;
+
+  /* Enum to indicate the mode of resource creation. */
+  createMode?: CreateMode;
 }
 
 /* The shard key and partition kind pair, only support "Hash" partition kind */
@@ -1096,6 +1488,11 @@ export interface MongoIndexOptions {
 export interface TableResource {
   /* Name of the Cosmos DB table */
   id: string;
+  /* Parameters to indicate the information about the restore */
+  restoreParameters?: ResourceRestoreParameters;
+
+  /* Enum to indicate the mode of resource creation. */
+  createMode?: CreateMode;
 }
 
 /* Cosmos DB Cassandra keyspace resource object */
@@ -1155,6 +1552,11 @@ export interface ClusterKey {
 export interface GremlinDatabaseResource {
   /* Name of the Cosmos DB Gremlin database */
   id: string;
+  /* Parameters to indicate the information about the restore */
+  restoreParameters?: ResourceRestoreParameters;
+
+  /* Enum to indicate the mode of resource creation. */
+  createMode?: CreateMode;
 }
 
 /* Cosmos DB Gremlin graph resource object */
@@ -1174,13 +1576,29 @@ export interface GremlinGraphResource {
 
   /* The conflict resolution policy for the graph. */
   conflictResolutionPolicy?: ConflictResolutionPolicy;
+
+  /* Analytical TTL. */
+  analyticalStorageTtl?: number;
+  /* Parameters to indicate the information about the restore */
+  restoreParameters?: ResourceRestoreParameters;
+
+  /* Enum to indicate the mode of resource creation. */
+  createMode?: CreateMode;
+}
+
+/* Cosmos DB Cassandra view resource object */
+export interface CassandraViewResource {
+  /* Name of the Cosmos DB Cassandra view */
+  id: string;
+  /* View Definition of the Cosmos DB Cassandra view */
+  viewDefinition: string;
 }
 
 /* CreateUpdateOptions are a list of key-value pairs that describe the resource. Supported keys are "If-Match", "If-None-Match", "Session-Token" and "Throughput" */
 export interface CreateUpdateOptions {
   /* Request Units per second. For example, "throughput": 10000. */
   throughput?: number;
-  /* Specifies the Autoscale settings. */
+  /* Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both. */
   autoscaleSettings?: AutoscaleSettings;
 }
 
@@ -1194,6 +1612,12 @@ export interface AutoscaleSettings {
 export interface Capability {
   /* Name of the Cosmos DB capability. For example, "name": "EnableCassandra". Current values also include "EnableTable" and "EnableGremlin". */
   name?: string;
+}
+
+/* The object that represents all properties related to capacity enforcement on an account. */
+export interface Capacity {
+  /* The total throughput limit imposed on the account. A totalThroughputLimit of 2000 imposes a strict limit of max throughput that can be provisioned on that account to be 2000. A totalThroughputLimit of -1 indicates no limits on provisioning of throughput. */
+  totalThroughputLimit?: number;
 }
 
 /* Tags are a list of key-value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater than 128 characters and value no greater than 256 characters. For example, the default experience for a template type is set with "defaultExperience": "Cassandra". Current "defaultExperience" values also include "Table", "Graph", "DocumentDB", and "MongoDB". */
@@ -1234,6 +1658,33 @@ export interface VirtualNetworkRule {
 
 /* Indicates what services are allowed to bypass firewall checks. */
 export type NetworkAclBypass = "None" | "AzureServices";
+
+/* The metadata related to an access key for a given database account. */
+export interface AccountKeyMetadata {
+  /* Generation time in UTC of the key in ISO-8601 format. If the value is missing from the object, it means that the last key regeneration was triggered before 2022-06-18. */
+  readonly generationTime?: string;
+}
+
+/* The metadata related to each access key for the given Cosmos DB database account. */
+export interface DatabaseAccountKeysMetadata {
+  /* The metadata related to the Primary Read-Write Key for the given Cosmos DB database account. */
+  readonly primaryMasterKey?: AccountKeyMetadata;
+
+  /* The metadata related to the Secondary Read-Write Key for the given Cosmos DB database account. */
+  readonly secondaryMasterKey?: AccountKeyMetadata;
+
+  /* The metadata related to the Primary Read-Only Key for the given Cosmos DB database account. */
+  readonly primaryReadonlyMasterKey?: AccountKeyMetadata;
+
+  /* The metadata related to the Secondary Read-Only Key for the given Cosmos DB database account. */
+  readonly secondaryReadonlyMasterKey?: AccountKeyMetadata;
+}
+
+/* Indicates what diagnostic log settings are to be enabled. */
+export interface DiagnosticLogSettings {
+  /* Describe the level of detail with which queries are to be logged. */
+  enableFullTextQuery?: "None" | "True" | "False";
+}
 
 /* REST API operation */
 export interface Operation {
@@ -1430,22 +1881,110 @@ export type UnitType = "Count" | "Bytes" | "Seconds" | "Percent" | "CountPerSeco
 export type ConnectorOffer = "Small";
 
 /* Whether requests from Public Network are allowed */
-export type PublicNetworkAccess = "Enabled" | "Disabled";
+export type PublicNetworkAccess = "Enabled" | "Disabled" | "SecuredByPerimeter";
 
 /* undocumented */
 export interface ApiProperties {
   /* Describes the ServerVersion of an a MongoDB account. */
-  serverVersion?: "3.2" | "3.6" | "4.0";
+  serverVersion?: "3.2" | "3.6" | "4.0" | "4.2";
 }
+
+/* Analytical storage specific properties. */
+export interface AnalyticalStorageConfiguration {
+  /* undocumented */
+  schemaType?: AnalyticalStorageSchemaType;
+}
+
+/* Describes the types of schema for analytical storage. */
+export type AnalyticalStorageSchemaType = "WellDefined" | "FullFidelity";
+
+/* Enum to indicate the mode of account creation. */
+export type CreateMode = "Default" | "Restore";
+
+/* Parameters to indicate the information about the restore. */
+export type RestoreParameters = RestoreParametersBase & {
+  /* Describes the mode of the restore. */
+  restoreMode?: "PointInTime";
+
+  /* The id of the restorable database account from which the restore has to be initiated. For example: /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName} */
+  restoreSource?: string;
+  /* Time to which the account has to be restored (ISO-8601 format). */
+  restoreTimestampInUtc?: string;
+  /* List of specific databases available for restore. */
+  databasesToRestore?: DatabaseRestoreResource[];
+
+  /* List of specific gremlin databases available for restore. */
+  gremlinDatabasesToRestore?: GremlinDatabaseRestoreResource[];
+
+  /* List of specific tables available for restore. */
+  tablesToRestore?: TableName[];
+
+  /* The source backup location for restore. */
+  sourceBackupLocation?: string;
+};
+
+/* Parameters to indicate the information about the restore. */
+export interface RestoreParametersBase {
+  /* The id of the restorable database account from which the restore has to be initiated. For example: /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName} */
+  restoreSource?: string;
+  /* Time to which the account has to be restored (ISO-8601 format). */
+  restoreTimestampInUtc?: string;
+}
+
+/* Parameters to indicate the information about the restore. */
+export type ResourceRestoreParameters = RestoreParametersBase;
+
+/* Specific Databases to restore. */
+export interface DatabaseRestoreResource {
+  /* The name of the database available for restore. */
+  databaseName?: string;
+  /* The names of the collections available for restore. */
+  collectionNames?: CollectionName[];
+}
+
+/* Specific Gremlin Databases to restore. */
+export interface GremlinDatabaseRestoreResource {
+  /* The name of the gremlin database available for restore. */
+  databaseName?: string;
+  /* The names of the graphs available for restore. */
+  graphNames?: GraphName[];
+}
+
+/* The name of the collection. */
+export type CollectionName = string;
+
+/* The name of the graph. */
+export type GraphName = string;
+
+/* The name of the table. */
+export type TableName = string;
 
 /* The object representing the policy for taking backups on an account. */
 export interface BackupPolicy {
-  /* undocumented */
+  /* Describes the mode of backups. */
   type: BackupPolicyType;
+
+  /* The object representing the state of the migration between the backup policies. */
+  migrationState?: BackupPolicyMigrationState;
 }
 
 /* Describes the mode of backups. */
 export type BackupPolicyType = "Periodic" | "Continuous";
+
+/* The object representing the state of the migration between the backup policies. */
+export interface BackupPolicyMigrationState {
+  /* Describes the status of migration between backup policy types. */
+  status?: BackupPolicyMigrationStatus;
+
+  /* Describes the target backup policy type of the backup policy migration. */
+  targetType?: BackupPolicyType;
+
+  /* Time at which the backup policy migration started (ISO-8601 format). */
+  startTime?: string;
+}
+
+/* Describes the status of migration between backup policy types. */
+export type BackupPolicyMigrationStatus = "Invalid" | "InProgress" | "Completed" | "Failed";
 
 /* The object representing periodic mode backup policy. */
 export type PeriodicModeBackupPolicy = BackupPolicy & {
@@ -1454,7 +1993,10 @@ export type PeriodicModeBackupPolicy = BackupPolicy & {
 };
 
 /* The object representing continuous mode backup policy. */
-export type ContinuousModeBackupPolicy = BackupPolicy;
+export type ContinuousModeBackupPolicy = BackupPolicy & {
+  /* Configuration values for continuous mode backup */
+  continuousModeProperties?: ContinuousModeProperties;
+};
 
 /* Configuration values for periodic mode backup */
 export interface PeriodicModeProperties {
@@ -1462,4 +2004,87 @@ export interface PeriodicModeProperties {
   backupIntervalInMinutes?: number;
   /* An integer representing the time (in hours) that each backup is retained */
   backupRetentionIntervalInHours?: number;
+  /* Enum to indicate type of backup residency */
+  backupStorageRedundancy?: BackupStorageRedundancy;
 }
+
+/* Configuration values for periodic mode backup */
+export interface ContinuousModeProperties {
+  /* Enum to indicate type of Continuos backup mode */
+  tier?: ContinuousTier;
+}
+
+/* The properties of an Azure Cosmos DB merge operations */
+export interface MergeParameters {
+  /* Specifies whether the operation is a real merge operation or a simulation. */
+  isDryRun?: boolean;
+}
+
+/* List of physical partitions and their properties returned by a merge operation. */
+export interface PhysicalPartitionStorageInfoCollection {
+  /* List of physical partitions and their properties. */
+  readonly physicalPartitionStorageInfoCollection?: physicalPartitionStorageInfo[];
+}
+
+/* The storage of a physical partition */
+export interface physicalPartitionStorageInfo {
+  /* The unique identifier of the partition. */
+  readonly id?: string;
+  /* The storage in KB for the physical partition. */
+  readonly storageInKB?: number;
+}
+
+/* The List operation response, that contains Cosmos DB locations and their properties. */
+export interface LocationListResult {
+  /* List of Cosmos DB locations and their properties. */
+  readonly value?: LocationGetResult[];
+}
+
+/* Cosmos DB location get result */
+export type LocationGetResult = ARMProxyResource & {
+  /* Cosmos DB location metadata */
+  properties?: LocationProperties;
+};
+
+/* Cosmos DB location metadata */
+export interface LocationProperties {
+  /* Flag indicating whether the location supports availability zones or not. */
+  readonly supportsAvailabilityZone?: boolean;
+  /* Flag indicating whether the location is residency sensitive. */
+  readonly isResidencyRestricted?: boolean;
+  /* The properties of available backup storage redundancies. */
+  readonly backupStorageRedundancies?: BackupStorageRedundancy[];
+
+  /* Flag indicating whether the subscription have access in region for Non-Availability Zones. */
+  readonly isSubscriptionRegionAccessAllowedForRegular?: boolean;
+  /* Flag indicating whether the subscription have access in region for Availability Zones(Az). */
+  readonly isSubscriptionRegionAccessAllowedForAz?: boolean;
+  /* Enum to indicate current buildout status of the region. */
+  readonly status?: "Uninitialized" | "Initializing" | "InternallyReady" | "Online" | "Deleting";
+}
+
+/* Enum to indicate type of backup storage redundancy. */
+export type BackupStorageRedundancy = "Geo" | "Local" | "Zone";
+
+/* Enum to indicate type of Continuous backup tier. */
+export type ContinuousTier = "Continuous7Days" | "Continuous30Days";
+
+/* Indicates the minimum allowed Tls version. The default is Tls 1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. */
+export type MinimalTlsVersion = "Tls" | "Tls11" | "Tls12";
+
+/* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
+export type CustomerManagedKeyStatus =
+  | "Access to your account is currently revoked because the Azure Cosmos DB service is unable to obtain the AAD authentication token for the account's default identity; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error (4000)."
+  | "Access to your account is currently revoked because the Azure Cosmos DB account's key vault key URI does not follow the expected format; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property (4006)."
+  | "Access to your account is currently revoked because the current default identity no longer has permission to the associated Key Vault key; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key (4002)."
+  | "Access to your account is currently revoked because the Azure Key Vault DNS name specified by the account's keyvaultkeyuri property could not be resolved; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns (4009)."
+  | "Access to your account is currently revoked because the correspondent key is not found on the specified Key Vault; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found (4003)."
+  | "Access to your account is currently revoked because the Azure Cosmos DB service is unable to wrap or unwrap the key; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error (4005)."
+  | "Access to your account is currently revoked because the Azure Cosmos DB account has an undefined default identity; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity (4015)."
+  | "Access to your account is currently revoked because the access rules are blocking outbound requests to the Azure Key Vault service; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016)."
+  | "Access to your account is currently revoked because the correspondent Azure Key Vault was not found; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found (4017)."
+  | "Access to your account is currently revoked; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide"
+  | "Access to the configured customer managed key confirmed.";
+
+/* Enum to indicate default priorityLevel of requests */
+export type DefaultPriorityLevel = "High" | "Low";

@@ -1,8 +1,15 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
+import {
+  DetailsList,
+  DetailsListLayoutMode,
+  DirectionalHint,
+  IColumn,
+  SelectionMode,
+  TooltipHost,
+} from "@fluentui/react";
 import { Upload } from "Common/Upload/Upload";
 import { UploadDetailsRecord } from "Contracts/ViewModels";
-import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -74,12 +81,21 @@ export const UploadItemsPane: FunctionComponent = () => {
   ];
 
   const _renderItemColumn = (item: UploadDetailsRecord, index: number, column: IColumn) => {
+    let fieldContent: string;
+    const tooltipId = `tooltip-${index}-${column.key}`;
+
     switch (column.key) {
       case "status":
-        return `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
+        fieldContent = `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
+        break;
       default:
-        return item.fileName;
+        fieldContent = item.fileName;
     }
+    return (
+      <TooltipHost content={fieldContent} id={tooltipId} directionalHint={DirectionalHint.rightCenter}>
+        {fieldContent}
+      </TooltipHost>
+    );
   };
 
   return (

@@ -1,23 +1,23 @@
 import {
-  actions,
   AppState,
-  castToSessionId,
   ContentRef,
-  createKernelRef,
   JupyterHostRecordProps,
+  ServerConfig as JupyterServerConfig,
   KernelInfo,
   KernelRef,
   RemoteKernelProps,
+  actions,
+  castToSessionId,
+  createKernelRef,
   selectors,
-  ServerConfig as JupyterServerConfig,
 } from "@nteract/core";
-import { Channels, childOf, createMessage, JupyterMessage, message, ofMessageType } from "@nteract/messaging";
+import { Channels, childOf, createMessage, message, ofMessageType } from "@nteract/messaging";
 import { defineConfigOption } from "@nteract/mythic-configuration";
 import { RecordOf } from "immutable";
 import { Action, AnyAction } from "redux";
-import { ofType, StateObservable } from "redux-observable";
+import { StateObservable, ofType } from "redux-observable";
 import { kernels, sessions } from "rx-jupyter";
-import { concat, EMPTY, from, interval, merge, Observable, Observer, of, Subject, Subscriber, timer } from "rxjs";
+import { EMPTY, Observable, Observer, Subject, Subscriber, concat, from, interval, merge, of, timer } from "rxjs";
 import {
   catchError,
   concatMap,
@@ -35,17 +35,17 @@ import {
 import { webSocket } from "rxjs/webSocket";
 import * as Constants from "../../../Common/Constants";
 import { Areas } from "../../../Common/Constants";
-import { useTabs } from "../../../hooks/useTabs";
-import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { ActionModifiers, Action as TelemetryAction } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError, logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
+import { useTabs } from "../../../hooks/useTabs";
 import { useDialog } from "../../Controls/Dialog";
 import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
 import { NotebookContentProviderType, NotebookUtil } from "../NotebookUtil";
 import * as CdbActions from "./actions";
 import * as TextFile from "./contents/file/text-file";
-import { CdbAppState } from "./types";
+import { CdbAppState, JupyterMessage } from "./types";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
@@ -100,16 +100,11 @@ const addInitialCodeCellEpic = (
  */
 const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string, sessionId?: string): string => {
   const params = new URLSearchParams();
-  if (serverConfig.token) {
-    params.append("token", serverConfig.token);
-  }
   if (sessionId) {
     params.append("session_id", sessionId);
   }
-
   const q = params.toString();
   const suffix = q !== "" ? `?${q}` : "";
-
   const url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels${suffix}`;
 
   return url.replace(/^http(s)?/, "ws$1");
@@ -241,10 +236,10 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
             ...message,
             header: {
               session: sessionID,
+              token: serverConfig.token,
               ...message.header,
             },
           };
-
           wsSubject.next(sessionizedMessage);
         } else {
           console.error("Message must be an object, the app sent", message);

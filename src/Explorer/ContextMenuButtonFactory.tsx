@@ -1,3 +1,7 @@
+import { useDatabases } from "Explorer/useDatabases";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import React from "react";
 import AddCollectionIcon from "../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../images/AddSqlQuery_16x16.svg";
@@ -11,9 +15,10 @@ import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
 import * as ViewModels from "../Contracts/ViewModels";
-import { useSidePanel } from "../hooks/useSidePanel";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
+import { useSidePanel } from "../hooks/useSidePanel";
+import { Platform, configContext } from "./../ConfigContext";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
 import { useNotebook } from "./Notebook/useNotebook";
@@ -95,11 +100,13 @@ export const createCollectionContextMenuButton = (
     });
   }
 
-  if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
+  if (
+    configContext.platform !== Platform.Fabric &&
+    (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+  ) {
     items.push({
       iconSrc: AddStoredProcedureIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
       },
       label: "New Stored Procedure",
@@ -108,7 +115,6 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddUdfIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
       },
       label: "New UDF",
@@ -117,7 +123,6 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddTriggerIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, undefined);
       },
       label: "New Trigger",
@@ -126,16 +131,44 @@ export const createCollectionContextMenuButton = (
 
   items.push({
     iconSrc: DeleteCollectionIcon,
-    onClick: () =>
+    onClick: () => {
+      useSelectedNode.getState().setSelectedNode(selectedCollection);
       useSidePanel
         .getState()
         .openSidePanel(
           "Delete " + getCollectionName(),
           <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
-        ),
+        );
+    },
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });
+
+  return items;
+};
+
+export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] => {
+  const items: TreeNodeMenuItem[] = [];
+  if (userContext.apiType === "SQL") {
+    const copilotVersion = userContext.features.copilotVersion;
+    if (copilotVersion === "v1.0") {
+      items.push({
+        iconSrc: AddSqlQueryIcon,
+        onClick: () => {
+          useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+          traceOpen(Action.OpenQueryCopilotFromNewQuery, { apiType: userContext.apiType });
+        },
+        label: "New SQL Query",
+      });
+    } else if (copilotVersion === "v2.0") {
+      const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
+      items.push({
+        iconSrc: AddSqlQueryIcon,
+        onClick: () => sampleCollection && sampleCollection.onNewQueryClick(sampleCollection, undefined),
+        label: "New SQL Query",
+      });
+    }
+  }
 
   return items;
 };
@@ -152,7 +185,7 @@ export const createStoreProcedureContextMenuItems = (
     {
       iconSrc: DeleteSprocIcon,
       onClick: () => storedProcedure.delete(),
-      label: "Delete Store Procedure",
+      label: "Delete Stored Procedure",
     },
   ];
 };

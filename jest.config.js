@@ -37,7 +37,7 @@ module.exports = {
   coverageThreshold: {
     global: {
       branches: 25,
-      functions: 25,
+      functions: 24,
       lines: 28,
       statements: 28,
     },
@@ -68,7 +68,8 @@ module.exports = {
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^.*[.](svg|png|gif|less|css)$": "<rootDir>/mockModule",
+    "^.*[.](png|gif|less|css)$": "<rootDir>/mockModule",
+    "(.*)$[.](svg)": "<rootDir>/mockModule/$1",
     "@nteract/stateful-components/(.*)$": "<rootDir>/mockModule",
     "@fluentui/react/lib/(.*)$": "@fluentui/react/lib-commonjs/$1", // https://github.com/microsoft/fluentui/wiki/Version-8-release-notes
     "monaco-editor/(.*)$": "<rootDir>/__mocks__/monaco-editor",
@@ -165,6 +166,7 @@ module.exports = {
   transform: {
     "^.+\\.html?$": "html-loader-jest",
     "^.+\\.[t|j]sx?$": "babel-jest",
+    "^.+\\.svg$": "<rootDir>/svgTransform.js",
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

@@ -28,6 +28,10 @@ export class JupyterLabAppFactory {
     this.isShellStarted = content?.includes("citus=>");
   }
 
+  private isVCoreMongoShellStarted(content: string | undefined) {
+    this.isShellStarted = content?.includes("Enter password");
+  }
+
   constructor(closeTab: () => void) {
     this.onShellExited = closeTab;
     this.isShellStarted = false;
@@ -43,10 +47,16 @@ export class JupyterLabAppFactory {
       case "Postgres":
         this.checkShellStarted = this.isPostgresShellStarted;
         break;
+      case "VCoreMongo":
+        this.checkShellStarted = this.isVCoreMongoShellStarted;
+        break;
     }
   }
 
   public async createTerminalApp(serverSettings: ServerConnection.ISettings): Promise<ITerminalConnection | undefined> {
+    const configurationSettings: Partial<ServerConnection.ISettings> = serverSettings;
+    (configurationSettings.appendToken as boolean) = false;
+    serverSettings = ServerConnection.makeSettings(configurationSettings);
     const manager = new TerminalManager({
       serverSettings: serverSettings,
     });
@@ -64,6 +74,11 @@ export class JupyterLabAppFactory {
       }
     }, this);
 
+    let internalSend = session.send;
+    session.send = (message: IMessage) => {
+      message?.content?.push(serverSettings?.token);
+      internalSend.call(session, message);
+    };
     const term = new Terminal(session, { theme: "dark", shutdownOnClose: true });
 
     if (!term) {

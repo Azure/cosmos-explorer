@@ -12,6 +12,7 @@ import {
 import React, { FunctionComponent } from "react";
 import DeleteIcon from "../../images/delete.svg";
 import EditIcon from "../../images/Edit_entity.svg";
+import { attributeNameLabel, dataTypeLabel } from "../Explorer/Panes/Tables/Validators/EntityTableHelper";
 import { CassandraType, TableType } from "../Explorer/Tables/Constants";
 import { userContext } from "../UserContext";
 import { EntityValue } from "./EntityValue";
@@ -106,13 +107,13 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
       <Stack horizontal tokens={sectionStackTokens}>
         <TextField
           label={entityPropertyLabel && entityPropertyLabel}
-          id="entityPropertyId"
           autoFocus
           disabled={isPropertyTypeDisable}
           placeholder={entityPropertyPlaceHolder}
           value={entityProperty}
           onChange={onEntityPropertyChange}
           required
+          ariaLabel={attributeNameLabel}
         />
         <Dropdown
           label={entityTypeLabel && entityTypeLabel}
@@ -120,8 +121,8 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onChange={onEntityTypeChange}
           options={options}
           disabled={isPropertyTypeDisable}
-          id="entityTypeId"
           styles={dropdownStyles}
+          ariaLabel={dataTypeLabel}
         />
         <EntityValue
           entityValueLabel={entityValueLabel}
@@ -137,7 +138,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         />
         {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
-            <div tabIndex={0}>
+            <div>
               <Image
                 {...imageProps}
                 src={EditIcon}

@@ -358,14 +358,12 @@ export enum ContainerStatusType {
 
 export enum PoolIdType {
   DefaultPoolId = "default",
+  QueryCopilot = "query-copilot",
 }
 
 export const EmulatorMasterKey =
   //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Well known public masterKey for emulator")]
   "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-
-// A variable @MyVariable defined in Constants.less is accessible as StyleConstants.MyVariable
-export const StyleConstants = require("less-vars-loader!../../less/Common/Constants.less");
 
 export class Notebook {
   public static readonly defaultBasePath = "./notebooks";
@@ -428,3 +426,246 @@ export class JunoEndpoints {
   public static readonly Prod = "https://tools.cosmos.azure.com";
   public static readonly Stage = "https://tools-staging.cosmos.azure.com";
 }
+
+export class PriorityLevel {
+  public static readonly High = "high";
+  public static readonly Low = "low";
+  public static readonly Default = "low";
+}
+
+export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
+export const QueryCopilotSampleContainerId = "SampleContainer";
+
+export const QueryCopilotSampleContainerSchema = {
+  product: {
+    sampleData: {
+      id: "c415e70f-9bf5-4cda-aebe-a290cb8b94c2",
+      name: "Amazing Phone 3000 (Black)",
+      price: 223.33,
+      category: "Electronics",
+      description:
+        "This Amazing Phone 3000 (Black) is made of black metal! It has a very well made aluminum body and it feels very comfortable. We loved the sound that comes out of it! Also, the design of the phone was a little loose at first because I was using the camera and felt uncomfortable wearing it. The phone is actually made slightly smaller than these photos! This is due to the addition of a 3.3mm filter",
+      stock: 84,
+      countryOfOrigin: "USA",
+      firstAvailable: "2018-09-07 19:41:44",
+      priceHistory: [238.68, 234.7, 221.49, 205.88, 220.15],
+      customerRatings: [
+        {
+          username: "steven66",
+          firstName: "Carol",
+          gender: "female",
+          lastName: "Shelton",
+          age: "25-35",
+          area: "suburban",
+          address: "261 Collins Burgs Apt. 332\nNorth Taylor, NM 32268",
+          stars: 5,
+          date: "2021-04-22 13:42:14",
+          verifiedUser: true,
+        },
+        {
+          username: "khudson",
+          firstName: "Ronald",
+          gender: "male",
+          lastName: "Webb",
+          age: "18-24",
+          area: "suburban",
+          address: "9912 Parker Court Apt. 068\nNorth Austin, HI 76225",
+          stars: 5,
+          date: "2021-02-07 07:00:22",
+          verifiedUser: false,
+        },
+        {
+          username: "lfrancis",
+          firstName: "Brady",
+          gender: "male",
+          lastName: "Wright",
+          age: "35-45",
+          area: "urban",
+          address: "PSC 5437, Box 3159\nAPO AA 26385",
+          stars: 2,
+          date: "2022-02-23 21:40:10",
+          verifiedUser: false,
+        },
+        {
+          username: "nicolemartinez",
+          firstName: "Megan",
+          gender: "female",
+          lastName: "Tran",
+          age: "18-24",
+          area: "rural",
+          address: "7445 Salazar Brooks\nNew Sarah, PW 18097",
+          stars: 4,
+          date: "2021-09-01 22:21:40",
+          verifiedUser: false,
+        },
+        {
+          username: "uguzman",
+          firstName: "Deanna",
+          gender: "female",
+          lastName: "Campbell",
+          age: "18-24",
+          area: "urban",
+          address: "41104 Moreno Fort Suite 872\nPort Michaelbury, AK 48712",
+          stars: 1,
+          date: "2022-03-07 02:23:14",
+          verifiedUser: false,
+        },
+        {
+          username: "rebeccahunt",
+          firstName: "Jared",
+          gender: "male",
+          lastName: "Lopez",
+          age: "18-24",
+          area: "rural",
+          address: "392 Morgan Village Apt. 785\nGreenshire, CT 05921",
+          stars: 5,
+          date: "2021-04-17 04:17:49",
+          verifiedUser: false,
+        },
+      ],
+      rareProperty: true,
+    },
+    schema: {
+      properties: {
+        id: {
+          type: "string",
+        },
+        name: {
+          type: "string",
+        },
+        price: {
+          type: "number",
+        },
+        category: {
+          type: "string",
+        },
+        description: {
+          type: "string",
+        },
+        stock: {
+          type: "number",
+        },
+        countryOfOrigin: {
+          type: "string",
+        },
+        firstAvailable: {
+          type: "string",
+        },
+        priceHistory: {
+          items: {
+            type: "number",
+          },
+          type: "array",
+        },
+        customerRatings: {
+          items: {
+            properties: {
+              username: {
+                type: "string",
+              },
+              firstName: {
+                type: "string",
+              },
+              gender: {
+                type: "string",
+              },
+              lastName: {
+                type: "string",
+              },
+              age: {
+                type: "string",
+              },
+              area: {
+                type: "string",
+              },
+              address: {
+                type: "string",
+              },
+              stars: {
+                type: "number",
+              },
+              date: {
+                type: "string",
+              },
+              verifiedUser: {
+                type: "boolean",
+              },
+            },
+            type: "object",
+          },
+          type: "array",
+        },
+        rareProperty: {
+          type: "boolean",
+        },
+      },
+      type: "object",
+    },
+  },
+};
+
+export const ShortenedQueryCopilotSampleContainerSchema = {
+  containerSchema: {
+    product: {
+      sampleData: {
+        categoryName: "Components, Saddles",
+
+        name: "LL Road Seat/Saddle",
+
+        price: 27.12,
+
+        tags: [
+          {
+            id: "0573D684-9140-4DEE-89AF-4E4A90E65666",
+
+            name: "Tag-113",
+          },
+
+          {
+            id: "6C2F05C8-1E61-4912-BE1A-C67A378429BB",
+
+            name: "Tag-5",
+          },
+        ],
+      },
+
+      schema: {
+        properties: {
+          categoryName: {
+            type: "string",
+          },
+
+          name: {
+            type: "string",
+          },
+
+          price: {
+            type: "number",
+          },
+
+          tags: {
+            items: {
+              properties: {
+                id: {
+                  type: "string",
+                },
+
+                name: {
+                  type: "string",
+                },
+              },
+
+              type: "object",
+            },
+
+            type: "array",
+          },
+        },
+
+        type: "object",
+      },
+    },
+  },
+
+  userPrompt: "find all products",
+};

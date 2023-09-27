@@ -2,10 +2,10 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { useTabs } from "../../hooks/useTabs";
 import Explorer from "../Explorer";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
@@ -28,8 +28,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   public children: ko.ObservableArray<ViewModels.TreeNode>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public isCollectionExpanded: ko.Observable<boolean>;
+  public isSampleCollection?: boolean;
 
-  constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
+  constructor(container: Explorer, databaseId: string, data: DataModels.Collection, isSampleCollection?: boolean) {
     this.nodeKind = "Collection";
     this.container = container;
     this.databaseId = databaseId;
@@ -42,6 +43,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.children = ko.observableArray<ViewModels.TreeNode>([]);
     this.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
     this.isCollectionExpanded = ko.observable<boolean>(true);
+    this.isSampleCollection = isSampleCollection;
   }
 
   public expandCollection(): void {
@@ -139,7 +141,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
       documentsTab = new DocumentsTab({
         partitionKey: this.partitionKey,
-        resourceTokenPartitionKey: userContext.parsedResourceToken.partitionKey,
+        resourceTokenPartitionKey: userContext.parsedResourceToken?.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",

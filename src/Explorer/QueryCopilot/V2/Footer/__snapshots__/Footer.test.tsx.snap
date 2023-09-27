@@ -1,0 +1,511 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer snapshot test should not pass if no text 1`] = `
+<Stack
+  horizontal={true}
+  horizontalAlign="end"
+  style={
+    Object {
+      "alignItems": "center",
+      "background": "white",
+      "borderRadius": "20px",
+      "display": "flex",
+      "margin": "5px",
+      "padding": "5px",
+    }
+  }
+  verticalAlign="end"
+>
+  <Stack>
+    <Image
+      onClick={[Function]}
+      src={Object {}}
+      styles={
+        Object {
+          "label": Object {
+            "fontWeight": 400,
+            "paddingLeft": 8,
+            "textAlign": "left",
+          },
+          "root": Object {
+            "border": "5px",
+            "selectors": Object {
+              ":hover": Object {
+                "outline": "1px dashed #605e5c",
+              },
+            },
+          },
+        }
+      }
+    />
+    <SamplePrompts
+      sampleProps={
+        Object {
+          "isSamplePromptsOpen": false,
+          "setIsSamplePromptsOpen": [Function],
+          "setTextBox": [Function],
+        }
+      }
+    />
+  </Stack>
+  <StyledTextFieldBase
+    disabled={false}
+    multiline={true}
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Write your own prompt or ask a question"
+    resizable={false}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "border": "none",
+        },
+        "root": Object {
+          "border": "none",
+          "borderRadius": "20px",
+          "height": "80px",
+          "marginLeft": "10px",
+          "outline": "none",
+          "padding": "8px",
+          "width": "100%",
+        },
+      }
+    }
+    value=""
+  />
+  <CustomizedIconButton
+    disabled={false}
+    iconProps={
+      Object {
+        "iconName": "Send",
+      }
+    }
+    onClick={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Footer snapshot test should not pass text with non enter key 1`] = `
+<Stack
+  horizontal={true}
+  horizontalAlign="end"
+  style={
+    Object {
+      "alignItems": "center",
+      "background": "white",
+      "borderRadius": "20px",
+      "display": "flex",
+      "margin": "5px",
+      "padding": "5px",
+    }
+  }
+  verticalAlign="end"
+>
+  <Stack>
+    <Image
+      onClick={[Function]}
+      src={Object {}}
+      styles={
+        Object {
+          "label": Object {
+            "fontWeight": 400,
+            "paddingLeft": 8,
+            "textAlign": "left",
+          },
+          "root": Object {
+            "border": "5px",
+            "selectors": Object {
+              ":hover": Object {
+                "outline": "1px dashed #605e5c",
+              },
+            },
+          },
+        }
+      }
+    />
+    <SamplePrompts
+      sampleProps={
+        Object {
+          "isSamplePromptsOpen": false,
+          "setIsSamplePromptsOpen": [Function],
+          "setTextBox": [Function],
+        }
+      }
+    />
+  </Stack>
+  <StyledTextFieldBase
+    disabled={false}
+    multiline={true}
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Write your own prompt or ask a question"
+    resizable={false}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "border": "none",
+        },
+        "root": Object {
+          "border": "none",
+          "borderRadius": "20px",
+          "height": "80px",
+          "marginLeft": "10px",
+          "outline": "none",
+          "padding": "8px",
+          "width": "100%",
+        },
+      }
+    }
+    value=""
+  />
+  <CustomizedIconButton
+    disabled={false}
+    iconProps={
+      Object {
+        "iconName": "Send",
+      }
+    }
+    onClick={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Footer snapshot test should open sample prompts on button click 1`] = `
+<Stack
+  horizontal={true}
+  horizontalAlign="end"
+  style={
+    Object {
+      "alignItems": "center",
+      "background": "white",
+      "borderRadius": "20px",
+      "display": "flex",
+      "margin": "5px",
+      "padding": "5px",
+    }
+  }
+  verticalAlign="end"
+>
+  <Stack>
+    <Image
+      onClick={[Function]}
+      src={Object {}}
+      styles={
+        Object {
+          "label": Object {
+            "fontWeight": 400,
+            "paddingLeft": 8,
+            "textAlign": "left",
+          },
+          "root": Object {
+            "border": "5px",
+            "selectors": Object {
+              ":hover": Object {
+                "outline": "1px dashed #605e5c",
+              },
+            },
+          },
+        }
+      }
+    />
+    <SamplePrompts
+      sampleProps={
+        Object {
+          "isSamplePromptsOpen": false,
+          "setIsSamplePromptsOpen": [Function],
+          "setTextBox": [Function],
+        }
+      }
+    />
+  </Stack>
+  <StyledTextFieldBase
+    disabled={false}
+    multiline={true}
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Write your own prompt or ask a question"
+    resizable={false}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "border": "none",
+        },
+        "root": Object {
+          "border": "none",
+          "borderRadius": "20px",
+          "height": "80px",
+          "marginLeft": "10px",
+          "outline": "none",
+          "padding": "8px",
+          "width": "100%",
+        },
+      }
+    }
+    value=""
+  />
+  <CustomizedIconButton
+    disabled={false}
+    iconProps={
+      Object {
+        "iconName": "Send",
+      }
+    }
+    onClick={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Footer snapshot test should pass text with enter key 1`] = `
+<Stack
+  horizontal={true}
+  horizontalAlign="end"
+  style={
+    Object {
+      "alignItems": "center",
+      "background": "white",
+      "borderRadius": "20px",
+      "display": "flex",
+      "margin": "5px",
+      "padding": "5px",
+    }
+  }
+  verticalAlign="end"
+>
+  <Stack>
+    <Image
+      onClick={[Function]}
+      src={Object {}}
+      styles={
+        Object {
+          "label": Object {
+            "fontWeight": 400,
+            "paddingLeft": 8,
+            "textAlign": "left",
+          },
+          "root": Object {
+            "border": "5px",
+            "selectors": Object {
+              ":hover": Object {
+                "outline": "1px dashed #605e5c",
+              },
+            },
+          },
+        }
+      }
+    />
+    <SamplePrompts
+      sampleProps={
+        Object {
+          "isSamplePromptsOpen": false,
+          "setIsSamplePromptsOpen": [Function],
+          "setTextBox": [Function],
+        }
+      }
+    />
+  </Stack>
+  <StyledTextFieldBase
+    disabled={false}
+    multiline={true}
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Write your own prompt or ask a question"
+    resizable={false}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "border": "none",
+        },
+        "root": Object {
+          "border": "none",
+          "borderRadius": "20px",
+          "height": "80px",
+          "marginLeft": "10px",
+          "outline": "none",
+          "padding": "8px",
+          "width": "100%",
+        },
+      }
+    }
+    value="test message"
+  />
+  <CustomizedIconButton
+    disabled={false}
+    iconProps={
+      Object {
+        "iconName": "Send",
+      }
+    }
+    onClick={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Footer snapshot test should pass text with icon button 1`] = `
+<Stack
+  horizontal={true}
+  horizontalAlign="end"
+  style={
+    Object {
+      "alignItems": "center",
+      "background": "white",
+      "borderRadius": "20px",
+      "display": "flex",
+      "margin": "5px",
+      "padding": "5px",
+    }
+  }
+  verticalAlign="end"
+>
+  <Stack>
+    <Image
+      onClick={[Function]}
+      src={Object {}}
+      styles={
+        Object {
+          "label": Object {
+            "fontWeight": 400,
+            "paddingLeft": 8,
+            "textAlign": "left",
+          },
+          "root": Object {
+            "border": "5px",
+            "selectors": Object {
+              ":hover": Object {
+                "outline": "1px dashed #605e5c",
+              },
+            },
+          },
+        }
+      }
+    />
+    <SamplePrompts
+      sampleProps={
+        Object {
+          "isSamplePromptsOpen": false,
+          "setIsSamplePromptsOpen": [Function],
+          "setTextBox": [Function],
+        }
+      }
+    />
+  </Stack>
+  <StyledTextFieldBase
+    disabled={false}
+    multiline={true}
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Write your own prompt or ask a question"
+    resizable={false}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "border": "none",
+        },
+        "root": Object {
+          "border": "none",
+          "borderRadius": "20px",
+          "height": "80px",
+          "marginLeft": "10px",
+          "outline": "none",
+          "padding": "8px",
+          "width": "100%",
+        },
+      }
+    }
+    value="test message"
+  />
+  <CustomizedIconButton
+    disabled={false}
+    iconProps={
+      Object {
+        "iconName": "Send",
+      }
+    }
+    onClick={[Function]}
+  />
+</Stack>
+`;
+
+exports[`Footer snapshot test should update user input 1`] = `
+<Stack
+  horizontal={true}
+  horizontalAlign="end"
+  style={
+    Object {
+      "alignItems": "center",
+      "background": "white",
+      "borderRadius": "20px",
+      "display": "flex",
+      "margin": "5px",
+      "padding": "5px",
+    }
+  }
+  verticalAlign="end"
+>
+  <Stack>
+    <Image
+      onClick={[Function]}
+      src={Object {}}
+      styles={
+        Object {
+          "label": Object {
+            "fontWeight": 400,
+            "paddingLeft": 8,
+            "textAlign": "left",
+          },
+          "root": Object {
+            "border": "5px",
+            "selectors": Object {
+              ":hover": Object {
+                "outline": "1px dashed #605e5c",
+              },
+            },
+          },
+        }
+      }
+    />
+    <SamplePrompts
+      sampleProps={
+        Object {
+          "isSamplePromptsOpen": false,
+          "setIsSamplePromptsOpen": [Function],
+          "setTextBox": [Function],
+        }
+      }
+    />
+  </Stack>
+  <StyledTextFieldBase
+    disabled={false}
+    multiline={true}
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    placeholder="Write your own prompt or ask a question"
+    resizable={false}
+    styles={
+      Object {
+        "fieldGroup": Object {
+          "border": "none",
+        },
+        "root": Object {
+          "border": "none",
+          "borderRadius": "20px",
+          "height": "80px",
+          "marginLeft": "10px",
+          "outline": "none",
+          "padding": "8px",
+          "width": "100%",
+        },
+      }
+    }
+    value=""
+  />
+  <CustomizedIconButton
+    disabled={false}
+    iconProps={
+      Object {
+        "iconName": "Send",
+      }
+    }
+    onClick={[Function]}
+  />
+</Stack>
+`;

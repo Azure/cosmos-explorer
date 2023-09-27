@@ -1,5 +1,5 @@
 import { IButtonStyles, ICommandBarStyles, ISeparatorStyles, IStackTokens } from "@fluentui/react";
-import { StyleConstants } from "../Common/Constants";
+import { StyleConstants } from "../Common/StyleConstants";
 
 export const commandBarItemStyles: IButtonStyles = { root: { paddingLeft: 20 } };
 

@@ -3,13 +3,13 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/2021-04-15/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-09-15-preview/cosmos-db.json
 */
 
-import { configContext } from "../../../../ConfigContext";
 import { armRequest } from "../../request";
 import * as Types from "./types";
-const apiVersion = "2021-04-15";
+import { configContext } from "../../../../ConfigContext";
+const apiVersion = "2023-09-15-preview";
 
 /* Lists the SQL databases under an existing Azure Cosmos DB database account. */
 export async function listSqlDatabases(
@@ -100,6 +100,42 @@ export async function migrateSqlDatabaseToManualThroughput(
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
+/* Lists the ClientEncryptionKeys under an existing Azure Cosmos DB SQL database. */
+export async function listClientEncryptionKeys(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string
+): Promise<Types.ClientEncryptionKeysListResult> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/clientEncryptionKeys`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
+}
+
+/* Gets the ClientEncryptionKey under an existing Azure Cosmos DB SQL database. */
+export async function getClientEncryptionKey(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  clientEncryptionKeyName: string
+): Promise<Types.ClientEncryptionKeyGetResults> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/clientEncryptionKeys/${clientEncryptionKeyName}`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
+}
+
+/* Create or update a ClientEncryptionKey. This API is meant to be invoked via tools such as the Azure Powershell (instead of directly). */
+export async function createUpdateClientEncryptionKey(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  clientEncryptionKeyName: string,
+  body: Types.ClientEncryptionKeyCreateUpdateParameters
+): Promise<Types.ClientEncryptionKeyGetResults | void> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/clientEncryptionKeys/${clientEncryptionKeyName}`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
+}
+
 /* Lists the SQL container under an existing Azure Cosmos DB database account. */
 export async function listSqlContainers(
   subscriptionId: string,
@@ -146,6 +182,31 @@ export async function deleteSqlContainer(
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+}
+
+/* Merges the partitions of a SQL database */
+export async function sqlDatabasePartitionMerge(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  body: Types.MergeParameters
+): Promise<Types.PhysicalPartitionStorageInfoCollection | void | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/partitionMerge`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
+}
+
+/* Merges the partitions of a SQL Container */
+export async function listSqlContainerPartitionMerge(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  containerName: string,
+  body: Types.MergeParameters
+): Promise<Types.PhysicalPartitionStorageInfoCollection | void | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/partitionMerge`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
 }
 
 /* Gets the RUs per second of the SQL container under an existing Azure Cosmos DB database account. */
@@ -197,6 +258,56 @@ export async function migrateSqlContainerToManualThroughput(
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
 }
 
+/* Retrieve throughput distribution for an Azure Cosmos DB SQL database */
+export async function sqlDatabaseRetrieveThroughputDistribution(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  body: Types.RetrieveThroughputParameters
+): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default/retrieveThroughputDistribution`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
+}
+
+/* Redistribute throughput for an Azure Cosmos DB SQL database */
+export async function sqlDatabaseRedistributeThroughput(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  body: Types.RedistributeThroughputParameters
+): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/throughputSettings/default/redistributeThroughput`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
+}
+
+/* Retrieve throughput distribution for an Azure Cosmos DB SQL container */
+export async function sqlContainerRetrieveThroughputDistribution(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  containerName: string,
+  body: Types.RetrieveThroughputParameters
+): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default/retrieveThroughputDistribution`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
+}
+
+/* Redistribute throughput for an Azure Cosmos DB SQL container */
+export async function sqlContainerRedistributeThroughput(
+  subscriptionId: string,
+  resourceGroupName: string,
+  accountName: string,
+  databaseName: string,
+  containerName: string,
+  body: Types.RedistributeThroughputParameters
+): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
+  const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/throughputSettings/default/redistributeThroughput`;
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
+}
+
 /* Lists the SQL storedProcedure under an existing Azure Cosmos DB database account. */
 export async function listSqlStoredProcedures(
   subscriptionId: string,
@@ -204,7 +315,7 @@ export async function listSqlStoredProcedures(
   accountName: string,
   databaseName: string,
   containerName: string
-): Promise<Types.SqlStoredProcedureListResult> {
+): Promise<Types.SqlStoredProcedureListResult | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }

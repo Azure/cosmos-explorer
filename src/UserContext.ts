@@ -1,11 +1,12 @@
-import { useCarousel } from "hooks/useCarousel";
-import { usePostgres } from "hooks/usePostgres";
+import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
+import { useCarousel } from "hooks/useCarousel";
+import { usePostgres } from "hooks/usePostgres";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
-import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
+import { Features, extractFeatures } from "./Platform/Hosted/extractFeatures";
 import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constants";
 
 interface ThroughputDefaults {
@@ -40,6 +41,11 @@ export interface PostgresConnectionStrParams {
   isFreeTier: boolean;
 }
 
+export interface VCoreMongoConnectionParams {
+  adminLogin: string;
+  connectionString: string;
+}
+
 interface UserContext {
   readonly authType?: AuthType;
   readonly masterKey?: string;
@@ -69,9 +75,11 @@ interface UserContext {
   readonly postgresConnectionStrParams?: PostgresConnectionStrParams;
   readonly isReplica?: boolean;
   collectionCreationDefaults: CollectionCreationDefaults;
+  sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
+  readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
 }
 
-export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres";
+export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
 const ONE_WEEK_IN_MS = 604800000;
@@ -89,7 +97,7 @@ const userContext: UserContext = {
   collectionCreationDefaults: CollectionCreationDefaults,
 };
 
-function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
+export function isAccountNewerThanThresholdInMs(createdAt: string, threshold: number) {
   let createdAtMs: number = Date.parse(createdAt);
   if (isNaN(createdAtMs)) {
     createdAtMs = 0;
@@ -154,7 +162,10 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
   if (account.kind === "Postgres") {
     return "Postgres";
   }
+  if (account.kind === "VCoreMongo") {
+    return "VCoreMongo";
+  }
   return "SQL";
 }
 
-export { userContext, updateUserContext };
+export { updateUserContext, userContext };

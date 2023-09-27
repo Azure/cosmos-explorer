@@ -1,7 +1,7 @@
 import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "@fluentui/react";
 import { Notebook } from "@nteract/commutable";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
-import { HttpStatusCodes } from "../Common/Constants";
+import { HttpStatusCodes, PoolIdType } from "../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import { TextFieldProps, useDialog } from "../Explorer/Controls/Dialog";
 import {
@@ -229,7 +229,7 @@ export function downloadItem(
     "Download",
     async () => {
       if (useNotebook.getState().isPhoenixNotebooks) {
-        await container.allocateContainer();
+        await container.allocateContainer(PoolIdType.DefaultPoolId);
       }
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {

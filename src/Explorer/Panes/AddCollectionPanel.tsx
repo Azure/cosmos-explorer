@@ -33,6 +33,7 @@ import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils"
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
+import "../Controls/ThroughputInput/ThroughputInput.less";
 import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
@@ -57,7 +58,7 @@ const SharedDatabaseDefault: DataModels.IndexingPolicy = {
   ],
 };
 
-const AllPropertiesIndexed: DataModels.IndexingPolicy = {
+export const AllPropertiesIndexed: DataModels.IndexingPolicy = {
   indexingMode: "consistent",
   automatic: true,
   includedPaths: [
@@ -318,7 +319,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   placeholder="Type a new database id"
                   size={40}
                   className="panelTextField"
-                  aria-label="New database id"
+                  aria-label="New database id, Type a new database id"
                   autoFocus
                   tabIndex={0}
                   value={this.state.newDatabaseId}
@@ -424,7 +425,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
-              aria-label={`${getCollectionName()} id`}
+              aria-label={`${getCollectionName()} id, Example ${getCollectionName()}1`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
@@ -634,18 +635,18 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               {userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <DefaultButton
-                    styles={{ root: { padding: 0, width: 250, height: 30 }, label: { fontSize: 12 } }}
+                    styles={{ root: { padding: 0, width: 200, height: 30 }, label: { fontSize: 12 } }}
                     hidden={this.state.useHashV1}
                     disabled={this.state.subPartitionKeys.length >= Constants.BackendDefaults.maxNumMultiHashPartition}
                     onClick={() => this.setState({ subPartitionKeys: [...this.state.subPartitionKeys, ""] })}
                   >
-                    Add hierarchical partition key (preview)
+                    Add hierarchical partition key
                   </DefaultButton>
                   {this.state.subPartitionKeys.length > 0 && (
                     <Text variant="small">
                       <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> This feature allows you to
-                      partition your data with up to three levels of keys for better data distribution. Requires preview
-                      version of .NET V3 or Java V4 SDK.{" "}
+                      partition your data with up to three levels of keys for better data distribution. Requires .NET
+                      V3, Java V4 SDK, or preview JavaScript V3 SDK.{" "}
                       <Link href="https://aka.ms/cosmos-hierarchical-partitioning" target="_blank">
                         Learn more
                       </Link>
@@ -843,7 +844,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <Text variant="small">
                     Azure Synapse Link is required for creating an analytical store{" "}
                     {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
-                    <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
+                    <Link
+                      href="https://aka.ms/cosmosdb-synapselink"
+                      target="_blank"
+                      className="capacitycalculator-link"
+                    >
                       Learn more
                     </Link>
                   </Text>
@@ -1425,6 +1430,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       this.setState({ isExecuting: false });
       TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
       useSidePanel.getState().closeSidePanel();
+      // open NPS Survey Dialog once the collection is created
+      this.props.explorer.openNPSSurveyDialog();
     } catch (error) {
       const errorMessage: string = getErrorMessage(error);
       this.setState({ isExecuting: false, errorMessage, showErrorDetails: true });

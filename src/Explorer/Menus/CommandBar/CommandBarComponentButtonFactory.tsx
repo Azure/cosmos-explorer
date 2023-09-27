@@ -1,3 +1,6 @@
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
@@ -8,23 +11,23 @@ import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
-import GitHubIcon from "../../../../images/github.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
+import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
+import GitHubIcon from "../../../../images/github.svg";
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
-import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
-import { configContext, Platform } from "../../../ConfigContext";
+import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
@@ -35,7 +38,7 @@ import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel"
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
-import { SelectedNodeState } from "../../useSelectedNode";
+import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
 
 let counter = 0;
 
@@ -51,7 +54,11 @@ export function createStaticCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   buttons.push(newCollectionBtn);
-  if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
+  if (
+    configContext.platform !== Platform.Fabric &&
+    userContext.apiType !== "Tables" &&
+    userContext.apiType !== "Cassandra"
+  ) {
     const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
     if (addSynapseLink) {
@@ -91,9 +98,9 @@ export function createStaticCommandBarButtons(
     ) {
       notebookButtons.push(createDivider());
       if (userContext.apiType === "Cassandra") {
-        notebookButtons.push(createOpenCassandraTerminalButton(container));
+        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Cassandra));
       } else {
-        notebookButtons.push(createOpenMongoTerminalButton(container));
+        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Mongo));
       }
     }
 
@@ -144,7 +151,9 @@ export function createStaticCommandBarButtons(
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+        disabled:
+          useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+          selectedNodeState.isDatabaseNodeOrNoneSelected(),
       };
 
       newStoredProcedureBtn.children = createScriptCommandButtons(selectedNodeState);
@@ -252,7 +261,9 @@ export function createDivider(): CommandButtonComponentProps {
 }
 
 function areScriptsSupported(): boolean {
-  return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+  return (
+    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+  );
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
@@ -289,7 +300,8 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: useNotebook.getState().isSynapseLinkUpdating,
+    disabled:
+      useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
@@ -320,8 +332,13 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
+        if (useSelectedNode.getState().isQueryCopilotCollectionSelected()) {
+          useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+          traceOpen(Action.OpenQueryCopilotFromNewQuery, { apiType: userContext.apiType });
+        } else {
+          const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
+          selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
+        }
       },
       commandButtonLabel: label,
       ariaLabel: label,
@@ -366,7 +383,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -383,7 +402,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -400,7 +421,9 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
+      disabled:
+        useSelectedNode.getState().isQueryCopilotCollectionSelected() ||
+        selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newTriggerBtn);
   }
@@ -424,7 +447,7 @@ function createNewNotebookButton(container: Explorer): CommandButtonComponentPro
     onCommandClick: () => container.onNewNotebookClicked(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -437,7 +460,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
     onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -452,7 +475,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -465,7 +488,7 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
   };
 }
 
@@ -477,13 +500,30 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
     onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
 
-function createOpenMongoTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open Mongo Shell";
+function createOpenTerminalButtonByKind(
+  container: Explorer,
+  terminalKind: ViewModels.TerminalKind
+): CommandButtonComponentProps {
+  const terminalFriendlyName = (): string => {
+    switch (terminalKind) {
+      case ViewModels.TerminalKind.Cassandra:
+        return "Cassandra";
+      case ViewModels.TerminalKind.Mongo:
+        return "Mongo";
+      case ViewModels.TerminalKind.Postgres:
+        return "PSQL";
+      case ViewModels.TerminalKind.VCoreMongo:
+        return "MongoDB (vcore)";
+      default:
+        return "";
+    }
+  };
+  const label = `Open ${terminalFriendlyName()} shell`;
   const tooltip =
     "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
   const disableButton =
@@ -493,7 +533,7 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
     iconAlt: label,
     onCommandClick: () => {
       if (useNotebook.getState().isNotebookEnabled) {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+        container.openNotebookTerminal(terminalKind);
       }
     },
     commandButtonLabel: label,
@@ -501,50 +541,6 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
     disabled: disableButton,
     ariaLabel: label,
     tooltipText: !disableButton ? "" : tooltip,
-  };
-}
-
-function createOpenCassandraTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open Cassandra Shell";
-  const tooltip =
-    "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
-  const disableButton =
-    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
-  return {
-    iconSrc: HostedTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      if (useNotebook.getState().isNotebookEnabled) {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
-      }
-    },
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: disableButton,
-    ariaLabel: label,
-    tooltipText: !disableButton ? "" : tooltip,
-  };
-}
-
-function createOpenPsqlTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open PSQL Shell";
-  const disableButton =
-    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
-  return {
-    iconSrc: HostedTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      if (useNotebook.getState().isNotebookEnabled) {
-        container.openNotebookTerminal(ViewModels.TerminalKind.Postgres);
-      }
-    },
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: disableButton,
-    ariaLabel: label,
-    tooltipText: !disableButton
-      ? ""
-      : "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.",
   };
 }
 
@@ -556,7 +552,7 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
     onCommandClick: () => container.resetNotebookWorkspace(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -582,7 +578,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
     },
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: false,
+    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     ariaLabel: label,
   };
 }
@@ -612,7 +608,13 @@ function createStaticCommandBarButtonsForResourceToken(
 }
 
 export function createPostgreButtons(container: Explorer): CommandButtonComponentProps[] {
-  const openPostgreShellBtn = createOpenPsqlTerminalButton(container);
+  const openPostgreShellBtn = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Postgres);
 
   return [openPostgreShellBtn];
+}
+
+export function createVCoreMongoButtons(container: Explorer): CommandButtonComponentProps[] {
+  const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.VCoreMongo);
+
+  return [openVCoreMongoTerminalButton];
 }

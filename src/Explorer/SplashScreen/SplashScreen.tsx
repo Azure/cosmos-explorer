@@ -14,19 +14,21 @@ import {
 import { sendMessage } from "Common/MessageHandler";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { TerminalKind } from "Contracts/ViewModels";
+import { SplashScreenButton } from "Explorer/SplashScreen/SplashScreenButton";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
-import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import NotebookColorIcon from "../../../images/Notebooks.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
+import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
 import { userContext } from "../../UserContext";
@@ -54,10 +56,6 @@ export interface SplashScreenProps {
 }
 
 export class SplashScreen extends React.Component<SplashScreenProps> {
-  private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
-  private static readonly throughputEstimatorUrl = "https://cosmos.azure.com/capacitycalculator";
-  private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
-
   private readonly container: Explorer;
   private subscriptions: Array<{ dispose: () => void }>;
 
@@ -99,6 +97,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           () => this.setState({}),
           (state) => state.showResetPasswordBubble
         ),
+      },
+      {
+        dispose: useDatabases.subscribe(
+          () => this.setState({}),
+          (state) => state.sampleDataResourceTokenCollection
+        ),
       }
     );
   }
@@ -108,117 +112,182 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.setState({});
   };
 
-  public render(): JSX.Element {
+  private getSplashScreenButtons = (): JSX.Element => {
+    if (
+      useDatabases.getState().sampleDataResourceTokenCollection &&
+      userContext.features.enableCopilot &&
+      userContext.apiType === "SQL"
+    ) {
+      return (
+        <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>
+          <Stack horizontal tokens={{ childrenGap: 16 }}>
+            <SplashScreenButton
+              imgSrc={QuickStartIcon}
+              title={"Launch quick start"}
+              description={"Launch a quick start tutorial to get started with sample data"}
+              onClick={() => {
+                this.container.onNewCollectionClicked({ isQuickstart: true });
+                traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
+              }}
+            />
+            <SplashScreenButton
+              imgSrc={ContainersIcon}
+              title={`New ${getCollectionName()}`}
+              description={"Create a new container for storage and throughput"}
+              onClick={() => {
+                this.container.onNewCollectionClicked();
+                traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+              }}
+            />
+          </Stack>
+          <Stack horizontal tokens={{ childrenGap: 16 }}>
+            <SplashScreenButton
+              imgSrc={CopilotIcon}
+              title={"Query faster with Copilot"}
+              description={
+                "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
+              }
+              onClick={() => {
+                const copilotVersion = userContext.features.copilotVersion;
+                if (copilotVersion === "v1.0") {
+                  useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+                } else if (copilotVersion === "v2.0") {
+                  const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
+                  sampleCollection.onNewQueryClick(sampleCollection, undefined);
+                }
+                traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
+              }}
+            />
+            <SplashScreenButton
+              imgSrc={ConnectIcon}
+              title={"Connect"}
+              description={"Prefer using your own choice of tooling? Find the connection string you need to connect"}
+              onClick={() => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect)}
+            />
+          </Stack>
+        </Stack>
+      );
+    }
+
     const mainItems = this.createMainItems();
+    return (
+      <div className="mainButtonsContainer">
+        {userContext.apiType === "Postgres" &&
+          usePostgres.getState().showPostgreTeachingBubble &&
+          !usePostgres.getState().showResetPasswordBubble && (
+            <TeachingBubble
+              headline="New to Cosmos DB PGSQL?"
+              target={"#mainButton-quickstartDescription"}
+              hasCloseButton
+              onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
+              calloutProps={{
+                directionalHint: DirectionalHint.rightCenter,
+                directionalHintFixed: true,
+                preventDismissOnLostFocus: true,
+                preventDismissOnResize: true,
+                preventDismissOnScroll: true,
+              }}
+              primaryButtonProps={{
+                text: "Get started",
+                onClick: () => {
+                  useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+                  usePostgres.getState().setShowPostgreTeachingBubble(false);
+                },
+              }}
+            >
+              Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you can find
+              sample data, query.
+            </TeachingBubble>
+          )}
+        {mainItems.map((item) => (
+          <Stack
+            id={`mainButton-${item.id}`}
+            horizontal
+            className="mainButton focusable"
+            key={`${item.title}`}
+            onClick={item.onClick}
+            onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+            tabIndex={0}
+            role="button"
+          >
+            <div>
+              <img src={item.iconSrc} alt="" />
+            </div>
+            <div className="legendContainer">
+              <Stack horizontal verticalAlign="center" style={{ marginBottom: 8 }}>
+                <div className="legend">{item.title}</div>
+                {item.showLinkIcon && <Image style={{ marginLeft: 8, width: 16 }} src={LinkIcon} />}
+              </Stack>
+
+              <div id={item.id} className="newDescription">
+                {item.description}
+              </div>
+            </div>
+          </Stack>
+        ))}
+        {userContext.apiType === "Postgres" && usePostgres.getState().showResetPasswordBubble && (
+          <TeachingBubble
+            headline="Create your password"
+            target={"#mainButton-quickstartDescription"}
+            hasCloseButton
+            onDismiss={() => {
+              localStorage.setItem(userContext.databaseAccount.id, "true");
+              usePostgres.getState().setShowResetPasswordBubble(false);
+            }}
+            calloutProps={{
+              directionalHint: DirectionalHint.bottomRightEdge,
+              directionalHintFixed: true,
+              preventDismissOnLostFocus: true,
+              preventDismissOnResize: true,
+              preventDismissOnScroll: true,
+            }}
+            primaryButtonProps={{
+              text: "Create",
+              onClick: () => {
+                localStorage.setItem(userContext.databaseAccount.id, "true");
+                sendMessage({
+                  type: MessageTypes.OpenPostgreSQLPasswordReset,
+                });
+                usePostgres.getState().setShowResetPasswordBubble(false);
+              },
+            }}
+          >
+            If you haven&apos;t changed your password yet, change it now.
+          </TeachingBubble>
+        )}
+      </div>
+    );
+  };
+
+  public render(): JSX.Element {
+    let title: string;
+    let subtitle: string;
+
+    switch (userContext.apiType) {
+      case "Postgres":
+        title = "Welcome to Azure Cosmos DB for PostgreSQL";
+        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+        break;
+      case "VCoreMongo":
+        title = "Welcome to Azure Cosmos DB for MongoDB (vCore)";
+        subtitle = "Get started with our sample datasets, documentation, and additional tools.";
+        break;
+      default:
+        title = "Welcome to Azure Cosmos DB";
+        subtitle = "Globally distributed, multi-model database service for any scale";
+    }
 
     return (
       <div className="connectExplorerContainer">
         <form className="connectExplorerFormContainer">
           <div className="splashScreenContainer">
             <div className="splashScreen">
-              <div
-                className="title"
-                aria-label={
-                  userContext.apiType === "Postgres"
-                    ? "Welcome to Azure Cosmos DB for PostgreSQL"
-                    : "Welcome to Azure Cosmos DB"
-                }
-              >
-                {userContext.apiType === "Postgres"
-                  ? "Welcome to Azure Cosmos DB for PostgreSQL"
-                  : "Welcome to Azure Cosmos DB"}
+              <h1 className="title" role="heading" aria-label={title}>
+                {title}
                 <FeaturePanelLauncher />
-              </div>
-              <div className="subtitle">
-                {userContext.apiType === "Postgres"
-                  ? "Get started with our sample datasets, documentation, and additional tools."
-                  : "Globally distributed, multi-model database service for any scale"}
-              </div>
-              <div className="mainButtonsContainer">
-                {userContext.apiType === "Postgres" &&
-                  usePostgres.getState().showPostgreTeachingBubble &&
-                  !usePostgres.getState().showResetPasswordBubble && (
-                    <TeachingBubble
-                      headline="New to Cosmos DB PGSQL?"
-                      target={"#mainButton-quickstartDescription"}
-                      hasCloseButton
-                      onDismiss={() => usePostgres.getState().setShowPostgreTeachingBubble(false)}
-                      calloutProps={{
-                        directionalHint: DirectionalHint.rightCenter,
-                        directionalHintFixed: true,
-                        preventDismissOnLostFocus: true,
-                        preventDismissOnResize: true,
-                        preventDismissOnScroll: true,
-                      }}
-                      primaryButtonProps={{
-                        text: "Get started",
-                        onClick: () => {
-                          useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
-                          usePostgres.getState().setShowPostgreTeachingBubble(false);
-                        },
-                      }}
-                    >
-                      Welcome! If you are new to Cosmos DB PGSQL and need help with getting started, here is where you
-                      can find sample data, query.
-                    </TeachingBubble>
-                  )}
-                {mainItems.map((item) => (
-                  <Stack
-                    id={`mainButton-${item.id}`}
-                    horizontal
-                    className="mainButton focusable"
-                    key={`${item.title}`}
-                    onClick={item.onClick}
-                    onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-                    tabIndex={0}
-                    role="button"
-                  >
-                    <div>
-                      <img src={item.iconSrc} alt="" />
-                    </div>
-                    <div className="legendContainer">
-                      <Stack horizontal verticalAlign="center" style={{ marginBottom: 8 }}>
-                        <div className="legend">{item.title}</div>
-                        {item.showLinkIcon && <Image style={{ marginLeft: 8, width: 16 }} src={LinkIcon} />}
-                      </Stack>
-
-                      <div id={item.id} className="newDescription">
-                        {item.description}
-                      </div>
-                    </div>
-                  </Stack>
-                ))}
-                {userContext.apiType === "Postgres" && usePostgres.getState().showResetPasswordBubble && (
-                  <TeachingBubble
-                    headline="Create your password"
-                    target={"#mainButton-quickstartDescription"}
-                    hasCloseButton
-                    onDismiss={() => {
-                      localStorage.setItem(userContext.databaseAccount.id, "true");
-                      usePostgres.getState().setShowResetPasswordBubble(false);
-                    }}
-                    calloutProps={{
-                      directionalHint: DirectionalHint.bottomRightEdge,
-                      directionalHintFixed: true,
-                      preventDismissOnLostFocus: true,
-                      preventDismissOnResize: true,
-                      preventDismissOnScroll: true,
-                    }}
-                    primaryButtonProps={{
-                      text: "Create",
-                      onClick: () => {
-                        localStorage.setItem(userContext.databaseAccount.id, "true");
-                        sendMessage({
-                          type: MessageTypes.OpenPostgreSQLPasswordReset,
-                        });
-                        usePostgres.getState().setShowResetPasswordBubble(false);
-                      },
-                    }}
-                  >
-                    If you haven&apos;t changed your password yet, change it now.
-                  </TeachingBubble>
-                )}
-              </div>
+              </h1>
+              <div className="subtitle">{subtitle}</div>
+              {this.getSplashScreenButtons()}
               {useCarousel.getState().showCoachMark && (
                 <Coachmark
                   target="#quickstartDescription"
@@ -247,8 +316,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </TeachingBubbleContent>
                 </Coachmark>
               )}
-              {userContext.apiType === "Postgres" ? (
-                <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 32 }}>
+              {userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo" ? (
+                <Stack horizontal style={{ margin: "0 auto", width: "84%" }} tokens={{ childrenGap: 16 }}>
                   <Stack style={{ width: "33%" }}>
                     <Text
                       variant="large"
@@ -314,7 +383,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     if (
       userContext.apiType === "SQL" ||
       userContext.apiType === "Mongo" ||
-      (userContext.apiType === "Postgres" && !userContext.isReplica)
+      (userContext.apiType === "Postgres" && !userContext.isReplica) ||
+      userContext.apiType === "VCoreMongo"
     ) {
       const launchQuickstartBtn = {
         id: "quickstartDescription",
@@ -322,9 +392,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "Launch quick start",
         description: "Launch a quick start tutorial to get started with sample data",
         onClick: () => {
-          userContext.apiType === "Postgres"
-            ? useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart)
-            : this.container.onNewCollectionClicked({ isQuickstart: true });
+          if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
+            useTabs.getState().openAndActivateReactTab(ReactTabKind.Quickstart);
+          } else {
+            this.container.onNewCollectionClicked({ isQuickstart: true });
+          }
           traceOpen(Action.LaunchQuickstart, { apiType: userContext.apiType });
         },
       };
@@ -339,39 +411,65 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       heroes.push(newNotebookBtn);
     }
 
+    heroes.push(this.getShellCard());
+    heroes.push(this.getThirdCard());
+    return heroes;
+  }
+
+  private getShellCard() {
     if (userContext.apiType === "Postgres") {
-      const postgreShellBtn = {
+      return {
         iconSrc: PowerShellIcon,
         title: "PostgreSQL Shell",
         description: "Create table and interact with data using PostgreSQL’s shell interface",
         onClick: () => this.container.openNotebookTerminal(TerminalKind.Postgres),
       };
-      heroes.push(postgreShellBtn);
-    } else {
-      const newContainerBtn = {
-        iconSrc: ContainersIcon,
-        title: `New ${getCollectionName()}`,
-        description: "Create a new container for storage and throughput",
-        onClick: () => {
-          this.container.onNewCollectionClicked();
-          traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
-        },
-      };
-      heroes.push(newContainerBtn);
     }
 
-    const connectBtn = {
-      iconSrc: ConnectIcon,
-      title: userContext.apiType === "Postgres" ? "Connect with pgAdmin" : "Connect",
-      description:
-        userContext.apiType === "Postgres"
-          ? "Prefer pgAdmin? Find your connection strings here"
-          : "Prefer using your own choice of tooling? Find the connection string you need to connect",
-      onClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect),
-    };
-    heroes.push(connectBtn);
+    if (userContext.apiType === "VCoreMongo") {
+      return {
+        iconSrc: PowerShellIcon,
+        title: "Mongo Shell",
+        description: "Create a collection and interact with data using MongoDB's shell interface",
+        onClick: () => this.container.openNotebookTerminal(TerminalKind.VCoreMongo),
+      };
+    }
 
-    return heroes;
+    return {
+      iconSrc: ContainersIcon,
+      title: `New ${getCollectionName()}`,
+      description: "Create a new container for storage and throughput",
+      onClick: () => {
+        this.container.onNewCollectionClicked();
+        traceOpen(Action.NewContainerHomepage, { apiType: userContext.apiType });
+      },
+    };
+  }
+
+  private getThirdCard() {
+    let icon = ConnectIcon;
+    let title = "Connect";
+    let description = "Prefer using your own choice of tooling? Find the connection string you need to connect";
+    let onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+
+    if (userContext.apiType === "Postgres") {
+      title = "Connect with pgAdmin";
+      description = "Prefer pgAdmin? Find your connection strings here";
+    }
+
+    if (userContext.apiType === "VCoreMongo") {
+      icon = ContainersIcon;
+      title = "Connect with Studio 3T";
+      description = "Prefer Studio 3T? Find your connection strings here";
+      onClick = () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Connect);
+    }
+
+    return {
+      iconSrc: icon,
+      title: title,
+      description: description,
+      onClick: onClick,
+    };
   }
 
   private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
@@ -521,6 +619,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           },
         ];
         break;
+      default:
+        break;
     }
     return (
       <Stack>
@@ -535,7 +635,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               >
                 {item.title}
               </Link>
-              <Image src={LinkIcon} alt=" " />
+              <Image src={LinkIcon} alt={item.title} />
             </Stack>
             <Text>{item.description}</Text>
           </Stack>
@@ -554,7 +654,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             <li key={`${item.title}${item.description}${index}`}>
               <Stack style={{ marginBottom: 26 }}>
                 <Stack horizontal>
-                  <Image style={{ marginRight: 8 }} src={item.iconSrc} />
+                  <Image style={{ marginRight: 8 }} src={item.iconSrc} alt={item.title} />
                   <Link style={{ fontSize: 14 }} onClick={item.onClick} title={item.info}>
                     {item.title}
                   </Link>
@@ -658,6 +758,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           cdbLiveTv,
         ];
         break;
+      default:
+        break;
     }
     return (
       <Stack>
@@ -674,7 +776,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               >
                 {item.title}
               </Link>
-              <Image src={LinkIcon} />
+              <Image src={LinkIcon} alt={item.title} />
             </Stack>
             <Text>{item.description}</Text>
           </Stack>
@@ -683,24 +785,46 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     );
   }
 
+  private postgresNextStepItems: { link: string; title: string; description: string }[] = [
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2208312",
+      title: "Data Modeling",
+      description: "",
+    },
+    {
+      link: " https://go.microsoft.com/fwlink/?linkid=2206941 ",
+      title: "How to choose a Distribution Column",
+      description: "",
+    },
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2207425",
+      title: "Build Apps with Python/Java/Django",
+      description: "",
+    },
+  ];
+
+  private vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
+    {
+      link:
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-migrate-native-tools?tabs=export-import",
+      title: "Migrate Data",
+      description: "",
+    },
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/vector-search-ai",
+      title: "Build AI apps with Vector Search",
+      description: "",
+    },
+    {
+      link:
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/tutorial-nodejs-web-app?tabs=github-codespaces",
+      title: "Build Apps with Nodejs",
+      description: "",
+    },
+  ];
+
   private getNextStepItems(): JSX.Element {
-    const items: { link: string; title: string; description: string }[] = [
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2208312",
-        title: "Data Modeling",
-        description: "",
-      },
-      {
-        link: " https://go.microsoft.com/fwlink/?linkid=2206941 ",
-        title: "How to choose a Distribution Column",
-        description: "",
-      },
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2207425",
-        title: "Build Apps with Python/Java/Django",
-        description: "",
-      },
-    ];
+    const items = userContext.apiType === "Postgres" ? this.postgresNextStepItems : this.vcoreMongoNextStepItems;
 
     return (
       <Stack style={{ minWidth: 124, maxWidth: 296 }}>
@@ -719,24 +843,44 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     );
   }
 
+  private postgresLearnMoreItems: { link: string; title: string; description: string }[] = [
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2207226",
+      title: "Performance Tuning",
+      description: "",
+    },
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2208037",
+      title: "Useful Diagnostic Queries",
+      description: "",
+    },
+    {
+      link: "https://go.microsoft.com/fwlink/?linkid=2205270",
+      title: "Distributed SQL Reference",
+      description: "",
+    },
+  ];
+
+  private vcoreMongoLearnMoreItems: { link: string; title: string; description: string }[] = [
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/vector-search",
+      title: "Vector Search",
+      description: "",
+    },
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-create-text-index",
+      title: "Text Indexing",
+      description: "",
+    },
+    {
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/troubleshoot-common-issues",
+      title: "Troubleshoot common issues",
+      description: "",
+    },
+  ];
+
   private getTipsAndLearnMoreItems(): JSX.Element {
-    const items: { link: string; title: string; description: string }[] = [
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2207226",
-        title: "Performance Tuning",
-        description: "",
-      },
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2208037",
-        title: "Useful Diagnostic Queries",
-        description: "",
-      },
-      {
-        link: "https://go.microsoft.com/fwlink/?linkid=2205270",
-        title: "Distributed SQL Reference",
-        description: "",
-      },
-    ];
+    const items = userContext.apiType === "Postgres" ? this.postgresLearnMoreItems : this.vcoreMongoLearnMoreItems;
 
     return (
       <Stack style={{ minWidth: 124, maxWidth: 296 }}>
