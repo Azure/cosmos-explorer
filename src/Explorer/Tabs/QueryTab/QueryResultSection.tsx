@@ -7,6 +7,7 @@ import {
   SelectionMode,
   Stack,
   Text,
+  IconButton
 } from "@fluentui/react";
 import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
@@ -22,6 +23,8 @@ import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
 import RunQuery from "../../../../images/RunQuery.png";
 import InfoColor from "../../../../images/info_color.svg";
 import { QueryResults } from "../../../Contracts/ViewModels";
+import copy from "clipboard-copy";
+import CopilotCopy from "../../../../images/CopilotCopy.svg";
 
 interface QueryResultProps {
   isMongoDB: boolean;
@@ -296,9 +299,8 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
         },
         {
           metric: "User defined function execution time",
-          value: `${
-            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
-          } ms`,
+          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+            } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
@@ -327,6 +329,10 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
 
     return items;
   };
+
+  const onClickCopyResults = (): void => {
+    copy(queryResultsString)
+  }
 
   return (
     <Stack style={{ height: "100%" }}>
@@ -393,6 +399,17 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                           ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}`
                           : `0 - 0`}
                       </span>
+                      <IconButton
+                        style={{
+                          height: "100%",
+                          marginLeft: "4px",
+                          verticalAlign: "middle",
+                        }}
+                        iconProps={{ imageProps: { src: CopilotCopy } }}
+                        title="Copy to Clipboard"
+                        ariaLabel="Copy"
+                        onClick={onClickCopyResults}
+                      />
                     </span>
                     {queryResults.hasMoreResults && (
                       <>
