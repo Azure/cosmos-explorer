@@ -18,7 +18,7 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
   return (
     <Modal
       styles={{ main: { width: 640 } }}
-      isOpen={true && page < 4}
+      isOpen={isOpen && page < 4}
       onDismissed={() => userContext.apiType === "SQL" && useCarousel.getState().setShowCoachMark(true)}
     >
       <Stack>
