@@ -18,7 +18,16 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
 
   return (
     <>
-      <Modal isOpen={isModalVisible} onDismiss={hideModal} isBlocking={false}>
+      <Modal
+        isOpen={isModalVisible}
+        onDismiss={hideModal}
+        isBlocking={false}
+        styles={{
+          scrollableContent: {
+            minHeight: 680,
+          },
+        }}
+      >
         <Stack className="modalContentPadding">
           <Stack horizontal>
             <Stack horizontal grow={4} horizontalAlign="end">
