@@ -132,7 +132,8 @@ async function configureFabric(): Promise<Explorer> {
             break;
           case "openTab": {
             // Expand database first
-            const database = useDatabases.getState().databases.find((db) => db.id() === data.databaseName);
+            const databaseName = sessionStorage.getItem("openDatabaseName") ?? data.databaseName;
+            const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
             if (database) {
               await database.expandDatabase();
               useDatabases.getState().updateDatabase(database);
@@ -153,7 +154,7 @@ async function configureFabric(): Promise<Explorer> {
                 handleOpenAction(
                   {
                     actionType: ActionType.OpenCollectionTab,
-                    databaseResourceId: data.databaseName,
+                    databaseResourceId: databaseName,
                     collectionResourceId: data.collectionName,
                     tabKind: TabKind.SQLDocuments,
                   } as DataExplorerAction,
