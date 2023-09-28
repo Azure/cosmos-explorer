@@ -239,7 +239,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
       commandButtonLabel: "Save Query",
       ariaLabel: "Save Query",
       hasPopup: false,
-      disabled: query?.trim() === "",
+      disabled: true,
     };
 
     // Sample Prompts temporary disabled due current design
