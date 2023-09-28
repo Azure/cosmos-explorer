@@ -3,6 +3,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { CollectionTabKind } from "../Contracts/ViewModels";
 import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
+import { Platform, configContext } from "./../ConfigContext";
 
 interface TabsState {
   openedTabs: TabsBase[];
@@ -37,11 +38,22 @@ export enum ReactTabKind {
   QueryCopilot,
 }
 
+// HACK: using this const when the configuration context is not initialized yet.
+// Since Fabric is always setting the url param, use that instead of the regular config.
+const isPlatformFabric = (() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has("platform")) {
+    const platform = params.get("platform");
+    return platform === Platform.Fabric;
+  }
+  return false;
+})();
+
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedTabs: [],
-  openedReactTabs: [ReactTabKind.Home],
+  openedReactTabs: !isPlatformFabric ? [ReactTabKind.Home] : [],
   activeTab: undefined,
-  activeReactTab: ReactTabKind.Home,
+  activeReactTab: !isPlatformFabric ? ReactTabKind.Home : undefined,
   networkSettingsWarning: "",
   queryCopilotTabInitialInput: "",
   isTabExecuting: false,
@@ -92,7 +104,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       }
       return true;
     });
-    if (updatedTabs.length === 0) {
+    if (updatedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
       set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
     }
 
@@ -130,7 +142,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
         }
       });
 
-      if (get().openedTabs.length === 0) {
+      if (get().openedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
         set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
       }
     }
