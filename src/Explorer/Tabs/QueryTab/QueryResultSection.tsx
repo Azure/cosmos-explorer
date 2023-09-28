@@ -400,17 +400,6 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                           ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}`
                           : `0 - 0`}
                       </span>
-                      <IconButton
-                        style={{
-                          height: "100%",
-                          marginLeft: "4px",
-                          verticalAlign: "middle",
-                        }}
-                        iconProps={{ imageProps: { src: CopilotCopy } }}
-                        title="Copy to Clipboard"
-                        ariaLabel="Copy"
-                        onClick={onClickCopyResults}
-                      />
                     </span>
                     {queryResults.hasMoreResults && (
                       <>
@@ -423,6 +412,17 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                         </span>
                       </>
                     )}
+                    <IconButton
+                        style={{
+                          height: "100%",
+                          verticalAlign: "middle",
+                          float: "right",
+                        }}
+                        iconProps={{ imageProps: { src: CopilotCopy } }}
+                        title="Copy to Clipboard"
+                        ariaLabel="Copy"
+                        onClick={onClickCopyResults}
+                      />
                   </div>
                   {queryResults && queryResultsString?.length > 0 && !error && (
                     <div
