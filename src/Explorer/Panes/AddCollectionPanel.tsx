@@ -33,6 +33,7 @@ import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils"
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
+import "../Controls/ThroughputInput/ThroughputInput.less";
 import { ContainerSampleGenerator } from "../DataSamples/ContainerSampleGenerator";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
@@ -318,7 +319,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   placeholder="Type a new database id"
                   size={40}
                   className="panelTextField"
-                  aria-label="New database id"
+                  aria-label="New database id, Type a new database id"
                   autoFocus
                   tabIndex={0}
                   value={this.state.newDatabaseId}
@@ -424,7 +425,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
-              aria-label={`${getCollectionName()} id`}
+              aria-label={`${getCollectionName()} id, Example ${getCollectionName()}1`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
@@ -843,7 +844,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <Text variant="small">
                     Azure Synapse Link is required for creating an analytical store{" "}
                     {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
-                    <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
+                    <Link
+                      href="https://aka.ms/cosmosdb-synapselink"
+                      target="_blank"
+                      className="capacitycalculator-link"
+                    >
                       Learn more
                     </Link>
                   </Text>
