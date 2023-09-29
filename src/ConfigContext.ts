@@ -61,6 +61,9 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
     `^https:\\/\\/cosmos-db-dataexplorer-germanycentral\\.azurewebsites\\.de$`,
+    `^https:\\/\\/.*\\.fabric\\.microsoft\\.com$`,
+    `^https:\\/\\/.*\\.powerbi\\.com$`,
+    `^https:\\/\\/.*\\.analysis-df\\.net$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -68,7 +71,7 @@ let configContext: Readonly<ConfigContext> = {
   ARM_AUTH_AREA: "https://management.azure.com/",
   ARM_ENDPOINT: "https://management.azure.com/",
   ARM_API_VERSION: "2016-06-01",
-  GRAPH_ENDPOINT: "https://graph.windows.net",
+  GRAPH_ENDPOINT: "https://graph.microsoft.com",
   GRAPH_API_VERSION: "1.6",
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",

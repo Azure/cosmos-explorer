@@ -103,6 +103,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             <br />
             <StyledLinkBase
               href="https://aka.ms/cdb-copilot-learn-more"
+              target="_blank"
             >
               Learn more
             </StyledLinkBase>
@@ -139,6 +140,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             <br />
             <StyledLinkBase
               href="https://aka.ms/cdb-copilot-preview-terms"
+              target="_blank"
             >
               Read preview terms
             </StyledLinkBase>
@@ -175,6 +177,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             <br />
             <StyledLinkBase
               href="https://aka.ms/cdb-copilot-learn-more"
+              target="_blank"
             >
               Learn more
             </StyledLinkBase>

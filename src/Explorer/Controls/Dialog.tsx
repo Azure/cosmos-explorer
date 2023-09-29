@@ -1,9 +1,9 @@
 import {
   ChoiceGroup,
   DefaultButton,
-  Dialog as FluentDialog,
   DialogFooter,
   DialogType,
+  Dialog as FluentDialog,
   FontIcon,
   IButtonProps,
   IChoiceGroupProps,
@@ -15,7 +15,7 @@ import {
   ProgressIndicator,
   TextField,
 } from "@fluentui/react";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import create, { UseStore } from "zustand";
 
 export interface DialogState {
@@ -156,6 +156,20 @@ export const Dialog: FC = () => {
     onDismiss,
     contentHtml,
   } = props || {};
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      useDialog.getState().closeDialog();
+    }
+  };
+
+  useEffect(() => {
+    if (visible) {
+      document.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [visible]);
 
   const dialogProps: IDialogProps = {
     hidden: !visible,
