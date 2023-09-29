@@ -437,16 +437,16 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                       </>
                     )}
                     <IconButton
-                        style={{
-                          height: "100%",
-                          verticalAlign: "middle",
-                          float: "right",
-                        }}
-                        iconProps={{ imageProps: { src: CopilotCopy } }}
-                        title="Copy to Clipboard"
-                        ariaLabel="Copy"
-                        onClick={onClickCopyResults}
-                      />
+                      style={{
+                        height: "100%",
+                        verticalAlign: "middle",
+                        float: "right",
+                      }}
+                      iconProps={{ imageProps: { src: CopilotCopy } }}
+                      title="Copy to Clipboard"
+                      ariaLabel="Copy"
+                      onClick={onClickCopyResults}
+                    />
                   </div>
                   {queryResults && queryResultsString?.length > 0 && !error && (
                     <div
