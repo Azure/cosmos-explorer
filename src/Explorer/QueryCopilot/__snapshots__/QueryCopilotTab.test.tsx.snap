@@ -24,6 +24,12 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
     >
       <Image
         src={Object {}}
+        style={
+          Object {
+            "height": 24,
+            "width": 24,
+          }
+        }
       />
       <Text
         style={
