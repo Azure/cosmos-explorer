@@ -30,6 +30,7 @@ export interface QueryCopilotState {
   showFeedbackBar: boolean;
   showCopyPopup: boolean;
   showErrorMessageBar: boolean;
+  showInvalidQueryMessageBar: boolean;
   generatedQueryComments: string;
   wasCopilotUsed: boolean;
   showWelcomeSidebar: boolean;
@@ -64,6 +65,7 @@ export interface QueryCopilotState {
   setShowFeedbackBar: (showFeedbackBar: boolean) => void;
   setshowCopyPopup: (showCopyPopup: boolean) => void;
   setShowErrorMessageBar: (showErrorMessageBar: boolean) => void;
+  setShowInvalidQueryMessageBar: (showInvalidQueryMessageBar: boolean) => void;
   setGeneratedQueryComments: (generatedQueryComments: string) => void;
   setWasCopilotUsed: (wasCopilotUsed: boolean) => void;
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
@@ -104,6 +106,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showFeedbackBar: false,
   showCopyPopup: false,
   showErrorMessageBar: false,
+  showInvalidQueryMessageBar: false,
   generatedQueryComments: "",
   wasCopilotUsed: false,
   showWelcomeSidebar: true,
@@ -148,6 +151,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setShowFeedbackBar: (showFeedbackBar: boolean) => set({ showFeedbackBar }),
   setshowCopyPopup: (showCopyPopup: boolean) => set({ showCopyPopup }),
   setShowErrorMessageBar: (showErrorMessageBar: boolean) => set({ showErrorMessageBar }),
+  setShowInvalidQueryMessageBar: (showInvalidQueryMessageBar: boolean) => set({ showInvalidQueryMessageBar }),
   setGeneratedQueryComments: (generatedQueryComments: string) => set({ generatedQueryComments }),
   setWasCopilotUsed: (wasCopilotUsed: boolean) => set({ wasCopilotUsed }),
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
@@ -196,6 +200,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       showFeedbackBar: false,
       showCopyPopup: false,
       showErrorMessageBar: false,
+      showInvalidQueryMessageBar: false,
       generatedQueryComments: "",
       wasCopilotUsed: false,
       showCopilotSidebar: false,
