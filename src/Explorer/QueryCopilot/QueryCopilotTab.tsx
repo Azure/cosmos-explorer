@@ -491,7 +491,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
                   this article.
                 </Link>{" "}
                 Our content guidelines can be found
-                <Link href="https://aka.ms/cdb-query-copilot" target="_blanck">
+                <Link href="https://aka.ms/cdb-query-copilot" target="_blank">
                   here.
                 </Link>
               </MessageBar>
