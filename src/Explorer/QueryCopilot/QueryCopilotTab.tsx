@@ -546,6 +546,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
               language={"sql"}
               content={query}
               isReadOnly={false}
+              wordWrap={"on"}
               ariaLabel={"Editing Query"}
               lineNumbers={"on"}
               onContentChanged={(newQuery: string) => setQuery(newQuery)}
