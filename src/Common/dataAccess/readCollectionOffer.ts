@@ -44,7 +44,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           resourceGroup,
           accountName,
           databaseId,
-          collectionId
+          collectionId,
         );
         break;
       case "Mongo":
@@ -53,7 +53,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           resourceGroup,
           accountName,
           databaseId,
-          collectionId
+          collectionId,
         );
         break;
       case "Cassandra":
@@ -62,7 +62,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           resourceGroup,
           accountName,
           databaseId,
-          collectionId
+          collectionId,
         );
         break;
       case "Gremlin":
@@ -71,7 +71,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           resourceGroup,
           accountName,
           databaseId,
-          collectionId
+          collectionId,
         );
         break;
       case "Tables":

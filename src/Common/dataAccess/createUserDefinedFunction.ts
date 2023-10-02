@@ -16,7 +16,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function createUserDefinedFunction(
   databaseId: string,
   collectionId: string,
-  userDefinedFunction: UserDefinedFunctionDefinition
+  userDefinedFunction: UserDefinedFunctionDefinition,
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating user defined function ${userDefinedFunction.id}`);
   try {
@@ -32,11 +32,11 @@ export async function createUserDefinedFunction(
           userContext.databaseAccount.name,
           databaseId,
           collectionId,
-          userDefinedFunction.id
+          userDefinedFunction.id,
         );
         if (getResponse?.properties?.resource) {
           throw new Error(
-            `Create user defined function failed: user defined function with id ${userDefinedFunction.id} already exists`
+            `Create user defined function failed: user defined function with id ${userDefinedFunction.id} already exists`,
           );
         }
       } catch (error) {
@@ -58,7 +58,7 @@ export async function createUserDefinedFunction(
         databaseId,
         collectionId,
         userDefinedFunction.id,
-        createUDFParams
+        createUDFParams,
       );
       return rpResponse && (rpResponse.properties?.resource as UserDefinedFunctionDefinition & Resource);
     }
@@ -72,7 +72,7 @@ export async function createUserDefinedFunction(
     handleError(
       error,
       "CreateUserupdateUserDefinedFunction",
-      `Error while creating user defined function ${userDefinedFunction.id}`
+      `Error while creating user defined function ${userDefinedFunction.id}`,
     );
     throw error;
   } finally {

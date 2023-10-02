@@ -12,7 +12,7 @@ interface BaseInput {
   onChange?: (
     newValue: InputType,
     currentState: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
+    baselineValues: ReadonlyMap<string, SmartUiInput>,
   ) => Map<string, SmartUiInput>;
   placeholderTKey?: (() => Promise<string>) | string;
 }
@@ -63,7 +63,7 @@ export interface SelfServeDescriptor {
   initialize?: () => Promise<Map<string, SmartUiInput>>;
   onSave?: (
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
+    baselineValues: ReadonlyMap<string, SmartUiInput>,
   ) => Promise<OnSaveResult>;
   inputNames?: string[];
   onRefresh?: () => Promise<RefreshResult>;
@@ -95,7 +95,7 @@ export type onSaveCallback =
    */
   (
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
+    baselineValues: ReadonlyMap<string, SmartUiInput>,
   ) => Promise<OnSaveResult>;
 
 /**
@@ -165,7 +165,7 @@ export type OnChangeCallback =
   (
     newValue: InputType,
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
+    baselineValues: ReadonlyMap<string, SmartUiInput>,
   ) => Map<string, SmartUiInput>;
 
 export enum NumberUiType {

@@ -62,7 +62,7 @@ export default class QueryViewModel {
       () =>
         this.queryText() !== this.unchangedSaveText() ||
         this.selectText() !== this.unchangedSaveSelect() ||
-        this.topValue() !== this.unchangedSaveTop()
+        this.topValue() !== this.unchangedSaveTop(),
     );
 
     this.queryBuilderViewModel().clauseArray.subscribe(() => {
@@ -191,8 +191,8 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.sqlQuery("SELECT * FROM c");
     this._tableEntityListViewModel.cqlQuery(
       `SELECT * FROM ${getQuotedCqlIdentifier(this.queryTablesTab.collection.databaseId)}.${getQuotedCqlIdentifier(
-        this.queryTablesTab.collection.id()
-      )}`
+        this.queryTablesTab.collection.id(),
+      )}`,
     );
     return this._tableEntityListViewModel.reloadTable(false);
   };

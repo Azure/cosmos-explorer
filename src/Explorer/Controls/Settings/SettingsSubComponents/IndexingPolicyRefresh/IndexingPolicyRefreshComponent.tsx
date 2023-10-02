@@ -35,7 +35,7 @@ export class IndexingPolicyRefreshComponent extends React.Component<
     } else if (isIndexTransforming(this.props.indexTransformationProgress)) {
       return renderMongoIndexTransformationRefreshMessage(
         this.props.indexTransformationProgress,
-        this.onClickRefreshIndexingTransformationLink
+        this.onClickRefreshIndexingTransformationLink,
       );
     }
     return undefined;

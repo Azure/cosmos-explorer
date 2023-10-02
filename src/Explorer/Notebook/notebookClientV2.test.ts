@@ -48,7 +48,7 @@ describe("auto start kernel", () => {
         undefined, // content provider
         expect.anything(), // onTraceFailure
         expect.anything(), // customMiddlewares
-        !isReadOnly
+        !isReadOnly,
       );
     });
   });

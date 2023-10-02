@@ -139,7 +139,7 @@ export class JunoClient {
       `${this.getNotebooksSubscriptionIdAccountUrl()}/github/token?${githubParams.toString()}`,
       {
         headers: JunoClient.getHeaders(),
-      }
+      },
     );
 
     let data: IGitHubOAuthToken;
@@ -167,7 +167,7 @@ export class JunoClient {
       {
         method: "DELETE",
         headers: JunoClient.getHeaders(),
-      }
+      },
     );
 
     return {
@@ -361,7 +361,7 @@ export class JunoClient {
     description: string,
     tags: string[],
     thumbnailUrl: string,
-    content: string
+    content: string,
   ): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery`, {
       method: "PUT",
@@ -422,7 +422,7 @@ export class JunoClient {
   }
 
   public async requestSchema(
-    schemaRequest: DataModels.ISchemaRequest
+    schemaRequest: DataModels.ISchemaRequest,
   ): Promise<IJunoResponse<DataModels.ISchemaRequest>> {
     const response = await window.fetch(`${this.getAnalyticsUrl()}/schema/request`, {
       method: "POST",
@@ -446,14 +446,14 @@ export class JunoClient {
     resourceGroup: string,
     accountName: string,
     databaseName: string,
-    containerName: string
+    containerName: string,
   ): Promise<IJunoResponse<DataModels.ISchema>> {
     const response = await window.fetch(
       `${this.getAnalyticsUrl()}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/databaseAccounts/${accountName}/schema/${databaseName}/${containerName}`,
       {
         method: "GET",
         headers: JunoClient.getHeaders(),
-      }
+      },
     );
 
     let data: DataModels.ISchema;

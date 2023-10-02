@@ -38,7 +38,7 @@ export class NotebookContentClient {
    */
   public async createNewNotebookFile(
     parent: NotebookContentItem,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
@@ -97,7 +97,7 @@ export class NotebookContentClient {
     name: string,
     content: string,
     parent: NotebookContentItem,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
@@ -147,7 +147,7 @@ export class NotebookContentClient {
   public renameNotebook(
     item: NotebookContentItem,
     targetName: string,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): Promise<NotebookContentItem> {
     const sourcePath = item.path;
     // Match extension
@@ -189,7 +189,7 @@ export class NotebookContentClient {
   public async createDirectory(
     parent: NotebookContentItem,
     newDirectoryName: string,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): Promise<NotebookContentItem> {
     if (parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent is not a directory: ${parent.path}`);
@@ -295,7 +295,7 @@ export class NotebookContentClient {
             name: item.name,
             path: item.path,
             type: NotebookUtil.getType(item.type),
-          })
+          }),
         );
       });
   }

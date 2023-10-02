@@ -16,7 +16,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function createStoredProcedure(
   databaseId: string,
   collectionId: string,
-  storedProcedure: StoredProcedureDefinition
+  storedProcedure: StoredProcedureDefinition,
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating stored procedure ${storedProcedure.id}`);
   try {
@@ -32,11 +32,11 @@ export async function createStoredProcedure(
           userContext.databaseAccount.name,
           databaseId,
           collectionId,
-          storedProcedure.id
+          storedProcedure.id,
         );
         if (getResponse?.properties?.resource) {
           throw new Error(
-            `Create stored procedure failed: stored procedure with id ${storedProcedure.id} already exists`
+            `Create stored procedure failed: stored procedure with id ${storedProcedure.id} already exists`,
           );
         }
       } catch (error) {
@@ -58,7 +58,7 @@ export async function createStoredProcedure(
         databaseId,
         collectionId,
         storedProcedure.id,
-        createSprocParams
+        createSprocParams,
       );
       return rpResponse && (rpResponse.properties?.resource as StoredProcedureDefinition & Resource);
     }

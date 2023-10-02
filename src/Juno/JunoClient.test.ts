@@ -237,7 +237,7 @@ describe("Gallery", () => {
           [authorizationHeader.header]: authorizationHeader.token,
           [HttpHeaders.contentType]: "application/json",
         },
-      }
+      },
     );
   });
 
@@ -262,7 +262,7 @@ describe("Gallery", () => {
           [authorizationHeader.header]: authorizationHeader.token,
           [HttpHeaders.contentType]: "application/json",
         },
-      }
+      },
     );
   });
 
@@ -287,7 +287,7 @@ describe("Gallery", () => {
           [authorizationHeader.header]: authorizationHeader.token,
           [HttpHeaders.contentType]: "application/json",
         },
-      }
+      },
     );
   });
 
@@ -310,7 +310,7 @@ describe("Gallery", () => {
           [authorizationHeader.header]: authorizationHeader.token,
           [HttpHeaders.contentType]: "application/json",
         },
-      }
+      },
     );
   });
 
@@ -333,7 +333,7 @@ describe("Gallery", () => {
           [authorizationHeader.header]: authorizationHeader.token,
           [HttpHeaders.contentType]: "application/json",
         },
-      }
+      },
     );
   });
 
@@ -358,7 +358,7 @@ describe("Gallery", () => {
           [authorizationHeader.header]: authorizationHeader.token,
           [HttpHeaders.contentType]: "application/json",
         },
-      }
+      },
     );
   });
 
@@ -396,7 +396,7 @@ describe("Gallery", () => {
           content: JSON.parse(content),
           addLinkToNotebookViewer,
         } as IPublishNotebookRequest),
-      }
+      },
     );
   });
 });

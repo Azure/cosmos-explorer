@@ -74,7 +74,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: title,
         },
-        startKey
+        startKey,
       );
       closeSidePanel();
     } catch (error) {
@@ -90,7 +90,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
     }
   };
@@ -111,7 +111,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: title,
         },
-        startKey
+        startKey,
       );
     } catch (error) {
       const errorMessage = getErrorMessage(error);
@@ -123,7 +123,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
       setFormError("Failed to setup a container for saved queries");
       logConsoleError(`Failed to setup a container for saved queries: ${errorMessage}`);

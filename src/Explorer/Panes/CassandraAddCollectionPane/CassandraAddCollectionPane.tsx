@@ -36,7 +36,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   const [existingKeyspaceId, setExistingKeyspaceId] = useState<string>("");
   const [tableId, setTableId] = useState<string>("");
   const [userTableQuery, setUserTableQuery] = useState<string>(
-    "(userid int, name text, email text, PRIMARY KEY (userid))"
+    "(userid int, name text, email text, PRIMARY KEY (userid))",
   );
   const [isKeyspaceShared, setIsKeyspaceShared] = useState<boolean>(false);
   const [keyspaceCreateNew, setKeyspaceCreateNew] = useState<boolean>(true);
@@ -118,14 +118,14 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           userContext?.databaseAccount?.id,
           container,
           tableQuery,
-          createKeyspaceQuery
+          createKeyspaceQuery,
         );
       } else {
         await cassandraApiClient.createTableAndKeyspace(
           userContext?.databaseAccount?.properties?.cassandraEndpoint,
           userContext?.databaseAccount?.id,
           container,
-          tableQuery
+          tableQuery,
         );
       }
       container.refreshAllDatabases();

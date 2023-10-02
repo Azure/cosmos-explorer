@@ -298,7 +298,7 @@ export class D3ForceGraph implements GraphRenderer {
 
       if (this.uniqueValues.length === D3ForceGraph.MAX_COLOR_NB) {
         this.errorMsgs.push(
-          `Number of unique values for property ${key} exceeds maximum (${D3ForceGraph.MAX_COLOR_NB})`
+          `Number of unique values for property ${key} exceeds maximum (${D3ForceGraph.MAX_COLOR_NB})`,
         );
         // ignore rest of values
         break;
@@ -347,14 +347,14 @@ export class D3ForceGraph implements GraphRenderer {
             return d.id;
           })
           .distance(D3ForceGraph.FORCE_LINK_DISTANCE)
-          .strength(D3ForceGraph.FORCE_LINK_STRENGTH)
+          .strength(D3ForceGraph.FORCE_LINK_STRENGTH),
       )
       .force("charge", forceManyBody())
       .force(
         "collide",
         forceCollide(D3ForceGraph.FORCE_COLLIDE_RADIUS)
           .strength(D3ForceGraph.FORCE_COLLIDE_STRENGTH)
-          .iterations(D3ForceGraph.FORCE_COLLIDE_ITERATIONS)
+          .iterations(D3ForceGraph.FORCE_COLLIDE_ITERATIONS),
       );
   }
 
@@ -695,7 +695,7 @@ export class D3ForceGraph implements GraphRenderer {
           }) as any)
           .on("end", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
             return this.dragended(d, e);
-          }) as any)
+          }) as any),
       )
       .on("mouseover", (_: MouseEvent, d: D3Node) => {
         if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
@@ -867,7 +867,7 @@ export class D3ForceGraph implements GraphRenderer {
         select(e.target as any).classed("active", false);
       }) as any)
       .attr("visibility", (d: D3Node) =>
-        !d._pagination || d._pagination.currentPage.start !== 0 ? "visible" : "hidden"
+        !d._pagination || d._pagination.currentPage.start !== 0 ? "visible" : "hidden",
       );
     parent
       .append("rect")
@@ -921,7 +921,7 @@ export class D3ForceGraph implements GraphRenderer {
         gaugeYOffset +
           gaugeHeight / 2 +
           D3ForceGraph.PAGINATION_LINE1_Y_OFFSET_PX +
-          D3ForceGraph.PAGINATION_LINE2_Y_OFFSET_PX
+          D3ForceGraph.PAGINATION_LINE2_Y_OFFSET_PX,
       )
       .text((d: D3Node) => {
         const pageInfo = d._pagination;
@@ -1100,7 +1100,7 @@ export class D3ForceGraph implements GraphRenderer {
           default:
           case NeighborType.BOTH:
             return (this.graphDataWrapper.getSourcesForId(nodeId) || []).concat(
-              this.graphDataWrapper.getTargetsForId(nodeId)
+              this.graphDataWrapper.getTargetsForId(nodeId),
             );
         }
       })(this.igraphConfig.showNeighborType);

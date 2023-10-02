@@ -271,7 +271,7 @@ export class HashRoutePrefixes {
     databaseId: string,
     collectionId: string,
     sprocId: string,
-    stripFirstSlash: boolean = true
+    stripFirstSlash: boolean = true,
   ): string {
     const transformedDatabasePrefix: string = this.sprocs.replace("{db_id}", databaseId);
 

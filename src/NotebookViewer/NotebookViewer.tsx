@@ -53,7 +53,7 @@ const render = (
   hideInputs?: boolean,
   hidePrompts?: boolean,
   galleryItem?: IGalleryItem,
-  onBackClick?: () => void
+  onBackClick?: () => void,
 ) => {
   const props: NotebookViewerComponentProps = {
     junoClient: galleryItem ? new JunoClient() : undefined,

@@ -63,10 +63,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
   const [entityAttributeProperty, setEntityAttributeProperty] = useState<string>("");
-  const [
-    isEntityValuePanelOpen,
-    { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
-  ] = useBoolean(false);
+  const [isEntityValuePanelOpen, { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse }] =
+    useBoolean(false);
   const [formError, setFormError] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
@@ -197,7 +195,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   const entityTypeChange = (
     _event: React.FormEvent<HTMLDivElement>,
     selectedType: IDropdownOption,
-    indexOfEntity: number
+    indexOfEntity: number,
   ): void => {
     const entityValuePlaceholder: string = getEntityValuePlaceholder(selectedType.key);
     const cloneEntities: EntityRowType[] = [...entities];

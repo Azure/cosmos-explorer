@@ -83,7 +83,7 @@ export default class StoredProcedure {
       {
         collection: source,
         container: source.container,
-      }
+      },
     );
 
     useTabs.getState().activateNewTab(storedProcedureTab);
@@ -105,7 +105,7 @@ export default class StoredProcedure {
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.StoredProcedures,
-        (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+        (tab: TabsBase) => tab.node && tab.node.rid === this.rid,
       ) as NewStoredProcedureTab[];
     let storedProcedureTab: NewStoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
 
@@ -132,7 +132,7 @@ export default class StoredProcedure {
         {
           collection: this.collection,
           container: this.container,
-        }
+        },
       );
 
       useTabs.getState().activateNewTab(storedProcedureTab);
@@ -149,11 +149,11 @@ export default class StoredProcedure {
             useTabs.getState().closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
             this.collection.children.remove(this);
           },
-          (reason) => {}
+          (reason) => {},
         );
       },
       "Cancel",
-      undefined
+      undefined,
     );
   }
 
@@ -162,7 +162,7 @@ export default class StoredProcedure {
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.StoredProcedures,
-        (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+        (tab: TabsBase) => tab.node && tab.node.rid === this.rid,
       ) as NewStoredProcedureTab[];
     const sprocTab: NewStoredProcedureTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
     sprocTab.isExecuting(true);
@@ -174,7 +174,7 @@ export default class StoredProcedure {
           },
           (error) => {
             sprocTab.onExecuteSprocsError(getErrorMessage(error));
-          }
+          },
         )
         .finally(() => {
           sprocTab.isExecuting(false);

@@ -66,7 +66,7 @@ const logFailureToTelemetry = (state: CdbAppState, title: string, error?: string
  */
 const addInitialCodeCellEpic = (
   action$: Observable<actions.FetchContentFulfilled>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<{} | actions.CreateCellBelow> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FULFILLED),
@@ -86,12 +86,12 @@ const addInitialCodeCellEpic = (
           actions.createCellAppend({
             cellType: "code",
             contentRef,
-          })
+          }),
         );
       }
 
       return EMPTY;
-    })
+    }),
   );
 };
 
@@ -126,7 +126,7 @@ export const acquireKernelInfoEpic = (action$: Observable<actions.NewKernelActio
         },
       } = action;
       return acquireKernelInfo(channels, kernelRef, contentRef);
-    })
+    }),
   );
 };
 
@@ -183,7 +183,7 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
             kernelRef,
             contentRef,
             error: new Error(
-              "The kernel that you are attempting to launch does not support the latest version (v5) of the messaging protocol."
+              "The kernel that you are attempting to launch does not support the latest version (v5) of the messaging protocol.",
             ),
           }),
         ];
@@ -203,7 +203,7 @@ function acquireKernelInfo(channels: Channels, kernelRef: KernelRef, contentRef:
       }
 
       return of(...result);
-    })
+    }),
   );
 
   return Observable.create((observer: Observer<any>) => {
@@ -246,13 +246,13 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
         }
       },
       (e: Error) => wsSubject.error(e),
-      () => wsSubject.complete()
+      () => wsSubject.complete(),
     ), // Subscriber
     // Subject.create takes a subscriber and an observable. We're only
     // overriding the subscriber here so we pass the subject on as an
     // observable as the second argument to Subject.create (since it's
     // _also_ an observable)
-    wsSubject
+    wsSubject,
   );
 };
 
@@ -268,7 +268,7 @@ const connect = (serverConfig: NotebookServiceConfig, kernelID: string, sessionI
  */
 export const launchWebSocketKernelEpic = (
   action$: Observable<actions.LaunchKernelByNameAction>,
-  state$: StateObservable<CdbAppState>
+  state$: StateObservable<CdbAppState>,
 ) => {
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_BY_NAME),
@@ -305,10 +305,10 @@ export const launchWebSocketKernelEpic = (
           return of(
             actions.launchKernelFailed({
               error: new Error(
-                "Unable to launch kernel: no kernelspec name specified to launch and no default kernelspecs"
+                "Unable to launch kernel: no kernelspec name specified to launch and no default kernelspecs",
               ),
               contentRef,
-            })
+            }),
           );
         }
       } else if (currentKernelspecs && !currentKernelspecs.byName.get(kernelSpecToLaunch)) {
@@ -316,7 +316,7 @@ export const launchWebSocketKernelEpic = (
 
         // Find a kernel that best matches the kernel name
         const match = currentKernelspecs.byName.find(
-          (value) => value.name.toLowerCase().indexOf(kernelSpecName.toLowerCase()) !== -1
+          (value) => value.name.toLowerCase().indexOf(kernelSpecName.toLowerCase()) !== -1,
         );
         if (match) {
           kernelSpecToLaunch = match.name;
@@ -362,14 +362,14 @@ export const launchWebSocketKernelEpic = (
               kernelRef,
               contentRef: action.payload.contentRef,
               selectNextKernel: true,
-            })
+            }),
           );
         }),
         catchError((error) => {
           return of(actions.launchKernelFailed({ error }));
-        })
+        }),
       );
-    })
+    }),
   );
 };
 /**
@@ -379,7 +379,7 @@ export const launchWebSocketKernelEpic = (
  */
 export const restartWebSocketKernelEpic = (
   action$: Observable<actions.RestartKernel | actions.NewKernelAction>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ) =>
   action$.pipe(
     ofType(actions.RESTART_KERNEL),
@@ -398,7 +398,7 @@ export const restartWebSocketKernelEpic = (
             error: new Error("Can't execute restart without kernel ref."),
             kernelRef: "none provided",
             contentRef,
-          })
+          }),
         );
       }
 
@@ -409,7 +409,7 @@ export const restartWebSocketKernelEpic = (
             error: new Error("Can't restart a kernel with no Jupyter host."),
             kernelRef,
             contentRef,
-          })
+          }),
         );
       }
 
@@ -420,7 +420,7 @@ export const restartWebSocketKernelEpic = (
             error: new Error("Can't restart a kernel that does not exist."),
             kernelRef,
             contentRef,
-          })
+          }),
         );
       }
 
@@ -430,7 +430,7 @@ export const restartWebSocketKernelEpic = (
             error: new Error("Can only restart Websocket kernels via API."),
             kernelRef,
             contentRef,
-          })
+          }),
         );
       }
 
@@ -471,13 +471,13 @@ export const restartWebSocketKernelEpic = (
               error,
               kernelRef: newKernelRef,
               contentRef,
-            })
+            }),
           );
-        })
+        }),
       );
 
       return merge(of(kill, relaunch), awaitKernelReady);
-    })
+    }),
   );
 
 /**
@@ -489,7 +489,7 @@ export const restartWebSocketKernelEpic = (
  */
 const changeWebSocketKernelEpic = (
   action$: Observable<actions.ChangeKernelByName>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ) => {
   return action$.pipe(
     ofType(actions.CHANGE_KERNEL_BY_NAME),
@@ -552,15 +552,15 @@ const changeWebSocketKernelEpic = (
                   kernelRef,
                   contentRef: action.payload.contentRef,
                   selectNextKernel: true,
-                })
+                }),
               );
             }),
-            catchError((error) => of(actions.launchKernelFailed({ error, kernelRef, contentRef })))
+            catchError((error) => of(actions.launchKernelFailed({ error, kernelRef, contentRef }))),
           );
         }),
-        catchError((error) => of(actions.launchKernelFailed({ error, kernelRef, contentRef })))
+        catchError((error) => of(actions.launchKernelFailed({ error, kernelRef, contentRef }))),
       );
-    })
+    }),
   );
 };
 
@@ -571,7 +571,7 @@ const changeWebSocketKernelEpic = (
  */
 const focusInitialCodeCellEpic = (
   action$: Observable<actions.CreateCellAppend>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<{} | actions.FocusCell> => {
   return action$.pipe(
     ofType(actions.CREATE_CELL_APPEND),
@@ -593,12 +593,12 @@ const focusInitialCodeCellEpic = (
           actions.focusCell({
             id,
             contentRef,
-          })
+          }),
         );
       }
 
       return EMPTY;
-    })
+    }),
   );
 };
 
@@ -615,7 +615,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
       actions.RESTART_KERNEL_FAILED,
       actions.SAVE_FULFILLED,
       actions.SAVE_FAILED,
-      actions.FETCH_CONTENT_FAILED
+      actions.FETCH_CONTENT_FAILED,
     ),
     mergeMap((action) => {
       switch (action.type) {
@@ -648,7 +648,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
         }
       }
       return EMPTY;
-    })
+    }),
   );
 };
 
@@ -659,7 +659,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
  */
 const handleKernelConnectionLostEpic = (
   action$: Observable<actions.UpdateDisplayFailed>,
-  state$: StateObservable<CdbAppState>
+  state$: StateObservable<CdbAppState>,
 ): Observable<CdbActions.UpdateKernelRestartDelayAction | actions.RestartKernel | {}> => {
   return action$.pipe(
     ofType(actions.UPDATE_DISPLAY_FAILED),
@@ -702,12 +702,12 @@ const handleKernelConnectionLostEpic = (
           retryWhen((errors) => {
             return errors.pipe(
               delayWhen(() => timer(Constants.Notebook.heartbeatDelayMs)),
-              tap(() => console.log("retrying...")) // TODO: Send new action?
+              tap(() => console.log("retrying...")), // TODO: Send new action?
             );
-          })
-        )
+          }),
+        ),
       );
-    })
+    }),
   );
 };
 
@@ -718,7 +718,7 @@ const handleKernelConnectionLostEpic = (
  */
 export const cleanKernelOnConnectionLostEpic = (
   action$: Observable<actions.UpdateDisplayFailed>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<actions.KillKernelSuccessful> => {
   return action$.pipe(
     ofType(actions.UPDATE_DISPLAY_FAILED),
@@ -728,9 +728,9 @@ export const cleanKernelOnConnectionLostEpic = (
       return of(
         actions.killKernelSuccessful({
           kernelRef,
-        })
+        }),
       );
-    })
+    }),
   );
 };
 
@@ -741,7 +741,7 @@ export const cleanKernelOnConnectionLostEpic = (
  */
 const executeFocusedCellAndFocusNextEpic = (
   action$: Observable<CdbActions.ExecuteFocusedCellAndFocusNextAction>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<{} | actions.FocusNextCellEditor> => {
   return action$.pipe(
     ofType(CdbActions.EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT),
@@ -749,9 +749,9 @@ const executeFocusedCellAndFocusNextEpic = (
       const contentRef = action.payload.contentRef;
       return concat(
         of(actions.executeFocusedCell({ contentRef })),
-        of(actions.focusNextCell({ contentRef, createCellIfUndefined: false }))
+        of(actions.focusNextCell({ contentRef, createCellIfUndefined: false })),
       );
-    })
+    }),
   );
 };
 
@@ -762,7 +762,7 @@ const executeFocusedCellAndFocusNextEpic = (
  */
 const closeUnsupportedMimetypesEpic = (
   action$: Observable<actions.FetchContentFulfilled>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<{}> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FULFILLED),
@@ -774,14 +774,15 @@ const closeUnsupportedMimetypesEpic = (
         useTabs
           .getState()
           .closeTabsByComparator(
-            (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+            (tab: any) =>
+              (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath),
           );
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
         useDialog.getState().showOkModalDialog("File cannot be rendered", msg);
         logConsoleError(msg);
       }
       return EMPTY;
-    })
+    }),
   );
 };
 
@@ -792,7 +793,7 @@ const closeUnsupportedMimetypesEpic = (
  */
 const closeContentFailedToFetchEpic = (
   action$: Observable<actions.FetchContentFailed>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<{}> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FAILED),
@@ -802,19 +803,19 @@ const closeContentFailedToFetchEpic = (
       useTabs
         .getState()
         .closeTabsByComparator(
-          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath),
         );
       const msg = `Failed to load file: ${filepath}.`;
       useDialog.getState().showOkModalDialog("Failure to load", msg);
       logConsoleError(msg);
       return EMPTY;
-    })
+    }),
   );
 };
 
 const traceNotebookTelemetryEpic = (
   action$: Observable<cdbActions.TraceNotebookTelemetryAction>,
-  state$: StateObservable<CdbAppState>
+  state$: StateObservable<CdbAppState>,
 ): Observable<{}> => {
   return action$.pipe(
     ofType(cdbActions.TRACE_NOTEBOOK_TELEMETRY),
@@ -828,7 +829,7 @@ const traceNotebookTelemetryEpic = (
         dataExplorerArea: Areas.Notebook,
       });
       return EMPTY;
-    })
+    }),
   );
 };
 
@@ -840,7 +841,7 @@ const traceNotebookTelemetryEpic = (
  */
 const traceNotebookInfoEpic = (
   action$: Observable<actions.FetchContentFulfilled>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<{} | cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FULFILLED),
@@ -880,9 +881,9 @@ const traceNotebookInfoEpic = (
           action: TelemetryAction.NotebooksFetched,
           actionModifier: ActionModifiers.Mark,
           data: dataToLog,
-        })
+        }),
       );
-    })
+    }),
   );
 };
 
@@ -893,7 +894,7 @@ const traceNotebookInfoEpic = (
  */
 const traceNotebookKernelEpic = (
   action$: Observable<AnyAction>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
     ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
@@ -905,15 +906,15 @@ const traceNotebookKernelEpic = (
           data: {
             kernelSpecName: action.payload.kernel.name,
           },
-        })
+        }),
       );
-    })
+    }),
   );
 };
 
 const resetCellStatusOnExecuteCanceledEpic = (
   action$: Observable<actions.ExecuteCanceled>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<actions.UpdateCellStatus> => {
   return action$.pipe(
     ofType(actions.EXECUTE_CANCELED),
@@ -938,9 +939,9 @@ const resetCellStatusOnExecuteCanceledEpic = (
       return from(busyCellIds).pipe(
         map((busyCellId) => {
           return actions.updateCellStatus({ id: busyCellId, contentRef, status: undefined });
-        })
+        }),
       );
-    })
+    }),
   );
 };
 
@@ -956,7 +957,7 @@ const { selector: autoSaveInterval } = defineConfigOption({
  */
 export function autoSaveCurrentContentEpic(
   action$: Observable<Action>,
-  state$: StateObservable<AppState>
+  state$: StateObservable<AppState>,
 ): Observable<actions.Save> {
   return state$.pipe(
     map((state) => autoSaveInterval(state)),
@@ -971,9 +972,9 @@ export function autoSaveCurrentContentEpic(
              * Only save contents that are files or notebooks with
              * a filepath already set.
              */
-            (content) => (content.type === "file" || content.type === "notebook") && content.filepath !== ""
+            (content) => (content.type === "file" || content.type === "notebook") && content.filepath !== "",
           )
-          .keys()
+          .keys(),
       );
     }),
     filter((contentRef: ContentRef) => {
@@ -988,7 +989,7 @@ export function autoSaveCurrentContentEpic(
       }
       return false;
     }),
-    map((contentRef: ContentRef) => actions.save({ contentRef }))
+    map((contentRef: ContentRef) => actions.save({ contentRef })),
   );
 }
 

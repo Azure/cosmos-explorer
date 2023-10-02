@@ -191,7 +191,7 @@ export class Heatmap {
       Heatmap.elementId,
       this._getChartSettings(),
       this._getLayoutSettings(),
-      this._getChartDisplaySettings()
+      this._getChartDisplaySettings(),
     );
     const plotDiv: any = document.getElementById(Heatmap.elementId);
     plotDiv.on("plotly_click", (data: any) => {

@@ -1001,7 +1001,7 @@ interface JQuery {
     date: Date,
     onSelect?: () => void,
     settings?: JQueryUI.DatepickerOptions,
-    pos?: number[]
+    pos?: number[],
   ): JQuery;
   /**
    * Opens the datepicker in a dialog box.
@@ -1017,7 +1017,7 @@ interface JQuery {
     date: Date,
     onSelect?: () => void,
     settings?: JQueryUI.DatepickerOptions,
-    pos?: MouseEvent
+    pos?: MouseEvent,
   ): JQuery;
   /**
    * Opens the datepicker in a dialog box.
@@ -1033,7 +1033,7 @@ interface JQuery {
     date: string,
     onSelect?: () => void,
     settings?: JQueryUI.DatepickerOptions,
-    pos?: number[]
+    pos?: number[],
   ): JQuery;
   /**
    * Opens the datepicker in a dialog box.
@@ -1049,7 +1049,7 @@ interface JQuery {
     date: string,
     onSelect?: () => void,
     settings?: JQueryUI.DatepickerOptions,
-    pos?: MouseEvent
+    pos?: MouseEvent,
   ): JQuery;
   /**
    * Returns the current date for the datepicker or null if no date has been selected.
@@ -1199,7 +1199,7 @@ interface JQuery {
   datepicker(
     methodName: "option",
     optionName: "beforeShow",
-    beforeShowValue: (input: Element, inst: any) => JQueryUI.DatepickerOptions
+    beforeShowValue: (input: Element, inst: any) => JQueryUI.DatepickerOptions,
   ): JQuery;
 
   /**
@@ -1716,14 +1716,14 @@ interface JQuery {
     addClassName: string,
     duration?: number,
     easing?: string,
-    complete?: Function
+    complete?: Function,
   ): JQuery;
   switchClass(
     removeClassName: string,
     addClassName: string,
     duration?: string,
     easing?: string,
-    complete?: Function
+    complete?: Function,
   ): JQuery;
 
   toggleClass(className: string, duration?: number, easing?: string, complete?: Function): JQuery;

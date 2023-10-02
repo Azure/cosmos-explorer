@@ -16,21 +16,21 @@ export default function configureStore(
   contentProvider: IContentProvider,
   onTraceFailure: (title: string, message: string) => void,
   customMiddlewares?: Middleware<{}, any, Dispatch<AnyAction>>[],
-  autoStartKernelOnNotebookOpen?: boolean
+  autoStartKernelOnNotebookOpen?: boolean,
 ): Store<CdbAppState, AnyAction> {
   /**
    * Catches errors in reducers
    */
-  const catchErrorMiddleware: Middleware = <D extends Dispatch<AnyAction>, S extends AppState>({
-    dispatch,
-    getState,
-  }: MiddlewareAPI<D, S>) => (next: Dispatch<AnyAction>) => <A extends AnyAction>(action: A): any => {
-    try {
-      next(action);
-    } catch (error) {
-      traceFailure("Reducer failure", error);
-    }
-  };
+  const catchErrorMiddleware: Middleware =
+    <D extends Dispatch<AnyAction>, S extends AppState>({ dispatch, getState }: MiddlewareAPI<D, S>) =>
+    (next: Dispatch<AnyAction>) =>
+    <A extends AnyAction>(action: A): any => {
+      try {
+        next(action);
+      } catch (error) {
+        traceFailure("Reducer failure", error);
+      }
+    };
 
   const protect = (epic: Epic) => {
     return (action$: Observable<any>, state$: any, dependencies: any) =>
@@ -38,7 +38,7 @@ export default function configureStore(
         catchError((error, caught) => {
           traceFailure("Epic failure", error);
           return caught;
-        })
+        }),
       );
   };
 

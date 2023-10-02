@@ -34,7 +34,7 @@ export const VcoreMongoQuickstartTab: React.FC<VCoreMongoQuickstartTabProps> = (
       (rule) =>
         rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
         (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
-      setIsAllPublicIPAddressEnabled
+      setIsAllPublicIPAddressEnabled,
     );
   });
 

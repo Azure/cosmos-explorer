@@ -88,7 +88,7 @@ export const SchemaAnalyzerHeader = ({
 
 const onSampleSizeWrapDefaultLabelRenderer = (
   props: ITextFieldProps,
-  defaultRender: IRenderFunction<ITextFieldProps>
+  defaultRender: IRenderFunction<ITextFieldProps>,
 ): JSX.Element => {
   return (
     <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 4 }}>

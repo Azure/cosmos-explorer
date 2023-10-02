@@ -144,7 +144,7 @@ export const cellTarget = {
 
 function collectSource(
   connect: DragSourceConnector,
-  monitor: DragSourceMonitor
+  monitor: DragSourceMonitor,
 ): {
   connectDragSource: ConnectDragSource;
   isDragging: boolean;
@@ -159,7 +159,7 @@ function collectSource(
 
 function collectTarget(
   connect: DropTargetConnector,
-  monitor: DropTargetMonitor
+  monitor: DropTargetMonitor,
 ): {
   connectDropTarget: ConnectDropTarget;
   isOver: boolean;
@@ -210,12 +210,12 @@ export class DraggableCellView extends React.Component<Props & DnDSourceProps & 
               // Same thing with connectDragSource... It also needs a React Element that matches a DOM element
               <div>
                 <DragHandle onClick={this.selectCell} />
-              </div>
+              </div>,
             )}
             {this.props.children}
           </DragHandleAnchor>
         </DragArea>
-      </div>
+      </div>,
     );
   }
 }

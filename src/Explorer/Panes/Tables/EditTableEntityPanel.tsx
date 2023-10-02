@@ -66,10 +66,8 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   const [formError, setFormError] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
-  const [
-    isEntityValuePanelOpen,
-    { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
-  ] = useBoolean(false);
+  const [isEntityValuePanelOpen, { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse }] =
+    useBoolean(false);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -213,7 +211,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
       const newEntity: Entities.ITableEntity = await newTableDataClient.updateDocument(
         queryTablesTab.collection,
         originalDocumentData,
-        entity
+        entity,
       );
       await tableEntityListViewModel.updateCachedEntity(newEntity);
       if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
@@ -298,7 +296,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   const entityTypeChange = (
     _event: React.FormEvent<HTMLDivElement>,
     selectedType: IDropdownOption,
-    indexOfEntity: number
+    indexOfEntity: number,
   ): void => {
     const entityValuePlaceholder = getEntityValuePlaceholder(selectedType.key);
     const cloneEntities = [...entities];

@@ -66,7 +66,7 @@ export default class ConflictsTab extends TabsBase {
     this.documentContentsGridId = `conflictsContentsGrid${this.tabId}`;
     this.documentContentsContainerId = `conflictsContentsContainer${this.tabId}`;
     this.editorState = ko.observable<ViewModels.DocumentExplorerState>(
-      ViewModels.DocumentExplorerState.noDocumentSelected
+      ViewModels.DocumentExplorerState.noDocumentSelected,
     );
     this.selectedConflictId = ko.observable<ConflictId>();
     this.selectedConflictContent = editable.observable<any>("");
@@ -100,7 +100,7 @@ export default class ConflictsTab extends TabsBase {
 
     this.accessibleDocumentList = new AccessibleVerticalList(this.conflictIds());
     this.accessibleDocumentList.setOnSelect(
-      (selectedDocument: ConflictId) => selectedDocument && selectedDocument.click()
+      (selectedDocument: ConflictId) => selectedDocument && selectedDocument.click(),
     );
     this.selectedConflictId.subscribe((newSelectedDocumentId: ConflictId) => {
       this.accessibleDocumentList.updateCurrentItem(newSelectedDocumentId);
@@ -110,7 +110,7 @@ export default class ConflictsTab extends TabsBase {
     this.conflictIds.subscribe((newDocuments: ConflictId[]) => {
       this.accessibleDocumentList.updateItemList(newDocuments);
       this.dataContentsGridScrollHeight(
-        newDocuments.length * DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px"
+        newDocuments.length * DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px",
       );
     });
 
@@ -262,7 +262,7 @@ export default class ConflictsTab extends TabsBase {
           "OK",
           async () => await this.resolveConflict(),
           "Cancel",
-          undefined
+          undefined,
         );
     } else {
       await this.resolveConflict();
@@ -290,7 +290,7 @@ export default class ConflictsTab extends TabsBase {
         await updateDocument(
           this.collection,
           selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty]),
-          documentContent
+          documentContent,
         );
       }
 
@@ -308,7 +308,7 @@ export default class ConflictsTab extends TabsBase {
 
         await deleteDocument(
           this.collection,
-          selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty])
+          selectedConflict.buildDocumentIdFromConflict(documentContent[selectedConflict.partitionKeyProperty]),
         );
       }
 
@@ -327,7 +327,7 @@ export default class ConflictsTab extends TabsBase {
           conflictOperationType: selectedConflict.operationType,
           conflictResourceId: selectedConflict.resourceId,
         },
-        startKey
+        startKey,
       );
     } catch (error) {
       this.isExecutionError(true);
@@ -344,7 +344,7 @@ export default class ConflictsTab extends TabsBase {
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
     } finally {
       this.isExecuting(false);
@@ -381,7 +381,7 @@ export default class ConflictsTab extends TabsBase {
           conflictOperationType: selectedConflict.operationType,
           conflictResourceId: selectedConflict.resourceId,
         },
-        startKey
+        startKey,
       );
     } catch (error) {
       this.isExecutionError(true);
@@ -398,7 +398,7 @@ export default class ConflictsTab extends TabsBase {
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
     } finally {
       this.isExecuting(false);
@@ -454,7 +454,7 @@ export default class ConflictsTab extends TabsBase {
               error: getErrorMessage(error),
               errorStack: getErrorStack(error),
             },
-            this.onLoadStartKey
+            this.onLoadStartKey,
           );
           this.onLoadStartKey = null;
         }
@@ -501,7 +501,7 @@ export default class ConflictsTab extends TabsBase {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
               },
-              this.onLoadStartKey
+              this.onLoadStartKey,
             );
             this.onLoadStartKey = null;
           }
@@ -520,11 +520,11 @@ export default class ConflictsTab extends TabsBase {
                 error: getErrorMessage(error),
                 errorStack: getErrorStack(error),
               },
-              this.onLoadStartKey
+              this.onLoadStartKey,
             );
             this.onLoadStartKey = null;
           }
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   }
@@ -564,7 +564,7 @@ export default class ConflictsTab extends TabsBase {
   public initDocumentEditorForReplace(
     documentId: ConflictId,
     conflictContent: any,
-    currentContent: any
+    currentContent: any,
   ): Q.Promise<any> {
     if (documentId) {
       currentContent = ConflictsTab.removeSystemProperties(currentContent);
@@ -654,7 +654,7 @@ export default class ConflictsTab extends TabsBase {
         this.discardButton.enabled,
         this.deleteButton.visible,
         this.deleteButton.enabled,
-      ])
+      ]),
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();
   }

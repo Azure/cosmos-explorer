@@ -66,7 +66,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
   public componentDidUpdate(prevProps: QueriesGridComponentProps, prevState: QueriesGridComponentState): void {
     this.selection.setItems(
       this.state.filteredResults,
-      !_.isEqual(prevState.filteredResults, this.state.filteredResults)
+      !_.isEqual(prevState.filteredResults, this.state.filteredResults),
     );
     this.queryFilter && this.queryFilter.focus();
     const querySetupCompleted: boolean = !prevProps.saveQueryEnabled && this.props.saveQueryEnabled;
@@ -159,7 +159,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
     if (query) {
       const filteredQueries: Query[] = this.state.queries.filter(
         (savedQuery: Query) =>
-          savedQuery.queryName.indexOf(query) > -1 || savedQuery.queryName.toLowerCase().indexOf(query) > -1
+          savedQuery.queryName.indexOf(query) > -1 || savedQuery.queryName.toLowerCase().indexOf(query) > -1,
       );
       this.setState({
         filteredResults: filteredQueries,
@@ -240,7 +240,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                               dataExplorerArea: Constants.Areas.ContextualPane,
                               paneTitle: title,
                             },
-                            startKey
+                            startKey,
                           );
                         } catch (error) {
                           TelemetryProcessor.traceFailure(
@@ -251,13 +251,13 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                               error: getErrorMessage(error),
                               errorStack: getErrorStack(error),
                             },
-                            startKey
+                            startKey,
                           );
                         }
                         await this.fetchSavedQueries(); // get latest state
                       },
                       "Cancel",
-                      undefined
+                      undefined,
                     );
                   },
                 },

@@ -116,11 +116,11 @@ export default class Database implements ViewModels.Database {
               error: errorMessage,
               errorStack: getErrorStack(error),
             },
-            startKey
+            startKey,
           );
           logConsoleError(`Error while fetching database settings for database ${this.id()}: ${errorMessage}`);
           throw error;
-        }
+        },
       );
     } else {
       pendingNotificationsPromise.then(
@@ -131,7 +131,7 @@ export default class Database implements ViewModels.Database {
         () => {
           settingsTab.pendingNotification(undefined);
           useTabs.getState().activateTab(settingsTab);
-        }
+        },
       );
     }
   };
@@ -180,7 +180,7 @@ export default class Database implements ViewModels.Database {
     if (containerPaginationEnabled) {
       const collectionsWithPagination: DataModels.CollectionsWithPagination = await readCollectionsWithPagination(
         this.id(),
-        this.collectionsContinuationToken
+        this.collectionsContinuationToken,
       );
 
       if (collectionsWithPagination.collections?.length === Constants.Queries.containersPerPage) {
@@ -240,7 +240,7 @@ export default class Database implements ViewModels.Database {
       .getState()
       .openSidePanel(
         "New " + getCollectionName(),
-        <AddCollectionPanel explorer={database.container} databaseId={database.id()} />
+        <AddCollectionPanel explorer={database.container} databaseId={database.id()} />,
       );
   }
 
@@ -288,32 +288,33 @@ export default class Database implements ViewModels.Database {
           databaseName: this.id(),
           collectionName: this.id(),
         }),
-        "Settings tree node"
+        "Settings tree node",
       );
 
       return undefined;
     }
   }
 
-  private getDeltaCollections(
-    updatedCollectionsList: DataModels.Collection[]
-  ): { toAdd: DataModels.Collection[]; toDelete: Collection[] } {
+  private getDeltaCollections(updatedCollectionsList: DataModels.Collection[]): {
+    toAdd: DataModels.Collection[];
+    toDelete: Collection[];
+  } {
     const collectionsToAdd: DataModels.Collection[] = _.filter(
       updatedCollectionsList,
       (collection: DataModels.Collection) => {
         const collectionExists = _.some(
           this.collections(),
-          (existingCollection: Collection) => existingCollection.id() === collection.id
+          (existingCollection: Collection) => existingCollection.id() === collection.id,
         );
         return !collectionExists;
-      }
+      },
     );
 
     const collectionsToDelete: Collection[] = [];
     ko.utils.arrayForEach(this.collections(), (collection: Collection) => {
       const collectionPresentInUpdatedList = _.some(
         updatedCollectionsList,
-        (coll: DataModels.Collection) => coll.id === collection.id()
+        (coll: DataModels.Collection) => coll.id === collection.id(),
       );
       if (!collectionPresentInUpdatedList) {
         collectionsToDelete.push(collection);
@@ -327,7 +328,7 @@ export default class Database implements ViewModels.Database {
     this.collections(
       this.collections()
         .concat(collections)
-        .sort((collection1, collection2) => collection1.id().localeCompare(collection2.id()))
+        .sort((collection1, collection2) => collection1.id().localeCompare(collection2.id())),
     );
   }
 
@@ -368,7 +369,7 @@ export default class Database implements ViewModels.Database {
             userContext.resourceGroup,
             userContext.databaseAccount.name,
             this.id(),
-            collection.id
+            collection.id,
           );
 
           if (response.status >= 404) {

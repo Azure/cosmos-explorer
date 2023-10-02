@@ -6,10 +6,10 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export const bulkCreateDocument = async (
   collection: CollectionBase,
-  documents: JSONObject[]
+  documents: JSONObject[],
 ): Promise<OperationResponse[]> => {
   const clearMessage = logConsoleProgress(
-    `Executing ${documents.length} bulk operations for container ${collection.id()}`
+    `Executing ${documents.length} bulk operations for container ${collection.id()}`,
   );
 
   try {
@@ -18,7 +18,7 @@ export const bulkCreateDocument = async (
       .container(collection.id())
       .items.bulk(
         documents.map((doc) => ({ operationType: "Create", resourceBody: doc })),
-        { continueOnError: true }
+        { continueOnError: true },
       );
 
     const successCount = response.filter((r) => r.statusCode === 201).length;
@@ -27,7 +27,7 @@ export const bulkCreateDocument = async (
     logConsoleInfo(
       `${
         documents.length
-      } operations completed for container ${collection.id()}. ${successCount} operations succeeded. ${throttledCount} operations throttled`
+      } operations completed for container ${collection.id()}. ${successCount} operations succeeded. ${throttledCount} operations throttled`,
     );
     return response;
   } catch (error) {

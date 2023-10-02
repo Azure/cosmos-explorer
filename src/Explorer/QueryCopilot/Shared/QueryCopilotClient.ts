@@ -165,7 +165,7 @@ export const OnExecuteQueryClick = async (): Promise<void> => {
 
 export const QueryDocumentsPerPage = async (
   firstItemIndex: number,
-  queryIterator: MinimalQueryIterator
+  queryIterator: MinimalQueryIterator,
 ): Promise<void> => {
   try {
     useQueryCopilot.getState().setIsExecuting(true);
@@ -173,7 +173,8 @@ export const QueryDocumentsPerPage = async (
     useTabs.getState().setIsQueryErrorThrown(false);
     const queryResults: QueryResults = await queryPagesUntilContentPresent(
       firstItemIndex,
-      async (firstItemIndex: number) => queryDocumentsPage(QueryCopilotSampleContainerId, queryIterator, firstItemIndex)
+      async (firstItemIndex: number) =>
+        queryDocumentsPage(QueryCopilotSampleContainerId, queryIterator, firstItemIndex),
     );
 
     useQueryCopilot.getState().setQueryResults(queryResults);

@@ -80,7 +80,7 @@ describe("Add Schema", () => {
       userContext.resourceGroup,
       userContext.databaseAccount.name,
       database.id(),
-      collection.id
+      collection.id,
     );
   });
 });

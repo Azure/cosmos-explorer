@@ -59,7 +59,7 @@ export class NotificationConsoleComponent extends React.Component<
 
   public componentDidUpdate(
     prevProps: NotificationConsoleComponentProps,
-    prevState: NotificationConsoleComponentState
+    prevState: NotificationConsoleComponentState,
   ): void {
     const currentHeaderStatus = NotificationConsoleComponent.extractHeaderStatus(this.props.consoleData);
 
@@ -87,12 +87,14 @@ export class NotificationConsoleComponent extends React.Component<
 
   public render(): JSX.Element {
     const numInProgress = this.state.allConsoleData.filter(
-      (data: ConsoleData) => data.type === ConsoleDataType.InProgress
+      (data: ConsoleData) => data.type === ConsoleDataType.InProgress,
     ).length;
-    const numErroredItems = this.state.allConsoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Error)
-      .length;
-    const numInfoItems = this.state.allConsoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Info)
-      .length;
+    const numErroredItems = this.state.allConsoleData.filter(
+      (data: ConsoleData) => data.type === ConsoleDataType.Error,
+    ).length;
+    const numInfoItems = this.state.allConsoleData.filter(
+      (data: ConsoleData) => data.type === ConsoleDataType.Info,
+    ).length;
 
     return (
       <div className="notificationConsoleContainer">
@@ -246,7 +248,7 @@ export class NotificationConsoleComponent extends React.Component<
     this.setState({ headerStatus: statusMessage });
     this.headerTimeoutId = window.setTimeout(
       () => this.setState({ headerStatus: "" }),
-      ClientDefaults.errorNotificationTimeoutMs
+      ClientDefaults.errorNotificationTimeoutMs,
     );
   }
 
@@ -272,7 +274,7 @@ export class NotificationConsoleComponent extends React.Component<
     ) {
       const allConsoleData = this.state.allConsoleData.filter(
         (data: ConsoleData) =>
-          !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted)
+          !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted),
       );
       this.setState({ allConsoleData });
     }
@@ -312,7 +314,7 @@ export const NotificationConsole: React.FC = () => {
   const isExpanded = useNotificationConsole((state) => state.isExpanded);
   const consoleData = useNotificationConsole((state) => state.consoleData);
   const inProgressConsoleDataIdToBeDeleted = useNotificationConsole(
-    (state) => state.inProgressConsoleDataIdToBeDeleted
+    (state) => state.inProgressConsoleDataIdToBeDeleted,
   );
   // TODO Refactor NotificationConsoleComponent into a functional component and remove this wrapper
   // This component only exists so we can use hooks and pass them down to a non-functional component

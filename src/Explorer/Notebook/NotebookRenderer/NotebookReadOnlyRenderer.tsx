@@ -108,7 +108,7 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
           actions.addTransform({
             mediaType: transform.MIMETYPE,
             component: transform,
-          })
+          }),
         );
       },
     };
