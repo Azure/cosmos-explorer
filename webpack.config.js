@@ -231,6 +231,11 @@ module.exports = function (_env = {}, argv = {}) {
       modules: [path.resolve(__dirname, "src"), "node_modules"],
       alias: {
         process: "process/browser",
+        "/sort_both.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_both.png'),
+        "/sort_asc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc.png'),
+        "/sort_desc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc.png'),
+        "/sort_asc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc_disabled.png'),
+        "/sort_desc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc_disabled.png'),
       },
 
       fallback: {
@@ -239,13 +244,6 @@ module.exports = function (_env = {}, argv = {}) {
         querystring: require.resolve("querystring-es3"),
       },
       extensions: [".tsx", ".ts", ".js"],
-      alias: {
-        "/sort_both.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_both.png'),
-        "/sort_asc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc.png'),
-        "/sort_desc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc.png'),
-        "/sort_asc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc_disabled.png'),
-        "/sort_desc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc_disabled.png'),
-      },
     },
     optimization: {
       minimize: mode === "production" ? true : false,
