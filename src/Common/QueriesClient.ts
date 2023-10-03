@@ -59,7 +59,7 @@ export class QueriesClient {
           (error: any) => {
             handleError(error, "setupQueriesCollection", "Failed to set up account for saving queries");
             return Promise.reject(error);
-          }
+          },
         )
         .finally(() => clearMessage());
     }
