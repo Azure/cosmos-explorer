@@ -17,7 +17,7 @@ export async function listMetrics(
   resourceGroupName: string,
   accountName: string,
   databaseRid: string,
-  collectionRid: string
+  collectionRid: string,
 ): Promise<Types.PartitionMetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitions/metrics`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -29,7 +29,7 @@ export async function listUsages(
   resourceGroupName: string,
   accountName: string,
   databaseRid: string,
-  collectionRid: string
+  collectionRid: string,
 ): Promise<Types.PartitionUsagesResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitions/usages`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

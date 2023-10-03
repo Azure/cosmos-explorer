@@ -44,7 +44,7 @@ let counter = 0;
 
 export function createStaticCommandBarButtons(
   container: Explorer,
-  selectedNodeState: SelectedNodeState
+  selectedNodeState: SelectedNodeState,
 ): CommandButtonComponentProps[] {
   if (userContext.authType === AuthType.ResourceToken) {
     return createStaticCommandBarButtonsForResourceToken(container, selectedNodeState);
@@ -166,7 +166,7 @@ export function createStaticCommandBarButtons(
 
 export function createContextCommandBarButtons(
   container: Explorer,
-  selectedNodeState: SelectedNodeState
+  selectedNodeState: SelectedNodeState,
 ): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
@@ -507,7 +507,7 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
 
 function createOpenTerminalButtonByKind(
   container: Explorer,
-  terminalKind: ViewModels.TerminalKind
+  terminalKind: ViewModels.TerminalKind,
 ): CommandButtonComponentProps {
   const terminalFriendlyName = (): string => {
     switch (terminalKind) {
@@ -573,7 +573,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
             explorer={container}
             gitHubClientProp={container.notebookManager.gitHubClient}
             junoClientProp={junoClient}
-          />
+          />,
         );
     },
     commandButtonLabel: label,
@@ -585,7 +585,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
 
 function createStaticCommandBarButtonsForResourceToken(
   container: Explorer,
-  selectedNodeState: SelectedNodeState
+  selectedNodeState: SelectedNodeState,
 ): CommandButtonComponentProps[] {
   const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
   const openQueryBtn = createOpenQueryButton(container);

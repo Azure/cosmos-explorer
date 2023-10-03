@@ -94,7 +94,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
       const createdResource: TriggerDefinition | SqlTriggerResource = await createTrigger(
         this.props.collection.databaseId,
         this.props.collection.id(),
-        resource
+        resource,
       );
       if (createdResource) {
         this.props.tabTitle(createdResource.id);
@@ -111,7 +111,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
             dataExplorerArea: Constants.Areas.Tab,
             tabTitle: this.props.tabTitle(),
           },
-          startKey
+          startKey,
         );
         this.props.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
         this.props.isExecuting(false);
@@ -126,7 +126,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           error: getErrorMessage(createError),
           errorStack: getErrorStack(createError),
         },
-        startKey
+        startKey,
       );
       this.props.isExecuting(false);
     }
@@ -161,7 +161,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
             dataExplorerArea: Constants.Areas.Tab,
             tabTitle: this.props.tabTitle(),
           },
-          startKey
+          startKey,
         );
         this.props.isExecuting(false);
       }
@@ -175,7 +175,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           error: getErrorMessage(createError),
           errorStack: getErrorStack(createError),
         },
-        startKey
+        startKey,
       );
       this.props.isExecuting(false);
     }
@@ -268,7 +268,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
 
   private handleTriggerIdChange = (
     _event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     this.saveButton.enabled = this.isValidId(newValue) && this.isNotEmpty(newValue);
     this.setState({ triggerId: newValue });
@@ -277,7 +277,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
   private handleTriggerTypeOprationChange = (
     _event: React.FormEvent<HTMLElement>,
     selectedParam: IDropdownOption,
-    key: string
+    key: string,
   ): void => {
     this.setState({ [key]: String(selectedParam.key) });
   };

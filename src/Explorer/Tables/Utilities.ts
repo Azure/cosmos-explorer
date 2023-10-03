@@ -119,7 +119,7 @@ export function onKey(
   action: ($sourceElement: JQuery) => void,
   metaKey: boolean = null,
   shiftKey: boolean = null,
-  altKey: boolean = null
+  altKey: boolean = null,
 ): boolean {
   var source: any = event.target || event.srcElement,
     keyCode: number = event.keyCode,
@@ -149,7 +149,7 @@ export function onEnter(
   action: ($sourceElement: JQuery) => void,
   metaKey: boolean = null,
   shiftKey: boolean = null,
-  altKey: boolean = null
+  altKey: boolean = null,
 ): boolean {
   return onKey(event, Constants.keyCodes.Enter, action, metaKey, shiftKey, altKey);
 }
@@ -162,7 +162,7 @@ export function onTab(
   action: ($sourceElement: JQuery) => void,
   metaKey: boolean = null,
   shiftKey: boolean = null,
-  altKey: boolean = null
+  altKey: boolean = null,
 ): boolean {
   return onKey(event, Constants.keyCodes.Tab, action, metaKey, shiftKey, altKey);
 }
@@ -175,7 +175,7 @@ export function onEsc(
   action: ($sourceElement: JQuery) => void,
   metaKey: boolean = null,
   shiftKey: boolean = null,
-  altKey: boolean = null
+  altKey: boolean = null,
 ): boolean {
   return onKey(event, Constants.keyCodes.Esc, action, metaKey, shiftKey, altKey);
 }

@@ -114,7 +114,7 @@ function updateUserContext(newContext: Partial<UserContext>): void {
 
     const isNewAccount = isAccountNewerThanThresholdInMs(
       newContext.databaseAccount?.systemData?.createdAt || "",
-      ONE_WEEK_IN_MS
+      ONE_WEEK_IN_MS,
     );
 
     if (!localStorage.getItem(newContext.databaseAccount.id)) {

@@ -5,7 +5,7 @@ export const queryConflicts = (
   databaseId: string,
   containerId: string,
   query: string,
-  options: FeedOptions
+  options: FeedOptions,
 ): QueryIterator<ConflictDefinition & Resource> => {
   return client().database(databaseId).container(containerId).conflicts.query(query, options);
 };

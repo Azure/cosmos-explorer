@@ -7,7 +7,7 @@ export const queryDocuments = (
   databaseId: string,
   containerId: string,
   query: string,
-  options: FeedOptions
+  options: FeedOptions,
 ): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
   return client().database(databaseId).container(containerId).items.query(query, options);

@@ -133,7 +133,7 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
         (event: monaco.editor.ICursorSelectionChangedEvent) => {
           const selectedContent: string = this.editor.getModel().getValueInRange(event.selection);
           this.params.selectedContent(selectedContent);
-        }
+        },
       );
     }
 

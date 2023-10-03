@@ -57,7 +57,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
           .getState()
           .openSidePanel(
             "Delete " + getDatabaseName(),
-            <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />
+            <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />,
           ),
       label: `Delete ${getDatabaseName()}`,
       styleClass: "deleteDatabaseMenuItem",
@@ -68,7 +68,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
 
 export const createCollectionContextMenuButton = (
   container: Explorer,
-  selectedCollection: ViewModels.Collection
+  selectedCollection: ViewModels.Collection,
 ): TreeNodeMenuItem[] => {
   const items: TreeNodeMenuItem[] = [];
   if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
@@ -137,7 +137,7 @@ export const createCollectionContextMenuButton = (
         .getState()
         .openSidePanel(
           "Delete " + getCollectionName(),
-          <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
+          <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
         );
     },
     label: `Delete ${getCollectionName()}`,
@@ -175,7 +175,7 @@ export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] =>
 
 export const createStoreProcedureContextMenuItems = (
   container: Explorer,
-  storedProcedure: StoredProcedure
+  storedProcedure: StoredProcedure,
 ): TreeNodeMenuItem[] => {
   if (userContext.apiType === "Cassandra") {
     return [];
@@ -206,7 +206,7 @@ export const createTriggerContextMenuItems = (container: Explorer, trigger: Trig
 
 export const createUserDefinedFunctionContextMenuItems = (
   container: Explorer,
-  userDefinedFunction: UserDefinedFunction
+  userDefinedFunction: UserDefinedFunction,
 ): TreeNodeMenuItem[] => {
   if (userContext.apiType === "Cassandra") {
     return [];

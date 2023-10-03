@@ -100,7 +100,7 @@ export class PureMarkdownCell extends React.Component<ComponentProps & DispatchP
 
 export const makeMapStateToProps = (
   initialState: AppState,
-  ownProps: ComponentProps
+  ownProps: ComponentProps,
 ): ((state: AppState) => StateProps) => {
   const { id, contentRef } = ownProps;
   const mapStateToProps = (state: AppState): StateProps => {
@@ -135,7 +135,7 @@ export const makeMapStateToProps = (
 
 const makeMapDispatchToProps = (
   initialDispatch: Dispatch,
-  ownProps: ComponentProps
+  ownProps: ComponentProps,
 ): ((dispatch: Dispatch) => DispatchProps) => {
   const { id, contentRef } = ownProps;
 

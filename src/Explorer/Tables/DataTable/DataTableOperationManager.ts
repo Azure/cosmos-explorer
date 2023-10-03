@@ -55,7 +55,7 @@ export default class DataTableOperationManager {
       // Simply select the first item in this case.
       var lastSelectedItemIndex = lastSelectedItem
         ? this._tableEntityListViewModel.getItemIndexFromCurrentPage(
-            this._tableEntityListViewModel.getTableEntityKeys(lastSelectedItem.RowKey._)
+            this._tableEntityListViewModel.getTableEntityKeys(lastSelectedItem.RowKey._),
           )
         : -1;
       var nextIndex: number = isUpArrowKey ? lastSelectedItemIndex - 1 : lastSelectedItemIndex + 1;
@@ -152,7 +152,7 @@ export default class DataTableOperationManager {
   private updateLastSelectedItem($elem: JQuery, isShiftSelect: boolean) {
     var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
     var entity = this._tableEntityListViewModel.getItemFromCurrentPage(
-      this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey)
+      this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
     );
 
     this._tableEntityListViewModel.lastSelectedItem = entity;
@@ -175,7 +175,7 @@ export default class DataTableOperationManager {
     this._tableEntityListViewModel.clearSelection();
     ko.utils.arrayPushAll<Entities.ITableEntity>(
       this._tableEntityListViewModel.selected,
-      this._tableEntityListViewModel.getAllItemsInCurrentPage()
+      this._tableEntityListViewModel.getAllItemsInCurrentPage(),
     );
   }
 
@@ -189,7 +189,7 @@ export default class DataTableOperationManager {
 
       if (
         !this._tableEntityListViewModel.isItemSelected(
-          this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey)
+          this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
         )
       ) {
         // Adding item not previously in selection
@@ -211,10 +211,10 @@ export default class DataTableOperationManager {
     if (anchorItem) {
       var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
       var elementIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
-        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey)
+        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
       );
       var anchorIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
-        this._tableEntityListViewModel.getTableEntityKeys(anchorItem.RowKey._)
+        this._tableEntityListViewModel.getTableEntityKeys(anchorItem.RowKey._),
       );
 
       var startIndex = Math.min(elementIndex, anchorIndex);
@@ -223,7 +223,7 @@ export default class DataTableOperationManager {
       this._tableEntityListViewModel.clearSelection();
       ko.utils.arrayPushAll<Entities.ITableEntity>(
         this._tableEntityListViewModel.selected,
-        this._tableEntityListViewModel.getItemsFromAllPagesWithinRange(startIndex, endIndex + 1)
+        this._tableEntityListViewModel.getItemsFromAllPagesWithinRange(startIndex, endIndex + 1),
       );
     }
   }
@@ -233,7 +233,7 @@ export default class DataTableOperationManager {
 
     if (
       !this._tableEntityListViewModel.isItemSelected(
-        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey)
+        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
       )
     ) {
       if (this._tableEntityListViewModel.selected().length) {
@@ -245,7 +245,7 @@ export default class DataTableOperationManager {
 
   private addToSelection(rowKey: string) {
     var selectedEntity: Entities.ITableEntity = this._tableEntityListViewModel.getItemFromCurrentPage(
-      this._tableEntityListViewModel.getTableEntityKeys(rowKey)
+      this._tableEntityListViewModel.getTableEntityKeys(rowKey),
     );
 
     if (selectedEntity != null) {

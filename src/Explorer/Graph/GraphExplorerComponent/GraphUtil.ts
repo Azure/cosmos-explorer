@@ -26,7 +26,7 @@ export const getNeighborTitle = (neighbor: NeighborVertexBasicInfo): string => {
 export const createEdgesfromNode = (
   vertex: GraphData.GremlinVertex,
   graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>,
-  newNodes?: { [id: string]: boolean }
+  newNodes?: { [id: string]: boolean },
 ): void => {
   if (Object.prototype.hasOwnProperty.call(vertex, "outE")) {
     const outE = vertex.outE;
@@ -104,7 +104,7 @@ export const createFetchEdgePairQuery = (
   excludedEdgeIds: string[],
   startIndex: number,
   pageSize: number,
-  withoutStepArgMaxLenght: number
+  withoutStepArgMaxLenght: number,
 ): string => {
   let gremlinQuery: string;
   if (excludedEdgeIds.length > 0) {
@@ -135,7 +135,7 @@ export const createFetchEdgePairQuery = (
  */
 export const trimGraph = (
   currentRoot: GraphData.GremlinVertex,
-  graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>
+  graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>,
 ): void => {
   const importantNodes = [currentRoot.id].concat(currentRoot._ancestorsId);
   graphData.unloadAllVertices(importantNodes);
@@ -149,7 +149,7 @@ export const trimGraph = (
 export const addRootChildToGraph = (
   root: GraphData.GremlinVertex,
   child: GraphData.GremlinVertex,
-  graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>
+  graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>,
 ): void => {
   child._ancestorsId = (root._ancestorsId || []).concat([root.id]);
   graphData.addVertex(child);

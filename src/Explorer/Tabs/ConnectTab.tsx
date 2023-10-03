@@ -31,7 +31,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
         const listKeysResult: DatabaseAccountListKeysResult = await listKeys(
           userContext.subscriptionId,
           userContext.resourceGroup,
-          userContext.databaseAccount.name
+          userContext.databaseAccount.name,
         );
         setPrimaryMasterKey(listKeysResult.primaryMasterKey);
         setSecondaryMasterKey(listKeysResult.secondaryMasterKey);
@@ -41,7 +41,7 @@ export const ConnectTab: React.FC = (): JSX.Element => {
         const listReadonlyKeysResult: DatabaseAccountListReadOnlyKeysResult = await listReadOnlyKeys(
           userContext.subscriptionId,
           userContext.resourceGroup,
-          userContext.databaseAccount.name
+          userContext.databaseAccount.name,
         );
         setPrimaryReadonlyMasterKey(listReadonlyKeysResult.primaryReadonlyMasterKey);
         setSecondaryReadonlyMasterKey(listReadonlyKeysResult.secondaryReadonlyMasterKey);

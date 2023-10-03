@@ -86,7 +86,7 @@ export function filterColumns(table: DataTables.DataTable, settings: boolean[]):
 export function reorderColumns(
   table: DataTables.DataTable,
   targetOrder: number[],
-  currentOrder?: number[]
+  currentOrder?: number[],
   //eslint-disable-next-line
 ): Q.Promise<any> {
   const columnsCount: number = targetOrder.length;

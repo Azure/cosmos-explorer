@@ -65,7 +65,7 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
       gitHubNotebooksContentRoot: state.gitHubNotebooksContentRoot,
       updateNotebookItem: state.updateNotebookItem,
     }),
-    shallow
+    shallow,
   );
   // const { activeTab } = useTabs();
   const databaseTreeNodes = useDatabaseTreeNodes(container, isNotebookEnabled);

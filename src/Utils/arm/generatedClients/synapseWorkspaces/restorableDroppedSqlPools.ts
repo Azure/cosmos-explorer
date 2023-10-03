@@ -16,7 +16,7 @@ export async function get(
   subscriptionId: string,
   resourceGroupName: string,
   workspaceName: string,
-  restorableDroppedSqlPoolId: string
+  restorableDroppedSqlPoolId: string,
 ): Promise<Types.RestorableDroppedSqlPool> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/restorableDroppedSqlPools/${restorableDroppedSqlPoolId}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function get(
 export async function listByWorkspace(
   subscriptionId: string,
   resourceGroupName: string,
-  workspaceName: string
+  workspaceName: string,
 ): Promise<Types.RestorableDroppedSqlPoolListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/restorableDroppedSqlPools`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

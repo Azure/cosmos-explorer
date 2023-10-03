@@ -72,7 +72,7 @@ describe("Graph Data", () => {
           testString: [{ id: "123", value: stringValue }],
         },
       },
-      "testString"
+      "testString",
     );
 
     expect(value).toEqual(stringValue);
@@ -88,7 +88,7 @@ describe("Graph Data", () => {
           testString: [{ id: "123", value: numberValue }],
         },
       },
-      "testString"
+      "testString",
     );
 
     expect(value).toEqual(numberValue);
@@ -104,7 +104,7 @@ describe("Graph Data", () => {
           testString: [{ id: "123", value: booleanValue }],
         },
       },
-      "testString"
+      "testString",
     );
 
     expect(value).toEqual(booleanValue);

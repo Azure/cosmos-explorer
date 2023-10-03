@@ -61,7 +61,7 @@ export class GremlinClient {
 
         if (!requestId || !this.pendingResults.has(requestId)) {
           const errorMsg = `Error: ${errorMessage}, unknown requestId:${requestId} ${GremlinClient.getRequestChargeString(
-            result.requestCharge
+            result.requestCharge,
           )}`;
           handleError(errorMsg, GremlinClient.LOG_AREA);
 
@@ -90,7 +90,7 @@ export class GremlinClient {
       deferred: deferred,
       timeoutId: window.setTimeout(
         () => this.abortPendingRequest(requestId, GremlinClient.TIMEOUT_ERROR_MSG, null),
-        GremlinClient.PENDING_REQUEST_TIMEOUT_MS
+        GremlinClient.PENDING_REQUEST_TIMEOUT_MS,
       ),
     });
     return deferred.promise;
@@ -126,7 +126,7 @@ export class GremlinClient {
     this.pendingResults.delete(requestId);
 
     const errorMsg = `Aborting pending request ${requestId}. Error:${error} ${GremlinClient.getRequestChargeString(
-      requestCharge
+      requestCharge,
     )}`;
     handleError(errorMsg, GremlinClient.LOG_AREA);
   }

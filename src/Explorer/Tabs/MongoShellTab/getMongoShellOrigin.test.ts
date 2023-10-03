@@ -15,7 +15,7 @@ describe("getMongoShellOrigin", () => {
           "feature.enableLegacyMongoShellV1Debug": "false",
           "feature.enableLegacyMongoShellV2Debug": "false",
           "feature.loadLegacyMongoShellFromBE": "false",
-        })
+        }),
       ),
     });
   });
@@ -29,7 +29,7 @@ describe("getMongoShellOrigin", () => {
       features: extractFeatures(
         new URLSearchParams({
           "feature.enableLegacyMongoShellV1": "true",
-        })
+        }),
       ),
     });
 
@@ -41,7 +41,7 @@ describe("getMongoShellOrigin", () => {
       features: extractFeatures(
         new URLSearchParams({
           "feature.enableLegacyMongoShellV2": "true",
-        })
+        }),
       ),
     });
 
@@ -53,7 +53,7 @@ describe("getMongoShellOrigin", () => {
       features: extractFeatures(
         new URLSearchParams({
           "feature.enableLegacyMongoShellV1Debug": "true",
-        })
+        }),
       ),
     });
 
@@ -65,7 +65,7 @@ describe("getMongoShellOrigin", () => {
       features: extractFeatures(
         new URLSearchParams({
           "feature.enableLegacyMongoShellV2Debug": "true",
-        })
+        }),
       ),
     });
 
@@ -77,7 +77,7 @@ describe("getMongoShellOrigin", () => {
       features: extractFeatures(
         new URLSearchParams({
           "feature.loadLegacyMongoShellFromBE": "true",
-        })
+        }),
       ),
     });
 

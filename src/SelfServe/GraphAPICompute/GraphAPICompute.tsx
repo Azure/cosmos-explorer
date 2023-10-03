@@ -65,7 +65,7 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
 const onNumberOfInstancesChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
-  baselineValues: Map<string, SmartUiInput>
+  baselineValues: Map<string, SmartUiInput>,
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
   const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
@@ -95,7 +95,7 @@ const onNumberOfInstancesChange = (
 const onEnableComputeChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
+  baselineValues: ReadonlyMap<string, SmartUiInput>,
 ): Map<string, SmartUiInput> => {
   currentValues.set("enableCompute", { value: newValue });
   const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
@@ -235,7 +235,7 @@ export default class GraphAPICompute extends SelfServeBaseClass {
 
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: Map<string, SmartUiInput>
+    baselineValues: Map<string, SmartUiInput>,
   ): Promise<OnSaveResult> => {
     selfServeTrace({ selfServeClassName: GraphAPICompute.name });
 

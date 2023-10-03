@@ -34,7 +34,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
 export async function readCollectionsWithPagination(
   databaseId: string,
-  continuationToken?: string
+  continuationToken?: string,
 ): Promise<DataModels.CollectionsWithPagination> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
@@ -45,7 +45,7 @@ export async function readCollectionsWithPagination(
         {
           continuationToken,
           maxItemCount: Queries.containersPerPage,
-        }
+        },
       )
       .fetchNext();
     const collectionsWithPagination: DataModels.CollectionsWithPagination = {

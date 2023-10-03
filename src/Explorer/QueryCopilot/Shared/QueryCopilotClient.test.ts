@@ -75,7 +75,7 @@ describe("Query Copilot Client", () => {
           headers: expect.objectContaining({
             "x-ms-correlationid": "mocked-correlation-id",
           }),
-        })
+        }),
       );
 
       const actualBody = JSON.parse(mockFetch.mock.calls[0][1].body);
@@ -109,7 +109,7 @@ describe("Query Copilot Client", () => {
             "content-type": "application/json",
             "x-ms-correlationid": "mocked-correlation-id",
           },
-        })
+        }),
       );
 
       const actualBody = JSON.parse(mockFetch.mock.calls[0][1].body);

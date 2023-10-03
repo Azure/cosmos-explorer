@@ -32,12 +32,12 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
 
   // React hooks to keep state
   const [baseUrl, setBaseUrl] = React.useState<IDropdownOption>(
-    baseUrlOptions.find((o) => o.key === window.location.origin + window.location.pathname) || baseUrlOptions[0]
+    baseUrlOptions.find((o) => o.key === window.location.origin + window.location.pathname) || baseUrlOptions[0],
   );
   const [platform, setPlatform] = React.useState<IDropdownOption>(
     urlParams.has("platform")
       ? platformOptions.find((o) => o.key === urlParams.get("platform")) || platformOptions[0]
-      : platformOptions[0]
+      : platformOptions[0],
   );
 
   const booleanFeatures: {
@@ -93,10 +93,10 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
   ];
 
   booleanFeatures.forEach(
-    (f) => (f.reactState = React.useState<boolean>(urlParams.has(f.key) ? urlParams.get(f.key) === "true" : false))
+    (f) => (f.reactState = React.useState<boolean>(urlParams.has(f.key) ? urlParams.get(f.key) === "true" : false)),
   );
   stringFeatures.forEach(
-    (f) => (f.reactState = React.useState<string>(urlParams.has(f.key) ? urlParams.get(f.key) : undefined))
+    (f) => (f.reactState = React.useState<string>(urlParams.has(f.key) ? urlParams.get(f.key) : undefined)),
   );
 
   const buildUrl = (): string => {
@@ -121,14 +121,14 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
     (f) =>
       (f.onChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
         f.reactState[1](checked);
-      })
+      }),
   );
 
   stringFeatures.forEach(
     (f) =>
       (f.onChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
         f.reactState[1](newValue);
-      })
+      }),
   );
 
   const onNotebookShortcut = (): void => {

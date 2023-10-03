@@ -87,7 +87,7 @@ export default class TableCommands {
           });
       },
       "Cancel",
-      undefined
+      undefined,
     );
 
     return null;

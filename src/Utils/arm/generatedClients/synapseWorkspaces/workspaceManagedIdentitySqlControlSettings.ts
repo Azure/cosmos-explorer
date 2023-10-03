@@ -15,7 +15,7 @@ const apiVersion = "2021-03-01";
 export async function get(
   subscriptionId: string,
   resourceGroupName: string,
-  workspaceName: string
+  workspaceName: string,
 ): Promise<Types.ManagedIdentitySqlControlSettingsModel> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/managedIdentitySqlControlSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function createOrUpdate(
   subscriptionId: string,
   resourceGroupName: string,
   workspaceName: string,
-  body: Types.ManagedIdentitySqlControlSettingsModel
+  body: Types.ManagedIdentitySqlControlSettingsModel,
 ): Promise<Types.ManagedIdentitySqlControlSettingsModel | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/managedIdentitySqlControlSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });

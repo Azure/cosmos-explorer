@@ -41,7 +41,7 @@ interface InitialProps {
 // Redux
 const makeMapStateToProps = (
   initialState: AppState,
-  initialProps: InitialProps
+  initialProps: InitialProps,
 ): ((state: AppState) => VirtualCommandBarComponentProps) => {
   const { contentRef } = initialProps;
   const mapStateToProps = (state: AppState) => {

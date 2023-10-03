@@ -10,7 +10,7 @@ export const coreReducer = (state: CoreRecord, action: Action) => {
       typedAction = action as cdbActions.CloseNotebookAction;
       return state.setIn(
         ["entities", "contents", "byRef"],
-        state.entities.contents.byRef.delete(typedAction.payload.contentRef)
+        state.entities.contents.byRef.delete(typedAction.payload.contentRef),
       );
     }
     case actions.CHANGE_KERNEL_BY_NAME: {

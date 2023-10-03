@@ -76,34 +76,34 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       {
         dispose: useNotebook.subscribe(
           () => this.setState({}),
-          (state) => state.isNotebookEnabled
+          (state) => state.isNotebookEnabled,
         ),
       },
       { dispose: useSelectedNode.subscribe(() => this.setState({})) },
       {
         dispose: useCarousel.subscribe(
           () => this.setState({}),
-          (state) => state.showCoachMark
+          (state) => state.showCoachMark,
         ),
       },
       {
         dispose: usePostgres.subscribe(
           () => this.setState({}),
-          (state) => state.showPostgreTeachingBubble
+          (state) => state.showPostgreTeachingBubble,
         ),
       },
       {
         dispose: usePostgres.subscribe(
           () => this.setState({}),
-          (state) => state.showResetPasswordBubble
+          (state) => state.showResetPasswordBubble,
         ),
       },
       {
         dispose: useDatabases.subscribe(
           () => this.setState({}),
-          (state) => state.sampleDataResourceTokenCollection
+          (state) => state.sampleDataResourceTokenCollection,
         ),
-      }
+      },
     );
   }
 
@@ -805,8 +805,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   private vcoreMongoNextStepItems: { link: string; title: string; description: string }[] = [
     {
-      link:
-        "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-migrate-native-tools?tabs=export-import",
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/how-to-migrate-native-tools?tabs=export-import",
       title: "Migrate Data",
       description: "",
     },
@@ -816,8 +815,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       description: "",
     },
     {
-      link:
-        "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/tutorial-nodejs-web-app?tabs=github-codespaces",
+      link: "https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/vcore/tutorial-nodejs-web-app?tabs=github-codespaces",
       title: "Build Apps with Nodejs",
       description: "",
     },

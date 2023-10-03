@@ -77,7 +77,7 @@ async function createSqlDatabase(params: DataModels.CreateDatabaseParams): Promi
     userContext.resourceGroup,
     userContext.databaseAccount.name,
     params.databaseId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Database);
 }
@@ -97,7 +97,7 @@ async function createMongoDatabase(params: DataModels.CreateDatabaseParams): Pro
     userContext.resourceGroup,
     userContext.databaseAccount.name,
     params.databaseId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Database);
 }
@@ -117,7 +117,7 @@ async function createCassandraKeyspace(params: DataModels.CreateDatabaseParams):
     userContext.resourceGroup,
     userContext.databaseAccount.name,
     params.databaseId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Database);
 }
@@ -137,7 +137,7 @@ async function createGremlineDatabase(params: DataModels.CreateDatabaseParams): 
     userContext.resourceGroup,
     userContext.databaseAccount.name,
     params.databaseId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Database);
 }

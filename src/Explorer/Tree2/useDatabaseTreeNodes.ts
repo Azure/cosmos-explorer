@@ -60,8 +60,8 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
       .collections()
       .forEach((collection: ViewModels.Collection) =>
         databaseNode.children.push(
-          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab)
-        )
+          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+        ),
       );
 
     if (database.collectionsContinuationToken) {
@@ -79,8 +79,8 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
     database.collections.subscribe((collections: ViewModels.Collection[]) => {
       collections.forEach((collection: ViewModels.Collection) =>
         databaseNode.children.push(
-          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab)
-        )
+          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+        ),
       );
     });
 

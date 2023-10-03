@@ -16,7 +16,7 @@ export async function listMetrics(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseRid: string
+  databaseRid: string,
 ): Promise<Types.MetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metrics`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -27,7 +27,7 @@ export async function listUsages(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseRid: string
+  databaseRid: string,
 ): Promise<Types.UsagesResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/usages`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -38,7 +38,7 @@ export async function listMetricDefinitions(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseRid: string
+  databaseRid: string,
 ): Promise<Types.MetricDefinitionsListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metricDefinitions`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

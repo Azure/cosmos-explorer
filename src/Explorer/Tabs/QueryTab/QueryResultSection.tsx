@@ -142,7 +142,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
       // for IE and Edge
       navigator.msSaveBlob(
         new Blob([csvData], { type: "data:text/csv;charset=utf-8" }),
-        "PerPartitionQueryMetrics.csv"
+        "PerPartitionQueryMetrics.csv",
       );
     } else {
       const downloadLink: HTMLAnchorElement = document.createElement("a");
@@ -329,7 +329,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
           metric: "Document write time",
           value: `${aggregatedQueryMetrics.documentWriteTime.toString() || 0} ms`,
           toolTip: "Time spent to write query result set to response buffer",
-        }
+        },
       );
     }
 

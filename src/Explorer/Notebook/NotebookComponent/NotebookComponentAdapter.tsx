@@ -39,7 +39,7 @@ export class NotebookComponentAdapter extends NotebookComponentBootstrapper impl
           params: {},
           kernelRef,
           contentRef: this.contentRef,
-        })
+        }),
       );
     }
   }

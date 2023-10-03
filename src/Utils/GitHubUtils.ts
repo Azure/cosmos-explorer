@@ -33,7 +33,7 @@ export function fromRepoUri(repoUri: string): undefined | { owner: string; repo:
 }
 
 export function fromContentUri(
-  contentUri: string
+  contentUri: string,
 ): undefined | { owner: string; repo: string; branch: string; path: string } {
   let matches = contentUri.match(ContentUriPattern);
   if (matches && matches.length > 4) {
