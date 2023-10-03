@@ -119,7 +119,9 @@ module.exports = function (_env = {}, argv = {}) {
       fileName: "version.txt",
       content: `${gitSha.trim()} ${new Date().toUTCString()}`,
     }),
-    new CaseSensitivePathsPlugin(),
+    // TODO Enable when @nteract once removed
+    // ./node_modules/@nteract/markdown/node_modules/@nteract/presentational-components/lib/index.js line 63 breaks this with physical file Icon.js referred to as icon.js
+    // new CaseSensitivePathsPlugin(),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",
     }),
@@ -218,7 +220,7 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist"),
       publicPath: "",
-      hashFunction: 'xxhash64'
+      hashFunction: "xxhash64",
     },
     devtool: mode === "development" ? "eval-source-map" : "source-map",
     plugins,
@@ -237,6 +239,13 @@ module.exports = function (_env = {}, argv = {}) {
         querystring: require.resolve("querystring-es3"),
       },
       extensions: [".tsx", ".ts", ".js"],
+      alias: {
+        "/sort_both.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_both.png'),
+        "/sort_asc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc.png'),
+        "/sort_desc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc.png'),
+        "/sort_asc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc_disabled.png'),
+        "/sort_desc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc_disabled.png'),
+      },
     },
     optimization: {
       minimize: mode === "production" ? true : false,
