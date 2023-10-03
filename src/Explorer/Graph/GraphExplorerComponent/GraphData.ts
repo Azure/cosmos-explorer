@@ -235,7 +235,7 @@ export class GraphData<V extends GremlinVertex, E extends GremlinEdge> {
    */
   public static addToEdgeArray(
     edge: GremlinShortInEdge | GremlinShortOutEdge,
-    edgeArray: (GremlinShortInEdge | GremlinShortOutEdge)[]
+    edgeArray: (GremlinShortInEdge | GremlinShortOutEdge)[],
   ) {
     for (let i = 0; i < edgeArray.length; i++) {
       if (edgeArray[i].id === edge.id) {

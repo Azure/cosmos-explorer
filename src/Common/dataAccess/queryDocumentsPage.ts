@@ -7,7 +7,7 @@ import { MinimalQueryIterator, nextPage } from "../IteratorUtilities";
 export const queryDocumentsPage = async (
   resourceName: string,
   documentsIterator: MinimalQueryIterator,
-  firstItemIndex: number
+  firstItemIndex: number,
 ): Promise<QueryResults> => {
   const entityName = getEntityName();
   const clearMessage = logConsoleProgress(`Querying ${entityName} for container ${resourceName}`);

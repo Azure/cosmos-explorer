@@ -42,7 +42,7 @@ export class GalleryHeaderComponent extends React.Component {
           {this.renderHeaderItem(
             GalleryHeaderComponent.azureText,
             GalleryHeaderComponent.openPortal,
-            GalleryHeaderComponent.mainHeaderTextProps
+            GalleryHeaderComponent.mainHeaderTextProps,
           )}
         </Stack.Item>
         <Stack.Item>
@@ -52,7 +52,7 @@ export class GalleryHeaderComponent extends React.Component {
           {this.renderHeaderItem(
             GalleryHeaderComponent.cosmosdbText,
             GalleryHeaderComponent.openDataExplorer,
-            GalleryHeaderComponent.headerItemTextProps
+            GalleryHeaderComponent.headerItemTextProps,
           )}
         </Stack.Item>
         <Stack.Item>
@@ -62,7 +62,7 @@ export class GalleryHeaderComponent extends React.Component {
           {this.renderHeaderItem(
             GalleryHeaderComponent.galleryText,
             () => "",
-            GalleryHeaderComponent.headerItemTextProps
+            GalleryHeaderComponent.headerItemTextProps,
           )}
         </Stack.Item>
         <Stack.Item grow>
@@ -72,7 +72,7 @@ export class GalleryHeaderComponent extends React.Component {
           {this.renderHeaderItem(
             GalleryHeaderComponent.loginText,
             GalleryHeaderComponent.openDataExplorer,
-            GalleryHeaderComponent.headerItemTextProps
+            GalleryHeaderComponent.headerItemTextProps,
           )}
         </Stack.Item>
       </Stack>

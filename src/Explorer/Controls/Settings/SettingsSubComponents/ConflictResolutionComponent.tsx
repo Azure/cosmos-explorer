@@ -68,20 +68,20 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
 
   private onConflictResolutionPolicyModeChange = (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
+    option?: IChoiceGroupOption,
   ): void =>
     this.props.onConflictResolutionPolicyModeChange(
-      DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode]
+      DataModels.ConflictResolutionMode[option.key as keyof typeof DataModels.ConflictResolutionMode],
     );
 
   private onConflictResolutionPolicyPathChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => this.props.onConflictResolutionPolicyPathChange(newValue);
 
   private onConflictResolutionPolicyProcedureChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => this.props.onConflictResolutionPolicyProcedureChange(newValue);
 
   private getConflictResolutionModeComponent = (): JSX.Element => (
@@ -92,7 +92,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       onChange={this.onConflictResolutionPolicyModeChange}
       styles={getChoiceGroupStyles(
         this.props.conflictResolutionPolicyMode,
-        this.props.conflictResolutionPolicyModeBaseline
+        this.props.conflictResolutionPolicyModeBaseline,
       )}
     />
   );
@@ -108,7 +108,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       onRenderLabel={this.onRenderLwwComponentTextField}
       styles={getTextFieldStyles(
         this.props.conflictResolutionPolicyPath,
-        this.props.conflictResolutionPolicyPathBaseline
+        this.props.conflictResolutionPolicyPathBaseline,
       )}
       value={this.props.conflictResolutionPolicyPath}
       onChange={this.onConflictResolutionPolicyPathChange}
@@ -126,7 +126,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
       onRenderLabel={this.onRenderCustomComponentTextField}
       styles={getTextFieldStyles(
         this.props.conflictResolutionPolicyProcedure,
-        this.props.conflictResolutionPolicyProcedureBaseline
+        this.props.conflictResolutionPolicyProcedureBaseline,
       )}
       value={this.props.conflictResolutionPolicyProcedure}
       onChange={this.onConflictResolutionPolicyProcedureChange}

@@ -80,25 +80,25 @@ interface JQueryXHR<T> extends XMLHttpRequest {
   then(
     doneCallbacks: JQueryPromiseXHRDoneCallback<T>,
     failCallbacks?: JQueryPromiseXHRFailCallback<T>,
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 
   then<UValue>(
     doneCallbacks: { (data: T, textStatus: string, jqXHR: JQueryXHR<T>): UValue },
     failCallbacks?: JQueryPromiseXHRFailCallback<T>,
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UValue, UReject>(
     doneCallbacks: { (data: T, textStatus: string, jqXHR: JQueryXHR<T>): UValue },
     failCallbacks?: { (data: T, textStatus: string, jqXHR: JQueryXHR<T>): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   then<UReject>(
     doneCallbacks: JQueryPromiseXHRDoneCallback<T>,
     failCallbacks?: { (data: T, textStatus: string, jqXHR: JQueryXHR<T>): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   overrideMimeType(mimeType: string): void;
@@ -201,7 +201,7 @@ interface JQueryPromiseAny {
   then(
     doneCallbacks: { (...args: any[]): any },
     failCallbacks: { (...args: any[]): any },
-    progressCallbacks?: { (...args: any[]): any }
+    progressCallbacks?: { (...args: any[]): any },
   ): JQueryPromiseAny;
 }
 
@@ -215,39 +215,39 @@ interface JQueryPromise {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue>(
     doneCallbacks: { (): JQueryPromiseV<UValue> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then(
     doneCallbacks: { (): JQueryDeferred },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 
   then(
     doneCallbacks: { (): JQueryPromise },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(doneCallbacks: { (): void }, failCallbacks?: { (): void }, progressCallbacks?: { (): void }): JQueryPromise;
@@ -263,39 +263,39 @@ interface JQueryPromiseV<TValue> {
   then<UValue, UReject>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryDeferredV<UValue> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryPromiseV<UValue> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -309,39 +309,39 @@ interface JQueryPromiseN<TNotify> {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then(
     doneCallbacks: { (): JQueryDeferredN<TNotify> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseN<TNotify>;
 
   then(
     doneCallbacks: { (): JQueryPromiseN<TNotify> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseN<TNotify>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromise;
 }
 
@@ -357,25 +357,25 @@ interface JQueryPromiseNNNN<TNotify1, TNotify2, TNotify3, TNotify4> {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   then<UValue>(
     doneCallbacks: { (): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromise;
 }
 
@@ -389,39 +389,39 @@ interface JQueryPromiseVV<TValue1, TValue2> {
   then<UValue, UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue1, UValue2>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): JQueryDeferredVV<UValue1, UValue2> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVV<UValue1, UValue2>;
 
   then<UValue1, UValue2>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): JQueryPromiseVV<UValue1, UValue2> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVV<UValue1, UValue2>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -437,39 +437,39 @@ interface JQueryPromiseVVV<TValue1, TValue2, TValue3> {
   then<UValue, UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue1, UValue2, UValue3>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): JQueryDeferredVVV<UValue1, UValue2, UValue3> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVVV<UValue1, UValue2, UValue3>;
 
   then<UValue1, UValue2, UValue3>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): JQueryPromiseVVV<UValue1, UValue2, UValue3> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVVV<UValue1, UValue2, UValue3>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -483,45 +483,45 @@ interface JQueryPromiseVR<TValue, TReject> {
   then<UValue, UReject>(
     doneCallbacks: { (arg: TValue): JQueryPromiseVR<UValue, UReject> },
     failCallbacks?: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   then<UValue, UReject>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks?: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryDeferredVR<UValue, TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, TReject>;
 
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryPromiseVR<UValue, TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, TReject>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks?: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -535,39 +535,39 @@ interface JQueryPromiseVRN<TValue, TReject, TProgress> {
   then<UValue, UReject>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (arg: TProgress): void }
+    progressCallbacks?: { (arg: TProgress): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryDeferredVRN<UValue, TReject, TProgress> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVRN<UValue, TReject, TProgress>;
 
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryPromiseVRN<UValue, TReject, TProgress> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVRN<UValue, TReject, TProgress>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (arg: TProgress): void }
+    progressCallbacks?: { (arg: TProgress): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (arg: TProgress): void }
+    progressCallbacks?: { (arg: TProgress): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (arg: TProgress): void }
+    progressCallbacks?: { (arg: TProgress): void },
   ): JQueryPromise;
 }
 
@@ -581,32 +581,32 @@ interface JQueryPromiseR<TReject> {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then(
     doneCallbacks: { (): JQueryDeferredR<TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<TReject>;
 
   then(
     doneCallbacks: { (): JQueryPromiseR<TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<TReject>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks?: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (): void },
     failCallbacks: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -629,7 +629,7 @@ interface JQueryDeferredAny {
   then(
     doneCallbacks: { (...args: any[]): any },
     failCallbacks: { (...args: any[]): any },
-    progressCallbacks?: { (...args: any[]): any }
+    progressCallbacks?: { (...args: any[]): any },
   ): JQueryDeferredAny;
 }
 
@@ -650,33 +650,33 @@ interface JQueryDeferred {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then(
     doneCallbacks: { (): JQueryDeferred },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 
   then(
     doneCallbacks: { (): JQueryPromise },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(doneCallbacks: { (): void }, failCallbacks?: { (): void }, progressCallbacks?: { (): void }): JQueryPromise;
@@ -699,39 +699,39 @@ interface JQueryDeferredV<TValue> {
   then<UValue, UReject>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryDeferredV<UValue> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryPromiseV<UValue> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -752,39 +752,39 @@ interface JQueryDeferredN<TNotify> {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then(
     doneCallbacks: { (): JQueryDeferredN<TNotify> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseN<TNotify>;
 
   then(
     doneCallbacks: { (): JQueryPromiseN<TNotify> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseN<TNotify>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromise;
 }
 
@@ -793,14 +793,14 @@ interface JQueryDeferredNNNN<TNotify1, TNotify2, TNotify3, TNotify4> {
     arg1: TNotify1,
     arg2: TNotify2,
     arg3: TNotify3,
-    arg4: TNotify4
+    arg4: TNotify4,
   ): JQueryDeferredNNNN<TNotify1, TNotify2, TNotify3, TNotify4>;
   notifyWith(
     context: any,
     arg1: TNotify1,
     arg2: TNotify2,
     arg3: TNotify3,
-    arg4: TNotify4
+    arg4: TNotify4,
   ): JQueryDeferredNNNN<TNotify1, TNotify2, TNotify3, TNotify4>;
 
   always(...alwaysCallbacks: Array<{ (): void }>): JQueryDeferredNNNN<TNotify1, TNotify2, TNotify3, TNotify4>;
@@ -818,25 +818,25 @@ interface JQueryDeferredNNNN<TNotify1, TNotify2, TNotify3, TNotify4> {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   then<UValue>(
     doneCallbacks: { (): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void }
+    progressCallbacks?: { (arg1: TNotify1, arg2: TNotify2, arg3: TNotify3, arg4: TNotify4): void },
   ): JQueryPromise;
 }
 
@@ -857,39 +857,39 @@ interface JQueryDeferredVV<TValue1, TValue2> {
   then<UValue, UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): UValue },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue1, UValue2>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): JQueryDeferredVV<UValue1, UValue2> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVV<UValue1, UValue2>;
 
   then<UValue1, UValue2>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): JQueryPromiseVV<UValue1, UValue2> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVV<UValue1, UValue2>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): void },
     failCallbacks: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -912,39 +912,39 @@ interface JQueryDeferredVVV<TValue1, TValue2, TValue3> {
   then<UValue, UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): UValue },
     failCallbacks?: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue1, UValue2, UValue3>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): JQueryDeferredVVV<UValue1, UValue2, UValue3> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVVV<UValue1, UValue2, UValue3>;
 
   then<UValue1, UValue2, UValue3>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): JQueryPromiseVVV<UValue1, UValue2, UValue3> },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVVV<UValue1, UValue2, UValue3>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): UValue },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): void },
     failCallbacks?: { (): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg1: TValue1, arg2: TValue2, arg3: TValue3): void },
     failCallbacks?: { (): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -965,39 +965,39 @@ interface JQueryDeferredVR<TValue, TReject> {
   then<UValue, UReject>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryDeferredVR<UValue, TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, TReject>;
 
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryPromiseVR<UValue, TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, TReject>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -1018,39 +1018,39 @@ interface JQueryDeferredVRN<TValue, TReject, TNotify> {
   then<UValue, UReject>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryDeferredVRN<UValue, TReject, TNotify> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVRN<UValue, TReject, TNotify>;
 
   then<UValue>(
     doneCallbacks: { (arg: TValue): JQueryPromiseVRN<UValue, TReject, TNotify> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVRN<UValue, TReject, TNotify>;
 
   // U Value
   then<UValue>(
     doneCallbacks: { (arg: TValue): UValue },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseV<UValue>;
 
   then<UReject>(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (arg: TValue): void },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (arg: TNotify): void }
+    progressCallbacks?: { (arg: TNotify): void },
   ): JQueryPromise;
 }
 
@@ -1071,32 +1071,32 @@ interface JQueryDeferredR<TReject> {
   then<UValue, UReject>(
     doneCallbacks: { (): UValue },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseVR<UValue, UReject>;
 
   // U Pipe
   then(
     doneCallbacks: { (): JQueryDeferredR<TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<TReject>;
 
   then(
     doneCallbacks: { (): JQueryPromiseR<TReject> },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<TReject>;
 
   then<UReject>(
     doneCallbacks: { (): void },
     failCallbacks: { (arg: TReject): UReject },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromiseR<UReject>;
 
   then(
     doneCallbacks: { (): void },
     failCallbacks?: { (arg: TReject): void },
-    progressCallbacks?: { (): void }
+    progressCallbacks?: { (): void },
   ): JQueryPromise;
 }
 
@@ -1210,7 +1210,7 @@ interface JQueryWhen {
   <T1, T2, T3>(
     promise1: JQueryPromiseV<T1>,
     promise2: JQueryPromiseV<T2>,
-    promise3: JQueryPromiseV<T3>
+    promise3: JQueryPromiseV<T3>,
   ): JQueryPromiseVVV<T1, T2, T3>;
   (...deferreds: JQueryPromise[]): JQueryPromise;
   apply($: JQueryStatic, deferreds: JQueryPromise[]): JQueryPromise;
@@ -1238,8 +1238,8 @@ interface JQueryStatic {
     handler: (
       options: JQueryAjaxSettings<T>,
       originalOptions: JQueryAjaxSettings<T>,
-      jqXHR: JQueryXHR<T>
-    ) => JQueryTransport
+      jqXHR: JQueryXHR<T>,
+    ) => JQueryTransport,
   ): any;
 
   get<T>(url: string, data?: any, success?: any, dataType?: any): JQueryXHR<T>;
@@ -1410,8 +1410,8 @@ interface JQueryTransport {
       status: number,
       statusText: string,
       responses?: { [dataType: string]: any },
-      headers?: string
-    ) => any
+      headers?: string,
+    ) => any,
   ): any;
   abort(): any;
 }
@@ -1547,7 +1547,7 @@ interface JQuery {
       step?: Function;
       queue?: boolean;
       specialEasing?: any;
-    }
+    },
   ): JQuery;
 
   delay(duration: number, queueName?: string): JQuery;
@@ -1621,7 +1621,7 @@ interface JQuery {
 
   hover(
     handlerIn: (eventObject: JQueryEventObject) => any,
-    handlerOut: (eventObject: JQueryEventObject) => any
+    handlerOut: (eventObject: JQueryEventObject) => any,
   ): JQuery;
   hover(handlerInOut: (eventObject: JQueryEventObject) => any): JQuery;
 

@@ -113,7 +113,7 @@ export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
         const { data } = (await postRobot.send(
           this.childWindow,
           "snapshotRequest",
-          this.props.pendingSnapshotRequest
+          this.props.pendingSnapshotRequest,
         )) as { data: SnapshotResponse };
         if (this.props.pendingSnapshotRequest.type === "notebook") {
           if (data.imageSrc === undefined) {
@@ -145,7 +145,7 @@ export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
 
 export const makeMapStateToProps = (
   initialState: AppState,
-  ownProps: ComponentProps
+  ownProps: ComponentProps,
 ): ((state: AppState) => StateProps) => {
   const mapStateToProps = (state: CdbAppState): StateProps => {
     let outputs = Immutable.List();
@@ -181,7 +181,7 @@ export const makeMapStateToProps = (
 
 export const makeMapDispatchToProps = (
   initialDispath: Dispatch,
-  ownProps: ComponentProps
+  ownProps: ComponentProps,
 ): ((dispatch: Dispatch) => DispatchProps) => {
   const { id, contentRef } = ownProps;
   const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -194,7 +194,7 @@ export const makeMapDispatchToProps = (
             metadata,
             index: index || 0,
             mediaType,
-          })
+          }),
         );
       },
       storeSnapshotFragment: (cellId: string, snapshot: SnapshotFragment) =>
@@ -209,5 +209,5 @@ export const makeMapDispatchToProps = (
 
 export default connect<StateProps, DispatchProps, ComponentProps, AppState>(
   makeMapStateToProps,
-  makeMapDispatchToProps
+  makeMapDispatchToProps,
 )(SandboxOutputs);

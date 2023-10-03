@@ -130,7 +130,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
   public getMongoWarningNotificationMessage = (): JSX.Element => {
     const warningMessage = this.props.indexesToAdd.find(
-      (addMongoIndexProps) => addMongoIndexProps.notification?.type === MongoNotificationType.Warning
+      (addMongoIndexProps) => addMongoIndexProps.notification?.type === MongoNotificationType.Warning,
     )?.notification.message;
 
     if (warningMessage) {
@@ -163,7 +163,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
   private getMongoIndexDisplayProps = (
     mongoIndex: MongoIndex,
     arrayPosition: number,
-    isCurrentIndex: boolean
+    isCurrentIndex: boolean,
   ): MongoIndexDisplayProps => {
     const keys = mongoIndex?.key?.keys;
     const type = getMongoIndexType(keys);
@@ -261,7 +261,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
   private renderIndexesToBeDropped = (): JSX.Element => {
     const indexesToBeDropped = this.props.indexesToDrop.map((dropIndex, arrayPosition) =>
-      this.getMongoIndexDisplayProps(this.props.mongoIndexes[dropIndex], arrayPosition, false)
+      this.getMongoIndexDisplayProps(this.props.mongoIndexes[dropIndex], arrayPosition, false),
     );
 
     return (

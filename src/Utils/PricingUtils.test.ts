@@ -326,10 +326,10 @@ describe("PricingUtils Tests", () => {
         1 /*RU/s*/,
         "default" /* cloud */,
         1 /* region */,
-        true /* multimaster */
+        true /* multimaster */,
       );
       expect(value).toBe(
-        "Cost (USD): <b>$0.000080 hourly / $0.0019 daily / $0.058 monthly </b> (1 region, 1RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
+        "Cost (USD): <b>$0.000080 hourly / $0.0019 daily / $0.058 monthly </b> (1 region, 1RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>",
       );
     });
 
@@ -338,10 +338,10 @@ describe("PricingUtils Tests", () => {
         1 /*RU/s*/,
         "mooncake" /* cloud */,
         1 /* region */,
-        true /* multimaster */
+        true /* multimaster */,
       );
       expect(value).toBe(
-        "Cost (RMB): <b>¥0.00051 hourly / ¥0.012 daily / ¥0.37 monthly </b> (1 region, 1RU/s, ¥0.00051/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
+        "Cost (RMB): <b>¥0.00051 hourly / ¥0.012 daily / ¥0.37 monthly </b> (1 region, 1RU/s, ¥0.00051/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>",
       );
     });
 
@@ -350,10 +350,10 @@ describe("PricingUtils Tests", () => {
         400 /*RU/s*/,
         "default" /* cloud */,
         2 /* region */,
-        true /* multimaster */
+        true /* multimaster */,
       );
       expect(value).toBe(
-        "Cost (USD): <b>$0.13 hourly / $3.07 daily / $93.44 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
+        "Cost (USD): <b>$0.13 hourly / $3.07 daily / $93.44 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>",
       );
     });
 
@@ -362,10 +362,10 @@ describe("PricingUtils Tests", () => {
         400 /*RU/s*/,
         "default" /* cloud */,
         2 /* region */,
-        false /* multimaster */
+        false /* multimaster */,
       );
       expect(value).toBe(
-        "Cost (USD): <b>$0.064 hourly / $1.54 daily / $46.72 monthly </b> (2 regions, 400RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
+        "Cost (USD): <b>$0.064 hourly / $1.54 daily / $46.72 monthly </b> (2 regions, 400RU/s, $0.00008/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>",
       );
     });
   });
@@ -377,7 +377,7 @@ describe("PricingUtils Tests", () => {
         "default" /* cloud */,
         1 /* region */,
         true /* multimaster */,
-        false
+        false,
       );
       expect(value).toBe("I acknowledge the estimated $0.0019 daily cost for the throughput above.");
     });
@@ -388,7 +388,7 @@ describe("PricingUtils Tests", () => {
         "mooncake" /* cloud */,
         1 /* region */,
         true /* multimaster */,
-        false
+        false,
       );
       expect(value).toBe("I acknowledge the estimated ¥0.012 daily cost for the throughput above.");
     });
@@ -399,7 +399,7 @@ describe("PricingUtils Tests", () => {
         "default" /* cloud */,
         2 /* region */,
         true /* multimaster */,
-        false
+        false,
       );
       expect(value).toBe("I acknowledge the estimated $3.07 daily cost for the throughput above.");
     });
@@ -410,7 +410,7 @@ describe("PricingUtils Tests", () => {
         "default" /* cloud */,
         2 /* region */,
         false /* multimaster */,
-        false
+        false,
       );
       expect(value).toBe("I acknowledge the estimated $1.54 daily cost for the throughput above.");
     });

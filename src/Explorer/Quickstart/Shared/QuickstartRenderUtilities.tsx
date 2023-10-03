@@ -31,7 +31,7 @@ export const customPivotHeaderRenderer = (
   link: IPivotItemProps,
   defaultRenderer: (link?: IPivotItemProps) => JSX.Element | null,
   currentStep: number,
-  newStep: number
+  newStep: number,
 ): JSX.Element | null => {
   if (!link || !defaultRenderer) {
     return null;

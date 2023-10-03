@@ -101,7 +101,7 @@ export default class Explorer {
     this.phoenixClient = new PhoenixClient(userContext?.databaseAccount?.id);
     useNotebook.subscribe(
       () => this.refreshCommandBarButtons(),
-      (state) => state.isNotebooksEnabledForAccount
+      (state) => state.isNotebooksEnabledForAccount,
     );
 
     this.queriesClient = new QueriesClient(this);
@@ -130,7 +130,7 @@ export default class Explorer {
           useCommandBar.getState().setContextButtons([]);
         }
       },
-      (state) => state.openedTabs
+      (state) => state.openedTabs,
     );
 
     this.isTabsContentExpanded = ko.observable(false);
@@ -140,7 +140,7 @@ export default class Explorer {
       (e) => {
         e.preventDefault();
       },
-      false
+      false,
     );
 
     $(() => {
@@ -162,13 +162,13 @@ export default class Explorer {
     TelemetryProcessor.traceSuccess(
       Action.InitializeDataExplorer,
       { dataExplorerArea: Constants.Areas.ResourceTree },
-      startKey
+      startKey,
     );
 
     useNotebook.subscribe(
       async () => this.initiateAndRefreshNotebookList(),
       (state) => [state.isNotebookEnabled, state.isRefreshed],
-      shallow
+      shallow,
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);
@@ -226,7 +226,7 @@ export default class Explorer {
       onPrimaryButtonClick: async () => {
         const startTime = TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
         const clearInProgressMessage = logConsoleProgress(
-          "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account."
+          "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account.",
         );
         useNotebook.getState().setIsSynapseLinkUpdating(true);
         useDialog.getState().closeDialog();
@@ -275,7 +275,7 @@ export default class Explorer {
     const ONE_DAY_IN_MS = 86400000;
     const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
       userContext.databaseAccount?.systemData?.createdAt || "",
-      NINETY_DAYS_IN_MS
+      NINETY_DAYS_IN_MS,
     );
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
 
@@ -343,15 +343,15 @@ export default class Explorer {
         {
           dataExplorerArea: Constants.Areas.ResourceTree,
         },
-        startKey
+        startKey,
       );
       const currentDatabases = useDatabases.getState().databases;
       const deltaDatabases = this.getDeltaDatabases(databases, currentDatabases);
       let updatedDatabases = currentDatabases.filter(
-        (database) => !deltaDatabases.toDelete.some((deletedDatabase) => deletedDatabase.id() === database.id())
+        (database) => !deltaDatabases.toDelete.some((deletedDatabase) => deletedDatabase.id() === database.id()),
       );
       updatedDatabases = [...updatedDatabases, ...deltaDatabases.toAdd].sort((db1, db2) =>
-        db1.id().localeCompare(db2.id())
+        db1.id().localeCompare(db2.id()),
       );
       useDatabases.setState({ databases: updatedDatabases });
       await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
@@ -364,7 +364,7 @@ export default class Explorer {
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
       logConsoleError(`Error while refreshing databases: ${errorMessage}`);
     }
@@ -462,7 +462,7 @@ export default class Explorer {
             .getState()
             .showOkModalDialog(
               "Connection Failed",
-              "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket."
+              "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
             );
         }
         throw error;
@@ -480,7 +480,7 @@ export default class Explorer {
   private async setNotebookInfo(
     shouldUseNotebookStates: boolean,
     connectionInfo: IResponse<IPhoenixServiceInfo>,
-    connectionStatus: DataModels.ContainerConnectionInfo
+    connectionStatus: DataModels.ContainerConnectionInfo,
   ) {
     const containerData = {
       forwardingId: connectionInfo.data.forwardingId,
@@ -512,7 +512,7 @@ export default class Explorer {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookClient) {
       handleError(
         "Attempt to reset notebook workspace, but notebook is not enabled",
-        "Explorer/resetNotebookWorkspace"
+        "Explorer/resetNotebookWorkspace",
       );
       return;
     }
@@ -540,7 +540,7 @@ export default class Explorer {
       const { value: workspaces } = await listByDatabaseAccount(
         userContext.subscriptionId,
         userContext.resourceGroup,
-        userContext.databaseAccount.name
+        userContext.databaseAccount.name,
       );
       return workspaces && workspaces.length > 0 && workspaces.some((workspace) => workspace.name === "default");
     } catch (error) {
@@ -608,7 +608,7 @@ export default class Explorer {
 
   private getDeltaDatabases(
     updatedDatabaseList: DataModels.Database[],
-    databases: ViewModels.Database[]
+    databases: ViewModels.Database[],
   ): {
     toAdd: ViewModels.Database[];
     toDelete: ViewModels.Database[];
@@ -616,19 +616,19 @@ export default class Explorer {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         databases,
-        (existingDatabase: ViewModels.Database) => existingDatabase.id() === database.id
+        (existingDatabase: ViewModels.Database) => existingDatabase.id() === database.id,
       );
       return !databaseExists;
     });
     const databasesToAdd: ViewModels.Database[] = newDatabases.map(
-      (newDatabase: DataModels.Database) => new Database(this, newDatabase)
+      (newDatabase: DataModels.Database) => new Database(this, newDatabase),
     );
 
     const databasesToDelete: ViewModels.Database[] = [];
     databases.forEach((database: ViewModels.Database) => {
       const databasePresentInUpdatedList = _.some(
         updatedDatabaseList,
-        (db: DataModels.Database) => db.id === database.id()
+        (db: DataModels.Database) => db.id === database.id(),
       );
       if (!databasePresentInUpdatedList) {
         databasesToDelete.push(database);
@@ -640,7 +640,7 @@ export default class Explorer {
 
   private async refreshAndExpandNewDatabases(
     newDatabases: ViewModels.Database[],
-    databases: ViewModels.Database[]
+    databases: ViewModels.Database[],
   ): Promise<void> {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
     // i.e addition of stored procedures, etc.
@@ -669,9 +669,9 @@ export default class Explorer {
           TelemetryProcessor.traceSuccess(
             Action.LoadCollections,
             { dataExplorerArea: Constants.Areas.ResourceTree },
-            startKey
+            startKey,
           );
-        })
+        }),
       );
     } catch (error) {
       TelemetryProcessor.traceFailure(
@@ -681,7 +681,7 @@ export default class Explorer {
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
     }
   }
@@ -698,7 +698,7 @@ export default class Explorer {
     name: string,
     content: string,
     parent: NotebookContentItem,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): Promise<NotebookContentItem> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
@@ -758,7 +758,7 @@ export default class Explorer {
     content: NotebookPaneContent,
     notebookContentRef?: string,
     onTakeSnapshot?: (request: SnapshotRequest) => void,
-    onClosePanel?: () => void
+    onClosePanel?: () => void,
   ): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(
@@ -766,7 +766,7 @@ export default class Explorer {
         content,
         notebookContentRef,
         onTakeSnapshot,
-        onClosePanel
+        onClosePanel,
       );
     }
   }
@@ -803,7 +803,7 @@ export default class Explorer {
         ViewModels.CollectionTabKind.NotebookV2,
         (tab) =>
           (tab as NotebookV2Tab).notebookPath &&
-          FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
+          FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path),
       ) as NotebookV2Tab[];
     let notebookTab = notebookTabs && notebookTabs[0];
 
@@ -873,7 +873,7 @@ export default class Explorer {
             this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input, isGithubTree)
           }
           notebookFile={notebookFile}
-        />
+        />,
       );
     }
   }
@@ -903,7 +903,7 @@ export default class Explorer {
           this.notebookManager?.notebookContentClient.createDirectory(notebookFile, input, isGithubTree)
         }
         notebookFile={parent}
-      />
+      />,
     );
   }
 
@@ -951,7 +951,7 @@ export default class Explorer {
       (error) => {
         logConsoleError(`Could not download notebook ${getErrorMessage(error)}`);
         clearMessage();
-      }
+      },
     );
   }
 
@@ -1004,7 +1004,7 @@ export default class Explorer {
 
     return this.notebookManager?.notebookContentClient.deleteContentItem(item, isGithubTree).then(
       () => logConsoleInfo(`Successfully deleted: ${item.path}`),
-      (reason) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
+      (reason) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`),
     );
   }
 
@@ -1034,7 +1034,7 @@ export default class Explorer {
           },
           "Cancel",
           undefined,
-          this.getNewNoteWarningText()
+          this.getNewNoteWarningText(),
         );
       }
     } else {
@@ -1073,7 +1073,7 @@ export default class Explorer {
           {
             dataExplorerArea: Constants.Areas.Notebook,
           },
-          startKey
+          startKey,
         );
         return this.openNotebook(newFile);
       })
@@ -1088,7 +1088,7 @@ export default class Explorer {
             error: errorMessage,
             errorStack: getErrorStack(error),
           },
-          startKey
+          startKey,
         );
       })
       .finally(clearInProgressMessage);
@@ -1116,7 +1116,7 @@ export default class Explorer {
           .getState()
           .showOkModalDialog(
             "Failed to connect",
-            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again."
+            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again.",
           );
       }
     } else {
@@ -1182,7 +1182,7 @@ export default class Explorer {
     selectedTab?: GalleryTabKind,
     notebookUrl?: string,
     galleryItem?: IGalleryItem,
-    isFavorite?: boolean
+    isFavorite?: boolean,
   ): Promise<void> {
     const title = "Gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
@@ -1211,8 +1211,8 @@ export default class Explorer {
             notebookUrl,
             galleryItem,
             isFavorite,
-          }
-        )
+          },
+        ),
       );
     }
   }
@@ -1221,14 +1221,14 @@ export default class Explorer {
     options: {
       databaseId?: string;
       isQuickstart?: boolean;
-    } = {}
+    } = {},
   ): Promise<void> {
     if (userContext.apiType === "Cassandra") {
       useSidePanel
         .getState()
         .openSidePanel(
           "Add Table",
-          <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
+          <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />,
         );
     } else {
       const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
@@ -1298,7 +1298,7 @@ export default class Explorer {
         },
         "Cancel",
         undefined,
-        this.getNewNoteWarningText()
+        this.getNewNoteWarningText(),
       );
     } else {
       parent = parent || this.resourceTree.myNotebooksContentRoot;
@@ -1311,7 +1311,7 @@ export default class Explorer {
       .getState()
       .openSidePanel(
         "Upload file to notebook server",
-        <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />
+        <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />,
       );
   }
 

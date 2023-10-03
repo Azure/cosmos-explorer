@@ -3,12 +3,12 @@ import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
   endpointToValidate: string | undefined,
-  allowedEndpoints: ReadonlyArray<string>
+  allowedEndpoints: ReadonlyArray<string>,
 ): boolean {
   try {
     return validateEndpointInternal(
       endpointToValidate,
-      allowedEndpoints.map((e) => e)
+      allowedEndpoints.map((e) => e),
     );
   } catch (reason) {
     Logger.logError(`${endpointToValidate} not allowed`, "validateEndpoint");
@@ -19,7 +19,7 @@ export function validateEndpoint(
 
 function validateEndpointInternal(
   endpointToValidate: string | undefined,
-  allowedEndpoints: ReadonlyArray<string>
+  allowedEndpoints: ReadonlyArray<string>,
 ): boolean {
   if (endpointToValidate === undefined) {
     return false;
@@ -31,7 +31,7 @@ function validateEndpointInternal(
 
   if (!valid) {
     throw new Error(
-      `${endpointToValidate} is not an allowed endpoint. Allowed endpoints are ${allowedEndpoints.toString()}`
+      `${endpointToValidate} is not an allowed endpoint. Allowed endpoints are ${allowedEndpoints.toString()}`,
     );
   }
 

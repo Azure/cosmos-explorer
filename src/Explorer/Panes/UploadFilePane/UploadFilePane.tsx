@@ -43,7 +43,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({ upload
         (error: string) => {
           setFormErrors(errorMessage);
           logConsoleError(`${errorMessage} ${file.name}: ${error}`);
-        }
+        },
       )
       .finally(() => {
         setIsExecuting(false);

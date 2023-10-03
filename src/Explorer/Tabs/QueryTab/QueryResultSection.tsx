@@ -2,15 +2,18 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
+  Icon,
+  Link,
   Pivot,
   PivotItem,
   SelectionMode,
   Stack,
   Text,
+  IconButton,
+  TooltipHost,
 } from "@fluentui/react";
 import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
-import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
@@ -22,6 +25,8 @@ import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
 import RunQuery from "../../../../images/RunQuery.png";
 import InfoColor from "../../../../images/info_color.svg";
 import { QueryResults } from "../../../Contracts/ViewModels";
+import copy from "clipboard-copy";
+import CopilotCopy from "../../../../images/CopilotCopy.svg";
 
 interface QueryResultProps {
   isMongoDB: boolean;
@@ -51,11 +56,33 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
 
   const onRender = (item: IDocument): JSX.Element => (
     <>
-      <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>
       <Text style={{ paddingLeft: 10, margin: 0 }}>{`${item.metric}`}</Text>
     </>
   );
   const columns: IColumn[] = [
+    {
+      key: "column1",
+      name: "",
+      minWidth: 10,
+      maxWidth: 12,
+      data: String,
+      fieldName: "",
+      onRender: (item: IDocument) => {
+        if (item.toolTip !== "") {
+          return (
+            <>
+              <TooltipHost content={`${item.toolTip}`}>
+                <Link style={{ color: "#323130" }}>
+                  <Icon iconName="Info" ariaLabel={`${item.toolTip}`} className="panelInfoIcon" tabIndex={0} />
+                </Link>
+              </TooltipHost>
+            </>
+          );
+        } else {
+          return undefined;
+        }
+      },
+    },
     {
       key: "column2",
       name: "METRIC",
@@ -118,7 +145,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
       // for IE and Edge
       navigator.msSaveBlob(
         new Blob([csvData], { type: "data:text/csv;charset=utf-8" }),
-        "PerPartitionQueryMetrics.csv"
+        "PerPartitionQueryMetrics.csv",
       );
     } else {
       const downloadLink: HTMLAnchorElement = document.createElement("a");
@@ -305,7 +332,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
           metric: "Document write time",
           value: `${aggregatedQueryMetrics.documentWriteTime.toString() || 0} ms`,
           toolTip: "Time spent to write query result set to response buffer",
-        }
+        },
       );
     }
 
@@ -326,6 +353,10 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
     }
 
     return items;
+  };
+
+  const onClickCopyResults = (): void => {
+    copy(queryResultsString);
   };
 
   return (
@@ -405,6 +436,17 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                         </span>
                       </>
                     )}
+                    <IconButton
+                      style={{
+                        height: "100%",
+                        verticalAlign: "middle",
+                        float: "right",
+                      }}
+                      iconProps={{ imageProps: { src: CopilotCopy } }}
+                      title="Copy to Clipboard"
+                      ariaLabel="Copy"
+                      onClick={onClickCopyResults}
+                    />
                   </div>
                   {queryResults && queryResultsString?.length > 0 && !error && (
                     <div

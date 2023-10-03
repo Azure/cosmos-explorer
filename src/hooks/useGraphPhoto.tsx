@@ -14,7 +14,7 @@ export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
   };
 
   return fetch(`${configContext.GRAPH_ENDPOINT}/me/thumbnailPhoto?api-version=1.6`, options).then((response) =>
-    response.blob()
+    response.blob(),
   );
 }
 

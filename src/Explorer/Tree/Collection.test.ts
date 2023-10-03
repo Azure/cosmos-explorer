@@ -8,7 +8,7 @@ describe("Collection", () => {
     new Collection(container, databaseId, data);
 
   const generateMockCollectionsDataModelWithPartitionKey = (
-    partitionKey: DataModels.PartitionKey
+    partitionKey: DataModels.PartitionKey,
   ): DataModels.Collection => {
     return {
       defaultTtl: 1,

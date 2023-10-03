@@ -62,7 +62,7 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
 const onNumberOfInstancesChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
-  baselineValues: Map<string, SmartUiInput>
+  baselineValues: Map<string, SmartUiInput>,
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
   const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
@@ -93,7 +93,7 @@ const onNumberOfInstancesChange = (
 const onEnableMaterializedViewsBuilderChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
+  baselineValues: ReadonlyMap<string, SmartUiInput>,
 ): Map<string, SmartUiInput> => {
   currentValues.set("enableMaterializedViewsBuilder", { value: newValue });
   const MaterializedViewsBuilderOriginallyEnabled = baselineValues.get("enableMaterializedViewsBuilder")
@@ -247,7 +247,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
 
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: Map<string, SmartUiInput>
+    baselineValues: Map<string, SmartUiInput>,
   ): Promise<OnSaveResult> => {
     selfServeTrace({ selfServeClassName: MaterializedViewsBuilder.name });
 

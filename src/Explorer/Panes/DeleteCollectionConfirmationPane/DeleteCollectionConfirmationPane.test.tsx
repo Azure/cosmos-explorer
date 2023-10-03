@@ -148,7 +148,7 @@ describe("Delete Collection Confirmation Pane", () => {
         "testDatabaseAccountId",
         "testDatabaseAccountName",
         ApiKind.SQL,
-        feedbackText
+        feedbackText,
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
       expect(TelemetryProcessor.trace).toHaveBeenCalledWith(Action.DeleteCollection, ActionModifiers.Mark, {

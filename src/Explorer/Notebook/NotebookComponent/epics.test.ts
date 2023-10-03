@@ -131,7 +131,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelSpecName,
         cwd,
         selectNextKernel: true,
-      })
+      }),
     );
 
     (sessions as any).__setResponse({
@@ -197,7 +197,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelSpecName,
         cwd,
         selectNextKernel: true,
-      })
+      }),
     );
 
     (sessions as any).__setResponse({
@@ -250,7 +250,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelSpecName: undefined,
         cwd,
         selectNextKernel: true,
-      })
+      }),
     );
 
     (sessions as any).__setResponse({
@@ -299,7 +299,7 @@ describe("launchWebSocketKernelEpic", () => {
         kernelSpecName: undefined,
         cwd,
         selectNextKernel: true,
-      })
+      }),
     );
 
     (sessions as any).__setResponse({
@@ -397,7 +397,7 @@ describe("launchWebSocketKernelEpic", () => {
           kernelSpecName: "kernel2",
           cwd: "cwd",
           selectNextKernel: true,
-        })
+        }),
       );
 
       await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
@@ -418,7 +418,7 @@ describe("launchWebSocketKernelEpic", () => {
           kernelSpecName: undefined,
           cwd: "cwd",
           selectNextKernel: true,
-        })
+        }),
       );
 
       await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
@@ -440,7 +440,7 @@ describe("launchWebSocketKernelEpic", () => {
           kernelSpecName: "This is an unknown kernelspec",
           cwd: "cwd",
           selectNextKernel: true,
-        })
+        }),
       );
 
       await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();
@@ -462,7 +462,7 @@ describe("launchWebSocketKernelEpic", () => {
           kernelSpecName: "ernel1",
           cwd: "cwd",
           selectNextKernel: true,
-        })
+        }),
       );
 
       await launchWebSocketKernelEpic(action$, state$).pipe(toArray()).toPromise();

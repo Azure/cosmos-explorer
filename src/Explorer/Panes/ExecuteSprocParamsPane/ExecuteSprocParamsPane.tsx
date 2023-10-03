@@ -119,7 +119,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
           }
           paramValue={paramKeyValue.text}
           selectedKey={paramKeyValue.key}
-        />
+        />,
       );
     }
 

@@ -3,20 +3,20 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/2023-04-15/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-09-15-preview/cosmos-db.json
 */
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2023-04-15";
+const apiVersion = "2023-09-15-preview";
 
 /* Retrieves the metrics determined by the given filter for the given database account and database. */
 export async function listMetrics(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseRid: string
+  databaseRid: string,
 ): Promise<Types.MetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metrics`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -27,7 +27,7 @@ export async function listUsages(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseRid: string
+  databaseRid: string,
 ): Promise<Types.UsagesResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/usages`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -38,7 +38,7 @@ export async function listMetricDefinitions(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseRid: string
+  databaseRid: string,
 ): Promise<Types.MetricDefinitionsListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/metricDefinitions`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

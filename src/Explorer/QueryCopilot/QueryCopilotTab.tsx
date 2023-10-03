@@ -139,7 +139,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
 
     // Filter suggested prompts
     const filteredSuggested = suggestedPrompts.filter((prompt) =>
-      prompt.text.toLowerCase().includes(value.toLowerCase())
+      prompt.text.toLowerCase().includes(value.toLowerCase()),
     );
     setFilteredSuggestedPrompts(filteredSuggested);
   };
@@ -149,7 +149,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     const existingHistories = histories.map((history) => history.replace(/\s+/g, " ").trim());
 
     const updatedHistories = existingHistories.filter(
-      (history) => history.toLowerCase() !== formattedUserPrompt.toLowerCase()
+      (history) => history.toLowerCase() !== formattedUserPrompt.toLowerCase(),
     );
     const newHistories = [formattedUserPrompt, ...updatedHistories.slice(0, 2)];
 
@@ -239,7 +239,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
       commandButtonLabel: "Save Query",
       ariaLabel: "Save Query",
       hasPopup: false,
-      disabled: query?.trim() === "",
+      disabled: true,
     };
 
     // Sample Prompts temporary disabled due current design
@@ -546,6 +546,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
               language={"sql"}
               content={query}
               isReadOnly={false}
+              wordWrap={"on"}
               ariaLabel={"Editing Query"}
               lineNumbers={"on"}
               onContentChanged={(newQuery: string) => setQuery(newQuery)}

@@ -248,7 +248,7 @@ export class NodePropertiesComponent extends React.Component<
       },
       () => {
         GraphExplorer.reportToConsole(ConsoleDataType.Error, "Failed to update Vertex sources.");
-      }
+      },
     );
   }
 
@@ -394,7 +394,7 @@ export class NodePropertiesComponent extends React.Component<
     isSectionExpanded: boolean,
     expandClickHandler: () => void,
     currentView: Mode,
-    saveClickHandler: () => void
+    saveClickHandler: () => void,
   ): JSX.Element {
     if (isSectionExpanded) {
       return (
@@ -444,7 +444,7 @@ export class NodePropertiesComponent extends React.Component<
           this.state.isPropertiesExpanded,
           this.showPropertyEditor.bind(this),
           Mode.PROPERTY_EDITOR,
-          this.saveProperties.bind(this)
+          this.saveProperties.bind(this),
         )}
         <AccessibleElement
           className="sectionHeader"
@@ -508,7 +508,7 @@ export class NodePropertiesComponent extends React.Component<
           isNeighborExpanded,
           showNeighborEditor,
           currentNeighborView,
-          this.updateVertexNeighbors.bind(this, isSource)
+          this.updateVertexNeighbors.bind(this, isSource),
         )}
 
         <AccessibleElement

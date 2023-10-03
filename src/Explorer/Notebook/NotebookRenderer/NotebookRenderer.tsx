@@ -93,7 +93,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
           this.notebookRendererRef.current,
           this.props.pendingSnapshotRequest.aspectRatio,
           [...this.props.cellOutputSnapshots.values()],
-          this.props.pendingSnapshotRequest.downloadFilename
+          this.props.pendingSnapshotRequest.downloadFilename,
         );
         this.props.storeNotebookSnapshot(result.imageSrc, this.props.pendingSnapshotRequest.requestId);
       } catch (error) {
@@ -136,7 +136,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                               ? () => <SandboxOutputs id={id} contentRef={contentRef} />
                               : undefined,
                           }}
-                        </CodeCell>
+                        </CodeCell>,
                       ),
                     markdown: ({ id, contentRef }: { id: any; contentRef: ContentRef }) =>
                       decorate(
@@ -152,7 +152,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
-                        </MarkdownCell>
+                        </MarkdownCell>,
                       ),
 
                     raw: ({ id, contentRef }: { id: any; contentRef: ContentRef }) =>
@@ -169,7 +169,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
-                        </RawCell>
+                        </RawCell>,
                       ),
                   }}
                 </Cells>
@@ -186,7 +186,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
 
 export const makeMapStateToProps = (
   initialState: CdbAppState,
-  ownProps: NotebookRendererProps
+  ownProps: NotebookRendererProps,
 ): ((state: CdbAppState) => StateProps) => {
   const mapStateToProps = (state: CdbAppState): StateProps => {
     const { contentRef } = ownProps;
@@ -210,7 +210,7 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
           actions.addTransform({
             mediaType: transform.MIMETYPE,
             component: transform,
-          })
+          }),
         ),
       storeNotebookSnapshot: (imageSrc: string, requestId: string) =>
         dispatch(cdbActions.storeNotebookSnapshot({ imageSrc, requestId })),

@@ -9,7 +9,7 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export async function readStoredProcedures(
   databaseId: string,
-  collectionId: string
+  collectionId: string,
 ): Promise<(StoredProcedureDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying stored procedures for container ${collectionId}`);
   try {
@@ -23,7 +23,7 @@ export async function readStoredProcedures(
         userContext.resourceGroup,
         userContext.databaseAccount.name,
         databaseId,
-        collectionId
+        collectionId,
       );
       const listResult = rpResponse as SqlStoredProcedureListResult;
       if (listResult) {

@@ -48,7 +48,7 @@ export const ResourceTokenTree: React.FC = (): JSX.Element => {
         useTabs
           .getState()
           .refreshActiveTab(
-            (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+            (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
           );
       },
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),

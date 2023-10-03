@@ -10,7 +10,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function createTrigger(
   databaseId: string,
   collectionId: string,
-  trigger: SqlTriggerResource
+  trigger: SqlTriggerResource,
 ): Promise<TriggerDefinition | SqlTriggerResource> {
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
   try {
@@ -26,7 +26,7 @@ export async function createTrigger(
           userContext.databaseAccount.name,
           databaseId,
           collectionId,
-          trigger.id
+          trigger.id,
         );
         if (getResponse?.properties?.resource) {
           throw new Error(`Create trigger failed: ${trigger.id} already exists`);
@@ -50,7 +50,7 @@ export async function createTrigger(
         databaseId,
         collectionId,
         trigger.id,
-        createTriggerParams
+        createTriggerParams,
       );
       return rpResponse && rpResponse.properties?.resource;
     }
@@ -58,7 +58,7 @@ export async function createTrigger(
     const response = await client()
       .database(databaseId)
       .container(collectionId)
-      .scripts.triggers.create((trigger as unknown) as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type
+      .scripts.triggers.create(trigger as unknown as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type
     return response.resource;
   } catch (error) {
     handleError(error, "CreateTrigger", `Error while creating trigger ${trigger.id}`);

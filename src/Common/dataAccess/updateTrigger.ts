@@ -10,7 +10,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function updateTrigger(
   databaseId: string,
   collectionId: string,
-  trigger: SqlTriggerResource
+  trigger: SqlTriggerResource,
 ): Promise<SqlTriggerResource | TriggerDefinition> {
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
   const { authType, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
@@ -22,7 +22,7 @@ export async function updateTrigger(
         databaseAccount.name,
         databaseId,
         collectionId,
-        trigger.id
+        trigger.id,
       );
 
       if (getResponse?.properties?.resource) {
@@ -39,7 +39,7 @@ export async function updateTrigger(
           databaseId,
           collectionId,
           trigger.id,
-          createTriggerParams
+          createTriggerParams,
         );
         return rpResponse && rpResponse.properties?.resource;
       }
@@ -51,7 +51,7 @@ export async function updateTrigger(
       .database(databaseId)
       .container(collectionId)
       .scripts.trigger(trigger.id)
-      .replace((trigger as unknown) as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type
+      .replace(trigger as unknown as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type
     return response?.resource;
   } catch (error) {
     handleError(error, "UpdateTrigger", `Error while updating trigger ${trigger.id}`);

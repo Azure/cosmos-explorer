@@ -1,9 +1,9 @@
 import {
   ChoiceGroup,
   DefaultButton,
-  Dialog as FluentDialog,
   DialogFooter,
   DialogType,
+  Dialog as FluentDialog,
   FontIcon,
   IButtonProps,
   IChoiceGroupProps,
@@ -15,7 +15,7 @@ import {
   ProgressIndicator,
   TextField,
 } from "@fluentui/react";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import create, { UseStore } from "zustand";
 
 export interface DialogState {
@@ -33,7 +33,7 @@ export interface DialogState {
     contentHtml?: JSX.Element,
     choiceGroupProps?: IChoiceGroupProps,
     textFieldProps?: TextFieldProps,
-    primaryButtonDisabled?: boolean
+    primaryButtonDisabled?: boolean,
   ) => void;
   showOkModalDialog: (title: string, subText: string) => void;
 }
@@ -50,7 +50,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
         showOkCancelModalDialog: state.showOkCancelModalDialog,
         showOkModalDialog: state.showOkModalDialog,
       }),
-      true // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
+      true, // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
     ),
   showOkCancelModalDialog: (
     title: string,
@@ -62,7 +62,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
     contentHtml?: JSX.Element,
     choiceGroupProps?: IChoiceGroupProps,
     textFieldProps?: TextFieldProps,
-    primaryButtonDisabled?: boolean
+    primaryButtonDisabled?: boolean,
   ): void =>
     get().openDialog({
       isModal: true,
@@ -156,6 +156,20 @@ export const Dialog: FC = () => {
     onDismiss,
     contentHtml,
   } = props || {};
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      useDialog.getState().closeDialog();
+    }
+  };
+
+  useEffect(() => {
+    if (visible) {
+      document.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [visible]);
 
   const dialogProps: IDialogProps = {
     hidden: !visible,

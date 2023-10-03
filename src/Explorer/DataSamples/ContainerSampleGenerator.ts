@@ -24,7 +24,7 @@ export class ContainerSampleGenerator {
    */
   public static async createSampleGeneratorAsync(
     container: Explorer,
-    isCopilot?: boolean
+    isCopilot?: boolean,
   ): Promise<ContainerSampleGenerator> {
     const generator = new ContainerSampleGenerator(container);
     let dataFileContent: any;
@@ -113,7 +113,7 @@ export class ContainerSampleGenerator {
           } catch (error) {
             NotificationConsoleUtils.logConsoleError(error);
           }
-        })
+        }),
       );
     }
   }

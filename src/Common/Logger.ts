@@ -53,7 +53,7 @@ function _generateLogEntry(
   level: Diagnostics.LogEntryLevel,
   message: string,
   area: string,
-  code?: number | string
+  code?: number | string,
 ): Diagnostics.LogEntry {
   return {
     timestamp: new Date().getUTCSeconds(),

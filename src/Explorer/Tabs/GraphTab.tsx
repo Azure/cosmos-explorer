@@ -163,7 +163,7 @@ export default class GraphTab extends TabsBase {
         onSubmit={(
           result: ViewModels.NewVertexData,
           onError: (errorMessage: string) => void,
-          onSuccess: () => void
+          onSuccess: () => void,
         ): void => {
           this.graphAccessor.addVertex(result).then(
             () => {
@@ -172,10 +172,10 @@ export default class GraphTab extends TabsBase {
             },
             (error: GraphExplorerError) => {
               onError(error.title);
-            }
+            },
           );
         }}
-      />
+      />,
     );
   }
   public openStyling(): void {
@@ -188,7 +188,7 @@ export default class GraphTab extends TabsBase {
           this.igraphConfig = igraphConfig;
           this.graphAccessor.shareIGraphConfig(igraphConfig);
         }}
-      />
+      />,
     );
   }
 

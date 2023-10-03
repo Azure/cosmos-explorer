@@ -3,19 +3,19 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/2023-04-15/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-09-15-preview/cosmos-db.json
 */
 
 import { armRequest } from "../../request";
 import * as Types from "./types";
 import { configContext } from "../../../../ConfigContext";
-const apiVersion = "2023-04-15";
+const apiVersion = "2023-09-15-preview";
 
 /* Lists the Tables under an existing Azure Cosmos DB database account. */
 export async function listTables(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.TableListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function getTable(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.TableGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -38,7 +38,7 @@ export async function createUpdateTable(
   resourceGroupName: string,
   accountName: string,
   tableName: string,
-  body: Types.TableCreateUpdateParameters
+  body: Types.TableCreateUpdateParameters,
 ): Promise<Types.TableGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -49,7 +49,7 @@ export async function deleteTable(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  tableName: string
+  tableName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -60,7 +60,7 @@ export async function getTableThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -72,7 +72,7 @@ export async function updateTableThroughput(
   resourceGroupName: string,
   accountName: string,
   tableName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -83,7 +83,7 @@ export async function migrateTableToAutoscale(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -94,7 +94,7 @@ export async function migrateTableToManualThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/tables/${tableName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });

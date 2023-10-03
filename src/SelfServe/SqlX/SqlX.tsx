@@ -71,7 +71,7 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
 const onNumberOfInstancesChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
-  baselineValues: Map<string, SmartUiInput>
+  baselineValues: Map<string, SmartUiInput>,
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
@@ -101,7 +101,7 @@ const onNumberOfInstancesChange = (
 const onEnableDedicatedGatewayChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
+  baselineValues: ReadonlyMap<string, SmartUiInput>,
 ): Map<string, SmartUiInput> => {
   currentValues.set("enableDedicatedGateway", { value: newValue });
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
@@ -279,7 +279,7 @@ export default class SqlX extends SelfServeBaseClass {
 
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: Map<string, SmartUiInput>
+    baselineValues: Map<string, SmartUiInput>,
   ): Promise<OnSaveResult> => {
     selfServeTrace({ selfServeClassName: SqlX.name });
 

@@ -62,7 +62,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
 
   const descriptionPara2 = `Would you like to publish and share "${FileSystemUtil.stripExtension(
     notebookName,
-    "ipynb"
+    "ipynb",
   )}" to the gallery?`;
 
   const options: ImageTypes[] = [ImageTypes.CustomImage, ImageTypes.Url];

@@ -27,7 +27,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
           values: [{ value: "", type: DEFAULT_PROPERTY_TYPE }],
         },
       ],
-    }
+    },
   );
 
   const propertyTypes: string[] = EditorNodePropertiesComponent.VERTEX_PROPERTY_TYPES;

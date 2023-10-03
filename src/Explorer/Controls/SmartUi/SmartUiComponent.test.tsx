@@ -122,7 +122,7 @@ describe("SmartUiComponent", () => {
         getTranslation={(key: string) => {
           return key;
         }}
-      />
+      />,
     );
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
@@ -153,7 +153,7 @@ describe("SmartUiComponent", () => {
         getTranslation={(key: string) => {
           return key;
         }}
-      />
+      />,
     );
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();

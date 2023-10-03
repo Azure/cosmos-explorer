@@ -79,8 +79,8 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
         {this.props.editedProperties.readOnlyProperties.map((nodeProp: ViewModels.InputProperty) =>
           ReadOnlyNodePropertiesComponent.renderReadOnlyPropertyKeyPair(
             nodeProp.key,
-            nodeProp.values.map((val) => val.value)
-          )
+            nodeProp.values.map((val) => val.value),
+          ),
         )}
       </React.Fragment>
     );

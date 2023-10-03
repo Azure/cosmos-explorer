@@ -61,6 +61,9 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
     `^https:\\/\\/cosmos-db-dataexplorer-germanycentral\\.azurewebsites\\.de$`,
+    `^https:\\/\\/.*\\.fabric\\.microsoft\\.com$`,
+    `^https:\\/\\/.*\\.powerbi\\.com$`,
+    `^https:\\/\\/.*\\.analysis-df\\.net$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -115,7 +118,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
   if (
     !validateEndpoint(
       newContext.BACKEND_ENDPOINT,
-      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints
+      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints,
     )
   ) {
     delete newContext.BACKEND_ENDPOINT;

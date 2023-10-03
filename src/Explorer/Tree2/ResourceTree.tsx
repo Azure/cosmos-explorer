@@ -8,7 +8,7 @@ import {
   TreeOpenChangeEvent,
   createLightTheme,
 } from "@fluentui/react-components";
-import { TreeNode2Component } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
+import { TreeNode2, TreeNode2Component } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
 import { useDatabaseTreeNodes } from "Explorer/Tree2/useDatabaseTreeNodes";
 import * as React from "react";
 import shallow from "zustand/shallow";
@@ -65,20 +65,49 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
       gitHubNotebooksContentRoot: state.gitHubNotebooksContentRoot,
       updateNotebookItem: state.updateNotebookItem,
     }),
-    shallow
+    shallow,
   );
   // const { activeTab } = useTabs();
   const databaseTreeNodes = useDatabaseTreeNodes(container, isNotebookEnabled);
-  const dataNodeTree = {
+  const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
+
+  const dataNodeTree: TreeNode2 = {
     id: "data",
     label: DATA_TREE_LABEL,
-    isExpanded: true,
     className: "accordionItemHeader",
     children: databaseTreeNodes,
     isScrollable: true,
   };
 
-  const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
+  React.useEffect(() => {
+    // Compute open items based on node.isExpanded
+    const updateOpenItems = (node: TreeNode2, parentNodeId: string): void => {
+      // This will look for ANY expanded node, event if its parent node isn't expanded
+      // and add it to the openItems list
+      const globalId = parentNodeId === undefined ? node.label : `${parentNodeId}/${node.label}`;
+
+      if (node.isExpanded) {
+        let found = false;
+        for (const id of openItems) {
+          if (id === globalId) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          setOpenItems((prevOpenItems) => [...prevOpenItems, globalId]);
+        }
+      }
+
+      if (node.children) {
+        for (const child of node.children) {
+          updateOpenItems(child, globalId);
+        }
+      }
+    };
+
+    updateOpenItems(dataNodeTree, undefined);
+  }, [databaseTreeNodes]);
 
   const handleOpenChange = (event: TreeOpenChangeEvent, data: TreeOpenChangeData) => setOpenItems(data.openItems);
 
@@ -93,13 +122,7 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
           style={{ height: "100%", width: "290px" }}
         >
           {[dataNodeTree].map((node) => (
-            <TreeNode2Component
-              key={node.label}
-              className="dataResourceTree"
-              node={node}
-              treeNodeId={node.label}
-              globalOpenIds={[...openItems].map((item) => item.toString())}
-            />
+            <TreeNode2Component key={node.label} className="dataResourceTree" node={node} treeNodeId={node.label} />
           ))}
         </Tree>
       </FluentProvider>

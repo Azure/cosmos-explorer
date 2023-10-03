@@ -35,37 +35,37 @@ export abstract class TableDataClient {
 
   public abstract createDocument(
     collection: ViewModels.Collection,
-    entity: Entities.ITableEntity
+    entity: Entities.ITableEntity,
   ): Q.Promise<Entities.ITableEntity>;
 
   public abstract updateDocument(
     collection: ViewModels.Collection,
     originalDocument: any,
-    newEntity: Entities.ITableEntity
+    newEntity: Entities.ITableEntity,
   ): Promise<Entities.ITableEntity>;
 
   public abstract queryDocuments(
     collection: ViewModels.Collection,
     query: string,
     shouldNotify?: boolean,
-    paginationToken?: string
+    paginationToken?: string,
   ): Promise<Entities.IListTableEntitiesResult>;
 
   public abstract deleteDocuments(
     collection: ViewModels.Collection,
-    entitiesToDelete: Entities.ITableEntity[]
+    entitiesToDelete: Entities.ITableEntity[],
   ): Promise<any>;
 }
 
 export class TablesAPIDataClient extends TableDataClient {
   public createDocument(
     collection: ViewModels.Collection,
-    entity: Entities.ITableEntity
+    entity: Entities.ITableEntity,
   ): Q.Promise<Entities.ITableEntity> {
     const deferred = Q.defer<Entities.ITableEntity>();
     createDocument(
       collection,
-      TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
+      TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity),
     ).then(
       (newDocument: any) => {
         const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
@@ -73,7 +73,7 @@ export class TablesAPIDataClient extends TableDataClient {
       },
       (reason) => {
         deferred.reject(reason);
-      }
+      },
     );
     return deferred.promise;
   }
@@ -81,13 +81,13 @@ export class TablesAPIDataClient extends TableDataClient {
   public async updateDocument(
     collection: ViewModels.Collection,
     originalDocument: any,
-    entity: Entities.ITableEntity
+    entity: Entities.ITableEntity,
   ): Promise<Entities.ITableEntity> {
     try {
       const newDocument = await updateDocument(
         collection,
         originalDocument,
-        TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
+        TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity),
       );
       return TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
     } catch (error) {
@@ -98,7 +98,7 @@ export class TablesAPIDataClient extends TableDataClient {
 
   public async queryDocuments(
     collection: ViewModels.Collection,
-    query: string
+    query: string,
   ): Promise<Entities.IListTableEntitiesResult> {
     try {
       const options = {
@@ -122,18 +122,18 @@ export class TablesAPIDataClient extends TableDataClient {
 
   public async deleteDocuments(
     collection: ViewModels.Collection,
-    entitiesToDelete: Entities.ITableEntity[]
+    entitiesToDelete: Entities.ITableEntity[],
   ): Promise<any> {
     const documentsToDelete: any[] = TableEntityProcessor.convertEntitiesToDocuments(
       <Entities.ITableEntityForTablesAPI[]>entitiesToDelete,
-      collection
+      collection,
     );
 
     await Promise.all(
       documentsToDelete?.map(async (document) => {
         document.id = ko.observable<string>(document.id);
         await deleteDocument(collection, document);
-      })
+      }),
     );
   }
 }
@@ -141,7 +141,7 @@ export class TablesAPIDataClient extends TableDataClient {
 export class CassandraAPIDataClient extends TableDataClient {
   public createDocument(
     collection: ViewModels.Collection,
-    entity: Entities.ITableEntity
+    entity: Entities.ITableEntity,
   ): Q.Promise<Entities.ITableEntity> {
     const clearInProgressMessage = logConsoleProgress(`Adding new row to table ${collection.id()}`);
     let properties = "(";
@@ -173,7 +173,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         (error) => {
           handleError(error, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
           deferred.reject(error);
-        }
+        },
       )
       .finally(clearInProgressMessage);
     return deferred.promise;
@@ -182,14 +182,14 @@ export class CassandraAPIDataClient extends TableDataClient {
   public async updateDocument(
     collection: ViewModels.Collection,
     originalDocument: any,
-    newEntity: Entities.ITableEntity
+    newEntity: Entities.ITableEntity,
   ): Promise<Entities.ITableEntity> {
     const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Updating row ${originalDocument.RowKey._}`);
 
     try {
       let whereSegment = " WHERE";
       let keys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys.concat(
-        collection.cassandraKeys.clusteringKeys
+        collection.cassandraKeys.clusteringKeys,
       );
       for (let keyIndex in keys) {
         const key = keys[keyIndex].property;
@@ -257,7 +257,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     collection: ViewModels.Collection,
     query: string,
     shouldNotify?: boolean,
-    paginationToken?: string
+    paginationToken?: string,
   ): Promise<Entities.IListTableEntitiesResult> {
     const clearMessage =
       shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
@@ -283,7 +283,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       });
       shouldNotify &&
         NotificationConsoleUtils.logConsoleInfo(
-          `Successfully fetched ${data.result.length} rows for table ${collection.id()}`
+          `Successfully fetched ${data.result.length} rows for table ${collection.id()}`,
         );
       return {
         Results: data.result,
@@ -300,7 +300,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   public async deleteDocuments(
     collection: ViewModels.Collection,
-    entitiesToDelete: Entities.ITableEntity[]
+    entitiesToDelete: Entities.ITableEntity[],
   ): Promise<any> {
     const query = `DELETE FROM ${collection.databaseId}.${collection.id()} WHERE `;
     const partitionKeyProperty = this.getCassandraPartitionKeyProperty(collection);
@@ -324,7 +324,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         } finally {
           clearMessage();
         }
-      })
+      }),
     );
   }
 
@@ -332,7 +332,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     cassandraEndpoint: string,
     resourceId: string,
     explorer: Explorer,
-    createKeyspaceQuery: string
+    createKeyspaceQuery: string,
   ): Q.Promise<any> {
     if (!createKeyspaceQuery) {
       return Q.reject("No query specified");
@@ -350,10 +350,10 @@ export class CassandraAPIDataClient extends TableDataClient {
           handleError(
             error,
             "CreateKeyspaceCassandra",
-            `Error while creating a keyspace with query ${createKeyspaceQuery}`
+            `Error while creating a keyspace with query ${createKeyspaceQuery}`,
           );
           deferred.reject(error);
-        }
+        },
       )
       .finally(clearInProgressMessage);
 
@@ -365,7 +365,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     resourceId: string,
     explorer: Explorer,
     createTableQuery: string,
-    createKeyspaceQuery?: string
+    createKeyspaceQuery?: string,
   ): Q.Promise<any> {
     let createKeyspacePromise: Q.Promise<any>;
     if (createKeyspaceQuery) {
@@ -387,13 +387,13 @@ export class CassandraAPIDataClient extends TableDataClient {
             (error) => {
               handleError(error, "CreateTableCassandra", `Error while creating a table with query ${createTableQuery}`);
               deferred.reject(error);
-            }
+            },
           )
           .finally(clearInProgressMessage);
       },
       (reason) => {
         deferred.reject(reason);
-      }
+      },
     );
     return deferred.promise;
   }
@@ -432,7 +432,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         (error: any) => {
           handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
           deferred.reject(error);
-        }
+        },
       )
       .done(clearInProgressMessage);
     return deferred.promise;
@@ -472,7 +472,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         (error: any) => {
           handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
           deferred.reject(error);
-        }
+        },
       )
       .done(clearInProgressMessage);
     return deferred.promise;
@@ -501,7 +501,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       },
       (reason) => {
         deferred.reject(reason);
-      }
+      },
     );
     return deferred.promise;
   }

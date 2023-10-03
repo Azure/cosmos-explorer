@@ -14,7 +14,7 @@ export const executeStoredProcedure = async (
   collection: Collection,
   storedProcedure: StoredProcedure,
   partitionKeyValue: string,
-  params: string[]
+  params: string[],
 ): Promise<ExecuteSprocResult> => {
   const clearMessage = logConsoleProgress(`Executing stored procedure ${storedProcedure.id()}`);
   const timeout = setTimeout(() => {
@@ -29,7 +29,7 @@ export const executeStoredProcedure = async (
       .execute(partitionKeyValue, params, { enableScriptLogging: true });
     clearTimeout(timeout);
     logConsoleInfo(
-      `Finished executing stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}`
+      `Finished executing stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}`,
     );
     return {
       result: response.resource,
@@ -39,7 +39,7 @@ export const executeStoredProcedure = async (
     handleError(
       error,
       "ExecuteStoredProcedure",
-      `Failed to execute stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}`
+      `Failed to execute stored procedure ${storedProcedure.id()} for container ${storedProcedure.collection.id()}`,
     );
     throw error;
   } finally {

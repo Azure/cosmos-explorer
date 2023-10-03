@@ -38,7 +38,7 @@ function generateQueryText(action: ActionContracts.OpenQueryTab, partitionKeyPro
 function openCollectionTab(
   action: ActionContracts.OpenCollectionTab,
   databases: ViewModels.Database[],
-  initialDatabaseIndex = 0
+  initialDatabaseIndex = 0,
 ) {
   for (let i = initialDatabaseIndex; i < databases.length; i++) {
     const database: ViewModels.Database = databases[i];
@@ -109,7 +109,7 @@ function openCollectionTab(
           collection.onNewQueryClick(
             collection,
             undefined,
-            generateQueryText(action as ActionContracts.OpenQueryTab, collection.partitionKeyProperties)
+            generateQueryText(action as ActionContracts.OpenQueryTab, collection.partitionKeyProperties),
           );
           break;
         }
@@ -148,7 +148,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
       .getState()
       .openSidePanel(
         "Add Table",
-        <CassandraAddCollectionPane explorer={explorer} cassandraApiClient={new CassandraAPIDataClient()} />
+        <CassandraAddCollectionPane explorer={explorer} cassandraApiClient={new CassandraAPIDataClient()} />,
       );
   } else if (
     action.paneKind === ActionContracts.PaneKind.GlobalSettings ||
@@ -161,7 +161,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
 export function handleOpenAction(
   action: ActionContracts.DataExplorerAction,
   databases: ViewModels.Database[],
-  explorer: Explorer
+  explorer: Explorer,
 ): boolean {
   if (
     action.actionType === ActionContracts.ActionType.OpenCollectionTab ||

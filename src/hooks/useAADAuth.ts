@@ -22,7 +22,7 @@ interface ReturnType {
 
 export function useAADAuth(): ReturnType {
   const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(
-    Boolean(cachedAccount && cachedTenantId) || false
+    Boolean(cachedAccount && cachedTenantId) || false,
   );
   const [account, setAccount] = React.useState<msal.AccountInfo>(cachedAccount);
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
@@ -58,7 +58,7 @@ export function useAADAuth(): ReturnType {
       setAccount(response.account);
       localStorage.setItem("cachedTenantId", response.tenantId);
     },
-    [account, tenantId]
+    [account, tenantId],
   );
 
   React.useEffect(() => {

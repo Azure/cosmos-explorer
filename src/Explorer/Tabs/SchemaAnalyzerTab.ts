@@ -16,7 +16,7 @@ export default class SchemaAnalyzerTab extends NotebookTabBase {
         notebookClient: NotebookTabBase.clientManager,
       },
       options.collection?.databaseId,
-      options.collection?.id()
+      options.collection?.id(),
     );
   }
 
@@ -29,7 +29,7 @@ export default class SchemaAnalyzerTab extends NotebookTabBase {
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Schema",
       },
-      this.onLoadStartKey
+      this.onLoadStartKey,
     );
 
     super.onActivate();

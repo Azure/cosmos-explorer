@@ -30,7 +30,7 @@ export const QuickstartTab: React.FC<QuickstartTabProps> = ({ explorer }: Quicks
     checkFirewallRules(
       "2022-11-08",
       (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
-      setIsAllPublicIPAddressEnabled
+      setIsAllPublicIPAddressEnabled,
     );
   });
 

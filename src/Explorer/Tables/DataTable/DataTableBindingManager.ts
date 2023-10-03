@@ -1,15 +1,14 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
 
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as Constants from "../Constants";
-import * as ViewModels from "../../../Contracts/ViewModels";
+import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
 import * as DataTableBuilder from "./DataTableBuilder";
 import DataTableOperationManager from "./DataTableOperationManager";
 import * as DataTableOperations from "./DataTableOperations";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
 
 /**
  * Custom binding manager of datatable
@@ -30,7 +29,7 @@ function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewM
   var operationManager = new DataTableOperationManager(
     $dataTable,
     tableEntityListViewModel,
-    queryTablesTab.tableCommands
+    queryTablesTab.tableCommands,
   );
 
   tableEntityListViewModelMap[queryTablesTab.tabId] = {
@@ -41,7 +40,6 @@ function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewM
 
   createDataTable(0, tableEntityListViewModel, queryTablesTab); // Fake a DataTable to start.
   $(window).resize(updateTableScrollableRegionMetrics);
-  operationManager.focusTable(); // Also selects the first row if needed.
 }
 
 function onTableColumnChange(enablePrompt: boolean = true, queryTablesTab: QueryTablesTab) {
@@ -55,7 +53,7 @@ function onTableColumnChange(enablePrompt: boolean = true, queryTablesTab: Query
     tableEntityListViewModel,
     queryTablesTab,
     true,
-    columnsFilter
+    columnsFilter,
   );
 }
 
@@ -64,7 +62,7 @@ function createDataTable(
   tableEntityListViewModel: TableEntityListViewModel,
   queryTablesTab: QueryTablesTab,
   destroy: boolean = false,
-  columnsFilter: boolean[] = null
+  columnsFilter: boolean[] = null,
 ): void {
   var $dataTable = tableEntityListViewModelMap[queryTablesTab.tabId].$dataTable;
   if (destroy) {
@@ -144,7 +142,7 @@ function createDataTable(
     .forEach((table) => {
       table.setAttribute(
         "summary",
-        `Header for sorting results for container ${tableEntityListViewModel.queryTablesTab.collection.id()}`
+        `Header for sorting results for container ${tableEntityListViewModel.queryTablesTab.collection.id()}`,
       );
     });
 
@@ -179,7 +177,7 @@ function getServerData(sSource: any, aoData: any, fnCallback: any, oSettings: an
     sSource,
     aoData,
     fnCallback,
-    oSettings
+    oSettings,
   );
 }
 
@@ -277,8 +275,9 @@ function updateTableScrollableRegionWidth(): void {
     }
 
     var bodyWidth = $(window).width();
-    var dataTablesScrollBodyPosLeft = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset()
-      .left;
+    var dataTablesScrollBodyPosLeft = $(tabElement)
+      .find(Constants.htmlSelectors.dataTableScrollBodySelector)
+      .offset().left;
     var scrollWidth = bodyWidth - dataTablesScrollBodyPosLeft;
 
     // jquery datatables automatically sets width:100% to both the header and the body when we use it's column autoWidth feature.
@@ -310,7 +309,7 @@ function initializeEventHandlers(): void {
         },
         /* metaKey */ null,
         /* shiftKey */ true,
-        /* altKey */ null
+        /* altKey */ null,
       );
 
       // Also reset color if [shift-] tabbing away from button while holding down 'enter'
@@ -364,10 +363,6 @@ function updateDataTableFocus(queryTablesTabId: string): void {
     if ($activeElement.is(".sorting_asc") || $activeElement.is(".sorting_desc")) {
       // If table header is selected, focus is shifted to the selected element as part of accessibility
       $activeElement && $activeElement.focus();
-    } else {
-      // If some control is active, we don't give focus back to the table,
-      // just select the first row if needed (empty selection).
-      operationManager.selectFirstIfNeeded();
     }
   }
 }

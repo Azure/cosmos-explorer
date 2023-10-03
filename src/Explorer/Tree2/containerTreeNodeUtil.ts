@@ -24,7 +24,7 @@ export const buildCollectionNode = (
   collection: ViewModels.Collection,
   isNotebookEnabled: boolean,
   container: Explorer,
-  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode2 => {
   let children: TreeNode2[];
 
@@ -45,17 +45,24 @@ export const buildCollectionNode = (
       // push to most recent
       mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
     },
-    onExpanded: () => {
+    onExpanded: async () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
       useCommandBar.getState().setContextButtons([]);
       refreshActiveTab(
         (tab: TabsBase) =>
-          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
       );
+      useDatabases.getState().updateDatabase(database);
     },
     isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
     onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
+    onCollapsed: () => {
+      collection.collapseCollection();
+      // useCommandBar.getState().setContextButtons([]);
+      useDatabases.getState().updateDatabase(database);
+    },
+    isExpanded: collection.isCollectionExpanded(),
   };
 };
 
@@ -64,7 +71,7 @@ const buildCollectionNodeChildren = (
   collection: ViewModels.Collection,
   isNotebookEnabled: boolean,
   container: Explorer,
-  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode2[] => {
   const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   const children: TreeNode2[] = [];
@@ -158,7 +165,7 @@ const buildStoredProcedureNode = (
   collection: ViewModels.Collection,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-  onUpdateDatabase: () => void
+  onUpdateDatabase: () => void,
 ): TreeNode2 => {
   return {
     label: "Stored Procedures",
@@ -176,7 +183,7 @@ const buildStoredProcedureNode = (
       collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
       refreshActiveTab(
         (tab: TabsBase) =>
-          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
       );
       onUpdateDatabase();
     },
@@ -187,7 +194,7 @@ const buildUserDefinedFunctionsNode = (
   collection: ViewModels.Collection,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-  onUpdateDatabase: () => void
+  onUpdateDatabase: () => void,
 ): TreeNode2 => {
   return {
     label: "User Defined Functions",
@@ -207,7 +214,7 @@ const buildUserDefinedFunctionsNode = (
       collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
       refreshActiveTab(
         (tab: TabsBase) =>
-          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
       );
       onUpdateDatabase();
     },
@@ -218,7 +225,7 @@ const buildTriggerNode = (
   collection: ViewModels.Collection,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-  onUpdateDatabase: () => void
+  onUpdateDatabase: () => void,
 ): TreeNode2 => {
   return {
     label: "Triggers",
@@ -236,7 +243,7 @@ const buildTriggerNode = (
       collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
       refreshActiveTab(
         (tab: TabsBase) =>
-          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+          tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
       );
       onUpdateDatabase();
     },
@@ -246,7 +253,7 @@ const buildTriggerNode = (
 const buildSchemaNode = (
   collection: ViewModels.Collection,
   container: Explorer,
-  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode2 => {
   if (collection.analyticalStorageTtl() === undefined) {
     return undefined;

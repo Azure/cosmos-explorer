@@ -25,15 +25,22 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
       contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
       onExpanded: async () => {
         useSelectedNode.getState().setSelectedNode(database);
-        if (databaseNode.children?.length === 0) {
+        if (!databaseNode.children || databaseNode.children?.length === 0) {
           databaseNode.isLoading = true;
         }
         await database.expandDatabase();
         databaseNode.isLoading = false;
         useCommandBar.getState().setContextButtons([]);
         refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
+        useDatabases.getState().updateDatabase(database);
       },
       onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
+      isExpanded: database.isDatabaseExpanded(),
+      onCollapsed: () => {
+        database.collapseDatabase();
+        // useCommandBar.getState().setContextButtons([]);
+        useDatabases.getState().updateDatabase(database);
+      },
     };
 
     if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
@@ -53,8 +60,8 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
       .collections()
       .forEach((collection: ViewModels.Collection) =>
         databaseNode.children.push(
-          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab)
-        )
+          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+        ),
       );
 
     if (database.collectionsContinuationToken) {
@@ -72,8 +79,8 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
     database.collections.subscribe((collections: ViewModels.Collection[]) => {
       collections.forEach((collection: ViewModels.Collection) =>
         databaseNode.children.push(
-          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab)
-        )
+          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+        ),
       );
     });
 

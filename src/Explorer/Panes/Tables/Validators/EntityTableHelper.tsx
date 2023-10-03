@@ -305,7 +305,7 @@ export const getFormattedTime = (displayValue: string): string => {
 
 export const getCassandraDefaultEntities = (
   headers: string[],
-  entityTypes: { [key: string]: string }
+  entityTypes: { [key: string]: string },
 ): EntityRowType[] => {
   const defaultEntities: EntityRowType[] = [];
   headers.forEach((header: string) => {

@@ -112,7 +112,7 @@ const getMediaInfo = (props: TransformMediaProps) => {
   const mediaType = displayOrder.find(
     (key) =>
       Object.prototype.hasOwnProperty.call(output.data, key) &&
-      (Object.prototype.hasOwnProperty.call(transformsById, key) || transformsById.get(key))
+      (Object.prototype.hasOwnProperty.call(transformsById, key) || transformsById.get(key)),
   );
 
   if (mediaType) {

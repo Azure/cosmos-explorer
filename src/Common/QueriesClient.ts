@@ -95,7 +95,7 @@ export class QueriesClient {
           }
           handleError(error, "saveQuery", `Failed to save query ${query.queryName}`);
           return Promise.reject(error);
-        }
+        },
       )
       .finally(() => clearMessage());
   }
@@ -114,7 +114,7 @@ export class QueriesClient {
       SavedQueries.DatabaseName,
       SavedQueries.CollectionName,
       this.fetchQueriesQuery(),
-      options
+      options,
     ).fetchAll();
 
     let queries: DataModels.Query[] = _.map(results.resources, (document: DataModels.Query) => {
@@ -164,7 +164,7 @@ export class QueriesClient {
         partitionKeyProperties: ["id"],
       } as DocumentsTab,
       query,
-      [query.queryName]
+      [query.queryName],
     ); // TODO: Remove DocumentId's dependency on DocumentsTab
     const options: any = { partitionKey: query.resourceId };
     return deleteDocument(queriesCollection, documentId)
@@ -176,7 +176,7 @@ export class QueriesClient {
         (error: any) => {
           handleError(error, "deleteQuery", `Failed to delete query ${query.queryName}`);
           return Promise.reject(error);
-        }
+        },
       )
       .finally(() => clearMessage());
   }
@@ -190,14 +190,14 @@ export class QueriesClient {
   private findQueriesCollection(): ViewModels.Collection {
     const queriesDatabase: ViewModels.Database = _.find(
       useDatabases.getState().databases,
-      (database: ViewModels.Database) => database.id() === SavedQueries.DatabaseName
+      (database: ViewModels.Database) => database.id() === SavedQueries.DatabaseName,
     );
     if (!queriesDatabase) {
       return undefined;
     }
     return _.find(
       queriesDatabase.collections(),
-      (collection: ViewModels.Collection) => collection.id() === SavedQueries.CollectionName
+      (collection: ViewModels.Collection) => collection.id() === SavedQueries.CollectionName,
     );
   }
 

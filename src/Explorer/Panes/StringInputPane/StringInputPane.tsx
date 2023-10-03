@@ -57,7 +57,7 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
         .getState()
         .getTabs(
           ViewModels.CollectionTabKind.NotebookV2,
-          (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
+          (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath),
         );
       notebookTabs.forEach((tab) => {
         tab.tabTitle(newNotebookFile.name);

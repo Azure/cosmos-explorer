@@ -7,7 +7,7 @@ describe("ConnectionStringParser", () => {
 
   it("should parse a valid sql account connection string", () => {
     const metadata = parseConnectionString(
-      `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};`
+      `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};`,
     );
 
     expect(metadata.accountName).toBe(mockAccountName);
@@ -16,7 +16,7 @@ describe("ConnectionStringParser", () => {
 
   it("should parse a valid mongo account connection string", () => {
     const metadata = parseConnectionString(
-      `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.documents.azure.com:10255`
+      `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.documents.azure.com:10255`,
     );
 
     expect(metadata.accountName).toBe(mockAccountName);
@@ -25,7 +25,7 @@ describe("ConnectionStringParser", () => {
 
   it("should parse a valid compute mongo account connection string", () => {
     const metadata = parseConnectionString(
-      `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.mongo.cosmos.azure.com:10255`
+      `mongodb://${mockAccountName}:${mockMasterKey}@${mockAccountName}.mongo.cosmos.azure.com:10255`,
     );
 
     expect(metadata.accountName).toBe(mockAccountName);
@@ -34,7 +34,7 @@ describe("ConnectionStringParser", () => {
 
   it("should parse a valid graph account connection string", () => {
     const metadata = parseConnectionString(
-      `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};ApiKind=Gremlin;`
+      `AccountEndpoint=https://${mockAccountName}.documents.azure.com:443/;AccountKey=${mockMasterKey};ApiKind=Gremlin;`,
     );
 
     expect(metadata.accountName).toBe(mockAccountName);
@@ -43,7 +43,7 @@ describe("ConnectionStringParser", () => {
 
   it("should parse a valid table account connection string", () => {
     const metadata = parseConnectionString(
-      `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmosdb.azure.com:443/;`
+      `DefaultEndpointsProtocol=https;AccountName=${mockAccountName};AccountKey=${mockMasterKey};TableEndpoint=https://${mockAccountName}.table.cosmosdb.azure.com:443/;`,
     );
 
     expect(metadata.accountName).toBe(mockAccountName);
@@ -52,7 +52,7 @@ describe("ConnectionStringParser", () => {
 
   it("should parse a valid cassandra account connection string", () => {
     const metadata = parseConnectionString(
-      `AccountEndpoint=${mockAccountName}.cassandra.cosmosdb.azure.com;AccountKey=${mockMasterKey};`
+      `AccountEndpoint=${mockAccountName}.cassandra.cosmosdb.azure.com;AccountKey=${mockMasterKey};`,
     );
 
     expect(metadata.accountName).toBe(mockAccountName);

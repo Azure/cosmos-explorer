@@ -153,7 +153,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
       this.setState({
         compileErrorMessage: `The following fields have default values set but are not input properties of this class: ${keys.join(
-          ", "
+          ", ",
         )}`,
       });
     }
@@ -183,7 +183,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   private initializeSmartUiNode = async (
     currentNode: Node,
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: Map<string, SmartUiInput>
+    baselineValues: Map<string, SmartUiInput>,
   ): Promise<void> => {
     currentNode.info = await this.getResolvedValue(currentNode.info);
 
@@ -192,7 +192,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     }
 
     const promises = currentNode.children?.map(
-      async (child: Node) => await this.initializeSmartUiNode(child, currentValues, baselineValues)
+      async (child: Node) => await this.initializeSmartUiNode(child, currentValues, baselineValues),
     );
     if (promises) {
       await Promise.all(promises);
@@ -202,7 +202,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   private getResolvedInput = async (
     input: AnyDisplay,
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: Map<string, SmartUiInput>
+    baselineValues: Map<string, SmartUiInput>,
   ): Promise<AnyDisplay> => {
     input.labelTKey = await this.getResolvedValue(input.labelTKey);
     input.placeholderTKey = await this.getResolvedValue(input.placeholderTKey);
@@ -258,7 +258,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       const newValues = input.onChange(
         newValue,
         this.state.currentValues,
-        this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+        this.state.baselineValues as ReadonlyMap<string, SmartUiInput>,
       );
       this.setState({ currentValues: newValues });
     } else {
@@ -281,7 +281,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     try {
       const onSaveResult = await this.props.descriptor.onSave(
         this.state.currentValues,
-        this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+        this.state.baselineValues as ReadonlyMap<string, SmartUiInput>,
       );
       if (onSaveResult.portalNotification) {
         const requestInitializedPortalNotification = onSaveResult.portalNotification.initialize;

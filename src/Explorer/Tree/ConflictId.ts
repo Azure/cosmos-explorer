@@ -58,7 +58,7 @@ export default class ConflictId {
           "OK",
           () => this.loadConflict(),
           "Cancel",
-          undefined
+          undefined,
         );
     } else {
       this.loadConflict();
@@ -78,7 +78,7 @@ export default class ConflictId {
     try {
       const currentDocumentContent = await readDocument(
         this.container.collection,
-        this.buildDocumentIdFromConflict(this.partitionKeyValue)
+        this.buildDocumentIdFromConflict(this.partitionKeyValue),
       );
 
       if (this.operationType === Constants.ConflictOperationType.Replace) {
@@ -126,7 +126,7 @@ export default class ConflictId {
     const conflictDocumentRid = Constants.HashRoutePrefixes.docsWithIds(
       this.container.collection.getDatabase().rid,
       this.container.collection.rid,
-      this.resourceId
+      this.resourceId,
     );
     const partitionKeyValueResolved = partitionKeyValue || this.partitionKeyValue;
     let id = this.resourceId;
@@ -147,7 +147,7 @@ export default class ConflictId {
         partitionKeyProperty: this.partitionKeyProperty,
         partitionKey: this.partitionKey,
       },
-      partitionKeyValueResolved
+      partitionKeyValueResolved,
     );
 
     documentId.partitionKeyProperties = [this.partitionKeyProperty];

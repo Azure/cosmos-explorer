@@ -8,7 +8,7 @@ describe("StatusBar", () => {
     const kernelSpecDisplayName = "python3";
 
     const component = shallow(
-      <StatusBar kernelStatus="kernel status" lastSaved={lastSaved} kernelSpecDisplayName={kernelSpecDisplayName} />
+      <StatusBar kernelStatus="kernel status" lastSaved={lastSaved} kernelSpecDisplayName={kernelSpecDisplayName} />,
     );
 
     expect(component).not.toBeNull();
@@ -18,7 +18,7 @@ describe("StatusBar", () => {
     const kernelSpecDisplayName = "python3";
 
     const component = shallow(
-      <StatusBar kernelStatus="kernel status" lastSaved={lastSaved} kernelSpecDisplayName={kernelSpecDisplayName} />
+      <StatusBar kernelStatus="kernel status" lastSaved={lastSaved} kernelSpecDisplayName={kernelSpecDisplayName} />,
     );
 
     const shouldUpdate = component.instance().shouldComponentUpdate(
@@ -28,7 +28,7 @@ describe("StatusBar", () => {
         kernelStatus: "kernelStatus",
       },
       undefined,
-      undefined
+      undefined,
     );
     expect(shouldUpdate).toBe(true);
   });
@@ -37,7 +37,7 @@ describe("StatusBar", () => {
     const kernelSpecDisplayName = "python3";
 
     const component = shallow(
-      <StatusBar kernelStatus="kernel status" lastSaved={lastSaved} kernelSpecDisplayName={kernelSpecDisplayName} />
+      <StatusBar kernelStatus="kernel status" lastSaved={lastSaved} kernelSpecDisplayName={kernelSpecDisplayName} />,
     );
 
     const shouldUpdate = component.instance().shouldComponentUpdate(
@@ -47,7 +47,7 @@ describe("StatusBar", () => {
         kernelStatus: "kernelStatus",
       },
       undefined,
-      undefined
+      undefined,
     );
     expect(shouldUpdate).toBe(true);
   });

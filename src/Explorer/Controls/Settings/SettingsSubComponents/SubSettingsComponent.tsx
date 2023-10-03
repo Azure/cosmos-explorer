@@ -145,7 +145,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private onTimeToLiveSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     const newTimeToLiveSeconds = getSanitizedInputValue(newValue, Int32.Max);
     this.props.onDisplayedTtlSecondsChange(newTimeToLiveSeconds.toString());
@@ -154,18 +154,18 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private onGeoSpatialConfigTypeChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
+    option?: IChoiceGroupOption,
   ): void =>
     this.props.onGeoSpatialConfigTypeChange(GeospatialConfigType[option.key as keyof typeof GeospatialConfigType]);
 
   private onAnalyticalStorageTtlSelectionChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
+    option?: IChoiceGroupOption,
   ): void => this.props.onAnalyticalStorageTtlSelectionChange(this.getTtlValue(option.key));
 
   private onAnalyticalStorageTtlSecondsChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     const newAnalyticalStorageTtlSeconds = getSanitizedInputValue(newValue, Int32.Max);
     this.props.onAnalyticalStorageTtlSecondsChange(newAnalyticalStorageTtlSeconds);
@@ -173,7 +173,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   private onChangeFeedPolicyChange = (
     ev?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
+    option?: IChoiceGroupOption,
   ): void =>
     this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState]);
 
@@ -218,6 +218,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
             value={this.props.displayedTtlSeconds}
             onChange={this.onTimeToLiveSecondsChange}
             suffix="second(s)"
+            ariaLabel={`Time to live in seconds`}
           />
         )}
       </Stack>
@@ -239,7 +240,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         onChange={this.onAnalyticalStorageTtlSelectionChange}
         styles={getChoiceGroupStyles(
           this.props.analyticalStorageTtlSelection,
-          this.props.analyticalStorageTtlSelectionBaseline
+          this.props.analyticalStorageTtlSelectionBaseline,
         )}
       />
       {this.props.analyticalStorageTtlSelection === TtlType.On && (
@@ -247,7 +248,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
           id="analyticalStorageTimeToLiveSeconds"
           styles={getTextFieldStyles(
             this.props.analyticalStorageTtlSeconds,
-            this.props.analyticalStorageTtlSecondsBaseline
+            this.props.analyticalStorageTtlSecondsBaseline,
           )}
           type="number"
           required

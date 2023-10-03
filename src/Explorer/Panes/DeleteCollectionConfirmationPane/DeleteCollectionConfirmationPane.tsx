@@ -41,7 +41,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       const errorMessage = "Input " + collectionName + " id does not match the selected " + collectionName;
       setFormError(errorMessage);
       NotificationConsoleUtils.logConsoleError(
-        `Error while deleting ${collectionName} ${collection.id()}: ${errorMessage}`
+        `Error while deleting ${collectionName} ${collection.id()}: ${errorMessage}`,
       );
       return;
     }
@@ -65,7 +65,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       useTabs
         .getState()
         .closeTabsByComparator(
-          (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
+          (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId,
         );
       refreshDatabases();
 
@@ -76,7 +76,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
           userContext.databaseAccount?.id,
           userContext.databaseAccount?.name,
           DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType),
-          deleteCollectionFeedback
+          deleteCollectionFeedback,
         );
 
         TelemetryProcessor.trace(Action.DeleteCollection, ActionModifiers.Mark, {
@@ -98,7 +98,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
     }
   };

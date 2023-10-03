@@ -14,8 +14,8 @@ test("Graph CRUD", async () => {
 
   // Create new database and graph
   await explorer.click('[data-test="New Graph"]');
-  await explorer.fill('[aria-label="New database id"]', databaseId);
-  await explorer.fill('[aria-label="Graph id"]', containerId);
+  await explorer.fill('[aria-label="New database id, Type a new database id"]', databaseId);
+  await explorer.fill('[aria-label="Graph id, Example Graph1"]', containerId);
   await explorer.fill('[aria-label="Partition key"]', "/pk");
   await explorer.click("#sidePanelOkButton");
   await explorer.click(`.nodeItem >> text=${databaseId}`);

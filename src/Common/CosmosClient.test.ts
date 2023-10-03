@@ -66,7 +66,7 @@ describe("getTokenFromAuthService", () => {
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
       "https://main.documentdb.ext.azure.com/api/guest/runtimeproxy/authorizationTokens",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -77,7 +77,7 @@ describe("getTokenFromAuthService", () => {
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
       "https://localhost:1234/api/guest/runtimeproxy/authorizationTokens",
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 });

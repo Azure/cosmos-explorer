@@ -125,7 +125,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container, poolId }: Props):
         content={
           containerInfo?.status === ContainerStatusType.Active
             ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
-                containerInfo.durationLeftInMinutes
+                containerInfo.durationLeftInMinutes,
               )} minutes.`
             : toolTipContent
         }

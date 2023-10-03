@@ -38,7 +38,7 @@ export class NotebookContainerClient {
 
     useNotebook.subscribe(
       () => this.scheduleHeartbeat(delayMs),
-      (state) => state.notebookServerInfo
+      (state) => state.notebookServerInfo,
     );
   }
 
@@ -81,7 +81,7 @@ export class NotebookContainerClient {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/getMemoryUsage");
       if (!this.clearReconnectionAttemptMessage) {
         this.clearReconnectionAttemptMessage = logConsoleProgress(
-          "Connection lost with Notebook server. Attempting to reconnect..."
+          "Connection lost with Notebook server. Attempting to reconnect...",
         );
       }
       this.onConnectionLost();
@@ -91,7 +91,7 @@ export class NotebookContainerClient {
 
   private async _getMemoryAsync(
     notebookServerEndpoint: string,
-    authToken: string
+    authToken: string,
   ): Promise<DataModels.MemoryUsageInfo> {
     if (this.shouldExecuteMemoryCall()) {
       const response = await fetch(`${notebookServerEndpoint}api/metrics/memory`, {
@@ -168,7 +168,7 @@ export class NotebookContainerClient {
           .getState()
           .showOkModalDialog(
             "Connection Failed",
-            "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket."
+            "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
           );
       }
       throw error;

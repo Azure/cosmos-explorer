@@ -108,7 +108,7 @@ export default class QueryTablesTab extends TabsBase {
       enabled: ko.computed<boolean>(() => {
         return this.tableCommands.isEnabled(
           TableCommands.editEntityCommand,
-          this.tableEntityListViewModel().selected()
+          this.tableEntityListViewModel().selected(),
         );
       }),
 
@@ -121,7 +121,7 @@ export default class QueryTablesTab extends TabsBase {
       enabled: ko.computed<boolean>(() => {
         return this.tableCommands.isEnabled(
           TableCommands.deleteEntitiesCommand,
-          this.tableEntityListViewModel().selected()
+          this.tableEntityListViewModel().selected(),
         );
       }),
 
@@ -144,7 +144,7 @@ export default class QueryTablesTab extends TabsBase {
           tableEntityListViewModel={this.tableEntityListViewModel()}
           cassandraApiClient={new CassandraAPIDataClient()}
         />,
-        "700px"
+        "700px",
       );
   };
 
@@ -159,7 +159,7 @@ export default class QueryTablesTab extends TabsBase {
           tableEntityListViewModel={this.tableEntityListViewModel()}
           cassandraApiClient={new CassandraAPIDataClient()}
         />,
-        "700px"
+        "700px",
       );
   };
 
@@ -278,7 +278,7 @@ export default class QueryTablesTab extends TabsBase {
         this.editEntityButton.enabled,
         this.deleteEntityButton.visible,
         this.deleteEntityButton.enabled,
-      ])
+      ]),
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();
   }

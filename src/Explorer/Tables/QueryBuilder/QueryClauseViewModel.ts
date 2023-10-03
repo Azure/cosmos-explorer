@@ -46,7 +46,7 @@ export default class QueryClauseViewModel {
     timestampType: string,
     //customLastTimestamp: CustomTimestampHelper.ILastQuery,
     isLocal: boolean,
-    id?: string
+    id?: string,
   ) {
     this._queryBuilderViewModel = queryBuilderViewModel;
     this.checkedForGrouping = ko.observable<boolean>(false);
@@ -72,7 +72,7 @@ export default class QueryClauseViewModel {
       const isPreferredApiCassandra = userContext.apiType === "Cassandra";
       const cassandraKeys = isPreferredApiCassandra
         ? this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys.map(
-            (key) => key.property
+            (key) => key.property,
           )
         : [];
       return (
@@ -85,7 +85,7 @@ export default class QueryClauseViewModel {
         this.field() !== "Timestamp" &&
         this.field() !== "PartitionKey" &&
         this.field() !== "RowKey" &&
-        userContext.apiType !== "Cassandra"
+        userContext.apiType !== "Cassandra",
     );
 
     this.and_or.subscribe(() => {
@@ -172,8 +172,8 @@ export default class QueryClauseViewModel {
     } else {
       this.resetFromTimestamp();
       if (userContext.apiType === "Cassandra") {
-        const cassandraSchema = this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection
-          .cassandraSchema;
+        const cassandraSchema =
+          this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection.cassandraSchema;
         for (let i = 0, len = cassandraSchema.length; i < len; i++) {
           if (cassandraSchema[i].property === this.field()) {
             this.type(cassandraSchema[i].type);

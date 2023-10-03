@@ -20,7 +20,7 @@ window.addEventListener("load", async () => {
       } as IGitHubConnectorParams,
       {
         domain: window.location.origin,
-      }
+      },
     );
     window.close();
   }

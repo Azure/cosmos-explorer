@@ -13,7 +13,7 @@
     "@babel/plugin-proposal-class-properties": "7.12.1",
     "@babel/plugin-proposal-decorators": "7.12.12",
     "@fluentui/react": "8.14.3",
-    "@fluentui/react-components": "9.30.1",
+    "@fluentui/react-components": "9.32.1",
     "@jupyterlab/services": "6.0.2",
     "@jupyterlab/terminal": "3.0.3",
     "@microsoft/applicationinsights-web": "2.6.1",
@@ -170,7 +170,7 @@
     "monaco-editor-webpack-plugin": "1.7.0",
     "node-fetch": "2.6.1",
     "playwright": "1.13.0",
-    "prettier": "2.2.1",
+    "prettier": "3.0.3",
     "process": "0.11.10",
     "raw-loader": "0.5.1",
     "react-dev-utils": "11.0.4",
@@ -178,8 +178,6 @@
     "sinon": "3.2.1",
     "style-loader": "0.23.0",
     "ts-loader": "9.2.4",
-    "tslint": "5.11.0",
-    "tslint-microsoft-contrib": "6.0.0",
     "typedoc": "0.20.36",
     "typescript": "4.3.4",
     "url-loader": "1.1.1",
@@ -210,7 +208,7 @@
     "compile:strict": "tsc -p ./tsconfig.strict.json",
     "format": "prettier --write \"{src,test}/**/*.{ts,tsx,html}\" \"*.{js,html}\"",
     "format:check": "prettier --check \"{src,test}/**/*.{ts,tsx,html}\" \"*.{js,html}\"",
-    "lint": "tslint --project tsconfig.json && eslint \"**/*.{ts,tsx}\"",
+    "lint": "eslint \"**/*.{ts,tsx}\"",
     "build:contracts": "npm run compile:contracts",
     "strict:find": "node ./strict-null-checks/find.js",
     "strict:add": "node ./strict-null-checks/auto-add.js",
@@ -233,6 +231,7 @@
   },
   "homepage": "https://github.com/Azure/cosmos-explorer",
   "prettier": {
-    "printWidth": 120
+    "printWidth": 120,
+    "endOfLine": "auto"
   }
 }
