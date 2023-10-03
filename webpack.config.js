@@ -218,6 +218,7 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist"),
       publicPath: "",
+      hashFunction: 'xxhash64'
     },
     devtool: mode === "development" ? "eval-source-map" : "source-map",
     plugins,
@@ -233,6 +234,7 @@ module.exports = function (_env = {}, argv = {}) {
       fallback: {
         crypto: false,
         fs: false,
+        querystring: require.resolve("querystring-es3"),
       },
       extensions: [".tsx", ".ts", ".js"],
     },
