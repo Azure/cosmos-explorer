@@ -9,6 +9,7 @@ import {
   SelectionMode,
   Stack,
   Text,
+  IconButton,
   TooltipHost,
 } from "@fluentui/react";
 import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
@@ -24,6 +25,8 @@ import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
 import RunQuery from "../../../../images/RunQuery.png";
 import InfoColor from "../../../../images/info_color.svg";
 import { QueryResults } from "../../../Contracts/ViewModels";
+import copy from "clipboard-copy";
+import CopilotCopy from "../../../../images/CopilotCopy.svg";
 
 interface QueryResultProps {
   isMongoDB: boolean;
@@ -352,6 +355,10 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
     return items;
   };
 
+  const onClickCopyResults = (): void => {
+    copy(queryResultsString);
+  };
+
   return (
     <Stack style={{ height: "100%" }}>
       {isMongoDB && queryEditorContent.length === 0 && (
@@ -429,6 +436,17 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                         </span>
                       </>
                     )}
+                    <IconButton
+                      style={{
+                        height: "100%",
+                        verticalAlign: "middle",
+                        float: "right",
+                      }}
+                      iconProps={{ imageProps: { src: CopilotCopy } }}
+                      title="Copy to Clipboard"
+                      ariaLabel="Copy"
+                      onClick={onClickCopyResults}
+                    />
                   </div>
                   {queryResults && queryResultsString?.length > 0 && !error && (
                     <div
