@@ -37,11 +37,11 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
       setFormError(
-        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`
+        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`,
       );
       logConsoleError(`Error while deleting collection ${selectedDatabase && selectedDatabase.id()}`);
       logConsoleError(
-        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`
+        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`,
       );
       return;
     }
@@ -67,8 +67,8 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
             .getState()
             .closeTabsByComparator(
               (tab) =>
-                tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
-            )
+                tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId,
+            ),
         );
       TelemetryProcessor.traceSuccess(
         Action.DeleteDatabase,
@@ -77,7 +77,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: "Delete Database",
         },
-        startKey
+        startKey,
       );
 
       if (isLastNonEmptyDatabase()) {
@@ -85,7 +85,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           userContext?.databaseAccount.id,
           userContext?.databaseAccount.name,
           DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType),
-          databaseFeedbackInput
+          databaseFeedbackInput,
         );
 
         TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
@@ -105,7 +105,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
     }
   };

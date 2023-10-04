@@ -18,7 +18,10 @@ export class NewQueryTab extends TabsBase {
   public iQueryTabComponentProps: IQueryTabComponentProps;
   public iTabAccessor: ITabAccessor;
 
-  constructor(options: QueryTabOptions, private props: IQueryTabProps) {
+  constructor(
+    options: QueryTabOptions,
+    private props: IQueryTabProps,
+  ) {
     super(options);
     this.partitionKey = options.partitionKey;
     this.iQueryTabComponentProps = {

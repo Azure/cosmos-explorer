@@ -10,7 +10,7 @@ export class NotebookContentProvider implements IContentProvider {
   constructor(
     private inMemoryContentProvider: InMemoryContentProvider,
     private gitHubContentProvider: GitHubContentProvider,
-    private jupyterContentProvider: IContentProvider
+    private jupyterContentProvider: IContentProvider,
   ) {}
 
   public remove(serverConfig: ServerConfig, path: string): Observable<AjaxResponse> {
@@ -24,7 +24,7 @@ export class NotebookContentProvider implements IContentProvider {
   public update<FT extends FileType>(
     serverConfig: ServerConfig,
     path: string,
-    model: Partial<IContent<FT>>
+    model: Partial<IContent<FT>>,
   ): Observable<AjaxResponse> {
     return this.getContentProvider(path).update(serverConfig, path, model);
   }
@@ -32,7 +32,7 @@ export class NotebookContentProvider implements IContentProvider {
   public create<FT extends FileType>(
     serverConfig: ServerConfig,
     path: string,
-    model: Partial<IContent<FT>> & { type: FT }
+    model: Partial<IContent<FT>> & { type: FT },
   ): Observable<AjaxResponse> {
     return this.getContentProvider(path).create(serverConfig, path, model);
   }
@@ -40,7 +40,7 @@ export class NotebookContentProvider implements IContentProvider {
   public save<FT extends FileType>(
     serverConfig: ServerConfig,
     path: string,
-    model: Partial<IContent<FT>>
+    model: Partial<IContent<FT>>,
   ): Observable<AjaxResponse> {
     return this.getContentProvider(path).save(serverConfig, path, model);
   }
@@ -60,7 +60,7 @@ export class NotebookContentProvider implements IContentProvider {
   public restoreFromCheckpoint(
     serverConfig: ServerConfig,
     path: string,
-    checkpointID: string
+    checkpointID: string,
   ): Observable<AjaxResponse> {
     return this.getContentProvider(path).restoreFromCheckpoint(serverConfig, path, checkpointID);
   }

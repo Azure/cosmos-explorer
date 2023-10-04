@@ -123,7 +123,7 @@ describe("NotebookUtil", () => {
     it("works for github file uris", () => {
       expect(NotebookUtil.replaceName(gitHubFileUri, "newName")).toEqual(gitHubFileUri.replace(fileName, "newName"));
       expect(NotebookUtil.replaceName(gitHubNotebookUri, "newName")).toEqual(
-        gitHubNotebookUri.replace(notebookName, "newName")
+        gitHubNotebookUri.replace(notebookName, "newName"),
       );
     });
   });

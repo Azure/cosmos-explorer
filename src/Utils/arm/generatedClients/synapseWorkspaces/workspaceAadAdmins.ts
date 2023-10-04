@@ -15,7 +15,7 @@ const apiVersion = "2021-03-01";
 export async function get(
   subscriptionId: string,
   resourceGroupName: string,
-  workspaceName: string
+  workspaceName: string,
 ): Promise<Types.WorkspaceAadAdminInfo> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/administrators/activeDirectory`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function createOrUpdate(
   subscriptionId: string,
   resourceGroupName: string,
   workspaceName: string,
-  body: Types.WorkspaceAadAdminInfo
+  body: Types.WorkspaceAadAdminInfo,
 ): Promise<Types.WorkspaceAadAdminInfo> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/administrators/activeDirectory`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });

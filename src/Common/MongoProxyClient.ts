@@ -61,7 +61,7 @@ export function queryDocuments(
   collection: Collection,
   isResourceList: boolean,
   query: string,
-  continuationToken?: string
+  continuationToken?: string,
 ): Promise<QueryResponse> {
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
@@ -121,7 +121,7 @@ export function queryDocuments(
 export function readDocument(
   databaseId: string,
   collection: Collection,
-  documentId: DocumentId
+  documentId: DocumentId,
 ): Promise<DataModels.DocumentId> {
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
@@ -152,7 +152,7 @@ export function readDocument(
         ...defaultHeaders,
         ...authHeaders(),
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: encodeURIComponent(
-          JSON.stringify(documentId.partitionKeyHeader())
+          JSON.stringify(documentId.partitionKeyHeader()),
         ),
       },
     })
@@ -168,7 +168,7 @@ export function createDocument(
   databaseId: string,
   collection: Collection,
   partitionKeyProperty: string,
-  documentContent: unknown
+  documentContent: unknown,
 ): Promise<DataModels.DocumentId> {
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
@@ -207,7 +207,7 @@ export function updateDocument(
   databaseId: string,
   collection: Collection,
   documentId: DocumentId,
-  documentContent: string
+  documentContent: string,
 ): Promise<DataModels.DocumentId> {
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
@@ -290,7 +290,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
 }
 
 export function createMongoCollectionWithProxy(
-  params: DataModels.CreateCollectionParams
+  params: DataModels.CreateCollectionParams,
 ): Promise<DataModels.Collection> {
   const { databaseAccount } = userContext;
   const shardKey: string = params.partitionKey?.paths[0];
@@ -316,7 +316,7 @@ export function createMongoCollectionWithProxy(
   return window
     .fetch(
       `${endpoint}/createCollection?${queryString.stringify(
-        (mongoParams as unknown) as queryString.ParsedUrlQueryInput
+        mongoParams as unknown as queryString.ParsedUrlQueryInput,
       )}`,
       {
         method: "POST",
@@ -325,7 +325,7 @@ export function createMongoCollectionWithProxy(
           ...authHeaders(),
           [HttpHeaders.contentType]: "application/json",
         },
-      }
+      },
     )
     .then(async (response) => {
       if (response.ok) {

@@ -14,7 +14,7 @@ describe("QueryTabComponent", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("should launch Copilot when ALT+C is pressed", () => {
-    const propsMock: Readonly<IQueryTabComponentProps> = ({
+    const propsMock: Readonly<IQueryTabComponentProps> = {
       collection: { databaseId: "CopilotSampleDb" },
       onTabAccessor: () => jest.fn(),
       isExecutionError: false,
@@ -22,7 +22,7 @@ describe("QueryTabComponent", () => {
       tabsBaseInstance: {
         updateNavbarWithTabsButtons: () => jest.fn(),
       },
-    } as unknown) as IQueryTabComponentProps;
+    } as unknown as IQueryTabComponentProps;
 
     const { container } = render(<QueryTabComponent {...propsMock} />);
 

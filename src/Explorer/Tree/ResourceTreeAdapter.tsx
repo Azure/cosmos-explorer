@@ -65,11 +65,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
     useSelectedNode.subscribe(() => this.triggerRender());
     useTabs.subscribe(
       () => this.triggerRender(),
-      (state) => state.activeTab
+      (state) => state.activeTab,
     );
     useNotebook.subscribe(
       () => this.triggerRender(),
-      (state) => state.isNotebookEnabled
+      (state) => state.isNotebookEnabled,
     );
 
     useDatabases.subscribe(() => this.triggerRender());
@@ -144,7 +144,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         this.container.refreshContentItem(this.myNotebooksContentRoot).then(() => {
           this.triggerRender();
           this.traceMyNotebookTreeInfo();
-        })
+        }),
       );
     }
     this.gitHubNotebooksContentRoot = {
@@ -226,12 +226,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
       database
         .collections()
         .forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(this.buildCollectionNode(database, collection))
+          databaseNode.children.push(this.buildCollectionNode(database, collection)),
         );
 
       database.collections.subscribe((collections: ViewModels.Collection[]) => {
         collections.forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(this.buildCollectionNode(database, collection))
+          databaseNode.children.push(this.buildCollectionNode(database, collection)),
         );
       });
 
@@ -343,7 +343,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           .getState()
           .refreshActiveTab(
             (tab: TabsBase) =>
-              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
           );
       },
       onExpanded: () => {
@@ -378,7 +378,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           .getState()
           .refreshActiveTab(
             (tab: TabsBase) =>
-              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
           );
       },
     };
@@ -398,7 +398,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
             ]),
         contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(
           this.container,
-          udf
+          udf,
         ),
       })),
       onClick: () => {
@@ -407,7 +407,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           .getState()
           .refreshActiveTab(
             (tab: TabsBase) =>
-              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
           );
       },
     };
@@ -431,7 +431,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           .getState()
           .refreshActiveTab(
             (tab: TabsBase) =>
-              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+              tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
           );
       },
     };
@@ -598,7 +598,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         });
       },
       true,
-      true
+      true,
     );
 
     myNotebooksTree.isExpanded = true;
@@ -619,7 +619,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         });
       },
       true,
-      true
+      true,
     );
 
     gitHubNotebooksTree.contextMenu = [
@@ -634,7 +634,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
                 explorer={this.container}
                 gitHubClientProp={this.container.notebookManager.gitHubClient}
                 junoClientProp={this.container.notebookManager.junoClient}
-              />
+              />,
             ),
       },
       {
@@ -658,7 +658,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
     createDirectoryContextMenu: boolean,
-    createFileContextMenu: boolean
+    createFileContextMenu: boolean,
   ): TreeNode[] {
     if (!item || !item.children) {
       return [];
@@ -677,7 +677,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   private buildNotebookFileNode(
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
-    createFileContextMenu: boolean
+    createFileContextMenu: boolean,
   ): TreeNode {
     return {
       label: item.name,
@@ -719,7 +719,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
               "Delete",
               () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
               "Cancel",
-              undefined
+              undefined,
             );
         },
       },
@@ -786,7 +786,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
               "Delete",
               () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
               "Cancel",
-              undefined
+              undefined,
             );
         },
       },
@@ -824,7 +824,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           item.label !== "Delete" &&
           item.label !== "Rename" &&
           item.label !== "New Directory" &&
-          item.label !== "Upload File"
+          item.label !== "Upload File",
       );
     }
 
@@ -835,7 +835,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
     createDirectoryContextMenu: boolean,
-    createFileContextMenu: boolean
+    createFileContextMenu: boolean,
   ): TreeNode {
     return {
       label: item.name,

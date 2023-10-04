@@ -16,7 +16,7 @@ export function trace(
   action: Action,
   actionModifier: string = ActionModifiers.Mark,
   data: TelemetryData = {},
-  type: TelemetryType = MessageTypes.TelemetryInfo
+  type: TelemetryType = MessageTypes.TelemetryInfo,
 ): void {
   sendMessage({
     type: type,
@@ -33,7 +33,7 @@ export function trace(
 export function traceStart(
   action: Action,
   data?: TelemetryData,
-  type: TelemetryType = MessageTypes.TelemetryInfo
+  type: TelemetryType = MessageTypes.TelemetryInfo,
 ): number {
   const timestamp: number = Date.now();
   sendMessage({
@@ -54,7 +54,7 @@ export function traceSuccess(
   action: Action,
   data?: TelemetryData,
   timestamp?: number,
-  type: TelemetryType = MessageTypes.TelemetryInfo
+  type: TelemetryType = MessageTypes.TelemetryInfo,
 ): void {
   sendMessage({
     type: type,
@@ -73,7 +73,7 @@ export function traceFailure(
   action: Action,
   data?: TelemetryData,
   timestamp?: number,
-  type: TelemetryType = MessageTypes.TelemetryInfo
+  type: TelemetryType = MessageTypes.TelemetryInfo,
 ): void {
   sendMessage({
     type: type,
@@ -92,7 +92,7 @@ export function traceCancel(
   action: Action,
   data?: TelemetryData,
   timestamp?: number,
-  type: TelemetryType = MessageTypes.TelemetryInfo
+  type: TelemetryType = MessageTypes.TelemetryInfo,
 ): void {
   sendMessage({
     type: type,
@@ -111,7 +111,7 @@ export function traceOpen(
   action: Action,
   data?: TelemetryData,
   timestamp?: number,
-  type: TelemetryType = MessageTypes.TelemetryInfo
+  type: TelemetryType = MessageTypes.TelemetryInfo,
 ): number {
   const validTimestamp = timestamp || Date.now();
   sendMessage({
@@ -132,7 +132,7 @@ export function traceMark(
   action: Action,
   data?: TelemetryData,
   timestamp?: number,
-  type: TelemetryType = MessageTypes.TelemetryInfo
+  type: TelemetryType = MessageTypes.TelemetryInfo,
 ): number {
   const validTimestamp = timestamp || Date.now();
   sendMessage({

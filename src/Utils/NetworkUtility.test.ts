@@ -58,7 +58,7 @@ describe("NetworkUtility tests", () => {
           databaseAccount: {
             kind: "MongoDB",
             properties: {
-              ipRules: PortalBackendIPs[endpoint].map((ip: string) => ({ ipAddressOrRange: ip } as IpRule)),
+              ipRules: PortalBackendIPs[endpoint].map((ip: string) => ({ ipAddressOrRange: ip }) as IpRule),
               publicNetworkAccess: "Enabled",
             },
           } as DatabaseAccount,

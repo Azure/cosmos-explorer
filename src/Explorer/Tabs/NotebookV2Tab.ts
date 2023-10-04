@@ -45,7 +45,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
     this.notebookPath = ko.observable(options.notebookContentItem.path);
     useNotebook.subscribe(
       () => logConsoleInfo("New notebook server info received."),
-      (state) => state.notebookServerInfo
+      (state) => state.notebookServerInfo,
     );
     this.notebookComponentAdapter = new NotebookComponentAdapter({
       contentItem: options.notebookContentItem,
@@ -72,7 +72,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
           "Close",
           cleanup,
           "Cancel",
-          undefined
+          undefined,
         );
       return Q.resolve(null);
     } else {
@@ -184,7 +184,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
               hasPopup: false,
               disabled: false,
               ariaLabel: kernel.displayName,
-            } as CommandButtonComponentProps)
+            }) as CommandButtonComponentProps,
         ),
         ariaLabel: kernelLabel,
       },
@@ -379,7 +379,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       this.notebookPath(),
       notebookConnectionInfo,
       kernelName,
-      sparkClusterConnectionInfo
+      sparkClusterConnectionInfo,
     );
   }
 
@@ -413,7 +413,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       notebookContent.content,
       notebookContentRef,
       (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request)),
-      onPanelClose
+      onPanelClose,
     );
   };
 

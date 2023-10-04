@@ -5,7 +5,7 @@ import Explorer from "../../Explorer";
 
 export const container = new Explorer();
 
-export const collection = ({
+export const collection = {
   container: container,
   databaseId: "test",
   id: ko.observable<string>("test"),
@@ -27,7 +27,7 @@ export const collection = ({
     offerReplacePending: false,
   }),
   conflictResolutionPolicy: ko.observable<DataModels.ConflictResolutionPolicy>(
-    {} as DataModels.ConflictResolutionPolicy
+    {} as DataModels.ConflictResolutionPolicy,
   ),
   changeFeedPolicy: ko.observable<DataModels.ChangeFeedPolicy>({} as DataModels.ChangeFeedPolicy),
   geospatialConfig: ko.observable<DataModels.GeospatialConfig>({} as DataModels.GeospatialConfig),
@@ -43,4 +43,4 @@ export const collection = ({
   readSettings: () => {
     return;
   },
-} as unknown) as ViewModels.Collection;
+} as unknown as ViewModels.Collection;

@@ -90,7 +90,7 @@ describe("MongoIndexingPolicyComponent", () => {
         indexToDropIsPresent: boolean,
         isMongoIndexingPolicySaveable: boolean,
         isMongoIndexingPolicyDiscardable: boolean,
-        mongoWarningNotificationMessage: string
+        mongoWarningNotificationMessage: string,
       ) => {
         const addMongoIndexProps = {
           mongoIndex: { key: { keys: ["sampleKey"] } },
@@ -107,7 +107,7 @@ describe("MongoIndexingPolicyComponent", () => {
 
         expect(mongoIndexingPolicyComponent.isMongoIndexingPolicySaveable()).toEqual(isMongoIndexingPolicySaveable);
         expect(mongoIndexingPolicyComponent.isMongoIndexingPolicyDiscardable()).toEqual(
-          isMongoIndexingPolicyDiscardable
+          isMongoIndexingPolicyDiscardable,
         );
         if (mongoWarningNotificationMessage) {
           const elementAsString = renderToString(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage());
@@ -115,7 +115,7 @@ describe("MongoIndexingPolicyComponent", () => {
         } else {
           expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toBeUndefined();
         }
-      }
+      },
     );
   });
 });

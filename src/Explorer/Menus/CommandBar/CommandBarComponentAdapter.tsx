@@ -57,7 +57,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
   const contextButtons = (buttons || []).concat(
-    CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState)
+    CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState),
   );
   const controlButtons = CommandBarComponentButtonFactory.createControlCommandBarButtons(container);
 
@@ -82,7 +82,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     connectionInfo?.status !== ConnectionStatusType.Connect
   ) {
     uiFabricControlButtons.unshift(
-      CommandBarUtil.createConnectionStatus(container, PoolIdType.DefaultPoolId, "connectionStatus")
+      CommandBarUtil.createConnectionStatus(container, PoolIdType.DefaultPoolId, "connectionStatus"),
     );
   }
 

@@ -222,7 +222,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         ? queryIterator(
             this.props.collection.databaseId,
             this.props.viewModelcollection,
-            this.state.selectedContent || this.state.sqlQueryEditorContent
+            this.state.selectedContent || this.state.sqlQueryEditorContent,
           )
         : queryDocuments(
             this.props.collection.databaseId,
@@ -255,7 +255,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     try {
       const queryResults: ViewModels.QueryResults = await QueryUtils.queryPagesUntilContentPresent(
         firstItemIndex,
-        queryDocuments
+        queryDocuments,
       );
       this.setState({ queryResults, error: "" });
     } catch (error) {

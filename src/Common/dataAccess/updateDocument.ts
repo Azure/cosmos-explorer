@@ -11,7 +11,7 @@ import { getPartitionKeyValue } from "./getPartitionKeyValue";
 export const updateDocument = async (
   collection: CollectionBase,
   documentId: DocumentId,
-  newDocument: Item
+  newDocument: Item,
 ): Promise<Item> => {
   const entityName = getEntityName();
   const clearMessage = logConsoleProgress(`Updating ${entityName} ${documentId.id()}`);

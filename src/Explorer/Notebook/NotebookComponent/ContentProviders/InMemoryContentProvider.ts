@@ -12,7 +12,10 @@ export interface InMemoryContentProviderParams {
 // Nteract relies on `errno` property to figure out the kind of failure
 // That's why we need a custom wrapper around Error to include `errno` property
 class InMemoryContentProviderError extends Error {
-  constructor(error: string, public errno: number = InMemoryContentProvider.SelfErrorCode) {
+  constructor(
+    error: string,
+    public errno: number = InMemoryContentProvider.SelfErrorCode,
+  ) {
     super(error);
   }
 }
@@ -47,7 +50,7 @@ export class InMemoryContentProvider implements IContentProvider {
   public save<FT extends FileType>(
     _config: ServerConfig, // eslint-disable-line @typescript-eslint/no-unused-vars
     uri: string,
-    model: Partial<IContent<FT>>
+    model: Partial<IContent<FT>>,
   ): Observable<AjaxResponse> {
     const item = this.params[uri];
     if (item) {

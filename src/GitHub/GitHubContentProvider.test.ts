@@ -38,7 +38,7 @@ const sampleGitHubUri = GitHubUtils.toContentUri(
   sampleFile.repo.owner,
   sampleFile.repo.name,
   sampleFile.branch.name,
-  sampleFile.path
+  sampleFile.path,
 );
 const sampleNotebookModel: IContent<"notebook"> = {
   name: sampleFile.name,
@@ -73,7 +73,7 @@ describe("GitHubContentProvider remove", () => {
 
   it("errors on failed delete", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
     );
     spyOn(GitHubClient.prototype, "deleteFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
@@ -86,10 +86,10 @@ describe("GitHubContentProvider remove", () => {
 
   it("removes notebook", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
     );
     spyOn(GitHubClient.prototype, "deleteFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }),
     );
 
     const response = await gitHubContentProvider.remove(undefined, sampleGitHubUri).toPromise();
@@ -121,7 +121,7 @@ describe("GitHubContentProvider get", () => {
 
   it("reads notebook", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
     );
 
     const response = await gitHubContentProvider.get(undefined, sampleGitHubUri, {}).toPromise();
@@ -153,7 +153,7 @@ describe("GitHubContentProvider update", () => {
 
   it("errors on failed rename", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
     );
     spyOn(GitHubClient.prototype, "renameFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
@@ -166,10 +166,10 @@ describe("GitHubContentProvider update", () => {
 
   it("updates notebook", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
     );
     spyOn(GitHubClient.prototype, "renameFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }),
     );
 
     const response = await gitHubContentProvider.update(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
@@ -205,7 +205,7 @@ describe("GitHubContentProvider create", () => {
 
   it("creates notebook", async () => {
     spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.Created, data: gitHubCommit })
+      Promise.resolve({ status: HttpStatusCodes.Created, data: gitHubCommit }),
     );
 
     const response = await gitHubContentProvider.create(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
@@ -240,7 +240,7 @@ describe("GitHubContentProvider save", () => {
 
   it("errors on failed update", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
     );
     spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
@@ -253,10 +253,10 @@ describe("GitHubContentProvider save", () => {
 
   it("saves notebook", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
     );
     spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit })
+      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }),
     );
 
     const response = await gitHubContentProvider.save(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();

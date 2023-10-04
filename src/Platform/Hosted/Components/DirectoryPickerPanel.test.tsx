@@ -23,7 +23,7 @@ it("switches tenant for user", () => {
       tenantId="test1-id"
       switchTenant={switchTenant}
       dismissPanel={dismissPanel}
-    />
+    />,
   );
   fireEvent.click(screen.getByLabelText(/test2-id/));
   expect(switchTenant).toHaveBeenCalledWith(directories[1].tenantId);

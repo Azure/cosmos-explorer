@@ -113,11 +113,11 @@ export default class Trigger {
             this.collection.children.remove(this);
           },
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          () => {}
+          () => {},
         );
       },
       "Cancel",
-      undefined
+      undefined,
     );
   }
 }

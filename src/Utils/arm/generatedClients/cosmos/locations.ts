@@ -20,7 +20,7 @@ export async function list(subscriptionId: string): Promise<Types.LocationListRe
 /* Get the properties of an existing Cosmos DB location */
 export async function get(
   subscriptionId: string,
-  location: string
+  location: string,
 ): Promise<Types.LocationGetResult | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/locations/${location}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

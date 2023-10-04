@@ -113,7 +113,7 @@ export class NotebookComponentBootstrapper {
         model: NotebookComponentBootstrapper.wrapModelIntoContent(name, undefined, content),
         kernelRef: undefined,
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -124,7 +124,7 @@ export class NotebookComponentBootstrapper {
    */
   public renderComponent(
     renderer?: any, // TODO FIX THIS React.ComponentClass<{ contentRef: ContentRef; isReadOnly?: boolean }>,
-    props?: any
+    props?: any,
   ): JSX.Element {
     return (
       <Provider store={this.getStore()}>
@@ -149,18 +149,18 @@ export class NotebookComponentBootstrapper {
           this.getStore().dispatch(
             actions.save({
               contentRef: this.contentRef,
-            })
+            }),
           );
         },
         "Cancel",
         undefined,
-        this.getSaveNotebookSubText()
+        this.getSaveNotebookSubText(),
       );
     } else {
       this.getStore().dispatch(
         actions.save({
           contentRef: this.contentRef,
-        })
+        }),
       );
     }
   }
@@ -171,7 +171,7 @@ export class NotebookComponentBootstrapper {
         contentRef: this.contentRef,
         kernelSpecName,
         oldKernelRef: this.getCurrentKernelRef(),
-      })
+      }),
     );
   }
 
@@ -179,7 +179,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       CdbActions.executeFocusedCellAndFocusNext({
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -187,7 +187,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.executeAllCells({
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -195,7 +195,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.interruptKernel({
         kernelRef: this.getCurrentKernelRef(),
-      })
+      }),
     );
   }
 
@@ -204,7 +204,7 @@ export class NotebookComponentBootstrapper {
       actions.killKernel({
         restarting: false,
         kernelRef: this.getCurrentKernelRef(),
-      })
+      }),
     );
   }
 
@@ -214,7 +214,7 @@ export class NotebookComponentBootstrapper {
         kernelRef: this.getCurrentKernelRef(),
         contentRef: this.contentRef,
         outputHandling: "None",
-      })
+      }),
     );
   }
 
@@ -222,7 +222,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.clearAllOutputs({
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -231,7 +231,7 @@ export class NotebookComponentBootstrapper {
       actions.createCellBelow({
         cellType: "code",
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -247,7 +247,7 @@ export class NotebookComponentBootstrapper {
         id: focusedCellId,
         contentRef: this.contentRef,
         to: type,
-      })
+      }),
     );
   }
 
@@ -262,7 +262,7 @@ export class NotebookComponentBootstrapper {
       actions.copyCell({
         id: focusedCellId,
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -277,7 +277,7 @@ export class NotebookComponentBootstrapper {
       actions.cutCell({
         id: focusedCellId,
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -285,7 +285,7 @@ export class NotebookComponentBootstrapper {
     this.getStore().dispatch(
       actions.pasteCell({
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 
@@ -298,14 +298,14 @@ export class NotebookComponentBootstrapper {
         actions.killKernel({
           restarting: false,
           kernelRef,
-        })
+        }),
       );
     }
 
     store.dispatch(
       CdbActions.closeNotebook({
         contentRef: this.contentRef,
-      })
+      }),
     );
   }
 

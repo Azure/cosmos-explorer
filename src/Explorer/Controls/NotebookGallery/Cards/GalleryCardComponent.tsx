@@ -90,7 +90,7 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
     iconName: string,
     title: string,
     horizontalAlign: "right" | "left",
-    activate: () => void
+    activate: () => void,
   ): JSX.Element => {
     return (
       <TooltipHost
@@ -116,7 +116,7 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
           HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
           MouseEvent
         >,
-    activate: () => void
+    activate: () => void,
   ): void => {
     event.stopPropagation();
     event.preventDefault();
@@ -183,7 +183,7 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
                     isFavorite ? "HeartFill" : "Heart",
                     isFavorite ? "Unfavorite" : "Favorite",
                     "left",
-                    isFavorite ? onUnfavoriteClick : onFavoriteClick
+                    isFavorite ? onUnfavoriteClick : onFavoriteClick,
                   )}
 
                 {showDownload && generateIconButtonWithTooltip("Download", "Download", "left", onDownloadClick)}
@@ -192,8 +192,8 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
                   generateIconButtonWithTooltip("Delete", "Remove", "right", () =>
                     onDeleteClick(
                       () => setIsDeletingPublishedNotebook(true),
-                      () => setIsDeletingPublishedNotebook(false)
-                    )
+                      () => setIsDeletingPublishedNotebook(false),
+                    ),
                   )}
               </span>
             </DocumentCardDetails>

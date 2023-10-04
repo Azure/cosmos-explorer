@@ -53,7 +53,7 @@ describe("useTabs tests", () => {
       },
       {
         container: container,
-      }
+      },
     );
 
     documentsTab = new DocumentsTab({

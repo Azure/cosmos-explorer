@@ -26,7 +26,10 @@ export class NewStoredProcedureTab extends ScriptTabBase {
   public onSaveClick: () => void;
   public onUpdateClick: () => Promise<void>;
 
-  constructor(options: ViewModels.ScriptTabOption, private props: IStoredProcTabProps) {
+  constructor(
+    options: ViewModels.ScriptTabOption,
+    private props: IStoredProcTabProps,
+  ) {
     super(options);
     this.partitionKey = options.partitionKey;
 

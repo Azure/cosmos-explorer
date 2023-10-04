@@ -27,7 +27,7 @@ export async function updateCollection(
   databaseId: string,
   collectionId: string,
   newCollection: Partial<Collection>,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<Collection> {
   let collection: Collection;
   const clearMessage = logConsoleProgress(`Updating container ${collectionId}`);
@@ -61,7 +61,7 @@ export async function updateCollection(
 async function updateCollectionWithARM(
   databaseId: string,
   collectionId: string,
-  newCollection: Partial<Collection>
+  newCollection: Partial<Collection>,
 ): Promise<Collection> {
   const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
   const accountName = databaseAccount.name;
@@ -82,7 +82,7 @@ async function updateCollectionWithARM(
         subscriptionId,
         resourceGroup,
         accountName,
-        newCollection
+        newCollection,
       );
     default:
       throw new Error(`Unsupported default experience type: ${apiType}`);
@@ -95,7 +95,7 @@ async function updateSqlContainer(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Partial<Collection>
+  newCollection: Partial<Collection>,
 ): Promise<Collection> {
   const getResponse = await getSqlContainer(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -106,7 +106,7 @@ async function updateSqlContainer(
       accountName,
       databaseId,
       collectionId,
-      getResponse as SqlContainerCreateUpdateParameters
+      getResponse as SqlContainerCreateUpdateParameters,
     );
     return updateResponse && (updateResponse.properties.resource as Collection);
   }
@@ -120,7 +120,7 @@ export async function updateMongoDBCollection(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Partial<Collection>
+  newCollection: Partial<Collection>,
 ): Promise<Collection> {
   const getResponse = await getMongoDBCollection(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -131,13 +131,13 @@ export async function updateMongoDBCollection(
       accountName,
       databaseId,
       collectionId,
-      getResponse as MongoDBCollectionCreateUpdateParameters
+      getResponse as MongoDBCollectionCreateUpdateParameters,
     );
     return updateResponse && (updateResponse.properties.resource as Collection);
   }
 
   throw new Error(
-    `MongoDB collection to update does not exist. Database id: ${databaseId} Collection id: ${collectionId}`
+    `MongoDB collection to update does not exist. Database id: ${databaseId} Collection id: ${collectionId}`,
   );
 }
 
@@ -147,7 +147,7 @@ async function updateCassandraTable(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Partial<Collection>
+  newCollection: Partial<Collection>,
 ): Promise<Collection> {
   const getResponse = await getCassandraTable(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -158,13 +158,13 @@ async function updateCassandraTable(
       accountName,
       databaseId,
       collectionId,
-      getResponse as SqlContainerCreateUpdateParameters
+      getResponse as SqlContainerCreateUpdateParameters,
     );
     return updateResponse && (updateResponse.properties.resource as Collection);
   }
 
   throw new Error(
-    `Cassandra table to update does not exist. Database id: ${databaseId} Collection id: ${collectionId}`
+    `Cassandra table to update does not exist. Database id: ${databaseId} Collection id: ${collectionId}`,
   );
 }
 
@@ -174,7 +174,7 @@ async function updateGremlinGraph(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Partial<Collection>
+  newCollection: Partial<Collection>,
 ): Promise<Collection> {
   const getResponse = await getGremlinGraph(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -185,7 +185,7 @@ async function updateGremlinGraph(
       accountName,
       databaseId,
       collectionId,
-      getResponse as SqlContainerCreateUpdateParameters
+      getResponse as SqlContainerCreateUpdateParameters,
     );
     return updateResponse && (updateResponse.properties.resource as Collection);
   }
@@ -198,7 +198,7 @@ async function updateTable(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Partial<Collection>
+  newCollection: Partial<Collection>,
 ): Promise<Collection> {
   const getResponse = await getTable(subscriptionId, resourceGroup, accountName, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -208,7 +208,7 @@ async function updateTable(
       resourceGroup,
       accountName,
       collectionId,
-      getResponse as SqlContainerCreateUpdateParameters
+      getResponse as SqlContainerCreateUpdateParameters,
     );
     return updateResponse && (updateResponse.properties.resource as Collection);
   }

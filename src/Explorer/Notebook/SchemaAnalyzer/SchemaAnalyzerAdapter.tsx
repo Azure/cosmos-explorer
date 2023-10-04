@@ -13,7 +13,11 @@ export class SchemaAnalyzerAdapter extends NotebookComponentBootstrapper impleme
   public parameters: unknown;
   private kernelRef: KernelRef;
 
-  constructor(options: NotebookComponentBootstrapperOptions, private databaseId: string, private collectionId: string) {
+  constructor(
+    options: NotebookComponentBootstrapperOptions,
+    private databaseId: string,
+    private collectionId: string,
+  ) {
     super(options);
 
     if (!this.contentRef) {
@@ -26,7 +30,7 @@ export class SchemaAnalyzerAdapter extends NotebookComponentBootstrapper impleme
           params: {},
           kernelRef: this.kernelRef,
           contentRef: this.contentRef,
-        })
+        }),
       );
     }
   }

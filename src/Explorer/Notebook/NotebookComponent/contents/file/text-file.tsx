@@ -84,7 +84,7 @@ interface InitialProps {
 
 function makeMapStateToTextFileProps(
   initialState: AppState,
-  initialProps: InitialProps
+  initialProps: InitialProps,
 ): (state: AppState) => MappedStateProps {
   const { contentRef } = initialProps;
 
@@ -107,7 +107,7 @@ function makeMapStateToTextFileProps(
 
 const makeMapDispatchToTextFileProps = (
   initialDispatch: Dispatch,
-  initialProps: InitialProps
+  initialProps: InitialProps,
 ): ((dispatch: Dispatch) => MappedDispatchProps) => {
   const { contentRef } = initialProps;
 
@@ -118,7 +118,7 @@ const makeMapDispatchToTextFileProps = (
           actions.updateFileText({
             contentRef,
             text: source,
-          })
+          }),
         );
       },
     };
@@ -128,7 +128,7 @@ const makeMapDispatchToTextFileProps = (
 
 const ConnectedTextFile = connect<MappedStateProps, MappedDispatchProps, InitialProps, AppState>(
   makeMapStateToTextFileProps,
-  makeMapDispatchToTextFileProps
+  makeMapDispatchToTextFileProps,
 )(TextFile);
 
 export function handles(mimetype: string) {

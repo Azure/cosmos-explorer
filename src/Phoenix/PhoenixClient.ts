@@ -59,7 +59,7 @@ export class PhoenixClient {
 
   private async executeContainerAssignmentOperation(
     provisionData: IProvisionData,
-    operation: string
+    operation: string,
   ): Promise<IResponse<IPhoenixServiceInfo>> {
     let response;
     try {
@@ -107,7 +107,7 @@ export class PhoenixClient {
   private scheduleContainerHeartbeat(
     shouldUseNotebookStates: boolean,
     delayMs: number,
-    containerData: IContainerData
+    containerData: IContainerData,
   ): void {
     this.containerHealthHandler = setTimeout(async () => {
       await this.getContainerHealth(shouldUseNotebookStates, delayMs, containerData);
@@ -116,7 +116,7 @@ export class PhoenixClient {
 
   private async getContainerStatusAsync(
     shouldUseNotebookStates: boolean,
-    containerData: IContainerData
+    containerData: IContainerData,
   ): Promise<ContainerInfo> {
     try {
       const runContainerStatusAsync = async () => {
@@ -125,7 +125,7 @@ export class PhoenixClient {
           {
             method: "GET",
             headers: PhoenixClient.getHeaders(),
-          }
+          },
         );
         if (response.status === HttpStatusCodes.OK) {
           const containerStatus = await response.json();
@@ -153,7 +153,7 @@ export class PhoenixClient {
               .getState()
               .showOkModalDialog(
                 "Disconnected",
-                "Disconnected from temporary workspace. Please click on connect button to connect to temporary workspace."
+                "Disconnected from temporary workspace. Please click on connect button to connect to temporary workspace.",
               );
           throw new AbortError(response.statusText);
         } else if (response?.status === HttpStatusCodes.Forbidden) {
@@ -219,7 +219,7 @@ export class PhoenixClient {
         {
           dataExplorerArea: Areas.Notebook,
         },
-        startKey
+        startKey,
       );
       return {
         status: response.status,
@@ -234,7 +234,7 @@ export class PhoenixClient {
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
       return {
