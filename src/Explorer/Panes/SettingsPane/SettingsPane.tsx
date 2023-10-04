@@ -9,6 +9,7 @@ import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
+import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 
 export const SettingsPane: FunctionComponent = () => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
@@ -51,8 +52,7 @@ export const SettingsPane: FunctionComponent = () => {
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-  const shouldShowPriorityLevelOption =
-    userContext.databaseAccount?.properties?.enablePriorityBasedExecution && userContext.apiType === "SQL";
+  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     setIsExecuting(true);
 
