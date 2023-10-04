@@ -78,6 +78,7 @@ export default class DocumentsTab extends TabsBase {
   private _documentsIterator: QueryIterator<ItemDefinition & Resource>;
   private _resourceTokenPartitionKey: string;
   private _isQueryCopilotSampleContainer: boolean;
+  private queryAbortController: AbortController;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
@@ -401,6 +402,10 @@ export default class DocumentsTab extends TabsBase {
     return true;
   };
 
+  public onAbortQueryClick(): void {
+    this.queryAbortController.abort();
+  }
+
   public onDocumentIdClick(clickedDocumentId: DocumentId): Q.Promise<any> {
     if (this.editorState() !== ViewModels.DocumentExplorerState.noDocumentSelected) {
       return Q();
@@ -688,6 +693,7 @@ export default class DocumentsTab extends TabsBase {
   }
 
   public createIterator(): QueryIterator<ItemDefinition & Resource> {
+    this.queryAbortController = new AbortController();
     const filter: string = this.filterContent().trim();
     const query: string = this.buildQuery(filter);
     let options: any = {};
@@ -696,7 +702,7 @@ export default class DocumentsTab extends TabsBase {
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
-
+    options.abortSignal = this.queryAbortController.signal; 
     return this._isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options)
       : queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
