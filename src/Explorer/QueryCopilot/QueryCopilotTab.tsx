@@ -8,6 +8,8 @@ import {
   IconButton,
   Image,
   Link,
+  MessageBar,
+  MessageBarType,
   Separator,
   Spinner,
   Stack,
@@ -44,7 +46,6 @@ import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
-import XErrorMessage from "../../../images/X-errorMessage.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import { useTabs } from "../../hooks/useTabs";
 
@@ -90,8 +91,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     showCopyPopup,
     setshowCopyPopup,
     showErrorMessageBar,
+    showInvalidQueryMessageBar,
+    setShowInvalidQueryMessageBar,
     setShowErrorMessageBar,
     setGeneratedQueryComments,
+    setQueryResults,
+    setErrorMessage,
   } = useQueryCopilot();
 
   const sampleProps: SamplePromptsProps = {
@@ -157,8 +162,20 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join("|"));
   };
 
+  const resetMessageStates = (): void => {
+    setShowErrorMessageBar(false);
+    setShowInvalidQueryMessageBar(false);
+    setShowFeedbackBar(false);
+  };
+
+  const resetQueryResults = (): void => {
+    setQueryResults(null);
+    setErrorMessage("");
+  };
+
   const generateSQLQuery = async (): Promise<void> => {
     try {
+      resetMessageStates();
       setIsGeneratingQuery(true);
       setShowDeletePopup(false);
       useTabs.getState().setIsTabExecuting(true);
@@ -191,7 +208,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
 
       const generateSQLQueryResponse: GenerateSQLQueryResponse = await response?.json();
       if (response.ok) {
-        if (generateSQLQueryResponse?.sql) {
+        if (generateSQLQueryResponse?.sql !== "N/A") {
           let query = `-- **Prompt:** ${userPrompt}\r\n`;
           if (generateSQLQueryResponse.explanation) {
             query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
@@ -200,7 +217,10 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
           setQuery(query);
           setGeneratedQuery(generateSQLQueryResponse.sql);
           setGeneratedQueryComments(generateSQLQueryResponse.explanation);
-          setShowErrorMessageBar(false);
+          setShowFeedbackBar(true);
+          resetQueryResults();
+        } else {
+          setShowInvalidQueryMessageBar(true);
         }
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
@@ -215,7 +235,6 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     } finally {
       setIsGeneratingQuery(false);
       useTabs.getState().setIsTabExecuting(false);
-      setShowFeedbackBar(true);
     }
   };
 
@@ -265,6 +284,11 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     }
   };
 
+  const clearFeedback = () => {
+    resetButtonState();
+    resetQueryResults();
+  };
+
   const resetButtonState = () => {
     setDislikeQuery(false);
     setLikeQuery(false);
@@ -290,7 +314,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     <Stack className="tab-pane" style={{ padding: 24, width: "100%" }}>
       <div style={isGeneratingQuery ? { height: "100%" } : { overflowY: "auto", height: "100%" }}>
         <Stack horizontal verticalAlign="center">
-          <Image src={CopilotIcon} />
+          <Image src={CopilotIcon} style={{ width: 24, height: 24 }} />
           <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
         </Stack>
         <Stack horizontal verticalAlign="center" style={{ marginTop: 16, width: "100%", position: "relative" }}>
@@ -452,12 +476,25 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
               Read preview terms
             </Link>
             {showErrorMessageBar && (
-              <Stack style={{ backgroundColor: "#FEF0F1", padding: "4px 8px" }} horizontal verticalAlign="center">
-                <Image src={XErrorMessage} style={{ marginRight: "8px" }} />
-                <Text style={{ fontSize: 12 }}>
-                  We ran into an error and were not able to execute query. Please try again after sometime
-                </Text>
-              </Stack>
+              <MessageBar messageBarType={MessageBarType.error}>
+                We ran into an error and were not able to execute query.
+              </MessageBar>
+            )}
+            {showInvalidQueryMessageBar && (
+              <MessageBar
+                messageBarType={MessageBarType.info}
+                styles={{ root: { backgroundColor: "#F0F6FF" }, icon: { color: "#015CDA" } }}
+              >
+                We were unable to generate a query based upon the prompt provided. Please modify the prompt and try
+                again. For examples of how to write a good prompt, please read
+                <Link href="https://aka.ms/cdb-copilot-writing" target="_blank">
+                  this article.
+                </Link>{" "}
+                Our content guidelines can be found
+                <Link href="https://aka.ms/cdb-query-copilot" target="_blank">
+                  here.
+                </Link>
+              </MessageBar>
             )}
           </Text>
         </Stack>
@@ -562,7 +599,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
             showDeletePopup={showDeletePopup}
             setShowDeletePopup={setShowDeletePopup}
             setQuery={setQuery}
-            clearFeedback={resetButtonState}
+            clearFeedback={clearFeedback}
             showFeedbackBar={setShowFeedbackBar}
           />
         )}
