@@ -228,9 +228,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             this.props.collection.databaseId,
             this.props.collection.id(),
             this.state.selectedContent || this.state.sqlQueryEditorContent,
-            { 
+            {
               enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-              abortSignal: this.queryAbortController.signal, 
+              abortSignal: this.queryAbortController.signal,
             } as FeedOptions
           );
     }
@@ -339,7 +339,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       };
       buttons.push(launchCopilotButton);
     }
-    
+
     if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
       const label = "Cancel query";
       buttons.push({

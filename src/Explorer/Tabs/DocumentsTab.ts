@@ -702,7 +702,7 @@ export default class DocumentsTab extends TabsBase {
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
-    options.abortSignal = this.queryAbortController.signal; 
+    options.abortSignal = this.queryAbortController.signal;
     return this._isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options)
       : queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
