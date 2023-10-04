@@ -84,7 +84,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
         (event: monaco.editor.ICursorSelectionChangedEvent) => {
           const selectedContent: string = this.editor.getModel().getValueInRange(event.selection);
           this.props.onContentSelected(selectedContent);
-        }
+        },
       );
     }
   }

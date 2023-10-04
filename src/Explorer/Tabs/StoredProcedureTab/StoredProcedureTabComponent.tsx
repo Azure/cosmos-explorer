@@ -73,7 +73,7 @@ export default class StoredProcedureTabComponent extends React.Component<
 
   constructor(
     public storedProcTabCompProps: IStoredProcTabComponentProps,
-    private storedProcTabCompStates: IStoredProcTabComponentStates
+    private storedProcTabCompStates: IStoredProcTabComponentStates,
   ) {
     super(storedProcTabCompProps);
     this.state = {
@@ -213,7 +213,7 @@ export default class StoredProcedureTabComponent extends React.Component<
     return updateStoredProcedure(
       this.props.scriptTabBaseInstance.collection.databaseId,
       this.props.scriptTabBaseInstance.collection.id(),
-      data
+      data,
     )
       .then(
         (updatedResource) => {
@@ -245,7 +245,7 @@ export default class StoredProcedureTabComponent extends React.Component<
         },
         () => {
           this.props.scriptTabBaseInstance.isExecutionError(true);
-        }
+        },
       )
       .finally(() => this.props.scriptTabBaseInstance.isExecuting(false));
   };
@@ -436,7 +436,7 @@ export default class StoredProcedureTabComponent extends React.Component<
           this.props.scriptTabBaseInstance.isExecutionError(true);
 
           return Promise.reject(createError);
-        }
+        },
       )
       .finally(() => this.props.scriptTabBaseInstance.isExecuting(false));
   }

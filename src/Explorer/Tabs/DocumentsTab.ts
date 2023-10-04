@@ -89,7 +89,7 @@ export default class DocumentsTab extends TabsBase {
     this.documentContentsGridId = `documentContentsGrid${this.tabId}`;
     this.documentContentsContainerId = `documentContentsContainer${this.tabId}`;
     this.editorState = ko.observable<ViewModels.DocumentExplorerState>(
-      ViewModels.DocumentExplorerState.noDocumentSelected
+      ViewModels.DocumentExplorerState.noDocumentSelected,
     );
     this.selectedDocumentId = ko.observable<DocumentId>();
     this.selectedDocumentContent = editable.observable<string>("");
@@ -100,7 +100,7 @@ export default class DocumentsTab extends TabsBase {
 
     this.partitionKeyPropertyHeaders = this.collection?.partitionKeyPropertyHeaders || this.partitionKey?.paths;
     this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
-      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, "")
+      partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
     );
 
     this.isFilterExpanded = ko.observable<boolean>(false);
@@ -135,20 +135,20 @@ export default class DocumentsTab extends TabsBase {
 
     this.accessibleDocumentList = new AccessibleVerticalList(this.documentIds());
     this.accessibleDocumentList.setOnSelect(
-      (selectedDocument: DocumentId) => selectedDocument && selectedDocument.click()
+      (selectedDocument: DocumentId) => selectedDocument && selectedDocument.click(),
     );
     this.selectedDocumentId.subscribe((newSelectedDocumentId: DocumentId) =>
-      this.accessibleDocumentList.updateCurrentItem(newSelectedDocumentId)
+      this.accessibleDocumentList.updateCurrentItem(newSelectedDocumentId),
     );
     this.documentIds.subscribe((newDocuments: DocumentId[]) => {
       this.accessibleDocumentList.updateItemList(newDocuments);
       if (newDocuments.length > 0) {
         this.dataContentsGridScrollHeight(
-          newDocuments.length * DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px"
+          newDocuments.length * DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px",
         );
       } else {
         this.dataContentsGridScrollHeight(
-          DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px"
+          DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px",
         );
       }
     });
@@ -426,7 +426,7 @@ export default class DocumentsTab extends TabsBase {
           "OK",
           () => this.initializeNewDocument(),
           "Cancel",
-          undefined
+          undefined,
         );
     } else {
       this.initializeNewDocument();
@@ -457,7 +457,7 @@ export default class DocumentsTab extends TabsBase {
           this.initialDocumentContent(value);
           const partitionKeyValueArray = extractPartitionKey(
             savedDocument,
-            this.partitionKey as PartitionKeyDefinition
+            this.partitionKey as PartitionKeyDefinition,
           );
           let id = new DocumentId(this, savedDocument, partitionKeyValueArray);
           let ids = this.documentIds();
@@ -472,7 +472,7 @@ export default class DocumentsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
-            startKey
+            startKey,
           );
         },
         (error) => {
@@ -487,9 +487,9 @@ export default class DocumentsTab extends TabsBase {
               error: errorMessage,
               errorStack: getErrorStack(error),
             },
-            startKey
+            startKey,
           );
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   };
@@ -533,7 +533,7 @@ export default class DocumentsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
-            startKey
+            startKey,
           );
         },
         (error) => {
@@ -548,9 +548,9 @@ export default class DocumentsTab extends TabsBase {
               error: errorMessage,
               errorStack: getErrorStack(error),
             },
-            startKey
+            startKey,
           );
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   };
@@ -577,7 +577,7 @@ export default class DocumentsTab extends TabsBase {
         "Delete",
         async () => await this._deleteDocument(selectedDocumentId),
         "Cancel",
-        undefined
+        undefined,
       );
   };
 
@@ -639,7 +639,7 @@ export default class DocumentsTab extends TabsBase {
               error: getErrorMessage(error),
               errorStack: getErrorStack(error),
             },
-            this.onLoadStartKey
+            this.onLoadStartKey,
           );
           this.onLoadStartKey = null;
         }
@@ -671,7 +671,7 @@ export default class DocumentsTab extends TabsBase {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
-            startKey
+            startKey,
           );
         },
         (error) => {
@@ -685,9 +685,9 @@ export default class DocumentsTab extends TabsBase {
               error: getErrorMessage(error),
               errorStack: getErrorStack(error),
             },
-            startKey
+            startKey,
           );
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   }
@@ -747,7 +747,7 @@ export default class DocumentsTab extends TabsBase {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
               },
-              this.onLoadStartKey
+              this.onLoadStartKey,
             );
             this.onLoadStartKey = null;
           }
@@ -768,11 +768,11 @@ export default class DocumentsTab extends TabsBase {
                 error: errorMessage,
                 errorStack: getErrorStack(error),
               },
-              this.onLoadStartKey
+              this.onLoadStartKey,
             );
             this.onLoadStartKey = null;
           }
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   }
@@ -929,7 +929,7 @@ export default class DocumentsTab extends TabsBase {
         this.discardExisitingDocumentChangesButton.enabled,
         this.deleteExisitingDocumentButton.visible,
         this.deleteExisitingDocumentButton.enabled,
-      ])
+      ]),
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();
   }

@@ -9,7 +9,7 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export async function readTriggers(
   databaseId: string,
-  collectionId: string
+  collectionId: string,
 ): Promise<SqlTriggerResource[] | TriggerDefinition[]> {
   const clearMessage = logConsoleProgress(`Querying triggers for container ${collectionId}`);
   try {
@@ -23,7 +23,7 @@ export async function readTriggers(
         userContext.resourceGroup,
         userContext.databaseAccount.name,
         databaseId,
-        collectionId
+        collectionId,
       );
       return rpResponse?.value?.map((trigger) => trigger.properties?.resource);
     }

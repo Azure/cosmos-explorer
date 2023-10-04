@@ -67,7 +67,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       gitHubNotebooksContentRoot: state.gitHubNotebooksContentRoot,
       updateNotebookItem: state.updateNotebookItem,
     }),
-    shallow
+    shallow,
   );
   const { activeTab, refreshActiveTab } = useTabs();
   const showScriptNodes =
@@ -170,7 +170,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       myNotebooksContentRoot,
       (item: NotebookContentItem) => {
         container.openNotebook(item);
-      }
+      },
     );
 
     myNotebooksTree.isExpanded = true;
@@ -186,7 +186,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       (item: NotebookContentItem) => {
         container.openNotebook(item);
       },
-      true
+      true,
     );
     const manageGitContextMenu: TreeNodeMenuItem[] = [
       {
@@ -200,7 +200,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
                 explorer={container}
                 gitHubClientProp={container.notebookManager.gitHubClient}
                 junoClientProp={container.notebookManager.junoClient}
-              />
+              />,
             ),
       },
       {
@@ -223,7 +223,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const buildChildNodes = (
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): TreeNode[] => {
     if (!item || !item.children) {
       return [];
@@ -242,7 +242,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const buildNotebookFileNode = (
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): TreeNode => {
     return {
       label: item.name,
@@ -267,7 +267,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const createFileContextMenu = (
     container: Explorer,
     item: NotebookContentItem,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): TreeNodeMenuItem[] => {
     let items: TreeNodeMenuItem[] = [
       {
@@ -287,7 +287,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
               "Delete",
               () => container.deleteNotebookFile(item, isGithubTree),
               "Cancel",
-              undefined
+              undefined,
             );
         },
       },
@@ -338,7 +338,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const createDirectoryContextMenu = (
     container: Explorer,
     item: NotebookContentItem,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): TreeNodeMenuItem[] => {
     let items: TreeNodeMenuItem[] = [
       {
@@ -358,7 +358,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
               "Delete",
               () => container.deleteNotebookFile(item, isGithubTree),
               "Cancel",
-              undefined
+              undefined,
             );
         },
       },
@@ -396,7 +396,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           item.label !== "Delete" &&
           item.label !== "Rename" &&
           item.label !== "New Directory" &&
-          item.label !== "Upload File"
+          item.label !== "Upload File",
       );
     }
 
@@ -406,7 +406,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const buildNotebookDirectoryNode = (
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
-    isGithubTree?: boolean
+    isGithubTree?: boolean,
   ): TreeNode => {
     return {
       label: item.name,
@@ -479,7 +479,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       database
         .collections()
         .forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(buildCollectionNode(database, collection))
+          databaseNode.children.push(buildCollectionNode(database, collection)),
         );
 
       if (database.collectionsContinuationToken) {
@@ -496,7 +496,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
       database.collections.subscribe((collections: ViewModels.Collection[]) => {
         collections.forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(buildCollectionNode(database, collection))
+          databaseNode.children.push(buildCollectionNode(database, collection)),
         );
       });
 
@@ -606,7 +606,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         useCommandBar.getState().setContextButtons([]);
         refreshActiveTab(
           (tab: TabsBase) =>
-            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
         );
       },
       onExpanded: () => {
@@ -640,7 +640,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
         refreshActiveTab(
           (tab: TabsBase) =>
-            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
         );
       },
     };
@@ -665,7 +665,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
         refreshActiveTab(
           (tab: TabsBase) =>
-            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
         );
       },
     };
@@ -688,7 +688,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
         refreshActiveTab(
           (tab: TabsBase) =>
-            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+            tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
         );
       },
     };

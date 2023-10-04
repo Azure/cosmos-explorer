@@ -79,7 +79,7 @@ export default class MongoShellTabComponent extends Component<
     }
 
     const shellIframe: HTMLIFrameElement = document.getElementById(
-      this.props.tabsBaseInstance.tabId
+      this.props.tabsBaseInstance.tabId,
     ) as HTMLIFrameElement;
 
     if (!shellIframe) {
@@ -115,7 +115,7 @@ export default class MongoShellTabComponent extends Component<
       documentEndpoint.substr(
         Constants.MongoDBAccounts.protocol.length + 3,
         documentEndpoint.length -
-          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
+          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length),
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();
@@ -137,7 +137,7 @@ export default class MongoShellTabComponent extends Component<
           apiEndpoint: apiEndpoint,
         },
       },
-      targetOrigin
+      targetOrigin,
     );
   }
 

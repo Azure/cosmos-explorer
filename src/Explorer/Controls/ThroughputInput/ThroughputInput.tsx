@@ -36,7 +36,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 }: ThroughputInputProps) => {
   const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
   const [throughput, setThroughput] = useState<number>(
-    isFreeTier || isQuickstart ? AutoPilotUtils.autoPilotThroughput1K : AutoPilotUtils.autoPilotThroughput4K
+    isFreeTier || isQuickstart ? AutoPilotUtils.autoPilotThroughput1K : AutoPilotUtils.autoPilotThroughput4K,
   );
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
   const [throughputError, setThroughputError] = useState<string>("");
@@ -71,7 +71,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       setThroughputError(
         `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
           totalThroughput + throughput * numberOfRegions
-        } RU/s. Change total throughput limit in cost management.`
+        } RU/s. Change total throughput limit in cost management.`,
       );
 
       setIsThroughputCapExceeded(true);
@@ -83,7 +83,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       setThroughputError(
         `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
           totalThroughputUsed + newThroughput * numberOfRegions
-        } RU/s. Change total throughput limit in cost management.`
+        } RU/s. Change total throughput limit in cost management.`,
       );
       setIsThroughputCapExceeded(true);
       return false;
@@ -151,7 +151,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       userContext.portalEnv,
       numberOfRegions,
       multimasterEnabled,
-      isAutoscaleSelected
+      isAutoscaleSelected,
     );
   };
 

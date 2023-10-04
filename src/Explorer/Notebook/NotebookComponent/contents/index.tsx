@@ -141,7 +141,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: ContentsProps): object
         actions.overwriteMetadataFields({
           ...props,
           contentRef: ownProps.contentRef,
-        })
+        }),
       );
     },
     // `HotKeys` handlers object

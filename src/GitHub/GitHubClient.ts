@@ -278,7 +278,7 @@ export class GitHubClient {
     owner: string,
     repo: string,
     pageSize: number,
-    endCursor?: string
+    endCursor?: string,
   ): Promise<IGitHubResponse<IGitHubBranch[]>> {
     try {
       const response = (await this.ocktokit.graphql(branchesQuery, {
@@ -307,7 +307,7 @@ export class GitHubClient {
     owner: string,
     repo: string,
     branch: string,
-    path?: string
+    path?: string,
   ): Promise<IGitHubResponse<IGitHubFile | IGitHubFile[]>> {
     try {
       const response = (await this.ocktokit.graphql(contentsQuery, {
@@ -338,8 +338,8 @@ export class GitHubClient {
             (path && UrlUtility.createUri(path, entry.name)) || entry.name,
             gitHubRepo,
             gitHubBranch,
-            gitHubCommit
-          )
+            gitHubCommit,
+          ),
         );
       } else {
         data = GitHubClient.toGitHubFile(
@@ -351,7 +351,7 @@ export class GitHubClient {
           path,
           gitHubRepo,
           gitHubBranch,
-          gitHubCommit
+          gitHubCommit,
         );
       }
 
@@ -375,7 +375,7 @@ export class GitHubClient {
     path: string,
     message: string,
     content: string,
-    sha?: string
+    sha?: string,
   ): Promise<IGitHubResponse<IGitHubCommit>> {
     const response = await this.ocktokit.repos.createOrUpdateFile({
       owner,
@@ -401,7 +401,7 @@ export class GitHubClient {
     branch: string,
     message: string,
     oldPath: string,
-    newPath: string
+    newPath: string,
   ): Promise<IGitHubResponse<IGitHubCommit>> {
     const ref = `heads/${branch}`;
     const currentRef = await this.ocktokit.git.getRef({
@@ -562,7 +562,7 @@ export class GitHubClient {
     path: string,
     repo: IGitHubRepo,
     branch: IGitHubBranch,
-    commit: IGitHubCommit
+    commit: IGitHubCommit,
   ): IGitHubFile {
     if (entry.type !== "blob" && entry.type !== "tree") {
       throw new Error(`Unsupported file type: ${entry.type}`);

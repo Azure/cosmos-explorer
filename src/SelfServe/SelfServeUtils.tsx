@@ -97,7 +97,7 @@ export interface DecoratorProperties {
   onChange?: (
     newValue: InputType,
     currentState: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
+    baselineValues: ReadonlyMap<string, SmartUiInput>,
   ) => Map<string, SmartUiInput>;
 }
 
@@ -105,7 +105,7 @@ export interface DecoratorProperties {
 const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   name: T,
   value: K,
-  fieldObject: DecoratorProperties
+  fieldObject: DecoratorProperties,
 ): void => {
   fieldObject[name] = value;
 };
@@ -121,7 +121,7 @@ export const addPropertyToMap = <T extends keyof DecoratorProperties, K extends 
   propertyName: string,
   className: string,
   descriptorName: keyof DecoratorProperties,
-  descriptorValue: K
+  descriptorValue: K,
 ): void => {
   const context =
     (Reflect.getMetadata(className, target) as Map<string, DecoratorProperties>) ??
@@ -136,7 +136,7 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
   propertyName: string,
   className: string,
   descriptorName: keyof DecoratorProperties,
-  descriptorValue: K
+  descriptorValue: K,
 ): void => {
   if (!(context instanceof Map)) {
     throw new Error(`@IsDisplayable should be the first decorator for the class '${className}'.`);
@@ -146,7 +146,7 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
 
   if (getValue(descriptorName, propertyObject) && descriptorName !== "type" && descriptorName !== "dataFieldName") {
     throw new Error(
-      `Duplicate value passed for '${descriptorName}' on property '${propertyName}' of class '${className}'`
+      `Duplicate value passed for '${descriptorName}' on property '${propertyName}' of class '${className}'`,
     );
   }
 
@@ -190,7 +190,7 @@ const addToDescriptor = (
   context: Map<string, DecoratorProperties>,
   root: Node,
   key: string,
-  inputNames: string[]
+  inputNames: string[],
 ): void => {
   const value = context.get(key);
   inputNames.push(value.id);

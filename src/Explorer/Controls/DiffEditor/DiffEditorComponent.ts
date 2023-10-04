@@ -95,7 +95,7 @@ export class DiffEditorViewModel {
   protected async createDiffEditor(
     originalContent: string,
     modifiedContent: string,
-    createCallback: (e: monaco.editor.IStandaloneDiffEditor) => void
+    createCallback: (e: monaco.editor.IStandaloneDiffEditor) => void,
   ) {
     this.editorContainer = document.getElementById(this.getEditorId());
     this.editorContainer.innerHTML = "";
@@ -116,7 +116,7 @@ export class DiffEditorViewModel {
     const modifiedModel = monaco.editor.createModel(modifiedContent, language);
     const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(
       this.editorContainer,
-      options
+      options,
     );
     diffEditor.setModel({
       original: originalModel,

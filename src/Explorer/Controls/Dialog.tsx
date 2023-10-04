@@ -33,7 +33,7 @@ export interface DialogState {
     contentHtml?: JSX.Element,
     choiceGroupProps?: IChoiceGroupProps,
     textFieldProps?: TextFieldProps,
-    primaryButtonDisabled?: boolean
+    primaryButtonDisabled?: boolean,
   ) => void;
   showOkModalDialog: (title: string, subText: string) => void;
 }
@@ -50,7 +50,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
         showOkCancelModalDialog: state.showOkCancelModalDialog,
         showOkModalDialog: state.showOkModalDialog,
       }),
-      true // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
+      true, // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
     ),
   showOkCancelModalDialog: (
     title: string,
@@ -62,7 +62,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
     contentHtml?: JSX.Element,
     choiceGroupProps?: IChoiceGroupProps,
     textFieldProps?: TextFieldProps,
-    primaryButtonDisabled?: boolean
+    primaryButtonDisabled?: boolean,
   ): void =>
     get().openDialog({
       isModal: true,

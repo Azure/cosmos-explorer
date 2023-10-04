@@ -41,7 +41,7 @@ export const UploadItemsPane: FunctionComponent = () => {
         (error: Error) => {
           const errorMessage = getErrorMessage(error);
           setFormError(errorMessage);
-        }
+        },
       )
       .finally(() => {
         setIsExecuting(false);

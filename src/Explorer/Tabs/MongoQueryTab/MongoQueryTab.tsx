@@ -15,7 +15,10 @@ export class NewMongoQueryTab extends NewQueryTab {
   public iMongoQueryTabComponentProps: IQueryTabComponentProps;
   public queryText: string;
 
-  constructor(options: ViewModels.QueryTabOptions, private mongoQueryTabProps: IMongoQueryTabProps) {
+  constructor(
+    options: ViewModels.QueryTabOptions,
+    private mongoQueryTabProps: IMongoQueryTabProps,
+  ) {
     super(options, mongoQueryTabProps);
     this.queryText = "";
     this.iMongoQueryTabComponentProps = {

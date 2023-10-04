@@ -179,7 +179,7 @@ export const getRuPriceBreakdown = (
   serverId: string,
   numberOfRegions: number,
   isMultimaster: boolean,
-  isAutoscale: boolean
+  isAutoscale: boolean,
 ): PriceBreakdown => {
   const hourlyPrice: number = computeRUUsagePriceHourly({
     serverId: serverId,
@@ -207,7 +207,7 @@ export const getEstimatedSpendingElement = (
   throughput: number,
   numberOfRegions: number,
   priceBreakdown: PriceBreakdown,
-  isAutoscale: boolean
+  isAutoscale: boolean,
 ): JSX.Element => {
   const ruRange: string = isAutoscale ? throughput / 10 + " RU/s - " : "";
   return (
@@ -279,7 +279,7 @@ export const getUpdateThroughputBeyondInstantLimitMessage = (instantMaximumThrou
 
 export const getUpdateThroughputBeyondSupportLimitMessage = (
   instantMaximumThroughput: number,
-  maximumThroughput: number
+  maximumThroughput: number,
 ): JSX.Element => {
   return (
     <>
@@ -333,15 +333,15 @@ const getCurrentThroughput = (
   isAutoscale: boolean,
   throughput: number,
   throughputUnit: string,
-  targetThroughput?: number
+  targetThroughput?: number,
 ): string => {
   if (targetThroughput) {
     if (throughput) {
       return isAutoscale
         ? `, Current autoscale throughput: ${Math.round(
-            throughput / 10
+            throughput / 10,
           )} - ${throughput} ${throughputUnit}, Target autoscale throughput: ${Math.round(
-            targetThroughput / 10
+            targetThroughput / 10,
           )} - ${targetThroughput} ${throughputUnit}`
         : `, Current manual throughput: ${throughput} ${throughputUnit}, Target manual throughput: ${targetThroughput}`;
     } else {
@@ -366,7 +366,7 @@ export const getThroughputApplyDelayedMessage = (
   throughputUnit: string,
   databaseName: string,
   collectionName: string,
-  requestedThroughput: number
+  requestedThroughput: number,
 ): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
     The request to increase the throughput has successfully been submitted. This operation will take 1-3 business days
@@ -382,7 +382,7 @@ export const getThroughputApplyShortDelayMessage = (
   throughput: number,
   throughputUnit: string,
   databaseName: string,
-  collectionName: string
+  collectionName: string,
 ): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyShortDelayMessage">
     A request to increase the throughput is currently in progress. This operation will take some time to complete.
@@ -398,7 +398,7 @@ export const getThroughputApplyLongDelayMessage = (
   throughputUnit: string,
   databaseName: string,
   collectionName: string,
-  requestedThroughput: number
+  requestedThroughput: number,
 ): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle} id="throughputApplyLongDelayMessage">
     A request to increase the throughput is currently in progress. This operation will take 1-3 business days to
@@ -480,7 +480,7 @@ export const mongoIndexTransformationRefreshingMessage: JSX.Element = (
 
 export const renderMongoIndexTransformationRefreshMessage = (
   progress: number,
-  performRefresh: () => void
+  performRefresh: () => void,
 ): JSX.Element => {
   if (progress === 0) {
     return (
@@ -516,7 +516,7 @@ export const getTextFieldStyles = (current: isDirtyTypes, baseline: isDirtyTypes
 export const getChoiceGroupStyles = (
   current: isDirtyTypes,
   baseline: isDirtyTypes,
-  isHorizontal?: boolean
+  isHorizontal?: boolean,
 ): Partial<IChoiceGroupStyles> => ({
   flexContainer: [
     {

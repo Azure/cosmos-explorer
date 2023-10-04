@@ -40,12 +40,12 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
     (value: MongoIndexTypes) => ({
       text: getMongoIndexTypeText(value),
       key: value,
-    })
+    }),
   );
 
   private onDescriptionChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     this.props.onIndexAddOrChange(newValue, this.props.type);
   };

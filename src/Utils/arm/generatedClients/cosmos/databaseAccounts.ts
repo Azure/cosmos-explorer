@@ -15,7 +15,7 @@ const apiVersion = "2023-09-15-preview";
 export async function get(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.DatabaseAccountGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function update(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  body: Types.DatabaseAccountUpdateParameters
+  body: Types.DatabaseAccountUpdateParameters,
 ): Promise<Types.DatabaseAccountGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PATCH", apiVersion, body });
@@ -37,7 +37,7 @@ export async function createOrUpdate(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  body: Types.DatabaseAccountCreateUpdateParameters
+  body: Types.DatabaseAccountCreateUpdateParameters,
 ): Promise<Types.DatabaseAccountGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -54,7 +54,7 @@ export async function failoverPriorityChange(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  body: Types.FailoverPolicies
+  body: Types.FailoverPolicies,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/failoverPriorityChange`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -69,7 +69,7 @@ export async function list(subscriptionId: string): Promise<Types.DatabaseAccoun
 /* Lists all the Azure Cosmos DB database accounts available under the given resource group. */
 export async function listByResourceGroup(
   subscriptionId: string,
-  resourceGroupName: string
+  resourceGroupName: string,
 ): Promise<Types.DatabaseAccountsListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -79,7 +79,7 @@ export async function listByResourceGroup(
 export async function listKeys(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.DatabaseAccountListKeysResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listKeys`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -89,7 +89,7 @@ export async function listKeys(
 export async function listConnectionStrings(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.DatabaseAccountListConnectionStringsResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/listConnectionStrings`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -100,7 +100,7 @@ export async function offlineRegion(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  body: Types.RegionForOnlineOffline
+  body: Types.RegionForOnlineOffline,
 ): Promise<void | Types.ErrorResponse> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/offlineRegion`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -111,7 +111,7 @@ export async function onlineRegion(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  body: Types.RegionForOnlineOffline
+  body: Types.RegionForOnlineOffline,
 ): Promise<void | Types.ErrorResponse> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/onlineRegion`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -121,7 +121,7 @@ export async function onlineRegion(
 export async function getReadOnlyKeys(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.DatabaseAccountListReadOnlyKeysResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -131,7 +131,7 @@ export async function getReadOnlyKeys(
 export async function listReadOnlyKeys(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.DatabaseAccountListReadOnlyKeysResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/readonlykeys`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -142,7 +142,7 @@ export async function regenerateKey(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  body: Types.DatabaseAccountRegenerateKeyParameters
+  body: Types.DatabaseAccountRegenerateKeyParameters,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/regenerateKey`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -158,7 +158,7 @@ export async function checkNameExists(accountName: string): Promise<void> {
 export async function listMetrics(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.MetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metrics`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -168,7 +168,7 @@ export async function listMetrics(
 export async function listUsages(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.UsagesResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/usages`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -178,7 +178,7 @@ export async function listUsages(
 export async function listMetricDefinitions(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.MetricDefinitionsListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/metricDefinitions`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

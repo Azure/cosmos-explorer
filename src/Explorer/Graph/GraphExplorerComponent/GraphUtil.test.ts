@@ -103,19 +103,19 @@ describe("fetchEdgeVertexPairs()", () => {
 
   it("should perform outE() query", () => {
     expect(GraphUtil.createFetchEdgePairQuery(true, pkid, [], startIndex, pageSize, max)).toMatch(
-      new RegExp(OUT_E_MATCHER, "g")
+      new RegExp(OUT_E_MATCHER, "g"),
     );
   });
 
   it("should perform inE() query", () => {
     expect(GraphUtil.createFetchEdgePairQuery(false, pkid, [], startIndex, pageSize, max)).toMatch(
-      new RegExp(IN_E_MATCHER, "g")
+      new RegExp(IN_E_MATCHER, "g"),
     );
   });
 
   it("should contain .has(id, without()) step which contains excludedIds", () => {
     expect(GraphUtil.createFetchEdgePairQuery(true, pkid, ["id1", "id2"], startIndex, pageSize, max)).toMatch(
-      /\.has\(id, *without\('id1', *'id2'\)\)/g
+      /\.has\(id, *without\('id1', *'id2'\)\)/g,
     );
   });
 
@@ -127,7 +127,7 @@ describe("fetchEdgeVertexPairs()", () => {
     const regex = new RegExp(`\\.limit\\(${pageSize}\\)`, "g");
     expect(GraphUtil.createFetchEdgePairQuery(true, pkid, ["id1", "id2"], startIndex, pageSize, max)).toMatch(regex);
     expect(GraphUtil.createFetchEdgePairQuery(true, pkid, ["id1", "id2"], startIndex, pageSize, max)).toMatch(
-      /^((?!range).)*$/g
+      /^((?!range).)*$/g,
     );
   });
 
@@ -140,7 +140,7 @@ describe("fetchEdgeVertexPairs()", () => {
     const regex = new RegExp(`\\.range\\(${expectedStart}, *${expectedStart + size}\\)`, "g");
     expect(GraphUtil.createFetchEdgePairQuery(true, pkid, excludedIds, start, size, smallLimit)).toMatch(regex);
     expect(GraphUtil.createFetchEdgePairQuery(true, pkid, excludedIds, start, size, smallLimit)).toMatch(
-      /^((?!limit).)*$/g
+      /^((?!limit).)*$/g,
     );
   });
 });

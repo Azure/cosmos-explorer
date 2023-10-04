@@ -7,13 +7,8 @@ import HintIcon from "../../../../../images/Hint.svg";
 import { SamplePrompts, SamplePromptsProps } from "../../Shared/SamplePrompts/SamplePrompts";
 
 export const Footer: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
-  const {
-    userPrompt,
-    setUserPrompt,
-    isSamplePromptsOpen,
-    setIsSamplePromptsOpen,
-    isGeneratingQuery,
-  } = useQueryCopilot();
+  const { userPrompt, setUserPrompt, isSamplePromptsOpen, setIsSamplePromptsOpen, isGeneratingQuery } =
+    useQueryCopilot();
 
   const promptStyles: IButtonStyles = {
     root: { border: "5px", selectors: { ":hover": { outline: "1px dashed #605e5c" } } },

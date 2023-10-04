@@ -50,12 +50,12 @@ interface Props {
 export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabaseAccount }: Props) => {
   const subscriptions = useSubscriptions(armToken);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<string>(() =>
-    localStorage.getItem("cachedSubscriptionId")
+    localStorage.getItem("cachedSubscriptionId"),
   );
   const selectedSubscription = subscriptions?.find((sub) => sub.subscriptionId === selectedSubscriptionId);
   const accounts = useDatabaseAccounts(selectedSubscription?.subscriptionId, armToken);
   const [selectedAccountName, setSelectedAccountName] = useState<string>(() =>
-    localStorage.getItem("cachedDatabaseAccountName")
+    localStorage.getItem("cachedDatabaseAccountName"),
   );
   const selectedAccount = accounts?.find((account) => account.name === selectedAccountName);
 

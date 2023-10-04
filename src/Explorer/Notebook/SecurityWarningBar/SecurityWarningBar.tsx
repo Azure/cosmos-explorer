@@ -81,7 +81,7 @@ const makeMapDispatchToProps = () => {
           actions.deleteMetadataField({
             contentRef,
             field: "untrusted",
-          })
+          }),
         );
       },
       saveNotebook: (contentRef: string) => dispatch(actions.save({ contentRef })),

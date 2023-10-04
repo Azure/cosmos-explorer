@@ -37,7 +37,7 @@ export function decryptJWTToken(token: string) {
     atob(tokenPayloadBase64)
       .split("")
       .map((p) => "%" + ("00" + p.charCodeAt(0).toString(16)).slice(-2))
-      .join("")
+      .join(""),
   );
 
   return JSON.parse(tokenPayload);

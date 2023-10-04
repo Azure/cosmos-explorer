@@ -33,7 +33,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
     private getDatabaseAccount: () => DataModels.DatabaseAccount,
     private getTabId: () => string,
     private getUsername: () => string,
-    private isAllPublicIPAddressesEnabled: ko.Observable<boolean>
+    private isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
   ) {}
 
   public renderComponent(): JSX.Element {
@@ -75,7 +75,7 @@ export default class TerminalTab extends TabsBase {
       () => userContext?.databaseAccount,
       () => this.tabId,
       () => this.getUsername(),
-      this.isAllPublicIPAddressesEnabled
+      this.isAllPublicIPAddressesEnabled,
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
       if (
@@ -93,7 +93,7 @@ export default class TerminalTab extends TabsBase {
       checkFirewallRules(
         "2022-11-08",
         (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
-        this.isAllPublicIPAddressesEnabled
+        this.isAllPublicIPAddressesEnabled,
       );
     }
 
@@ -103,7 +103,7 @@ export default class TerminalTab extends TabsBase {
         (rule) =>
           rule.name.startsWith("AllowAllAzureServicesAndResourcesWithinAzureIps") ||
           (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
-        this.isAllPublicIPAddressesEnabled
+        this.isAllPublicIPAddressesEnabled,
       );
     }
   }

@@ -90,7 +90,7 @@ export class AccessibleVerticalList {
   private scrollElementIntoContainerViewIfNeeded(
     element: Element,
     container: Element,
-    scrollPosition: ScrollPosition
+    scrollPosition: ScrollPosition,
   ): void {
     if (!this.isElementVisibleInContainer(element, container)) {
       if (scrollPosition === ScrollPosition.Top) {

@@ -202,7 +202,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         userContext.portalEnv,
         regions,
         multimaster,
-        isDirty ? this.props.maxAutoPilotThroughput : undefined
+        isDirty ? this.props.maxAutoPilotThroughput : undefined,
       );
     } else {
       estimatedSpend = this.getEstimatedManualSpendElement(
@@ -211,7 +211,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         userContext.portalEnv,
         regions,
         multimaster,
-        isDirty ? this.props.throughput : undefined
+        isDirty ? this.props.throughput : undefined,
       );
     }
     return estimatedSpend;
@@ -222,7 +222,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     serverId: string,
     numberOfRegions: number,
     isMultimaster: boolean,
-    newThroughput?: number
+    newThroughput?: number,
   ): JSX.Element => {
     const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
 
@@ -232,7 +232,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         serverId,
         numberOfRegions,
         isMultimaster,
-        true
+        true,
       );
       return (
         <div>
@@ -275,7 +275,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     serverId: string,
     numberOfRegions: number,
     isMultimaster: boolean,
-    newThroughput?: number
+    newThroughput?: number,
   ): JSX.Element => {
     const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, false);
 
@@ -285,7 +285,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         serverId,
         numberOfRegions,
         isMultimaster,
-        true
+        true,
       );
       return (
         <div>
@@ -331,7 +331,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
   private onAutoPilotThroughputChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     const newThroughput = getSanitizedInputValue(newValue);
     this.props.onMaxAutoPilotThroughputChange(newThroughput);
@@ -339,7 +339,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
   private onThroughputChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     const newThroughput = getSanitizedInputValue(newValue);
     if (this.overrideWithAutoPilotSettings()) {
@@ -354,7 +354,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
 
   private onChoiceGroupChange = (
     event?: React.FormEvent<HTMLElement | HTMLInputElement>,
-    option?: IChoiceGroupOption
+    option?: IChoiceGroupOption,
   ): void => {
     this.props.onAutoPilotSelected(option.key === "true");
     TelemetryProcessor.trace(Action.ToggleAutoscaleSetting, ActionModifiers.Mark, {
@@ -557,7 +557,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       case "requireSupport":
         return getUpdateThroughputBeyondSupportLimitMessage(
           this.props.instantMaximumThroughput,
-          this.props.softAllowedMaximumThroughput
+          this.props.softAllowedMaximumThroughput,
         );
       default:
         return <></>;

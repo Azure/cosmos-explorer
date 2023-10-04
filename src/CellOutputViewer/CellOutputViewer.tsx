@@ -66,7 +66,7 @@ const onInit = async () => {
       );
 
       ReactDOM.render(outputs, document.getElementById("cellOutput"));
-    }
+    },
   );
 
   postRobot.on(
@@ -89,14 +89,14 @@ const onInit = async () => {
         topNode,
         snapshotRequest.aspectRatio,
         undefined,
-        snapshotRequest.downloadFilename
+        snapshotRequest.downloadFilename,
       );
 
       return {
         imageSrc: result.imageSrc,
         requestId: snapshotRequest.requestId,
       };
-    }
+    },
   );
 };
 

@@ -122,7 +122,7 @@ describe("SettingsUtils", () => {
 
     notification = getMongoNotification(singleIndexDescription, MongoIndexTypes.Wildcard);
     expect(notification.message).toEqual(
-      "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder
+      "Wildcard path is not present in the field name. Use a pattern like " + MongoWildcardPlaceHolder,
     );
     expect(notification.type).toEqual(MongoNotificationType.Error);
   });

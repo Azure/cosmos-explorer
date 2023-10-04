@@ -35,7 +35,7 @@ export default class NotebookTabBase extends TabsBase {
           NotebookTabBase.clientManager = undefined;
         }
       },
-      (state) => state.notebookServerInfo
+      (state) => state.notebookServerInfo,
     );
     if (!NotebookTabBase.clientManager) {
       NotebookTabBase.clientManager = new NotebookClientV2({

@@ -113,7 +113,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         throughput,
         throughputUnit,
         this.databaseId,
-        this.collectionId
+        this.collectionId,
       );
     }
 
@@ -122,7 +122,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   public getLongDelayMessage = (): JSX.Element => {
     const matches: string[] = this.props.initialNotification?.description.match(
-      `Throughput update for (.*) ${throughputUnit}`
+      `Throughput update for (.*) ${throughputUnit}`,
     );
 
     const throughput = this.props.throughputBaseline;
@@ -134,7 +134,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
         throughputUnit,
         this.databaseId,
         this.collectionId,
-        targetThroughput
+        targetThroughput,
       );
     }
     return <></>;

@@ -155,8 +155,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         this.createPublicGalleryTab(
           GalleryTab.PublicGallery,
           this.state.publicNotebooks,
-          this.state.isCodeOfConductAccepted
-        )
+          this.state.isCodeOfConductAccepted,
+        ),
       );
     }
     tabs.push(this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks));
@@ -265,7 +265,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createPublicGalleryTab(
     tab: GalleryTab,
     data: IGalleryItem[],
-    acceptedCodeOfConduct: boolean
+    acceptedCodeOfConduct: boolean,
   ): GalleryTabInfo {
     return {
       tab,
@@ -285,7 +285,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           Favorite any notebook from the{" "}
           <Link onClick={() => this.setState({ selectedTab: GalleryTab.OfficialSamples })}>official samples</Link> or{" "}
           <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link>
-        </>
+        </>,
       );
     }
     return this.createSearchBarHeader(this.createCardsTabContent(data));
@@ -309,7 +309,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           You have not published anything to the{" "}
           <Link onClick={() => this.setState({ selectedTab: GalleryTab.PublicGallery })}>public gallery</Link> yet
         </>,
-        <>Publish your notebooks to share your work with other users</>
+        <>Publish your notebooks to share your work with other users</>,
       );
     }
     return this.createPublishedNotebooksTabContent(data);
@@ -330,19 +330,19 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           this.createPublishedNotebooksSectionContent(
             undefined,
             "You have successfully published and shared the following notebook(s) to the public gallery.",
-            this.createCardsTabContent(published)
+            this.createCardsTabContent(published),
           )}
         {underReview?.length > 0 &&
           this.createPublishedNotebooksSectionContent(
             "Under Review",
             "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
-            this.createCardsTabContent(underReview)
+            this.createCardsTabContent(underReview),
           )}
         {removed?.length > 0 &&
           this.createPublishedNotebooksSectionContent(
             "Removed",
             "These notebooks were found to contain illegal content and has been taken down.",
-            this.createPolicyViolationsListContent(removed)
+            this.createPolicyViolationsListContent(removed),
           )}
       </Stack>
     );
@@ -353,7 +353,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createPublishedNotebooksSectionContent = (
     title: string,
     description: string,
-    content: JSX.Element
+    content: JSX.Element,
   ): JSX.Element => {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
@@ -708,7 +708,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private downloadItem = async (data: IGalleryItem): Promise<void> => {
     GalleryUtils.downloadItem(this.props.container, this.props.junoClient, data, (item) =>
-      this.refreshSelectedTab(item)
+      this.refreshSelectedTab(item),
     );
   };
 
@@ -722,7 +722,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         this.refreshSelectedTab(item);
       },
       beforeDelete,
-      afterDelete
+      afterDelete,
     );
   };
 

@@ -109,7 +109,7 @@ export function convertDocumentsToEntities(documents: any[]): Entities.ITableEnt
 // Do not use this to create a document to send to the server, only for delete and for giving rid/self/collection to the utility methods.
 export function convertEntitiesToDocuments(
   entities: Entities.ITableEntityForTablesAPI[],
-  collection: ViewModels.Collection
+  collection: ViewModels.Collection,
 ): any[] {
   let results: any[] = [];
   entities &&

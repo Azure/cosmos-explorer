@@ -87,7 +87,7 @@ const makeMapStateToProps = (_state: CdbAppState, ownProps: ComponentProps): ((s
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { id, contentRef }: { id: string; contentRef: ContentRef }
+  { id, contentRef }: { id: string; contentRef: ContentRef },
 ): DispatchProps => ({
   executeCell: () => {
     dispatch(actions.executeCell({ id, contentRef }));
@@ -95,7 +95,7 @@ const mapDispatchToProps = (
       cdbActions.traceNotebookTelemetry({
         action: Action.ExecuteCellPromptBtn,
         actionModifier: ActionModifiers.Mark,
-      })
+      }),
     );
   },
   stopExecution: () => dispatch(actions.interruptKernel({})),

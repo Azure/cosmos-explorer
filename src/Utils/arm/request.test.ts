@@ -7,7 +7,7 @@ interface Global {
   Headers: unknown;
 }
 
-((global as unknown) as Global).Headers = ((fetch as unknown) as Global).Headers;
+(global as unknown as Global).Headers = (fetch as unknown as Global).Headers;
 
 describe("ARM request", () => {
   updateUserContext({
@@ -51,7 +51,7 @@ describe("ARM request", () => {
       },
     });
     await expect(() =>
-      armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" })
+      armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" }),
     ).rejects.toThrow();
     expect(window.fetch).toHaveBeenCalledTimes(2);
   });
@@ -72,7 +72,7 @@ describe("ARM request", () => {
       },
     });
     await expect(() =>
-      armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" })
+      armRequest({ apiVersion: "2001-01-01", host: "https://foo.com", path: "foo", method: "GET" }),
     ).rejects.toThrow("No authority token provided");
   });
 });

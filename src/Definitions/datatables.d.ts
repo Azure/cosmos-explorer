@@ -41,7 +41,7 @@ declare namespace DataTables {
      */
     cell(
       cellSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
-      modifier?: ObjectSelectorModifier
+      modifier?: ObjectSelectorModifier,
     ): CellMethods;
 
     /**
@@ -54,7 +54,7 @@ declare namespace DataTables {
     cell(
       rowSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
       cellSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
-      modifier?: ObjectSelectorModifier
+      modifier?: ObjectSelectorModifier,
     ): CellMethods;
 
     /**
@@ -72,7 +72,7 @@ declare namespace DataTables {
      */
     cells(
       cellSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
-      modifier?: ObjectSelectorModifier
+      modifier?: ObjectSelectorModifier,
     ): CellsMethods;
 
     /**
@@ -85,7 +85,7 @@ declare namespace DataTables {
     cells(
       rowSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
       cellSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
-      modifier?: ObjectSelectorModifier
+      modifier?: ObjectSelectorModifier,
     ): CellsMethods;
     //#endregion "Cell/Cells"
 
@@ -125,7 +125,7 @@ declare namespace DataTables {
      * @param tableSelector Table selector.
      */
     table(
-      tableSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[]
+      tableSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
     ): TableMethods;
 
     /**
@@ -139,7 +139,7 @@ declare namespace DataTables {
      * @param tableSelector Table selector.
      */
     tables(
-      tableSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[]
+      tableSelector: (string | Node | Function | JQuery | Object) | (string | Node | Function | JQuery | Object)[],
     ): TablesMethods;
 
     //#endregion "Table/Tables"

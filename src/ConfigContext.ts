@@ -118,7 +118,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
   if (
     !validateEndpoint(
       newContext.BACKEND_ENDPOINT,
-      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints
+      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints,
     )
   ) {
     delete newContext.BACKEND_ENDPOINT;

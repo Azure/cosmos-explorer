@@ -10,7 +10,7 @@ export class BindingHandlersRegisterer {
         wrappedValueAccessor: () => any,
         allBindings?: ko.AllBindings,
         viewModel?: any,
-        bindingContext?: ko.BindingContext
+        bindingContext?: ko.BindingContext,
       ) {
         const value = ko.unwrap(wrappedValueAccessor());
         bindingContext?.$data.isTemplateReady(value);

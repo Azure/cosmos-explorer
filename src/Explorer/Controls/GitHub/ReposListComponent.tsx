@@ -211,7 +211,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
   };
 
   private onRenderBranchesDropdownList = (
-    props: ISelectableDroppableTextProps<IDropdown, HTMLDivElement>
+    props: ISelectableDroppableTextProps<IDropdown, HTMLDivElement>,
   ): JSX.Element => {
     const renderedList: JSX.Element[] = [];
     props.options.forEach((option: IDropdownOption) => {

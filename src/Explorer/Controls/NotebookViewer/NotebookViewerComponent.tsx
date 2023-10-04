@@ -44,7 +44,8 @@ interface NotebookViewerComponentState {
 
 export class NotebookViewerComponent
   extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
-  implements DialogHost {
+  implements DialogHost
+{
   private clientManager: NotebookClientV2;
   private notebookComponentBootstrapper: NotebookComponentBootstrapper;
 
@@ -97,7 +98,7 @@ export class NotebookViewerComponent
           notebookId: this.props.galleryItem?.id,
           isSample: this.props.galleryItem?.isSample,
         },
-        startKey
+        startKey,
       );
 
       const notebook: Notebook = await response.json();
@@ -123,7 +124,7 @@ export class NotebookViewerComponent
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
 
       this.setState({ showProgressBar: false });
@@ -172,7 +173,7 @@ export class NotebookViewerComponent
 
   public static getDerivedStateFromProps(
     props: NotebookViewerComponentProps,
-    state: NotebookViewerComponentState
+    state: NotebookViewerComponentState,
   ): Partial<NotebookViewerComponentState> {
     let galleryItem = props.galleryItem;
     let isFavorite = props.isFavorite;
@@ -196,7 +197,7 @@ export class NotebookViewerComponent
     msg: string,
     okLabel: string,
     onOk: () => void,
-    progressIndicatorProps?: IProgressIndicatorProps
+    progressIndicatorProps?: IProgressIndicatorProps,
   ): void {
     useDialog.getState().openDialog({
       isModal: true,
@@ -223,7 +224,7 @@ export class NotebookViewerComponent
     progressIndicatorProps?: IProgressIndicatorProps,
     choiceGroupProps?: IChoiceGroupProps,
     textFieldProps?: TextFieldProps,
-    primaryButtonDisabled?: boolean
+    primaryButtonDisabled?: boolean,
   ): void {
     useDialog.getState().openDialog({
       isModal: true,
@@ -248,19 +249,19 @@ export class NotebookViewerComponent
 
   private favoriteItem = async (): Promise<void> => {
     GalleryUtils.favoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
-      this.setState({ galleryItem: item, isFavorite: true })
+      this.setState({ galleryItem: item, isFavorite: true }),
     );
   };
 
   private unfavoriteItem = async (): Promise<void> => {
     GalleryUtils.unfavoriteItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
-      this.setState({ galleryItem: item, isFavorite: false })
+      this.setState({ galleryItem: item, isFavorite: false }),
     );
   };
 
   private downloadItem = async (): Promise<void> => {
     GalleryUtils.downloadItem(this.props.container, this.props.junoClient, this.state.galleryItem, (item) =>
-      this.setState({ galleryItem: item })
+      this.setState({ galleryItem: item }),
     );
   };
 

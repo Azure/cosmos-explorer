@@ -142,7 +142,7 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
     addPropertyToMap(target, propertyName, className, "dataFieldName", propertyName);
 
     decorators.map((decorator: Decorator) =>
-      addPropertyToMap(target, propertyName, className, decorator.name, decorator.value)
+      addPropertyToMap(target, propertyName, className, decorator.name, decorator.value),
     );
   };
 };
@@ -172,30 +172,30 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
       { name: "min", value: inputOptions.min },
       { name: "max", value: inputOptions.max },
       { name: "step", value: inputOptions.step },
-      { name: "uiType", value: inputOptions.uiType }
+      { name: "uiType", value: inputOptions.uiType },
     );
   } else if (isBooleanInputOptions(inputOptions)) {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
       { name: "trueLabelTKey", value: inputOptions.trueLabelTKey },
-      { name: "falseLabelTKey", value: inputOptions.falseLabelTKey }
+      { name: "falseLabelTKey", value: inputOptions.falseLabelTKey },
     );
   } else if (isChoiceInputOptions(inputOptions)) {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
       { name: "placeholderTKey", value: inputOptions.placeholderTKey },
-      { name: "choices", value: inputOptions.choices }
+      { name: "choices", value: inputOptions.choices },
     );
   } else if (isDescriptionDisplayOptions(inputOptions)) {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
       { name: "description", value: inputOptions.description },
-      { name: "isDynamicDescription", value: inputOptions.isDynamicDescription }
+      { name: "isDynamicDescription", value: inputOptions.isDynamicDescription },
     );
   } else {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
-      { name: "placeholderTKey", value: inputOptions.placeholderTKey }
+      { name: "placeholderTKey", value: inputOptions.placeholderTKey },
     );
   }
 };

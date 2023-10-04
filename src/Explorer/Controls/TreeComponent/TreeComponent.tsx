@@ -222,7 +222,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
       node.children.reduce(
         (previous: boolean, child: TreeNode) =>
           previous || (child.isSelected && child.isSelected()) || TreeNodeComponent.isAnyDescendantSelected(child),
-        false
+        false,
       )
     );
   }
