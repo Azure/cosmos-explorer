@@ -255,7 +255,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     try {
       const queryResults: ViewModels.QueryResults = await QueryUtils.queryPagesUntilContentPresent(
         firstItemIndex,
-        queryDocuments
+        queryDocuments,
       );
       this.setState({ queryResults, error: "" });
     } catch (error) {
