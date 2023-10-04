@@ -1,7 +1,6 @@
 import useSWR from "swr";
 import { configContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
-import { userContext } from "../UserContext";
 
 interface AccountListResult {
   nextLink: string;
