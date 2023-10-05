@@ -265,13 +265,14 @@ module.exports = function (_env = {}, argv = {}) {
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
       hot: false,
-      disableHostCheck: true,
-      inline: !isCI,
+      // disableHostCheck is removed in webpack 5, use: allowedHosts: "all",
+      // disableHostCheck: true,
       liveReload: !isCI,
-      https: true,
+      server: {
+        type: "https",
+      },
       host: "0.0.0.0",
       port: envVars.PORT,
-      stats: "minimal",
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Credentials": "true",
