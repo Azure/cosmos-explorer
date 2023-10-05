@@ -51,6 +51,11 @@ const replaceKnownError = (errorMessage: string): string => {
     return "Database throughput is not supported for internal subscriptions.";
   } else if (errorMessage?.indexOf("Partition key paths must contain only valid") >= 0) {
     return "Partition key paths must contain only valid characters and not contain a trailing slash or wildcard character.";
+  } else if (
+    errorMessage?.indexOf("The user aborted a request") >= 0 ||
+    errorMessage?.indexOf("The operation was aborted") >= 0
+  ) {
+    return "User aborted query.";
   }
 
   return errorMessage;

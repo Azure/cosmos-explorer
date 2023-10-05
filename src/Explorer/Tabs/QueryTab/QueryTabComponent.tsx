@@ -8,6 +8,7 @@ import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
+import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey, QueryCopilotSampleDatabaseId } from "../../../Common/Constants";
@@ -91,6 +92,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   public isCloseClicked: boolean;
   public isCopilotTabActive: boolean;
   private _iterator: MinimalQueryIterator;
+  private queryAbortController: AbortController;
 
   constructor(props: IQueryTabComponentProps) {
     super(props);
@@ -214,6 +216,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   private async _executeQueryDocumentsPage(firstItemIndex: number): Promise<void> {
+    this.queryAbortController = new AbortController();
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(
@@ -225,7 +228,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             this.props.collection.databaseId,
             this.props.collection.id(),
             this.state.selectedContent || this.state.sqlQueryEditorContent,
-            { enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey() } as FeedOptions,
+            {
+              enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+              abortSignal: this.queryAbortController.signal,
+            } as FeedOptions,
           );
     }
 
@@ -244,6 +250,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({
       isExecuting: true,
     });
+    useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
     try {
       const queryResults: ViewModels.QueryResults = await QueryUtils.queryPagesUntilContentPresent(
@@ -268,6 +275,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         isExecuting: false,
       });
       this.togglesOnFocus();
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
@@ -330,6 +338,18 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         children: [openCopilotChatButton, copilotSettingsButton],
       };
       buttons.push(launchCopilotButton);
+    }
+
+    if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
+      const label = "Cancel query";
+      buttons.push({
+        iconSrc: CancelQueryIcon,
+        iconAlt: label,
+        onCommandClick: () => this.queryAbortController.abort(),
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+      });
     }
 
     return buttons;
