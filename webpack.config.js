@@ -42,17 +42,17 @@ const lessRule = {
 
 const imagesRule = {
   test: /\.(jpg|jpeg|png|gif|svg|pdf|ico)$/,
-  loader: "file-loader",
-  options: {
-    name: "images/[name].[ext]",
+  type: "asset/resource",
+  generator: {
+    // Add hash, because there are multiple versions of "delete.svg"
+    filename: 'images/[name].[hash][ext]'
   },
 };
 
 const fontRule = {
   test: /\.(woff|woff2|ttf|eot)$/,
-  loader: "file-loader",
-  options: {
-    name: "[name].[ext]",
+  generator: {
+    filename: "[name][ext]",
   },
 };
 
