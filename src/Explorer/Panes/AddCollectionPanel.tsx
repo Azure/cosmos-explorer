@@ -260,7 +260,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
-                  true
+                  true,
                 ).toLocaleLowerCase()}.`}
               >
                 <Icon
@@ -268,7 +268,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   className="panelInfoIcon"
                   tabIndex={0}
                   ariaLabel={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
-                    true
+                    true,
                   ).toLocaleLowerCase()}.`}
                 />
               </TooltipHost>
@@ -345,7 +345,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <TooltipHost
                       directionalHint={DirectionalHint.bottomLeftEdge}
                       content={`Throughput configured at the database level will be shared across all ${getCollectionName(
-                        true
+                        true,
                       ).toLocaleLowerCase()} within the database.`}
                     >
                       <Icon
@@ -353,7 +353,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         className="panelInfoIcon"
                         tabIndex={0}
                         ariaLabel={`Throughput configured at the database level will be shared across all ${getCollectionName(
-                          true
+                          true,
                         ).toLocaleLowerCase()} within the database.`}
                       />
                     </TooltipHost>
@@ -675,7 +675,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                   provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                    true
+                    true,
                   ).toLocaleLowerCase()} in the database and
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
@@ -686,7 +686,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   tabIndex={0}
                   ariaLabel={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                 provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                  true
+                  true,
                 ).toLocaleLowerCase()} in the database and
                 does not count towards the throughput you provisioned for the database. This throughput amount will be
                 billed in addition to the throughput amount you provisioned at the database level.`}
@@ -736,44 +736,42 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </TooltipHost>
               </Stack>
 
-              {this.state.uniqueKeys.map(
-                (uniqueKey: string, i: number): JSX.Element => {
-                  return (
-                    <Stack style={{ marginBottom: 8 }} key={`uniqueKey${i}`} horizontal>
-                      <input
-                        type="text"
-                        autoComplete="off"
-                        placeholder={
-                          userContext.apiType === "Mongo"
-                            ? "Comma separated paths e.g. firstName,address.zipCode"
-                            : "Comma separated paths e.g. /firstName,/address/zipCode"
-                        }
-                        className="panelTextField"
-                        autoFocus
-                        value={uniqueKey}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
-                            if (i === j) {
-                              return event.target.value;
-                            }
-                            return uniqueKey;
-                          });
-                          this.setState({ uniqueKeys });
-                        }}
-                      />
+              {this.state.uniqueKeys.map((uniqueKey: string, i: number): JSX.Element => {
+                return (
+                  <Stack style={{ marginBottom: 8 }} key={`uniqueKey${i}`} horizontal>
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      placeholder={
+                        userContext.apiType === "Mongo"
+                          ? "Comma separated paths e.g. firstName,address.zipCode"
+                          : "Comma separated paths e.g. /firstName,/address/zipCode"
+                      }
+                      className="panelTextField"
+                      autoFocus
+                      value={uniqueKey}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
+                          if (i === j) {
+                            return event.target.value;
+                          }
+                          return uniqueKey;
+                        });
+                        this.setState({ uniqueKeys });
+                      }}
+                    />
 
-                      <IconButton
-                        iconProps={{ iconName: "Delete" }}
-                        style={{ height: 27 }}
-                        onClick={() => {
-                          const uniqueKeys = this.state.uniqueKeys.filter((uniqueKey, j) => i !== j);
-                          this.setState({ uniqueKeys });
-                        }}
-                      />
-                    </Stack>
-                  );
-                }
-              )}
+                    <IconButton
+                      iconProps={{ iconName: "Delete" }}
+                      style={{ height: 27 }}
+                      onClick={() => {
+                        const uniqueKeys = this.state.uniqueKeys.filter((uniqueKey, j) => i !== j);
+                        this.setState({ uniqueKeys });
+                      }}
+                    />
+                  </Stack>
+                );
+              })}
 
               <ActionButton
                 iconProps={{ iconName: "Add" }}
@@ -1100,7 +1098,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     let tooltipText = `The ${this.getPartitionKeyName(
-      true
+      true,
     )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
 
     if (userContext.apiType === "SQL") {
@@ -1204,7 +1202,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return properties.capabilities?.some(
-      (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics
+      (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics,
     );
   }
 

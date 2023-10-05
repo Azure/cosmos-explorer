@@ -34,7 +34,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Button should be visible", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
       expect(enableAzureSynapseLinkBtn).toBeDefined();
     });
@@ -50,7 +50,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
       expect(enableAzureSynapseLinkBtn).toBeUndefined();
     });
@@ -66,7 +66,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
-        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
+        (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
       expect(enableAzureSynapseLinkBtn).toBeUndefined();
     });
@@ -354,7 +354,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("creates Postgres shell button", () => {
       const buttons = CommandBarComponentButtonFactory.createPostgreButtons(mockExplorer);
       const openPostgresShellButton = buttons.find(
-        (button) => button.commandButtonLabel === openPostgresShellButtonLabel
+        (button) => button.commandButtonLabel === openPostgresShellButtonLabel,
       );
       expect(openPostgresShellButton).toBeDefined();
     });
@@ -362,7 +362,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("creates vCore Mongo shell button", () => {
       const buttons = CommandBarComponentButtonFactory.createVCoreMongoButtons(mockExplorer);
       const openVCoreMongoShellButton = buttons.find(
-        (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel
+        (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel,
       );
       expect(openVCoreMongoShellButton).toBeDefined();
     });
@@ -406,7 +406,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const manageGitHubSettingsBtn = buttons.find(
-        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel
+        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel,
       );
       expect(manageGitHubSettingsBtn).toBeDefined();
     });
@@ -418,7 +418,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(connectToGitHubBtn).toBeUndefined();
 
       const manageGitHubSettingsBtn = buttons.find(
-        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel
+        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel,
       );
       expect(manageGitHubSettingsBtn).toBeUndefined();
     });

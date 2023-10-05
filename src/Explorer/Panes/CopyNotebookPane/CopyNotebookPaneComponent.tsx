@@ -88,7 +88,7 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
               repo: pinnedRepo.name,
               branch: branch.name,
             } as Location,
-          })
+          }),
         );
       });
     }

@@ -36,7 +36,7 @@ describe("SelfServeUtils", () => {
       public onRefresh = jest.fn();
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow(
-      "@IsDisplayable decorator was not declared for the class 'Test'"
+      "@IsDisplayable decorator was not declared for the class 'Test'",
     );
   });
 

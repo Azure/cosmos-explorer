@@ -47,7 +47,7 @@ function _parse(err: any): ErrorDataModel[] {
   } else {
     const innerErrors: any[] = _getInnerErrors(err.message);
     normalizedErrors = innerErrors.map((innerError) =>
-      typeof innerError === "string" ? { message: innerError } : innerError
+      typeof innerError === "string" ? { message: innerError } : innerError,
     );
   }
 
@@ -120,8 +120,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     this.id = `tableEntityListViewModel${this.queryTablesTab.tabId}`;
     this.cqlQuery = ko.observable<string>(
       `SELECT * FROM ${getQuotedCqlIdentifier(this.queryTablesTab.collection.databaseId)}.${getQuotedCqlIdentifier(
-        this.queryTablesTab.collection.id()
-      )}`
+        this.queryTablesTab.collection.id(),
+      )}`,
     );
     this.oDataQuery = ko.observable<string>();
     this.sqlQuery = ko.observable<string>("SELECT * FROM c");
@@ -216,7 +216,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         draw,
         fnCallback,
         oSettings,
-        columnSortOrder
+        columnSortOrder,
       );
     }
   }
@@ -239,7 +239,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     var insertIndex: number = Utilities.ensureBetweenBounds(
       index < 0 ? this.cache.length : index,
       0,
-      this.cache.length
+      this.cache.length,
     );
 
     this.cache.data.splice(insertIndex, 0, entity);
@@ -260,7 +260,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     }
     var oldEntityIndex: number = _.findIndex(
       this.cache.data,
-      (data: Entities.ITableEntity) => data.RowKey._ === entity.RowKey._
+      (data: Entities.ITableEntity) => data.RowKey._ === entity.RowKey._,
     );
 
     this.cache.data.splice(oldEntityIndex, 1, entity);
@@ -284,7 +284,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       entities.forEach((entity: Entities.ITableEntity) => {
         var cachedIndex: number = _.findIndex(
           this.cache.data,
-          (e: Entities.ITableEntity) => e.RowKey._ === entity.RowKey._
+          (e: Entities.ITableEntity) => e.RowKey._ === entity.RowKey._,
         );
         if (cachedIndex >= 0) {
           this.cache.data.splice(cachedIndex, 1);
@@ -307,7 +307,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     item1: Entities.ITableEntity,
     item2: Entities.ITableEntity,
     sortOrder: any[],
-    oSettings: any
+    oSettings: any,
   ): number {
     var sort: any;
     var itemA: any;
@@ -400,7 +400,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     draw: number,
     renderCallBack: Function,
     oSettings: any,
-    columnSortOrder: any
+    columnSortOrder: any,
   ): void {
     this.queryErrorMessage(null);
     if (this.cache.serverCallInProgress) {
@@ -419,13 +419,13 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             .then((headers: CassandraTableKey[]) => {
               this.updateHeaders(
                 headers.map((header) => header.property),
-                true
+                true,
               );
             });
         } else {
           var selectedHeadersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
             entities,
-            userContext.apiType === "Cassandra"
+            userContext.apiType === "Cassandra",
           );
           var newHeaders: string[] = _.difference(selectedHeadersUnion, this.headers);
           if (newHeaders.length > 0) {
@@ -466,7 +466,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
               tabTitle: this.queryTablesTab.tabTitle(),
               error: error,
             },
-            this.queryTablesTab.onLoadStartKey
+            this.queryTablesTab.onLoadStartKey,
           );
           this.queryTablesTab.onLoadStartKey = null;
         }
@@ -488,7 +488,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   private prefetchData(
     tableQuery: Entities.ITableQuery,
     downloadSize: number,
-    currentRetry: number = 0
+    currentRetry: number = 0,
   ): Q.Promise<any> {
     if (!this.cache.serverCallInProgress) {
       this.cache.serverCallInProgress = true;
@@ -508,7 +508,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
               ContinuationToken: this._documentIterator.hasMoreResults(),
             };
             return Q.resolve(finalEntities);
-          }
+          },
         );
       } else if (this.continuationToken && userContext.apiType === "Cassandra") {
         promise = Q(
@@ -516,8 +516,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             this.queryTablesTab.collection,
             this.cqlQuery(),
             true,
-            this.continuationToken
-          )
+            this.continuationToken,
+          ),
         );
       } else {
         let query = this.sqlQuery();
@@ -525,7 +525,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           query = this.cqlQuery();
         }
         promise = Q(
-          this.queryTablesTab.container.tableDataClient.queryDocuments(this.queryTablesTab.collection, query, true)
+          this.queryTablesTab.container.tableDataClient.queryDocuments(this.queryTablesTab.collection, query, true),
         );
       }
       return promise

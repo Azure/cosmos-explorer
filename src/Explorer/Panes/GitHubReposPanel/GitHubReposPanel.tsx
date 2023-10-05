@@ -182,8 +182,8 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
     const unpinnedGitHubRepos = this.allGitHubRepos.filter(
       (gitHubRepo) =>
         this.pinnedReposProps.repos.findIndex(
-          (pinnedRepo) => pinnedRepo.key === GitHubUtils.toRepoFullName(gitHubRepo.owner, gitHubRepo.name)
-        ) === -1
+          (pinnedRepo) => pinnedRepo.key === GitHubUtils.toRepoFullName(gitHubRepo.owner, gitHubRepo.name),
+        ) === -1,
     );
     return unpinnedGitHubRepos.map((gitHubRepo) => ({
       key: GitHubUtils.toRepoFullName(gitHubRepo.owner, gitHubRepo.name),
@@ -202,7 +202,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
         repo.owner,
         repo.name,
         GitHubReposPanel.PageSize,
-        branchesProps.lastPageInfo?.endCursor
+        branchesProps.lastPageInfo?.endCursor,
       );
 
       if (response.status !== HttpStatusCodes.OK) {
@@ -215,7 +215,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
         branchesProps.defaultBranchName = branchesProps.branches[0].name;
         const defaultbranchName = branchesProps.branches.find(
           (branch) =>
-            branch.name === GitHubReposPanel.MasterBranchName || branch.name === GitHubReposPanel.MainBranchName
+            branch.name === GitHubReposPanel.MasterBranchName || branch.name === GitHubReposPanel.MainBranchName,
         )?.name;
         if (defaultbranchName) {
           branchesProps.defaultBranchName = defaultbranchName;
@@ -255,7 +255,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
     try {
       const response = await this.gitHubClient.getReposAsync(
         GitHubReposPanel.PageSize,
-        this.allGitHubReposLastPageInfo?.endCursor
+        this.allGitHubReposLastPageInfo?.endCursor,
       );
 
       if (response.status !== HttpStatusCodes.OK) {
@@ -366,7 +366,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
 
     try {
       const response = await this.junoClient.getPinnedRepos(
-        this.props.explorer.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope
+        this.props.explorer.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope,
       );
 
       if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
@@ -380,7 +380,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
               key: GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name),
               branches: pinnedRepo.branches,
               repo: JunoUtils.toGitHubRepo(pinnedRepo),
-            } as RepoListItem)
+            }) as RepoListItem,
         );
 
         this.pinnedReposProps.repos = pinnedRepos;

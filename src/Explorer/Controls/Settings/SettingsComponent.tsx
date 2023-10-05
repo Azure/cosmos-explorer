@@ -251,7 +251,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (userContext.apiType === "Mongo" && userContext?.databaseAccount) {
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
-        this.collection.id()
+        this.collection.id(),
       );
 
       if (this.mongoDBCollectionResource) {
@@ -357,7 +357,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
     } finally {
       this.props.settingsTab.isExecuting(false);
@@ -431,7 +431,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
         },
-        this.props.settingsTab.onLoadStartKey
+        this.props.settingsTab.onLoadStartKey,
       );
       this.props.settingsTab.onLoadStartKey = undefined;
     }
@@ -566,7 +566,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.collection.databaseId,
         this.collection.id(),
         this.state.conflictResolutionPolicyProcedure,
-        false
+        false,
       );
     }
 
@@ -640,7 +640,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const conflictResolutionPolicyMode = parseConflictResolutionMode(conflictResolutionPolicy?.mode);
     const conflictResolutionPolicyPath = conflictResolutionPolicy?.conflictResolutionPath;
     const conflictResolutionPolicyProcedure = parseConflictResolutionProcedure(
-      conflictResolutionPolicy?.conflictResolutionProcedure
+      conflictResolutionPolicy?.conflictResolutionProcedure,
     );
     const geospatialConfigTypeString: string =
       (this.collection.geospatialConfig && this.collection.geospatialConfig()?.type) || GeospatialConfigType.Geometry;
@@ -780,7 +780,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: this.props.settingsTab.tabTitle(),
       },
-      startKey
+      startKey,
     );
   };
 
@@ -828,7 +828,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       const updatedCollection: DataModels.Collection = await updateCollection(
         this.collection.databaseId,
         this.collection.id(),
-        newCollection
+        newCollection,
       );
       this.collection.rawDataModel = updatedCollection;
       this.collection.defaultTtl(updatedCollection.defaultTtl);
@@ -862,7 +862,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         this.mongoDBCollectionResource = await updateCollection(
           this.collection.databaseId,
           this.collection.id(),
-          newMongoCollection
+          newMongoCollection,
         );
 
         await this.refreshIndexTransformationProgress();
@@ -881,7 +881,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             dataExplorerArea: Constants.Areas.Tab,
             tabTitle: this.props.settingsTab.tabTitle(),
           },
-          startKey
+          startKey,
         );
       } catch (error) {
         traceFailure(
@@ -895,7 +895,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
             error: getErrorMessage(error),
             errorStack: getErrorStack(error),
           },
-          startKey
+          startKey,
         );
         throw error;
       }
@@ -942,12 +942,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: this.props.settingsTab.tabTitle(),
       },
-      startKey
+      startKey,
     );
   };
 
   public getMongoIndexTabContent = (
-    mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps
+    mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps,
   ): JSX.Element => {
     if (userContext.authType === AuthType.AAD) {
       if (userContext.apiType === "Mongo") {

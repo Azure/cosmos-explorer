@@ -11,7 +11,7 @@ export interface SelectedNodeState {
   isDataNodeSelected: (
     databaseId: string,
     collectionId?: string,
-    subnodeKinds?: ViewModels.CollectionTabKind[]
+    subnodeKinds?: ViewModels.CollectionTabKind[],
   ) => boolean;
   isConnectedToContainer: () => boolean;
   isQueryCopilotCollectionSelected: () => boolean;
@@ -31,7 +31,7 @@ export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) =>
   isDataNodeSelected: (
     databaseId: string,
     collectionId?: string,
-    subnodeKinds?: ViewModels.CollectionTabKind[]
+    subnodeKinds?: ViewModels.CollectionTabKind[],
   ): boolean => {
     const selectedNode = get().selectedNode;
     if (!selectedNode) {

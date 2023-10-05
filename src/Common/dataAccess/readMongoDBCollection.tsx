@@ -7,7 +7,7 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export async function readMongoDBCollectionThroughRP(
   databaseId: string,
-  collectionId: string
+  collectionId: string,
 ): Promise<MongoDBCollectionResource> {
   if (userContext.authType !== AuthType.AAD) {
     return undefined;

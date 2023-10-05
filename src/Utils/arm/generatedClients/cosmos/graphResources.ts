@@ -15,7 +15,7 @@ const apiVersion = "2023-09-15-preview";
 export async function listGraphs(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.GraphResourcesListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/graphs`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function getGraph(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  graphName: string
+  graphName: string,
 ): Promise<Types.GraphResourceGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/graphs/${graphName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -38,7 +38,7 @@ export async function createUpdateGraph(
   resourceGroupName: string,
   accountName: string,
   graphName: string,
-  body: Types.GraphResourceCreateUpdateParameters
+  body: Types.GraphResourceCreateUpdateParameters,
 ): Promise<Types.GraphResourceGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/graphs/${graphName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -49,7 +49,7 @@ export async function deleteGraphResource(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  graphName: string
+  graphName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/graphs/${graphName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });

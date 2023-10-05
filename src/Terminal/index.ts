@@ -75,7 +75,7 @@ const initTerminal = async (props: TerminalProps): Promise<ITerminalConnection |
 const closeTab = (tabId: string): void => {
   window.parent.postMessage(
     { type: MessageTypes.CloseTab, data: { tabId: tabId }, signature: "pcIframe" },
-    window.document.referrer
+    window.document.referrer,
   );
 };
 
@@ -92,7 +92,7 @@ const main = async (): Promise<void> => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const props = (event as any).data as TerminalProps;
       session = await initTerminal(props);
-    }
+    },
   );
 
   postRobot.on(
@@ -107,7 +107,7 @@ const main = async (): Promise<void> => {
       if (session) {
         session.send(message);
       }
-    }
+    },
   );
 };
 

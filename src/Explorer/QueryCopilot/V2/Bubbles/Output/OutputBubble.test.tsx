@@ -10,7 +10,7 @@ describe("Output Bubble snapshot tests", () => {
       const wrapper = shallow(
         <OutputBubble
           copilotMessage={{ message: "testMessage", source: 1, explanation: "testExplanation", sqlQuery: "testSQL" }}
-        />
+        />,
       );
 
       const editor = wrapper.find(EditorReact).first();

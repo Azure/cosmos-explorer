@@ -53,7 +53,7 @@ const onRegionsChange = (newValue: InputType, currentState: Map<string, SmartUiI
 
 const onEnableDbLevelThroughputChange = (
   newValue: InputType,
-  currentState: Map<string, SmartUiInput>
+  currentState: Map<string, SmartUiInput>,
 ): Map<string, SmartUiInput> => {
   currentState.set("enableDbLevelThroughput", { value: newValue });
   const currentDbThroughput = currentState.get("dbThroughput");
@@ -64,7 +64,7 @@ const onEnableDbLevelThroughputChange = (
 
 const validate = (
   currentvalues: Map<string, SmartUiInput>,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
+  baselineValues: ReadonlyMap<string, SmartUiInput>,
 ): void => {
   if (currentvalues.get("dbThroughput") === baselineValues.get("dbThroughput")) {
     throw new Error("DbThroughputValidationError");
@@ -87,7 +87,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   */
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
+    baselineValues: ReadonlyMap<string, SmartUiInput>,
   ): Promise<OnSaveResult> => {
     validate(currentValues, baselineValues);
     const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];

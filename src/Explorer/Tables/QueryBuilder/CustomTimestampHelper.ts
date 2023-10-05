@@ -36,7 +36,7 @@ export enum TimeUnit {
 export function addRangeTimestamp(
   timestamp: ITimestampQuery,
   queryBuilderViewModel: QueryBuilderViewModel,
-  queryClauseViewModel: QueryClauseViewModel
+  queryClauseViewModel: QueryClauseViewModel,
 ): void {
   queryBuilderViewModel.addCustomRange(timestamp, queryClauseViewModel);
 }
@@ -294,7 +294,7 @@ function _getLocalIsoDateString(date: Date): string {
 function _getLocalIsoDateStringFromParts(
   fullYear: number,
   month: number /* 0..11 */,
-  date: number /* 1..31 */
+  date: number /* 1..31 */,
 ): string {
   month = month + 1;
   return (

@@ -19,7 +19,7 @@ export async function deleteTrigger(databaseId: string, collectionId: string, tr
         userContext.databaseAccount.name,
         databaseId,
         collectionId,
-        triggerId
+        triggerId,
       );
     } else {
       await client().database(databaseId).container(collectionId).scripts.trigger(triggerId).delete();

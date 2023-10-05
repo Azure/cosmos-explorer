@@ -16,7 +16,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function updateUserDefinedFunction(
   databaseId: string,
   collectionId: string,
-  userDefinedFunction: UserDefinedFunctionDefinition
+  userDefinedFunction: UserDefinedFunctionDefinition,
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating user defined function ${userDefinedFunction.id}`);
   const { authType, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
@@ -28,7 +28,7 @@ export async function updateUserDefinedFunction(
         databaseAccount.name,
         databaseId,
         collectionId,
-        userDefinedFunction.id
+        userDefinedFunction.id,
       );
 
       if (getResponse?.properties?.resource) {
@@ -45,7 +45,7 @@ export async function updateUserDefinedFunction(
           databaseId,
           collectionId,
           userDefinedFunction.id,
-          createUDFParams
+          createUDFParams,
         );
         return rpResponse && (rpResponse.properties?.resource as UserDefinedFunctionDefinition & Resource);
       }
@@ -63,7 +63,7 @@ export async function updateUserDefinedFunction(
     handleError(
       error,
       "UpdateUserupdateUserDefinedFunction",
-      `Error while updating user defined function ${userDefinedFunction.id}`
+      `Error while updating user defined function ${userDefinedFunction.id}`,
     );
     throw error;
   } finally {

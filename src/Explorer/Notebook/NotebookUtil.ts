@@ -109,7 +109,7 @@ export class NotebookUtil {
           contentInfo.owner,
           contentInfo.repo,
           contentInfo.branch,
-          parentPath.replace(/\/$/, "") // no trailling slash
+          parentPath.replace(/\/$/, ""), // no trailling slash
         );
       }
 
@@ -170,7 +170,7 @@ export class NotebookUtil {
       (output) =>
         output.output_type === "display_data" ||
         output.output_type === "execute_result" ||
-        output.output_type === "stream"
+        output.output_type === "stream",
     );
   }
 
@@ -205,7 +205,7 @@ export class NotebookUtil {
     target: HTMLElement,
     aspectRatio: number,
     subSnapshots: SnapshotFragment[],
-    downloadFilename?: string
+    downloadFilename?: string,
   ): Promise<{ imageSrc: string | undefined }> => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -248,7 +248,7 @@ export class NotebookUtil {
                 context.drawImage(
                   snapshot.image,
                   snapshot.boundingClientRect.x - parentRect.x,
-                  snapshot.boundingClientRect.y - parentRect.y
+                  snapshot.boundingClientRect.y - parentRect.y,
                 );
               }
             });
@@ -259,7 +259,7 @@ export class NotebookUtil {
           if (downloadFilename) {
             NotebookUtil.downloadFile(
               downloadFilename,
-              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"),
             );
           }
         };
@@ -273,7 +273,7 @@ export class NotebookUtil {
     target: HTMLElement,
     aspectRatio: number,
     subSnapshots: SnapshotFragment[],
-    downloadFilename?: string
+    downloadFilename?: string,
   ): Promise<{ imageSrc?: string }> => {
     return new Promise(async (resolve, reject) => {
       // target.scrollIntoView();
@@ -317,7 +317,7 @@ export class NotebookUtil {
                 context.drawImage(
                   snapshot.image,
                   snapshot.boundingClientRect.x - parentRect.x,
-                  snapshot.boundingClientRect.y - parentRect.y
+                  snapshot.boundingClientRect.y - parentRect.y,
                 );
               }
             });
@@ -328,7 +328,7 @@ export class NotebookUtil {
           if (downloadFilename) {
             NotebookUtil.downloadFile(
               downloadFilename,
-              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"),
             );
           }
         };

@@ -14,7 +14,7 @@ const apiVersion = "2021-03-01";
 /* Returns a list of workspaces in a resource group */
 export async function listByResourceGroup(
   subscriptionId: string,
-  resourceGroupName: string
+  resourceGroupName: string,
 ): Promise<Types.WorkspaceInfoListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -24,7 +24,7 @@ export async function listByResourceGroup(
 export async function get(
   subscriptionId: string,
   resourceGroupName: string,
-  workspaceName: string
+  workspaceName: string,
 ): Promise<Types.Workspace> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -35,7 +35,7 @@ export async function update(
   subscriptionId: string,
   resourceGroupName: string,
   workspaceName: string,
-  body: Types.WorkspacePatchInfo
+  body: Types.WorkspacePatchInfo,
 ): Promise<Types.Workspace> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PATCH", apiVersion, body });
@@ -46,7 +46,7 @@ export async function createOrUpdate(
   subscriptionId: string,
   resourceGroupName: string,
   workspaceName: string,
-  body: Types.Workspace
+  body: Types.Workspace,
 ): Promise<Types.Workspace> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });

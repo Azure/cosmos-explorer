@@ -15,7 +15,7 @@ const apiVersion = "2023-09-15-preview";
 export async function listMongoDBDatabases(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.MongoDBDatabaseListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function getMongoDBDatabase(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.MongoDBDatabaseGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -38,7 +38,7 @@ export async function createUpdateMongoDBDatabase(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  body: Types.MongoDBDatabaseCreateUpdateParameters
+  body: Types.MongoDBDatabaseCreateUpdateParameters,
 ): Promise<Types.MongoDBDatabaseGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -49,7 +49,7 @@ export async function deleteMongoDBDatabase(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -60,7 +60,7 @@ export async function getMongoDBDatabaseThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -72,7 +72,7 @@ export async function updateMongoDBDatabaseThroughput(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -83,7 +83,7 @@ export async function migrateMongoDBDatabaseToAutoscale(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -94,7 +94,7 @@ export async function migrateMongoDBDatabaseToManualThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -106,7 +106,7 @@ export async function mongoDBDatabaseRetrieveThroughputDistribution(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  body: Types.RetrieveThroughputParameters
+  body: Types.RetrieveThroughputParameters,
 ): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/retrieveThroughputDistribution`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -118,7 +118,7 @@ export async function mongoDBDatabaseRedistributeThroughput(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  body: Types.RedistributeThroughputParameters
+  body: Types.RedistributeThroughputParameters,
 ): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/throughputSettings/default/redistributeThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -131,7 +131,7 @@ export async function mongoDBContainerRetrieveThroughputDistribution(
   accountName: string,
   databaseName: string,
   collectionName: string,
-  body: Types.RetrieveThroughputParameters
+  body: Types.RetrieveThroughputParameters,
 ): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/retrieveThroughputDistribution`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -144,7 +144,7 @@ export async function mongoDBContainerRedistributeThroughput(
   accountName: string,
   databaseName: string,
   collectionName: string,
-  body: Types.RedistributeThroughputParameters
+  body: Types.RedistributeThroughputParameters,
 ): Promise<Types.PhysicalPartitionThroughputInfoResult | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/redistributeThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -155,7 +155,7 @@ export async function listMongoDBCollections(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.MongoDBCollectionListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -167,7 +167,7 @@ export async function getMongoDBCollection(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  collectionName: string
+  collectionName: string,
 ): Promise<Types.MongoDBCollectionGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -180,7 +180,7 @@ export async function createUpdateMongoDBCollection(
   accountName: string,
   databaseName: string,
   collectionName: string,
-  body: Types.MongoDBCollectionCreateUpdateParameters
+  body: Types.MongoDBCollectionCreateUpdateParameters,
 ): Promise<Types.MongoDBCollectionGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -192,7 +192,7 @@ export async function deleteMongoDBCollection(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  collectionName: string
+  collectionName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -204,7 +204,7 @@ export async function mongoDBDatabasePartitionMerge(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  body: Types.MergeParameters
+  body: Types.MergeParameters,
 ): Promise<Types.PhysicalPartitionStorageInfoCollection | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/partitionMerge`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -217,7 +217,7 @@ export async function listMongoDBCollectionPartitionMerge(
   accountName: string,
   databaseName: string,
   collectionName: string,
-  body: Types.MergeParameters
+  body: Types.MergeParameters,
 ): Promise<Types.PhysicalPartitionStorageInfoCollection | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/partitionMerge`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion, body });
@@ -229,7 +229,7 @@ export async function getMongoDBCollectionThroughput(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  collectionName: string
+  collectionName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -242,7 +242,7 @@ export async function updateMongoDBCollectionThroughput(
   accountName: string,
   databaseName: string,
   collectionName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -254,7 +254,7 @@ export async function migrateMongoDBCollectionToAutoscale(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  collectionName: string
+  collectionName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -266,7 +266,7 @@ export async function migrateMongoDBCollectionToManualThroughput(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  collectionName: string
+  collectionName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/mongodbDatabases/${databaseName}/collections/${collectionName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });

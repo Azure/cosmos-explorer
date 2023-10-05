@@ -197,7 +197,7 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { id, contentRef }: { id: CellId; contentRef: ContentRef }
+  { id, contentRef }: { id: CellId; contentRef: ContentRef },
 ): DispatchProps => ({
   executeCell: () => dispatch(actions.executeCell({ id, contentRef })),
   insertCodeCellAbove: () => dispatch(actions.createCellAbove({ id, contentRef, cellType: "code" })),

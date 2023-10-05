@@ -346,7 +346,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       // DO NOT UPDATE Multi-value properties (as this is not supported)
       if (p.values.length === 1) {
         updateQueryFragment += `.Property("${GraphUtil.escapeDoubleQuotes(p.key)}", ${GraphUtil.getQuotedPropValue(
-          p.values[0]
+          p.values[0],
         )})`;
       }
     });
@@ -374,12 +374,12 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       // TODO Wait for dropping to end. Can we drop all of them in a single query?
       // Must execute these drops sequentially to avoid a 500 "{"Message":"An error has occurred."}"
       promise = this.submitToBackend(
-        `g.V(${pkId}).properties("${GraphUtil.escapeDoubleQuotes(droppedKeys[0])}").drop()`
+        `g.V(${pkId}).properties("${GraphUtil.escapeDoubleQuotes(droppedKeys[0])}").drop()`,
       );
       for (let i = 1; i < droppedKeys.length; i++) {
         promise = promise.then(() => {
           return this.submitToBackend(
-            `g.V(${pkId}).properties("${GraphUtil.escapeDoubleQuotes(droppedKeys[i])}").drop()`
+            `g.V(${pkId}).properties("${GraphUtil.escapeDoubleQuotes(droppedKeys[i])}").drop()`,
           );
         });
       }
@@ -413,7 +413,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         },
         (error: string) => {
           GraphExplorer.reportToConsole(ConsoleDataType.Error, "Failed to update vertex properties: " + error);
-        }
+        },
       );
 
     return promise;
@@ -458,9 +458,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       (error: string) => {
         GraphExplorer.reportToConsole(
           ConsoleDataType.Error,
-          `Failed to remove node (Gremlin failed to execute). id=${id} : ${error}`
+          `Failed to remove node (Gremlin failed to execute). id=${id} : ${error}`,
         );
-      }
+      },
     );
   }
 
@@ -504,7 +504,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     outE: boolean,
     vertex: GraphData.GremlinVertex,
     startIndex: number,
-    pageSize: number
+    pageSize: number,
   ): Q.Promise<EdgeVertexPair[]> {
     if (startIndex < 0) {
       const error = `Attempt to fetch edge-vertex pairs with negative index: outE:${outE}, vertex id:${vertex.id}, startIndex:${startIndex}, pageSize:${pageSize}`;
@@ -528,7 +528,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       excludedEdgeIds,
       startIndex,
       pageSize,
-      GraphExplorer.WITHOUT_STEP_ARGS_MAX_CHARS
+      GraphExplorer.WITHOUT_STEP_ARGS_MAX_CHARS,
     );
 
     return this.submitToBackend(gremlinQuery).then((result: GremlinClient.GremlinRequestResult) => {
@@ -572,7 +572,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public loadNeighborsPage(
     vertex: GraphData.GremlinVertex,
     graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>,
-    offsetIndex: number
+    offsetIndex: number,
   ): Q.Promise<GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>> {
     const updateGraphData = () => {
       // Cache results
@@ -627,46 +627,44 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           });
           addedEdgesNb += pairsToAdd.length;
           return pairs.length;
-        }
+        },
       );
     } else {
       promise = Q.resolve(0);
     }
 
-    promise = promise.then(
-      (outEPairsNb: number): Q.Promise<number> => {
-        const inEdgesToFetch = totalEdgesToFetch - outEPairsNb;
-        if (!vertex._inEAllLoaded && inEdgesToFetch > 0) {
-          let start: number;
-          if (offsetIndex <= vertex._outEdgeIds.length) {
-            start = 0;
-          } else {
-            start = offsetIndex - vertex._outEdgeIds.length;
-          }
-
-          return this.fetchEdgeVertexPairs(false, vertex, start, inEdgesToFetch).then(
-            (pairs: EdgeVertexPair[]): number => {
-              vertex._inEAllLoaded = pairs.length < inEdgesToFetch;
-
-              const pairsToAdd = pairs.slice(0, GraphExplorer.LOAD_PAGE_SIZE - outEPairsNb);
-              pairsToAdd.forEach((p: EdgeVertexPair) => {
-                GraphData.GraphData.addInE(vertex, p.e.label, p.e);
-                GraphUtil.addRootChildToGraph(vertex, p.v, graphData);
-                graphData.addEdge(p.e);
-                vertex._inEdgeIds.push(p.e.id);
-
-                // Cache results (graphdata now contains a vertex with outE's filled in)
-                this.edgeInfoCache.addVertex(graphData.getVertexById(p.v.id));
-              });
-              addedEdgesNb += pairsToAdd.length;
-              return outEPairsNb + pairs.length;
-            }
-          );
+    promise = promise.then((outEPairsNb: number): Q.Promise<number> => {
+      const inEdgesToFetch = totalEdgesToFetch - outEPairsNb;
+      if (!vertex._inEAllLoaded && inEdgesToFetch > 0) {
+        let start: number;
+        if (offsetIndex <= vertex._outEdgeIds.length) {
+          start = 0;
         } else {
-          return Q.resolve(outEPairsNb);
+          start = offsetIndex - vertex._outEdgeIds.length;
         }
+
+        return this.fetchEdgeVertexPairs(false, vertex, start, inEdgesToFetch).then(
+          (pairs: EdgeVertexPair[]): number => {
+            vertex._inEAllLoaded = pairs.length < inEdgesToFetch;
+
+            const pairsToAdd = pairs.slice(0, GraphExplorer.LOAD_PAGE_SIZE - outEPairsNb);
+            pairsToAdd.forEach((p: EdgeVertexPair) => {
+              GraphData.GraphData.addInE(vertex, p.e.label, p.e);
+              GraphUtil.addRootChildToGraph(vertex, p.v, graphData);
+              graphData.addEdge(p.e);
+              vertex._inEdgeIds.push(p.e.id);
+
+              // Cache results (graphdata now contains a vertex with outE's filled in)
+              this.edgeInfoCache.addVertex(graphData.getVertexById(p.v.id));
+            });
+            addedEdgesNb += pairsToAdd.length;
+            return outEPairsNb + pairs.length;
+          },
+        );
+      } else {
+        return Q.resolve(outEPairsNb);
       }
-    );
+    });
 
     return promise.then(() => {
       if (offsetIndex >= GraphExplorer.LOAD_PAGE_SIZE || !vertex._outEAllLoaded || !vertex._inEAllLoaded) {
@@ -706,7 +704,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         }
         GraphExplorer.reportToConsole(
           ConsoleDataType.Info,
-          `Executed: ${cmd} ${GremlinClient.GremlinClient.getRequestChargeString(result.totalRequestCharge)}`
+          `Executed: ${cmd} ${GremlinClient.GremlinClient.getRequestChargeString(result.totalRequestCharge)}`,
         );
         return result;
       },
@@ -715,7 +713,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         GraphExplorer.reportToConsole(ConsoleDataType.Error, `Gremlin query failed: ${cmd}`, err);
         clearConsoleProgress();
         throw err;
-      }
+      },
     );
   }
 
@@ -733,9 +731,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           maxItemCount: GraphExplorer.PAGE_ALL,
           enableCrossPartitionQuery:
             StorageUtility.LocalStorageUtility.getEntryString(
-              StorageUtility.StorageKey.IsCrossPartitionQueryEnabled
+              StorageUtility.StorageKey.IsCrossPartitionQueryEnabled,
             ) === "true",
-        } as FeedOptions
+        } as FeedOptions,
       );
       const response = await iterator.fetchNext();
 
@@ -744,7 +742,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       GraphExplorer.reportToConsole(
         ConsoleDataType.Error,
         `Failed to execute non-paged query ${query}. Reason:${error}`,
-        error
+        error,
       );
       return null;
     }
@@ -756,7 +754,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    */
   public createNewEdge(e: GraphNewEdgeData): Q.Promise<unknown> {
     const q = `g.V('${GraphUtil.escapeSingleQuotes(e.inputOutV)}').addE('${GraphUtil.escapeSingleQuotes(
-      e.label
+      e.label,
     )}').To(g.V('${GraphUtil.escapeSingleQuotes(e.inputInV)}'))`;
     return this.submitToBackend(q).then(
       (result: GremlinClient.GremlinRequestResult) => {
@@ -789,9 +787,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       (error: string) => {
         GraphExplorer.reportToConsole(
           ConsoleDataType.Error,
-          "Failed to create edge (Gremlin query failed to execute): " + error
+          "Failed to create edge (Gremlin query failed to execute): " + error,
         );
-      }
+      },
     );
   }
 
@@ -810,9 +808,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       (error: string) => {
         GraphExplorer.reportToConsole(
           ConsoleDataType.Error,
-          "Failed to remove edge (Gremlin query failed to execute): " + error
+          "Failed to remove edge (Gremlin query failed to execute): " + error,
         );
-      }
+      },
     );
   }
 
@@ -960,7 +958,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         const title = "Failed to create vertex (Gremlin query failed to execute)";
         GraphExplorer.reportToConsole(ConsoleDataType.Error, title + " :" + error);
         throw { title: title, detail: error };
-      }
+      },
     );
   }
 
@@ -1035,7 +1033,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: "Graph",
         },
-        this.props.onLoadStartKey
+        this.props.onLoadStartKey,
       );
       this.props.onLoadStartKeyChange(null);
     }
@@ -1119,7 +1117,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       this.collectNodeProperties(
         Object.keys(rootMap).map((id: string) => {
           return rootMap[id];
-        })
+        }),
       );
       if (this.state.igraphConfigUiData.nodeProperties.indexOf(GraphExplorer.DISPLAY_DEFAULT_PROPERTY_KEY) !== -1) {
         this.setState({
@@ -1161,8 +1159,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const newIconsMap = {} as D3ForceGraph.D3GraphIconMap;
     this.executeNonPagedDocDbQuery(
       `SELECT c._graph_icon_property_value, c.format, c.icon FROM c WHERE c._graph_icon_set = "${GraphUtil.escapeDoubleQuotes(
-        iconSet
-      )}"`
+        iconSet,
+      )}"`,
     ).then(
       (documents: DataModels.DocumentId[]) => {
         $.each(
@@ -1172,7 +1170,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
               data: doc["icon"],
               format: doc["format"],
             };
-          }
+          },
         );
 
         // Update graph configuration
@@ -1186,7 +1184,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       },
       () => {
         GraphExplorer.reportToConsole(ConsoleDataType.Error, `Failed to retrieve icons. iconSet:${iconSet}`);
-      }
+      },
     );
   }
 
@@ -1228,16 +1226,13 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
   private getPossibleRootNodes(): LeftPane.CaptionId[] {
     const key = this.state.igraphConfig.nodeCaption;
-    return $.map(
-      this.state.rootMap,
-      (value: any): LeftPane.CaptionId => {
-        const result = GraphData.GraphData.getNodePropValue(value, key);
-        return {
-          caption: result !== undefined ? result : value.id,
-          id: value.id,
-        };
-      }
-    );
+    return $.map(this.state.rootMap, (value: any): LeftPane.CaptionId => {
+      const result = GraphData.GraphData.getNodePropValue(value, key);
+      return {
+        caption: result !== undefined ? result : value.id,
+        id: value.id,
+      };
+    });
   }
 
   /**
@@ -1291,7 +1286,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       },
       (reason: string) => {
         GraphExplorer.reportToConsole(ConsoleDataType.Error, `Failed to select root node. Reason:${reason}`);
-      }
+      },
     );
   }
 
@@ -1459,7 +1454,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       () => {
         GraphExplorer.reportToConsole(ConsoleDataType.Error, "Failed to retrieve list of possible vertices");
         return [];
-      }
+      },
     );
   }
 
@@ -1485,7 +1480,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           // Reload neighbors in case we linked to a vertex that isn't loaded in the graph
           const highlightedVertex = this.originalGraphData.getVertexById(this.state.highlightedNode.id);
           return this.loadNeighborsPage(highlightedVertex, this.originalGraphData, 0);
-        })
+        }),
       );
     }
 
@@ -1617,7 +1612,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     id: string,
     nodeCaption: string,
     sources: NeighborVertexBasicInfo[],
-    targets: NeighborVertexBasicInfo[]
+    targets: NeighborVertexBasicInfo[],
   ): void {
     // update neighbors
     const gd = this.originalGraphData;
@@ -1668,11 +1663,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }
 
     this.setState({
-      possibleEdgeLabels: Object.keys(possibleEdgeLabels).map(
-        (value: string): InputTypeaheadComponent.Item => {
-          return { caption: value, value: value };
-        }
-      ),
+      possibleEdgeLabels: Object.keys(possibleEdgeLabels).map((value: string): InputTypeaheadComponent.Item => {
+        return { caption: value, value: value };
+      }),
     });
   }
 
@@ -1714,7 +1707,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    */
   private updateGraphData(
     graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>,
-    igraphConfig?: IGraphConfig
+    igraphConfig?: IGraphConfig,
   ) {
     this.originalGraphData = graphData;
     const gd = JSON.parse(JSON.stringify(this.originalGraphData));
@@ -1792,7 +1785,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
           enableCrossPartitionQuery:
             LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true",
-        } as FeedOptions
+        } as FeedOptions,
       );
       this.currentDocDBQueryInfo = {
         iterator: iterator,
@@ -1803,7 +1796,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     } catch (error) {
       GraphExplorer.reportToConsole(
         ConsoleDataType.Error,
-        `Failed to execute CosmosDB query: ${query} reason:${error}`
+        `Failed to execute CosmosDB query: ${query} reason:${error}`,
       );
       throw error;
     }
@@ -1820,14 +1813,14 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     })`;
     const clearConsoleProgress = GraphExplorer.reportToConsole(
       ConsoleDataType.InProgress,
-      `Executing: ${queryInfoStr}`
+      `Executing: ${queryInfoStr}`,
     );
 
     try {
       const results: ViewModels.QueryResults = await queryDocumentsPage(
         this.props.collectionId,
         this.currentDocDBQueryInfo.iterator,
-        this.currentDocDBQueryInfo.index
+        this.currentDocDBQueryInfo.index,
       );
 
       clearConsoleProgress();
@@ -1836,10 +1829,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       RU = results.requestCharge.toString();
       GraphExplorer.reportToConsole(
         ConsoleDataType.Info,
-        `Executed: ${queryInfoStr} ${GremlinClient.GremlinClient.getRequestChargeString(RU)}`
+        `Executed: ${queryInfoStr} ${GremlinClient.GremlinClient.getRequestChargeString(RU)}`,
       );
       const pkIds: string[] = (results.documents || []).map((item: DataModels.DocumentId) =>
-        GraphExplorer.getPkIdFromDocumentId(item, this.props.collectionPartitionKeyProperty)
+        GraphExplorer.getPkIdFromDocumentId(item, this.props.collectionPartitionKeyProperty),
       );
 
       const arg = pkIds.join(",");
@@ -1877,7 +1870,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         });
         this.setFilterQueryStatus(FilterQueryStatus.ErrorResult);
         throw error;
-      }
+      },
     );
 
     promise

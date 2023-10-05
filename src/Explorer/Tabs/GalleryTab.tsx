@@ -19,7 +19,10 @@ interface Props {
 }
 
 export default class GalleryTab extends TabsBase {
-  constructor(options: TabOptions, private props: Props) {
+  constructor(
+    options: TabOptions,
+    private props: Props,
+  ) {
     super(options);
   }
 

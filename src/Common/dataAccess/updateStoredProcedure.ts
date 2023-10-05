@@ -16,7 +16,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function updateStoredProcedure(
   databaseId: string,
   collectionId: string,
-  storedProcedure: StoredProcedureDefinition
+  storedProcedure: StoredProcedureDefinition,
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
@@ -29,7 +29,7 @@ export async function updateStoredProcedure(
         databaseAccount.name,
         databaseId,
         collectionId,
-        storedProcedure.id
+        storedProcedure.id,
       );
 
       if (getResponse?.properties?.resource) {
@@ -46,7 +46,7 @@ export async function updateStoredProcedure(
           databaseId,
           collectionId,
           storedProcedure.id,
-          createSprocParams
+          createSprocParams,
         );
         return rpResponse && (rpResponse.properties?.resource as StoredProcedureDefinition & Resource);
       }

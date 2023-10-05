@@ -33,7 +33,7 @@ export const _configureServiceEndpoints = async (kernelMetadata: KernelConnectio
         Logger.logError(
           getErrorMessage(responseMessage),
           "NotebookConfigurationUtils/configureServiceEndpoints",
-          response.status
+          response.status,
         );
       }
     } catch (error) {
@@ -46,12 +46,12 @@ export const configureServiceEndpoints = async (
   notebookPath: string,
   notebookConnectionInfo: DataModels.NotebookWorkspaceConnectionInfo,
   kernelName: string,
-  clusterConnectionInfo: DataModels.SparkClusterConnectionInfo
+  clusterConnectionInfo: DataModels.SparkClusterConnectionInfo,
 ): Promise<void> => {
   if (!notebookPath || !notebookConnectionInfo || !kernelName) {
     Logger.logError(
       "Invalid or missing notebook connection info/path",
-      "NotebookConfigurationUtils/configureServiceEndpoints"
+      "NotebookConfigurationUtils/configureServiceEndpoints",
     );
     return Promise.reject("Invalid or missing notebook connection info");
   }
@@ -59,7 +59,7 @@ export const configureServiceEndpoints = async (
   if (!clusterConnectionInfo || !clusterConnectionInfo.endpoints || clusterConnectionInfo.endpoints.length === 0) {
     Logger.logError(
       "Invalid or missing cluster connection info/endpoints",
-      "NotebookConfigurationUtils/configureServiceEndpoints"
+      "NotebookConfigurationUtils/configureServiceEndpoints",
     );
     return Promise.reject("Invalid or missing cluster connection info");
   }
@@ -71,7 +71,7 @@ export const configureServiceEndpoints = async (
       username: clusterConnectionInfo.userName,
       password: clusterConnectionInfo.password,
       token: "", // TODO. This was arcadiaToken() when our synapse/spark integration comes back
-    })
+    }),
   );
   const configurationEndpoints: DataModels.NotebookConfigurationEndpoints = {
     path: notebookPath,

@@ -38,7 +38,7 @@ export default class DocumentId {
           "OK",
           () => this.loadDocument(),
           "Cancel",
-          undefined
+          undefined,
         );
     } else {
       this.loadDocument();

@@ -4,13 +4,13 @@ import * as ViewModels from "../Contracts/ViewModels";
 export function buildDocumentsQuery(
   filter: string,
   partitionKeyProperties: string[],
-  partitionKey: DataModels.PartitionKey
+  partitionKey: DataModels.PartitionKey,
 ): string {
   let query =
     partitionKeyProperties && partitionKeyProperties.length > 0
       ? `select c.id, c._self, c._rid, c._ts, [${buildDocumentsQueryPartitionProjections(
           "c",
-          partitionKey
+          partitionKey,
         )}] as _partitionKeyValue from c`
       : `select c.id, c._self, c._rid, c._ts from c`;
 
@@ -23,7 +23,7 @@ export function buildDocumentsQuery(
 
 export function buildDocumentsQueryPartitionProjections(
   collectionAlias: string,
-  partitionKey?: DataModels.PartitionKey
+  partitionKey?: DataModels.PartitionKey,
 ): string {
   if (!partitionKey) {
     return "";
@@ -58,7 +58,7 @@ export function buildDocumentsQueryPartitionProjections(
 
 export const queryPagesUntilContentPresent = async (
   firstItemIndex: number,
-  queryItems: (itemIndex: number) => Promise<ViewModels.QueryResults>
+  queryItems: (itemIndex: number) => Promise<ViewModels.QueryResults>,
 ): Promise<ViewModels.QueryResults> => {
   let roundTrips = 0;
   let netRequestCharge = 0;

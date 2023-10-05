@@ -257,7 +257,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
         this.updateButton.enabled,
         this.discardButton.visible,
         this.discardButton.enabled,
-      ])
+      ]),
     ).subscribe(() => this.updateNavbarWithTabsButtons());
     this.updateNavbarWithTabsButtons();
   }

@@ -8,7 +8,7 @@ export async function checkFirewallRules(
   firewallRulesPredicate: (rule: DataModels.FirewallRule) => unknown,
   isAllPublicIPAddressesEnabled?: ko.Observable<boolean> | React.Dispatch<React.SetStateAction<boolean>>,
   setMessageFunc?: (message: string) => void,
-  message?: string
+  message?: string,
 ): Promise<void> {
   const firewallRulesUri = `${userContext.databaseAccount.id}/firewallRules`;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,7 +38,7 @@ export async function checkFirewallRules(
     setTimeout(
       () =>
         checkFirewallRules(apiVersion, firewallRulesPredicate, isAllPublicIPAddressesEnabled, setMessageFunc, message),
-      30000
+      30000,
     );
   }
 }

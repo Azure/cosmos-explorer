@@ -31,7 +31,7 @@ export class Registerer {
 
         // If any of the ko observable change inside parameters, trigger a new render.
         ko.computed(() => ko.toJSON(adapter.parameters)).subscribe(() =>
-          ReactDOM.render(adapter.renderComponent(), element)
+          ReactDOM.render(adapter.renderComponent(), element),
         );
 
         // Initial rendering at mount point

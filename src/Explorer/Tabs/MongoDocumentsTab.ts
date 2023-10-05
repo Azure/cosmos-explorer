@@ -72,7 +72,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
           tabTitle: this.tabTitle(),
           error: message,
         },
-        startKey
+        startKey,
       );
       Logger.logError("Failed to save new document: Document shard key not defined", "MongoDocumentsTab");
       throw new Error("Document without shard key");
@@ -84,13 +84,13 @@ export default class MongoDocumentsTab extends DocumentsTab {
       this.collection.databaseId,
       this.collection,
       this.partitionKeyProperties?.[0],
-      documentContent
+      documentContent,
     )
       .then(
         (savedDocument: any) => {
           let partitionKeyArray = extractPartitionKey(
             savedDocument,
-            this._getPartitionKeyDefinition() as PartitionKeyDefinition
+            this._getPartitionKeyDefinition() as PartitionKeyDefinition,
           );
 
           let id = new ObjectId(this, savedDocument, partitionKeyArray);
@@ -110,7 +110,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
-            startKey
+            startKey,
           );
         },
         (error) => {
@@ -125,9 +125,9 @@ export default class MongoDocumentsTab extends DocumentsTab {
               error: errorMessage,
               errorStack: getErrorStack(error),
             },
-            startKey
+            startKey,
           );
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   };
@@ -152,7 +152,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
             if (documentId.rid === updatedDocument._rid) {
               const partitionKeyArray = extractPartitionKey(
                 updatedDocument,
-                this._getPartitionKeyDefinition() as PartitionKeyDefinition
+                this._getPartitionKeyDefinition() as PartitionKeyDefinition,
               );
 
               const id = new ObjectId(this, updatedDocument, partitionKeyArray);
@@ -166,7 +166,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
-            startKey
+            startKey,
           );
         },
         (error) => {
@@ -181,9 +181,9 @@ export default class MongoDocumentsTab extends DocumentsTab {
               error: errorMessage,
               errorStack: getErrorStack(error),
             },
-            startKey
+            startKey,
           );
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   };
@@ -240,7 +240,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
               },
-              this.onLoadStartKey
+              this.onLoadStartKey,
             );
             this.onLoadStartKey = null;
           }
@@ -258,11 +258,11 @@ export default class MongoDocumentsTab extends DocumentsTab {
                 error: getErrorMessage(error),
                 errorStack: getErrorStack(error),
               },
-              this.onLoadStartKey
+              this.onLoadStartKey,
             );
             this.onLoadStartKey = null;
           }
-        }
+        },
       )
       .finally(() => this.isExecuting(false));
   }

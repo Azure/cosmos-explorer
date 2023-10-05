@@ -54,7 +54,7 @@ describe("Check whether query result is edge-vertex array", () => {
           e: { id: "ide", type: "edge" },
           v: { id: "idv", type: "vertex" },
         },
-      ])
+      ]),
     ).toBe(true);
   });
 });
@@ -207,11 +207,9 @@ describe("GraphExplorer", () => {
     const gVRU = 123.456;
 
     const disableMonacoEditor = (graphExplorer: GraphExplorer) => {
-      renderResultAsJsonStub = sinon.stub(graphExplorer, "renderResultAsJson").callsFake(
-        (): JSX.Element => {
-          return <div>[Monaco Editor Stub]</div>;
-        }
-      );
+      renderResultAsJsonStub = sinon.stub(graphExplorer, "renderResultAsJson").callsFake((): JSX.Element => {
+        return <div>[Monaco Editor Stub]</div>;
+      });
     };
 
     interface AjaxResponse {
@@ -227,7 +225,7 @@ describe("GraphExplorer", () => {
       graphExplorer: GraphExplorer,
       backendResponses: BackendResponses,
       done: any,
-      ignoreD3Update: boolean
+      ignoreD3Update: boolean,
     ) => {
       const complete = (): void => {
         wrapper.update();
@@ -299,7 +297,7 @@ describe("GraphExplorer", () => {
       docDBResponse: AjaxResponse,
       backendResponses: BackendResponses,
       done: any,
-      ignoreD3Update: boolean
+      ignoreD3Update: boolean,
     ): GraphExplorer => {
       (queryDocuments as jest.Mock).mockImplementation((container: any, query: string, options: any) => {
         return {
@@ -321,7 +319,7 @@ describe("GraphExplorer", () => {
             headers: [] as any[],
             requestCharge: gVRU,
           });
-        }
+        },
       );
       const props: GraphExplorerProps = createMockProps();
       wrapper = mount(<GraphExplorer {...props} />);

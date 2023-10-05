@@ -133,7 +133,7 @@ export class InputTypeaheadComponent extends React.Component<
   private filterChoiceByValue = (choices: Item[], searchKeyword: string): Item[] => {
     return choices.filter((choice) =>
       // @ts-ignore
-      Object.keys(choice).some((key) => choice[key].toLowerCase().includes(searchKeyword.toLowerCase()))
+      Object.keys(choice).some((key) => choice[key].toLowerCase().includes(searchKeyword.toLowerCase())),
     );
   };
 

@@ -15,7 +15,7 @@ export async function getIndexTransformationProgress(databaseId: string, collect
     const response = await client().database(databaseId).container(collectionId).read({ populateQuotaInfo: true });
 
     indexTransformationPercentage = parseInt(
-      response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string
+      response.headers[Constants.HttpHeaders.collectionIndexTransformationProgress] as string,
     );
   } catch (error) {
     handleError(error, "ReadMongoDBCollection", `Error while reading container ${collectionId}`);

@@ -36,7 +36,7 @@ describe("Sample Prompts snapshot test", () => {
 
     wrapper.find(DefaultButton).at(3).simulate("click");
     expect(setTextBoxMock).toHaveBeenCalledWith(
-      "Write a query to return all records in this table created in the last thirty days"
+      "Write a query to return all records in this table created in the last thirty days",
     );
     expect(setIsSamplePromptsOpenMock).toHaveBeenCalledWith(false);
   });
@@ -66,13 +66,13 @@ describe("Sample Prompts snapshot test", () => {
 
     wrapper.find(DefaultButton).at(2).simulate("click");
     expect(setTextBoxMock).toHaveBeenCalledWith(
-      "Show items with a description that contains a number between 0 and 99 inclusive."
+      "Show items with a description that contains a number between 0 and 99 inclusive.",
     );
     expect(setIsSamplePromptsOpenMock).toHaveBeenCalledWith(false);
 
     wrapper.find(DefaultButton).at(3).simulate("click");
     expect(setTextBoxMock).toHaveBeenCalledWith(
-      "Write a query to return all records in this table created in the last thirty days"
+      "Write a query to return all records in this table created in the last thirty days",
     );
     expect(setIsSamplePromptsOpenMock).toHaveBeenCalledWith(false);
   });

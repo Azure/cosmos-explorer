@@ -145,7 +145,7 @@ describe("Gremlin Client", () => {
             done(e);
           }
         },
-        (error) => done.fail(error)
+        (error) => done.fail(error),
       )
       .finally(() => {
         logConsoleSpy.restore();
@@ -188,7 +188,7 @@ describe("Gremlin Client", () => {
             done(e);
           }
         },
-        (error) => done.fail(error)
+        (error) => done.fail(error),
       )
       .finally(() => {
         logConsoleSpy.restore();
@@ -225,7 +225,7 @@ describe("Gremlin Client", () => {
         } catch (e) {
           done(e);
         }
-      }
+      },
     );
 
     gremlinClient.client.params.failureCallback(
@@ -234,7 +234,7 @@ describe("Gremlin Client", () => {
         requestCharge: RU,
         requestId: requestId,
       },
-      error
+      error,
     );
   });
 
@@ -260,7 +260,7 @@ describe("Gremlin Client", () => {
         requestCharge: undefined,
         requestId: undefined,
       },
-      error
+      error,
     );
   });
 });

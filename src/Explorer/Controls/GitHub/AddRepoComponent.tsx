@@ -63,7 +63,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
 
   private onTextFieldChange = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     this.setState({
       textFieldValue: newValue || "",
@@ -100,7 +100,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
           {
             dataExplorerArea: Constants.Areas.Notebook,
           },
-          startKey
+          startKey,
         );
         return this.props.pinRepo(item);
       }
@@ -115,7 +115,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
         dataExplorerArea: Constants.Areas.Notebook,
         error: AddRepoComponent.TextFieldErrorMessage,
       },
-      startKey
+      startKey,
     );
   };
 }

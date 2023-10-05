@@ -72,7 +72,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
       if (selectedLocation.type === "GitHub") {
         destination = `${destination} - ${GitHubUtils.toRepoFullName(
           selectedLocation.owner,
-          selectedLocation.repo
+          selectedLocation.repo,
         )} - ${selectedLocation.branch}`;
       } else if (selectedLocation.type === "MyNotebooks" && useNotebook.getState().isPhoenixNotebooks) {
         destination = useNotebook.getState().notebookFolderName;

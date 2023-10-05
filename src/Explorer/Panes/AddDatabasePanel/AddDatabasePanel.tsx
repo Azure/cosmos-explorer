@@ -48,7 +48,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
   const databaseLevelThroughputTooltipText = `Provisioned throughput at the ${databaseLabel} level will be shared across all ${collectionsLabel} within the ${databaseLabel}.`;
   const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(
-    subscriptionType !== SubscriptionType.EA && !isServerlessAccount()
+    subscriptionType !== SubscriptionType.EA && !isServerlessAccount(),
   );
   const [formErrors, setFormErrors] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
@@ -114,7 +114,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       },
       (error: string) => {
         _onCreateDatabaseFailure(error, throughput, startKey);
-      }
+      },
     );
   };
 
@@ -147,7 +147,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     if (isAutoscaleSelected) {
       if (!AutoPilotUtils.isValidAutoPilotThroughput(throughput)) {
         setFormErrors(
-          `Please enter a value greater than ${AutoPilotUtils.autoPilotThroughput1K} for autopilot throughput`
+          `Please enter a value greater than ${AutoPilotUtils.autoPilotThroughput1K} for autopilot throughput`,
         );
         return false;
       }
@@ -165,7 +165,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
       setDatabaseId(newValue || "");
     },
-    []
+    [],
   );
 
   const props: RightPaneFormProps = {
@@ -184,7 +184,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             userContext.portalEnv,
             true,
             useDatabases.getState().isFirstResourceCreated(),
-            true
+            true,
           )}
           messageType="info"
           showErrorDetails={false}

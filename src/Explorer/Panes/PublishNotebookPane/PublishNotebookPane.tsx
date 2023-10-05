@@ -59,7 +59,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       handleError(
         error,
         "PublishNotebookPaneAdapter/isCodeOfConductAccepted",
-        "Failed to check if code of conduct was accepted"
+        "Failed to check if code of conduct was accepted",
       );
     }
   };
@@ -106,7 +106,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
         notebookDescription,
         notebookTags?.split(","),
         imageSrc,
-        content
+        content,
       );
 
       const data = response.data;
@@ -116,7 +116,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
         if (data.pendingScanJobIds?.length > 0) {
           isPublishPending = true;
           NotificationConsoleUtils.logConsoleInfo(
-            `Content of ${name} is currently being scanned for illegal content. It will not be available in the public gallery until the review is complete (may take a few days).`
+            `Content of ${name} is currently being scanned for illegal content. It will not be available in the public gallery until the review is complete (may take a few days).`,
           );
         } else {
           NotificationConsoleUtils.logConsoleInfo(`Published ${notebookName} to gallery`);
@@ -129,7 +129,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
             notebookId: data.id,
             isPublishPending,
           },
-          startKey
+          startKey,
         );
       }
     } catch (error) {
@@ -139,7 +139,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
 
       const errorMessage = getErrorMessage(error);

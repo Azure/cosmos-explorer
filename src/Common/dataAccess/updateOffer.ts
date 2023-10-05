@@ -152,7 +152,7 @@ const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void>
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else if (params.migrateToManual) {
     await migrateSqlContainerToManualThroughput(
@@ -160,7 +160,7 @@ const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void>
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else {
     const body: ThroughputSettingsUpdateParameters = createUpdateOfferBody(params);
@@ -170,7 +170,7 @@ const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void>
       accountName,
       params.databaseId,
       params.collectionId,
-      body
+      body,
     );
   }
 };
@@ -185,7 +185,7 @@ const updateMongoCollectionOffer = async (params: UpdateOfferParams): Promise<vo
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else if (params.migrateToManual) {
     await migrateMongoDBCollectionToManualThroughput(
@@ -193,7 +193,7 @@ const updateMongoCollectionOffer = async (params: UpdateOfferParams): Promise<vo
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else {
     const body: ThroughputSettingsUpdateParameters = createUpdateOfferBody(params);
@@ -203,7 +203,7 @@ const updateMongoCollectionOffer = async (params: UpdateOfferParams): Promise<vo
       accountName,
       params.databaseId,
       params.collectionId,
-      body
+      body,
     );
   }
 };
@@ -218,7 +218,7 @@ const updateCassandraTableOffer = async (params: UpdateOfferParams): Promise<voi
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else if (params.migrateToManual) {
     await migrateCassandraTableToManualThroughput(
@@ -226,7 +226,7 @@ const updateCassandraTableOffer = async (params: UpdateOfferParams): Promise<voi
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else {
     const body: ThroughputSettingsUpdateParameters = createUpdateOfferBody(params);
@@ -236,7 +236,7 @@ const updateCassandraTableOffer = async (params: UpdateOfferParams): Promise<voi
       accountName,
       params.databaseId,
       params.collectionId,
-      body
+      body,
     );
   }
 };
@@ -251,7 +251,7 @@ const updateGremlinGraphOffer = async (params: UpdateOfferParams): Promise<void>
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else if (params.migrateToManual) {
     await migrateGremlinGraphToManualThroughput(
@@ -259,7 +259,7 @@ const updateGremlinGraphOffer = async (params: UpdateOfferParams): Promise<void>
       resourceGroup,
       accountName,
       params.databaseId,
-      params.collectionId
+      params.collectionId,
     );
   } else {
     const body: ThroughputSettingsUpdateParameters = createUpdateOfferBody(params);
@@ -269,7 +269,7 @@ const updateGremlinGraphOffer = async (params: UpdateOfferParams): Promise<void>
       accountName,
       params.databaseId,
       params.collectionId,
-      body
+      body,
     );
   }
 };
@@ -404,7 +404,7 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
   const sdkResponse = await client()
     .offer(params.currentOffer.id)
     // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
-    .replace((newOffer as unknown) as OfferDefinition, options);
+    .replace(newOffer as unknown as OfferDefinition, options);
 
   return parseSDKOfferResponse(sdkResponse);
 };

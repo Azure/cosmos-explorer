@@ -17,7 +17,10 @@ export interface GitHubContentProviderParams {
 }
 
 class GitHubContentProviderError extends Error {
-  constructor(error: string, public errno: number = GitHubContentProvider.SelfErrorCode) {
+  constructor(
+    error: string,
+    public errno: number = GitHubContentProvider.SelfErrorCode,
+  ) {
     super(error);
   }
 }
@@ -44,7 +47,7 @@ export class GitHubContentProvider implements IContentProvider {
           Logger.logError(getErrorMessage(error), "GitHubContentProvider/remove", error.errno);
           return this.createErrorAjaxResponse(error);
         }
-      })
+      }),
     );
   }
 
@@ -68,14 +71,14 @@ export class GitHubContentProvider implements IContentProvider {
           Logger.logError(getErrorMessage(error), "GitHubContentProvider/get", error.errno);
           return this.createErrorAjaxResponse(error);
         }
-      })
+      }),
     );
   }
 
   public update<FT extends FileType>(
     _: ServerConfig,
     uri: string,
-    model: Partial<IContent<FT>>
+    model: Partial<IContent<FT>>,
   ): Observable<AjaxResponse> {
     return from(
       this.getContent(uri).then(async (content: IGitHubResponse<IGitHubFile | IGitHubFile[]>) => {
@@ -90,7 +93,7 @@ export class GitHubContentProvider implements IContentProvider {
             gitHubFile.branch.name,
             commitMsg,
             gitHubFile.path,
-            newPath
+            newPath,
           );
           if (response.status !== HttpStatusCodes.OK) {
             throw new GitHubContentProviderError("Failed to rename", response.status);
@@ -102,20 +105,20 @@ export class GitHubContentProvider implements IContentProvider {
 
           return this.createSuccessAjaxResponse(
             HttpStatusCodes.OK,
-            this.createContentModel(newUri, gitHubFile, { content: 0 })
+            this.createContentModel(newUri, gitHubFile, { content: 0 }),
           );
         } catch (error) {
           Logger.logError(getErrorMessage(error), "GitHubContentProvider/update", error.errno);
           return this.createErrorAjaxResponse(error);
         }
-      })
+      }),
     );
   }
 
   public create<FT extends FileType>(
     _: ServerConfig,
     uri: string,
-    model: Partial<IContent<FT>> & { type: FT }
+    model: Partial<IContent<FT>> & { type: FT },
   ): Observable<AjaxResponse> {
     return from(
       this.params.promptForCommitMsg("Create New Notebook", "Create").then(async (commitMsg: string) => {
@@ -155,7 +158,7 @@ export class GitHubContentProvider implements IContentProvider {
             contentInfo.branch,
             path,
             commitMsg,
-            content
+            content,
           );
           if (response.status !== HttpStatusCodes.Created) {
             throw new GitHubContentProviderError("Failed to create", response.status);
@@ -179,20 +182,20 @@ export class GitHubContentProvider implements IContentProvider {
 
           return this.createSuccessAjaxResponse(
             HttpStatusCodes.Created,
-            this.createContentModel(newUri, newGitHubFile, { content: 0 })
+            this.createContentModel(newUri, newGitHubFile, { content: 0 }),
           );
         } catch (error) {
           Logger.logError(getErrorMessage(error), "GitHubContentProvider/create", error.errno);
           return this.createErrorAjaxResponse(error);
         }
-      })
+      }),
     );
   }
 
   public save<FT extends FileType>(
     _: ServerConfig,
     uri: string,
-    model: Partial<IContent<FT>>
+    model: Partial<IContent<FT>>,
   ): Observable<AjaxResponse> {
     return from(
       this.getContent(uri).then(async (content: IGitHubResponse<IGitHubFile | IGitHubFile[]>) => {
@@ -233,7 +236,7 @@ export class GitHubContentProvider implements IContentProvider {
             contentInfo.path,
             commitMsg,
             updatedContent,
-            gitHubFile?.sha
+            gitHubFile?.sha,
           );
           if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.Created) {
             throw new GitHubContentProviderError("Failed to create or update", response.status);
@@ -246,7 +249,7 @@ export class GitHubContentProvider implements IContentProvider {
               contentInfo.owner,
               contentInfo.repo,
               contentInfo.branch,
-              contentInfo.path
+              contentInfo.path,
             );
             if (contentResponse.status !== HttpStatusCodes.OK) {
               throw new GitHubContentProviderError("Failed to get content", response.status);
@@ -257,13 +260,13 @@ export class GitHubContentProvider implements IContentProvider {
 
           return this.createSuccessAjaxResponse(
             HttpStatusCodes.OK,
-            this.createContentModel(uri, gitHubFile, { content: 0 })
+            this.createContentModel(uri, gitHubFile, { content: 0 }),
           );
         } catch (error) {
           Logger.logError(getErrorMessage(error), "GitHubContentProvider/update", error.errno);
           return this.createErrorAjaxResponse(error);
         }
-      })
+      }),
     );
   }
 
@@ -294,7 +297,7 @@ export class GitHubContentProvider implements IContentProvider {
   private async validateContentAndGetCommitMsg(
     content: IGitHubResponse<IGitHubFile | IGitHubFile[]>,
     promptTitle: string,
-    promptPrimaryButtonLabel: string
+    promptPrimaryButtonLabel: string,
   ): Promise<string> {
     if (content.status !== HttpStatusCodes.OK) {
       throw new GitHubContentProviderError("Failed to get content", content.status);
@@ -325,7 +328,7 @@ export class GitHubContentProvider implements IContentProvider {
   private createContentModel(
     uri: string,
     content: IGitHubFile | IGitHubFile[],
-    params: Partial<IGetParams>
+    params: Partial<IGetParams>,
   ): IContent<FileType> {
     if (Array.isArray(content)) {
       return this.createDirectoryModel(uri, content);
@@ -358,8 +361,8 @@ export class GitHubContentProvider implements IContentProvider {
             file,
             {
               content: 0,
-            }
-          ) as IEmptyContent<FileType>
+            },
+          ) as IEmptyContent<FileType>,
       ),
       format: "json",
     };
@@ -373,7 +376,7 @@ export class GitHubContentProvider implements IContentProvider {
         gitHubFile.repo.owner,
         gitHubFile.repo.name,
         gitHubFile.branch.name,
-        gitHubFile.path
+        gitHubFile.path,
       ),
       type: "notebook",
       writable: true, // TODO: tamitta: we don't know this info here
@@ -393,7 +396,7 @@ export class GitHubContentProvider implements IContentProvider {
         gitHubFile.repo.owner,
         gitHubFile.repo.name,
         gitHubFile.branch.name,
-        gitHubFile.path
+        gitHubFile.path,
       ),
       type: "file",
       writable: true, // TODO: tamitta: we don't know this info here

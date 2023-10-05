@@ -44,7 +44,7 @@ export const CodeOfConduct: FunctionComponent<CodeOfConductProps> = ({
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
-        startKey
+        startKey,
       );
 
       handleError(error, "CodeOfConduct/acceptCodeOfConduct", "Failed to accept code of conduct");
