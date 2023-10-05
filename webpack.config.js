@@ -45,7 +45,7 @@ const imagesRule = {
   type: "asset/resource",
   generator: {
     // Add hash, because there are multiple versions of "delete.svg"
-    filename: 'images/[name].[hash][ext]'
+    filename: "images/[name].[hash][ext]",
   },
 };
 
@@ -231,11 +231,11 @@ module.exports = function (_env = {}, argv = {}) {
       modules: [path.resolve(__dirname, "src"), "node_modules"],
       alias: {
         process: "process/browser",
-        "/sort_both.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_both.png'),
-        "/sort_asc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc.png'),
-        "/sort_desc.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc.png'),
-        "/sort_asc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_asc_disabled.png'),
-        "/sort_desc_disabled.png": path.resolve(__dirname, 'images/jquery.dataTables-images/sort_desc_disabled.png'),
+        "/sort_both.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_both.png"),
+        "/sort_asc.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_asc.png"),
+        "/sort_desc.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_desc.png"),
+        "/sort_asc_disabled.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_asc_disabled.png"),
+        "/sort_desc_disabled.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_desc_disabled.png"),
       },
 
       fallback: {
