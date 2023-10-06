@@ -1,4 +1,12 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, ISpinButtonStyles, Position, SpinButton, Toggle } from "@fluentui/react";
+import {
+  Checkbox,
+  ChoiceGroup,
+  IChoiceGroupOption,
+  ISpinButtonStyles,
+  Position,
+  SpinButton,
+  Toggle,
+} from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
@@ -20,11 +28,9 @@ export const SettingsPane: FunctionComponent = () => {
       : Constants.Queries.CustomPageOption,
   );
   const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
-    LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled)
+    LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
   );
-  const [queryTimeout, setQueryTimeout] = useState<number>(
-    LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout)
-  );
+  const [queryTimeout, setQueryTimeout] = useState<number>(LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout));
   const [customItemPerPage, setCustomItemPerPage] = useState<number>(
     LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0,
   );
@@ -150,21 +156,15 @@ export const SettingsPane: FunctionComponent = () => {
     setPageOption(option.key);
   };
 
-  const handleOnQueryTimeoutToggleChange = (
-    ev: React.MouseEvent<HTMLElement>, 
-    checked?: boolean
-  ): void => {
+  const handleOnQueryTimeoutToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
     setQueryTimeoutEnabled(checked);
-  }
+  };
 
-  const handleOnQueryTimeoutSpinButtonChange = (
-    ev: React.MouseEvent<HTMLElement>, 
-    value?: number
-  ): void => {
+  const handleOnQueryTimeoutSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, value?: number): void => {
     if (value) {
       setQueryTimeout(value);
     }
-  }
+  };
 
   const choiceButtonStyles = {
     root: {
@@ -188,19 +188,19 @@ export const SettingsPane: FunctionComponent = () => {
     ],
   };
 
-  const queryTimeoutToggleStyles: IToggleStyles  = {
+  const queryTimeoutToggleStyles: IToggleStyles = {
     label: {
-      fontSize: 12, 
-      fontWeight: 400, 
+      fontSize: 12,
+      fontWeight: 400,
       display: "block",
-    }
+    },
   };
 
-  const queryTimeoutSpinButtonStyles: ISpinButtonStyles  = {
+  const queryTimeoutSpinButtonStyles: ISpinButtonStyles = {
     label: {
-      fontSize: 12, 
-      fontWeight: 400, 
-    }
+      fontSize: 12,
+      fontWeight: 400,
+    },
   };
 
   return (
@@ -255,33 +255,37 @@ export const SettingsPane: FunctionComponent = () => {
         )}
         <div className="settingsSection">
           <div className="settingsSectionPart">
+            <div>
+              <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
+                Query Timeout
+              </legend>
+              <InfoTooltip>
+                When a query reaches a specified time limit, a popup with an option to cancel the query will show
+              </InfoTooltip>
+            </div>
+            <div>
+              <Toggle
+                styles={queryTimeoutToggleStyles}
+                label="Enable query timeout"
+                onChange={handleOnQueryTimeoutToggleChange}
+                defaultChecked={queryTimeoutEnabled}
+              />
+            </div>
+            {queryTimeoutEnabled && (
               <div>
-                <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
-                  Query Timeout
-                </legend>
-                <InfoTooltip>
-                  When a query reaches a specified time limit, a popup with an option to cancel the query will show
-                </InfoTooltip>
+                <SpinButton
+                  label="Query timeout (ms)"
+                  labelPosition={Position.top}
+                  defaultValue={queryTimeout || 5000}
+                  min={0}
+                  step={1000}
+                  onChange={handleOnQueryTimeoutSpinButtonChange}
+                  incrementButtonAriaLabel="Increase value by 1000"
+                  decrementButtonAriaLabel="Decrease value by 1000"
+                  styles={queryTimeoutSpinButtonStyles}
+                />
               </div>
-              <div>
-                <Toggle styles={queryTimeoutToggleStyles} label="Enable query timeout" onChange={handleOnQueryTimeoutToggleChange} defaultChecked={queryTimeoutEnabled}/>
-              </div>
-              {queryTimeoutEnabled &&
-                <div>
-                  <SpinButton
-                    label="Query timeout (ms)"
-                    labelPosition={Position.top}
-                    defaultValue={queryTimeout || 5000}
-                    min={0}
-                    step={1000}
-                    onChange={handleOnQueryTimeoutSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1000"
-                    decrementButtonAriaLabel="Decrease value by 1000"
-                    styles={queryTimeoutSpinButtonStyles}
-                  />
-                </div>
-              }
-              
+            )}
           </div>
         </div>
         <div className="settingsSection">

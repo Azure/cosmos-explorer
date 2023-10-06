@@ -241,7 +241,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             } as FeedOptions,
           );
     }
-    
+
     await this._queryDocumentsPage(firstItemIndex);
   }
 
@@ -250,7 +250,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({
       isExecutionError: false,
     });
-    
+
     const queryDocuments = async (firstItemIndex: number) =>
       await queryDocumentsPage(this.props.collection && this.props.collection.id(), this._iterator, firstItemIndex);
     this.props.tabsBaseInstance.isExecuting(true);
@@ -260,18 +260,22 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     if (this.queryTimeoutEnabled()) {
       const queryTimeout: number = LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout);
       const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(
-        () => this.state.isExecuting && useDialog.getState().showOkCancelModalDialog(
-          QueryConstants.CancelQueryTitle, 
-          QueryConstants.CancelQuerySubText, 
-          "Yes",
-          () => this.queryAbortController.abort(),
-          "No",
-          undefined
-        ), 
-        queryTimeout
+        () =>
+          this.state.isExecuting &&
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              QueryConstants.CancelQueryTitle,
+              QueryConstants.CancelQuerySubText,
+              "Yes",
+              () => this.queryAbortController.abort(),
+              "No",
+              undefined,
+            ),
+        queryTimeout,
       );
       this.setState({
-        cancelQueryTimeoutID
+        cancelQueryTimeoutID,
       });
     }
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -368,7 +372,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       };
       buttons.push(launchCopilotButton);
     }
-    
+
     if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
       const label = "Cancel query";
       buttons.push({

@@ -724,15 +724,19 @@ export default class DocumentsTab extends TabsBase {
     if (applyFilterButtonClicked && this.queryTimeoutEnabled()) {
       const queryTimeout: number = LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout);
       const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(
-        () => this.isExecuting() && useDialog.getState().showOkCancelModalDialog(
-          QueryConstants.CancelQueryTitle, 
-          QueryConstants.CancelQuerySubText, 
-          "Yes",
-          () => this.queryAbortController.abort(),
-          "No",
-          undefined
-        ), 
-        queryTimeout
+        () =>
+          this.isExecuting() &&
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              QueryConstants.CancelQueryTitle,
+              QueryConstants.CancelQuerySubText,
+              "Yes",
+              () => this.queryAbortController.abort(),
+              "No",
+              undefined,
+            ),
+        queryTimeout,
       );
       this.cancelQueryTimeoutID = cancelQueryTimeoutID;
     }
