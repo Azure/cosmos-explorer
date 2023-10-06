@@ -10,7 +10,7 @@ describe("SecurityWarningBar", () => {
         isNotebookUntrusted={true}
         markNotebookAsTrusted={undefined}
         saveNotebook={undefined}
-      />
+      />,
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -23,7 +23,7 @@ describe("SecurityWarningBar", () => {
         isNotebookUntrusted={false}
         markNotebookAsTrusted={undefined}
         saveNotebook={undefined}
-      />
+      />,
     );
 
     expect(wrapper).toMatchSnapshot();

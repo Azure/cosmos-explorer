@@ -38,7 +38,7 @@ const collection = {
   },
 } as Collection;
 
-const documentId = ({
+const documentId = {
   partitionKeyHeader: () => "[]",
   self: "db/testDB/db/testCollection/docs/testId",
   partitionKeyProperties,
@@ -47,7 +47,7 @@ const documentId = ({
     kind: "Hash",
     version: 1,
   },
-} as unknown) as DocumentId;
+} as unknown as DocumentId;
 
 const databaseAccount = {
   id: "foo",
@@ -83,7 +83,7 @@ describe("MongoProxyClient", () => {
       queryDocuments(databaseId, collection, true, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://main.documentdb.ext.azure.com/api/mongo/explorer/resourcelist?db=testDB&coll=testCollection&resourceUrl=bardbs%2FtestDB%2Fcolls%2FtestCollection%2Fdocs%2F&rid=testCollectionrid&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -92,7 +92,7 @@ describe("MongoProxyClient", () => {
       queryDocuments(databaseId, collection, true, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer/resourcelist?db=testDB&coll=testCollection&resourceUrl=bardbs%2FtestDB%2Fcolls%2FtestCollection%2Fdocs%2F&rid=testCollectionrid&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -115,7 +115,7 @@ describe("MongoProxyClient", () => {
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://main.documentdb.ext.azure.com/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -124,7 +124,7 @@ describe("MongoProxyClient", () => {
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -147,7 +147,7 @@ describe("MongoProxyClient", () => {
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://main.documentdb.ext.azure.com/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -156,7 +156,7 @@ describe("MongoProxyClient", () => {
       readDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -179,7 +179,7 @@ describe("MongoProxyClient", () => {
       updateDocument(databaseId, collection, documentId, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://main.documentdb.ext.azure.com/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -188,7 +188,7 @@ describe("MongoProxyClient", () => {
       updateDocument(databaseId, collection, documentId, "{}");
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -211,7 +211,7 @@ describe("MongoProxyClient", () => {
       deleteDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://main.documentdb.ext.azure.com/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -220,7 +220,7 @@ describe("MongoProxyClient", () => {
       deleteDocument(databaseId, collection, documentId);
       expect(window.fetch).toHaveBeenCalledWith(
         "https://localhost:1234/api/mongo/explorer?db=testDB&coll=testCollection&resourceUrl=bardb%2FtestDB%2Fdb%2FtestCollection%2Fdocs%2FtestId&rid=testId&rtype=docs&sid=&rg=&dba=foo&pk=pk",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });

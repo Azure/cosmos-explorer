@@ -162,9 +162,9 @@ export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDat
 
   const resource: string = isDatabaseThroughput ? "database" : getCollectionName().toLocaleLowerCase();
   return `Your ${resource} throughput will automatically scale from <b>${AutoPilotUtils.getMinRUsBasedOnUserInput(
-    maxAutoPilotThroughputSet
+    maxAutoPilotThroughputSet,
   )} RU/s (10% of max RU/s) - ${maxAutoPilotThroughputSet} RU/s</b> based on usage. <br /><br />After the first ${AutoPilotUtils.getStorageBasedOnUserInput(
-    maxAutoPilotThroughputSet
+    maxAutoPilotThroughputSet,
   )} GB of data stored, the max RU/s will be automatically upgraded based on the new storage value. <a href='${
     Constants.AutopilotDocumentation.Url
   }' target='_blank' aria-label='Learn more about autoscale throughput'>Learn more</a>.`;
@@ -174,7 +174,7 @@ export function getEstimatedAutoscaleSpendHtml(
   throughput: number,
   serverId: string,
   regions: number,
-  multimaster: boolean
+  multimaster: boolean,
 ): string {
   const hourlyPrice: number = computeRUUsagePriceHourly({
     serverId: serverId,
@@ -202,7 +202,7 @@ export function getEstimatedSpendHtml(
   throughput: number,
   serverId: string,
   regions: number,
-  multimaster: boolean
+  multimaster: boolean,
 ): string {
   const hourlyPrice: number = computeRUUsagePriceHourly({
     serverId: serverId,
@@ -233,7 +233,7 @@ export function getEstimatedSpendAcknowledgeString(
   serverId: string,
   regions: number,
   multimaster: boolean,
-  isAutoscale: boolean
+  isAutoscale: boolean,
 ): string {
   const hourlyPrice: number = computeRUUsagePriceHourly({
     serverId: serverId,
@@ -247,10 +247,10 @@ export function getEstimatedSpendAcknowledgeString(
   const currencySign: string = getCurrencySign(serverId);
   return !isAutoscale
     ? `I acknowledge the estimated ${currencySign}${calculateEstimateNumber(
-        dailyPrice
+        dailyPrice,
       )} daily cost for the throughput above.`
     : `I acknowledge the estimated ${currencySign}${calculateEstimateNumber(
-        monthlyPrice / 10
+        monthlyPrice / 10,
       )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
@@ -258,7 +258,7 @@ export function getUpsellMessage(
   serverId = "default",
   isFreeTier = false,
   isFirstResourceCreated = false,
-  isCollection: boolean
+  isCollection: boolean,
 ): string {
   if (isFreeTier) {
     const collectionName = getCollectionName().toLocaleLowerCase();
@@ -276,7 +276,7 @@ export function getUpsellMessage(
     }
 
     return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple ${getCollectionName(
-      true
+      true,
     ).toLocaleLowerCase()} included`;
   }
 }

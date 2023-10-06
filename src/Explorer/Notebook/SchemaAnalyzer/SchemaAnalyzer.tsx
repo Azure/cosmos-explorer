@@ -211,7 +211,7 @@ const makeMapDispatchToProps = () => {
           actions.addTransform({
             mediaType: transform.MIMETYPE,
             component: transform,
-          })
+          }),
         );
       },
       runCell: (contentRef: ContentRef, cellId: string) => {
@@ -219,7 +219,7 @@ const makeMapDispatchToProps = () => {
           actions.executeCell({
             contentRef,
             id: cellId,
-          })
+          }),
         );
       },
       updateCell: (text: string, id: string, contentRef: ContentRef) => {

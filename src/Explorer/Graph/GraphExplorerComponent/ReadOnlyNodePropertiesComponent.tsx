@@ -39,10 +39,10 @@ export class ReadOnlyNodePropertiesComponent extends React.Component<ReadOnlyNod
 
   public static renderReadOnlyPropertyKeyPair(
     key: string,
-    propertyValues: ViewModels.GremlinPropertyValueType[]
+    propertyValues: ViewModels.GremlinPropertyValueType[],
   ): JSX.Element {
     const renderedValues = propertyValues.map((value) =>
-      ReadOnlyNodePropertiesComponent.renderSinglePropertyValue(value)
+      ReadOnlyNodePropertiesComponent.renderSinglePropertyValue(value),
     );
     const stringifiedValues = propertyValues
       .map((value) => ReadOnlyNodePropertiesComponent.singlePropertyValueToString(value))

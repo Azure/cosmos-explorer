@@ -51,7 +51,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   isSaveQueryEnabled: () => {
     const savedQueriesDatabase: ViewModels.Database = _.find(
       get().databases,
-      (database: ViewModels.Database) => database.id() === Constants.SavedQueries.DatabaseName
+      (database: ViewModels.Database) => database.id() === Constants.SavedQueries.DatabaseName,
     );
     if (!savedQueriesDatabase) {
       return false;
@@ -60,7 +60,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
       savedQueriesDatabase &&
       _.find(
         savedQueriesDatabase.collections(),
-        (collection: ViewModels.Collection) => collection.id() === Constants.SavedQueries.CollectionName
+        (collection: ViewModels.Collection) => collection.id() === Constants.SavedQueries.CollectionName,
       );
     if (!savedQueriesCollection) {
       return false;
@@ -97,7 +97,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     await Promise.all(
       get().databases?.map(async (database: ViewModels.Database) => {
         await database.loadOffer();
-      })
+      }),
     );
   },
   loadAllOffers: async () => {
@@ -108,9 +108,9 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
         await Promise.all(
           (database.collections() || []).map(async (collection: ViewModels.Collection) => {
             await collection.loadOffer();
-          })
+          }),
         );
-      })
+      }),
     );
   },
   isFirstResourceCreated: () => {

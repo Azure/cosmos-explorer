@@ -119,7 +119,7 @@ export default class QueryBuilderViewModel {
       "",
       "",
       //null,
-      true
+      true,
     );
     const example2 = new QueryClauseViewModel(
       this,
@@ -133,7 +133,7 @@ export default class QueryBuilderViewModel {
       "",
       "",
       //null,
-      true
+      true,
     );
     this.addClauseImpl(example1, 0);
     this.addClauseImpl(example2, 1);
@@ -156,8 +156,8 @@ export default class QueryBuilderViewModel {
               clause.type(),
               clause.operator(),
               clause.value(),
-              this.generateRightParentheses(clause)
-            )
+              this.generateRightParentheses(clause),
+            ),
           );
         }
 
@@ -219,8 +219,8 @@ export default class QueryBuilderViewModel {
               clause.type(),
               clause.operator(),
               value,
-              this.generateRightParentheses(clause)
-            )
+              this.generateRightParentheses(clause),
+            ),
           );
           first = false;
         }
@@ -275,8 +275,8 @@ export default class QueryBuilderViewModel {
               clause.type(),
               clause.operator(),
               value,
-              this.generateRightParentheses(clause)
-            )
+              this.generateRightParentheses(clause),
+            ),
           );
           first = false;
         }
@@ -354,31 +354,31 @@ export default class QueryBuilderViewModel {
     type: string,
     operator: string,
     value: string,
-    rightParentheses: string
+    rightParentheses: string,
   ): string => {
     switch (type) {
       case Constants.TableType.DateTime:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
-          operator
+          operator,
         )} ${value}${rightParentheses}`;
       case Constants.TableType.String:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
-          operator
+          operator,
           // eslint-disable-next-line no-useless-escape
         )} \'${value}\'${rightParentheses}`;
       case Constants.TableType.Guid:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
-          operator
+          operator,
           // eslint-disable-next-line no-useless-escape
         )} guid\'${value}\'${rightParentheses}`;
       case Constants.TableType.Binary:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
-          operator
+          operator,
           // eslint-disable-next-line no-useless-escape
         )} binary\'${value}\'${rightParentheses}`;
       default:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
-          operator
+          operator,
         )} ${value}${rightParentheses}`;
     }
   };
@@ -390,7 +390,7 @@ export default class QueryBuilderViewModel {
     type: string,
     operator: string,
     value: string,
-    rightParentheses: string
+    rightParentheses: string,
   ): string => {
     if (propertyName === Constants.EntityKeyNames.PartitionKey) {
       propertyName = TableEntityProcessor.keyProperties.PartitionKey;
@@ -403,20 +403,20 @@ export default class QueryBuilderViewModel {
     } else if (propertyName === Constants.EntityKeyNames.Timestamp) {
       propertyName = TableEntityProcessor.keyProperties.Timestamp;
       return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName} ${operator} ${DateTimeUtilities.convertJSDateToUnix(
-        value
+        value,
       )}${rightParentheses}`;
     }
     switch (type) {
       case Constants.TableType.DateTime:
         // eslint-disable-next-line no-useless-escape
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName}["$v"] ${operator} \'${DateTimeUtilities.convertJSDateToTicksWithPadding(
-          value
+          value,
           // eslint-disable-next-line no-useless-escape
         )}\'${rightParentheses}`;
       case Constants.TableType.Int64:
         // eslint-disable-next-line no-useless-escape
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName}["$v"] ${operator} \'${Utilities.padLongWithZeros(
-          value
+          value,
           // eslint-disable-next-line no-useless-escape
         )}\'${rightParentheses}`;
       case Constants.TableType.String:
@@ -436,7 +436,7 @@ export default class QueryBuilderViewModel {
     type: string,
     operator: string,
     value: string,
-    rightParentheses: string
+    rightParentheses: string,
   ): string => {
     if (
       type === Constants.CassandraType.Text ||
@@ -490,7 +490,7 @@ export default class QueryBuilderViewModel {
       "",
       "",
       //null,
-      true
+      true,
     );
     this.addClauseImpl(newClause, index);
     if (index === this.clauseArray().length - 1) {
@@ -663,7 +663,7 @@ export default class QueryBuilderViewModel {
       timestamp.endTime,
       "range",
       //null,
-      true
+      true,
     );
 
     newClause.isLocal = ko.observable(timestamp.timeZone === "local");

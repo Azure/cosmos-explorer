@@ -159,7 +159,7 @@ async function configureFabric(): Promise<Explorer> {
                     tabKind: TabKind.SQLDocuments,
                   } as DataExplorerAction,
                   useDatabases.getState().databases,
-                  explorer
+                  explorer,
                 );
               }
             }
@@ -171,7 +171,7 @@ async function configureFabric(): Promise<Explorer> {
             break;
         }
       },
-      false
+      false,
     );
 
     sendReadyMessage();
@@ -179,7 +179,7 @@ async function configureFabric(): Promise<Explorer> {
 }
 
 async function configureHosted(): Promise<Explorer> {
-  const win = (window as unknown) as HostedExplorerChildFrame;
+  const win = window as unknown as HostedExplorerChildFrame;
   let explorer: Explorer;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
     explorer = configureWithEncryptedToken(win.hostedConfig);
@@ -215,7 +215,7 @@ async function configureHosted(): Promise<Explorer> {
         }
       }
     },
-    false
+    false,
   );
 
   return explorer;
@@ -355,7 +355,7 @@ async function configurePortal(): Promise<Explorer> {
       if (initMessage) {
         const message = JSON.parse(initMessage) as DataExplorerInputsFrame;
         console.warn(
-          "Loaded cached portal iframe message from session storage. Do a full page refresh to get a new message"
+          "Loaded cached portal iframe message from session storage. Do a full page refresh to get a new message",
         );
         console.dir(message);
         updateContextsFromPortalMessage(message);
@@ -418,7 +418,7 @@ async function configurePortal(): Promise<Explorer> {
           explorer.onRefreshResourcesClick();
         }
       },
-      false
+      false,
     );
 
     sendReadyMessage();

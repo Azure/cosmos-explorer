@@ -18,7 +18,7 @@ export async function listMetrics(
   accountName: string,
   region: string,
   databaseRid: string,
-  collectionRid: string
+  collectionRid: string,
 ): Promise<Types.MetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/region/${region}/databases/${databaseRid}/collections/${collectionRid}/metrics`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

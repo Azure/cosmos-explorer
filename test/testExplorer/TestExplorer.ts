@@ -14,7 +14,7 @@ const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Po
 
 if (!process.env.AZURE_CLIENT_SECRET) {
   throw new Error(
-    "process.env.AZURE_CLIENT_SECRET was not set! Set it in your .env file and restart webpack dev server"
+    "process.env.AZURE_CLIENT_SECRET was not set! Set it in your .env file and restart webpack dev server",
   );
 }
 
@@ -25,7 +25,7 @@ const credentials = new ClientSecretCredential(
   process.env.AZURE_CLIENT_SECRET,
   {
     authorityHost: "https://localhost:1234",
-  }
+  },
 );
 
 console.log("Resource Group:", resourceGroup);
@@ -85,11 +85,11 @@ const initTestExplorer = async (): Promise<void> => {
             signature: "pcIframe",
             data: initTestExplorerContent,
           },
-          iframe.contentDocument.referrer || window.location.href
+          iframe.contentDocument.referrer || window.location.href,
         );
       }
     },
-    false
+    false,
   );
   iframe.id = "explorerMenu";
   iframe.name = "explorer";

@@ -8,7 +8,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function deleteStoredProcedure(
   databaseId: string,
   collectionId: string,
-  storedProcedureId: string
+  storedProcedureId: string,
 ): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting stored procedure ${storedProcedureId}`);
   try {
@@ -23,7 +23,7 @@ export async function deleteStoredProcedure(
         userContext.databaseAccount.name,
         databaseId,
         collectionId,
-        storedProcedureId
+        storedProcedureId,
       );
     } else {
       await client().database(databaseId).container(collectionId).scripts.storedProcedure(storedProcedureId).delete();

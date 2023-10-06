@@ -16,7 +16,7 @@ export async function get(
   subscriptionId: string,
   resourceGroupName: string,
   workspaceName: string,
-  bigDataPoolName: string
+  bigDataPoolName: string,
 ): Promise<Types.BigDataPoolResourceInfo> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/bigDataPools/${bigDataPoolName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -28,7 +28,7 @@ export async function update(
   resourceGroupName: string,
   workspaceName: string,
   bigDataPoolName: string,
-  body: Types.BigDataPoolPatchInfo
+  body: Types.BigDataPoolPatchInfo,
 ): Promise<Types.BigDataPoolResourceInfo> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/bigDataPools/${bigDataPoolName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PATCH", apiVersion, body });
@@ -40,7 +40,7 @@ export async function createOrUpdate(
   resourceGroupName: string,
   workspaceName: string,
   bigDataPoolName: string,
-  body: Types.BigDataPoolResourceInfo
+  body: Types.BigDataPoolResourceInfo,
 ): Promise<Types.BigDataPoolResourceInfo> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/bigDataPools/${bigDataPoolName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -51,7 +51,7 @@ export async function destroy(
   subscriptionId: string,
   resourceGroupName: string,
   workspaceName: string,
-  bigDataPoolName: string
+  bigDataPoolName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/bigDataPools/${bigDataPoolName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -61,7 +61,7 @@ export async function destroy(
 export async function listByWorkspace(
   subscriptionId: string,
   resourceGroupName: string,
-  workspaceName: string
+  workspaceName: string,
 ): Promise<Types.BigDataPoolResourceInfoListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Synapse/workspaces/${workspaceName}/bigDataPools`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

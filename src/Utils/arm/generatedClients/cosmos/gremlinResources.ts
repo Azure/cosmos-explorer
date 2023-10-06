@@ -15,7 +15,7 @@ const apiVersion = "2023-09-15-preview";
 export async function listGremlinDatabases(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.GremlinDatabaseListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function getGremlinDatabase(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.GremlinDatabaseGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -38,7 +38,7 @@ export async function createUpdateGremlinDatabase(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  body: Types.GremlinDatabaseCreateUpdateParameters
+  body: Types.GremlinDatabaseCreateUpdateParameters,
 ): Promise<Types.GremlinDatabaseGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -49,7 +49,7 @@ export async function deleteGremlinDatabase(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -60,7 +60,7 @@ export async function getGremlinDatabaseThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -72,7 +72,7 @@ export async function updateGremlinDatabaseThroughput(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -83,7 +83,7 @@ export async function migrateGremlinDatabaseToAutoscale(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -94,7 +94,7 @@ export async function migrateGremlinDatabaseToManualThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -105,7 +105,7 @@ export async function listGremlinGraphs(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  databaseName: string
+  databaseName: string,
 ): Promise<Types.GremlinGraphListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -117,7 +117,7 @@ export async function getGremlinGraph(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  graphName: string
+  graphName: string,
 ): Promise<Types.GremlinGraphGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -130,7 +130,7 @@ export async function createUpdateGremlinGraph(
   accountName: string,
   databaseName: string,
   graphName: string,
-  body: Types.GremlinGraphCreateUpdateParameters
+  body: Types.GremlinGraphCreateUpdateParameters,
 ): Promise<Types.GremlinGraphGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -142,7 +142,7 @@ export async function deleteGremlinGraph(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  graphName: string
+  graphName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -154,7 +154,7 @@ export async function getGremlinGraphThroughput(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  graphName: string
+  graphName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -167,7 +167,7 @@ export async function updateGremlinGraphThroughput(
   accountName: string,
   databaseName: string,
   graphName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -179,7 +179,7 @@ export async function migrateGremlinGraphToAutoscale(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  graphName: string
+  graphName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -191,7 +191,7 @@ export async function migrateGremlinGraphToManualThroughput(
   resourceGroupName: string,
   accountName: string,
   databaseName: string,
-  graphName: string
+  graphName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/gremlinDatabases/${databaseName}/graphs/${graphName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });

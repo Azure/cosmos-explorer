@@ -25,7 +25,7 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
     }
     nextLink = result.nextLink;
     const validSubscriptions = result.value.filter(
-      (sub) => sub.state === "Enabled" || sub.state === "Warned" || sub.state === "PastDue"
+      (sub) => sub.state === "Enabled" || sub.state === "Warned" || sub.state === "PastDue",
     );
     subscriptions = [...subscriptions, ...validSubscriptions];
   }
@@ -35,7 +35,7 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
 export function useSubscriptions(armToken: string): Subscription[] | undefined {
   const { data } = useSWR(
     () => (armToken ? ["subscriptions", armToken] : undefined),
-    (_, armToken) => fetchSubscriptions(armToken)
+    (_, armToken) => fetchSubscriptions(armToken),
   );
   return data;
 }

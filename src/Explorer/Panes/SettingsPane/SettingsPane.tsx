@@ -6,6 +6,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
+import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -16,7 +17,7 @@ export const SettingsPane: FunctionComponent = () => {
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
       ? Constants.Queries.UnlimitedPageOption
-      : Constants.Queries.CustomPageOption
+      : Constants.Queries.CustomPageOption,
   );
   const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
     LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled)
@@ -25,46 +26,45 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout)
   );
   const [customItemPerPage, setCustomItemPerPage] = useState<number>(
-    LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0
+    LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0,
   );
   const [containerPaginationEnabled, setContainerPaginationEnabled] = useState<boolean>(
     LocalStorageUtility.hasItem(StorageKey.ContainerPaginationEnabled)
       ? LocalStorageUtility.getEntryString(StorageKey.ContainerPaginationEnabled) === "true"
-      : false
+      : false,
   );
   const [crossPartitionQueryEnabled, setCrossPartitionQueryEnabled] = useState<boolean>(
     LocalStorageUtility.hasItem(StorageKey.IsCrossPartitionQueryEnabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
-      : false
+      : false,
   );
   const [graphAutoVizDisabled, setGraphAutoVizDisabled] = useState<string>(
     LocalStorageUtility.hasItem(StorageKey.IsGraphAutoVizDisabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
-      : "false"
+      : "false",
   );
   const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism)
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism)
-      : Constants.Queries.DefaultMaxDegreeOfParallelism
+      : Constants.Queries.DefaultMaxDegreeOfParallelism,
   );
   const [priorityLevel, setPriorityLevel] = useState<string>(
     LocalStorageUtility.hasItem(StorageKey.PriorityLevel)
       ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
-      : Constants.PriorityLevel.Default
+      : Constants.PriorityLevel.Default,
   );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-  const shouldShowPriorityLevelOption =
-    userContext.databaseAccount?.properties?.enablePriorityBasedExecution && userContext.apiType === "SQL";
+  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
   const handlerOnSubmit = () => {
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
       StorageKey.ActualItemPerPage,
-      isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage
+      isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage,
     );
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
@@ -76,7 +76,7 @@ export const SettingsPane: FunctionComponent = () => {
     if (shouldShowGraphAutoVizOption) {
       LocalStorageUtility.setEntryBoolean(
         StorageKey.IsGraphAutoVizDisabled,
-        StringUtility.toBoolean(graphAutoVizDisabled)
+        StringUtility.toBoolean(graphAutoVizDisabled),
       );
     }
 
@@ -86,13 +86,13 @@ export const SettingsPane: FunctionComponent = () => {
 
     setIsExecuting(false);
     logConsoleInfo(
-      `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`
+      `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`,
     );
     logConsoleInfo(`${crossPartitionQueryEnabled ? "Enabled" : "Disabled"} cross-partition query feed option`);
     logConsoleInfo(
       `Updated the max degree of parallelism query feed option to ${LocalStorageUtility.getEntryNumber(
-        StorageKey.MaxDegreeOfParellism
-      )}`
+        StorageKey.MaxDegreeOfParellism,
+      )}`,
     );
     logConsoleInfo(`Updated priority level setting to ${LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)}`);
 
@@ -100,12 +100,12 @@ export const SettingsPane: FunctionComponent = () => {
       logConsoleInfo(
         `Graph result will be displayed as ${
           LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
-        }`
+        }`,
       );
     }
 
     logConsoleInfo(
-      `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`
+      `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
     );
     closeSidePanel();
   };
@@ -141,7 +141,7 @@ export const SettingsPane: FunctionComponent = () => {
 
   const handleOnPriorityLevelOptionChange = (
     ev: React.FormEvent<HTMLInputElement>,
-    option: IChoiceGroupOption
+    option: IChoiceGroupOption,
   ): void => {
     setPriorityLevel(option.key);
   };

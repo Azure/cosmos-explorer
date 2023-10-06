@@ -4,7 +4,7 @@ import { userContext } from "UserContext";
 import { PortalBackendIPs } from "Utils/EndpointValidation";
 
 export const getNetworkSettingsWarningMessage = async (
-  setStateFunc: (warningMessage: string) => void
+  setStateFunc: (warningMessage: string) => void,
 ): Promise<void> => {
   const accountProperties = userContext.databaseAccount?.properties;
   const accessMessage =
@@ -18,7 +18,7 @@ export const getNetworkSettingsWarningMessage = async (
       (rule) => rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255",
       undefined,
       setStateFunc,
-      accessMessage
+      accessMessage,
     );
     return;
   } else if (userContext.apiType === "VCoreMongo") {
@@ -29,7 +29,7 @@ export const getNetworkSettingsWarningMessage = async (
         (rule.properties.startIpAddress === "0.0.0.0" && rule.properties.endIpAddress === "255.255.255.255"),
       undefined,
       setStateFunc,
-      accessMessage
+      accessMessage,
     );
     return;
   } else if (accountProperties) {

@@ -223,23 +223,22 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   private async _executeQueryDocumentsPage(firstItemIndex: number): Promise<void> {
-    // this.setState({queryAbortController:  new AbortController()});
     this.queryAbortController = new AbortController();
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(
             this.props.collection.databaseId,
             this.props.viewModelcollection,
-            this.state.selectedContent || this.state.sqlQueryEditorContent
+            this.state.selectedContent || this.state.sqlQueryEditorContent,
           )
         : queryDocuments(
             this.props.collection.databaseId,
             this.props.collection.id(),
             this.state.selectedContent || this.state.sqlQueryEditorContent,
-            { 
+            {
               enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-              abortSignal: this.queryAbortController.signal, 
-            } as FeedOptions
+              abortSignal: this.queryAbortController.signal,
+            } as FeedOptions,
           );
     }
     
@@ -280,7 +279,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     try {
       const queryResults: ViewModels.QueryResults = await QueryUtils.queryPagesUntilContentPresent(
         firstItemIndex,
-        queryDocuments
+        queryDocuments,
       );
       this.setState({ queryResults, error: "" });
     } catch (error) {
@@ -370,6 +369,18 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push(launchCopilotButton);
     }
     
+    if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
+      const label = "Cancel query";
+      buttons.push({
+        iconSrc: CancelQueryIcon,
+        iconAlt: label,
+        onCommandClick: () => this.queryAbortController.abort(),
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+      });
+    }
+
     if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
       const label = "Cancel query";
       buttons.push({

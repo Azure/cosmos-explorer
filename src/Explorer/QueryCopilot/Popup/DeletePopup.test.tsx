@@ -16,7 +16,7 @@ describe("Delete Popup snapshot test", () => {
         setQuery={setQueryMock}
         clearFeedback={clearFeedbackMock}
         showFeedbackBar={showFeedbackBarMock}
-      />
+      />,
     );
     expect(wrapper.find("Modal").prop("isOpen")).toBeTruthy();
     expect(wrapper).toMatchSnapshot();
@@ -30,7 +30,7 @@ describe("Delete Popup snapshot test", () => {
         setQuery={setQueryMock}
         clearFeedback={clearFeedbackMock}
         showFeedbackBar={showFeedbackBarMock}
-      />
+      />,
     );
     expect(wrapper.props().children.props.showDeletePopup).toBeFalsy();
     expect(wrapper).toMatchSnapshot();
@@ -44,7 +44,7 @@ describe("Delete Popup snapshot test", () => {
         setQuery={setQueryMock}
         clearFeedback={clearFeedbackMock}
         showFeedbackBar={showFeedbackBarMock}
-      />
+      />,
     );
 
     wrapper.find("PrimaryButton").simulate("click");
@@ -62,7 +62,7 @@ describe("Delete Popup snapshot test", () => {
         setQuery={setQueryMock}
         clearFeedback={clearFeedbackMock}
         showFeedbackBar={showFeedbackBarMock}
-      />
+      />,
     );
 
     wrapper.find("DefaultButton").at(1).simulate("click");
@@ -78,7 +78,7 @@ describe("Delete Popup snapshot test", () => {
         setQuery={setQueryMock}
         clearFeedback={clearFeedbackMock}
         showFeedbackBar={showFeedbackBarMock}
-      />
+      />,
     );
 
     const textContent = wrapper
@@ -103,7 +103,7 @@ describe("Delete Popup snapshot test", () => {
         setQuery={setQueryMock}
         clearFeedback={clearFeedbackMock}
         showFeedbackBar={showFeedbackBarMock}
-      />
+      />,
     );
 
     const stackStyle = wrapper.find("Stack[style]").props().style;

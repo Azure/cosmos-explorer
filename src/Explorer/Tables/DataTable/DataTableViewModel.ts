@@ -157,7 +157,7 @@ abstract class DataTableViewModel {
     item1: Entities.ITableEntity,
     item2: Entities.ITableEntity,
     sortOrder: any,
-    oSettings: any
+    oSettings: any,
   ): number;
   protected abstract isCacheValid(validator: any): boolean;
 
@@ -176,7 +176,7 @@ abstract class DataTableViewModel {
     startIndex: number,
     pageSize: number,
     oSettings: any,
-    postRenderTasks: (startIndex: number, pageSize: number) => Promise<void> = null
+    postRenderTasks: (startIndex: number, pageSize: number) => Promise<void> = null,
   ) {
     this.updatePaginationControls(oSettings);
 
@@ -208,7 +208,7 @@ abstract class DataTableViewModel {
           dataExplorerArea: CommonConstants.Areas.Tab,
           tabTitle: this.queryTablesTab.tabTitle(),
         },
-        this.queryTablesTab.onLoadStartKey
+        this.queryTablesTab.onLoadStartKey,
       );
       this.queryTablesTab.onLoadStartKey = null;
     }

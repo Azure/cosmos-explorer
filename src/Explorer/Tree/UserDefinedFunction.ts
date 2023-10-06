@@ -58,7 +58,7 @@ export default class UserDefinedFunction {
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.UserDefinedFunctions,
-        (tab) => tab.node?.rid === this.rid
+        (tab) => tab.node?.rid === this.rid,
       ) as UserDefinedFunctionTab[];
     let userDefinedFunctionTab: UserDefinedFunctionTab = userDefinedFunctionTabs && userDefinedFunctionTabs[0];
 
@@ -108,11 +108,11 @@ export default class UserDefinedFunction {
           },
           () => {
             /**/
-          }
+          },
         );
       },
       "Cancel",
-      undefined
+      undefined,
     );
   }
 }

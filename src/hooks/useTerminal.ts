@@ -20,7 +20,7 @@ export const useTerminal: UseStore<TerminalState> = create((set, get) => ({
       { type: "stdin", content: [message] },
       {
         domain: window.location.origin,
-      }
+      },
     );
   },
 }));

@@ -136,7 +136,7 @@ export class GremlinSimpleClient {
       if (this.params.failureCallback) {
         this.params.failureCallback(
           null,
-          `Unexpected error while decoding backend response: ${e} msg:${JSON.stringify(msg)}`
+          `Unexpected error while decoding backend response: ${e} msg:${JSON.stringify(msg)}`,
         );
       }
       return null;
@@ -169,7 +169,7 @@ export class GremlinSimpleClient {
       if (this.params.failureCallback) {
         this.params.failureCallback(
           result,
-          `Received response for missing or closed request: ${requestId} code:${statusCode} message:${statusMessage}`
+          `Received response for missing or closed request: ${requestId} code:${statusCode} message:${statusMessage}`,
         );
       }
       return;
@@ -282,7 +282,7 @@ export class GremlinSimpleClient {
     return btoa(
       encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
         return String.fromCharCode(parseInt(p1, 16));
-      })
+      }),
     );
   }
 

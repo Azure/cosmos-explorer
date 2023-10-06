@@ -19,7 +19,7 @@ export async function deleteUserDefinedFunction(databaseId: string, collectionId
         userContext.databaseAccount.name,
         databaseId,
         collectionId,
-        id
+        id,
       );
     } else {
       await client().database(databaseId).container(collectionId).scripts.userDefinedFunction(id).delete();

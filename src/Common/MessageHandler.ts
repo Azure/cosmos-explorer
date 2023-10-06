@@ -30,7 +30,7 @@ export function handleCachedDataMessage(message: any): void {
 export function sendCachedDataMessage<TResponseDataModel>(
   messageType: MessageTypes,
   params: Object[],
-  timeoutInMs?: number
+  timeoutInMs?: number,
 ): Q.Promise<TResponseDataModel> {
   let cachedDataPromise: CachedDataPromise<TResponseDataModel> = {
     deferred: Q.defer<TResponseDataModel>(),
@@ -43,7 +43,7 @@ export function sendCachedDataMessage<TResponseDataModel>(
   //TODO: Use telemetry to measure optimal time to resolve/reject promises
   return cachedDataPromise.deferred.promise.timeout(
     timeoutInMs || Constants.ClientDefaults.requestTimeoutMs,
-    "Timed out while waiting for response from portal"
+    "Timed out while waiting for response from portal",
   );
 }
 

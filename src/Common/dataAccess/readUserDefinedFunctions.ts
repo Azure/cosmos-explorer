@@ -8,7 +8,7 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export async function readUserDefinedFunctions(
   databaseId: string,
-  collectionId: string
+  collectionId: string,
 ): Promise<(UserDefinedFunctionDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying user defined functions for container ${collectionId}`);
   const { authType, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
@@ -19,7 +19,7 @@ export async function readUserDefinedFunctions(
         resourceGroup,
         databaseAccount.name,
         databaseId,
-        collectionId
+        collectionId,
       );
       return rpResponse?.value?.map((udf) => udf.properties?.resource as UserDefinedFunctionDefinition & Resource);
     }
@@ -34,7 +34,7 @@ export async function readUserDefinedFunctions(
     handleError(
       error,
       "ReadUserDefinedFunctions",
-      `Failed to query user defined functions for container ${collectionId}`
+      `Failed to query user defined functions for container ${collectionId}`,
     );
     throw error;
   } finally {

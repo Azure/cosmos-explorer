@@ -61,7 +61,7 @@ export default class UserDefinedFunctionTabContent extends Component<
 
   private handleUdfIdChange = (
     _event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
+    newValue?: string,
   ): void => {
     this.saveButton.enabled = this.isValidId(newValue) && this.isNotEmpty(newValue);
     this.setState({ udfId: newValue });
@@ -137,7 +137,7 @@ export default class UserDefinedFunctionTabContent extends Component<
       const createdResource = await createUserDefinedFunction(
         this.props.collection.databaseId,
         this.props.collection.id(),
-        resource
+        resource,
       );
       if (createdResource) {
         this.props.tabTitle(createdResource.id);
@@ -155,7 +155,7 @@ export default class UserDefinedFunctionTabContent extends Component<
 
             tabTitle: this.props.tabTitle(),
           },
-          startKey
+          startKey,
         );
         this.props.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
       }
@@ -169,7 +169,7 @@ export default class UserDefinedFunctionTabContent extends Component<
           error: getErrorMessage(createError),
           errorStack: getErrorStack(createError),
         },
-        startKey
+        startKey,
       );
       this.props.isExecuting(false);
       return Promise.reject(createError);
@@ -193,7 +193,7 @@ export default class UserDefinedFunctionTabContent extends Component<
       const createdResource = await updateUserDefinedFunction(
         this.props.collection.databaseId,
         this.props.collection.id(),
-        resource
+        resource,
       );
 
       this.props.resource(createdResource);
@@ -206,7 +206,7 @@ export default class UserDefinedFunctionTabContent extends Component<
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.tabTitle(),
         },
-        startKey
+        startKey,
       );
 
       this.props.editorContent.setBaseline(createdResource.body as string);
@@ -220,7 +220,7 @@ export default class UserDefinedFunctionTabContent extends Component<
           error: getErrorMessage(createError),
           errorStack: getErrorStack(createError),
         },
-        startKey
+        startKey,
       );
       this.props.isExecuting(false);
     }

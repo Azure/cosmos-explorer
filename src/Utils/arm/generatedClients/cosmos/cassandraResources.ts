@@ -15,7 +15,7 @@ const apiVersion = "2023-09-15-preview";
 export async function listCassandraKeyspaces(
   subscriptionId: string,
   resourceGroupName: string,
-  accountName: string
+  accountName: string,
 ): Promise<Types.CassandraKeyspaceListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -26,7 +26,7 @@ export async function getCassandraKeyspace(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  keyspaceName: string
+  keyspaceName: string,
 ): Promise<Types.CassandraKeyspaceGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -38,7 +38,7 @@ export async function createUpdateCassandraKeyspace(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  body: Types.CassandraKeyspaceCreateUpdateParameters
+  body: Types.CassandraKeyspaceCreateUpdateParameters,
 ): Promise<Types.CassandraKeyspaceGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -49,7 +49,7 @@ export async function deleteCassandraKeyspace(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  keyspaceName: string
+  keyspaceName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -60,7 +60,7 @@ export async function getCassandraKeyspaceThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  keyspaceName: string
+  keyspaceName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -72,7 +72,7 @@ export async function updateCassandraKeyspaceThroughput(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -83,7 +83,7 @@ export async function migrateCassandraKeyspaceToAutoscale(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  keyspaceName: string
+  keyspaceName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -94,7 +94,7 @@ export async function migrateCassandraKeyspaceToManualThroughput(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  keyspaceName: string
+  keyspaceName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -105,7 +105,7 @@ export async function listCassandraTables(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  keyspaceName: string
+  keyspaceName: string,
 ): Promise<Types.CassandraTableListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -117,7 +117,7 @@ export async function getCassandraTable(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.CassandraTableGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -130,7 +130,7 @@ export async function createUpdateCassandraTable(
   accountName: string,
   keyspaceName: string,
   tableName: string,
-  body: Types.CassandraTableCreateUpdateParameters
+  body: Types.CassandraTableCreateUpdateParameters,
 ): Promise<Types.CassandraTableGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -142,7 +142,7 @@ export async function deleteCassandraTable(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  tableName: string
+  tableName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -154,7 +154,7 @@ export async function getCassandraTableThroughput(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -167,7 +167,7 @@ export async function updateCassandraTableThroughput(
   accountName: string,
   keyspaceName: string,
   tableName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -179,7 +179,7 @@ export async function migrateCassandraTableToAutoscale(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -191,7 +191,7 @@ export async function migrateCassandraTableToManualThroughput(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  tableName: string
+  tableName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/tables/${tableName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -202,7 +202,7 @@ export async function listCassandraViews(
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
-  keyspaceName: string
+  keyspaceName: string,
 ): Promise<Types.CassandraViewListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -214,7 +214,7 @@ export async function getCassandraView(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  viewName: string
+  viewName: string,
 ): Promise<Types.CassandraViewGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views/${viewName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -227,7 +227,7 @@ export async function createUpdateCassandraView(
   accountName: string,
   keyspaceName: string,
   viewName: string,
-  body: Types.CassandraViewCreateUpdateParameters
+  body: Types.CassandraViewCreateUpdateParameters,
 ): Promise<Types.CassandraViewGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views/${viewName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -239,7 +239,7 @@ export async function deleteCassandraView(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  viewName: string
+  viewName: string,
 ): Promise<void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views/${viewName}`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
@@ -251,7 +251,7 @@ export async function getCassandraViewThroughput(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  viewName: string
+  viewName: string,
 ): Promise<Types.ThroughputSettingsGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views/${viewName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
@@ -264,7 +264,7 @@ export async function updateCassandraViewThroughput(
   accountName: string,
   keyspaceName: string,
   viewName: string,
-  body: Types.ThroughputSettingsUpdateParameters
+  body: Types.ThroughputSettingsUpdateParameters,
 ): Promise<Types.ThroughputSettingsGetResults | void> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views/${viewName}/throughputSettings/default`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
@@ -276,7 +276,7 @@ export async function migrateCassandraViewToAutoscale(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  viewName: string
+  viewName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views/${viewName}/throughputSettings/default/migrateToAutoscale`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });
@@ -288,7 +288,7 @@ export async function migrateCassandraViewToManualThroughput(
   resourceGroupName: string,
   accountName: string,
   keyspaceName: string,
-  viewName: string
+  viewName: string,
 ): Promise<Types.ThroughputSettingsGetResults | void | Types.CloudError> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/cassandraKeyspaces/${keyspaceName}/views/${viewName}/throughputSettings/default/migrateToManualThroughput`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "POST", apiVersion });

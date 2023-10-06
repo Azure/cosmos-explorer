@@ -18,7 +18,7 @@ export async function listMetrics(
   accountName: string,
   databaseRid: string,
   collectionRid: string,
-  partitionKeyRangeId: string
+  partitionKeyRangeId: string,
 ): Promise<Types.PartitionMetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/databases/${databaseRid}/collections/${collectionRid}/partitionKeyRangeId/${partitionKeyRangeId}/metrics`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

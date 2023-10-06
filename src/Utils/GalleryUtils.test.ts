@@ -81,7 +81,7 @@ describe("GalleryUtils", () => {
     const searchText = "my-complicated%20search%20query!!!";
 
     const response = GalleryUtils.getGalleryViewerProps(
-      `?${GalleryUtils.GalleryViewerParams.SelectedTab}=${GalleryTab[selectedTab]}&${GalleryUtils.GalleryViewerParams.SortBy}=${SortBy[sortBy]}&${GalleryUtils.GalleryViewerParams.SearchText}=${searchText}`
+      `?${GalleryUtils.GalleryViewerParams.SelectedTab}=${GalleryTab[selectedTab]}&${GalleryUtils.GalleryViewerParams.SortBy}=${SortBy[sortBy]}&${GalleryUtils.GalleryViewerParams.SearchText}=${searchText}`,
     );
 
     expect(response).toEqual({
@@ -97,7 +97,7 @@ describe("GalleryUtils", () => {
     const hideInputs = "true";
 
     const response = GalleryUtils.getNotebookViewerProps(
-      `?${GalleryUtils.NotebookViewerParams.NotebookUrl}=${notebookUrl}&${GalleryUtils.NotebookViewerParams.GalleryItemId}=${galleryItemId}&${GalleryUtils.NotebookViewerParams.HideInputs}=${hideInputs}`
+      `?${GalleryUtils.NotebookViewerParams.NotebookUrl}=${notebookUrl}&${GalleryUtils.NotebookViewerParams.GalleryItemId}=${galleryItemId}&${GalleryUtils.NotebookViewerParams.HideInputs}=${hideInputs}`,
     );
 
     expect(response).toEqual({

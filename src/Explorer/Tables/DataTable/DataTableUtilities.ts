@@ -59,7 +59,7 @@ export function removeCssClass($sourceElement: JQuery, cssClassName: string): vo
  */
 export function getPropertyIntersectionFromTableEntities(
   entities: Entities.ITableEntity[],
-  isCassandraApi: boolean
+  isCassandraApi: boolean,
 ): string[] {
   const headerUnion: string[] = [];
   entities &&

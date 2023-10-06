@@ -102,8 +102,8 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
         },
-        { container: this.container }
-      )
+        { container: this.container },
+      ),
     );
   }
 
@@ -124,7 +124,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         ViewModels.CollectionTabKind.Documents,
         (tab: TabsBase) =>
           tab.collection?.id() === this.id() &&
-          (tab.collection as ViewModels.CollectionBase).databaseId === this.databaseId
+          (tab.collection as ViewModels.CollectionBase).databaseId === this.databaseId,
       ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 

@@ -78,11 +78,11 @@ export default class NotebookManager {
     this.notebookContentProvider = new NotebookContentProvider(
       this.inMemoryContentProvider,
       this.gitHubContentProvider,
-      contents.JupyterContentProvider
+      contents.JupyterContentProvider,
     );
 
     this.notebookClient = new NotebookContainerClient(() =>
-      this.params.container.initNotebooks(userContext?.databaseAccount)
+      this.params.container.initNotebooks(userContext?.databaseAccount),
     );
 
     this.notebookContentClient = new NotebookContentClient(this.notebookContentProvider);
@@ -100,7 +100,7 @@ export default class NotebookManager {
                 explorer={this.params.container}
                 gitHubClientProp={this.params.container.notebookManager.gitHubClient}
                 junoClientProp={this.junoClient}
-              />
+              />,
             );
         }, 200);
       }
@@ -129,7 +129,7 @@ export default class NotebookManager {
     content: NotebookPaneContent,
     notebookContentRef: string,
     onTakeSnapshot: (request: SnapshotRequest) => void,
-    onClosePanel: () => void
+    onClosePanel: () => void,
   ): Promise<void> {
     useSidePanel
       .getState()
@@ -145,7 +145,7 @@ export default class NotebookManager {
           onTakeSnapshot={onTakeSnapshot}
         />,
         "440px",
-        onClosePanel
+        onClosePanel,
       );
   }
 
@@ -161,7 +161,7 @@ export default class NotebookManager {
           gitHubOAuthService={this.gitHubOAuthService}
           name={name}
           content={content}
-        />
+        />,
       );
   }
 
@@ -188,10 +188,10 @@ export default class NotebookManager {
                   explorer={this.params.container}
                   gitHubClientProp={this.params.container.notebookManager.gitHubClient}
                   junoClientProp={this.junoClient}
-                />
+                />,
               ),
           "Cancel",
-          undefined
+          undefined,
         );
     }
   };
@@ -223,7 +223,7 @@ export default class NotebookManager {
             commitMsg = newValue;
           },
         },
-        !commitMsg
+        !commitMsg,
       );
     });
   };

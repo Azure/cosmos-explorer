@@ -35,7 +35,7 @@ export const SampleDataTree = ({
               .refreshActiveTab(
                 (tab: TabsBase) =>
                   tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
-                  tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId
+                  tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId,
               );
           },
           isSelected: () =>
@@ -54,7 +54,7 @@ export const SampleDataTree = ({
                   .isDataNodeSelected(
                     sampleDataResourceTokenCollection.databaseId,
                     sampleDataResourceTokenCollection.id(),
-                    [ViewModels.CollectionTabKind.Documents]
+                    [ViewModels.CollectionTabKind.Documents],
                   ),
             },
           ],

@@ -20,7 +20,7 @@ import { createDatabase } from "./createDatabase";
 
 export const createCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   const clearMessage = logConsoleProgress(
-    `Creating a new container ${params.collectionId} for database ${params.databaseId}`
+    `Creating a new container ${params.collectionId} for database ${params.databaseId}`,
   );
   try {
     let collection: DataModels.Collection;
@@ -57,7 +57,7 @@ const createCollectionWithARM = async (params: DataModels.CreateCollectionParams
     if (!isValid) {
       const collectionName = getCollectionName().toLocaleLowerCase();
       throw new Error(
-        `Create ${collectionName} failed: ${collectionName} with id ${params.collectionId} already exists`
+        `Create ${collectionName} failed: ${collectionName} with id ${params.collectionId} already exists`,
       );
     }
   }
@@ -110,7 +110,7 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
     userContext.databaseAccount.name,
     params.databaseId,
     params.collectionId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
@@ -145,7 +145,7 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
     userContext.databaseAccount.name,
     params.databaseId,
     params.collectionId,
-    rpPayload
+    rpPayload,
   );
 
   if (params.createMongoWildcardIndex) {
@@ -179,7 +179,7 @@ const createCassandraTable = async (params: DataModels.CreateCollectionParams): 
     userContext.databaseAccount.name,
     params.databaseId,
     params.collectionId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
@@ -213,7 +213,7 @@ const createGraph = async (params: DataModels.CreateCollectionParams): Promise<D
     userContext.databaseAccount.name,
     params.databaseId,
     params.collectionId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
@@ -236,7 +236,7 @@ const createTable = async (params: DataModels.CreateCollectionParams): Promise<D
     userContext.resourceGroup,
     userContext.databaseAccount.name,
     params.collectionId,
-    rpPayload
+    rpPayload,
   );
   return createResponse && (createResponse.properties.resource as DataModels.Collection);
 };
@@ -287,7 +287,7 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
   const databaseResponse: DatabaseResponse = await client().databases.createIfNotExists(createDatabaseBody);
   const collectionResponse: ContainerResponse = await databaseResponse?.database.containers.create(
     createCollectionBody,
-    collectionOptions
+    collectionOptions,
   );
   return collectionResponse?.resource as DataModels.Collection;
 };

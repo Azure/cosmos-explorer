@@ -18,7 +18,7 @@ postRobot.on(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params = (event as any).data as IGitHubConnectorParams;
     window.dataExplorer.notebookManager?.gitHubOAuthService.finishOAuth(params);
-  }
+  },
 );
 
 export interface IGitHubOAuthToken {

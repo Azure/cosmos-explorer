@@ -17,7 +17,7 @@ export async function listMetrics(
   resourceGroupName: string,
   accountName: string,
   sourceRegion: string,
-  targetRegion: string
+  targetRegion: string,
 ): Promise<Types.PercentileMetricListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sourceRegion/${sourceRegion}/targetRegion/${targetRegion}/percentile/metrics`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });

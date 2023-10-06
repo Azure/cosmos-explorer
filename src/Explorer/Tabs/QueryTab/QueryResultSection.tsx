@@ -9,6 +9,7 @@ import {
   SelectionMode,
   Stack,
   Text,
+  IconButton,
   TooltipHost,
 } from "@fluentui/react";
 import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
@@ -24,6 +25,8 @@ import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
 import RunQuery from "../../../../images/RunQuery.png";
 import InfoColor from "../../../../images/info_color.svg";
 import { QueryResults } from "../../../Contracts/ViewModels";
+import copy from "clipboard-copy";
+import CopilotCopy from "../../../../images/CopilotCopy.svg";
 
 interface QueryResultProps {
   isMongoDB: boolean;
@@ -142,7 +145,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
       // for IE and Edge
       navigator.msSaveBlob(
         new Blob([csvData], { type: "data:text/csv;charset=utf-8" }),
-        "PerPartitionQueryMetrics.csv"
+        "PerPartitionQueryMetrics.csv",
       );
     } else {
       const downloadLink: HTMLAnchorElement = document.createElement("a");
@@ -329,7 +332,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
           metric: "Document write time",
           value: `${aggregatedQueryMetrics.documentWriteTime.toString() || 0} ms`,
           toolTip: "Time spent to write query result set to response buffer",
-        }
+        },
       );
     }
 
@@ -350,6 +353,10 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
     }
 
     return items;
+  };
+
+  const onClickCopyResults = (): void => {
+    copy(queryResultsString);
   };
 
   return (
@@ -429,6 +436,17 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                         </span>
                       </>
                     )}
+                    <IconButton
+                      style={{
+                        height: "100%",
+                        verticalAlign: "middle",
+                        float: "right",
+                      }}
+                      iconProps={{ imageProps: { src: CopilotCopy } }}
+                      title="Copy to Clipboard"
+                      ariaLabel="Copy"
+                      onClick={onClickCopyResults}
+                    />
                   </div>
                   {queryResults && queryResultsString?.length > 0 && !error && (
                     <div

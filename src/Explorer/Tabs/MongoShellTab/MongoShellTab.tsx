@@ -17,7 +17,10 @@ export class NewMongoShellTab extends TabsBase {
   public iMongoShellTabComponentProps: IMongoShellTabComponentProps;
   public iMongoShellTabAccessor: IMongoShellTabAccessor;
 
-  constructor(options: TabOptions, private props: IMongoShellTabProps) {
+  constructor(
+    options: TabOptions,
+    private props: IMongoShellTabProps,
+  ) {
     super(options);
     this.iMongoShellTabComponentProps = {
       collection: this.collection,
