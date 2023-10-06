@@ -7,7 +7,10 @@ export type FabricMessage =
   }
   | {
     type: "initialize";
-    connectionString: string | undefined;
+    message: {
+      endpoint: string | undefined;
+      error: string | undefined;
+    }
   }
   | {
     type: "openTab";
@@ -19,7 +22,7 @@ export type FabricMessage =
     message: {
       id: string;
       error: string | undefined;
-      data: AuthorizationToken;
+      data: AuthorizationToken | undefined;
     }
   };
 
@@ -36,12 +39,20 @@ export type DataExploreMessage =
   | {
     type: MessageTypes.GetAuthorizationToken;
     id: string;
-    params: [{
-      verb: string;
-      resourceId: string;
-      resourceType: string;
-      headers: {
-        [key: string]: string;
-      }
-    }];
+    params: GetCosmosTokenMessageOptions[];
   };
+
+export type GetCosmosTokenMessageOptions = {
+  verb: "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
+  resourceType: "" | "dbs" | "colls" | "docs" | "sprocs" | "pkranges";
+  resourceId: string;
+}
+
+export type CosmosDBTokenResponse = {
+  token: string;
+  date: string;
+}
+
+export type CosmosDBConnectionInfoResponse = {
+  endpoint: string;
+}
