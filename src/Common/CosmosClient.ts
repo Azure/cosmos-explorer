@@ -28,9 +28,10 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   }
 
   if (configContext.platform === Platform.Fabric) {
-    const authorizationToken = await sendCachedDataMessage(MessageTypes.GetAuthorizationToken, [requestInfo]);
+    const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(MessageTypes.GetAuthorizationToken, [requestInfo]);
     console.log('Response from Fabric: ', authorizationToken);
-    return authorizationToken;
+    headers[HttpHeaders.msDate] = authorizationToken.XDate;
+    return authorizationToken.PrimaryReadWriteToken;
   }
 
   if (userContext.masterKey) {
