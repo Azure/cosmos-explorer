@@ -1,4 +1,4 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
+import { Checkbox, ChoiceGroup, IChoiceGroupOption, ISpinButtonStyles, Position, SpinButton, Toggle } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
@@ -7,7 +7,7 @@ import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { useSidePanel } from "hooks/useSidePanel";
-import React, { FunctionComponent, MouseEvent, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export const SettingsPane: FunctionComponent = () => {
@@ -17,6 +17,12 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
       ? Constants.Queries.UnlimitedPageOption
       : Constants.Queries.CustomPageOption
+  );
+  const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
+    LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled)
+  );
+  const [queryTimeout, setQueryTimeout] = useState<number>(
+    LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout)
   );
   const [customItemPerPage, setCustomItemPerPage] = useState<number>(
     LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0
@@ -53,7 +59,7 @@ export const SettingsPane: FunctionComponent = () => {
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption =
     userContext.databaseAccount?.properties?.enablePriorityBasedExecution && userContext.apiType === "SQL";
-  const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+  const handlerOnSubmit = () => {
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
@@ -61,6 +67,7 @@ export const SettingsPane: FunctionComponent = () => {
       isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage
     );
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
+    LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
@@ -71,6 +78,10 @@ export const SettingsPane: FunctionComponent = () => {
         StorageKey.IsGraphAutoVizDisabled,
         StringUtility.toBoolean(graphAutoVizDisabled)
       );
+    }
+
+    if (queryTimeoutEnabled) {
+      LocalStorageUtility.setEntryNumber(StorageKey.QueryTimeout, queryTimeout);
     }
 
     setIsExecuting(false);
@@ -97,7 +108,6 @@ export const SettingsPane: FunctionComponent = () => {
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`
     );
     closeSidePanel();
-    e.preventDefault();
   };
 
   const isCustomPageOptionSelected = () => {
@@ -112,7 +122,7 @@ export const SettingsPane: FunctionComponent = () => {
     formError: "",
     isExecuting,
     submitButtonText: "Apply",
-    onSubmit: () => handlerOnSubmit(undefined),
+    onSubmit: () => handlerOnSubmit(),
   };
   const pageOptionList: IChoiceGroupOption[] = [
     { key: Constants.Queries.CustomPageOption, text: "Custom" },
@@ -140,6 +150,22 @@ export const SettingsPane: FunctionComponent = () => {
     setPageOption(option.key);
   };
 
+  const handleOnQueryTimeoutToggleChange = (
+    ev: React.MouseEvent<HTMLElement>, 
+    checked?: boolean
+  ): void => {
+    setQueryTimeoutEnabled(checked);
+  }
+
+  const handleOnQueryTimeoutSpinButtonChange = (
+    ev: React.MouseEvent<HTMLElement>, 
+    value?: number
+  ): void => {
+    if (value) {
+      setQueryTimeout(value);
+    }
+  }
+
   const choiceButtonStyles = {
     root: {
       clear: "both",
@@ -161,6 +187,22 @@ export const SettingsPane: FunctionComponent = () => {
       },
     ],
   };
+
+  const queryTimeoutToggleStyles: IToggleStyles  = {
+    label: {
+      fontSize: 12, 
+      fontWeight: 400, 
+      display: "block",
+    }
+  };
+
+  const queryTimeoutSpinButtonStyles: ISpinButtonStyles  = {
+    label: {
+      fontSize: 12, 
+      fontWeight: 400, 
+    }
+  };
+
   return (
     <RightPaneForm {...genericPaneProps}>
       <div className="paneMainContent">
@@ -211,6 +253,37 @@ export const SettingsPane: FunctionComponent = () => {
             </div>
           </div>
         )}
+        <div className="settingsSection">
+          <div className="settingsSectionPart">
+              <div>
+                <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
+                  Query Timeout
+                </legend>
+                <InfoTooltip>
+                  When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                </InfoTooltip>
+              </div>
+              <div>
+                <Toggle styles={queryTimeoutToggleStyles} label="Enable query timeout" onChange={handleOnQueryTimeoutToggleChange} defaultChecked={queryTimeoutEnabled}/>
+              </div>
+              {queryTimeoutEnabled &&
+                <div>
+                  <SpinButton
+                    label="Query timeout (ms)"
+                    labelPosition={Position.top}
+                    defaultValue={queryTimeout || 5000}
+                    min={0}
+                    step={1000}
+                    onChange={handleOnQueryTimeoutSpinButtonChange}
+                    incrementButtonAriaLabel="Increase value by 1000"
+                    decrementButtonAriaLabel="Decrease value by 1000"
+                    styles={queryTimeoutSpinButtonStyles}
+                  />
+                </div>
+              }
+              
+          </div>
+        </div>
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">

@@ -98,7 +98,7 @@
             <button
               class="filterbtnstyle queryButton"
               data-bind="
-                                click: refreshDocumentsGrid,
+                                click: refreshDocumentsGrid.bind($data, true),
                                 enable: applyFilterButton.enabled"
               aria-label="Apply filter"
               tabindex="0"
@@ -209,7 +209,7 @@
           </table>
         </div>
         <div class="loadMore">
-          <a role="button" data-bind="click: loadNextPage, event: { keypress: onLoadMoreKeyInput }" tabindex="0"
+          <a role="button" data-bind="click: loadNextPage.bind($data, false), event: { keypress: onLoadMoreKeyInput }" tabindex="0"
             >Load more</a
           >
         </div>

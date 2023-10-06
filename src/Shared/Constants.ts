@@ -208,3 +208,8 @@ export class FreeTierLimits {
   public static RU: number = 1000;
   public static Storage: number = 25;
 }
+
+export class QueryConstants {
+  public static readonly CancelQueryTitle: string = "Cancel query";
+  public static readonly CancelQuerySubText: string = "Do you want to cancel this query?"
+}
