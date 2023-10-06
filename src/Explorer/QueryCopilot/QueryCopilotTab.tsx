@@ -66,6 +66,15 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     useCommandBar.getState().setContextButtons(getCommandbarButtons());
   }, [query, selectedQuery, copilotActive]);
 
+  React.useEffect(() => {
+    return () => {
+      const commandbarButtons = getCommandbarButtons();
+      commandbarButtons.pop();
+      commandbarButtons.map((props: CommandButtonComponentProps) => (props.disabled = true));
+      useCommandBar.getState().setContextButtons(commandbarButtons);
+    };
+  }, []);
+
   const toggleCopilot = (toggle: boolean) => {
     setCopilotActive(toggle);
     localStorage.setItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`, toggle.toString());
