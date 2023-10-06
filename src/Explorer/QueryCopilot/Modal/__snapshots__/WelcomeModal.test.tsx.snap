@@ -76,7 +76,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
           <Text
             className="title bold"
           >
-            Welcome to Query Copilot for Azure Cosmos DB (Private Preview)
+            Welcome to Copilot in Azure Cosmos DB (Private Preview)
           </Text>
         </StackItem>
         <StackItem
@@ -100,7 +100,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
               <Text
                 className="bold"
               >
-                Let Query Copilot do the work for you
+                Let Copilot do the work for you
                 <br />
               </Text>
             </StackItem>
