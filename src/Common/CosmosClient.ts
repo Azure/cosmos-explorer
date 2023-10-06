@@ -1,13 +1,14 @@
 import * as Cosmos from "@azure/cosmos";
-import { configContext, Platform } from "../ConfigContext";
+import { sendCachedDataMessage } from "Common/MessageHandler";
+import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
+import { AuthType } from "../AuthType";
+import { PriorityLevel } from "../Common/Constants";
+import { Platform, configContext } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
+import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { PriorityLevel } from "../Common/Constants";
-import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
-import { AuthType } from "../AuthType";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -24,6 +25,12 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
     return decodeURIComponent(headers.authorization);
+  }
+
+  if (configContext.platform === Platform.Fabric) {
+    const authorizationToken = await sendCachedDataMessage(MessageTypes.GetAuthorizationToken, [requestInfo]);
+    console.log('Response from Fabric: ', authorizationToken);
+    return authorizationToken;
   }
 
   if (userContext.masterKey) {
@@ -56,7 +63,7 @@ export const endpoint = () => {
   return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
 };
 
-export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
+export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<AuthorizationToken> {
   try {
     const host = configContext.BACKEND_ENDPOINT;
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
