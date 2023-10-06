@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import { handleCachedDataMessage, sendMessage, sendReadyMessage } from "../Common/MessageHandler";
+import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { Platform, configContext, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction, TabKind } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -164,10 +164,6 @@ async function configureFabric(): Promise<Explorer> {
               }
             }
 
-            break;
-          }
-          case "authorizationToken": {
-            handleCachedDataMessage(data);
             break;
           }
           default:
