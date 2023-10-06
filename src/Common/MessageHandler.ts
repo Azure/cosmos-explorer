@@ -22,7 +22,7 @@ export function handleCachedDataMessage(message: any): void {
   if (messageContent.error != null) {
     cachedDataPromise.deferred.reject(messageContent.error);
   } else {
-    cachedDataPromise.deferred.resolve(JSON.parse(messageContent.data));
+    cachedDataPromise.deferred.resolve(messageContent.data);
   }
   runGarbageCollector();
 }
