@@ -310,16 +310,15 @@ function configureWithFabric(documentEndpoint: string): Explorer {
       type: "",
       name: "Mounted",
       kind: AccountKind.Default,
-      properties: { 
-        documentEndpoint
-      }
+      properties: {
+        documentEndpoint,
+      },
     },
   });
   const explorer = new Explorer();
-  setTimeout(()=>explorer.refreshAllDatabases(), 0)
+  setTimeout(() => explorer.refreshAllDatabases(), 0);
   return explorer;
 }
-
 
 function configureWithEncryptedToken(config: EncryptedToken): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);

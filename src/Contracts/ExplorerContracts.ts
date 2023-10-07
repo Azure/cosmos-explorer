@@ -4,4 +4,3 @@ import * as Diagnostics from "./Diagnostics";
 import * as Versions from "./Versions";
 
 export { ActionContracts, Diagnostics, MessageTypes, Versions };
-

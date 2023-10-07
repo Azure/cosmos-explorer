@@ -28,8 +28,10 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   }
 
   if (configContext.platform === Platform.Fabric) {
-    const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(MessageTypes.GetAuthorizationToken, [requestInfo]);
-    console.log('Response from Fabric: ', authorizationToken);
+    const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(MessageTypes.GetAuthorizationToken, [
+      requestInfo,
+    ]);
+    console.log("Response from Fabric: ", authorizationToken);
     headers[HttpHeaders.msDate] = authorizationToken.XDate;
     return authorizationToken.PrimaryReadWriteToken;
   }
@@ -64,7 +66,11 @@ export const endpoint = () => {
   return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
 };
 
-export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<AuthorizationToken> {
+export async function getTokenFromAuthService(
+  verb: string,
+  resourceType: string,
+  resourceId?: string,
+): Promise<AuthorizationToken> {
   try {
     const host = configContext.BACKEND_ENDPOINT;
     const response = await _global.fetch(host + "/api/guest/runtimeproxy/authorizationTokens", {
