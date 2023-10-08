@@ -43,7 +43,7 @@ function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewM
   operationManager.focusTable(); // Also selects the first row if needed.
   // Attach the arrow key event handler to the table element
   $dataTable.on("keydown", (event: JQueryEventObject) => {
-    handlearrowkey(element, valueAccessor, allBindings, viewModel, bindingContext, event);
+    handleArrowKey(element, valueAccessor, allBindings, viewModel, bindingContext, event);
   });
 }
 
