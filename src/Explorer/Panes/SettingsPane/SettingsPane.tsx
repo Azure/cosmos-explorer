@@ -266,41 +266,43 @@ export const SettingsPane: FunctionComponent = () => {
             </div>
           </div>
         )}
-        <div className="settingsSection">
-          <div className="settingsSectionPart">
-            <div>
-              <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
-                Query Timeout
-              </legend>
-              <InfoTooltip>
-                When a query reaches a specified time limit, a popup with an option to cancel the query will show
-              </InfoTooltip>
-            </div>
-            <div>
-              <Toggle
-                styles={queryTimeoutToggleStyles}
-                label="Enable query timeout"
-                onChange={handleOnQueryTimeoutToggleChange}
-                defaultChecked={queryTimeoutEnabled}
-              />
-            </div>
-            {queryTimeoutEnabled && (
+        {userContext.apiType === "SQL" && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart">
               <div>
-                <SpinButton
-                  label="Query timeout (ms)"
-                  labelPosition={Position.top}
-                  defaultValue={(queryTimeout || 5000).toString()}
-                  min={0}
-                  step={1000}
-                  onChange={handleOnQueryTimeoutSpinButtonChange}
-                  incrementButtonAriaLabel="Increase value by 1000"
-                  decrementButtonAriaLabel="Decrease value by 1000"
-                  styles={queryTimeoutSpinButtonStyles}
+                <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
+                  Query Timeout
+                </legend>
+                <InfoTooltip>
+                  When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                </InfoTooltip>
+              </div>
+              <div>
+                <Toggle
+                  styles={queryTimeoutToggleStyles}
+                  label="Enable query timeout"
+                  onChange={handleOnQueryTimeoutToggleChange}
+                  defaultChecked={queryTimeoutEnabled}
                 />
               </div>
-            )}
+              {queryTimeoutEnabled && (
+                <div>
+                  <SpinButton
+                    label="Query timeout (ms)"
+                    labelPosition={Position.top}
+                    defaultValue={(queryTimeout || 5000).toString()}
+                    min={0}
+                    step={1000}
+                    onChange={handleOnQueryTimeoutSpinButtonChange}
+                    incrementButtonAriaLabel="Increase value by 1000"
+                    decrementButtonAriaLabel="Decrease value by 1000"
+                    styles={queryTimeoutSpinButtonStyles}
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">
