@@ -106,6 +106,18 @@
               Apply Filter
             </button>
           </span>
+          <span class="filterbuttonpad">
+            <button
+              class="filterbtnstyle queryButton"
+              data-bind="
+                                visible: !isPreferredApiMongoDB && isExecuting,
+                                click: onAbortQueryClick"
+              aria-label="Cancel Query"
+              tabindex="0"
+            >
+              Cancel Query
+            </button>
+          </span>
           <span
             class="filterclose"
             role="button"

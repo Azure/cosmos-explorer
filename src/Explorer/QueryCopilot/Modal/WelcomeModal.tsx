@@ -52,7 +52,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
           </Stack>
           <Stack horizontalAlign="center">
             <Stack.Item align="center" style={{ textAlign: "center" }}>
-              <Text className="title bold">Welcome to Query Copilot for Azure Cosmos DB (Private Preview)</Text>
+              <Text className="title bold">Welcome to Copilot in Azure Cosmos DB (Private Preview)</Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
               <Stack horizontal>
@@ -61,7 +61,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 </StackItem>
                 <StackItem align="start">
                   <Text className="bold">
-                    Let Query Copilot do the work for you
+                    Let Copilot do the work for you
                     <br />
                   </Text>
                 </StackItem>

@@ -21,6 +21,7 @@ import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
+import * as StringUtility from "../../../Shared/StringUtility";
 
 export const SendQueryRequest = async ({
   userPrompt,
@@ -184,15 +185,20 @@ export const QueryDocumentsPerPage = async (
       correlationId: useQueryCopilot.getState().correlationId,
     });
   } catch (error) {
+    const isCopilotActive = StringUtility.toBoolean(
+      localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`),
+    );
     const errorMessage = getErrorMessage(error);
     traceFailure(Action.ExecuteQueryGeneratedFromQueryCopilot, {
       correlationId: useQueryCopilot.getState().correlationId,
       errorMessage: errorMessage,
     });
-    useQueryCopilot.getState().setErrorMessage(errorMessage);
     handleError(errorMessage, "executeQueryCopilotTab");
     useTabs.getState().setIsQueryErrorThrown(true);
-    useQueryCopilot.getState().setShowErrorMessageBar(true);
+    if (isCopilotActive) {
+      useQueryCopilot.getState().setErrorMessage(errorMessage);
+      useQueryCopilot.getState().setShowErrorMessageBar(true);
+    }
   } finally {
     useQueryCopilot.getState().setIsExecuting(false);
     useTabs.getState().setIsTabExecuting(false);
