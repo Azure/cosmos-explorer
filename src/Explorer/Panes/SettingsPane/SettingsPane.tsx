@@ -162,7 +162,7 @@ export const SettingsPane: FunctionComponent = () => {
   };
 
   const handleOnQueryTimeoutSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
-    const queryTimeout: number = Number(newValue);
+    const queryTimeout = Number(newValue);
     if (!isNaN(queryTimeout)) {
       setQueryTimeout(queryTimeout);
     }
