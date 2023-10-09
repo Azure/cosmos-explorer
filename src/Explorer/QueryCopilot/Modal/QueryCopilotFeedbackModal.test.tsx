@@ -79,7 +79,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("should render dont show again button and check it ", () => {
+  it("should render dont show again button and check it", () => {
     useQueryCopilot.getState().openFeedbackModal("test query", true, "test prompt");
     const wrapper = shallow(<QueryCopilotFeedbackModal explorer={new Explorer()} />);
 

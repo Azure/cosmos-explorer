@@ -1,7 +1,5 @@
 jest.mock("./MessageHandler");
-import { LogEntryLevel } from "../Contracts/Diagnostics";
 import * as Logger from "./Logger";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { sendMessage } from "./MessageHandler";
 
 describe("Logger", () => {
@@ -11,16 +9,16 @@ describe("Logger", () => {
 
   it("should log info messages", () => {
     Logger.logInfo("Test info", "DocDB");
-    expect(sendMessage).toBeCalled();
+    expect(sendMessage).toHaveBeenCalled();
   });
 
   it("should log error messages", () => {
     Logger.logError("Test error", "DocDB");
-    expect(sendMessage).toBeCalled();
+    expect(sendMessage).toHaveBeenCalled();
   });
 
   it("should log warnings", () => {
     Logger.logWarning("Test warning", "DocDB");
-    expect(sendMessage).toBeCalled();
+    expect(sendMessage).toHaveBeenCalled();
   });
 });

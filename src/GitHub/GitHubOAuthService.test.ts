@@ -35,7 +35,7 @@ describe("GitHubOAuthService", () => {
     junoClient.deleteAppAuthorization = deleteAppAuthorizationCallback;
 
     await gitHubOAuthService.logout();
-    expect(deleteAppAuthorizationCallback).toBeCalled();
+    expect(deleteAppAuthorizationCallback).toHaveBeenCalled();
     expect(gitHubOAuthService.getTokenObservable()()).toBeUndefined();
   });
 
@@ -52,13 +52,13 @@ describe("GitHubOAuthService", () => {
     window.open = windowOpenCallback;
 
     await gitHubOAuthService.startOAuth("scope");
-    expect(windowOpenCallback).toBeCalled();
+    expect(windowOpenCallback).toHaveBeenCalled();
 
     const initialParams = new URLSearchParams(new URL(url).search);
     expect(initialParams.get("state")).toBeDefined();
 
     await gitHubOAuthService.startOAuth("another scope");
-    expect(windowOpenCallback).toBeCalled();
+    expect(windowOpenCallback).toHaveBeenCalled();
 
     const newParams = new URLSearchParams(new URL(url).search);
     expect(newParams.get("state")).toBeDefined();
@@ -80,7 +80,7 @@ describe("GitHubOAuthService", () => {
     await gitHubOAuthService.finishOAuth(params);
     const updatedToken = gitHubOAuthService.getTokenObservable()();
 
-    expect(getGitHubTokenCallback).toBeCalledWith("code");
+    expect(getGitHubTokenCallback).toHaveBeenCalledWith("code");
     expect(initialToken).not.toEqual(updatedToken);
   });
 
@@ -108,7 +108,7 @@ describe("GitHubOAuthService", () => {
     };
     await gitHubOAuthService.finishOAuth(params);
 
-    expect(getGitHubTokenCallback).toBeCalledWith("code");
+    expect(getGitHubTokenCallback).toHaveBeenCalledWith("code");
     expect(gitHubOAuthService.getTokenObservable()().error).toBeDefined();
   });
 
