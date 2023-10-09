@@ -3,6 +3,7 @@ import {
   ChoiceGroup,
   IChoiceGroupOption,
   ISpinButtonStyles,
+  IToggleStyles,
   Position,
   SpinButton,
   Toggle,
@@ -160,9 +161,10 @@ export const SettingsPane: FunctionComponent = () => {
     setQueryTimeoutEnabled(checked);
   };
 
-  const handleOnQueryTimeoutSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, value?: number): void => {
-    if (value) {
-      setQueryTimeout(value);
+  const handleOnQueryTimeoutSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const queryTimeout: number = Number(newValue);
+    if (!isNaN(queryTimeout)) {
+      setQueryTimeout(queryTimeout);
     }
   };
 
@@ -194,6 +196,11 @@ export const SettingsPane: FunctionComponent = () => {
       fontWeight: 400,
       display: "block",
     },
+    root: {},
+    container: {},
+    pill: {},
+    thumb: {},
+    text: {},
   };
 
   const queryTimeoutSpinButtonStyles: ISpinButtonStyles = {
@@ -201,6 +208,12 @@ export const SettingsPane: FunctionComponent = () => {
       fontSize: 12,
       fontWeight: 400,
     },
+    root: {},
+    labelWrapper: {},
+    icon: {},
+    spinButtonWrapper: {},
+    input: {},
+    arrowButtonsContainer: {},
   };
 
   return (
@@ -276,7 +289,7 @@ export const SettingsPane: FunctionComponent = () => {
                 <SpinButton
                   label="Query timeout (ms)"
                   labelPosition={Position.top}
-                  defaultValue={queryTimeout || 5000}
+                  defaultValue={(queryTimeout || 5000).toString()}
                   min={0}
                   step={1000}
                   onChange={handleOnQueryTimeoutSpinButtonChange}
