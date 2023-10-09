@@ -32,13 +32,13 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
           onClick={[Function]}
         >
           <div
-            className="ms-Stack addButtonEntiy css-53"
+            className="ms-Stack addButtonEntiy css-109"
             onClick={[Function]}
           >
             <StyledImageBase
               alt="Add Entity"
               height={30}
-              key=".0:$.0"
+              key=".0:$.$.0"
               src={Object {}}
               width={16}
             >
@@ -323,7 +323,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                 width={16}
               >
                 <div
-                  className="ms-Image root-54"
+                  className="ms-Image root-110"
                   style={
                     Object {
                       "height": 30,
@@ -333,7 +333,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                 >
                   <img
                     alt="Add Entity"
-                    className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-55"
+                    className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-111"
                     key="fabricImage[object Object]"
                     onError={[Function]}
                     onLoad={[Function]}
@@ -344,10 +344,10 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
             </StyledImageBase>
             <Text
               className="addNewParamStyle"
-              key=".0:$.1"
+              key=".0:$.$.1"
             >
               <span
-                className="addNewParamStyle css-56"
+                className="addNewParamStyle css-112"
               >
                 Add Property
               </span>
@@ -1244,7 +1244,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                         "iconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -1270,7 +1270,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                         "menuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -1282,14 +1282,16 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -1320,7 +1322,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "display": "inline-block",
                             "padding": "0 16px",
                             "selectors": Object {
-                              ":active > *": Object {
+                              ":active > span": Object {
                                 "left": 0,
                                 "position": "relative",
                                 "top": 0,
@@ -1347,7 +1349,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "borderColor": "WindowText",
@@ -1372,14 +1374,16 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -1413,7 +1417,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "backgroundColor": "#f3f2f1",
                             "color": "#d2d0ce",
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -1430,7 +1434,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "border": "1px solid #106ebe",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "Highlight",
                               "borderColor": "Highlight",
                               "color": "Window",
@@ -1442,7 +1446,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "border": "1px solid #005a9e",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "WindowText",
                               "borderColor": "WindowText",
@@ -1458,12 +1462,13 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "overflow": "hidden",
                           "padding": 0,
                           "position": "absolute",
+                          "whiteSpace": "nowrap",
                           "width": 1,
                         },
                         "splitButtonContainer": Array [
                           Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "border": "none",
                               },
                             },
@@ -1474,14 +1479,16 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid #ffffff",
+                                "borderRadius": undefined,
                                 "bottom": 3,
                                 "content": "\\"\\"",
                                 "left": 3,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": "none",
                                 "position": "absolute",
                                 "right": 3,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "none",
                                     "bottom": -2,
                                     "left": -2,
@@ -1504,13 +1511,21 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                 "borderBottomRightRadius": "0",
                                 "borderRight": "none",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                               },
                               ".ms-Button--primary": Object {
                                 "border": "none",
                                 "borderBottomRightRadius": "0",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  ":active": Object {
+                                    "border": "none",
+                                  },
+                                  ":hover": Object {
+                                    "border": "none",
+                                  },
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "MsHighContrastAdjust": "none",
                                     "backgroundColor": "Window",
                                     "border": "1px solid WindowText",
@@ -1523,7 +1538,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                               ".ms-Button--primary + .ms-Button": Object {
                                 "border": "none",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "1px solid WindowText",
                                     "borderLeftWidth": "0",
                                   },
@@ -1536,7 +1551,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -1550,7 +1565,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -1564,7 +1579,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "border": "none",
                           "outline": "none",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "Window",
                               "borderColor": "GrayText",
@@ -1580,7 +1595,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Highlight",
                                   "color": "Window",
                                 },
@@ -1589,7 +1604,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             ".ms-Button.is-disabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -1605,7 +1620,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                               },
                             },
@@ -1617,7 +1632,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "WindowText",
                               },
                             },
@@ -1630,7 +1645,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "position": "absolute",
                           "right": 31,
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "GrayText",
                             },
                           },
@@ -1652,18 +1667,18 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                               ":hover": Object {
                                 "backgroundColor": "#106ebe",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "Highlight",
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
-                                "backgroundColor": "WindowText",
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "backgroundColor": "Canvas",
                               },
                             },
                           },
                           Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               ".ms-Button-menuIcon": Object {
                                 "color": "WindowText",
                               },
@@ -1713,7 +1728,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Button--primary": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
@@ -1722,7 +1737,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                               },
                               ".ms-Button-menuIcon": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
@@ -1730,7 +1745,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                               ":hover": Object {
                                 "cursor": "default",
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "border": "1px solid GrayText",
                                 "color": "GrayText",
@@ -1752,14 +1767,16 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Fabric--isFocusVisible &:focus:after": Object {
                               "border": "1px solid #ffffff",
+                              "borderRadius": undefined,
                               "bottom": 3,
                               "content": "\\"\\"",
                               "left": 3,
                               "outline": "1px solid #605e5c",
+                              "pointerEvents": undefined,
                               "position": "absolute",
                               "right": 3,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "border": "none",
                                   "bottom": -2,
                                   "left": -2,
@@ -1781,7 +1798,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                         "splitButtonMenuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -2071,7 +2088,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                   >
                     <button
                       aria-label="Update"
-                      className="ms-Button ms-Button--primary root-57"
+                      className="ms-Button ms-Button--primary root-113"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2083,14 +2100,14 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-58"
+                        className="ms-Button-flexContainer flexContainer-114"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-59"
+                          className="ms-Button-textContainer textContainer-115"
                         >
                           <span
-                            className="ms-Button-label label-61"
+                            className="ms-Button-label label-117"
                             id="id__0"
                             key="id__0"
                           >

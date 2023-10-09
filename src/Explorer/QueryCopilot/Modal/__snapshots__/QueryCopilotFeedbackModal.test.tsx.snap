@@ -1085,7 +1085,7 @@ exports[`Query Copilot Feedback Modal snapshot test should record user contact c
 </Modal>
 `;
 
-exports[`Query Copilot Feedback Modal snapshot test should render dont show again button and check it  1`] = `
+exports[`Query Copilot Feedback Modal snapshot test should render dont show again button and check it 1`] = `
 <Modal
   isOpen={true}
 >
