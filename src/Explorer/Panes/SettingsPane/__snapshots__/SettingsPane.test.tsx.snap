@@ -98,45 +98,45 @@ exports[`Settings Pane should render Default properly 1`] = `
       </div>
     </div>
     <div
-                className="settingsSection"
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryTimeoutLabel"
           >
-            <div
-              className="settingsSectionPart"
-            >
-             <div>
-               <legend
-                 className="settingsSectionLabel legendLabel"
-                 id="queryTimeoutLabel"
-               >
-                 Query Timeout
-               </legend>
-               <InfoTooltip>
-                 When a query reaches a specified time limit, a popup with an option to cancel the query will show
-               </InfoTooltip>
-             </div>
-             <div>
-               <StyledToggleBase
-                 defaultChecked={false}
-                 label="Enable query timeout"
-                 onChange={[Function]}
-                 styles={
-                   Object {
-                     "container": Object {},
-                     "label": Object {
-                       "display": "block",
-                       "fontSize": 12,
-                       "fontWeight": 400,
-                     },
-                     "pill": Object {},
-                     "root": Object {},
-                     "text": Object {},
-                     "thumb": Object {},
-                   }
-                 }
-               />
-             </div>
-           </div>
-         </div>
+            Query Timeout
+          </legend>
+          <InfoTooltip>
+            When a query reaches a specified time limit, a popup with an option to cancel the query will show
+          </InfoTooltip>
+        </div>
+        <div>
+          <StyledToggleBase
+            defaultChecked={false}
+            label="Enable query timeout"
+            onChange={[Function]}
+            styles={
+              Object {
+                "container": Object {},
+                "label": Object {
+                  "display": "block",
+                  "fontSize": 12,
+                  "fontWeight": 400,
+                },
+                "pill": Object {},
+                "root": Object {},
+                "text": Object {},
+                "thumb": Object {},
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
     <div
       className="settingsSection"
     >
