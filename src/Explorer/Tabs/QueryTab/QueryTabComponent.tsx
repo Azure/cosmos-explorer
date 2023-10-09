@@ -83,7 +83,6 @@ interface IQueryTabStates {
   isExecuting: boolean;
   showCopilotSidebar: boolean;
   queryCopilotGeneratedQuery: string;
-  // queryAbortController: AbortController;
   cancelQueryTimeoutID: NodeJS.Timeout;
 }
 
@@ -112,7 +111,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isExecuting: false,
       showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
       queryCopilotGeneratedQuery: useQueryCopilot.getState().query,
-      // queryAbortController: undefined,
       cancelQueryTimeoutID: undefined,
     };
     this.isCloseClicked = false;
@@ -120,7 +118,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this.isPreferredApiMongoDB = this.props.isPreferredApiMongoDB;
     this.isCopilotTabActive = QueryCopilotSampleDatabaseId === this.props.collection.databaseId;
-    // this.queryTimeoutEnabled = !this.props.isPreferredApiMongoDB && LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled);
     this.executeQueryButton = {
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
