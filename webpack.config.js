@@ -323,6 +323,12 @@ module.exports = function (_env = {}, argv = {}) {
           logLevel: "debug",
         },
       },
+      client: {
+        overlay: {
+          warnings: false,
+          errors: true,
+        },
+      }
     },
     stats: "minimal",
   };
