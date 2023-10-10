@@ -15,10 +15,10 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: node utils/codeMetrics.js
         env:
@@ -28,10 +28,10 @@ jobs:
     name: "Compile TypeScript"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run compile
       - run: npm run compile:strict
@@ -40,10 +40,10 @@ jobs:
     name: "Check Format"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run format:check
   lint:
@@ -51,10 +51,10 @@ jobs:
     name: "Lint"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run lint
   unittest:
@@ -62,10 +62,10 @@ jobs:
     name: "Unit Tests"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run test
   build:
@@ -73,10 +73,10 @@ jobs:
     name: "Build"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run build:contracts
       - name: Restore Build Cache
@@ -86,7 +86,7 @@ jobs:
           key: ${{ runner.os }}-build-cache
       - run: npm run pack:prod
         env:
-          NODE_OPTIONS: '--max-old-space-size=4096'
+          NODE_OPTIONS: "--max-old-space-size=4096"
       - run: cp -r ./Contracts ./dist/contracts
       - run: cp -r ./configs ./dist/configs
       - uses: actions/upload-artifact@v2
@@ -108,10 +108,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - uses: southpolesteve/cosmos-emulator-github-action@v1
       - name: End to End Tests
         run: |
@@ -150,10 +150,10 @@ jobs:
           - ./test/tables/container.spec.ts
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm start &
       - run: npm run wait-for-server
