@@ -328,7 +328,7 @@ module.exports = function (_env = {}, argv = {}) {
           warnings: false,
           errors: true,
         },
-      }
+      },
     },
     stats: "minimal",
   };
