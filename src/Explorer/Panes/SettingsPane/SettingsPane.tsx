@@ -291,7 +291,7 @@ export const SettingsPane: FunctionComponent = () => {
                     label="Query timeout (ms)"
                     labelPosition={Position.top}
                     defaultValue={(queryTimeout || 5000).toString()}
-                    min={0}
+                    min={100}
                     step={1000}
                     onChange={handleOnQueryTimeoutSpinButtonChange}
                     incrementButtonAriaLabel="Increase value by 1000"
