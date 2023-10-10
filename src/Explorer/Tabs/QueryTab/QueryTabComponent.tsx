@@ -217,16 +217,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(
-            this.props.collection.databaseId,
-            this.props.viewModelcollection,
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
-          )
+          this.props.collection.databaseId,
+          this.props.viewModelcollection,
+          this.state.selectedContent || this.state.sqlQueryEditorContent,
+        )
         : queryDocuments(
-            this.props.collection.databaseId,
-            this.props.collection.id(),
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
-            { enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey() } as FeedOptions,
-          );
+          this.props.collection.databaseId,
+          this.props.collection.id(),
+          this.state.selectedContent || this.state.sqlQueryEditorContent,
+          { enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey() } as unknown as FeedOptions,
+        );
     }
 
     await this._queryDocumentsPage(firstItemIndex);
