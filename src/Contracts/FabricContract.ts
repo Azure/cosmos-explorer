@@ -1,3 +1,5 @@
+import { AuthorizationToken, MessageTypes } from "./MessageTypes";
+
 export type FabricMessage =
   | {
       type: "newContainer";
@@ -5,21 +7,52 @@ export type FabricMessage =
     }
   | {
       type: "initialize";
-      connectionString: string | undefined;
+      message: {
+        endpoint: string | undefined;
+        error: string | undefined;
+      };
     }
   | {
       type: "openTab";
       databaseName: string;
       collectionName: string | undefined;
+    }
+  | {
+      type: "authorizationToken";
+      message: {
+        id: string;
+        error: string | undefined;
+        data: AuthorizationToken | undefined;
+      };
     };
 
 export type DataExploreMessage =
   | "ready"
   | {
-      type: number;
+      type: MessageTypes.TelemetryInfo;
       data: {
         action: "LoadDatabases";
         actionModifier: "success" | "start";
         defaultExperience: "SQL";
       };
+    }
+  | {
+      type: MessageTypes.GetAuthorizationToken;
+      id: string;
+      params: GetCosmosTokenMessageOptions[];
     };
+
+export type GetCosmosTokenMessageOptions = {
+  verb: "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
+  resourceType: "" | "dbs" | "colls" | "docs" | "sprocs" | "pkranges";
+  resourceId: string;
+};
+
+export type CosmosDBTokenResponse = {
+  token: string;
+  date: string;
+};
+
+export type CosmosDBConnectionInfoResponse = {
+  endpoint: string;
+};
