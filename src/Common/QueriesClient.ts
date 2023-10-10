@@ -13,6 +13,7 @@ import { createDocument } from "./dataAccess/createDocument";
 import { deleteDocument } from "./dataAccess/deleteDocument";
 import { queryDocuments } from "./dataAccess/queryDocuments";
 import { handleError } from "./ErrorHandlingUtils";
+import { isServerlessAccount } from "Utils/CapabilityUtils";
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -32,25 +33,36 @@ export class QueriesClient {
     }
 
     const clearMessage = NotificationConsoleUtils.logConsoleProgress("Setting up account for saving queries");
-    return createCollection({
-      collectionId: SavedQueries.CollectionName,
-      createNewDatabase: true,
-      databaseId: SavedQueries.DatabaseName,
-      partitionKey: QueriesClient.PartitionKey,
-      offerThroughput: SavedQueries.OfferThroughput,
-      databaseLevelThroughput: false,
-    })
-      .then(
-        (collection: DataModels.Collection) => {
-          NotificationConsoleUtils.logConsoleInfo("Successfully set up account for saving queries");
-          return Promise.resolve(collection);
-        },
-        (error: any) => {
-          handleError(error, "setupQueriesCollection", "Failed to set up account for saving queries");
-          return Promise.reject(error);
-        },
-      )
-      .finally(() => clearMessage());
+
+    if (isServerlessAccount()) {
+      return createCollection({
+        collectionId: SavedQueries.CollectionName,
+        createNewDatabase: true,
+        databaseId: SavedQueries.DatabaseName,
+        partitionKey: QueriesClient.PartitionKey,
+        databaseLevelThroughput: false,
+      });
+    } else {
+      return createCollection({
+        collectionId: SavedQueries.CollectionName,
+        createNewDatabase: true,
+        databaseId: SavedQueries.DatabaseName,
+        partitionKey: QueriesClient.PartitionKey,
+        offerThroughput: SavedQueries.OfferThroughput,
+        databaseLevelThroughput: false,
+      })
+        .then(
+          (collection: DataModels.Collection) => {
+            NotificationConsoleUtils.logConsoleInfo("Successfully set up account for saving queries");
+            return Promise.resolve(collection);
+          },
+          (error: any) => {
+            handleError(error, "setupQueriesCollection", "Failed to set up account for saving queries");
+            return Promise.reject(error);
+          },
+        )
+        .finally(() => clearMessage());
+    }
   }
 
   public async saveQuery(query: DataModels.Query): Promise<void> {
