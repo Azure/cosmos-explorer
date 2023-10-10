@@ -53,6 +53,10 @@ const sampleNotebookModel: IContent<"notebook"> = {
 };
 
 describe("GitHubContentProvider remove", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
     jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
@@ -105,6 +109,10 @@ describe("GitHubContentProvider remove", () => {
 });
 
 describe("GitHubContentProvider get", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
     jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
@@ -139,6 +147,10 @@ describe("GitHubContentProvider get", () => {
 });
 
 describe("GitHubContentProvider update", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
     jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
@@ -195,6 +207,10 @@ describe("GitHubContentProvider update", () => {
 });
 
 describe("GitHubContentProvider create", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
     jest.spyOn(GitHubClient.prototype, "createOrUpdateFileAsync");
 
@@ -232,6 +248,10 @@ describe("GitHubContentProvider create", () => {
 });
 
 describe("GitHubContentProvider save", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
     jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
@@ -288,6 +308,10 @@ describe("GitHubContentProvider save", () => {
 });
 
 describe("GitHubContentProvider listCheckpoints", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.listCheckpoints().toPromise();
     expect(response).toBeDefined();
@@ -296,6 +320,10 @@ describe("GitHubContentProvider listCheckpoints", () => {
 });
 
 describe("GitHubContentProvider createCheckpoint", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.createCheckpoint().toPromise();
     expect(response).toBeDefined();
@@ -304,6 +332,10 @@ describe("GitHubContentProvider createCheckpoint", () => {
 });
 
 describe("GitHubContentProvider deleteCheckpoint", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.deleteCheckpoint().toPromise();
     expect(response).toBeDefined();
@@ -312,6 +344,10 @@ describe("GitHubContentProvider deleteCheckpoint", () => {
 });
 
 describe("GitHubContentProvider restoreFromCheckpoint", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.restoreFromCheckpoint().toPromise();
     expect(response).toBeDefined();
