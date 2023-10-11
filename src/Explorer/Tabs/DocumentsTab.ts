@@ -2,6 +2,7 @@ import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryItera
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import * as ko from "knockout";
 import Q from "q";
+import { format } from "react-string-format";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
@@ -721,23 +722,30 @@ export default class DocumentsTab extends TabsBase {
   public loadNextPage(applyFilterButtonClicked?: boolean): Q.Promise<any> {
     this.isExecuting(true);
     this.isExecutionError(false);
+    let automaticallyCancelQueryAfterTimeout: boolean;
     if (applyFilterButtonClicked && this.queryTimeoutEnabled()) {
       const queryTimeout: number = LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout);
-      const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(
-        () =>
-          this.isExecuting() &&
-          useDialog
-            .getState()
-            .showOkCancelModalDialog(
-              QueryConstants.CancelQueryTitle,
-              QueryConstants.CancelQuerySubText,
-              "Yes",
-              () => this.queryAbortController.abort(),
-              "No",
-              undefined,
-            ),
-        queryTimeout,
+      automaticallyCancelQueryAfterTimeout = LocalStorageUtility.getEntryBoolean(
+        StorageKey.AutomaticallyCancelQueryAfterTimeout,
       );
+      const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(() => {
+        if (this.isExecuting()) {
+          if (automaticallyCancelQueryAfterTimeout) {
+            this.queryAbortController.abort();
+          } else {
+            useDialog
+              .getState()
+              .showOkCancelModalDialog(
+                QueryConstants.CancelQueryTitle,
+                format(QueryConstants.CancelQuerySubTextTemplate, QueryConstants.CancelQueryTimeoutThresholdReached),
+                "Yes",
+                () => this.queryAbortController.abort(),
+                "No",
+                undefined,
+              );
+          }
+        }
+      }, queryTimeout);
       this.cancelQueryTimeoutID = cancelQueryTimeoutID;
     }
     return this._loadNextPageInternal()
@@ -799,7 +807,9 @@ export default class DocumentsTab extends TabsBase {
         this.isExecuting(false);
         if (applyFilterButtonClicked && this.queryTimeoutEnabled()) {
           clearTimeout(this.cancelQueryTimeoutID);
-          useDialog.getState().closeDialog();
+          if (!automaticallyCancelQueryAfterTimeout) {
+            useDialog.getState().closeDialog();
+          }
         }
       });
   }

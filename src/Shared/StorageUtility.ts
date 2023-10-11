@@ -6,6 +6,7 @@ export enum StorageKey {
   ActualItemPerPage,
   QueryTimeoutEnabled,
   QueryTimeout,
+  AutomaticallyCancelQueryAfterTimeout,
   ContainerPaginationEnabled,
   CustomItemPerPage,
   DatabaseAccountId,

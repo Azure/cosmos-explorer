@@ -10,6 +10,7 @@ import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
+import { format } from "react-string-format";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
@@ -254,23 +255,30 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({
       isExecuting: true,
     });
+    let automaticallyCancelQueryAfterTimeout: boolean;
     if (this.queryTimeoutEnabled()) {
       const queryTimeout: number = LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout);
-      const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(
-        () =>
-          this.state.isExecuting &&
-          useDialog
-            .getState()
-            .showOkCancelModalDialog(
-              QueryConstants.CancelQueryTitle,
-              QueryConstants.CancelQuerySubText,
-              "Yes",
-              () => this.queryAbortController.abort(),
-              "No",
-              undefined,
-            ),
-        queryTimeout,
+      automaticallyCancelQueryAfterTimeout = LocalStorageUtility.getEntryBoolean(
+        StorageKey.AutomaticallyCancelQueryAfterTimeout,
       );
+      const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(() => {
+        if (this.state.isExecuting) {
+          if (automaticallyCancelQueryAfterTimeout) {
+            this.queryAbortController.abort();
+          } else {
+            useDialog
+              .getState()
+              .showOkCancelModalDialog(
+                QueryConstants.CancelQueryTitle,
+                format(QueryConstants.CancelQuerySubTextTemplate, QueryConstants.CancelQueryTimeoutThresholdReached),
+                "Yes",
+                () => this.queryAbortController.abort(),
+                "No",
+                undefined,
+              );
+          }
+        }
+      }, queryTimeout);
       this.setState({
         cancelQueryTimeoutID,
       });
@@ -302,7 +310,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
       if (this.queryTimeoutEnabled()) {
         clearTimeout(this.state.cancelQueryTimeoutID);
-        useDialog.getState().closeDialog();
+        if (!automaticallyCancelQueryAfterTimeout) {
+          useDialog.getState().closeDialog();
+        }
       }
       this.togglesOnFocus();
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -368,18 +378,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         children: [openCopilotChatButton, copilotSettingsButton],
       };
       buttons.push(launchCopilotButton);
-    }
-
-    if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
-      const label = "Cancel query";
-      buttons.push({
-        iconSrc: CancelQueryIcon,
-        iconAlt: label,
-        onCommandClick: () => this.queryAbortController.abort(),
-        commandButtonLabel: label,
-        ariaLabel: label,
-        hasPopup: false,
-      });
     }
 
     if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {

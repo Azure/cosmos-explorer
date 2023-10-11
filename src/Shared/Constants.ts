@@ -211,5 +211,6 @@ export class FreeTierLimits {
 
 export class QueryConstants {
   public static readonly CancelQueryTitle: string = "Cancel query";
-  public static readonly CancelQuerySubText: string = "Do you want to cancel this query?";
+  public static readonly CancelQuerySubTextTemplate: string = "{0} Do you want to cancel this query?";
+  public static readonly CancelQueryTimeoutThresholdReached: string = "The query timeout threshold has been reached."
 }

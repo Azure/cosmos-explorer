@@ -32,6 +32,9 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
   );
   const [queryTimeout, setQueryTimeout] = useState<number>(LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout));
+  const [automaticallyCancelQueryAfterTimeout, setAutomaticallyCancelQueryAfterTimeout] = useState<boolean>(
+    LocalStorageUtility.getEntryBoolean(StorageKey.AutomaticallyCancelQueryAfterTimeout),
+  );
   const [customItemPerPage, setCustomItemPerPage] = useState<number>(
     LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0,
   );
@@ -89,6 +92,10 @@ export const SettingsPane: FunctionComponent = () => {
 
     if (queryTimeoutEnabled) {
       LocalStorageUtility.setEntryNumber(StorageKey.QueryTimeout, queryTimeout);
+      LocalStorageUtility.setEntryBoolean(
+        StorageKey.AutomaticallyCancelQueryAfterTimeout,
+        automaticallyCancelQueryAfterTimeout,
+      );
     }
 
     setIsExecuting(false);
@@ -161,6 +168,10 @@ export const SettingsPane: FunctionComponent = () => {
     setQueryTimeoutEnabled(checked);
   };
 
+  const handleOnAutomaticallyCancelQueryToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
+    setAutomaticallyCancelQueryAfterTimeout(checked);
+  };
+
   const handleOnQueryTimeoutSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
     const queryTimeout = Number(newValue);
     if (!isNaN(queryTimeout)) {
@@ -208,7 +219,9 @@ export const SettingsPane: FunctionComponent = () => {
       fontSize: 12,
       fontWeight: 400,
     },
-    root: {},
+    root: {
+      paddingBottom: 10,
+    },
     labelWrapper: {},
     icon: {},
     spinButtonWrapper: {},
@@ -297,6 +310,12 @@ export const SettingsPane: FunctionComponent = () => {
                     incrementButtonAriaLabel="Increase value by 1000"
                     decrementButtonAriaLabel="Decrease value by 1000"
                     styles={queryTimeoutSpinButtonStyles}
+                  />
+                  <Toggle
+                    label="Automatically cancel query after timeout"
+                    styles={queryTimeoutToggleStyles}
+                    onChange={handleOnAutomaticallyCancelQueryToggleChange}
+                    defaultChecked={automaticallyCancelQueryAfterTimeout}
                   />
                 </div>
               )}
