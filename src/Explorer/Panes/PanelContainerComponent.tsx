@@ -78,16 +78,14 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
   }
 
   private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
-    let collection = useSelectedNode.getState().findSelectedCollection();
+    const collection = useSelectedNode.getState().findSelectedCollection();
     if (collection) {
-      console.log(collection);
       const targetElementDataTest: string | undefined = collection.id();
       const targetElement: HTMLElement | null = document.querySelector(`[data-test="${targetElementDataTest}"]`);
       if (targetElement) {
         setTimeout(() => {
           const moreButton: HTMLElement | null = targetElement.querySelector('[name="More"]');
           if (moreButton) {
-            console.log(targetElementDataTest, targetElement);
             moreButton.focus();
           }
         }, 100);
