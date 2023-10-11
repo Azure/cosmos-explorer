@@ -237,12 +237,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   const showTeachingBubble = (): void => {
     if (!inputEdited.current) {
       setTimeout(() => {
-        if (!inputEdited.current) {
+        if (!inputEdited.current && !isWelcomModalVisible()) {
           toggleCopilotTeachingBubbleVisible();
           inputEdited.current = true;
         }
       }, 30000);
     }
+  };
+
+  const isWelcomModalVisible = (): boolean => {
+    return localStorage.getItem("hideWelcomeModal") !== "true";
   };
 
   const clearFeedback = () => {
@@ -297,7 +301,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             setShowSamplePrompts(true);
           }}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && userPrompt) {
               inputEdited.current = true;
               startGenerateQueryProcess();
             }
@@ -533,7 +537,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             iconProps={{ iconName: "Copy" }}
             style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
           >
-            Copy code
+            Copy query
           </CommandBarButton>
           <CommandBarButton
             onClick={() => {
@@ -542,11 +546,11 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             iconProps={{ iconName: "Delete" }}
             style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
           >
-            Delete code
+            Delete query
           </CommandBarButton>
         </Stack>
       )}
-      <WelcomeModal visible={localStorage.getItem("hideWelcomeModal") !== "true"} />
+      <WelcomeModal visible={isWelcomModalVisible()} />
       {isSamplePromptsOpen && <SamplePrompts sampleProps={sampleProps} />}
       {query !== "" && query.trim().length !== 0 && (
         <DeletePopup
