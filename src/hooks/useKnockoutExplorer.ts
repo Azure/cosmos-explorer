@@ -2,15 +2,13 @@ import { createUri } from "Common/UrlUtility";
 import { FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import { fetchEncryptedToken } from "Platform/Hosted/Components/ConnectExplorer";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
-import { fetchAccessData } from "hooks/usePortalAccessToken";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
+import { handleCachedDataMessage, sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { Platform, configContext, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction, TabKind } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -107,23 +105,7 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            // TODO For now, retrieve info from session storage. Replace with info injected into Data Explorer
-            const connectionString = data.connectionString ?? sessionStorage.getItem("connectionString");
-            if (!connectionString) {
-              console.error("No connection string found in session storage");
-              return undefined;
-            }
-            const encryptedToken = await fetchEncryptedToken(connectionString);
-            // TODO Duplicated from useTokenMetadata
-            const encryptedTokenMetadata = await fetchAccessData(encryptedToken);
-
-            const hostedConfig: EncryptedToken = {
-              authType: AuthType.EncryptedToken,
-              encryptedToken,
-              encryptedTokenMetadata,
-            };
-
-            explorer = await configureWithEncryptedToken(hostedConfig);
+            explorer = await configureWithFabric(data.message.endpoint);
             resolve(explorer);
             break;
           }
@@ -164,6 +146,10 @@ async function configureFabric(): Promise<Explorer> {
               }
             }
 
+            break;
+          }
+          case "authorizationToken": {
+            handleCachedDataMessage(data);
             break;
           }
           default:
@@ -312,6 +298,25 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
     },
   });
   const explorer = new Explorer();
+  return explorer;
+}
+
+function configureWithFabric(documentEndpoint: string): Explorer {
+  updateUserContext({
+    authType: AuthType.ConnectionString,
+    databaseAccount: {
+      id: "",
+      location: "",
+      type: "",
+      name: "Mounted",
+      kind: AccountKind.Default,
+      properties: {
+        documentEndpoint,
+      },
+    },
+  });
+  const explorer = new Explorer();
+  setTimeout(() => explorer.refreshAllDatabases(), 0);
   return explorer;
 }
 
