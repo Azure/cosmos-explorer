@@ -78,18 +78,26 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
   }
 
   private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
-    const collection = useSelectedNode.getState().findSelectedCollection();
-    const targetElement: HTMLElement | null = document.querySelector(`[data-test="${collection.id()}"]`);
+    let collection = useSelectedNode.getState().findSelectedCollection();
+    if (collection) {
+      console.log(collection);
+      const targetElementDataTest: string | undefined = collection.id();
+      const targetElement: HTMLElement | null = document.querySelector(`[data-test="${targetElementDataTest}"]`);
+      if (targetElement) {
+        setTimeout(() => {
+          const moreButton: HTMLElement | null = targetElement.querySelector('[name="More"]');
+          if (moreButton) {
+            console.log(targetElementDataTest, targetElement);
+            moreButton.focus();
+          }
+        }, 100);
+        clearTimeout;
+      }
+    }
     if (ev && (ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
     } else {
       useSidePanel.getState().closeSidePanel();
-    }
-    if (targetElement) {
-      const moreButton: HTMLElement | null = targetElement.querySelector('[name="More"]');
-      if (moreButton) {
-        moreButton.focus();
-      }
     }
   };
 
