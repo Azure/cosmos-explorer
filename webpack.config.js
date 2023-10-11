@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 require("dotenv/config");
 const path = require("path");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const InlineChunkHtmlPlugin = require("react-dev-utils/InlineChunkHtmlPlugin");
 const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
@@ -16,7 +17,6 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPl
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 const isCI = require("is-ci");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -110,7 +110,6 @@ module.exports = function (_env = {}, argv = {}) {
   }
 
   const plugins = [
-    new MonacoWebpackPlugin(),
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: "process/browser",
@@ -191,6 +190,7 @@ module.exports = function (_env = {}, argv = {}) {
     new HTMLInlineCSSWebpackPlugin({
       filter: (fileName) => fileName.includes("cellOutputViewer"),
     }),
+    new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [{ from: "DataExplorer.nuspec" }, { from: "web.config" }, { from: "quickstart/*.zip" }],
     }),
