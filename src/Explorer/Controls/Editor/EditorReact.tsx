@@ -93,7 +93,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
    * Create the monaco editor and attach to DOM
    */
   private async createEditor(createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
-    const options: monaco.editor.IEditorConstructionOptions = {
+    const options: monaco.editor.IStandaloneEditorConstructionOptions = {
       language: this.props.language,
       value: this.props.content,
       readOnly: this.props.isReadOnly,

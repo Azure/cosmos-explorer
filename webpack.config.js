@@ -16,6 +16,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPl
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 const isCI = require("is-ci");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -109,6 +110,7 @@ module.exports = function (_env = {}, argv = {}) {
   }
 
   const plugins = [
+    new MonacoWebpackPlugin(),
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: "process/browser",
