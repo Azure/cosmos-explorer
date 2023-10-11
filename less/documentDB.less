@@ -1179,16 +1179,16 @@ menuQuickStart {
   }
 }
 
-.gridRowSelected {
+#tbodycontent tr.gridRowSelected {
   .active();
 }
 
-.gridRowSelected:hover {
+#tbodycontent tr.gridRowSelected:hover {
   cursor: default;
   .hover();
 }
 
-.gridRowHighlighted {
+#tbodycontent tr.gridRowHighlighted {
   border-style: dotted;
   border-width: 2px;
 }
@@ -2576,9 +2576,10 @@ a:link {
 .querydropdown.placeholderVisible {
   font-style: italic;
 }
-.querydropdown.placeholderVisible::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+.querydropdown.placeholderVisible::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: #767474;
-  opacity: 1; 
+  opacity: 1;
 }
 
 .querydropdown:hover {
@@ -2648,7 +2649,7 @@ a:link {
 
 .nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .tabNavText {
   font-weight: bolder;
-  border-bottom: 2px solid rgba(0,120,212,1);
+  border-bottom: 2px solid rgba(0, 120, 212, 1);
 }
 
 .nav-tabs > li.active:focus > .tabNavContentContainer {
@@ -3096,4 +3097,3 @@ a:link {
   background: white;
   height: 100%;
 }
-
