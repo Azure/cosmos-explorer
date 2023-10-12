@@ -114,24 +114,21 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
   });
 
   it("should submit submission", () => {
+    useQueryCopilot.getState().openFeedbackModal("test query", false, "test prompt");
     const explorer = new Explorer();
     const wrapper = shallow(<QueryCopilotFeedbackModal explorer={explorer} />);
-    const userDescriptionInput = "test input";
 
-    const descriptionField = wrapper.find(TextField).first();
-    descriptionField.simulate("change", {}, userDescriptionInput);
-
-    const submitButton = wrapper.find(PrimaryButton);
-    submitButton.simulate("click");
+    const submitButton = wrapper.find("form");
+    submitButton.simulate("submit");
     wrapper.setProps({});
 
     expect(SubmitFeedback).toHaveBeenCalledTimes(1);
     expect(SubmitFeedback).toHaveBeenCalledWith({
       params: {
         likeQuery: false,
-        generatedQuery: "",
-        userPrompt: "",
-        description: userDescriptionInput,
+        generatedQuery: "test query",
+        userPrompt: "test prompt",
+        description: "",
         contact: getUserEmail(),
       },
       explorer: explorer,
