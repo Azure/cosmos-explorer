@@ -102,9 +102,24 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it("should not submit submission if required description field is null", () => {
+    const explorer = new Explorer();
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={explorer} />);
+
+    const submitButton = wrapper.find(PrimaryButton);
+    submitButton.simulate("click");
+    wrapper.setProps({});
+
+    expect(SubmitFeedback).toHaveBeenCalledTimes(0);
+  });
+
   it("should submit submission", () => {
     const explorer = new Explorer();
     const wrapper = shallow(<QueryCopilotFeedbackModal explorer={explorer} />);
+    const userDescriptionInput = "test input";
+
+    const descriptionField = wrapper.find(TextField).first();
+    descriptionField.simulate("change", {}, userDescriptionInput);
 
     const submitButton = wrapper.find(PrimaryButton);
     submitButton.simulate("click");
@@ -116,7 +131,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
         likeQuery: false,
         generatedQuery: "",
         userPrompt: "",
-        description: "",
+        description: userDescriptionInput,
         contact: getUserEmail(),
       },
       explorer: explorer,
