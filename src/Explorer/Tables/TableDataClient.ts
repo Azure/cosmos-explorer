@@ -19,6 +19,8 @@ import Explorer from "../Explorer";
 import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
+import { getLocalDateTime } from "./QueryBuilder/DateTimeUtilities";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -31,7 +33,7 @@ export interface CassandraTableKey {
 }
 
 export abstract class TableDataClient {
-  constructor() {}
+  constructor() { }
 
   public abstract createDocument(
     collection: ViewModels.Collection,
@@ -147,8 +149,36 @@ export class CassandraAPIDataClient extends TableDataClient {
     let properties = "(";
     let values = "(";
     for (let property in entity) {
-      if (entity[property]._ === null) {
-        continue;
+      if (entity[property]._ === "" || undefined) {
+        // Numberic types require a value, otherwise the column will not be created/editable.
+        switch (entity[property].$) {
+          case "Timestamp":
+            entity[property]._ = getLocalDateTime(new Date().toString());
+            break;
+          case "Int":
+          case "Double":
+            const int: number = 0;
+            entity[property]._ = int.toString();
+            break;
+          case "Float":
+            const fl: number = parseFloat("0.0");
+            entity[property]._ = fl.toString();
+            break;
+          case "Bigint":
+            const bg: bigint = BigInt(0);
+            entity[property]._ = bg.toString();
+            break;
+          case "Decimal":
+            const dec: number = 0.0;
+            entity[property]._ = dec.toString();
+            break;
+          case "Uuid":
+            const id: string = uuidv4();
+            entity[property]._ = id.toString();
+            break;
+          default: entity[property]._ = "";
+            break;
+        }
       }
       properties = properties.concat(`${property}, `);
       const propertyType = entity[property].$;
@@ -208,6 +238,37 @@ export class CassandraAPIDataClient extends TableDataClient {
           !originalDocument[property] ||
           newEntity[property]._.toString() !== originalDocument[property]._.toString()
         ) {
+          if (newEntity[property]._.toString() === "" || undefined) {
+            // Deleting a column would do nothing if not set to 0 for numeric types.
+            switch (newEntity[property].$) {
+              case "Timestamp":
+                newEntity[property]._ = getLocalDateTime(new Date().toString());
+                break;
+              case "Int":
+              case "Double":
+                const int: number = 0;
+                newEntity[property]._ = int.toString();
+                break;
+              case "Float":
+                const fl: number = parseFloat("0.0");
+                newEntity[property]._ = fl.toString();
+                break;
+              case "Bigint":
+                const bg: bigint = BigInt(0);
+                newEntity[property]._ = bg.toString();
+                break;
+              case "Decimal":
+                const dec: number = 0.0;
+                newEntity[property]._ = dec.toString();
+                break;
+              case "Uuid":
+                const id: string = uuidv4();
+                newEntity[property]._ = id.toString();
+                break;
+              default: newEntity[property]._ = "";
+                break;
+            }
+          }
           let propertyQuerySegment = this.isStringType(newEntity[property].$)
             ? `${property} = '${newEntity[property]._}',`
             : `${property} = ${newEntity[property]._},`;
