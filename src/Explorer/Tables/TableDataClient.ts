@@ -20,7 +20,7 @@ import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
 import { getLocalDateTime } from "./QueryBuilder/DateTimeUtilities";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -33,7 +33,7 @@ export interface CassandraTableKey {
 }
 
 export abstract class TableDataClient {
-  constructor() { }
+  constructor() {}
 
   public abstract createDocument(
     collection: ViewModels.Collection,
@@ -176,7 +176,8 @@ export class CassandraAPIDataClient extends TableDataClient {
             const id: string = uuidv4();
             entity[property]._ = id.toString();
             break;
-          default: entity[property]._ = "";
+          default:
+            entity[property]._ = "";
             break;
         }
       }
@@ -265,7 +266,8 @@ export class CassandraAPIDataClient extends TableDataClient {
                 const id: string = uuidv4();
                 newEntity[property]._ = id.toString();
                 break;
-              default: newEntity[property]._ = "";
+              default:
+                newEntity[property]._ = "";
                 break;
             }
           }
