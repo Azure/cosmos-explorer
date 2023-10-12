@@ -4,154 +4,158 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
 <Modal
   isOpen={true}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value=""
-    />
-    <StyledTextFieldBase
-      defaultValue="test query"
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="yes"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value=""
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="no"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
@@ -159,154 +163,173 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
 <Modal
   isOpen={false}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value=""
-    />
-    <StyledTextFieldBase
-      defaultValue=""
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="yes"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value=""
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="no"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <StyledCheckboxBase
+        checked={false}
+        label="Don't show me this next time"
+        onChange={[Function]}
+        styles={
+          Object {
+            "label": Object {
+              "paddingLeft": 0,
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
@@ -314,154 +337,158 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
 <Modal
   isOpen={false}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value=""
-    />
-    <StyledTextFieldBase
-      defaultValue=""
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="yes"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value=""
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="no"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
@@ -469,154 +496,158 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
 <Modal
   isOpen={false}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value="test user input"
-    />
-    <StyledTextFieldBase
-      defaultValue=""
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="yes"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value="test user input"
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="no"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
@@ -624,154 +655,158 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
 <Modal
   isOpen={false}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value=""
-    />
-    <StyledTextFieldBase
-      defaultValue=""
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="yes"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value=""
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="no"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
@@ -779,154 +814,158 @@ exports[`Query Copilot Feedback Modal snapshot test should record user contact c
 <Modal
   isOpen={false}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value=""
-    />
-    <StyledTextFieldBase
-      defaultValue=""
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="no"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value=""
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="no"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
@@ -934,154 +973,158 @@ exports[`Query Copilot Feedback Modal snapshot test should record user contact c
 <Modal
   isOpen={false}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value=""
-    />
-    <StyledTextFieldBase
-      defaultValue=""
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="yes"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value=""
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="yes"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
@@ -1089,169 +1132,173 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
 <Modal
   isOpen={true}
 >
-  <Stack
-    style={
-      Object {
-        "padding": 24,
-      }
-    }
+  <form
+    onSubmit={[Function]}
   >
     <Stack
-      horizontal={true}
-      horizontalAlign="space-between"
+      style={
+        Object {
+          "padding": 24,
+        }
+      }
     >
+      <Stack
+        horizontal={true}
+        horizontalAlign="space-between"
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 20,
+              "fontWeight": 600,
+              "marginBottom": 20,
+            }
+          }
+        >
+          Send feedback to Microsoft
+        </Text>
+        <CustomizedIconButton
+          iconProps={
+            Object {
+              "iconName": "Cancel",
+            }
+          }
+          onClick={[Function]}
+        />
+      </Stack>
       <Text
         style={
           Object {
-            "fontSize": 20,
-            "fontWeight": 600,
-            "marginBottom": 20,
+            "fontSize": 14,
+            "marginBottom": 14,
           }
         }
       >
-        Send feedback to Microsoft
+        Your feedback will help improve the experience.
       </Text>
-      <CustomizedIconButton
-        iconProps={
-          Object {
-            "iconName": "Cancel",
-          }
-        }
-        onClick={[Function]}
-      />
-    </Stack>
-    <Text
-      style={
-        Object {
-          "fontSize": 14,
-          "marginBottom": 14,
-        }
-      }
-    >
-      Your feedback will help improve the experience.
-    </Text>
-    <StyledTextFieldBase
-      label="Description"
-      multiline={true}
-      onChange={[Function]}
-      placeholder="Provide more details"
-      required={true}
-      rows={3}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-      value=""
-    />
-    <StyledTextFieldBase
-      defaultValue="test query"
-      label="Query generated"
-      readOnly={true}
-      styles={
-        Object {
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <StyledChoiceGroup
-      label="May we contact you about your feedback?"
-      onChange={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "yes",
-            "text": "Yes, you may contact me.",
-          },
-          Object {
-            "key": "no",
-            "text": "No, do not contact me.",
-          },
-        ]
-      }
-      selectedKey="yes"
-      styles={
-        Object {
-          "flexContainer": Object {
-            "selectors": Object {
-              ".ms-ChoiceField-field::after": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceField-field::before": Object {
-                "marginTop": 4,
-              },
-              ".ms-ChoiceFieldLabel": Object {
-                "paddingLeft": 6,
-              },
-            },
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Text
-      style={
-        Object {
-          "fontSize": 12,
-          "marginBottom": 14,
-        }
-      }
-    >
-      By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
-       
-      <StyledLinkBase
-        href="https://privacy.microsoft.com/privacystatement"
-        target="_blank"
-      >
-        Privacy statement
-      </StyledLinkBase>
-       
-      for more information.
-    </Text>
-    <StyledCheckboxBase
-      checked={true}
-      label="Don't show me this next time"
-      onChange={[Function]}
-      styles={
-        Object {
-          "label": Object {
-            "paddingLeft": 0,
-          },
-          "root": Object {
-            "marginBottom": 14,
-          },
-        }
-      }
-    />
-    <Stack
-      horizontal={true}
-      horizontalAlign="end"
-    >
-      <CustomizedPrimaryButton
-        onClick={[Function]}
+      <StyledTextFieldBase
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        placeholder="Provide more details"
+        required={true}
+        rows={3}
         styles={
           Object {
             "root": Object {
-              "marginRight": 8,
+              "marginBottom": 14,
             },
           }
         }
+        value=""
+      />
+      <StyledTextFieldBase
+        defaultValue="test query"
+        label="Query generated"
+        readOnly={true}
+        styles={
+          Object {
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <StyledChoiceGroup
+        label="May we contact you about your feedback?"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "yes",
+              "text": "Yes, you may contact me.",
+            },
+            Object {
+              "key": "no",
+              "text": "No, do not contact me.",
+            },
+          ]
+        }
+        selectedKey="no"
+        styles={
+          Object {
+            "flexContainer": Object {
+              "selectors": Object {
+                ".ms-ChoiceField-field::after": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceField-field::before": Object {
+                  "marginTop": 4,
+                },
+                ".ms-ChoiceFieldLabel": Object {
+                  "paddingLeft": 6,
+                },
+              },
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Text
+        style={
+          Object {
+            "fontSize": 12,
+            "marginBottom": 14,
+          }
+        }
       >
-        Submit
-      </CustomizedPrimaryButton>
-      <CustomizedDefaultButton
-        onClick={[Function]}
+        By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the
+         
+        <StyledLinkBase
+          href="https://privacy.microsoft.com/privacystatement"
+          target="_blank"
+        >
+          Privacy statement
+        </StyledLinkBase>
+         
+        for more information.
+      </Text>
+      <StyledCheckboxBase
+        checked={true}
+        label="Don't show me this next time"
+        onChange={[Function]}
+        styles={
+          Object {
+            "label": Object {
+              "paddingLeft": 0,
+            },
+            "root": Object {
+              "marginBottom": 14,
+            },
+          }
+        }
+      />
+      <Stack
+        horizontal={true}
+        horizontalAlign="end"
       >
-        Cancel
-      </CustomizedDefaultButton>
+        <CustomizedPrimaryButton
+          styles={
+            Object {
+              "root": Object {
+                "marginRight": 8,
+              },
+            }
+          }
+          type="submit"
+        >
+          Submit
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Cancel
+        </CustomizedDefaultButton>
+      </Stack>
     </Stack>
-  </Stack>
+  </form>
 </Modal>
 `;
 
