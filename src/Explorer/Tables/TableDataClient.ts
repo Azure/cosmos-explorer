@@ -21,6 +21,7 @@ import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
 import { getLocalDateTime } from "./QueryBuilder/DateTimeUtilities";
 import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -150,31 +151,26 @@ export class CassandraAPIDataClient extends TableDataClient {
     let values = "(";
     for (let property in entity) {
       if (entity[property]._ === "" || undefined) {
-        // Numberic types require a value, otherwise the column will not be created/editable.
         switch (entity[property].$) {
           case "Timestamp":
             entity[property]._ = getLocalDateTime(new Date().toString());
             break;
-          case "Int":
-          case "Double":
-            const int: number = 0;
-            entity[property]._ = int.toString();
-            break;
-          case "Float":
-            const fl: number = parseFloat("0.0");
-            entity[property]._ = fl.toString();
-            break;
-          case "Bigint":
-            const bg: bigint = BigInt(0);
-            entity[property]._ = bg.toString();
-            break;
-          case "Decimal":
-            const dec: number = 0.0;
-            entity[property]._ = dec.toString();
+          case "Date":
+            entity[property]._ = moment().format("YYYY-MM-DD");
             break;
           case "Uuid":
-            const id: string = uuidv4();
-            entity[property]._ = id.toString();
+            entity[property]._ = uuidv4().toString();
+            break;
+          case "Boolean":
+            const bool: boolean = false;
+            entity[property]._ = bool.toString();
+            break;
+          case "Int":
+          case "Double":
+          case "Decimal":
+          case "Float":
+          case "Bigint":
+            entity[property]._ = "0";
             break;
           default:
             entity[property]._ = "";
@@ -240,31 +236,26 @@ export class CassandraAPIDataClient extends TableDataClient {
           newEntity[property]._.toString() !== originalDocument[property]._.toString()
         ) {
           if (newEntity[property]._.toString() === "" || undefined) {
-            // Deleting a column would do nothing if not set to 0 for numeric types.
             switch (newEntity[property].$) {
               case "Timestamp":
                 newEntity[property]._ = getLocalDateTime(new Date().toString());
                 break;
-              case "Int":
-              case "Double":
-                const int: number = 0;
-                newEntity[property]._ = int.toString();
-                break;
-              case "Float":
-                const fl: number = parseFloat("0.0");
-                newEntity[property]._ = fl.toString();
-                break;
-              case "Bigint":
-                const bg: bigint = BigInt(0);
-                newEntity[property]._ = bg.toString();
-                break;
-              case "Decimal":
-                const dec: number = 0.0;
-                newEntity[property]._ = dec.toString();
+              case "Date":
+                newEntity[property]._ = moment().format("YYYY-MM-DD");
                 break;
               case "Uuid":
-                const id: string = uuidv4();
-                newEntity[property]._ = id.toString();
+                newEntity[property]._ = uuidv4().toString();
+                break;
+              case "Boolean":
+                const bool: boolean = false;
+                newEntity[property]._ = bool.toString();
+                break;
+              case "Int":
+              case "Double":
+              case "Decimal":
+              case "Float":
+              case "Bigint":
+                newEntity[property]._ = "0";
                 break;
               default:
                 newEntity[property]._ = "";
