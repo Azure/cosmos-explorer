@@ -25,93 +25,94 @@ export const QueryCopilotFeedbackModal = ({ explorer }: { explorer: Explorer }):
     closeFeedbackModal,
     setHideFeedbackModalForLikedQueries,
   } = useQueryCopilot();
-  const [isContactAllowed, setIsContactAllowed] = React.useState<boolean>(true);
+  const [isContactAllowed, setIsContactAllowed] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [doNotShowAgainChecked, setDoNotShowAgainChecked] = React.useState<boolean>(false);
   const [contact, setContact] = React.useState<string>(getUserEmail());
 
+  const handleSubmit = () => {
+    closeFeedbackModal();
+    setHideFeedbackModalForLikedQueries(doNotShowAgainChecked);
+    SubmitFeedback({
+      params: { generatedQuery, likeQuery, description, userPrompt, contact },
+      explorer: explorer,
+    });
+  };
+
   return (
     <Modal isOpen={showFeedbackModal}>
-      <Stack style={{ padding: 24 }}>
-        <Stack horizontal horizontalAlign="space-between">
-          <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 20 }}>Send feedback to Microsoft</Text>
-          <IconButton iconProps={{ iconName: "Cancel" }} onClick={() => closeFeedbackModal()} />
-        </Stack>
-        <Text style={{ fontSize: 14, marginBottom: 14 }}>Your feedback will help improve the experience.</Text>
-        <TextField
-          styles={{ root: { marginBottom: 14 } }}
-          label="Description"
-          required
-          placeholder="Provide more details"
-          value={description}
-          onChange={(_, newValue) => setDescription(newValue)}
-          multiline
-          rows={3}
-        />
-        <TextField
-          styles={{ root: { marginBottom: 14 } }}
-          label="Query generated"
-          defaultValue={generatedQuery}
-          readOnly
-        />
-        <ChoiceGroup
-          styles={{
-            root: {
-              marginBottom: 14,
-            },
-            flexContainer: {
-              selectors: {
-                ".ms-ChoiceField-field::before": { marginTop: 4 },
-                ".ms-ChoiceField-field::after": { marginTop: 4 },
-                ".ms-ChoiceFieldLabel": { paddingLeft: 6 },
-              },
-            },
-          }}
-          label="May we contact you about your feedback?"
-          options={[
-            { key: "yes", text: "Yes, you may contact me." },
-            { key: "no", text: "No, do not contact me." },
-          ]}
-          selectedKey={isContactAllowed ? "yes" : "no"}
-          onChange={(_, option) => {
-            setIsContactAllowed(option.key === "yes");
-            setContact(option.key === "yes" ? getUserEmail() : "");
-          }}
-        ></ChoiceGroup>
-        <Text style={{ fontSize: 12, marginBottom: 14 }}>
-          By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the{" "}
-          {
-            <Link href="https://privacy.microsoft.com/privacystatement" target="_blank">
-              Privacy statement
-            </Link>
-          }{" "}
-          for more information.
-        </Text>
-        {likeQuery && (
-          <Checkbox
-            styles={{ label: { paddingLeft: 0 }, root: { marginBottom: 14 } }}
-            label="Don't show me this next time"
-            checked={doNotShowAgainChecked}
-            onChange={(_, checked) => setDoNotShowAgainChecked(checked)}
+      <form onSubmit={handleSubmit}>
+        <Stack style={{ padding: 24 }}>
+          <Stack horizontal horizontalAlign="space-between">
+            <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 20 }}>Send feedback to Microsoft</Text>
+            <IconButton iconProps={{ iconName: "Cancel" }} onClick={() => closeFeedbackModal()} />
+          </Stack>
+          <Text style={{ fontSize: 14, marginBottom: 14 }}>Your feedback will help improve the experience.</Text>
+          <TextField
+            styles={{ root: { marginBottom: 14 } }}
+            label="Description"
+            required
+            placeholder="Provide more details"
+            value={description}
+            onChange={(_, newValue) => setDescription(newValue)}
+            multiline
+            rows={3}
           />
-        )}
-        <Stack horizontal horizontalAlign="end">
-          <PrimaryButton
-            styles={{ root: { marginRight: 8 } }}
-            onClick={() => {
-              closeFeedbackModal();
-              setHideFeedbackModalForLikedQueries(doNotShowAgainChecked);
-              SubmitFeedback({
-                params: { generatedQuery, likeQuery, description, userPrompt, contact },
-                explorer: explorer,
-              });
+          <TextField
+            styles={{ root: { marginBottom: 14 } }}
+            label="Query generated"
+            defaultValue={generatedQuery}
+            readOnly
+          />
+          <ChoiceGroup
+            styles={{
+              root: {
+                marginBottom: 14,
+              },
+              flexContainer: {
+                selectors: {
+                  ".ms-ChoiceField-field::before": { marginTop: 4 },
+                  ".ms-ChoiceField-field::after": { marginTop: 4 },
+                  ".ms-ChoiceFieldLabel": { paddingLeft: 6 },
+                },
+              },
             }}
-          >
-            Submit
-          </PrimaryButton>
-          <DefaultButton onClick={() => closeFeedbackModal()}>Cancel</DefaultButton>
+            label="May we contact you about your feedback?"
+            options={[
+              { key: "yes", text: "Yes, you may contact me." },
+              { key: "no", text: "No, do not contact me." },
+            ]}
+            selectedKey={isContactAllowed ? "yes" : "no"}
+            onChange={(_, option) => {
+              setIsContactAllowed(option.key === "yes");
+              setContact(option.key === "yes" ? getUserEmail() : "");
+            }}
+          ></ChoiceGroup>
+          <Text style={{ fontSize: 12, marginBottom: 14 }}>
+            By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the{" "}
+            {
+              <Link href="https://privacy.microsoft.com/privacystatement" target="_blank">
+                Privacy statement
+              </Link>
+            }{" "}
+            for more information.
+          </Text>
+          {likeQuery && (
+            <Checkbox
+              styles={{ label: { paddingLeft: 0 }, root: { marginBottom: 14 } }}
+              label="Don't show me this next time"
+              checked={doNotShowAgainChecked}
+              onChange={(_, checked) => setDoNotShowAgainChecked(checked)}
+            />
+          )}
+          <Stack horizontal horizontalAlign="end">
+            <PrimaryButton styles={{ root: { marginRight: 8 } }} type="submit">
+              Submit
+            </PrimaryButton>
+            <DefaultButton onClick={() => closeFeedbackModal()}>Cancel</DefaultButton>
+          </Stack>
         </Stack>
-      </Stack>
+      </form>
     </Modal>
   );
 };

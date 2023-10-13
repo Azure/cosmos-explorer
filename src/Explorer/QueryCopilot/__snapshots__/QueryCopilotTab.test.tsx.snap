@@ -17,6 +17,37 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       }
     }
   >
+    <QueryCopilotPromptbar
+      explorer={
+        Explorer {
+          "_isInitializingNotebooks": false,
+          "_resetNotebookWorkspace": [Function],
+          "isFixedCollectionWithSharedThroughputSupported": [Function],
+          "isTabsContentExpanded": [Function],
+          "onRefreshDatabasesKeyPress": [Function],
+          "onRefreshResourcesClick": [Function],
+          "phoenixClient": PhoenixClient {
+            "armResourceId": undefined,
+            "retryOptions": Object {
+              "maxTimeout": 5000,
+              "minTimeout": 5000,
+              "retries": 3,
+            },
+          },
+          "provideFeedbackEmail": [Function],
+          "queriesClient": QueriesClient {
+            "container": [Circular],
+          },
+          "refreshNotebookList": [Function],
+          "resourceTree": ResourceTreeAdapter {
+            "container": [Circular],
+            "copyNotebook": [Function],
+            "parameters": [Function],
+          },
+        }
+      }
+      toggleCopilot={[Function]}
+    />
     <Stack
       className="tabPaneContentContainer"
     >
@@ -25,10 +56,10 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
         onDragEnd={null}
         onDragStart={null}
         onSecondaryPaneSizeChange={null}
-        percentage={false}
+        percentage={true}
         primaryIndex={0}
-        primaryMinSize={100}
-        secondaryMinSize={200}
+        primaryMinSize={30}
+        secondaryMinSize={70}
         vertical={true}
       >
         <EditorReact

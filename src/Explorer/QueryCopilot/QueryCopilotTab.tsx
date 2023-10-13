@@ -21,8 +21,13 @@ import * as StringUtility from "../../Shared/StringUtility";
 export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
   const { query, setQuery, selectedQuery, setSelectedQuery, isGeneratingQuery } = useQueryCopilot();
 
-  const cachedCopilotToggleStatus = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`);
-  const [copilotActive, setCopilotActive] = useState<boolean>(StringUtility.toBoolean(cachedCopilotToggleStatus));
+  const cachedCopilotToggleStatus: string = localStorage.getItem(
+    `${userContext.databaseAccount?.id}-queryCopilotToggleStatus`,
+  );
+  const copilotInitialActive: boolean = cachedCopilotToggleStatus
+    ? StringUtility.toBoolean(cachedCopilotToggleStatus)
+    : true;
+  const [copilotActive, setCopilotActive] = useState<boolean>(copilotInitialActive);
 
   const getCommandbarButtons = (): CommandButtonComponentProps[] => {
     const executeQueryBtnLabel = selectedQuery ? "Execute Selection" : "Execute Query";
@@ -87,7 +92,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
           <QueryCopilotPromptbar explorer={explorer} toggleCopilot={toggleCopilot}></QueryCopilotPromptbar>
         )}
         <Stack className="tabPaneContentContainer">
-          <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
+          <SplitterLayout percentage={true} vertical={true} primaryIndex={0} primaryMinSize={30} secondaryMinSize={70}>
             <EditorReact
               language={"sql"}
               content={query}
