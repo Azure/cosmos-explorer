@@ -1,8 +1,10 @@
+import { PartitionKey, PartitionKeyDefinition, PartitionKeyKind } from "@azure/cosmos";
 import * as Q from "q";
 import * as sinon from "sinon";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
+import { extractPartitionKeyValues } from "./QueryUtils";
 
 describe("Query Utils", () => {
   const generatePartitionKeyForPath = (path: string): DataModels.PartitionKey => {
@@ -92,6 +94,71 @@ describe("Query Utils", () => {
       await QueryUtils.queryPagesUntilContentPresent(0, queryStub);
       expect(queryStub.callCount).toBe(1);
       expect(queryStub.getCall(0).args[0]).toBe(0);
+    });
+  });
+
+  describe("extractPartitionKey", () => {
+    const documentContent = {
+      "Volcano Name": "Adams",
+      Country: "United States",
+      Region: "US-Washington",
+      Location: {
+        type: "Point",
+        coordinates: [-121.49, 46.206],
+      },
+      Elevation: 3742,
+      Type: "Stratovolcano",
+      Status: "Tephrochronology",
+      "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
+      id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
+      _rid: "xzo0AJRYUxUFAAAAAAAAAA==",
+      _self: "dbs/xzo0AA==/colls/xzo0AJRYUxU=/docs/xzo0AJRYUxUFAAAAAAAAAA==/",
+      _etag: '"ce00fa43-0000-0100-0000-652840440000"',
+      _attachments: "attachments/",
+      _ts: 1697136708,
+    };
+    it("should extract single partition key value", () => {
+      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.Hash,
+        paths: ["/Elevation"],
+      };
+
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        singlePartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(1);
+      expect(partitionKeyValues[0]).toEqual(3742);
+    });
+
+    it("should extract two partition key values", () => {
+      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Type", "/Status"],
+      };
+      // const validPartitionKeyValues: Set<string> = new Set(["Stratovolcano", "Tephrochronology"]);
+      const validPartitionKeyValues: string[] = ["Stratovolcano", "Tephrochronology"];
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        singlePartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(2);
+      expect(validPartitionKeyValues).toContain(documentContent["Type"]);
+      expect(validPartitionKeyValues).toContain(documentContent["Status"]);
+    });
+
+    it("should extract no partition key values", () => {
+      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.Hash,
+        paths: ["/InvalidPartitionKeyPath"],
+      };
+
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        singlePartitionKeyDefinition,
+      );
+
+      expect(partitionKeyValues.length).toBe(0);
     });
   });
 });

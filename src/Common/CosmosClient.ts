@@ -1,13 +1,12 @@
 import * as Cosmos from "@azure/cosmos";
+import { AuthType } from "../AuthType";
+import { PriorityLevel } from "../Common/Constants";
 import { configContext, Platform } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
+import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { PriorityLevel } from "../Common/Constants";
-import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
-import { AuthType } from "../AuthType";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -41,7 +40,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   return decodeURIComponent(result.PrimaryReadWriteToken);
 };
 
-export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
+export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   return next(requestContext);
