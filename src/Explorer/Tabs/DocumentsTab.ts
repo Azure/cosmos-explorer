@@ -346,6 +346,22 @@ export default class DocumentsTab extends TabsBase {
     return true;
   }
 
+  /**
+   * Query first page of documents
+   * Select and query first document and display content
+   */
+  private async autoPopulateContent() {
+    // reset iterator
+    this._documentsIterator = this.createIterator();
+    // load documents
+    await this.loadNextPage();
+
+    // Select first document and load content
+    if (this.documentIds().length > 0) {
+      this.documentIds()[0].click();
+    }
+  }
+
   public onShowFilterClick(): Q.Promise<any> {
     this.isFilterCreated(true);
     this.isFilterExpanded(true);
@@ -380,10 +396,7 @@ export default class DocumentsTab extends TabsBase {
     this.documentIds([]);
 
     try {
-      // reset iterator
-      this._documentsIterator = this.createIterator();
-      // load documents
-      await this.loadNextPage();
+      await this.autoPopulateContent();
       // collapse filter
       this.appliedFilter(this.filterContent());
       this.isFilterExpanded(false);
@@ -406,6 +419,11 @@ export default class DocumentsTab extends TabsBase {
     this.queryAbortController.abort();
   }
 
+  /**
+   * TODO Doesn't seem to be used: remove?
+   * @param clickedDocumentId
+   * @returns
+   */
   public onDocumentIdClick(clickedDocumentId: DocumentId): Q.Promise<any> {
     if (this.editorState() !== ViewModels.DocumentExplorerState.noDocumentSelected) {
       return Q();
@@ -624,8 +642,7 @@ export default class DocumentsTab extends TabsBase {
 
     if (!this._documentsIterator) {
       try {
-        this._documentsIterator = this.createIterator();
-        await this.loadNextPage();
+        await this.autoPopulateContent();
       } catch (error) {
         if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
           TelemetryProcessor.traceFailure(

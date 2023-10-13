@@ -5,7 +5,6 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
   className="tab-pane"
   style={
     Object {
-      "padding": 24,
       "width": "100%",
     }
   }
@@ -18,103 +17,37 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       }
     }
   >
-    <Stack
-      horizontal={true}
-      verticalAlign="center"
-    >
-      <Image
-        src={Object {}}
-        style={
-          Object {
-            "height": 24,
-            "width": 24,
-          }
-        }
-      />
-      <Text
-        style={
-          Object {
-            "fontSize": 16,
-            "fontWeight": 600,
-            "marginLeft": 8,
-          }
-        }
-      >
-        Copilot
-      </Text>
-    </Stack>
-    <Stack
-      horizontal={true}
-      style={
-        Object {
-          "marginTop": 16,
-          "position": "relative",
-          "width": "100%",
-        }
-      }
-      verticalAlign="center"
-    >
-      <StyledTextFieldBase
-        autoComplete="off"
-        disabled={false}
-        id="naturalLanguageInput"
-        onChange={[Function]}
-        onClick={[Function]}
-        onKeyDown={[Function]}
-        style={
-          Object {
-            "lineHeight": 30,
-          }
-        }
-        styles={
-          Object {
-            "root": Object {
-              "width": "95%",
+    <QueryCopilotPromptbar
+      explorer={
+        Explorer {
+          "_isInitializingNotebooks": false,
+          "_resetNotebookWorkspace": [Function],
+          "isFixedCollectionWithSharedThroughputSupported": [Function],
+          "isTabsContentExpanded": [Function],
+          "onRefreshDatabasesKeyPress": [Function],
+          "onRefreshResourcesClick": [Function],
+          "phoenixClient": PhoenixClient {
+            "armResourceId": undefined,
+            "retryOptions": Object {
+              "maxTimeout": 5000,
+              "minTimeout": 5000,
+              "retries": 3,
             },
-          }
-        }
-        value=""
-      />
-      <CustomizedIconButton
-        disabled={true}
-        iconProps={
-          Object {
-            "iconName": "Send",
-          }
-        }
-        onClick={[Function]}
-        style={
-          Object {
-            "marginLeft": 8,
-          }
-        }
-      />
-    </Stack>
-    <Stack
-      style={
-        Object {
-          "marginBottom": 24,
-          "marginTop": 8,
+          },
+          "provideFeedbackEmail": [Function],
+          "queriesClient": QueriesClient {
+            "container": [Circular],
+          },
+          "refreshNotebookList": [Function],
+          "resourceTree": ResourceTreeAdapter {
+            "container": [Circular],
+            "copyNotebook": [Function],
+            "parameters": [Function],
+          },
         }
       }
-    >
-      <Text
-        style={
-          Object {
-            "fontSize": 12,
-          }
-        }
-      >
-        AI-generated content can have mistakes. Make sure it's accurate and appropriate before using it.
-         
-        <StyledLinkBase
-          href="https://aka.ms/cdb-copilot-preview-terms"
-          target="_blank"
-        >
-          Read preview terms
-        </StyledLinkBase>
-      </Text>
-    </Stack>
+      toggleCopilot={[Function]}
+    />
     <Stack
       className="tabPaneContentContainer"
     >
@@ -123,10 +56,10 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
         onDragEnd={null}
         onDragStart={null}
         onSecondaryPaneSizeChange={null}
-        percentage={false}
+        percentage={true}
         primaryIndex={0}
-        primaryMinSize={100}
-        secondaryMinSize={200}
+        primaryMinSize={30}
+        secondaryMinSize={70}
         vertical={true}
       >
         <EditorReact
@@ -142,20 +75,6 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
         <QueryCopilotResults />
       </t>
     </Stack>
-    <WelcomeModal
-      visible={true}
-    />
-    <DeletePopup
-      clearFeedback={[Function]}
-      setQuery={[Function]}
-      setShowDeletePopup={[Function]}
-      showDeletePopup={false}
-      showFeedbackBar={[Function]}
-    />
-    <CopyPopup
-      setShowCopyPopup={[Function]}
-      showCopyPopup={false}
-    />
   </div>
 </Stack>
 `;
