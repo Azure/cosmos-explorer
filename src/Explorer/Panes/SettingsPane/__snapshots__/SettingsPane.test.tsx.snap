@@ -111,7 +111,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             Query Timeout
           </legend>
           <InfoTooltip>
-            When a query reaches a specified time limit, a popup with an option to cancel the query will show
+            When a query reaches a specified time limit, a popup with an option to cancel the query will show unless automatic cancellation has been enabled
           </InfoTooltip>
         </div>
         <div>

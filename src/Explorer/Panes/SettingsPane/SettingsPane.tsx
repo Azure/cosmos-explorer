@@ -288,6 +288,7 @@ export const SettingsPane: FunctionComponent = () => {
                 </legend>
                 <InfoTooltip>
                   When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                  unless automatic cancellation has been enabled
                 </InfoTooltip>
               </div>
               <div>
