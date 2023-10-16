@@ -11,6 +11,7 @@ export type FabricMessage =
       endpoint: string | undefined;
       databaseId: string | undefined;
       resourceTokens: unknown | undefined;
+      resourceTokensTimestamp: number | undefined;
       error: string | undefined;
     };
   }
@@ -33,6 +34,7 @@ export type FabricMessage =
       endpoint: string | undefined;
       databaseId: string | undefined;
       resourceTokens: unknown | undefined;
+      resourceTokensTimestamp: number | undefined;
     };
   };
 
