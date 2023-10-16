@@ -41,6 +41,7 @@ export type Features = {
   readonly enableCopilotFullSchema: boolean;
   readonly copilotChatFixedMonacoEditorHeight: boolean;
   readonly enablePriorityBasedExecution: boolean;
+  readonly disableConnectionStringLogin: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -114,6 +115,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableCopilotFullSchema: "true" === get("enablecopilotfullschema", "true"),
     copilotChatFixedMonacoEditorHeight: "true" === get("copilotchatfixedmonacoeditorheight"),
     enablePriorityBasedExecution: "true" === get("enableprioritybasedexecution"),
+    disableConnectionStringLogin: "true" === get("disableconnectionstringlogin"),
   };
 }
 

@@ -1,4 +1,5 @@
 import { useBoolean } from "@fluentui/react-hooks";
+import { userContext } from "UserContext";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
@@ -37,6 +38,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setConnectionString,
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
+  const enableConnectionStringLogin = !userContext.features.disableConnectionStringLogin;
 
   return (
     <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
@@ -46,7 +48,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
             <img src={ConnectImage} alt="Azure Cosmos DB" />
           </p>
           <p className="welcomeText">Welcome to Azure Cosmos DB</p>
-          {isFormVisible ? (
+          {isFormVisible && enableConnectionStringLogin ? (
             <form
               id="connectWithConnectionString"
               onSubmit={async (event) => {
@@ -89,9 +91,11 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
           ) : (
             <div id="connectWithAad">
               <input className="filterbtnstyle" type="button" value="Sign In" onClick={login} />
-              <p className="switchConnectTypeText" onClick={showForm}>
-                Connect to your account with connection string
-              </p>
+              {enableConnectionStringLogin && (
+                <p className="switchConnectTypeText" onClick={showForm}>
+                  Connect to your account with connection string
+                </p>
+              )}
             </div>
           )}
         </div>
