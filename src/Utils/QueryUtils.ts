@@ -84,6 +84,7 @@ export const queryPagesUntilContentPresent = async (
   return await doRequest(firstItemIndex);
 };
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export const extractPartitionKeyValues = (
   documentContent: any,
   partitionKeyDefinition: PartitionKeyDefinition,
@@ -95,7 +96,9 @@ export const extractPartitionKeyValues = (
   const partitionKeyValues: PartitionKey[] = [];
   partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
     const partitionKeyPathWithoutSlash: string = partitionKeyPath.substring(1);
-    partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
+    if (documentContent[partitionKeyPathWithoutSlash]) {
+      partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
+    }
   });
   return partitionKeyValues;
 };

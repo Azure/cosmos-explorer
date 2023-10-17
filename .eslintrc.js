@@ -39,6 +39,7 @@ module.exports = {
     "@typescript-eslint/switch-exhaustiveness-check": "error",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-extraneous-class": "error",
+    "@typescript-eslint/no-explicit-any": "error",
     "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
     eqeqeq: "error",
     "react/display-name": "off",

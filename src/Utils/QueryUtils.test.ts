@@ -117,6 +117,7 @@ describe("Query Utils", () => {
       _attachments: "attachments/",
       _ts: 1697136708,
     };
+
     it("should extract single partition key value", () => {
       const singlePartitionKeyDefinition: PartitionKeyDefinition = {
         kind: PartitionKeyKind.Hash,
@@ -132,19 +133,18 @@ describe("Query Utils", () => {
     });
 
     it("should extract two partition key values", () => {
-      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
+      const multiPartitionKeyDefinition: PartitionKeyDefinition = {
         kind: PartitionKeyKind.MultiHash,
         paths: ["/Type", "/Status"],
       };
-      // const validPartitionKeyValues: Set<string> = new Set(["Stratovolcano", "Tephrochronology"]);
-      const validPartitionKeyValues: string[] = ["Stratovolcano", "Tephrochronology"];
+      const expectedPartitionKeyValues: string[] = ["Stratovolcano", "Tephrochronology"];
       const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
         documentContent,
-        singlePartitionKeyDefinition,
+        multiPartitionKeyDefinition,
       );
       expect(partitionKeyValues.length).toBe(2);
-      expect(validPartitionKeyValues).toContain(documentContent["Type"]);
-      expect(validPartitionKeyValues).toContain(documentContent["Status"]);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Type"]);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Status"]);
     });
 
     it("should extract no partition key values", () => {
