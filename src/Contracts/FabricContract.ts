@@ -73,3 +73,9 @@ export type CosmosDBConnectionInfoResponse = {
   databaseId: string;
   resourceTokens: unknown;
 };
+
+export interface FabricDatabaseTokensData {
+  databaseId: string;
+  resourceTokens: { [resourceId: string]: string };
+  resourceTokensTimestamp: number;
+}

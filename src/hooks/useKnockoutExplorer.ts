@@ -1,6 +1,8 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricMessage } from "Contracts/FabricContract";
+import { FabricDatabaseTokensData, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
+import Collection from "Explorer/Tree/Collection";
+import Database from "Explorer/Tree/Database";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -105,7 +107,12 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            explorer = await configureWithFabric(data.message.endpoint);
+            console.log("Received initialize message from Fabric", data)
+            explorer = await configureWithFabric(data.message.endpoint, {
+              databaseId: data.message.databaseId,
+              resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
+              resourceTokensTimestamp: data.message.resourceTokensTimestamp,
+            });
             resolve(explorer);
             break;
           }
@@ -301,7 +308,44 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function configureWithFabric(documentEndpoint: string): Explorer {
+const updateResourceTreeFromFabricTokens = (container: Explorer, tokensData: FabricDatabaseTokensData) => {
+  const databasesMap = new Map<string, Database>(); // databaseId <--> Database
+
+  // Emulate what Explorer.refreshDatabaseAccount does, but with the tokens Data
+  for (const resourceId in tokensData.resourceTokens) {
+    // Dictionary key looks like this: dbs/SampleDB/colls/Container
+    const resourceIdObj = resourceId.split("/");
+    const databaseId = resourceIdObj[1];
+    const collectionId = resourceIdObj[3];
+    if (!databasesMap.has(databaseId)) {
+      const database = new Database(container, {
+        _rid: `_${databaseId}`,
+        _self: '',
+        _etag: '',
+        _ts: Date.now(),
+        id: databaseId,
+        collections: [],
+      });
+      databasesMap.set(databaseId, database);
+    }
+
+    const database = databasesMap.get(databaseId);
+    if (!database.collections().find(c => c.id() === collectionId)) {
+      const collection = new Collection(container, databaseId, {
+        _rid: `_${collectionId}`,
+        _self: '',
+        _etag: '',
+        _ts: Date.now(),
+        id: collectionId
+      });
+      database.collections.push(collection);
+    }
+  }
+
+  useDatabases.setState({ databases: Array.from(databasesMap.values()) });
+};
+
+function configureWithFabric(documentEndpoint: string, tokensData: FabricDatabaseTokensData): Explorer {
   updateUserContext({
     authType: AuthType.ConnectionString,
     databaseAccount: {
@@ -316,7 +360,7 @@ function configureWithFabric(documentEndpoint: string): Explorer {
     },
   });
   const explorer = new Explorer();
-  setTimeout(() => explorer.refreshAllDatabases(), 0);
+  setTimeout(() => updateResourceTreeFromFabricTokens(explorer, tokensData), 0);
   return explorer;
 }
 
