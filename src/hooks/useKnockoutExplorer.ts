@@ -1,8 +1,8 @@
 import { createUri } from "Common/UrlUtility";
 import { FabricDatabaseTokensData, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
+import Collection from "Explorer/Tree/Collection";
 import Database from "Explorer/Tree/Database";
-import FabricCollection from "Explorer/Tree2/FabricCollection";
 import FabricDatabase from "Explorer/Tree2/FabricDatabase";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -337,7 +337,7 @@ const updateResourceTreeFromFabricTokens = (container: Explorer, tokensData: Fab
 
     const database = databasesMap.get(databaseId);
     if (!database.collections().find(c => c.id() === collectionId)) {
-      const collection = new FabricCollection(container, databaseId, {
+      const collection = new Collection(container, databaseId, {
         _rid: `_${collectionId}`,
         _self: '',
         _etag: '',
