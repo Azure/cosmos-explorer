@@ -114,7 +114,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     super(props);
 
     this.state = {
-      createNewDatabase: userContext.apiType !== "Tables" && configContext.platform !== Platform.Fabric && !this.props.databaseId,
+      createNewDatabase:
+        userContext.apiType !== "Tables" && configContext.platform !== Platform.Fabric && !this.props.databaseId,
       newDatabaseId: props.isQuickstart ? this.getSampleDBName() : "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
       selectedDatabaseId:
@@ -677,8 +678,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                   provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                  true,
-                ).toLocaleLowerCase()} in the database and
+                    true,
+                  ).toLocaleLowerCase()} in the database and
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
@@ -688,8 +689,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   tabIndex={0}
                   ariaLabel={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                 provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                    true,
-                  ).toLocaleLowerCase()} in the database and
+                  true,
+                ).toLocaleLowerCase()} in the database and
                 does not count towards the throughput you provisioned for the database. This throughput amount will be
                 billed in addition to the throughput amount you provisioned at the database level.`}
                 />
@@ -993,12 +994,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       case "Gremlin":
         return "e.g., /address";
       case "SQL":
-        return `${index === undefined
-          ? "Required - first partition key e.g., /TenantId"
-          : index === 0
+        return `${
+          index === undefined
+            ? "Required - first partition key e.g., /TenantId"
+            : index === 0
             ? "second partition key e.g., /UserId"
             : "third partition key e.g., /SessionId"
-          }`;
+        }`;
       default:
         return "e.g., /address/zipCode";
     }
@@ -1327,15 +1329,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
-        paths: [
-          partitionKeyString,
-          ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
-            ? this.state.subPartitionKeys
-            : []),
-        ],
-        kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
-        version: partitionKeyVersion,
-      }
+          paths: [
+            partitionKeyString,
+            ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
+              ? this.state.subPartitionKeys
+              : []),
+          ],
+          kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
+          version: partitionKeyVersion,
+        }
       : undefined;
 
     const indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
