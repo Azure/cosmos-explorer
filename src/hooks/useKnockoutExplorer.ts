@@ -1,8 +1,9 @@
 import { createUri } from "Common/UrlUtility";
 import { FabricDatabaseTokensData, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
-import Collection from "Explorer/Tree/Collection";
 import Database from "Explorer/Tree/Database";
+import FabricCollection from "Explorer/Tree2/FabricCollection";
+import FabricDatabase from "Explorer/Tree2/FabricDatabase";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -108,7 +109,7 @@ async function configureFabric(): Promise<Explorer> {
         switch (data.type) {
           case "initialize": {
             console.log("Received initialize message from Fabric", data)
-            explorer = await configureWithFabric(data.message.endpoint, {
+            explorer = await createExplorerFabric(data.message.endpoint, {
               databaseId: data.message.databaseId,
               resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
               resourceTokensTimestamp: data.message.resourceTokensTimestamp,
@@ -120,39 +121,7 @@ async function configureFabric(): Promise<Explorer> {
             explorer.onNewCollectionClicked();
             break;
           case "openTab": {
-            // Expand database first
-            const databaseName = sessionStorage.getItem("openDatabaseName") ?? data.databaseName;
-            const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
-            if (database) {
-              await database.expandDatabase();
-              useDatabases.getState().updateDatabase(database);
-              useSelectedNode.getState().setSelectedNode(database);
-
-              let collectionResourceId = data.collectionName;
-              if (collectionResourceId === undefined) {
-                // Pick first collection if collectionName not specified in message
-                collectionResourceId = database.collections()[0]?.id();
-              }
-
-              if (collectionResourceId !== undefined) {
-                // Expand collection
-                const collection = database.collections().find((coll) => coll.id() === collectionResourceId);
-                collection.expandCollection();
-                useSelectedNode.getState().setSelectedNode(collection);
-
-                handleOpenAction(
-                  {
-                    actionType: ActionType.OpenCollectionTab,
-                    databaseResourceId: databaseName,
-                    collectionResourceId: data.collectionName,
-                    tabKind: TabKind.SQLDocuments,
-                  } as DataExplorerAction,
-                  useDatabases.getState().databases,
-                  explorer,
-                );
-              }
-            }
-
+            openFirstContainer(explorer, data.databaseName, data.collectionName);
             break;
           }
           case "authorizationToken": {
@@ -169,6 +138,43 @@ async function configureFabric(): Promise<Explorer> {
 
     sendReadyMessage();
   });
+}
+
+const openFirstContainer = async (explorer: Explorer, databaseName: string, collectionName?: string) => {
+  console.log('openFirstContainer', databaseName, collectionName);
+  // Expand database first
+  databaseName = sessionStorage.getItem("openDatabaseName") ?? databaseName;
+  const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
+  if (database) {
+    await database.expandDatabase();
+    useDatabases.getState().updateDatabase(database);
+    useSelectedNode.getState().setSelectedNode(database);
+
+    let collectionResourceId = collectionName;
+    if (collectionResourceId === undefined) {
+      // Pick first collection if collectionName not specified in message
+      collectionResourceId = database.collections()[0]?.id();
+    }
+
+    if (collectionResourceId !== undefined) {
+      // Expand collection
+      const collection = database.collections().find((coll) => coll.id() === collectionResourceId);
+      collection.expandCollection();
+      useSelectedNode.getState().setSelectedNode(collection);
+
+      handleOpenAction(
+        {
+          actionType: ActionType.OpenCollectionTab,
+          databaseResourceId: databaseName,
+          collectionResourceId: collectionName,
+          tabKind: TabKind.SQLDocuments,
+        } as DataExplorerAction,
+        useDatabases.getState().databases,
+        explorer,
+      );
+    }
+  }
+
 }
 
 async function configureHosted(): Promise<Explorer> {
@@ -318,7 +324,7 @@ const updateResourceTreeFromFabricTokens = (container: Explorer, tokensData: Fab
     const databaseId = resourceIdObj[1];
     const collectionId = resourceIdObj[3];
     if (!databasesMap.has(databaseId)) {
-      const database = new Database(container, {
+      const database = new FabricDatabase(container, {
         _rid: `_${databaseId}`,
         _self: '',
         _etag: '',
@@ -331,7 +337,7 @@ const updateResourceTreeFromFabricTokens = (container: Explorer, tokensData: Fab
 
     const database = databasesMap.get(databaseId);
     if (!database.collections().find(c => c.id() === collectionId)) {
-      const collection = new Collection(container, databaseId, {
+      const collection = new FabricCollection(container, databaseId, {
         _rid: `_${collectionId}`,
         _self: '',
         _etag: '',
@@ -345,7 +351,7 @@ const updateResourceTreeFromFabricTokens = (container: Explorer, tokensData: Fab
   useDatabases.setState({ databases: Array.from(databasesMap.values()) });
 };
 
-function configureWithFabric(documentEndpoint: string, tokensData: FabricDatabaseTokensData): Explorer {
+function createExplorerFabric(documentEndpoint: string, tokensData: FabricDatabaseTokensData): Explorer {
   updateUserContext({
     authType: AuthType.ConnectionString,
     databaseAccount: {
@@ -360,7 +366,10 @@ function configureWithFabric(documentEndpoint: string, tokensData: FabricDatabas
     },
   });
   const explorer = new Explorer();
-  setTimeout(() => updateResourceTreeFromFabricTokens(explorer, tokensData), 0);
+  setTimeout(() => {
+    updateResourceTreeFromFabricTokens(explorer, tokensData);
+    openFirstContainer(explorer, tokensData.databaseId);
+  }, 0);
   return explorer;
 }
 
