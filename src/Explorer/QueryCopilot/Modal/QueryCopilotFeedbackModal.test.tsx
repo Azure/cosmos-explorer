@@ -102,7 +102,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("should submit submission", () => {
+  it("should not submit submission if required description field is null", () => {
     const explorer = new Explorer();
     const wrapper = shallow(<QueryCopilotFeedbackModal explorer={explorer} />);
 
@@ -110,12 +110,24 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     submitButton.simulate("click");
     wrapper.setProps({});
 
+    expect(SubmitFeedback).toHaveBeenCalledTimes(0);
+  });
+
+  it("should submit submission", () => {
+    useQueryCopilot.getState().openFeedbackModal("test query", false, "test prompt");
+    const explorer = new Explorer();
+    const wrapper = shallow(<QueryCopilotFeedbackModal explorer={explorer} />);
+
+    const submitButton = wrapper.find("form");
+    submitButton.simulate("submit");
+    wrapper.setProps({});
+
     expect(SubmitFeedback).toHaveBeenCalledTimes(1);
     expect(SubmitFeedback).toHaveBeenCalledWith({
       params: {
         likeQuery: false,
-        generatedQuery: "",
-        userPrompt: "",
+        generatedQuery: "test query",
+        userPrompt: "test prompt",
         description: "",
         contact: getUserEmail(),
       },

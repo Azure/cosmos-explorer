@@ -128,7 +128,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
-  closeFeedbackModal: () => set({ generatedQuery: "", likeQuery: false, userPrompt: "", showFeedbackModal: false }),
+  closeFeedbackModal: () => set({ showFeedbackModal: false }),
   setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) =>
     set({ hideFeedbackModalForLikedQueries }),
   refreshCorrelationId: () => set({ correlationId: guid() }),
