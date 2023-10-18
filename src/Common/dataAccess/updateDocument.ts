@@ -18,7 +18,7 @@ export const updateDocument = async (
 
   try {
     const options: RequestOptions =
-      documentId.partitionKey.kind === "MultiHash"
+      documentId.partitionKey?.kind === "MultiHash"
         ? {
             [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
           }
