@@ -2,16 +2,30 @@ import { Queries } from "Common/Constants";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { listMongoDBCollections } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { listSqlContainers } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { listTables } from "../../Utils/arm/generatedClients/cosmos/tableResources";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
+  if (!!userContext.fabricConnectionInfo) {
+    const collections: DataModels.Collection[] = [];
+    for(const resourceId in userContext.fabricConnectionInfo.resourceTokens) {
+      collections.push({
+        _rid: null,
+        _self:  null,
+        _etag:  null,
+        _ts: 0,
+        id: resourceId.split("/")[3]
+      });
+    }
+
+    return collections;
+  }
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
     if (

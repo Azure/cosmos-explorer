@@ -92,6 +92,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
   private phoenixClient: PhoenixClient;
+
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -332,6 +333,10 @@ export default class Explorer {
   }
 
   public async refreshAllDatabases(): Promise<void> {
+    if (userContext.fabricConnectionInfo) {
+      return this.refreshAllDatabasesFromResourceTokens();
+    }
+
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -368,6 +373,21 @@ export default class Explorer {
       );
       logConsoleError(`Error while refreshing databases: ${errorMessage}`);
     }
+  }
+
+  public async refreshAllDatabasesFromResourceTokens(): Promise<void> {
+      const databases: ViewModels.Database[] = [
+        new Database(this, {
+          _rid: null,
+          _self:  null,
+          _etag:  null,
+          _ts: 0,
+          id: userContext.fabricConnectionInfo.databaseId,
+          collections: []
+        })
+      ];
+      useDatabases.setState({ databases: databases });
+      //await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, updatedDatabases);
   }
 
   public onRefreshDatabasesKeyPress = (source: string, event: KeyboardEvent): boolean => {
@@ -1365,6 +1385,10 @@ export default class Explorer {
   }
 
   public async refreshSampleData(): Promise<void> {
+    if (userContext.fabricConnectionInfo) {
+      return;
+    }
+
     if (!userContext.sampleDataConnectionInfo) {
       return;
     }

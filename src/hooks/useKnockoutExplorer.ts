@@ -1,5 +1,5 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricMessage } from "Contracts/FabricContract";
+import { CosmosDBConnectionInfoResponse, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -105,7 +105,7 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            explorer = await configureWithFabric(data.message.endpoint);
+            explorer = await configureWithFabric(data.message as CosmosDBConnectionInfoResponse);
             resolve(explorer);
             break;
           }
@@ -301,8 +301,9 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function configureWithFabric(documentEndpoint: string): Explorer {
+function configureWithFabric(cosmosDBConnectionInfoResponse: CosmosDBConnectionInfoResponse): Explorer {
   updateUserContext({
+    fabricConnectionInfo: cosmosDBConnectionInfoResponse,
     authType: AuthType.ConnectionString,
     databaseAccount: {
       id: "",
@@ -311,12 +312,12 @@ function configureWithFabric(documentEndpoint: string): Explorer {
       name: "Mounted",
       kind: AccountKind.Default,
       properties: {
-        documentEndpoint,
+        documentEndpoint: cosmosDBConnectionInfoResponse.endpoint,
       },
     },
   });
   const explorer = new Explorer();
-  setTimeout(() => explorer.refreshAllDatabases(), 0);
+  //setTimeout(() => explorer.refreshAllDatabases(), 0);
   return explorer;
 }
 
