@@ -232,8 +232,8 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   <b>Migrate existing data</b>
                   <br />
                   <br />
-                  Modernize your data seamlessly from an existing MongoDB cluster, whether it's on-premises or hosted in
-                  the cloud, to Azure Cosmos DB for MongoDB vCore.&nbsp;
+                  Modernize your data seamlessly from an existing MongoDB cluster, whether it&apos;s on-premises or
+                  hosted in the cloud, to Azure Cosmos DB for MongoDB vCore.&nbsp;
                   <Link
                     target="_blank"
                     href="https://learn.microsoft.com/azure-data-studio/extensions/azure-cosmos-db-mongodb-extension"
