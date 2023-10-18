@@ -390,7 +390,9 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
           </Stack>
         )}
       </div>
-      <div className="panelNullWarning" style={{ padding: "20px", color: "red" }}>Warning: Null fields may not be edited.</div>
+      <div className="panelNullWarning" style={{ padding: "20px", color: "red" }}>
+        Warning: Null fields may not be edited.
+      </div>
     </RightPaneForm>
   );
 };
