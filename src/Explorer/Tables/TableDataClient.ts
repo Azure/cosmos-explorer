@@ -185,6 +185,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     newEntity: Entities.ITableEntity,
   ): Promise<Entities.ITableEntity> {
     const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Updating row ${originalDocument.RowKey._}`);
+    
     try {
       let whereSegment = " WHERE";
       let keys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys.concat(
