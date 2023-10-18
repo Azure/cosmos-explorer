@@ -14,7 +14,7 @@ export const readDocument = async (collection: CollectionBase, documentId: Docum
 
   try {
     const options: RequestOptions =
-      documentId.partitionKey.kind === "MultiHash"
+      documentId.partitionKey?.kind === "MultiHash"
         ? {
             [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
           }
