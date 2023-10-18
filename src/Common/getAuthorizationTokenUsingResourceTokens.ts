@@ -3,7 +3,7 @@ export function getAuthorizationTokenUsingResourceTokens(
   path: string,
   resourceId: string,
 ): string {
-  console.log(`getting token for path: "${path}" and resourceId: "${resourceId}"`);
+  // console.log(`getting token for path: "${path}" and resourceId: "${resourceId}"`);
 
   if (resourceTokens && Object.keys(resourceTokens).length > 0) {
     // For database account access(through getDatabaseAccount API), path and resourceId are "",
@@ -20,7 +20,7 @@ export function getAuthorizationTokenUsingResourceTokens(
 
     // minimum valid path /dbs
     if (!path || path.length < 4) {
-      console.log(
+      console.error(
         `Unable to get authotization token for Path:"${path}" and resourcerId:"${resourceId}". Invalid path.`,
       );
       return null;
@@ -51,7 +51,7 @@ export function getAuthorizationTokenUsingResourceTokens(
     }
   }
 
-  console.log(`Unable to get authotization token for Path:"${path}" and resourcerId:"${resourceId}"`);
+  console.error(`Unable to get authotization token for Path:"${path}" and resourcerId:"${resourceId}"`);
   return null;
 }
 
