@@ -19,9 +19,6 @@ import Explorer from "../Explorer";
 import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
-import { getLocalDateTime } from "./QueryBuilder/DateTimeUtilities";
-import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -34,7 +31,7 @@ export interface CassandraTableKey {
 }
 
 export abstract class TableDataClient {
-  constructor() {}
+  constructor() { }
 
   public abstract createDocument(
     collection: ViewModels.Collection,
@@ -151,31 +148,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     let values = "(";
     for (let property in entity) {
       if (entity[property]._ === "" || undefined) {
-        switch (entity[property].$) {
-          case "Timestamp":
-            entity[property]._ = getLocalDateTime(new Date().toString());
-            break;
-          case "Date":
-            entity[property]._ = moment().format("YYYY-MM-DD");
-            break;
-          case "Uuid":
-            entity[property]._ = uuidv4().toString();
-            break;
-          case "Boolean":
-            const bool: boolean = false;
-            entity[property]._ = bool.toString();
-            break;
-          case "Int":
-          case "Double":
-          case "Decimal":
-          case "Float":
-          case "Bigint":
-            entity[property]._ = "0";
-            break;
-          default:
-            entity[property]._ = "";
-            break;
-        }
+        continue;
       }
       properties = properties.concat(`${property}, `);
       const propertyType = entity[property].$;
@@ -212,7 +185,6 @@ export class CassandraAPIDataClient extends TableDataClient {
     newEntity: Entities.ITableEntity,
   ): Promise<Entities.ITableEntity> {
     const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Updating row ${originalDocument.RowKey._}`);
-
     try {
       let whereSegment = " WHERE";
       let keys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys.concat(
@@ -236,31 +208,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           newEntity[property]._.toString() !== originalDocument[property]._.toString()
         ) {
           if (newEntity[property]._.toString() === "" || undefined) {
-            switch (newEntity[property].$) {
-              case "Timestamp":
-                newEntity[property]._ = getLocalDateTime(new Date().toString());
-                break;
-              case "Date":
-                newEntity[property]._ = moment().format("YYYY-MM-DD");
-                break;
-              case "Uuid":
-                newEntity[property]._ = uuidv4().toString();
-                break;
-              case "Boolean":
-                const bool: boolean = false;
-                newEntity[property]._ = bool.toString();
-                break;
-              case "Int":
-              case "Double":
-              case "Decimal":
-              case "Float":
-              case "Bigint":
-                newEntity[property]._ = "0";
-                break;
-              default:
-                newEntity[property]._ = "";
-                break;
-            }
+            continue;
           }
           let propertyQuerySegment = this.isStringType(newEntity[property].$)
             ? `${property} = '${newEntity[property]._}',`
