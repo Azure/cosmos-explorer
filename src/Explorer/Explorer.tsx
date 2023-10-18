@@ -3,6 +3,8 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
+import Collection from "Explorer/Tree/Collection";
+import FabricDatabase from "Explorer/Tree2/FabricDatabase";
 import { IGalleryItem } from "Juno/JunoClient";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -336,6 +338,10 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
+    if (configContext.platform === Platform.Fabric) {
+      return this.refreshAllDatabasesFromFabricResourceTokens();
+    }
+
     try {
       const databases: DataModels.Database[] = await readDatabases();
       TelemetryProcessor.traceSuccess(
@@ -377,6 +383,50 @@ export default class Explorer {
     }
     return true;
   };
+
+  public async refreshAllDatabasesFromFabricResourceTokens(): Promise<void> {
+    const tokensData = userContext.fabricDatabaseConnectionInfo;
+
+    const databasesMap = new Map<string, Database>(); // databaseId <--> Database
+
+    // Emulate what Explorer.refreshDatabaseAccount does, but with the tokens Data
+    for (const resourceId in tokensData.resourceTokens) {
+      // Dictionary key looks like this: dbs/SampleDB/colls/Container
+      const resourceIdObj = resourceId.split("/");
+      const databaseId = resourceIdObj[1];
+      const collectionId = resourceIdObj[3];
+      if (!databasesMap.has(databaseId)) {
+        const database = new FabricDatabase(this, {
+          _rid: `_${databaseId}`,
+          _self: "",
+          _etag: "",
+          _ts: Date.now(),
+          id: databaseId,
+          collections: [],
+        });
+        databasesMap.set(databaseId, database);
+      }
+
+      const database = databasesMap.get(databaseId);
+      if (!database.collections().find((c) => c.id() === collectionId)) {
+        const collection = new Collection(this, databaseId, {
+          _rid: `_${collectionId}`,
+          _self: "",
+          _etag: "",
+          _ts: Date.now(),
+          id: collectionId,
+        });
+        database.collections.push(collection);
+      }
+
+      // Sort collections by id
+      database.collections.sort((a, b) => a.id().localeCompare(b.id()));
+    }
+
+    useDatabases.setState({
+      databases: Array.from(databasesMap.values()).sort((a, b) => a.id().localeCompare(b.id())),
+    });
+  }
 
   public onRefreshResourcesClick = (): void => {
     userContext.authType === AuthType.ResourceToken

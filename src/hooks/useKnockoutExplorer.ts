@@ -1,9 +1,6 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricDatabaseTokensData, FabricMessage } from "Contracts/FabricContract";
+import { FabricDatabaseConnectionInfo, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
-import Collection from "Explorer/Tree/Collection";
-import Database from "Explorer/Tree/Database";
-import FabricDatabase from "Explorer/Tree2/FabricDatabase";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -101,15 +98,14 @@ async function configureFabric(): Promise<Explorer> {
         }
 
         const data: FabricMessage = event.data?.data;
-
         if (!data) {
           return;
         }
 
         switch (data.type) {
           case "initialize": {
-            console.log("Received initialize message from Fabric", data)
-            explorer = await createExplorerFabric(data.message.endpoint, {
+            explorer = await createExplorerFabric({
+              endpoint: data.message.endpoint,
               databaseId: data.message.databaseId,
               resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
               resourceTokensTimestamp: data.message.resourceTokensTimestamp,
@@ -141,7 +137,6 @@ async function configureFabric(): Promise<Explorer> {
 }
 
 const openFirstContainer = async (explorer: Explorer, databaseName: string, collectionName?: string) => {
-  console.log('openFirstContainer', databaseName, collectionName);
   // Expand database first
   databaseName = sessionStorage.getItem("openDatabaseName") ?? databaseName;
   const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
@@ -174,8 +169,7 @@ const openFirstContainer = async (explorer: Explorer, databaseName: string, coll
       );
     }
   }
-
-}
+};
 
 async function configureHosted(): Promise<Explorer> {
   const win = window as unknown as HostedExplorerChildFrame;
@@ -314,45 +308,9 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-const updateResourceTreeFromFabricTokens = (container: Explorer, tokensData: FabricDatabaseTokensData) => {
-  const databasesMap = new Map<string, Database>(); // databaseId <--> Database
-
-  // Emulate what Explorer.refreshDatabaseAccount does, but with the tokens Data
-  for (const resourceId in tokensData.resourceTokens) {
-    // Dictionary key looks like this: dbs/SampleDB/colls/Container
-    const resourceIdObj = resourceId.split("/");
-    const databaseId = resourceIdObj[1];
-    const collectionId = resourceIdObj[3];
-    if (!databasesMap.has(databaseId)) {
-      const database = new FabricDatabase(container, {
-        _rid: `_${databaseId}`,
-        _self: '',
-        _etag: '',
-        _ts: Date.now(),
-        id: databaseId,
-        collections: [],
-      });
-      databasesMap.set(databaseId, database);
-    }
-
-    const database = databasesMap.get(databaseId);
-    if (!database.collections().find(c => c.id() === collectionId)) {
-      const collection = new Collection(container, databaseId, {
-        _rid: `_${collectionId}`,
-        _self: '',
-        _etag: '',
-        _ts: Date.now(),
-        id: collectionId
-      });
-      database.collections.push(collection);
-    }
-  }
-
-  useDatabases.setState({ databases: Array.from(databasesMap.values()) });
-};
-
-function createExplorerFabric(documentEndpoint: string, tokensData: FabricDatabaseTokensData): Explorer {
+function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo): Explorer {
   updateUserContext({
+    fabricDatabaseConnectionInfo: fabricDatabaseConnectionInfo,
     authType: AuthType.ConnectionString,
     databaseAccount: {
       id: "",
@@ -361,14 +319,14 @@ function createExplorerFabric(documentEndpoint: string, tokensData: FabricDataba
       name: "Mounted",
       kind: AccountKind.Default,
       properties: {
-        documentEndpoint,
+        documentEndpoint: fabricDatabaseConnectionInfo.endpoint,
       },
     },
   });
   const explorer = new Explorer();
   setTimeout(() => {
-    updateResourceTreeFromFabricTokens(explorer, tokensData);
-    openFirstContainer(explorer, tokensData.databaseId);
+    explorer.refreshAllDatabasesFromFabricResourceTokens();
+    openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
   }, 0);
   return explorer;
 }

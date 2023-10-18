@@ -40,7 +40,7 @@ export enum MessageTypes {
 
   // Data Explorer -> Fabric communication
   GetAuthorizationToken,
-  GetAllResourceTokens
+  GetAllResourceTokens,
 }
 
 export interface AuthorizationToken {
