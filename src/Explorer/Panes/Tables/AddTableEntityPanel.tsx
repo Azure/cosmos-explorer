@@ -215,12 +215,24 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     setSelectedRow(rowEndex);
     setIsEntityValuePanelTrue();
   };
+  const handlePress = (event: React.KeyboardEvent<HTMLElement>): void => {
+    if (event.key === "Enter" || event.key === "Space") {
+      setIsEntityValuePanelFalse();
+    }
+  };
 
   if (isEntityValuePanelOpen) {
     return (
       <Stack style={{ padding: "20px 34px" }}>
         <Stack horizontal {...columnProps}>
-          <Image {...backImageProps} src={RevertBackIcon} alt="back" onClick={() => setIsEntityValuePanelFalse()} />
+          <Image
+            {...backImageProps}
+            src={RevertBackIcon}
+            alt="back"
+            tabIndex={0}
+            onClick={setIsEntityValuePanelFalse}
+            onKeyPress={handlePress}
+          />
           <Label>{entityAttributeProperty}</Label>
         </Stack>
         <TextField
