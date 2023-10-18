@@ -67,7 +67,7 @@ export function createStaticCommandBarButtons(
     }
   }
 
-  if (userContext.apiType !== "Tables") {
+  if (userContext.apiType !== "Tables" && configContext.platform !== Platform.Fabric) {
     newCollectionBtn.children = [createNewCollectionGroup(container)];
     const newDatabaseBtn = createNewDatabase(container);
     newCollectionBtn.children.push(newDatabaseBtn);
