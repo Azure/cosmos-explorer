@@ -336,10 +336,6 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    if (configContext.platform === Platform.Fabric) {
-      return this.refreshAllDatabasesFromFabricResourceTokens();
-    }
-
     try {
       const databases: DataModels.Database[] = await readDatabases();
       TelemetryProcessor.traceSuccess(
@@ -381,34 +377,6 @@ export default class Explorer {
     }
     return true;
   };
-
-  public async refreshAllDatabasesFromFabricResourceTokens(): Promise<void> {
-    const tokensData = userContext.fabricDatabaseConnectionInfo;
-
-    const databasesMap = new Map<string, Database>(); // databaseId <--> Database
-
-    // Emulate what Explorer.refreshDatabaseAccount does, but with the tokens Data
-    for (const collectionResourceId in tokensData.resourceTokens) {
-      // Dictionary key looks like this: dbs/SampleDB/colls/Container
-      const resourceIdObj = collectionResourceId.split("/");
-      const databaseId = resourceIdObj[1];
-      if (!databasesMap.has(databaseId)) {
-        const database = new Database(this, {
-          _rid: `_${databaseId}`,
-          _self: "",
-          _etag: "",
-          _ts: Date.now(),
-          id: databaseId,
-          collections: [],
-        });
-        databasesMap.set(databaseId, database);
-      }
-    }
-
-    useDatabases.setState({
-      databases: Array.from(databasesMap.values()).sort((a, b) => a.id().localeCompare(b.id())),
-    });
-  }
 
   public onRefreshResourcesClick = (): void => {
     userContext.authType === AuthType.ResourceToken
