@@ -126,10 +126,6 @@ async function configureFabric(): Promise<Explorer> {
           case "newContainer":
             explorer.onNewCollectionClicked();
             break;
-          case "openTab": {
-            openFirstContainer(explorer, data.databaseName, data.collectionName);
-            break;
-          }
           case "authorizationToken": {
             handleCachedDataMessage(data);
             break;

@@ -16,11 +16,6 @@ export type FabricMessage =
       };
     }
   | {
-      type: "openTab";
-      databaseName: string;
-      collectionName: string | undefined;
-    }
-  | {
       type: "authorizationToken";
       message: {
         id: string;
