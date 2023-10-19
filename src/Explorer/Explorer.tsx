@@ -1,4 +1,5 @@
 import { Link } from "@fluentui/react/lib/Link";
+import { client } from "Common/CosmosClient";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
@@ -390,9 +391,9 @@ export default class Explorer {
     const databasesMap = new Map<string, Database>(); // databaseId <--> Database
 
     // Emulate what Explorer.refreshDatabaseAccount does, but with the tokens Data
-    for (const resourceId in tokensData.resourceTokens) {
+    for (const collectionResourceId in tokensData.resourceTokens) {
       // Dictionary key looks like this: dbs/SampleDB/colls/Container
-      const resourceIdObj = resourceId.split("/");
+      const resourceIdObj = collectionResourceId.split("/");
       const databaseId = resourceIdObj[1];
       const collectionId = resourceIdObj[3];
       if (!databasesMap.has(databaseId)) {
@@ -407,17 +408,10 @@ export default class Explorer {
         databasesMap.set(databaseId, database);
       }
 
+      const response = await client().database(databaseId).container(collectionId).read();
+      const collection = response.resource as DataModels.Collection;
       const database = databasesMap.get(databaseId);
-      if (!database.collections().find((c) => c.id() === collectionId)) {
-        const collection = new Collection(this, databaseId, {
-          _rid: `_${collectionId}`,
-          _self: "",
-          _etag: "",
-          _ts: Date.now(),
-          id: collectionId,
-        });
-        database.collections.push(collection);
-      }
+      database.collections().push(new Collection(this, databaseId, collection));
 
       // Sort collections by id
       database.collections.sort((a, b) => a.id().localeCompare(b.id()));
