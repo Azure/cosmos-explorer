@@ -1,15 +1,22 @@
+import { Platform, configContext } from "ConfigContext";
 import { AuthType } from "../../AuthType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
 
 export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promise<Offer> => {
+  if (configContext.platform === Platform.Fabric) {
+    // TODO This works, but is very slow, because it requests the token, so we skip for now
+    console.error("Skiping readDatabaseOffer for Fabric");
+    return undefined;
+  }
+
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
 
   try {
