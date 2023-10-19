@@ -136,7 +136,7 @@ async function configureFabric(): Promise<Explorer> {
           }
           case "allResourceTokens": {
             // TODO call handleCachedDataMessage when Fabric echoes message id back
-            handleRequestDatabaseResourceTokensResponse(data.message as FabricDatabaseConnectionInfo);
+            handleRequestDatabaseResourceTokensResponse(explorer, data.message as FabricDatabaseConnectionInfo);
             break;
           }
           default:

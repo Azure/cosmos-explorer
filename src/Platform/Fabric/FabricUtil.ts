@@ -1,9 +1,10 @@
 import { sendCachedDataMessage } from "Common/MessageHandler";
 import { FabricDatabaseConnectionInfo } from "Contracts/FabricContract";
 import { MessageTypes } from "Contracts/MessageTypes";
+import Explorer from "Explorer/Explorer";
 import { updateUserContext } from "UserContext";
 
-const TOKEN_VALIDITY_MS = 3600 * 1000; // 1 hour
+const TOKEN_VALIDITY_MS = (3600 - 600) * 1000; // 1 hour minus 10 minutes to be safe
 let timeoutId: NodeJS.Timeout;
 
 // Prevents multiple parallel requests
@@ -20,11 +21,13 @@ export const requestDatabaseResourceTokens = (): void => {
 };
 
 export const handleRequestDatabaseResourceTokensResponse = (
+  explorer: Explorer,
   fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo,
 ): void => {
   isRequestPending = false;
   updateUserContext({ fabricDatabaseConnectionInfo });
   scheduleRefreshDatabaseResourceToken();
+  explorer.refreshAllDatabases();
 };
 
 /**
