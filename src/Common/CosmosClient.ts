@@ -1,8 +1,6 @@
 import * as Cosmos from "@azure/cosmos";
 import { sendCachedDataMessage } from "Common/MessageHandler";
 import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
-import { AuthType } from "../AuthType";
-import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
@@ -108,18 +106,6 @@ export function client(): Cosmos.CosmosClient {
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
-
-  if (
-    userContext.authType === AuthType.ConnectionString ||
-    userContext.authType === AuthType.EncryptedToken ||
-    userContext.authType === AuthType.ResourceToken
-  ) {
-    // Default to low priority. Needed for non-AAD-auth scenarios
-    // where we cannot use RP API, and thus, cannot detect whether priority
-    // based execution is enabled.
-    // The header will be ignored if priority based execution is disabled on the account.
-    _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
-  }
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called

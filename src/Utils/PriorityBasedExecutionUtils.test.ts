@@ -1,7 +1,7 @@
-import * as PriorityBasedExecutionUtils from "./PriorityBasedExecutionUtils";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { PriorityLevel } from "../Common/Constants";
 import * as Cosmos from "@azure/cosmos";
+import { PriorityLevel } from "@azure/cosmos";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import * as PriorityBasedExecutionUtils from "./PriorityBasedExecutionUtils";
 
 describe("Priority execution utility", () => {
   it("check default priority level is Low", () => {
