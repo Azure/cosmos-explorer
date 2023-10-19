@@ -5,7 +5,7 @@ import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import Collection from "Explorer/Tree/Collection";
-import FabricDatabase from "Explorer/Tree2/FabricDatabase";
+import Database from "Explorer/Tree/Database";
 import { IGalleryItem } from "Juno/JunoClient";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -62,7 +62,6 @@ import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
 import TerminalTab from "./Tabs/TerminalTab";
-import Database from "./Tree/Database";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
@@ -397,7 +396,7 @@ export default class Explorer {
       const databaseId = resourceIdObj[1];
       const collectionId = resourceIdObj[3];
       if (!databasesMap.has(databaseId)) {
-        const database = new FabricDatabase(this, {
+        const database = new Database(this, {
           _rid: `_${databaseId}`,
           _self: "",
           _etag: "",

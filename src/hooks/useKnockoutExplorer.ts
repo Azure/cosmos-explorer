@@ -324,8 +324,8 @@ function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnec
     },
   });
   const explorer = new Explorer();
-  setTimeout(() => {
-    explorer.refreshAllDatabasesFromFabricResourceTokens();
+  setTimeout(async () => {
+    await explorer.refreshAllDatabases();
     openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
   }, 0);
   return explorer;
