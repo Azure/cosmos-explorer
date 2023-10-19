@@ -16,7 +16,7 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { configContext, Platform } from "ConfigContext";
+import { Platform } from "ConfigContext";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -72,6 +72,7 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   if (config?.platform === Platform.Fabric) {
     loadTheme(appThemeFabric);
+    import('../less/documentDBFabric.less');
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
@@ -91,7 +92,6 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer" aria-hidden="false">
-      <LoadFabricOverrides />
       <div id="divExplorer" className="flexContainer hideOverflows">
         <div id="freeTierTeachingBubble"> </div>
         {/* Main Command Bar - Start */}
@@ -143,19 +143,6 @@ const App: React.FunctionComponent = () => {
 
 const mainElement = document.getElementById("Main");
 ReactDOM.render(<App />, mainElement);
-
-function LoadFabricOverrides(): JSX.Element {
-  if (configContext.platform === Platform.Fabric) {
-    const FabricStyle = React.lazy(() => import("./Platform/Fabric/FabricPlatform"));
-    return (
-      <React.Suspense fallback={<div></div>}>
-        <FabricStyle />
-      </React.Suspense>
-    );
-  } else {
-    return <></>;
-  }
-}
 
 function LoadingExplorer(): JSX.Element {
   return (
