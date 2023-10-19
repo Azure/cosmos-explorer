@@ -1,3 +1,4 @@
+import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
 import { Platform, configContext } from "ConfigContext";
 import { AuthType } from "../../AuthType";
@@ -21,6 +22,8 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
     userContext.fabricDatabaseConnectionInfo.databaseId === databaseId
   ) {
     const collections: DataModels.Collection[] = [];
+    const promises: Promise<ContainerResponse>[] = [];
+
     for (const collectionResourceId in userContext.fabricDatabaseConnectionInfo.resourceTokens) {
       // Dictionary key looks like this: dbs/SampleDB/colls/Container
       const resourceIdObj = collectionResourceId.split("/");
@@ -28,10 +31,14 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       const tokenCollectionId = resourceIdObj[3];
 
       if (tokenDatabaseId === databaseId) {
-        const response = await client().database(databaseId).container(tokenCollectionId).read();
-        collections.push(response.resource as DataModels.Collection);
+        promises.push(client().database(databaseId).container(tokenCollectionId).read());
       }
     }
+
+    const responses = await Promise.all(promises);
+    responses.forEach((response) => {
+      collections.push(response.resource as DataModels.Collection);
+    });
 
     // Sort collections by id before returning
     collections.sort((a, b) => a.id.localeCompare(b.id));
