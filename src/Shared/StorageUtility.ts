@@ -4,6 +4,9 @@ import * as SessionStorageUtility from "./SessionStorageUtility";
 export { LocalStorageUtility, SessionStorageUtility };
 export enum StorageKey {
   ActualItemPerPage,
+  QueryTimeoutEnabled,
+  QueryTimeout,
+  AutomaticallyCancelQueryAfterTimeout,
   ContainerPaginationEnabled,
   CustomItemPerPage,
   DatabaseAccountId,

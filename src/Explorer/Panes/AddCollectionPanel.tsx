@@ -114,7 +114,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     super(props);
 
     this.state = {
-      createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
+      createNewDatabase:
+        userContext.apiType !== "Tables" && configContext.platform !== Platform.Fabric && !this.props.databaseId,
       newDatabaseId: props.isQuickstart ? this.getSampleDBName() : "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
       selectedDatabaseId:
@@ -274,36 +275,38 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </TooltipHost>
             </Stack>
 
-            <Stack horizontal verticalAlign="center">
-              <div role="radiogroup">
-                <input
-                  className="panelRadioBtn"
-                  checked={this.state.createNewDatabase}
-                  aria-label="Create new database"
-                  aria-checked={this.state.createNewDatabase}
-                  name="databaseType"
-                  type="radio"
-                  role="radio"
-                  id="databaseCreateNew"
-                  tabIndex={0}
-                  onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
-                />
-                <span className="panelRadioBtnLabel">Create new</span>
+            {configContext.platform !== Platform.Fabric && (
+              <Stack horizontal verticalAlign="center">
+                <div role="radiogroup">
+                  <input
+                    className="panelRadioBtn"
+                    checked={this.state.createNewDatabase}
+                    aria-label="Create new database"
+                    aria-checked={this.state.createNewDatabase}
+                    name="databaseType"
+                    type="radio"
+                    role="radio"
+                    id="databaseCreateNew"
+                    tabIndex={0}
+                    onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
+                  />
+                  <span className="panelRadioBtnLabel">Create new</span>
 
-                <input
-                  className="panelRadioBtn"
-                  checked={!this.state.createNewDatabase}
-                  aria-label="Use existing database"
-                  aria-checked={!this.state.createNewDatabase}
-                  name="databaseType"
-                  type="radio"
-                  role="radio"
-                  tabIndex={0}
-                  onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
-                />
-                <span className="panelRadioBtnLabel">Use existing</span>
-              </div>
-            </Stack>
+                  <input
+                    className="panelRadioBtn"
+                    checked={!this.state.createNewDatabase}
+                    aria-label="Use existing database"
+                    aria-checked={!this.state.createNewDatabase}
+                    name="databaseType"
+                    type="radio"
+                    role="radio"
+                    tabIndex={0}
+                    onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
+                  />
+                  <span className="panelRadioBtnLabel">Use existing</span>
+                </div>
+              </Stack>
+            )}
 
             {this.state.createNewDatabase && (
               <Stack className="panelGroupSpacing">

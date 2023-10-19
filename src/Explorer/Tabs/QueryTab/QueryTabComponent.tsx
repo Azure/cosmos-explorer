@@ -1,12 +1,16 @@
 import { FeedOptions } from "@azure/cosmos";
+import { useDialog } from "Explorer/Controls/Dialog";
 import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { QueryConstants } from "Shared/Constants";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
+import { format } from "react-string-format";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
@@ -80,6 +84,7 @@ interface IQueryTabStates {
   isExecuting: boolean;
   showCopilotSidebar: boolean;
   queryCopilotGeneratedQuery: string;
+  cancelQueryTimeoutID: NodeJS.Timeout;
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
@@ -107,13 +112,13 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isExecuting: false,
       showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
       queryCopilotGeneratedQuery: useQueryCopilot.getState().query,
+      cancelQueryTimeoutID: undefined,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this.isPreferredApiMongoDB = this.props.isPreferredApiMongoDB;
     this.isCopilotTabActive = QueryCopilotSampleDatabaseId === this.props.collection.databaseId;
-
     this.executeQueryButton = {
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
@@ -250,6 +255,34 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({
       isExecuting: true,
     });
+    let automaticallyCancelQueryAfterTimeout: boolean;
+    if (this.queryTimeoutEnabled()) {
+      const queryTimeout: number = LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout);
+      automaticallyCancelQueryAfterTimeout = LocalStorageUtility.getEntryBoolean(
+        StorageKey.AutomaticallyCancelQueryAfterTimeout,
+      );
+      const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(() => {
+        if (this.state.isExecuting) {
+          if (automaticallyCancelQueryAfterTimeout) {
+            this.queryAbortController.abort();
+          } else {
+            useDialog
+              .getState()
+              .showOkCancelModalDialog(
+                QueryConstants.CancelQueryTitle,
+                format(QueryConstants.CancelQuerySubTextTemplate, QueryConstants.CancelQueryTimeoutThresholdReached),
+                "Yes",
+                () => this.queryAbortController.abort(),
+                "No",
+                undefined,
+              );
+          }
+        }
+      }, queryTimeout);
+      this.setState({
+        cancelQueryTimeoutID,
+      });
+    }
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
     try {
@@ -273,7 +306,14 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       this.props.tabsBaseInstance.isExecuting(false);
       this.setState({
         isExecuting: false,
+        cancelQueryTimeoutID: undefined,
       });
+      if (this.queryTimeoutEnabled()) {
+        clearTimeout(this.state.cancelQueryTimeoutID);
+        if (!automaticallyCancelQueryAfterTimeout) {
+          useDialog.getState().closeDialog();
+        }
+      }
       this.togglesOnFocus();
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
@@ -403,6 +443,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
 
     return this.state.sqlQueryEditorContent;
+  }
+
+  private queryTimeoutEnabled(): boolean {
+    return !this.isPreferredApiMongoDB && LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled);
   }
 
   private unsubscribeCopilotSidebar: () => void;
