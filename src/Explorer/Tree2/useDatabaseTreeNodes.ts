@@ -5,7 +5,6 @@ import { useDatabases } from "Explorer/useDatabases";
 import { useTabs } from "hooks/useTabs";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import * as ViewModels from "../../Contracts/ViewModels";
-import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "../useSelectedNode";
@@ -22,7 +21,7 @@ export const useDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boo
       className: "databaseHeader",
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
-      contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
+      contextMenu: undefined, // TODO Disable this for now as the actions don't work. ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
       onExpanded: async () => {
         useSelectedNode.getState().setSelectedNode(database);
         if (!databaseNode.children || databaseNode.children?.length === 0) {

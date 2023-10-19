@@ -1,3 +1,4 @@
+import { FabricDatabaseConnectionInfo } from "Contracts/FabricContract";
 import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -47,6 +48,7 @@ export interface VCoreMongoConnectionParams {
 }
 
 interface UserContext {
+  readonly fabricDatabaseConnectionInfo?: FabricDatabaseConnectionInfo;
   readonly authType?: AuthType;
   readonly masterKey?: string;
   readonly subscriptionId?: string;
