@@ -1,4 +1,4 @@
-import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import * as ko from "knockout";
 import Q from "q";
@@ -6,10 +6,10 @@ import { format } from "react-string-format";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
-import DiscardIcon from "../../../images/discard.svg";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
+import DiscardIcon from "../../../images/discard.svg";
+import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
 import {
   DocumentsGridMetrics,
@@ -17,15 +17,15 @@ import {
   QueryCopilotSampleContainerId,
   QueryCopilotSampleDatabaseId,
 } from "../../Common/Constants";
+import editable from "../../Common/EditableUtility";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../Common/HeadersUtility";
+import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { readDocument } from "../../Common/dataAccess/readDocument";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
-import editable from "../../Common/EditableUtility";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import * as HeadersUtility from "../../Common/HeadersUtility";
-import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
@@ -33,6 +33,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import * as QueryUtils from "../../Utils/QueryUtils";
+import { extractPartitionKeyValues } from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
@@ -479,7 +480,7 @@ export default class DocumentsTab extends TabsBase {
           const value: string = this.renderObjectForEditor(savedDocument || {}, null, 4);
           this.selectedDocumentContent.setBaseline(value);
           this.initialDocumentContent(value);
-          const partitionKeyValueArray = extractPartitionKey(
+          const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
             savedDocument,
             this.partitionKey as PartitionKeyDefinition,
           );
@@ -530,7 +531,10 @@ export default class DocumentsTab extends TabsBase {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = JSON.parse(this.selectedDocumentContent());
 
-    const partitionKeyValueArray = extractPartitionKey(documentContent, this.partitionKey as PartitionKeyDefinition);
+    const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
+      documentContent,
+      this.partitionKey as PartitionKeyDefinition,
+    );
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     this.isExecutionError(false);

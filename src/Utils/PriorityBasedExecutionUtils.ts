@@ -29,7 +29,7 @@ export function getPriorityLevel(): PriorityLevel {
   }
 }
 
-export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
+export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, undefined, next) => {
   if (isRelevantRequest(requestContext)) {
     const priorityLevel: PriorityLevel = getPriorityLevel();
     requestContext.headers["x-ms-cosmos-priority-level"] = priorityLevel as string;

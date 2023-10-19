@@ -51,7 +51,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   return decodeURIComponent(result.PrimaryReadWriteToken);
 };
 
-export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
+export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   return next(requestContext);

@@ -1,3 +1,4 @@
+import { PartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 
@@ -81,4 +82,23 @@ export const queryPagesUntilContentPresent = async (
   };
 
   return await doRequest(firstItemIndex);
+};
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+export const extractPartitionKeyValues = (
+  documentContent: any,
+  partitionKeyDefinition: PartitionKeyDefinition,
+): PartitionKey[] => {
+  if (!partitionKeyDefinition.paths || partitionKeyDefinition.paths.length === 0) {
+    return undefined;
+  }
+
+  const partitionKeyValues: PartitionKey[] = [];
+  partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
+    const partitionKeyPathWithoutSlash: string = partitionKeyPath.substring(1);
+    if (documentContent[partitionKeyPathWithoutSlash]) {
+      partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
+    }
+  });
+  return partitionKeyValues;
 };

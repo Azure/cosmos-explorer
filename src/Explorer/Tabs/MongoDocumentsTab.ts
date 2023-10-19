@@ -1,4 +1,5 @@
-import { extractPartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
+import { PartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
+import { extractPartitionKeyValues } from "Utils/QueryUtils";
 import * as ko from "knockout";
 import Q from "q";
 import * as Constants from "../../Common/Constants";
@@ -88,7 +89,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     )
       .then(
         (savedDocument: any) => {
-          let partitionKeyArray = extractPartitionKey(
+          const partitionKeyArray: PartitionKey[] = extractPartitionKeyValues(
             savedDocument,
             this._getPartitionKeyDefinition() as PartitionKeyDefinition,
           );
@@ -150,7 +151,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
 
           this.documentIds().forEach((documentId: DocumentId) => {
             if (documentId.rid === updatedDocument._rid) {
-              const partitionKeyArray = extractPartitionKey(
+              const partitionKeyArray: PartitionKey[] = extractPartitionKeyValues(
                 updatedDocument,
                 this._getPartitionKeyDefinition() as PartitionKeyDefinition,
               );
@@ -289,7 +290,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
   }
 
   private _hasShardKeySpecified(document: any): boolean {
-    return Boolean(extractPartitionKey(document, this._getPartitionKeyDefinition() as PartitionKeyDefinition));
+    return Boolean(extractPartitionKeyValues(document, this._getPartitionKeyDefinition() as PartitionKeyDefinition));
   }
 
   private _getPartitionKeyDefinition(): DataModels.PartitionKey {
