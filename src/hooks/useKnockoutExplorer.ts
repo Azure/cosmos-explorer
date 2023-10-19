@@ -105,7 +105,7 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            explorer = await configureWithFabric(data.message as CosmosDBConnectionInfoResponse);
+            explorer = createExplorerForFabric(data.message as CosmosDBConnectionInfoResponse);
             resolve(explorer);
             break;
           }
@@ -301,7 +301,7 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function configureWithFabric(cosmosDBConnectionInfoResponse: CosmosDBConnectionInfoResponse): Explorer {
+function createExplorerForFabric(cosmosDBConnectionInfoResponse: CosmosDBConnectionInfoResponse): Explorer {
   updateUserContext({
     fabricConnectionInfo: cosmosDBConnectionInfoResponse,
     authType: AuthType.ConnectionString,
@@ -317,7 +317,6 @@ function configureWithFabric(cosmosDBConnectionInfoResponse: CosmosDBConnectionI
     },
   });
   const explorer = new Explorer();
-  //setTimeout(() => explorer.refreshAllDatabases(), 0);
   return explorer;
 }
 
