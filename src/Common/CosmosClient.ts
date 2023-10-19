@@ -30,8 +30,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
   if (configContext.platform === Platform.Fabric) {
     switch (requestInfo.resourceType) {
-      case Cosmos.ResourceType.conflicts:
+      // TODO: the kind of token to use for containers depends on the resource id and the operation
       case Cosmos.ResourceType.container:
+      case Cosmos.ResourceType.conflicts:
       case Cosmos.ResourceType.sproc:
       case Cosmos.ResourceType.udf:
       case Cosmos.ResourceType.trigger:
