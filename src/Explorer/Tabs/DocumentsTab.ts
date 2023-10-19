@@ -2,6 +2,9 @@ import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryItera
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import * as ko from "knockout";
 import Q from "q";
+import { format } from "react-string-format";
+import { QueryConstants } from "Shared/Constants";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
 import DiscardIcon from "../../../images/discard.svg";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
@@ -79,6 +82,7 @@ export default class DocumentsTab extends TabsBase {
   private _resourceTokenPartitionKey: string;
   private _isQueryCopilotSampleContainer: boolean;
   private queryAbortController: AbortController;
+  private cancelQueryTimeoutID: NodeJS.Timeout;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
@@ -350,11 +354,11 @@ export default class DocumentsTab extends TabsBase {
    * Query first page of documents
    * Select and query first document and display content
    */
-  private async autoPopulateContent() {
+  private async autoPopulateContent(applyFilterButtonPressed?: boolean) {
     // reset iterator
     this._documentsIterator = this.createIterator();
     // load documents
-    await this.loadNextPage();
+    await this.loadNextPage(applyFilterButtonPressed);
 
     // Select first document and load content
     if (this.documentIds().length > 0) {
@@ -391,12 +395,14 @@ export default class DocumentsTab extends TabsBase {
     return true;
   };
 
-  public async refreshDocumentsGrid(): Promise<void> {
+  public async refreshDocumentsGrid(applyFilterButtonPressed?: boolean): Promise<void> {
     // clear documents grid
     this.documentIds([]);
-
     try {
-      await this.autoPopulateContent();
+      // reset iterator
+      this._documentsIterator = this.createIterator();
+      // load documents
+      await this.autoPopulateContent(applyFilterButtonPressed);
       // collapse filter
       this.appliedFilter(this.filterContent());
       this.isFilterExpanded(false);
@@ -733,9 +739,35 @@ export default class DocumentsTab extends TabsBase {
     this.initDocumentEditor(documentId, content);
   }
 
-  public loadNextPage(): Q.Promise<any> {
+  public loadNextPage(applyFilterButtonClicked?: boolean): Q.Promise<any> {
     this.isExecuting(true);
     this.isExecutionError(false);
+    let automaticallyCancelQueryAfterTimeout: boolean;
+    if (applyFilterButtonClicked && this.queryTimeoutEnabled()) {
+      const queryTimeout: number = LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout);
+      automaticallyCancelQueryAfterTimeout = LocalStorageUtility.getEntryBoolean(
+        StorageKey.AutomaticallyCancelQueryAfterTimeout,
+      );
+      const cancelQueryTimeoutID: NodeJS.Timeout = setTimeout(() => {
+        if (this.isExecuting()) {
+          if (automaticallyCancelQueryAfterTimeout) {
+            this.queryAbortController.abort();
+          } else {
+            useDialog
+              .getState()
+              .showOkCancelModalDialog(
+                QueryConstants.CancelQueryTitle,
+                format(QueryConstants.CancelQuerySubTextTemplate, QueryConstants.CancelQueryTimeoutThresholdReached),
+                "Yes",
+                () => this.queryAbortController.abort(),
+                "No",
+                undefined,
+              );
+          }
+        }
+      }, queryTimeout);
+      this.cancelQueryTimeoutID = cancelQueryTimeoutID;
+    }
     return this._loadNextPageInternal()
       .then(
         (documentsIdsResponse = []) => {
@@ -791,7 +823,15 @@ export default class DocumentsTab extends TabsBase {
           }
         },
       )
-      .finally(() => this.isExecuting(false));
+      .finally(() => {
+        this.isExecuting(false);
+        if (applyFilterButtonClicked && this.queryTimeoutEnabled()) {
+          clearTimeout(this.cancelQueryTimeoutID);
+          if (!automaticallyCancelQueryAfterTimeout) {
+            useDialog.getState().closeDialog();
+          }
+        }
+      });
   }
 
   public onLoadMoreKeyInput = (source: any, event: KeyboardEvent): void => {
@@ -968,5 +1008,9 @@ export default class DocumentsTab extends TabsBase {
         useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
     };
+  }
+
+  private queryTimeoutEnabled(): boolean {
+    return !this.isPreferredApiMongoDB && LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled);
   }
 }

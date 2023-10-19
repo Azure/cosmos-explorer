@@ -1,4 +1,13 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
+import {
+  Checkbox,
+  ChoiceGroup,
+  IChoiceGroupOption,
+  ISpinButtonStyles,
+  IToggleStyles,
+  Position,
+  SpinButton,
+  Toggle,
+} from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
@@ -6,10 +15,10 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
-import { useSidePanel } from "hooks/useSidePanel";
-import React, { FunctionComponent, MouseEvent, useState } from "react";
-import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
+import { useSidePanel } from "hooks/useSidePanel";
+import React, { FunctionComponent, useState } from "react";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export const SettingsPane: FunctionComponent = () => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
@@ -18,6 +27,13 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
       ? Constants.Queries.UnlimitedPageOption
       : Constants.Queries.CustomPageOption,
+  );
+  const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
+    LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
+  );
+  const [queryTimeout, setQueryTimeout] = useState<number>(LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout));
+  const [automaticallyCancelQueryAfterTimeout, setAutomaticallyCancelQueryAfterTimeout] = useState<boolean>(
+    LocalStorageUtility.getEntryBoolean(StorageKey.AutomaticallyCancelQueryAfterTimeout),
   );
   const [customItemPerPage, setCustomItemPerPage] = useState<number>(
     LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0,
@@ -53,7 +69,7 @@ export const SettingsPane: FunctionComponent = () => {
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
-  const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+  const handlerOnSubmit = () => {
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
@@ -61,6 +77,7 @@ export const SettingsPane: FunctionComponent = () => {
       isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage,
     );
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
+    LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
@@ -70,6 +87,14 @@ export const SettingsPane: FunctionComponent = () => {
       LocalStorageUtility.setEntryBoolean(
         StorageKey.IsGraphAutoVizDisabled,
         StringUtility.toBoolean(graphAutoVizDisabled),
+      );
+    }
+
+    if (queryTimeoutEnabled) {
+      LocalStorageUtility.setEntryNumber(StorageKey.QueryTimeout, queryTimeout);
+      LocalStorageUtility.setEntryBoolean(
+        StorageKey.AutomaticallyCancelQueryAfterTimeout,
+        automaticallyCancelQueryAfterTimeout,
       );
     }
 
@@ -97,7 +122,6 @@ export const SettingsPane: FunctionComponent = () => {
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
     );
     closeSidePanel();
-    e.preventDefault();
   };
 
   const isCustomPageOptionSelected = () => {
@@ -112,7 +136,7 @@ export const SettingsPane: FunctionComponent = () => {
     formError: "",
     isExecuting,
     submitButtonText: "Apply",
-    onSubmit: () => handlerOnSubmit(undefined),
+    onSubmit: () => handlerOnSubmit(),
   };
   const pageOptionList: IChoiceGroupOption[] = [
     { key: Constants.Queries.CustomPageOption, text: "Custom" },
@@ -140,6 +164,21 @@ export const SettingsPane: FunctionComponent = () => {
     setPageOption(option.key);
   };
 
+  const handleOnQueryTimeoutToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
+    setQueryTimeoutEnabled(checked);
+  };
+
+  const handleOnAutomaticallyCancelQueryToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
+    setAutomaticallyCancelQueryAfterTimeout(checked);
+  };
+
+  const handleOnQueryTimeoutSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const queryTimeout = Number(newValue);
+    if (!isNaN(queryTimeout)) {
+      setQueryTimeout(queryTimeout);
+    }
+  };
+
   const choiceButtonStyles = {
     root: {
       clear: "both",
@@ -161,6 +200,35 @@ export const SettingsPane: FunctionComponent = () => {
       },
     ],
   };
+
+  const queryTimeoutToggleStyles: IToggleStyles = {
+    label: {
+      fontSize: 12,
+      fontWeight: 400,
+      display: "block",
+    },
+    root: {},
+    container: {},
+    pill: {},
+    thumb: {},
+    text: {},
+  };
+
+  const queryTimeoutSpinButtonStyles: ISpinButtonStyles = {
+    label: {
+      fontSize: 12,
+      fontWeight: 400,
+    },
+    root: {
+      paddingBottom: 10,
+    },
+    labelWrapper: {},
+    icon: {},
+    spinButtonWrapper: {},
+    input: {},
+    arrowButtonsContainer: {},
+  };
+
   return (
     <RightPaneForm {...genericPaneProps}>
       <div className="paneMainContent">
@@ -205,6 +273,50 @@ export const SettingsPane: FunctionComponent = () => {
                     className="textfontclr"
                     incrementButtonAriaLabel="Increase value by 1"
                     decrementButtonAriaLabel="Decrease value by 1"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {userContext.apiType === "SQL" && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart">
+              <div>
+                <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
+                  Query Timeout
+                </legend>
+                <InfoTooltip>
+                  When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                  unless automatic cancellation has been enabled
+                </InfoTooltip>
+              </div>
+              <div>
+                <Toggle
+                  styles={queryTimeoutToggleStyles}
+                  label="Enable query timeout"
+                  onChange={handleOnQueryTimeoutToggleChange}
+                  defaultChecked={queryTimeoutEnabled}
+                />
+              </div>
+              {queryTimeoutEnabled && (
+                <div>
+                  <SpinButton
+                    label="Query timeout (ms)"
+                    labelPosition={Position.top}
+                    defaultValue={(queryTimeout || 5000).toString()}
+                    min={100}
+                    step={1000}
+                    onChange={handleOnQueryTimeoutSpinButtonChange}
+                    incrementButtonAriaLabel="Increase value by 1000"
+                    decrementButtonAriaLabel="Decrease value by 1000"
+                    styles={queryTimeoutSpinButtonStyles}
+                  />
+                  <Toggle
+                    label="Automatically cancel query after timeout"
+                    styles={queryTimeoutToggleStyles}
+                    onChange={handleOnAutomaticallyCancelQueryToggleChange}
+                    defaultChecked={automaticallyCancelQueryAfterTimeout}
                   />
                 </div>
               )}
