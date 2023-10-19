@@ -2,6 +2,7 @@ import * as Cosmos from "@azure/cosmos";
 import { sendCachedDataMessage } from "Common/MessageHandler";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
+import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
@@ -40,6 +41,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
         // User resource tokens
         headers[HttpHeaders.msDate] = new Date().toUTCString();
         const resourceTokens = userContext.fabricDatabaseConnectionInfo.resourceTokens;
+        checkDatabaseResourceTokensValidity(userContext.fabricDatabaseConnectionInfo.resourceTokensTimestamp);
         return getAuthorizationTokenUsingResourceTokens(resourceTokens, requestInfo.path, requestInfo.resourceId);
 
       case Cosmos.ResourceType.none:

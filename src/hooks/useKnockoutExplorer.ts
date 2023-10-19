@@ -2,6 +2,10 @@ import { createUri } from "Common/UrlUtility";
 import { FabricDatabaseConnectionInfo, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import {
+  handleRequestDatabaseResourceTokensResponse,
+  scheduleRefreshDatabaseResourceToken,
+} from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -104,13 +108,19 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            explorer = await createExplorerFabric({
+            const fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo = {
               endpoint: data.message.endpoint,
               databaseId: data.message.databaseId,
               resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
               resourceTokensTimestamp: data.message.resourceTokensTimestamp,
-            });
+            };
+            explorer = await createExplorerFabric(fabricDatabaseConnectionInfo);
             resolve(explorer);
+
+            explorer.refreshAllDatabases().then(() => {
+              openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
+            });
+            scheduleRefreshDatabaseResourceToken();
             break;
           }
           case "newContainer":
@@ -122,6 +132,11 @@ async function configureFabric(): Promise<Explorer> {
           }
           case "authorizationToken": {
             handleCachedDataMessage(data);
+            break;
+          }
+          case "allResourceTokens": {
+            // TODO call handleCachedDataMessage when Fabric echoes message id back
+            handleRequestDatabaseResourceTokensResponse(data.message as FabricDatabaseConnectionInfo);
             break;
           }
           default:
@@ -324,10 +339,6 @@ function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnec
     },
   });
   const explorer = new Explorer();
-  setTimeout(async () => {
-    await explorer.refreshAllDatabases();
-    openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
-  }, 0);
   return explorer;
 }
 
