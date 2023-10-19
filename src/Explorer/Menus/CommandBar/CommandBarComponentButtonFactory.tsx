@@ -62,10 +62,7 @@ export function createStaticCommandBarButtons(
   if (configContext.platform !== Platform.Fabric) {
     const newCollectionBtn = createNewCollectionGroup(container);
     buttons.push(newCollectionBtn);
-    if (
-      userContext.apiType !== "Tables" &&
-      userContext.apiType !== "Cassandra"
-    ) {
+    if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
       const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
       if (addSynapseLink) {
