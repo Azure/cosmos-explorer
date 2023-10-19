@@ -72,7 +72,7 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   if (config?.platform === Platform.Fabric) {
     loadTheme(appThemeFabric);
-    import('../less/documentDBFabric.less');
+    import("../less/documentDBFabric.less");
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
