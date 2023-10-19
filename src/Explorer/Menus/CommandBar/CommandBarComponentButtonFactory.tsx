@@ -50,31 +50,39 @@ export function createStaticCommandBarButtons(
     return createStaticCommandBarButtonsForResourceToken(container, selectedNodeState);
   }
 
-  const newCollectionBtn = createNewCollectionGroup(container);
   const buttons: CommandButtonComponentProps[] = [];
 
-  buttons.push(newCollectionBtn);
-  if (
-    configContext.platform !== Platform.Fabric &&
-    userContext.apiType !== "Tables" &&
-    userContext.apiType !== "Cassandra"
-  ) {
-    const addSynapseLink = createOpenSynapseLinkDialogButton(container);
-
-    if (addSynapseLink) {
+  // Avoid starting with a divider
+  const addDivider = () => {
+    if (buttons.length > 0) {
       buttons.push(createDivider());
-      buttons.push(addSynapseLink);
+    }
+  };
+
+  if (configContext.platform !== Platform.Fabric) {
+    const newCollectionBtn = createNewCollectionGroup(container);
+    buttons.push(newCollectionBtn);
+    if (
+      userContext.apiType !== "Tables" &&
+      userContext.apiType !== "Cassandra"
+    ) {
+      const addSynapseLink = createOpenSynapseLinkDialogButton(container);
+
+      if (addSynapseLink) {
+        addDivider();
+        buttons.push(addSynapseLink);
+      }
+    }
+
+    if (userContext.apiType !== "Tables") {
+      newCollectionBtn.children = [createNewCollectionGroup(container)];
+      const newDatabaseBtn = createNewDatabase(container);
+      newCollectionBtn.children.push(newDatabaseBtn);
     }
   }
 
-  if (userContext.apiType !== "Tables" && configContext.platform !== Platform.Fabric) {
-    newCollectionBtn.children = [createNewCollectionGroup(container)];
-    const newDatabaseBtn = createNewDatabase(container);
-    newCollectionBtn.children.push(newDatabaseBtn);
-  }
-
   if (useNotebook.getState().isNotebookEnabled) {
-    buttons.push(createDivider());
+    addDivider();
     const notebookButtons: CommandButtonComponentProps[] = [];
 
     const newNotebookButton = createNewNotebookButton(container);
@@ -128,7 +136,7 @@ export function createStaticCommandBarButtons(
     const isQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 
     if (isQuerySupported) {
-      buttons.push(createDivider());
+      addDivider();
       const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
       buttons.push(newSqlQueryBtn);
     }
