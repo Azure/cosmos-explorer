@@ -12,7 +12,7 @@ import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
-  if (!!userContext.fabricConnectionInfo) {
+  if (userContext.fabricConnectionInfo) {
     const collections: DataModels.Collection[] = [];
     for(const resourceId in userContext.fabricConnectionInfo.resourceTokens) {
       collections.push({
