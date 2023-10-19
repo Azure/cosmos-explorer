@@ -1,6 +1,6 @@
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { QueryResults } from "Contracts/ViewModels";
-import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { CopilotMessage, CopilotSchemaAllocationInfo } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
 import { useTabs } from "hooks/useTabs";
 import create, { UseStore } from "zustand";
@@ -40,7 +40,10 @@ export interface QueryCopilotState {
   showExplanationBubble: boolean;
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
   containerStatus: ContainerInfo;
+  schemaAllocationInfo: CopilotSchemaAllocationInfo;
   isAllocatingContainer: boolean;
+
+  getState?: () => QueryCopilotState;
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
@@ -76,6 +79,7 @@ export interface QueryCopilotState {
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
   setContainerStatus: (containerStatus: ContainerInfo) => void;
   setIsAllocatingContainer: (isAllocatingContainer: boolean) => void;
+  setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => void;
 
   resetContainerConnection: () => void;
   resetQueryCopilotStates: () => void;
@@ -124,6 +128,10 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
     durationLeftInMinutes: undefined,
     phoenixServerInfo: undefined,
   },
+  schemaAllocationInfo: {
+    databaseId: undefined,
+    containerId: undefined,
+  },
   isAllocatingContainer: false,
 
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
@@ -163,6 +171,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
     set({ notebookServerInfo }),
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   setIsAllocatingContainer: (isAllocatingContainer: boolean) => set({ isAllocatingContainer }),
+  setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => set({ schemaAllocationInfo }),
 
   resetContainerConnection: (): void => {
     useTabs.getState().closeAllNotebookTabs(true);
@@ -172,6 +181,10 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       status: undefined,
       durationLeftInMinutes: undefined,
       phoenixServerInfo: undefined,
+    });
+    useQueryCopilot.getState().setSchemaAllocationInfo({
+      databaseId: undefined,
+      containerId: undefined,
     });
   },
 
@@ -216,6 +229,10 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
         status: undefined,
         durationLeftInMinutes: undefined,
         phoenixServerInfo: undefined,
+      },
+      schemaAllocationInfo: {
+        databaseId: undefined,
+        containerId: undefined,
       },
       isAllocatingContainer: false,
     }));

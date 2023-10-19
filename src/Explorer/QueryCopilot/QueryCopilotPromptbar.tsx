@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import {
   Callout,
   CommandBarButton,
@@ -17,18 +19,12 @@ import {
   TextField,
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import {
-  ContainerStatusType,
-  PoolIdType,
-  QueryCopilotSampleContainerSchema,
-  ShortenedQueryCopilotSampleContainerSchema,
-} from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
-import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { SubmitFeedback, allocatePhoenixContainer } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
 import { userContext } from "UserContext";
@@ -39,6 +35,7 @@ import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
 import { useTabs } from "../../hooks/useTabs";
+import { useStore } from "../QueryCopilot/QueryCopilotContext";
 
 type QueryCopilotPromptProps = QueryCopilotProps & {
   toggleCopilot: (toggle: boolean) => void;
@@ -60,7 +57,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 }: QueryCopilotPromptProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
+  const copilotStore = useStore();
   const {
+    openFeedbackModal,
     hideFeedbackModalForLikedQueries,
     userPrompt,
     setUserPrompt,
@@ -93,7 +92,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setGeneratedQueryComments,
     setQueryResults,
     setErrorMessage,
-  } = useQueryCopilot();
+    setNotebookServerInfo,
+  } = copilotStore;
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -176,16 +176,13 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       setShowDeletePopup(false);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
-      if (
-        useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
-        !userContext.features.disableCopilotPhoenixGateaway
-      ) {
-        await explorer.allocateContainer(PoolIdType.QueryCopilot);
-      }
+      const userdbId: string = useTabs.getState().activeTab.collection.databaseId;
+      const usercontainerId: string = useTabs.getState().activeTab.collection.id();
+
+      await allocatePhoenixContainer({ explorer, userdbId, usercontainerId });
+      setNotebookServerInfo(useQueryCopilot.getState().notebookServerInfo);
+
       const payload = {
-        containerSchema: userContext.features.enableCopilotFullSchema
-          ? QueryCopilotSampleContainerSchema
-          : ShortenedQueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
       };
       useQueryCopilot.getState().refreshCorrelationId();
@@ -499,7 +496,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 <Link
                   onClick={() => {
                     setShowCallout(false);
-                    useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userPrompt);
+                    openFeedbackModal(generatedQuery, true, userPrompt);
                   }}
                 >
                   more feedback?
@@ -524,7 +521,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
             onClick={() => {
               if (!dislikeQuery) {
-                useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
+                openFeedbackModal(generatedQuery, false, userPrompt);
                 setLikeQuery(false);
               }
               setDislikeQuery(!dislikeQuery);

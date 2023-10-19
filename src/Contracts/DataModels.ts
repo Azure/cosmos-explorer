@@ -457,8 +457,10 @@ export interface ContainerInfo {
 }
 
 export interface IProvisionData {
-  cosmosEndpoint: string;
+  cosmosEndpoint?: string;
   poolId: string;
+  databaseId?: string;
+  containerId?: string;
 }
 
 export interface IContainerData {

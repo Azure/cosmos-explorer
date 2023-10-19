@@ -1,16 +1,19 @@
 import { FeedOptions } from "@azure/cosmos";
 import {
+  Areas,
+  ConnectionStatusType,
   ContainerStatusType,
   PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
-import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
+import { ContainerConnectionInfo, IProvisionData } from "Contracts/DataModels";
 import { QueryResults } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
@@ -22,6 +25,82 @@ import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as StringUtility from "../../../Shared/StringUtility";
+
+export const allocatePhoenixContainer = async ({
+  explorer,
+  userdbId,
+  usercontainerId,
+}: {
+  explorer: Explorer;
+  userdbId: string;
+  usercontainerId: string;
+}): Promise<void> => {
+  try {
+    if (
+      useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
+      !userContext.features.disableCopilotPhoenixGateaway
+    ) {
+      try {
+        await explorer.allocateContainer(PoolIdType.QueryCopilot);
+      } catch (error) {
+        await resetPhoenixContainerSchema({ explorer, userdbId, usercontainerId });
+      }
+    } else {
+      const currentAllocatedSchemaInfo = useQueryCopilot.getState().schemaAllocationInfo;
+      // eslint-disable-next-line no-console
+      console.log("current", currentAllocatedSchemaInfo, userdbId, usercontainerId);
+      if (
+        currentAllocatedSchemaInfo.databaseId !== userdbId ||
+        currentAllocatedSchemaInfo.containerId !== usercontainerId
+      ) {
+        await resetPhoenixContainerSchema({ explorer, userdbId, usercontainerId });
+      }
+    }
+    useQueryCopilot.getState().setSchemaAllocationInfo({
+      databaseId: userdbId,
+      containerId: usercontainerId,
+    });
+  } catch (error) {
+    traceFailure(Action.PhoenixConnection, {
+      dataExplorerArea: Areas.Copilot,
+      status: error.status,
+      error: getErrorMessage(error),
+      errorStack: getErrorStack(error),
+    });
+  } finally {
+    useTabs.getState().setIsTabExecuting(false);
+  }
+};
+
+export const resetPhoenixContainerSchema = async ({
+  explorer,
+  userdbId,
+  usercontainerId,
+}: {
+  explorer: Explorer;
+  userdbId: string;
+  usercontainerId: string;
+}): Promise<void> => {
+  try {
+    const provisionData: IProvisionData = {
+      poolId: PoolIdType.QueryCopilot,
+      databaseId: userdbId,
+      containerId: usercontainerId,
+    };
+    const connectionInfo = await explorer.phoenixClient.resetContainer(provisionData);
+    const connectionStatus: ContainerConnectionInfo = {
+      status: ConnectionStatusType.Connecting,
+    };
+    await explorer.setNotebookInfo(false, connectionInfo, connectionStatus);
+  } catch (error) {
+    traceFailure(Action.PhoenixConnection, {
+      dataExplorerArea: Areas.Copilot,
+      status: error.status,
+      error: getErrorMessage(error),
+      errorStack: getErrorStack(error),
+    });
+  }
+};
 
 export const SendQueryRequest = async ({
   userPrompt,

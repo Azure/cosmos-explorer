@@ -256,6 +256,8 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
+  // eslint-disable-next-line no-console
+  console.log(activeReactTab);
   switch (activeReactTab) {
     case ReactTabKind.Connect:
       return userContext.apiType === "VCoreMongo" ? (
