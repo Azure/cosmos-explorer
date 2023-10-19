@@ -1,3 +1,4 @@
+import { PriorityLevel } from "@azure/cosmos";
 import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
@@ -6,10 +7,10 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
+import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
-import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 
 export const SettingsPane: FunctionComponent = () => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
@@ -42,10 +43,10 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism)
       : Constants.Queries.DefaultMaxDegreeOfParallelism,
   );
-  const [priorityLevel, setPriorityLevel] = useState<string>(
+  const [priorityLevel, setPriorityLevel] = useState<PriorityLevel>(
     LocalStorageUtility.hasItem(StorageKey.PriorityLevel)
-      ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
-      : Constants.PriorityLevel.Default,
+      ? (LocalStorageUtility.getEntryString(StorageKey.PriorityLevel) as PriorityLevel)
+      : PriorityLevel.Low,
   );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
@@ -64,7 +65,7 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
-    LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
+    LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel);
 
     if (shouldShowGraphAutoVizOption) {
       LocalStorageUtility.setEntryBoolean(
@@ -125,15 +126,15 @@ export const SettingsPane: FunctionComponent = () => {
   ];
 
   const priorityLevelOptionList: IChoiceGroupOption[] = [
-    { key: Constants.PriorityLevel.Low, text: "Low" },
-    { key: Constants.PriorityLevel.High, text: "High" },
+    { key: PriorityLevel.Low, text: "Low" },
+    { key: PriorityLevel.High, text: "High" },
   ];
 
   const handleOnPriorityLevelOptionChange = (
     ev: React.FormEvent<HTMLInputElement>,
     option: IChoiceGroupOption,
   ): void => {
-    setPriorityLevel(option.key);
+    setPriorityLevel(option.key as PriorityLevel);
   };
 
   const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
@@ -289,8 +290,7 @@ export const SettingsPane: FunctionComponent = () => {
                 </legend>
                 <InfoTooltip>
                   Sets the priority level for data-plane requests from Data Explorer when using Priority-Based
-                  Execution. If &quot;None&quot; is selected, Data Explorer will not specify priority level, and the
-                  server-side default priority level will be used.
+                  Execution.
                 </InfoTooltip>
                 <ChoiceGroup
                   ariaLabelledBy="priorityLevel"

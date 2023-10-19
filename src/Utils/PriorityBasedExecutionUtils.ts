@@ -1,6 +1,6 @@
 import * as Cosmos from "@azure/cosmos";
+import { Constants, PriorityLevel } from "@azure/cosmos";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { PriorityLevel } from "../Common/Constants";
 import { userContext } from "../UserContext";
 
 export function isFeatureEnabled(): boolean {
@@ -21,18 +21,18 @@ export function isRelevantRequest(requestContext: Cosmos.RequestContext): boolea
 }
 
 export function getPriorityLevel(): PriorityLevel {
-  const priorityLevel = LocalStorageUtility.getEntryString(StorageKey.PriorityLevel);
-  if (priorityLevel && Object.values(PriorityLevel).includes(priorityLevel)) {
+  const priorityLevel: string = LocalStorageUtility.getEntryString(StorageKey.PriorityLevel);
+  if (priorityLevel) {
     return priorityLevel as PriorityLevel;
   } else {
-    return PriorityLevel.Default;
+    return PriorityLevel.Low;
   }
 }
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, undefined, next) => {
   if (isRelevantRequest(requestContext)) {
     const priorityLevel: PriorityLevel = getPriorityLevel();
-    requestContext.headers["x-ms-cosmos-priority-level"] = priorityLevel as string;
+    requestContext.headers[Constants.HttpHeaders.PriorityLevel] = priorityLevel;
   }
   return next(requestContext);
 };
