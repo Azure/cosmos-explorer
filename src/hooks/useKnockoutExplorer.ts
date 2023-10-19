@@ -310,7 +310,7 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
 
 function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo): Explorer {
   updateUserContext({
-    fabricDatabaseConnectionInfo: fabricDatabaseConnectionInfo,
+    fabricDatabaseConnectionInfo,
     authType: AuthType.ConnectionString,
     databaseAccount: {
       id: "",

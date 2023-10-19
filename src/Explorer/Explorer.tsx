@@ -1,10 +1,8 @@
 import { Link } from "@fluentui/react/lib/Link";
-import { client } from "Common/CosmosClient";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import Collection from "Explorer/Tree/Collection";
 import Database from "Explorer/Tree/Database";
 import { IGalleryItem } from "Juno/JunoClient";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
@@ -394,7 +392,6 @@ export default class Explorer {
       // Dictionary key looks like this: dbs/SampleDB/colls/Container
       const resourceIdObj = collectionResourceId.split("/");
       const databaseId = resourceIdObj[1];
-      const collectionId = resourceIdObj[3];
       if (!databasesMap.has(databaseId)) {
         const database = new Database(this, {
           _rid: `_${databaseId}`,
@@ -406,14 +403,6 @@ export default class Explorer {
         });
         databasesMap.set(databaseId, database);
       }
-
-      const response = await client().database(databaseId).container(collectionId).read();
-      const collection = response.resource as DataModels.Collection;
-      const database = databasesMap.get(databaseId);
-      database.collections().push(new Collection(this, databaseId, collection));
-
-      // Sort collections by id
-      database.collections.sort((a, b) => a.id().localeCompare(b.id()));
     }
 
     useDatabases.setState({
