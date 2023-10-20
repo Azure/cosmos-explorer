@@ -197,7 +197,7 @@
     "pack:prod": "webpack  --mode production",
     "pack:fast": "webpack  --mode development --progress",
     "copyToConsumers": "node copyToConsumers",
-    "test": "jest src/Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal.test.tsx --silent=false",
+    "test": "rimraf coverage && jest",
     "test:debug": "jest --runInBand",
     "test:e2e": "jest -c ./jest.config.playwright.js --detectOpenHandles",
     "watch": "npm run start",
