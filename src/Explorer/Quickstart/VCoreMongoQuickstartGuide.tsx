@@ -9,8 +9,6 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import { sendMessage } from "Common/MessageHandler";
-import { MessageTypes } from "Contracts/ExplorerContracts";
 import { customPivotHeaderRenderer } from "Explorer/Quickstart/Shared/QuickstartRenderUtilities";
 import {
   loadDataCommand,
@@ -63,28 +61,16 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>
-                  A hosted mongosh (mongo shell) is provided for this quick start. You are automatically logged in to
-                  mongosh, allowing you to interact with your database directly.
+                  This tutorial guides you to create and query distributed tables using a sample dataset.
                   <br />
                   <br />
-                  When not in the quick start guide, connecting to Azure Cosmos DB for MongoDB vCore is straightforward
-                  using your connection string.
+                  To start, input the admin password you used during the cluster creation process into the MongoDB vCore
+                  terminal.
                   <br />
                   <br />
-                  <Link
-                    aria-label="View connection string"
-                    href=""
-                    onClick={() => sendMessage({ type: MessageTypes.OpenVCoreMongoConnectionStringsBlade })}
-                  >
-                    View connection string
-                  </Link>
                   <br />
-                  <br />
-                  This string contains placeholders for &lt;user&gt; and &lt;password&gt;. Replace them with your chosen
-                  username and password to establish a secure connection to your cluster. Depending on your environment,
-                  you may need to adjust firewall rules or configure private endpoints in the &lsquo;Networking&rsquo;
-                  tab of your database settings, or modify your own network&apos;s firewall settings, to successfully
-                  connect.
+                  Note: If you navigate out of the Quick start blade &#40;MongoDB vCore Shell&#41;, the session will be
+                  closed and all ongoing commands might be interrupted.
                 </Text>
               </Stack>
             </PivotItem>
@@ -102,6 +88,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   Collections contain documents, each of which consists of field and value pairs. The fields in
                   documents are similar to the columns in a relational database table. One key advantage of MongoDB is
                   that these documents within a collection can have different fields.
+                  <br />
                   <br />
                   You&apos;re now going to create a new database and a collection within that database using the Mongo
                   shell. In MongoDB, creating a database or a collection is implicit. This means that databases and
@@ -153,14 +140,14 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   with data. In MongoDB, data is stored as documents, which are structured as field and value pairs.
                   <br />
                   <br />
-                  Let&apos;s populate your sampleCollection with data. We&apos;ll add 10 documents representing books,
-                  each with a title, author, and number of pages, to your sampleCollection in the quickstartDB database.
+                  We&apos;ll add 10 documents representing books, each with a title, author, and number of pages, to
+                  your sampleCollection in the quickstartDB database.
                 </Text>
                 <DefaultButton
                   style={{ marginTop: 16, width: 200 }}
                   onClick={() => useTerminal.getState().sendMessage(loadDataCommand)}
                 >
-                  Create distributed table
+                  Load data
                 </DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
@@ -197,7 +184,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
             >
               <Stack style={{ marginTop: 20 }}>
                 <Text>
-                  Once you’ve inserted data into your sampleCollection, you can retrieve it using queries. MongoDB
+                  Once you&apos;ve inserted data into your sampleCollection, you can retrieve it using queries. MongoDB
                   queries can be as simple or as complex as you need them to be, allowing you to filter, sort, and limit
                   results.
                 </Text>
@@ -205,7 +192,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   style={{ marginTop: 16, width: 110 }}
                   onClick={() => useTerminal.getState().sendMessage(queriesCommand)}
                 >
-                  Load data
+                  Try query
                 </DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
@@ -233,7 +220,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
               </Stack>
             </PivotItem>
             <PivotItem
-              headerText="Integrations"
+              headerText="Next steps"
               onRenderItemLink={(props, defaultRenderer) =>
                 customPivotHeaderRenderer(props, defaultRenderer, currentStep, 4)
               }
@@ -242,46 +229,18 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
             >
               <Stack>
                 <Text>
-                  Cosmos DB for MongoDB vCore seamlessly integrates with Azure services. These integrations enable
-                  Cosmos DB for MongoDB and its partner products to directly interoperate, ensuring a smooth and unified
-                  experience, that just works.
+                  <b>Migrate existing data</b>
+                  <br />
+                  <br />
+                  Modernize your data seamlessly from an existing MongoDB cluster, whether it&apos;s on-premises or
+                  hosted in the cloud, to Azure Cosmos DB for MongoDB vCore.&nbsp;
+                  <Link
+                    target="_blank"
+                    href="https://learn.microsoft.com/azure-data-studio/extensions/azure-cosmos-db-mongodb-extension"
+                  >
+                    Learn more
+                  </Link>
                 </Text>
-                <Stack horizontal>
-                  <Stack style={{ marginTop: 20, marginRight: 20 }}>
-                    <Text>
-                      <b>First party integrations</b>
-                      <br />
-                      <br />
-                      <b>Azure Monitor</b>
-                      <br />
-                      Azure monitor provides comprehensive monitoring and diagnostics for Cosmos DB for Mongo DB. Learn
-                      more
-                      <br />
-                      <br />
-                      <b>Azure Networking</b>
-                      <br />
-                      Azure Networking seamlessly integrates with Azure Cosmos DB for Mongo DB for fast and secure data
-                      access. Learn more
-                      <br />
-                      <br />
-                      <b>PowerShell/CLI/ARM</b>
-                      <br />
-                      PowerShell/CLI/ARM seamlessly integrates with Azure Cosmos DB for Mongo DB for efficient
-                      management and automation. Learn more
-                    </Text>
-                  </Stack>
-                  <Stack style={{ marginTop: 20, marginLeft: 20 }}>
-                    <Text>
-                      <b>Application platforms integrations</b>
-                      <br />
-                      <br />
-                      <b>Vercel</b>
-                      <br />
-                      Vercel is a cloud platform for hosting static front ends and serverless functions, with instant
-                      deployments, automated scaling, and Next.js integration. Learn more
-                    </Text>
-                  </Stack>
-                </Stack>
               </Stack>
             </PivotItem>
           </Pivot>
