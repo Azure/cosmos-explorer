@@ -1,17 +1,45 @@
+import { Platform, configContext } from "ConfigContext";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinDatabases } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { listSqlDatabases } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
+
+  if (configContext.platform === Platform.Fabric && userContext.fabricDatabaseConnectionInfo?.resourceTokens) {
+    const tokensData = userContext.fabricDatabaseConnectionInfo;
+
+    const databaseIdsSet = new Set<string>(); // databaseId
+
+    for (const collectionResourceId in tokensData.resourceTokens) {
+      // Dictionary key looks like this: dbs/SampleDB/colls/Container
+      const resourceIdObj = collectionResourceId.split("/");
+      const databaseId = resourceIdObj[1];
+
+      databaseIdsSet.add(databaseId);
+    }
+
+    const databases: DataModels.Database[] = Array.from(databaseIdsSet.values())
+      .sort((a, b) => a.localeCompare(b))
+      .map((databaseId) => ({
+        _rid: "",
+        _self: "",
+        _etag: "",
+        _ts: 0,
+        id: databaseId,
+        collections: [],
+      }));
+    return databases;
+  }
+
   try {
     if (
       userContext.authType === AuthType.AAD &&
