@@ -4,6 +4,10 @@ import * as msRestNodeAuth from "@azure/ms-rest-nodeauth";
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateUniqueName } from "../utils/shared";
+
+var fetch = require("node-fetch");
+jest.mock("node-fetch", () => jest.fn());
+
 jest.setTimeout(120000);
 
 const clientId = "fd8753b0-0707-4e32-84e9-2532af865fb4";
@@ -32,6 +36,16 @@ test("Resource token", async () => {
     resource: container.url,
   });
   const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
+
+  // Mock the call to /api/guest/tokens/generateToken
+  fetch.mockImplemtation(() =>
+    Promise.resolve({
+      ok: true,
+      text: () => {
+        return "False";
+      },
+    }),
+  );
 
   await page.goto("https://localhost:1234/hostedExplorer.html");
   await page.waitForSelector("div > p.switchConnectTypeText");
