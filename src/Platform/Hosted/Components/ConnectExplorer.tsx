@@ -42,16 +42,6 @@ export const isAccountRestrictedForConnectionStringLogin = async (connectionStri
   return (await response.text()) === "True";
 };
 
-export const hideErrorDetails = () => {
-  window.document.getElementById("errorDetails").innerText = "";
-  window.document.getElementById("errorDetailsInfoTooltip").style.display = "none";
-};
-
-export const showErrorDetails = (errorMessage: string) => {
-  window.document.getElementById("errorDetails").innerText = errorMessage;
-  window.document.getElementById("errorDetailsInfoTooltip").style.display = "inline";
-};
-
 export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setEncryptedToken,
   login,
@@ -60,6 +50,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setConnectionString,
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
   const enableConnectionStringLogin = !userContext.features.disableConnectionStringLogin;
 
   return (
@@ -75,15 +66,15 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
               id="connectWithConnectionString"
               onSubmit={async (event) => {
                 event.preventDefault();
-                hideErrorDetails();
-
-                if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
-                  showErrorDetails("This account has been blocked from connection-string login.");
-                  return;
-                }
+                setErrorMessage("");
 
                 if (isResourceTokenConnectionString(connectionString)) {
                   setAuthType(AuthType.ResourceToken);
+                  return;
+                }
+
+                if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                  setErrorMessage("This account has been blocked from connection-string login.");
                   return;
                 }
 
@@ -104,10 +95,12 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                     setConnectionString(event.target.value);
                   }}
                 />
-                <span className="errorDetailsInfoTooltip" id="errorDetailsInfoTooltip" style={{ display: "none" }}>
-                  <img className="errorImg" src={ErrorImage} alt="Error notification" />
-                  <span className="errorDetails" id="errorDetails"></span>
-                </span>
+                {errorMessage.length > 0 && (
+                  <span className="errorDetailsInfoTooltip">
+                    <img className="errorImg" src={ErrorImage} alt="Error notification" />
+                    <span className="errorDetails">{errorMessage}</span>
+                  </span>
+                )}
               </p>
               <p className="connectExplorerContent">
                 <input className="filterbtnstyle" type="submit" value="Connect" />
