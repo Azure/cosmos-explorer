@@ -33,7 +33,7 @@ export const fetchEncryptedToken = async (connectionString: string): Promise<str
 export const isAccountRestrictedForConnectionStringLogin = async (connectionString: string): Promise<boolean> => {
   const headers = new Headers();
   headers.append(HttpHeaders.connectionString, connectionString);
-  const url = configContext.BACKEND_ENDPOINT + "/api/accountrestrictions/checkconnectionstringlogin";
+  const url = configContext.BACKEND_ENDPOINT + "/api/guest/accountrestrictions/checkconnectionstringlogin";
   const response = await fetch(url, { headers, method: "POST" });
   if (!response.ok) {
     throw response;
