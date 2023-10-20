@@ -458,19 +458,21 @@ export default class Explorer {
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         });
-        connectionStatus.status = ConnectionStatusType.Failed;
-        shouldUseNotebookStates
-          ? useNotebook.getState().resetContainerConnection(connectionStatus)
-          : useQueryCopilot.getState().resetContainerConnection();
-        if (error?.status === HttpStatusCodes.Forbidden && error.message) {
-          useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
-        } else {
-          useDialog
-            .getState()
-            .showOkModalDialog(
-              "Connection Failed",
-              "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
-            );
+        if (shouldUseNotebookStates) {
+          connectionStatus.status = ConnectionStatusType.Failed;
+          shouldUseNotebookStates
+            ? useNotebook.getState().resetContainerConnection(connectionStatus)
+            : useQueryCopilot.getState().resetContainerConnection();
+          if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+            useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+          } else {
+            useDialog
+              .getState()
+              .showOkModalDialog(
+                "Connection Failed",
+                "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
+              );
+          }
         }
         throw error;
       } finally {

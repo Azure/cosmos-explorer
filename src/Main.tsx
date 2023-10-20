@@ -1,13 +1,13 @@
 // CSS Dependencies
 import { initializeIcons, loadTheme } from "@fluentui/react";
+import "bootstrap/dist/css/bootstrap.css";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
-import { userContext } from "UserContext";
-import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import { userContext } from "UserContext";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -16,27 +16,25 @@ import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
-import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
-import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
-import "../images/CosmosDB_rgb_ui_lighttheme.ico";
-import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
-import "../images/favicon.ico";
-import "../less/TableStyles/CustomizeColumns.less";
-import "../less/TableStyles/EntityEditor.less";
-import "../less/TableStyles/fulldatatables.less";
-import "../less/TableStyles/queryBuilder.less";
-import * as StyleConstants from "./Common/StyleConstants";
 import { configContext, Platform } from "ConfigContext";
+import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
+import "../images/CosmosDB_rgb_ui_lighttheme.ico";
+import "../images/favicon.ico";
+import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../less/documentDB.less";
 import "../less/forms.less";
 import "../less/infobox.less";
 import "../less/menus.less";
 import "../less/messagebox.less";
 import "../less/resourceTree.less";
+import "../less/TableStyles/CustomizeColumns.less";
+import "../less/TableStyles/EntityEditor.less";
+import "../less/TableStyles/fulldatatables.less";
+import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
 import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
 import { ResourceTreeContainer } from "./Common/ResourceTreeContainer";
+import * as StyleConstants from "./Common/StyleConstants";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog } from "./Explorer/Controls/Dialog";
@@ -55,11 +53,11 @@ import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import { Tabs } from "./Explorer/Tabs/Tabs";
-import "./Libs/jquery";
-import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
+import "./Libs/jquery";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
+import "./Shared/appInsights";
 
 initializeIcons();
 
@@ -67,7 +65,6 @@ const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
-  const shouldShowModal = useQueryCopilot((state) => state.showFeedbackModal);
 
   const config = useConfig();
   if (config?.platform === Platform.Fabric) {
@@ -136,7 +133,6 @@ const App: React.FunctionComponent = () => {
       {<SQLQuickstartTutorial />}
       {<MongoQuickstartTutorial />}
       {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
-      {shouldShowModal && <QueryCopilotFeedbackModal explorer={explorer} />}
     </div>
   );
 };

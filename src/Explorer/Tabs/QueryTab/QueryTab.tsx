@@ -1,10 +1,11 @@
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
+import { userContext } from "UserContext";
 import React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
 import type { QueryTabOptions } from "../../../Contracts/ViewModels";
 import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
-import {
+import QueryTabComponent, {
   IQueryTabComponentProps,
   ITabAccessor,
   QueryTabFunctionComponent,
@@ -44,11 +45,11 @@ export class NewQueryTab extends TabsBase {
   }
 
   public render(): JSX.Element {
-    return (
+    return userContext.apiType === "SQL" ? (
       <CopilotProvider>
         <QueryTabFunctionComponent {...this.iQueryTabComponentProps} />
       </CopilotProvider>
-    );
+    ) : (<QueryTabComponent {...this.iQueryTabComponentProps} />);
   }
 
   public onTabClick(): void {

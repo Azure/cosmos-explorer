@@ -2,7 +2,8 @@
 /* eslint-disable no-console */
 import { FeedOptions } from "@azure/cosmos";
 import { useDialog } from "Explorer/Controls/Dialog";
-import { useStore } from "Explorer/QueryCopilot/QueryCopilotContext";
+import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
+import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
@@ -21,7 +22,7 @@ import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
-import { NormalizedEventKey, QueryCopilotSampleDatabaseId } from "../../../Common/Constants";
+import { NormalizedEventKey } from "../../../Common/Constants";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
@@ -79,6 +80,7 @@ export interface IQueryTabComponentProps {
   isPreferredApiMongoDB?: boolean;
   monacoEditorSetting?: string;
   viewModelcollection?: ViewModels.Collection;
+  copilotEnabled?: boolean;
   copilotStore?: any;
 }
 
@@ -98,9 +100,10 @@ interface IQueryTabStates {
 }
 
 export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
-  const copilotStore = useStore();
+  const copilotStore = useCopilotStore();
   const queryTabProps = {
     ...props,
+    copilotEnabled: true,
     copilotStore: copilotStore,
   };
   return <QueryTabComponent {...queryTabProps}></QueryTabComponent>;
@@ -121,13 +124,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   constructor(props: IQueryTabComponentProps) {
     super(props);
 
-    const cachedCopilotToggleStatus: string = localStorage.getItem(
-      `${userContext.databaseAccount?.id}-queryCopilotToggleStatus`,
-    );
-    const copilotInitialActive: boolean = cachedCopilotToggleStatus
-      ? StringUtility.toBoolean(cachedCopilotToggleStatus)
-      : true;
-
     this.state = {
       toggleState: ToggleState.Result,
       sqlQueryEditorContent: props.queryText || "SELECT * FROM c",
@@ -139,14 +135,14 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
       queryCopilotGeneratedQuery: useQueryCopilot.getState().query,
       cancelQueryTimeoutID: undefined,
-      copilotActive: copilotInitialActive,
+      copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this.isPreferredApiMongoDB = this.props.isPreferredApiMongoDB;
-    this.isCopilotTabActive = QueryCopilotSampleDatabaseId === this.props.collection.databaseId;
+    this.isCopilotTabActive = userContext.features.copilotVersion === "v3.0";
     this.executeQueryButton = {
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
@@ -169,6 +165,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       onSaveClickEvent: this.getCurrentEditorQuery.bind(this),
       onCloseClickEvent: this.onCloseClick.bind(this),
     });
+  }
+
+  private _queryCopilotActive(): boolean {
+    if (this.props.copilotEnabled) {
+      const cachedCopilotToggleStatus: string = localStorage.getItem(
+        `${userContext.databaseAccount?.id}-queryCopilotToggleStatus`,
+      );
+      const copilotInitialActive: boolean = cachedCopilotToggleStatus
+        ? StringUtility.toBoolean(cachedCopilotToggleStatus)
+        : true;
+      return copilotInitialActive;
+    }
+    return false;
   }
 
   public onCloseClick(isClicked: boolean): void {
@@ -253,19 +262,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(
-            this.props.collection.databaseId,
-            this.props.viewModelcollection,
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
-          )
+          this.props.collection.databaseId,
+          this.props.viewModelcollection,
+          this.state.selectedContent || this.state.sqlQueryEditorContent,
+        )
         : queryDocuments(
-            this.props.collection.databaseId,
-            this.props.collection.id(),
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
-            {
-              enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-              abortSignal: this.queryAbortController.signal,
-            } as FeedOptions,
-          );
+          this.props.collection.databaseId,
+          this.props.collection.id(),
+          this.state.selectedContent || this.state.sqlQueryEditorContent,
+          {
+            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+            abortSignal: this.queryAbortController.signal,
+          } as FeedOptions,
+        );
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -354,7 +363,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
-        onCommandClick: this.state.copilotActive ? () => OnExecuteQueryClick() : this.onExecuteQueryClick,
+        onCommandClick: this.isCopilotTabActive ? () => OnExecuteQueryClick() : this.onExecuteQueryClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -408,18 +417,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push(launchCopilotButton);
     }
 
-    const toggleCopilotButton = {
-      iconSrc: QueryCommandIcon,
-      iconAlt: "Copilot",
-      onCommandClick: () => {
-        this._toggleCopilot(true);
-      },
-      commandButtonLabel: "Copilot",
-      ariaLabel: "Copilot",
-      hasPopup: false,
-      disabled: this.state.copilotActive,
-    };
-    buttons.push(toggleCopilotButton);
+    if (this.props.copilotEnabled) {
+      const toggleCopilotButton = {
+        iconSrc: QueryCommandIcon,
+        iconAlt: "Copilot",
+        onCommandClick: () => {
+          this._toggleCopilot(true);
+        },
+        commandButtonLabel: "Copilot",
+        ariaLabel: "Copilot",
+        hasPopup: false,
+        disabled: this.state.copilotActive,
+      };
+      buttons.push(toggleCopilotButton);
+    }
 
     if (!this.props.isPreferredApiMongoDB && this.state.isExecuting) {
       const label = "Cancel query";
@@ -533,7 +544,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   componentWillUnmount(): void {
-    // this.unsubcribeCopilotQuery?.();
     document.removeEventListener("keydown", this.handleCopilotKeyDown);
   }
 
@@ -541,7 +551,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     return (
       <Fragment>
         <div className="tab-pane" id={this.props.tabId} role="tabpanel">
-          {this.state.currentTabActive && this.state.copilotActive && (
+          {this.props.copilotEnabled && this.state.currentTabActive && this.state.copilotActive && (
             <QueryCopilotPromptbar
               explorer={this.props.collection.container}
               toggleCopilot={this._toggleCopilot}
@@ -580,6 +590,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             </SplitterLayout>
           </div>
         </div>
+        {this.props.copilotEnabled && this.props.copilotStore?.showFeedbackModal && <QueryCopilotFeedbackModal explorer={this.props.collection.container} />}
       </Fragment>
     );
   }

@@ -3,6 +3,7 @@ import {
   Areas,
   ConnectionStatusType,
   ContainerStatusType,
+  HttpStatusCodes,
   PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
@@ -15,6 +16,7 @@ import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { ContainerConnectionInfo, IProvisionData } from "Contracts/DataModels";
 import { QueryResults } from "Contracts/ViewModels";
+import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
@@ -67,6 +69,17 @@ export const allocatePhoenixContainer = async ({
       error: getErrorMessage(error),
       errorStack: getErrorStack(error),
     });
+    useQueryCopilot.getState().resetContainerConnection();
+    if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+      useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+    } else {
+      useDialog
+        .getState()
+        .showOkModalDialog(
+          "Connection Failed",
+          "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
+        );
+    }
   } finally {
     useTabs.getState().setIsTabExecuting(false);
   }
@@ -192,9 +205,9 @@ export const SubmitFeedback = async ({
   try {
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
     const payload = {
-      containerSchema: userContext.features.enableCopilotFullSchema
-        ? QueryCopilotSampleContainerSchema
-        : ShortenedQueryCopilotSampleContainerSchema,
+      // containerSchema: userContext.features.enableCopilotFullSchema
+      //   ? QueryCopilotSampleContainerSchema
+      //   : ShortenedQueryCopilotSampleContainerSchema,
       like: likeQuery ? "like" : "dislike",
       generatedSql: generatedQuery,
       userPrompt,
@@ -210,7 +223,7 @@ export const SubmitFeedback = async ({
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
       ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
-      : createUri(serverInfo.notebookServerEndpoint, "feedback");
+      : createUri(serverInfo.notebookServerEndpoint, "public/feedback");
     await fetch(feedbackUri, {
       method: "POST",
       headers: {

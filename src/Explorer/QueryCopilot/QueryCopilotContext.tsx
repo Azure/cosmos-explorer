@@ -7,7 +7,7 @@ import { QueryCopilotState } from "hooks/useQueryCopilot";
 import React, { createContext, useContext, useState } from "react";
 import create from "zustand";
 const context = createContext(null);
-const useStore = (): Partial<QueryCopilotState> => useContext(context);
+const useCopilotStore = (): Partial<QueryCopilotState> => useContext(context);
 
 const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
   const [useStore] = useState(() =>
@@ -128,4 +128,4 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
   return <context.Provider value={useStore()}>{children}</context.Provider>;
 };
 
-export { CopilotProvider, useStore };
+export { CopilotProvider, useCopilotStore };

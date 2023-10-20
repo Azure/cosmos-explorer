@@ -11,8 +11,8 @@ import {
   TextField,
 } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
+import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import { getUserEmail } from "../../../Utils/UserUtils";
 
@@ -24,7 +24,7 @@ export const QueryCopilotFeedbackModal = ({ explorer }: { explorer: Explorer }):
     showFeedbackModal,
     closeFeedbackModal,
     setHideFeedbackModalForLikedQueries,
-  } = useQueryCopilot();
+  } = useCopilotStore();
   const [isContactAllowed, setIsContactAllowed] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [doNotShowAgainChecked, setDoNotShowAgainChecked] = React.useState<boolean>(false);

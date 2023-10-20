@@ -35,7 +35,7 @@ import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
 import { useTabs } from "../../hooks/useTabs";
-import { useStore } from "../QueryCopilot/QueryCopilotContext";
+import { useCopilotStore } from "../QueryCopilot/QueryCopilotContext";
 
 type QueryCopilotPromptProps = QueryCopilotProps & {
   toggleCopilot: (toggle: boolean) => void;
@@ -57,7 +57,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 }: QueryCopilotPromptProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
-  const copilotStore = useStore();
   const {
     openFeedbackModal,
     hideFeedbackModalForLikedQueries,
@@ -93,7 +92,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setQueryResults,
     setErrorMessage,
     setNotebookServerInfo,
-  } = copilotStore;
+  } = useCopilotStore();
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -169,6 +168,10 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setErrorMessage("");
   };
 
+  React.useEffect(() => {
+    console.log(userPrompt);
+  }, [])
+
   const generateSQLQuery = async (): Promise<void> => {
     try {
       resetMessageStates();
@@ -180,7 +183,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       const usercontainerId: string = useTabs.getState().activeTab.collection.id();
 
       await allocatePhoenixContainer({ explorer, userdbId, usercontainerId });
-      setNotebookServerInfo(useQueryCopilot.getState().notebookServerInfo);
 
       const payload = {
         userPrompt: userPrompt,
@@ -189,7 +191,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       const serverInfo = useQueryCopilot.getState().notebookServerInfo;
       const queryUri = userContext.features.disableCopilotPhoenixGateaway
         ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
-        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+        : createUri(serverInfo.notebookServerEndpoint, "public/generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {
