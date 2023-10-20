@@ -30,6 +30,30 @@ export const fetchEncryptedToken = async (connectionString: string): Promise<str
   return decodeURIComponent(result.readWrite || result.read);
 };
 
+export const isAccountRestrictedForConnectionStringLogin = async (connectionString: string): Promise<boolean> => {
+  console.log("DEBUG: START");
+  const headers = new Headers();
+  headers.append(HttpHeaders.connectionString, connectionString);
+  //const url = configContext.BACKEND_ENDPOINT + "/api/accountrestrictions/checkconnectionstringlogin";
+  const url = "https://localhost:12901" + "/api/accountrestrictions/checkconnectionstringlogin";
+  const response = await fetch(url, { headers, method: "POST" });
+  if (!response.ok) {
+    throw response;
+  }
+
+  return (await response.text()) === "True";
+};
+
+export const hideErrorDetails = () => {
+  window.document.getElementById("errorDetails").innerText = "";
+  window.document.getElementById("errorDetailsInfoTooltip").style.display = "none";
+};
+
+export const showErrorDetails = (errorMessage: string) => {
+  window.document.getElementById("errorDetails").innerText = errorMessage;
+  window.document.getElementById("errorDetailsInfoTooltip").style.display = "inline";
+};
+
 export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setEncryptedToken,
   login,
@@ -53,6 +77,12 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
               id="connectWithConnectionString"
               onSubmit={async (event) => {
                 event.preventDefault();
+                hideErrorDetails();
+
+                if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                  showErrorDetails("This account has been blocked from connection-string login.");
+                  return;
+                }
 
                 if (isResourceTokenConnectionString(connectionString)) {
                   setAuthType(AuthType.ResourceToken);
@@ -76,9 +106,9 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                     setConnectionString(event.target.value);
                   }}
                 />
-                <span className="errorDetailsInfoTooltip" style={{ display: "none" }}>
+                <span className="errorDetailsInfoTooltip" id="errorDetailsInfoTooltip" style={{ display: "none" }}>
                   <img className="errorImg" src={ErrorImage} alt="Error notification" />
-                  <span className="errorDetails"></span>
+                  <span className="errorDetails" id="errorDetails"></span>
                 </span>
               </p>
               <p className="connectExplorerContent">
