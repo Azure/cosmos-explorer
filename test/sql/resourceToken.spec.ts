@@ -7,12 +7,14 @@ import { isAccountRestrictedForConnectionStringLogin } from "../../src/Platform/
 import { generateUniqueName } from "../utils/shared";
 jest.setTimeout(120000);
 
-jest.mock("../../src/Platform/Hosted/Components/ConnectExplorer", () => {
-  const original = jest.requireActual("../../src/Platform/Hosted/Components/ConnectExplorer");
-  return {
-    ...original,
-    isAccountRestrictedForConnectionStringLogin: jest.fn(),
-  };
+beforeAll(() => {
+  jest.mock("../../src/Platform/Hosted/Components/ConnectExplorer", () => {
+    const original = jest.requireActual("../../src/Platform/Hosted/Components/ConnectExplorer");
+    return {
+      ...original,
+      isAccountRestrictedForConnectionStringLogin: jest.fn(),
+    };
+  });
 });
 
 const clientId = "fd8753b0-0707-4e32-84e9-2532af865fb4";
