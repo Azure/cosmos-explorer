@@ -3,20 +3,11 @@ import { CosmosClient, PermissionMode } from "@azure/cosmos";
 import * as msRestNodeAuth from "@azure/ms-rest-nodeauth";
 import { jest } from "@jest/globals";
 import "expect-playwright";
+import { isAccountRestrictedForConnectionStringLogin } from "../../src/Platform/Hosted/Helpers/AccountRestrictionsHelper";
 import { generateUniqueName } from "../utils/shared";
 
-import { isAccountRestrictedForConnectionStringLogin } from "../../src/Platform/Hosted/Helpers/AccountRestrictionsHelper";
-
 jest.setTimeout(120000);
-const mockAccountRestricted = jest.fn();
-
-beforeAll(() => {
-  jest.mock("../../src/Platform/Hosted/Helpers/AccountRestrictionsHelper", () => {
-    return {
-      isAccountRestrictedForConnectionStringLogin: mockAccountRestricted,
-    };
-  });
-});
+jest.mock("../../src/Platform/Hosted/Helpers/AccountRestrictionsHelper");
 
 const clientId = "fd8753b0-0707-4e32-84e9-2532af865fb4";
 const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
@@ -45,8 +36,7 @@ test("Resource token", async () => {
   });
   const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
 
-  (isAccountRestrictedForConnectionStringLogin as jest.Mock).mockImplementation((s: string) => {
-    console.log(s.length);
+  (isAccountRestrictedForConnectionStringLogin as jest.Mock).mockImplementation(() => {
     return Promise.resolve(false);
   });
 
