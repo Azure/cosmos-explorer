@@ -1,5 +1,4 @@
 import { useBoolean } from "@fluentui/react-hooks";
-import { userContext } from "UserContext";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
@@ -7,6 +6,7 @@ import { AuthType } from "../../../AuthType";
 import { HttpHeaders } from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import { GenerateTokenResponse } from "../../../Contracts/DataModels";
+import { userContext } from "../../../UserContext";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 
 interface Props {
