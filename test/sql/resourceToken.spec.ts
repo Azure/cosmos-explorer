@@ -5,13 +5,13 @@ import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateUniqueName } from "../utils/shared";
 
-import { isAccountRestrictedForConnectionStringLogin } from "../../src/Platform/Hosted/Components/ConnectExplorer";
+import { isAccountRestrictedForConnectionStringLogin } from "../../src/Platform/Hosted/Helpers/AccountRestrictionsHelper";
 
 jest.setTimeout(120000);
 const mockAccountRestricted = jest.fn();
 
 beforeAll(() => {
-  jest.mock("../../src/Platform/Hosted/Components/ConnectExplorer", () => {
+  jest.mock("../../src/Platform/Hosted/Helpers/AccountRestrictionsHelper", () => {
     return {
       isAccountRestrictedForConnectionStringLogin: mockAccountRestricted,
     };
