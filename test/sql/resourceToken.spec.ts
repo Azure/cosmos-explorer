@@ -5,12 +5,15 @@ import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateUniqueName } from "../utils/shared";
 
+import { isAccountRestrictedForConnectionStringLogin } from "../../src/Platform/Hosted/Components/ConnectExplorer";
+
 jest.setTimeout(120000);
+const mockAccountRestricted = jest.fn();
 
 beforeAll(() => {
   jest.mock("../../src/Platform/Hosted/Components/ConnectExplorer", () => {
     return {
-      isAccountRestrictedForConnectionStringLogin: jest.fn().mockImplementation(() => Promise.resolve(false)),
+      isAccountRestrictedForConnectionStringLogin: mockAccountRestricted,
     };
   });
 });
@@ -41,6 +44,8 @@ test("Resource token", async () => {
     resource: container.url,
   });
   const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
+
+  (isAccountRestrictedForConnectionStringLogin as jest.Mock).mockReturnValue(Promise.resolve(false));
 
   await page.goto("https://localhost:1234/hostedExplorer.html");
   await page.waitForSelector("div > p.switchConnectTypeText");
