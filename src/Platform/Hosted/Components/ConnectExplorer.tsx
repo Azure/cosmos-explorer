@@ -68,13 +68,13 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 event.preventDefault();
                 setErrorMessage("");
 
-                if (isResourceTokenConnectionString(connectionString)) {
-                  setAuthType(AuthType.ResourceToken);
+                if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                  setErrorMessage("This account has been blocked from connection-string login.");
                   return;
                 }
 
-                if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
-                  setErrorMessage("This account has been blocked from connection-string login.");
+                if (isResourceTokenConnectionString(connectionString)) {
+                  setAuthType(AuthType.ResourceToken);
                   return;
                 }
 
