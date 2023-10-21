@@ -5,13 +5,11 @@ import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateUniqueName } from "../utils/shared";
 
-const original = jest.requireActual("../../src/Platform/Hosted/Components/ConnectExplorer");
 jest.setTimeout(120000);
 
 beforeAll(() => {
   jest.mock("../../src/Platform/Hosted/Components/ConnectExplorer", () => {
     return {
-      ...original,
       isAccountRestrictedForConnectionStringLogin: jest.fn().mockImplementation(() => Promise.resolve(false)),
     };
   });
