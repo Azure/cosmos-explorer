@@ -45,7 +45,10 @@ test("Resource token", async () => {
   });
   const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
 
-  (isAccountRestrictedForConnectionStringLogin as jest.Mock).mockReturnValue(Promise.resolve(false));
+  (isAccountRestrictedForConnectionStringLogin as jest.Mock).mockImplementation((s: string) => {
+    console.log(s.length);
+    return Promise.resolve(false);
+  });
 
   await page.goto("https://localhost:1234/hostedExplorer.html");
   await page.waitForSelector("div > p.switchConnectTypeText");
