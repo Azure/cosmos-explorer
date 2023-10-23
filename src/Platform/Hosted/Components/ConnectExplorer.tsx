@@ -30,6 +30,18 @@ export const fetchEncryptedToken = async (connectionString: string): Promise<str
   return decodeURIComponent(result.readWrite || result.read);
 };
 
+export const isAccountRestrictedForConnectionStringLogin = async (connectionString: string): Promise<boolean> => {
+  const headers = new Headers();
+  headers.append(HttpHeaders.connectionString, connectionString);
+  const url = configContext.BACKEND_ENDPOINT + "/api/guest/accountrestrictions/checkconnectionstringlogin";
+  const response = await fetch(url, { headers, method: "POST" });
+  if (!response.ok) {
+    throw response;
+  }
+
+  return (await response.text()) === "True";
+};
+
 export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setEncryptedToken,
   login,
@@ -38,6 +50,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
   setConnectionString,
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
   const enableConnectionStringLogin = !userContext.features.disableConnectionStringLogin;
 
   return (
@@ -53,6 +66,12 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
               id="connectWithConnectionString"
               onSubmit={async (event) => {
                 event.preventDefault();
+                setErrorMessage("");
+
+                if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
+                  setErrorMessage("This account has been blocked from connection-string login.");
+                  return;
+                }
 
                 if (isResourceTokenConnectionString(connectionString)) {
                   setAuthType(AuthType.ResourceToken);
@@ -76,10 +95,12 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                     setConnectionString(event.target.value);
                   }}
                 />
-                <span className="errorDetailsInfoTooltip" style={{ display: "none" }}>
-                  <img className="errorImg" src={ErrorImage} alt="Error notification" />
-                  <span className="errorDetails"></span>
-                </span>
+                {errorMessage.length > 0 && (
+                  <span className="errorDetailsInfoTooltip">
+                    <img className="errorImg" src={ErrorImage} alt="Error notification" />
+                    <span className="errorDetails">{errorMessage}</span>
+                  </span>
+                )}
               </p>
               <p className="connectExplorerContent">
                 <input className="filterbtnstyle" type="submit" value="Connect" />
