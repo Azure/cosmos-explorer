@@ -3,17 +3,8 @@ import { CosmosClient, PermissionMode } from "@azure/cosmos";
 import * as msRestNodeAuth from "@azure/ms-rest-nodeauth";
 import { jest } from "@jest/globals";
 import "expect-playwright";
-import { isAccountRestrictedForConnectionStringLogin } from "../../src/Platform/Hosted/Components/ConnectExplorer";
 import { generateUniqueName } from "../utils/shared";
 jest.setTimeout(120000);
-
-jest.mock("../../src/Platform/Hosted/Components/ConnectExplorer", () => {
-  const original = jest.requireActual("../../src/Platform/Hosted/Components/ConnectExplorer");
-  return {
-    ...original,
-    isAccountRestrictedForConnectionStringLogin: jest.fn(),
-  };
-});
 
 const clientId = "fd8753b0-0707-4e32-84e9-2532af865fb4";
 const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
@@ -41,8 +32,6 @@ test("Resource token", async () => {
     resource: container.url,
   });
   const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
-
-  isAccountRestrictedForConnectionStringLogin.mockImplementation(() => Promise.resolve(false));
 
   await page.goto("https://localhost:1234/hostedExplorer.html");
   await page.waitForSelector("div > p.switchConnectTypeText");
