@@ -147,7 +147,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     let properties = "(";
     let values = "(";
     for (let property in entity) {
-      if (entity[property]._ === "" || undefined) {
+      if (entity[property]._ === "" || entity[property]._ === undefined) {
         continue;
       }
       properties = properties.concat(`${property}, `);
@@ -208,7 +208,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           !originalDocument[property] ||
           newEntity[property]._.toString() !== originalDocument[property]._.toString()
         ) {
-          if (newEntity[property]._.toString() === "" || undefined) {
+          if (newEntity[property]._.toString() === "" || newEntity[property]._.toString() === undefined) {
             continue;
           }
           let propertyQuerySegment = this.isStringType(newEntity[property].$)
