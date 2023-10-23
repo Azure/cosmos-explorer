@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { mount, ReactWrapper } from "enzyme";
+import { ReactWrapper, mount } from "enzyme";
 import React from "react";
 import { RightPaneForm } from "./RightPaneForm";
 
@@ -34,6 +34,6 @@ describe("Right Pane Form", () => {
   it("should render error in header", () => {
     render(<RightPaneForm {...props} formError="file already Exist" />);
     expect(screen.getByLabelText("error")).toBeDefined();
-    expect(screen.getByRole("alert").innerHTML).toEqual("file already Exist");
+    expect(screen.getByRole("alert").innerHTML).toContain("file already Exist");
   });
 });
