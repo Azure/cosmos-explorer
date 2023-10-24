@@ -208,7 +208,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           !originalDocument[property] ||
           newEntity[property]._.toString() !== originalDocument[property]._.toString()
         ) {
-          if (newEntity[property]._.toString() === "" || newEntity[property]._.toString() === undefined) {
+          if (newEntity[property]._.toString() === "" || newEntity[property]._ === undefined) {
             continue;
           }
           let propertyQuerySegment = this.isStringType(newEntity[property].$)
