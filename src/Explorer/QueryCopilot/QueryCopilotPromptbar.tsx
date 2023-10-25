@@ -299,6 +299,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           styles={{ root: { width: "95%" }, fieldGroup: { borderRadius: 6 } }}
           disabled={isGeneratingQuery}
           autoComplete="off"
+          placeholder="Ask a question in natural language and we’ll generate the query for you."
         />
         {copilotTeachingBubbleVisible && (
           <TeachingBubble
