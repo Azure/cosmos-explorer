@@ -51,7 +51,7 @@ export async function fetchDatabaseAccountsFromGraph(
   do {
     const body = {
       query: databaseAccountsQuery,
-      subscriptionId: [subscriptionId],
+      subscriptions: [subscriptionId],
       ...(skipToken && {
         options: {
           $skipToken: skipToken,
