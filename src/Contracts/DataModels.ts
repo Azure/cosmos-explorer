@@ -88,13 +88,13 @@ export interface GenerateTokenResponse {
 }
 
 export interface Subscription {
-  uniqueDisplayName: string;
+  uniqueDisplayName?: string;
   displayName: string;
   subscriptionId: string;
-  tenantId: string;
+  tenantId?: string;
   state: string;
-  subscriptionPolicies: SubscriptionPolicies;
-  authorizationSource: string;
+  subscriptionPolicies?: SubscriptionPolicies;
+  authorizationSource?: string;
 }
 
 export interface SubscriptionPolicies {
