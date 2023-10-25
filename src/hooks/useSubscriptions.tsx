@@ -87,7 +87,8 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
 export function useSubscriptions(armToken: string): Subscription[] | undefined {
   const { data } = useSWR(
     () => (armToken ? ["subscriptions", armToken] : undefined),
-    (_, armToken) => userContext.features.enableResourceGraph ? fetchSubscriptionsFromGraph(armToken) : fetchSubscriptions(armToken),
+    (_, armToken) =>
+      userContext.features.enableResourceGraph ? fetchSubscriptionsFromGraph(armToken) : fetchSubscriptions(armToken),
   );
   return data;
 }
