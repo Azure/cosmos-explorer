@@ -11,6 +11,8 @@ import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 import { TerminalProps } from "./TerminalProps";
 import "./index.css";
 
+let session: ITerminalConnection | undefined;
+
 const createServerSettings = (props: TerminalProps): ServerConnection.ISettings => {
   let body: BodyInit | undefined;
   let headers: HeadersInit | undefined;
@@ -49,7 +51,7 @@ const createServerSettings = (props: TerminalProps): ServerConnection.ISettings 
   return ServerConnection.makeSettings(options);
 };
 
-const initTerminal = async (props: TerminalProps): Promise<ITerminalConnection | undefined> => {
+const initTerminal = async (props: TerminalProps): Promise<void> => {
   // Initialize userContext (only properties which are needed by TelemetryProcessor)
   updateUserContext({
     subscriptionId: props.subscriptionId,
@@ -59,28 +61,38 @@ const initTerminal = async (props: TerminalProps): Promise<ITerminalConnection |
   });
 
   const serverSettings = createServerSettings(props);
+
+  createTerminalApp(props, serverSettings);
+};
+
+const createTerminalApp = async (props: TerminalProps, serverSettings: ServerConnection.ISettings) => {
   const data = { baseUrl: serverSettings.baseUrl };
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
-    const session = await new JupyterLabAppFactory(() => closeTab(props.tabId)).createTerminalApp(serverSettings);
+    session = await new JupyterLabAppFactory((restartShell: boolean) =>
+      closeTab(props, serverSettings, restartShell),
+    ).createTerminalApp(serverSettings);
     TelemetryProcessor.traceSuccess(Action.OpenTerminal, data, startTime);
-    return session;
   } catch (error) {
     TelemetryProcessor.traceFailure(Action.OpenTerminal, data, startTime);
-    return undefined;
+    session = undefined;
   }
 };
 
-const closeTab = (tabId: string): void => {
-  window.parent.postMessage(
-    { type: MessageTypes.CloseTab, data: { tabId: tabId }, signature: "pcIframe" },
-    window.document.referrer,
-  );
+const closeTab = (props: TerminalProps, serverSettings: ServerConnection.ISettings, restartShell: boolean): void => {
+  if (restartShell) {
+    createTerminalApp(props, serverSettings);
+  } else {
+    window.parent.postMessage(
+      { type: MessageTypes.CloseTab, data: { tabId: props.tabId }, signature: "pcIframe" },
+      window.document.referrer,
+    );
+  }
 };
 
 const main = async (): Promise<void> => {
-  let session: ITerminalConnection | undefined;
+  //let session: ITerminalConnection | undefined;
   postRobot.on(
     "props",
     {
@@ -91,7 +103,7 @@ const main = async (): Promise<void> => {
       // Typescript definition for event is wrong. So read props by casting to <any>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const props = (event as any).data as TerminalProps;
-      session = await initTerminal(props);
+      await initTerminal(props);
     },
   );
 
