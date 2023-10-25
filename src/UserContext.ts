@@ -79,6 +79,7 @@ interface UserContext {
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
+  readonly accountRestrictedFromUser?: boolean;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
@@ -171,3 +172,4 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { updateUserContext, userContext };
+

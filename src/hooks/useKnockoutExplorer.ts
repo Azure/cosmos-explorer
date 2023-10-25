@@ -36,7 +36,7 @@ import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
+import { getAuthorizationHeader, getMsalInstance, isAccountRestrictedFromUser } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
@@ -227,9 +227,11 @@ async function configureHosted(): Promise<Explorer> {
 
 async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   // TODO: Refactor. updateUserContext needs to be called twice because listKeys below depends on userContext.authorizationToken
+  const accountRestrictedFromUser: boolean = await isAccountRestrictedFromUser(config.databaseAccount.name, config.graphAuthorizationToken);
   updateUserContext({
     authType: AuthType.AAD,
     authorizationToken: `Bearer ${config.authorizationToken}`,
+    accountRestrictedFromUser
   });
   const account = config.databaseAccount;
   const accountResourceId = account.id;

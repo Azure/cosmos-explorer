@@ -60,3 +60,27 @@ export function getMsalInstance() {
   const msalInstance = new msal.PublicClientApplication(config);
   return msalInstance;
 }
+
+export async function isAccountRestrictedFromUser(accountName: string, graphToken: string): Promise<boolean> {
+  const checkUserAccessUrl: string = "https://localhost:12901/api/guest/accountrestrictions/accountrestrictedfromuser";
+  // const authorizationHeader = getAuthorizationHeader();
+  try {
+    const response: Response = await fetch(checkUserAccessUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        accountName
+      }),
+      headers: {
+        // [authorizationHeader.header]: authorizationHeader.token,
+        [Constants.HttpHeaders.graphAuthorization]: graphToken,
+        [Constants.HttpHeaders.contentType]: "application/json",
+      }
+    });
+
+    const responseText: string = await response.text();
+    return responseText.toLowerCase() === "true";
+  } catch (e) {
+    console.log(e);
+    throw new Error(e);
+  }
+}

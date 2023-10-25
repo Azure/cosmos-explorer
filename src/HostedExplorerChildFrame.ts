@@ -10,6 +10,7 @@ export interface AAD {
   authType: AuthType.AAD;
   databaseAccount: DatabaseAccount;
   authorizationToken: string;
+  graphAuthorizationToken: string;
 }
 
 export interface ConnectionString {
