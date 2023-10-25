@@ -1,5 +1,6 @@
 import { HttpHeaders } from "Common/Constants";
 import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph";
+import { userContext } from "UserContext";
 import useSWR from "swr";
 import { configContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
@@ -82,7 +83,7 @@ export async function fetchDatabaseAccountsFromGraph(
 export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] | undefined {
   const { data } = useSWR(
     () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
-    (_, subscriptionId, armToken) => fetchDatabaseAccountsFromGraph(subscriptionId, armToken),
+    (_, subscriptionId, armToken) => userContext.features.enableResourceGraph ? fetchDatabaseAccountsFromGraph(subscriptionId, armToken) : fetchDatabaseAccounts(subscriptionId, armToken),
   );
   return data;
 }

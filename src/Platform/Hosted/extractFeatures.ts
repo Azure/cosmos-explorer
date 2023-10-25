@@ -14,6 +14,7 @@ export type Features = {
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
   readonly enableAadDataPlane: boolean;
+  readonly enableResourceGraph: boolean;
   readonly enableKoResourceTree: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
@@ -73,6 +74,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
     enableAadDataPlane: "true" === get("enableaaddataplane"),
+    enableResourceGraph: "true" === get("enableresourcegraph"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
