@@ -24,6 +24,7 @@ import { createUri } from "Common/UrlUtility";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
+import { SuggestedPrompt, getSampleDatabaseSuggestedPrompts, getSuggestedPrompts } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { SubmitFeedback, allocatePhoenixContainer } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
@@ -36,15 +37,11 @@ import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
 import { useTabs } from "../../hooks/useTabs";
 import { useCopilotStore } from "../QueryCopilot/QueryCopilotContext";
+import { useSelectedNode } from "../useSelectedNode";
 
 type QueryCopilotPromptProps = QueryCopilotProps & {
   toggleCopilot: (toggle: boolean) => void;
 };
-
-interface SuggestedPrompt {
-  id: number;
-  text: string;
-}
 
 const promptStyles: IButtonStyles = {
   root: { border: 0, selectors: { ":hover": { outline: "1px dashed #605e5c" } } },
@@ -91,7 +88,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setGeneratedQueryComments,
     setQueryResults,
     setErrorMessage,
-    setNotebookServerInfo,
   } = useCopilotStore();
 
   const sampleProps: SamplePromptsProps = {
@@ -117,14 +113,11 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     }, 6000);
   };
 
+  const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
   const cachedHistories = cachedHistoriesString?.split("|");
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
-  const suggestedPrompts: SuggestedPrompt[] = [
-    { id: 1, text: 'Show all products that have the word "ultra" in the name or description' },
-    { id: 2, text: "What are all of the possible categories for the products, and their counts?" },
-    { id: 3, text: 'Show me all products that have been reviewed by someone with a username that contains "bob"' },
-  ];
+  const suggestedPrompts: SuggestedPrompt[] = isSampleCopilotActive ? getSampleDatabaseSuggestedPrompts() : getSuggestedPrompts();
   const [filteredHistories, setFilteredHistories] = useState<string[]>(histories);
   const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
 
@@ -168,10 +161,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setErrorMessage("");
   };
 
-  React.useEffect(() => {
-    console.log(userPrompt);
-  }, [])
-
   const generateSQLQuery = async (): Promise<void> => {
     try {
       resetMessageStates();
@@ -181,8 +170,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       useTabs.getState().setIsQueryErrorThrown(false);
       const userdbId: string = useTabs.getState().activeTab.collection.databaseId;
       const usercontainerId: string = useTabs.getState().activeTab.collection.id();
+      const mode: string = isSampleCopilotActive ? "Sample" : "User";
 
-      await allocatePhoenixContainer({ explorer, userdbId, usercontainerId });
+      await allocatePhoenixContainer({ explorer, userdbId, usercontainerId, mode });
 
       const payload = {
         userPrompt: userPrompt,

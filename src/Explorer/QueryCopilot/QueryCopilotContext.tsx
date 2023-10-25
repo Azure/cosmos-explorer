@@ -11,7 +11,7 @@ const useCopilotStore = (): Partial<QueryCopilotState> => useContext(context);
 
 const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
   const [useStore] = useState(() =>
-    create((set) => ({
+    create((set, get) => ({
       generatedQuery: "",
       likeQuery: false,
       userPrompt: "",
@@ -77,6 +77,10 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
       setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
       setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),
       setShowExplanationBubble: (showExplanationBubble: boolean) => set({ showExplanationBubble }),
+
+      getState: () => {
+        return get();
+      },
 
       resetQueryCopilotStates: () => {
         set((state) => ({

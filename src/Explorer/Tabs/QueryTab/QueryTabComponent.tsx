@@ -5,13 +5,13 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
-import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
-import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
+import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { useSelectedNode } from "Explorer/useSelectedNode";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -81,7 +81,8 @@ export interface IQueryTabComponentProps {
   monacoEditorSetting?: string;
   viewModelcollection?: ViewModels.Collection;
   copilotEnabled?: boolean;
-  copilotStore?: any;
+  isSampleCopilotActive?: boolean;
+  copilotStore?: Partial<QueryCopilotState>;
 }
 
 interface IQueryTabStates {
@@ -101,9 +102,11 @@ interface IQueryTabStates {
 
 export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
   const copilotStore = useCopilotStore();
+  const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
     ...props,
     copilotEnabled: true,
+    isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
   };
   return <QueryTabComponent {...queryTabProps}></QueryTabComponent>;
@@ -363,7 +366,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
-        onCommandClick: this.isCopilotTabActive ? () => OnExecuteQueryClick() : this.onExecuteQueryClick,
+        onCommandClick: this.props.isSampleCopilotActive ? () => OnExecuteQueryClick(this.props.copilotStore) : this.onExecuteQueryClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -513,7 +516,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
 
     if (this.state.copilotActive) {
-      console.log(this.props.copilotStore?.query);
       return this.props.copilotStore?.query;
     }
 
@@ -573,8 +575,17 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                   />
                 </div>
               </Fragment>
-              {this.isCopilotTabActive ? (
-                <QueryCopilotResults />
+              {this.props.isSampleCopilotActive ? (
+                <QueryResultSection
+                  isMongoDB={this.props.isPreferredApiMongoDB}
+                  queryEditorContent={this.state.sqlQueryEditorContent}
+                  error={this.props.copilotStore?.errorMessage}
+                  queryResults={this.props.copilotStore?.queryResults}
+                  isExecuting={this.props.copilotStore?.isExecuting}
+                  executeQueryDocumentsPage={(firstItemIndex: number) =>
+                    QueryDocumentsPerPage(firstItemIndex, this.props.copilotStore.queryIterator, this.props.copilotStore)
+                  }
+                />
               ) : (
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}

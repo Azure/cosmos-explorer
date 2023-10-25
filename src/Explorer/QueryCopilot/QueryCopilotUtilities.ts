@@ -7,6 +7,11 @@ import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
 import DocumentId from "Explorer/Tree/DocumentId";
 import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
 
+export interface SuggestedPrompt {
+  id: number;
+  text: string;
+}
+
 export const querySampleDocuments = (query: string, options: FeedOptions): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
   return sampleDataClient()
@@ -33,3 +38,20 @@ export const readSampleDocument = async (documentId: DocumentId): Promise<Item> 
     clearMessage();
   }
 };
+
+export const getSampleDatabaseSuggestedPrompts = (): SuggestedPrompt[] => {
+  return [
+    { id: 1, text: 'Show all products that have the word "ultra" in the name or description' },
+    { id: 2, text: 'What are all of the possible categories for the products, and their counts?' },
+    { id: 3, text: 'Show me all products that have been reviewed by someone with a username that contains "bob"' },
+  ];
+}
+
+export const getSuggestedPrompts = (): SuggestedPrompt[] => {
+  return [
+    { id: 1, text: 'Show me the first 5 records' },
+    { id: 2, text: 'Show me all records' },
+    { id: 3, text: 'Show me all unique columns?' },
+    { id: 4, text: 'How many records are in the table?' },
+  ];
+}

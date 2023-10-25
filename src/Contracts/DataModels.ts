@@ -461,6 +461,7 @@ export interface IProvisionData {
   poolId: string;
   databaseId?: string;
   containerId?: string;
+  mode?: string;
 }
 
 export interface IContainerData {

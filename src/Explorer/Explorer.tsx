@@ -411,7 +411,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public async allocateContainer(poolId: PoolIdType): Promise<void> {
+  public async allocateContainer(poolId: PoolIdType, mode?: string): Promise<void> {
     const shouldUseNotebookStates = poolId === PoolIdType.DefaultPoolId ? true : false;
     const notebookServerInfo = shouldUseNotebookStates
       ? useNotebook.getState().notebookServerInfo
@@ -449,6 +449,7 @@ export default class Explorer {
             poolId: poolId,
             databaseId: useTabs.getState().activeTab.collection.databaseId,
             containerId: useTabs.getState().activeTab.collection.id(),
+            mode: mode
           };
         }
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);

@@ -24,7 +24,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as StringUtility from "../../../Shared/StringUtility";
 
@@ -32,30 +32,26 @@ export const allocatePhoenixContainer = async ({
   explorer,
   userdbId,
   usercontainerId,
+  mode,
 }: {
   explorer: Explorer;
   userdbId: string;
   usercontainerId: string;
+  mode: string;
 }): Promise<void> => {
   try {
     if (
       useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
       !userContext.features.disableCopilotPhoenixGateaway
     ) {
-      try {
-        await explorer.allocateContainer(PoolIdType.QueryCopilot);
-      } catch (error) {
-        await resetPhoenixContainerSchema({ explorer, userdbId, usercontainerId });
-      }
+      await explorer.allocateContainer(PoolIdType.QueryCopilot, mode);
     } else {
       const currentAllocatedSchemaInfo = useQueryCopilot.getState().schemaAllocationInfo;
-      // eslint-disable-next-line no-console
-      console.log("current", currentAllocatedSchemaInfo, userdbId, usercontainerId);
       if (
         currentAllocatedSchemaInfo.databaseId !== userdbId ||
         currentAllocatedSchemaInfo.containerId !== usercontainerId
       ) {
-        await resetPhoenixContainerSchema({ explorer, userdbId, usercontainerId });
+        await resetPhoenixContainerSchema({ explorer, userdbId, usercontainerId, mode });
       }
     }
     useQueryCopilot.getState().setSchemaAllocationInfo({
@@ -89,16 +85,19 @@ export const resetPhoenixContainerSchema = async ({
   explorer,
   userdbId,
   usercontainerId,
+  mode,
 }: {
   explorer: Explorer;
   userdbId: string;
   usercontainerId: string;
+  mode: string;
 }): Promise<void> => {
   try {
     const provisionData: IProvisionData = {
       poolId: PoolIdType.QueryCopilot,
       databaseId: userdbId,
       containerId: usercontainerId,
+      mode: mode
     };
     const connectionInfo = await explorer.phoenixClient.resetContainer(provisionData);
     const connectionStatus: ContainerConnectionInfo = {
@@ -205,9 +204,6 @@ export const SubmitFeedback = async ({
   try {
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
     const payload = {
-      // containerSchema: userContext.features.enableCopilotFullSchema
-      //   ? QueryCopilotSampleContainerSchema
-      //   : ShortenedQueryCopilotSampleContainerSchema,
       like: likeQuery ? "like" : "dislike",
       generatedSql: generatedQuery,
       userPrompt,
@@ -237,7 +233,7 @@ export const SubmitFeedback = async ({
   }
 };
 
-export const OnExecuteQueryClick = async (): Promise<void> => {
+export const OnExecuteQueryClick = async (useQueryCopilot: Partial<QueryCopilotState>): Promise<void> => {
   traceStart(Action.ExecuteQueryGeneratedFromQueryCopilot, {
     correlationId: useQueryCopilot.getState().correlationId,
     userPrompt: useQueryCopilot.getState().userPrompt,
@@ -252,13 +248,14 @@ export const OnExecuteQueryClick = async (): Promise<void> => {
   useQueryCopilot.getState().setQueryIterator(queryIterator);
 
   setTimeout(async () => {
-    await QueryDocumentsPerPage(0, queryIterator);
+    await QueryDocumentsPerPage(0, queryIterator, useQueryCopilot);
   }, 100);
 };
 
 export const QueryDocumentsPerPage = async (
   firstItemIndex: number,
   queryIterator: MinimalQueryIterator,
+  useQueryCopilot: Partial<QueryCopilotState>
 ): Promise<void> => {
   try {
     useQueryCopilot.getState().setIsExecuting(true);
