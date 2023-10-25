@@ -92,7 +92,6 @@ const closeTab = (props: TerminalProps, serverSettings: ServerConnection.ISettin
 };
 
 const main = async (): Promise<void> => {
-  //let session: ITerminalConnection | undefined;
   postRobot.on(
     "props",
     {
