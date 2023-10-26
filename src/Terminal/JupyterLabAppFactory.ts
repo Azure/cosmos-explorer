@@ -10,9 +10,13 @@ import { userContext } from "UserContext";
 export class JupyterLabAppFactory {
   private isShellStarted: boolean | undefined;
   private checkShellStarted: ((content: string | undefined) => void) | undefined;
-  private onShellExited: () => void;
+  private onShellExited: (restartShell: boolean) => void;
+  private restartShell: boolean;
 
   private isShellExited(content: string | undefined) {
+    if (userContext.apiType === "VCoreMongo" && content?.includes("MongoServerError: Invalid key")) {
+      this.restartShell = true;
+    }
     return content?.includes("cosmosuser@");
   }
 
@@ -32,10 +36,11 @@ export class JupyterLabAppFactory {
     this.isShellStarted = content?.includes("Enter password");
   }
 
-  constructor(closeTab: () => void) {
+  constructor(closeTab: (restartShell: boolean) => void) {
     this.onShellExited = closeTab;
     this.isShellStarted = false;
     this.checkShellStarted = undefined;
+    this.restartShell = false;
 
     switch (userContext.apiType) {
       case "Mongo":
@@ -69,7 +74,7 @@ export class JupyterLabAppFactory {
         if (!this.isShellStarted) {
           this.checkShellStarted(content);
         } else if (this.isShellExited(content)) {
-          this.onShellExited();
+          this.onShellExited(this.restartShell);
         }
       }
     }, this);
