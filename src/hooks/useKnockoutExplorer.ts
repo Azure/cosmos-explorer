@@ -2,10 +2,7 @@ import { createUri } from "Common/UrlUtility";
 import { FabricDatabaseConnectionInfo, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import {
-  handleRequestDatabaseResourceTokensResponse,
-  scheduleRefreshDatabaseResourceToken,
-} from "Platform/Fabric/FabricUtil";
+import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -120,19 +117,16 @@ async function configureFabric(): Promise<Explorer> {
             explorer.refreshAllDatabases().then(() => {
               openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
             });
+            // Schedule renewal of resource tokens
             scheduleRefreshDatabaseResourceToken();
             break;
           }
           case "newContainer":
             explorer.onNewCollectionClicked();
             break;
-          case "authorizationToken": {
-            handleCachedDataMessage(data);
-            break;
-          }
+          case "authorizationToken":
           case "allResourceTokens": {
-            // TODO call handleCachedDataMessage when Fabric echoes message id back
-            handleRequestDatabaseResourceTokensResponse(explorer, data.message as FabricDatabaseConnectionInfo);
+            handleCachedDataMessage(data);
             break;
           }
           default:

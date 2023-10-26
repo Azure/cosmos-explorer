@@ -26,23 +26,14 @@ export type FabricMessage =
   | {
       type: "allResourceTokens";
       message: {
-        endpoint: string | undefined;
-        databaseId: string | undefined;
-        resourceTokens: unknown | undefined;
-        resourceTokensTimestamp: number | undefined;
+        id: string;
+        error: string | undefined;
+        data: FabricDatabaseConnectionInfo | undefined;
       };
     };
 
 export type DataExploreMessage =
   | "ready"
-  | {
-      type: MessageTypes.TelemetryInfo;
-      data: {
-        action: "LoadDatabases";
-        actionModifier: "success" | "start";
-        defaultExperience: "SQL";
-      };
-    }
   | {
       type: MessageTypes.GetAuthorizationToken;
       id: string;
@@ -50,6 +41,7 @@ export type DataExploreMessage =
     }
   | {
       type: MessageTypes.GetAllResourceTokens;
+      id: string;
     };
 
 export type GetCosmosTokenMessageOptions = {
