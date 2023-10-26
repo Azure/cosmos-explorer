@@ -1,6 +1,10 @@
+import { HttpHeaders } from "Common/Constants";
+import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph";
+import { userContext } from "UserContext";
 import useSWR from "swr";
 import { configContext } from "../ConfigContext";
 import { Subscription } from "../Contracts/DataModels";
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 interface SubscriptionListResult {
   nextLink: string;
@@ -32,10 +36,59 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
   return subscriptions.sort((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
+export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<Subscription[]> {
+  const headers = new Headers();
+  const bearer = `Bearer ${accessToken}`;
+
+  headers.append("Authorization", bearer);
+  headers.append(HttpHeaders.contentType, "application/json");
+  const subscriptionsQuery =
+    "resources | where type == 'microsoft.documentdb/databaseaccounts' | join kind=inner ( resourcecontainers | where type == 'microsoft.resources/subscriptions' | project subscriptionId, subscriptionName = name, subscriptionState = tostring(parse_json(properties).state) ) on subscriptionId |  summarize by subscriptionId, subscriptionName, subscriptionState";
+  const apiVersion = "2021-03-01";
+  const managementResourceGraphAPIURL = `${configContext.ARM_ENDPOINT}providers/Microsoft.ResourceGraph/resources?api-version=${apiVersion}`;
+
+  const subscriptions: Subscription[] = [];
+  let skipToken: string;
+  do {
+    const body = {
+      query: subscriptionsQuery,
+      ...(skipToken && {
+        options: {
+          $skipToken: skipToken,
+        } as QueryRequestOptions,
+      }),
+    };
+
+    const response = await fetch(managementResourceGraphAPIURL, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const queryResponse: QueryResponse = (await response.json()) as QueryResponse;
+    skipToken = queryResponse.$skipToken;
+
+    queryResponse.data?.map((subscription: any) => {
+      subscriptions.push({
+        displayName: subscription.subscriptionName,
+        subscriptionId: subscription.subscriptionId,
+        state: subscription.subscriptionState,
+      } as Subscription);
+    });
+  } while (skipToken);
+
+  return subscriptions.sort((a, b) => a.displayName.localeCompare(b.displayName));
+}
+
 export function useSubscriptions(armToken: string): Subscription[] | undefined {
   const { data } = useSWR(
     () => (armToken ? ["subscriptions", armToken] : undefined),
-    (_, armToken) => fetchSubscriptions(armToken),
+    (_, armToken) =>
+      userContext.features.enableResourceGraph ? fetchSubscriptionsFromGraph(armToken) : fetchSubscriptions(armToken),
   );
   return data;
 }
