@@ -1,5 +1,6 @@
 export const newDbAndCollectionCommand = `use quickstartDB
-db.createCollection('sampleCollection')`;
+db.createCollection('sampleCollection')
+`;
 
 export const newDbAndCollectionCommandForDisplay = `use quickstartDB // Create new database named 'quickstartDB' or switch to it if it already exists
 
@@ -16,19 +17,25 @@ export const loadDataCommand = `db.sampleCollection.insertMany([
     {title: "War and Peace", author: "Leo Tolstoy", pages: 1392},
     {title: "The Odyssey", author: "Homer", pages: 374},
     {title: "Ulysses", author: "James Joyce", pages: 730}
-  ])`;
+  ])
+`;
 
-export const queriesCommand = `db.sampleCollection.find({author: "George Orwell"})
+export const findOrwellCommand = `db.sampleCollection.find({author: "George Orwell"})
+`;
 
+export const findOrwellCommandForDisplay = `// Query to find all books written by "George Orwell"
+db.sampleCollection.find({author: "George Orwell"})`;
+
+export const findByPagesCommand = `db.sampleCollection.find({pages: {$gt: 500}})
+`;
+
+export const findByPagesCommandForDisplay = `// Query to find all books with more than 500 pages
 db.sampleCollection.find({pages: {$gt: 500}})
+`;
 
-db.sampleCollection.find({}).sort({pages: 1})`;
+export const findAndSortCommand = `db.sampleCollection.find({}).sort({pages: 1})
+`;
 
-export const queriesCommandForDisplay = `// Query to find all books written by "George Orwell"
-db.sampleCollection.find({author: "George Orwell"})
-
-// Query to find all books with more than 500 pages
-db.sampleCollection.find({pages: {$gt: 500}})
-
-// Query to find all books and sort them by the number of pages in ascending order
-db.sampleCollection.find({}).sort({pages: 1})`;
+export const findAndSortCommandForDisplay = `// Query to find all books and sort them by the number of pages in ascending order
+db.sampleCollection.find({}).sort({pages: 1})
+`;

@@ -11,11 +11,15 @@ import {
 } from "@fluentui/react";
 import { customPivotHeaderRenderer } from "Explorer/Quickstart/Shared/QuickstartRenderUtilities";
 import {
+  findAndSortCommand,
+  findAndSortCommandForDisplay,
+  findByPagesCommand,
+  findByPagesCommandForDisplay,
+  findOrwellCommand,
+  findOrwellCommandForDisplay,
   loadDataCommand,
   newDbAndCollectionCommand,
   newDbAndCollectionCommandForDisplay,
-  queriesCommand,
-  queriesCommandForDisplay,
 } from "Explorer/Quickstart/VCoreMongoQuickstartCommands";
 import { useTerminal } from "hooks/useTerminal";
 import React, { useState } from "react";
@@ -190,17 +194,17 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                 </Text>
                 <DefaultButton
                   style={{ marginTop: 16, width: 110 }}
-                  onClick={() => useTerminal.getState().sendMessage(queriesCommand)}
+                  onClick={() => useTerminal.getState().sendMessage(findOrwellCommand)}
                 >
                   Try query
                 </DefaultButton>
                 <Stack horizontal style={{ marginTop: 16 }}>
                   <TextField
-                    id="queriesCommand"
+                    id="findOrwellCommand"
                     multiline
-                    rows={5}
+                    rows={2}
                     readOnly
-                    defaultValue={queriesCommandForDisplay}
+                    defaultValue={findOrwellCommandForDisplay}
                     styles={{
                       root: { width: "90%" },
                       field: {
@@ -214,7 +218,65 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                     iconProps={{
                       iconName: "Copy",
                     }}
-                    onClick={() => onCopyBtnClicked("#queriesCommand")}
+                    onClick={() => onCopyBtnClicked("#findOrwellCommand")}
+                  />
+                </Stack>
+                <DefaultButton
+                  style={{ marginTop: 32, width: 110 }}
+                  onClick={() => useTerminal.getState().sendMessage(findByPagesCommand)}
+                >
+                  Try query
+                </DefaultButton>
+                <Stack horizontal style={{ marginTop: 16 }}>
+                  <TextField
+                    id="findByPagesCommand"
+                    multiline
+                    rows={2}
+                    readOnly
+                    defaultValue={findByPagesCommandForDisplay}
+                    styles={{
+                      root: { width: "90%" },
+                      field: {
+                        backgroundColor: "#EEEEEE",
+                        fontFamily:
+                          "Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New",
+                      },
+                    }}
+                  />
+                  <IconButton
+                    iconProps={{
+                      iconName: "Copy",
+                    }}
+                    onClick={() => onCopyBtnClicked("#findByPagesCommand")}
+                  />
+                </Stack>
+                <DefaultButton
+                  style={{ marginTop: 32, width: 110 }}
+                  onClick={() => useTerminal.getState().sendMessage(findAndSortCommand)}
+                >
+                  Try query
+                </DefaultButton>
+                <Stack horizontal style={{ marginTop: 16 }}>
+                  <TextField
+                    id="findAndSortCommand"
+                    multiline
+                    rows={2}
+                    readOnly
+                    defaultValue={findAndSortCommandForDisplay}
+                    styles={{
+                      root: { width: "90%" },
+                      field: {
+                        backgroundColor: "#EEEEEE",
+                        fontFamily:
+                          "Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New",
+                      },
+                    }}
+                  />
+                  <IconButton
+                    iconProps={{
+                      iconName: "Copy",
+                    }}
+                    onClick={() => onCopyBtnClicked("#findAndSortCommand")}
                   />
                 </Stack>
               </Stack>
@@ -236,7 +298,7 @@ export const VcoreMongoQuickstartGuide: React.FC = (): JSX.Element => {
                   hosted in the cloud, to Azure Cosmos DB for MongoDB vCore.&nbsp;
                   <Link
                     target="_blank"
-                    href="https://learn.microsoft.com/azure-data-studio/extensions/azure-cosmos-db-mongodb-extension"
+                    href="https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/migration-options"
                   >
                     Learn more
                   </Link>
