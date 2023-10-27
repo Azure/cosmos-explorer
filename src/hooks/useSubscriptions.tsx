@@ -1,6 +1,5 @@
 import { HttpHeaders } from "Common/Constants";
 import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph";
-import { userContext } from "UserContext";
 import useSWR from "swr";
 import { configContext } from "../ConfigContext";
 import { Subscription } from "../Contracts/DataModels";
@@ -87,8 +86,7 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
 export function useSubscriptions(armToken: string): Subscription[] | undefined {
   const { data } = useSWR(
     () => (armToken ? ["subscriptions", armToken] : undefined),
-    (_, armToken) =>
-      userContext.features.enableResourceGraph ? fetchSubscriptionsFromGraph(armToken) : fetchSubscriptions(armToken),
+    (_, armToken) => fetchSubscriptionsFromGraph(armToken),
   );
   return data;
 }
