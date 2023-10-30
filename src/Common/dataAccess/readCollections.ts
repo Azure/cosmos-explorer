@@ -1,18 +1,57 @@
+import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
+import { Platform, configContext } from "ConfigContext";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { listMongoDBCollections } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { listSqlContainers } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { listTables } from "../../Utils/arm/generatedClients/cosmos/tableResources";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
+
+  if (
+    configContext.platform === Platform.Fabric &&
+    userContext.fabricDatabaseConnectionInfo &&
+    userContext.fabricDatabaseConnectionInfo.databaseId === databaseId
+  ) {
+    const collections: DataModels.Collection[] = [];
+    const promises: Promise<ContainerResponse>[] = [];
+
+    for (const collectionResourceId in userContext.fabricDatabaseConnectionInfo.resourceTokens) {
+      // Dictionary key looks like this: dbs/SampleDB/colls/Container
+      const resourceIdObj = collectionResourceId.split("/");
+      const tokenDatabaseId = resourceIdObj[1];
+      const tokenCollectionId = resourceIdObj[3];
+
+      if (tokenDatabaseId === databaseId) {
+        promises.push(client().database(databaseId).container(tokenCollectionId).read());
+      }
+    }
+
+    try {
+      const responses = await Promise.all(promises);
+      responses.forEach((response) => {
+        collections.push(response.resource as DataModels.Collection);
+      });
+
+      // Sort collections by id before returning
+      collections.sort((a, b) => a.id.localeCompare(b.id));
+      return collections;
+    } catch (error) {
+      handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
+      throw error;
+    } finally {
+      clearMessage();
+    }
+  }
+
   try {
     if (
       userContext.authType === AuthType.AAD &&

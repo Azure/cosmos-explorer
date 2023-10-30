@@ -14,6 +14,7 @@ export type Features = {
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
   readonly enableAadDataPlane: boolean;
+  readonly enableResourceGraph: boolean;
   readonly enableKoResourceTree: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
@@ -41,6 +42,7 @@ export type Features = {
   readonly enableCopilotFullSchema: boolean;
   readonly copilotChatFixedMonacoEditorHeight: boolean;
   readonly enablePriorityBasedExecution: boolean;
+  readonly disableConnectionStringLogin: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -72,6 +74,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
     enableAadDataPlane: "true" === get("enableaaddataplane"),
+    enableResourceGraph: "true" === get("enableresourcegraph"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
@@ -114,6 +117,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableCopilotFullSchema: "true" === get("enablecopilotfullschema", "true"),
     copilotChatFixedMonacoEditorHeight: "true" === get("copilotchatfixedmonacoeditorheight"),
     enablePriorityBasedExecution: "true" === get("enableprioritybasedexecution"),
+    disableConnectionStringLogin: "true" === get("disableconnectionstringlogin"),
   };
 }
 

@@ -7,9 +7,6 @@ import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
-import { useAADAuth } from "./hooks/useAADAuth";
-import { useConfig } from "./hooks/useConfig";
-import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
 import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
@@ -20,6 +17,9 @@ import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import "./Platform/Hosted/ConnectScreen.less";
 import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
 import "./Shared/appInsights";
+import { useAADAuth } from "./hooks/useAADAuth";
+import { useConfig } from "./hooks/useConfig";
+import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 
 initializeIcons();
 

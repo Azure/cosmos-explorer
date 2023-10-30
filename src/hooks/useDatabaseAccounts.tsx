@@ -1,6 +1,9 @@
+import { HttpHeaders } from "Common/Constants";
+import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph";
 import useSWR from "swr";
 import { configContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 interface AccountListResult {
   nextLink: string;
@@ -30,10 +33,56 @@ export async function fetchDatabaseAccounts(subscriptionId: string, accessToken:
   return accounts.sort((a, b) => a.name.localeCompare(b.name));
 }
 
+export async function fetchDatabaseAccountsFromGraph(
+  subscriptionId: string,
+  accessToken: string,
+): Promise<DatabaseAccount[]> {
+  const headers = new Headers();
+  const bearer = `Bearer ${accessToken}`;
+
+  headers.append("Authorization", bearer);
+  headers.append(HttpHeaders.contentType, "application/json");
+  const databaseAccountsQuery = "resources | where type =~ 'microsoft.documentdb/databaseaccounts'";
+  const apiVersion = "2021-03-01";
+  const managementResourceGraphAPIURL = `${configContext.ARM_ENDPOINT}providers/Microsoft.ResourceGraph/resources?api-version=${apiVersion}`;
+
+  const databaseAccounts: DatabaseAccount[] = [];
+  let skipToken: string;
+  do {
+    const body = {
+      query: databaseAccountsQuery,
+      subscriptions: [subscriptionId],
+      ...(skipToken && {
+        options: {
+          $skipToken: skipToken,
+        } as QueryRequestOptions,
+      }),
+    };
+
+    const response = await fetch(managementResourceGraphAPIURL, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const queryResponse: QueryResponse = (await response.json()) as QueryResponse;
+    skipToken = queryResponse.$skipToken;
+    queryResponse.data?.map((databaseAccount: any) => {
+      databaseAccounts.push(databaseAccount as DatabaseAccount);
+    });
+  } while (skipToken);
+
+  return databaseAccounts.sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] | undefined {
   const { data } = useSWR(
     () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
-    (_, subscriptionId, armToken) => fetchDatabaseAccounts(subscriptionId, armToken),
+    (_, subscriptionId, armToken) => fetchDatabaseAccountsFromGraph(subscriptionId, armToken),
   );
   return data;
 }

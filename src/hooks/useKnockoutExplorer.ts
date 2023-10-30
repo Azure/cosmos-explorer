@@ -1,7 +1,11 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricMessage } from "Contracts/FabricContract";
+import { FabricDatabaseConnectionInfo, FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import {
+  handleRequestDatabaseResourceTokensResponse,
+  scheduleRefreshDatabaseResourceToken,
+} from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -98,58 +102,37 @@ async function configureFabric(): Promise<Explorer> {
         }
 
         const data: FabricMessage = event.data?.data;
-
         if (!data) {
           return;
         }
 
         switch (data.type) {
           case "initialize": {
-            explorer = await configureWithFabric(data.message.endpoint);
+            const fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo = {
+              endpoint: data.message.endpoint,
+              databaseId: data.message.databaseId,
+              resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
+              resourceTokensTimestamp: data.message.resourceTokensTimestamp,
+            };
+            explorer = await createExplorerFabric(fabricDatabaseConnectionInfo);
             resolve(explorer);
+
+            explorer.refreshAllDatabases().then(() => {
+              openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
+            });
+            scheduleRefreshDatabaseResourceToken();
             break;
           }
           case "newContainer":
             explorer.onNewCollectionClicked();
             break;
-          case "openTab": {
-            // Expand database first
-            const databaseName = sessionStorage.getItem("openDatabaseName") ?? data.databaseName;
-            const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
-            if (database) {
-              await database.expandDatabase();
-              useDatabases.getState().updateDatabase(database);
-              useSelectedNode.getState().setSelectedNode(database);
-
-              let collectionResourceId = data.collectionName;
-              if (collectionResourceId === undefined) {
-                // Pick first collection if collectionName not specified in message
-                collectionResourceId = database.collections()[0]?.id();
-              }
-
-              if (collectionResourceId !== undefined) {
-                // Expand collection
-                const collection = database.collections().find((coll) => coll.id() === collectionResourceId);
-                collection.expandCollection();
-                useSelectedNode.getState().setSelectedNode(collection);
-
-                handleOpenAction(
-                  {
-                    actionType: ActionType.OpenCollectionTab,
-                    databaseResourceId: databaseName,
-                    collectionResourceId: data.collectionName,
-                    tabKind: TabKind.SQLDocuments,
-                  } as DataExplorerAction,
-                  useDatabases.getState().databases,
-                  explorer,
-                );
-              }
-            }
-
-            break;
-          }
           case "authorizationToken": {
             handleCachedDataMessage(data);
+            break;
+          }
+          case "allResourceTokens": {
+            // TODO call handleCachedDataMessage when Fabric echoes message id back
+            handleRequestDatabaseResourceTokensResponse(explorer, data.message as FabricDatabaseConnectionInfo);
             break;
           }
           default:
@@ -163,6 +146,41 @@ async function configureFabric(): Promise<Explorer> {
     sendReadyMessage();
   });
 }
+
+const openFirstContainer = async (explorer: Explorer, databaseName: string, collectionName?: string) => {
+  // Expand database first
+  databaseName = sessionStorage.getItem("openDatabaseName") ?? databaseName;
+  const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
+  if (database) {
+    await database.expandDatabase();
+    useDatabases.getState().updateDatabase(database);
+    useSelectedNode.getState().setSelectedNode(database);
+
+    let collectionResourceId = collectionName;
+    if (collectionResourceId === undefined) {
+      // Pick first collection if collectionName not specified in message
+      collectionResourceId = database.collections()[0]?.id();
+    }
+
+    if (collectionResourceId !== undefined) {
+      // Expand collection
+      const collection = database.collections().find((coll) => coll.id() === collectionResourceId);
+      collection.expandCollection();
+      useSelectedNode.getState().setSelectedNode(collection);
+
+      handleOpenAction(
+        {
+          actionType: ActionType.OpenCollectionTab,
+          databaseResourceId: databaseName,
+          collectionResourceId: collectionName,
+          tabKind: TabKind.SQLDocuments,
+        } as DataExplorerAction,
+        useDatabases.getState().databases,
+        explorer,
+      );
+    }
+  }
+};
 
 async function configureHosted(): Promise<Explorer> {
   const win = window as unknown as HostedExplorerChildFrame;
@@ -301,8 +319,9 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function configureWithFabric(documentEndpoint: string): Explorer {
+function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo): Explorer {
   updateUserContext({
+    fabricDatabaseConnectionInfo,
     authType: AuthType.ConnectionString,
     databaseAccount: {
       id: "",
@@ -311,12 +330,11 @@ function configureWithFabric(documentEndpoint: string): Explorer {
       name: "Mounted",
       kind: AccountKind.Default,
       properties: {
-        documentEndpoint,
+        documentEndpoint: fabricDatabaseConnectionInfo.endpoint,
       },
     },
   });
   const explorer = new Explorer();
-  setTimeout(() => explorer.refreshAllDatabases(), 0);
   return explorer;
 }
 

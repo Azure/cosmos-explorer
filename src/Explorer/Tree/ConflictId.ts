@@ -1,4 +1,4 @@
-import { extractPartitionKey } from "@azure/cosmos";
+import { extractPartitionKeyValues } from "Utils/QueryUtils";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { readDocument } from "../../Common/dataAccess/readDocument";
@@ -42,7 +42,7 @@ export default class ConflictId {
     }
     this.partitionKeyProperty = container && container.partitionKeyProperty;
     this.partitionKey = container && container.partitionKey;
-    this.partitionKeyValue = extractPartitionKey(this.parsedContent, this.partitionKey as any);
+    this.partitionKeyValue = extractPartitionKeyValues(this.parsedContent, this.partitionKey as any);
     this.stringPartitionKeyValue = this.getPartitionKeyValueAsString();
     this.id = ko.observable(data.id);
     this.isDirty = ko.observable(false);

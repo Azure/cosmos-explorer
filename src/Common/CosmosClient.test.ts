@@ -125,7 +125,7 @@ describe("requestPlugin", () => {
       const headers = {};
       const endpoint = "https://docs.azure.com";
       const path = "/dbs/foo";
-      requestPlugin({ endpoint, headers, path } as any, next as any);
+      requestPlugin({ endpoint, headers, path } as any, undefined, next as any);
       expect(next.mock.calls[0][0]).toMatchSnapshot();
     });
   });
@@ -137,7 +137,7 @@ describe("requestPlugin", () => {
       const headers = {};
       const endpoint = "";
       const path = "/dbs/foo";
-      requestPlugin({ endpoint, headers, path } as any, next as any);
+      requestPlugin({ endpoint, headers, path } as any, undefined, next as any);
       expect(next.mock.calls[0][0]).toMatchSnapshot();
     });
   });

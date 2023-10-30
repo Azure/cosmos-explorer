@@ -9,13 +9,11 @@ export type FabricMessage =
       type: "initialize";
       message: {
         endpoint: string | undefined;
+        databaseId: string | undefined;
+        resourceTokens: unknown | undefined;
+        resourceTokensTimestamp: number | undefined;
         error: string | undefined;
       };
-    }
-  | {
-      type: "openTab";
-      databaseName: string;
-      collectionName: string | undefined;
     }
   | {
       type: "authorizationToken";
@@ -23,6 +21,15 @@ export type FabricMessage =
         id: string;
         error: string | undefined;
         data: AuthorizationToken | undefined;
+      };
+    }
+  | {
+      type: "allResourceTokens";
+      message: {
+        endpoint: string | undefined;
+        databaseId: string | undefined;
+        resourceTokens: unknown | undefined;
+        resourceTokensTimestamp: number | undefined;
       };
     };
 
@@ -40,6 +47,9 @@ export type DataExploreMessage =
       type: MessageTypes.GetAuthorizationToken;
       id: string;
       params: GetCosmosTokenMessageOptions[];
+    }
+  | {
+      type: MessageTypes.GetAllResourceTokens;
     };
 
 export type GetCosmosTokenMessageOptions = {
@@ -55,4 +65,13 @@ export type CosmosDBTokenResponse = {
 
 export type CosmosDBConnectionInfoResponse = {
   endpoint: string;
+  databaseId: string;
+  resourceTokens: unknown;
 };
+
+export interface FabricDatabaseConnectionInfo {
+  endpoint: string;
+  databaseId: string;
+  resourceTokens: { [resourceId: string]: string };
+  resourceTokensTimestamp: number;
+}

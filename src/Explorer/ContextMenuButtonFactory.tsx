@@ -129,20 +129,22 @@ export const createCollectionContextMenuButton = (
     });
   }
 
-  items.push({
-    iconSrc: DeleteCollectionIcon,
-    onClick: () => {
-      useSelectedNode.getState().setSelectedNode(selectedCollection);
-      useSidePanel
-        .getState()
-        .openSidePanel(
-          "Delete " + getCollectionName(),
-          <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
-        );
-    },
-    label: `Delete ${getCollectionName()}`,
-    styleClass: "deleteCollectionMenuItem",
-  });
+  if (configContext.platform !== Platform.Fabric) {
+    items.push({
+      iconSrc: DeleteCollectionIcon,
+      onClick: () => {
+        useSelectedNode.getState().setSelectedNode(selectedCollection);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Delete " + getCollectionName(),
+            <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
+          );
+      },
+      label: `Delete ${getCollectionName()}`,
+      styleClass: "deleteCollectionMenuItem",
+    });
+  }
 
   return items;
 };
