@@ -14,8 +14,14 @@ import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
-import { ContainerConnectionInfo, IProvisionData } from "Contracts/DataModels";
-import { QueryResults } from "Contracts/ViewModels";
+import { configContext } from "ConfigContext";
+import {
+  ContainerConnectionInfo,
+  CopilotEnabledConfiguration,
+  FeatureRegistration,
+  IProvisionData,
+} from "Contracts/DataModels";
+import { AuthorizationTokenHeaderMetadata, QueryResults } from "Contracts/ViewModels";
 import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
@@ -23,10 +29,58 @@ import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
+import { getAuthorizationHeader } from "Utils/AuthorizationUtils";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as StringUtility from "../../../Shared/StringUtility";
+
+export const isCopilotFeatureRegistered = async (subscriptionId: string): Promise<boolean> => {
+  const api_version = "2021-07-01";
+  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/CopilotInAzureCDB?api-version=${api_version}`;
+  const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  let response;
+
+  try {
+    response = await window.fetch(url, {
+      headers,
+    });
+  } catch (error) {
+    return false;
+  }
+
+  if (!response?.ok) {
+    return false;
+  }
+
+  const featureRegistration = (await response?.json()) as FeatureRegistration;
+  return featureRegistration?.properties?.state === "Registered";
+};
+
+export const getCopilotEnabled = async (): Promise<boolean> => {
+  const url = `${configContext.BACKEND_ENDPOINT}/api/portalsettings/querycopilot`;
+  const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  let response;
+
+  try {
+    response = await window.fetch(url, {
+      headers,
+    });
+  } catch (error) {
+    return false;
+  }
+
+  if (!response?.ok) {
+    throw new Error(await response?.text());
+  }
+
+  const copilotPortalConfiguration = (await response?.json()) as CopilotEnabledConfiguration;
+  return copilotPortalConfiguration?.isEnabled;
+};
 
 export const allocatePhoenixContainer = async ({
   explorer,
@@ -97,9 +151,9 @@ export const resetPhoenixContainerSchema = async ({
       poolId: PoolIdType.QueryCopilot,
       databaseId: userdbId,
       containerId: usercontainerId,
-      mode: mode
+      mode: mode,
     };
-    const connectionInfo = await explorer.phoenixClient.resetContainer(provisionData);
+    const connectionInfo = await explorer.phoenixClient.allocateContainer(provisionData);
     const connectionStatus: ContainerConnectionInfo = {
       status: ConnectionStatusType.Connecting,
     };
@@ -255,7 +309,7 @@ export const OnExecuteQueryClick = async (useQueryCopilot: Partial<QueryCopilotS
 export const QueryDocumentsPerPage = async (
   firstItemIndex: number,
   queryIterator: MinimalQueryIterator,
-  useQueryCopilot: Partial<QueryCopilotState>
+  useQueryCopilot: Partial<QueryCopilotState>,
 ): Promise<void> => {
   try {
     useQueryCopilot.getState().setIsExecuting(true);

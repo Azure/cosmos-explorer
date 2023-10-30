@@ -81,7 +81,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
         } else {
           setTabActive(false);
         }
-      })
+      });
     };
   }, []);
 

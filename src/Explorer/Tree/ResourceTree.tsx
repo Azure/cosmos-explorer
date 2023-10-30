@@ -1,6 +1,7 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import { SampleDataTree } from "Explorer/Tree/SampleDataTree";
 import { getItemName } from "Utils/APITypeUtils";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as React from "react";
 import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
@@ -767,7 +768,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   };
 
   const dataRootNode = buildDataTree();
-  const isSampleDataEnabled = userContext.sampleDataConnectionInfo && userContext.apiType === "SQL";
+  const isSampleDataEnabled =
+    useQueryCopilot().copilotEnabled && userContext.sampleDataConnectionInfo && userContext.apiType === "SQL";
   const sampleDataResourceTokenCollection = useDatabases((state) => state.sampleDataResourceTokenCollection);
 
   return (

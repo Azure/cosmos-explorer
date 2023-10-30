@@ -8,6 +8,8 @@ import * as DataModels from "../Contracts/DataModels";
 import { ContainerInfo } from "../Contracts/DataModels";
 
 export interface QueryCopilotState {
+  copilotEnabled: boolean;
+  copilotUserDBEnabled: boolean;
   generatedQuery: string;
   likeQuery: boolean;
   userPrompt: string;
@@ -45,6 +47,8 @@ export interface QueryCopilotState {
 
   getState?: () => QueryCopilotState;
 
+  setCopilotEnabled: (copilotEnabled: boolean) => void;
+  setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => void;
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
   setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) => void;
@@ -88,6 +92,8 @@ export interface QueryCopilotState {
 type QueryCopilotStore = UseStore<QueryCopilotState>;
 
 export const useQueryCopilot: QueryCopilotStore = create((set) => ({
+  copilotEnabled: false,
+  copilotUserDBEnabled: false,
   generatedQuery: "",
   likeQuery: false,
   userPrompt: "",
@@ -134,6 +140,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   },
   isAllocatingContainer: false,
 
+  setCopilotEnabled: (copilotEnabled: boolean) => set({ copilotEnabled }),
+  setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => set({ copilotUserDBEnabled }),
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
   closeFeedbackModal: () => set({ showFeedbackModal: false }),

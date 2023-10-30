@@ -24,7 +24,11 @@ import { createUri } from "Common/UrlUtility";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
-import { SuggestedPrompt, getSampleDatabaseSuggestedPrompts, getSuggestedPrompts } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import {
+  SuggestedPrompt,
+  getSampleDatabaseSuggestedPrompts,
+  getSuggestedPrompts,
+} from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { SubmitFeedback, allocatePhoenixContainer } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
@@ -117,7 +121,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
   const cachedHistories = cachedHistoriesString?.split("|");
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
-  const suggestedPrompts: SuggestedPrompt[] = isSampleCopilotActive ? getSampleDatabaseSuggestedPrompts() : getSuggestedPrompts();
+  const suggestedPrompts: SuggestedPrompt[] = isSampleCopilotActive
+    ? getSampleDatabaseSuggestedPrompts()
+    : getSuggestedPrompts();
   const [filteredHistories, setFilteredHistories] = useState<string[]>(histories);
   const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
 

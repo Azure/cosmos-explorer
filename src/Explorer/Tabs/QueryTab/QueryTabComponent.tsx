@@ -105,7 +105,9 @@ export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any =
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
     ...props,
-    copilotEnabled: true,
+    copilotEnabled:
+      useQueryCopilot().copilotEnabled &&
+      (useQueryCopilot().copilotUserDBEnabled || (isSampleCopilotActive && !!userContext.sampleDataConnectionInfo)),
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
   };
@@ -265,19 +267,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(
-          this.props.collection.databaseId,
-          this.props.viewModelcollection,
-          this.state.selectedContent || this.state.sqlQueryEditorContent,
-        )
+            this.props.collection.databaseId,
+            this.props.viewModelcollection,
+            this.state.selectedContent || this.state.sqlQueryEditorContent,
+          )
         : queryDocuments(
-          this.props.collection.databaseId,
-          this.props.collection.id(),
-          this.state.selectedContent || this.state.sqlQueryEditorContent,
-          {
-            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-            abortSignal: this.queryAbortController.signal,
-          } as FeedOptions,
-        );
+            this.props.collection.databaseId,
+            this.props.collection.id(),
+            this.state.selectedContent || this.state.sqlQueryEditorContent,
+            {
+              enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+              abortSignal: this.queryAbortController.signal,
+            } as FeedOptions,
+          );
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -366,7 +368,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
-        onCommandClick: this.props.isSampleCopilotActive ? () => OnExecuteQueryClick(this.props.copilotStore) : this.onExecuteQueryClick,
+        onCommandClick: this.props.isSampleCopilotActive
+          ? () => OnExecuteQueryClick(this.props.copilotStore)
+          : this.onExecuteQueryClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -583,7 +587,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                   queryResults={this.props.copilotStore?.queryResults}
                   isExecuting={this.props.copilotStore?.isExecuting}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
-                    QueryDocumentsPerPage(firstItemIndex, this.props.copilotStore.queryIterator, this.props.copilotStore)
+                    QueryDocumentsPerPage(
+                      firstItemIndex,
+                      this.props.copilotStore.queryIterator,
+                      this.props.copilotStore,
+                    )
                   }
                 />
               ) : (
@@ -601,7 +609,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             </SplitterLayout>
           </div>
         </div>
-        {this.props.copilotEnabled && this.props.copilotStore?.showFeedbackModal && <QueryCopilotFeedbackModal explorer={this.props.collection.container} />}
+        {this.props.copilotEnabled && this.props.copilotStore?.showFeedbackModal && (
+          <QueryCopilotFeedbackModal explorer={this.props.collection.container} />
+        )}
       </Fragment>
     );
   }

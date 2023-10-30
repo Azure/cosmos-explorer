@@ -68,7 +68,8 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     return true;
   },
   findDatabaseWithId: (databaseId: string, isSampleDatabase?: boolean) => {
-    return get().databases.find((db) => databaseId === db.id() && db.isSampleDB === isSampleDatabase)},
+    return get().databases.find((db) => databaseId === db.id() && db.isSampleDB === isSampleDatabase);
+  },
   isLastNonEmptyDatabase: () => {
     const databases = get().databases;
     return databases.length === 1 && (databases[0].collections()?.length > 0 || !!databases[0].offer());

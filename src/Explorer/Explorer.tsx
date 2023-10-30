@@ -3,6 +3,7 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
+import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
@@ -449,7 +450,7 @@ export default class Explorer {
             poolId: poolId,
             databaseId: useTabs.getState().activeTab.collection.databaseId,
             containerId: useTabs.getState().activeTab.collection.id(),
-            mode: mode
+            mode: mode,
           };
         }
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
@@ -1381,6 +1382,17 @@ export default class Explorer {
     }
 
     await this.refreshSampleData();
+
+    if (userContext.apiType === "SQL") {
+      await this.configureCopilot();
+    }
+  }
+
+  public async configureCopilot(): Promise<void> {
+    const copilotEnabled = await getCopilotEnabled();
+    const copilotUserDBEnabled = await isCopilotFeatureRegistered(userContext.subscriptionId);
+    useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
+    useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
   }
 
   public async refreshSampleData(): Promise<void> {

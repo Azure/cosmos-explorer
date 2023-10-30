@@ -604,3 +604,14 @@ export enum PhoenixErrorType {
   PhoenixFlightFallback = "PhoenixFlightFallback",
   UserMissingPermissionsError = "UserMissingPermissionsError",
 }
+
+export interface CopilotEnabledConfiguration {
+  isEnabled: boolean;
+}
+
+export interface FeatureRegistration {
+  name: string;
+  properties: {
+    state: string;
+  };
+}

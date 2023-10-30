@@ -49,7 +49,9 @@ export class NewQueryTab extends TabsBase {
       <CopilotProvider>
         <QueryTabFunctionComponent {...this.iQueryTabComponentProps} />
       </CopilotProvider>
-    ) : (<QueryTabComponent {...this.iQueryTabComponentProps} />);
+    ) : (
+      <QueryTabComponent {...this.iQueryTabComponentProps} />
+    );
   }
 
   public onTabClick(): void {
