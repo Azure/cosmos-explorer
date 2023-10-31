@@ -1,8 +1,8 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
 import React from "react";
-import DiscardIcon from "../../../../images/discard.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
+import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { createStoredProcedure } from "../../../Common/dataAccess/createStoredProcedure";

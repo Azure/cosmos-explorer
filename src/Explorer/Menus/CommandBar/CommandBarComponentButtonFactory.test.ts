@@ -9,7 +9,7 @@ import NotebookManager from "../../Notebook/NotebookManager";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
-import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
+import * as createStaticCommandBarButtons from "./CommandButtonsFactories/createStaticCommandBarButtons";
 
 describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;
@@ -32,7 +32,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Button should be visible", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
       );
@@ -48,7 +48,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
         } as DatabaseAccount,
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
       );
@@ -64,7 +64,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
         } as DatabaseAccount,
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
       );
@@ -100,7 +100,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
       expect(enableNotebookBtn).toBeUndefined();
     });
@@ -110,7 +110,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
         portalEnv: "mooncake",
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
       expect(enableNotebookBtn).toBeUndefined();
     });
@@ -118,7 +118,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is not enabled but is available - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
 
       //TODO: modify once notebooks are available
@@ -129,7 +129,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
 
       //TODO: modify once notebooks are available
@@ -180,7 +180,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       updateUserContext({
         apiType: "SQL",
       });
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
     });
@@ -190,13 +190,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
         portalEnv: "mooncake",
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
     });
 
     it("Notebooks is not enabled and is unavailable - button should be hidden", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
     });
@@ -204,7 +204,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is not enabled and is available - button should be hidden", () => {
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
     });
@@ -212,7 +212,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
 
@@ -226,7 +226,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
 
@@ -241,7 +241,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
       useNotebook.getState().setIsShellEnabled(false);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
     });
@@ -285,7 +285,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
@@ -295,13 +295,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
         portalEnv: "mooncake",
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
 
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
@@ -309,7 +309,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is not enabled and is available - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
@@ -317,7 +317,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
 
       expect(openCassandraShellBtn).toBeDefined();
@@ -332,7 +332,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeDefined();
 
@@ -370,7 +370,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is enabled and GitHubOAuthService is not logged in - connect to github button should be visible", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const connectToGitHubBtn = buttons.find((button) => button.commandButtonLabel === connectToGitHubBtnLabel);
       expect(connectToGitHubBtn).toBeDefined();
     });
@@ -379,7 +379,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
       mockExplorer.notebookManager.gitHubOAuthService.isLoggedIn = jest.fn().mockReturnValue(true);
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const manageGitHubSettingsBtn = buttons.find(
         (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel
       );
@@ -387,7 +387,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is not enabled - connect to github and manage github settings buttons should be hidden", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
 
       const connectToGitHubBtn = buttons.find((button) => button.commandButtonLabel === connectToGitHubBtnLabel);
       expect(connectToGitHubBtn).toBeUndefined();
@@ -419,7 +419,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
           kind: "DocumentDB",
         } as DatabaseAccount,
       });
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = createStaticCommandBarButtons.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       expect(buttons.length).toBe(2);
       expect(buttons[0].commandButtonLabel).toBe("New SQL Query");
       expect(buttons[0].disabled).toBe(false);

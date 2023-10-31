@@ -284,7 +284,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
 
   const getCommandbarButtons = (): CommandButtonComponentProps[] => {
     const executeQueryBtnLabel = selectedQuery ? "Execute Selection" : "Execute Query";
-    const executeQueryBtn = {
+    const executeQueryBtn: CommandButtonComponentProps = {
       iconSrc: ExecuteQueryIcon,
       iconAlt: executeQueryBtnLabel,
       onCommandClick: () => onExecuteQueryClick(),
@@ -294,7 +294,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
       disabled: query?.trim() === "",
     };
 
-    const saveQueryBtn = {
+    const saveQueryBtn: CommandButtonComponentProps = {
       iconSrc: SaveQueryIcon,
       iconAlt: "Save Query",
       onCommandClick: () =>
@@ -306,7 +306,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotTabProps> = ({ explorer }: Qu
     };
 
     // Sample Prompts temporary disabled due current design
-    // const samplePromptsBtn = {
+    // const samplePromptsBtn: CommandButtonComponentProps = {
     //   iconSrc: SamplePromptsIcon,
     //   iconAlt: "Sample Prompts",
     //   onCommandClick: () => setIsSamplePromptsOpen(true),

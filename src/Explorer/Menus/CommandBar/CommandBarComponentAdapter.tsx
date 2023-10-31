@@ -4,16 +4,21 @@
  * and update any knockout observables passed from the parent.
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
+import { AuthType } from "AuthType";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import * as React from "react";
 import { userContext } from "UserContext";
+import * as React from "react";
 import create, { UseStore } from "zustand";
 import { ConnectionStatusType, StyleConstants } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
-import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 import * as CommandBarUtil from "./CommandBarUtil";
+import * as createContextCommandBarButtons from "./CommandButtonsFactories/createContextCommandBarButtons";
+import * as createControlCommandBarButtons from "./CommandButtonsFactories/createControlCommandBarButtons";
+import * as createPostgreButtons from "./CommandButtonsFactories/createPostgreButtons";
+import * as createStaticCommandBarButtons from "./CommandButtonsFactories/createStaticCommandBarButtons";
+import * as createStaticCommandBarButtonsForResourceToken from "./CommandButtonsFactories/createStaticCommandBarButtonsForResourceToken";
 
 interface Props {
   container: Explorer;
@@ -35,7 +40,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const backgroundColor = StyleConstants.BaseLight;
 
   if (userContext.apiType === "Postgres") {
-    const buttons = CommandBarComponentButtonFactory.createPostgreButtons(container);
+    const buttons = createPostgreButtons.createPostgreButtons(container);
     return (
       <div className="commandBarContainer">
         <FluentCommandBar
@@ -50,11 +55,18 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     );
   }
 
-  const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
+  const staticButtons =
+    userContext.authType === AuthType.ResourceToken
+      ? createStaticCommandBarButtonsForResourceToken.createStaticCommandBarButtonsForResourceToken(
+          container,
+          selectedNodeState
+        )
+      : createStaticCommandBarButtons.createStaticCommandBarButtons(container, selectedNodeState);
+
   const contextButtons = (buttons || []).concat(
-    CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState)
+    createContextCommandBarButtons.createContextCommandBarButtons(container, selectedNodeState)
   );
-  const controlButtons = CommandBarComponentButtonFactory.createControlCommandBarButtons(container);
+  const controlButtons = createControlCommandBarButtons.createControlCommandBarButtons(container);
 
   const uiFabricStaticButtons = CommandBarUtil.convertButton(staticButtons, backgroundColor);
   if (buttons && buttons.length > 0) {

@@ -1,7 +1,8 @@
 import { stringifyNotebook, toJS } from "@nteract/commutable";
+import * as createDivider from "Explorer/Menus/CommandBar/CommandButtonsFactories/createDivider";
+import { userContext } from "UserContext";
 import * as ko from "knockout";
 import * as Q from "q";
-import { userContext } from "UserContext";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
 import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import CutIcon from "../../../images/notebook/Notebook-cut.svg";
@@ -12,17 +13,16 @@ import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
 import RunIcon from "../../../images/notebook/Notebook-run.svg";
 import { default as InterruptKernelIcon, default as KillKernelIcon } from "../../../images/notebook/Notebook-stop.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
-import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
+import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "../Controls/Dialog";
-import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { KernelSpecsDisplay } from "../Notebook/NotebookClientV2";
-import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
+import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
@@ -118,7 +118,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
     const cellMarkdownType = "markdown";
     const cellRawType = "raw";
 
-    const saveButtonChildren = [];
+    const saveButtonChildren: CommandButtonComponentProps[] = [];
     if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       saveButtonChildren.push({
         iconName: copyToLabel,
@@ -272,7 +272,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
         hasPopup: false,
         disabled: false,
       },
-      CommandBarComponentButtonFactory.createDivider(),
+      createDivider.createDivider(),
       {
         iconSrc: null,
         iconAlt: null,

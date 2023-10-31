@@ -5,18 +5,18 @@ import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
@@ -37,15 +37,15 @@ import {
   AddMongoIndexProps,
   ChangeFeedPolicyState,
   GeospatialConfigType,
+  MongoIndexTypes,
+  SettingsV2TabTypes,
+  TtlType,
   getMongoNotification,
   getTabTitle,
   hasDatabaseSharedThroughput,
   isDirty,
-  MongoIndexTypes,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
-  SettingsV2TabTypes,
-  TtlType,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { CommandButtonComponent } from "../../../Explorer/Controls/CommandButton/CommandButtonComponent";
 import FeedbackIcon from "../../../../images/Feedback.svg";
+import { CommandButtonComponent } from "../../../Explorer/Controls/CommandButton/CommandButtonComponent";
 
 export const FeedbackCommandButton: React.FunctionComponent = () => {
   return (
