@@ -58,7 +58,7 @@ function onTableColumnChange(enablePrompt: boolean = true, queryTablesTab: Query
     tableEntityListViewModel,
     queryTablesTab,
     true,
-    columnsFilter
+    columnsFilter,
   );
 }
 
@@ -67,7 +67,7 @@ function createDataTable(
   tableEntityListViewModel: TableEntityListViewModel,
   queryTablesTab: QueryTablesTab,
   destroy: boolean = false,
-  columnsFilter: boolean[] = null
+  columnsFilter: boolean[] = null,
 ): void {
   var $dataTable = tableEntityListViewModelMap[queryTablesTab.tabId].$dataTable;
   if (destroy) {
@@ -147,7 +147,7 @@ function createDataTable(
     .forEach((table) => {
       table.setAttribute(
         "summary",
-        `Header for sorting results for container ${tableEntityListViewModel.queryTablesTab.collection.id()}`
+        `Header for sorting results for container ${tableEntityListViewModel.queryTablesTab.collection.id()}`,
       );
     });
 
@@ -182,7 +182,7 @@ function getServerData(sSource: any, aoData: any, fnCallback: any, oSettings: an
     sSource,
     aoData,
     fnCallback,
-    oSettings
+    oSettings,
   );
 }
 
@@ -219,7 +219,7 @@ function handleArrowKey(
   allBindings: any,
   viewModel: any,
   bindingContext: any,
-  event: JQueryEventObject
+  event: JQueryEventObject,
 ) {
   let isUpArrowKey: boolean = event.keyCode === Constants.keyCodes.UpArrow;
   let isDownArrowKey: boolean = event.keyCode === Constants.keyCodes.DownArrow;
@@ -346,7 +346,7 @@ function initializeEventHandlers(): void {
         },
         /* metaKey */ null,
         /* shiftKey */ true,
-        /* altKey */ null
+        /* altKey */ null,
       );
 
       // Also reset color if [shift-] tabbing away from button while holding down 'enter'
