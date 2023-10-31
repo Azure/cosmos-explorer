@@ -7,6 +7,7 @@ import {
   scheduleRefreshDatabaseResourceToken,
 } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
@@ -79,7 +80,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
     if (explorer) {
       applyExplorerBindings(explorer);
       if (userContext.features.enableCopilot) {
-        updateContextForSampleData(explorer);
+        updateContextForCopilot(explorer).then((_res) => updateContextForSampleData(explorer));
       }
     }
   }, [explorer]);
@@ -554,12 +555,21 @@ interface PortalMessage {
   inputs?: DataExplorerInputsFrame;
 }
 
+async function updateContextForCopilot(explorer: Explorer): Promise<void> {
+  await explorer.configureCopilot();
+}
+
 async function updateContextForSampleData(explorer: Explorer): Promise<void> {
-  if (!userContext.features.enableCopilot) {
+  
+  const copilotEnabled = userContext.apiType === "SQL" && userContext.features.enableCopilot && useQueryCopilot.getState().copilotEnabled
+  
+  if (!copilotEnabled) {
     return;
   }
 
-  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, `/api/tokens/sampledataconnection`);
+  const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled ? `/api/tokens/sampledataconnection/v2` : `/api/tokens/sampledataconnection`
+
+  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 

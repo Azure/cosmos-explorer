@@ -1382,13 +1382,10 @@ export default class Explorer {
     }
 
     await this.refreshSampleData();
-
-    if (userContext.apiType === "SQL") {
-      await this.configureCopilot();
-    }
   }
 
   public async configureCopilot(): Promise<void> {
+    if (userContext.apiType !== "SQL") return;
     const copilotEnabled = await getCopilotEnabled();
     const copilotUserDBEnabled = await isCopilotFeatureRegistered(userContext.subscriptionId);
     useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
