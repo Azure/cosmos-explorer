@@ -338,7 +338,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       TelemetryProcessor.traceSuccess(Action.QueryExecuted, {
         copilotEnabled: this.state.copilotActive,
         databaseName: this.props.collection.databaseId,
-        collectionId: this.props.collection.collection.id(),
+        collectionId: this.props.collection.id(),
       })
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);
