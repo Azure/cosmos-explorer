@@ -11,6 +11,7 @@ import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
 import React, { Fragment } from "react";
@@ -32,6 +33,7 @@ import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPag
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as StringUtility from "../../../Shared/StringUtility";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
@@ -333,6 +335,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         queryDocuments,
       );
       this.setState({ queryResults, error: "" });
+      TelemetryProcessor.traceSuccess(Action.QueryExecuted, {
+        copilotEnabled: this.state.copilotActive,
+        databaseName: this.props.collection.databaseId,
+        collectionId: this.props.collection.collection.id(),
+      })
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);
       this.setState({
@@ -344,6 +351,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
 
       document.getElementById("error-display").focus();
+      TelemetryProcessor.traceFailure(Action.QueryExecuted, {
+        copilotEnabled: this.state.copilotActive,
+        databaseName: this.props.collection.databaseId,
+        collectionId: this.props.collection.id(),
+      })
     } finally {
       this.props.tabsBaseInstance.isExecuting(false);
       this.setState({
@@ -429,12 +441,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         iconSrc: QueryCommandIcon,
         iconAlt: "Copilot",
         onCommandClick: () => {
-          this._toggleCopilot(true);
+          this._toggleCopilot(!this.state.copilotActive);
         },
         commandButtonLabel: "Copilot",
         ariaLabel: "Copilot",
         hasPopup: false,
-        disabled: this.state.copilotActive,
       };
       buttons.push(toggleCopilotButton);
     }
@@ -454,9 +465,14 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     return buttons;
   }
 
-  private _toggleCopilot = (toggle: boolean) => {
-    this.setState({ copilotActive: toggle });
-    localStorage.setItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`, toggle.toString());
+  private _toggleCopilot = (active: boolean) => {
+    this.setState({ copilotActive: active });
+    localStorage.setItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`, active.toString());
+    
+    TelemetryProcessor.traceSuccess(active ? Action.ActivateQueryCopilot : Action.DeactivateQueryCopilot, {
+      databaseName: this.props.collection.databaseId,
+      collectionId: this.props.collection.id(), 
+    });
   };
 
   componentDidUpdate = (_prevProps: IQueryTabComponentProps, prevState: IQueryTabStates): void => {

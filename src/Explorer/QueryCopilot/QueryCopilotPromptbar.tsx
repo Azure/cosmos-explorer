@@ -32,6 +32,7 @@ import {
 import { SubmitFeedback, allocatePhoenixContainer } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { useRef, useState } from "react";
@@ -39,6 +40,7 @@ import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { useTabs } from "../../hooks/useTabs";
 import { useCopilotStore } from "../QueryCopilot/QueryCopilotContext";
 import { useSelectedNode } from "../useSelectedNode";
@@ -210,13 +212,29 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           setGeneratedQueryComments(generateSQLQueryResponse.explanation);
           setShowFeedbackBar(true);
           resetQueryResults();
+          TelemetryProcessor.traceSuccess(Action.QueryGenerationFromCopilotPrompt, {
+            databaseName: userdbId,
+            collectionId: usercontainerId,
+            copilotLatency: Date.parse(generateSQLQueryResponse?.generateEnd) - Date.parse(generateSQLQueryResponse?.generateStart),
+            responseCode: response.status
+          });
         } else {
           setShowInvalidQueryMessageBar(true);
+          TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
+            databaseName: userdbId,
+            collectionId: usercontainerId,
+            responseCode: response.status
+          });
         }
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
         useTabs.getState().setIsQueryErrorThrown(true);
         setShowErrorMessageBar(true);
+        TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
+          databaseName: userdbId,
+          collectionId: usercontainerId,
+          responseCode: response.status
+        });
       }
     } catch (error) {
       handleError(error, "executeNaturalLanguageQuery");

@@ -111,7 +111,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
     this.rootNode.innerHTML = "";
     const monaco = await loadMonaco();
-    createCallback(monaco.editor.create(this.rootNode, options));
+    createCallback(monaco?.editor?.create(this.rootNode, options));
 
     if (this.rootNode.innerHTML) {
       this.setState({

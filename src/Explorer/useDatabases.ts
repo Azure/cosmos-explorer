@@ -33,7 +33,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   updateDatabase: (updatedDatabase: ViewModels.Database) =>
     set((state) => {
       const updatedDatabases = state.databases.map((database: ViewModels.Database) => {
-        if (database.id() === updatedDatabase.id()) {
+        if (database?.id() === updatedDatabase?.id()) {
           return updatedDatabase;
         }
 
