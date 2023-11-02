@@ -22,6 +22,13 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
     for (const collectionResourceId in tokensData.resourceTokens) {
       // Dictionary key looks like this: dbs/SampleDB/colls/Container
       const resourceIdObj = collectionResourceId.split("/");
+
+      if (resourceIdObj.length !== 4) {
+        handleError(`Resource key not recognized: ${resourceIdObj}`, "ReadDatabases", `Error while querying databases`);
+        clearMessage();
+        return [];
+      }
+
       const databaseId = resourceIdObj[1];
 
       databaseIdsSet.add(databaseId);
@@ -37,6 +44,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
         id: databaseId,
         collections: [],
       }));
+    clearMessage();
     return databases;
   }
 
