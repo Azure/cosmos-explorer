@@ -44,6 +44,7 @@ export interface QueryCopilotState {
   containerStatus: ContainerInfo;
   schemaAllocationInfo: CopilotSchemaAllocationInfo;
   isAllocatingContainer: boolean;
+  copilotEnabledforExecution: boolean;
 
   getState?: () => QueryCopilotState;
 
@@ -84,6 +85,7 @@ export interface QueryCopilotState {
   setContainerStatus: (containerStatus: ContainerInfo) => void;
   setIsAllocatingContainer: (isAllocatingContainer: boolean) => void;
   setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => void;
+  setCopilotEnabledforExecution: (copilotEnabledforExecution: boolean) => void;
 
   resetContainerConnection: () => void;
   resetQueryCopilotStates: () => void;
@@ -139,6 +141,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
     containerId: undefined,
   },
   isAllocatingContainer: false,
+  copilotEnabledforExecution: false,
 
   setCopilotEnabled: (copilotEnabled: boolean) => set({ copilotEnabled }),
   setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => set({ copilotUserDBEnabled }),
@@ -180,6 +183,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   setIsAllocatingContainer: (isAllocatingContainer: boolean) => set({ isAllocatingContainer }),
   setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => set({ schemaAllocationInfo }),
+  setCopilotEnabledforExecution: (copilotEnabledforExecution: boolean) => set({ copilotEnabledforExecution }),
 
   resetContainerConnection: (): void => {
     useTabs.getState().closeAllNotebookTabs(true);

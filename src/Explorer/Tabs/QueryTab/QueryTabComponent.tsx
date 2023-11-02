@@ -211,6 +211,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     setTimeout(async () => {
       await this._executeQueryDocumentsPage(0);
     }, 100);
+    if (this.state.copilotActive) {
+      const query = this.state.sqlQueryEditorContent.split("\r\n")?.pop();
+      const isqueryEdited = this.props.copilotStore.generatedQuery && this.props.copilotStore.generatedQuery !== query
+      if (isqueryEdited) {
+        TelemetryProcessor.traceMark(Action.QueryEdited, {
+          databaseName: this.props.collection.databaseId,
+          collectionId: this.props.collection.id()
+        })
+      }
+    }
   };
 
   public onSaveQueryClick = (): void => {
@@ -335,11 +345,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         queryDocuments,
       );
       this.setState({ queryResults, error: "" });
-      TelemetryProcessor.traceSuccess(Action.QueryExecuted, {
-        copilotEnabled: this.state.copilotActive,
-        databaseName: this.props.collection.databaseId,
-        collectionId: this.props.collection.id(),
-      })
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);
       this.setState({
@@ -351,11 +356,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
 
       document.getElementById("error-display").focus();
-      TelemetryProcessor.traceFailure(Action.QueryExecuted, {
-        copilotEnabled: this.state.copilotActive,
-        databaseName: this.props.collection.databaseId,
-        collectionId: this.props.collection.id(),
-      })
     } finally {
       this.props.tabsBaseInstance.isExecuting(false);
       this.setState({
@@ -467,6 +467,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   private _toggleCopilot = (active: boolean) => {
     this.setState({ copilotActive: active });
+    useQueryCopilot.getState().setCopilotEnabledforExecution(active);
     localStorage.setItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`, active.toString());
     
     TelemetryProcessor.traceSuccess(active ? Action.ActivateQueryCopilot : Action.DeactivateQueryCopilot, {

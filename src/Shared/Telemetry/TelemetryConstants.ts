@@ -136,7 +136,7 @@ export enum Action {
   ActivateQueryCopilot,
   DeactivateQueryCopilot,
   QueryGenerationFromCopilotPrompt,
-  QueryExecuted,
+  QueryEdited,
   ExecuteQueryGeneratedFromQueryCopilot,
 }
 
