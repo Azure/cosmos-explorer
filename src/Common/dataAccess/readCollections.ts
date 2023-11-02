@@ -35,14 +35,21 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       }
     }
 
-    const responses = await Promise.all(promises);
-    responses.forEach((response) => {
-      collections.push(response.resource as DataModels.Collection);
-    });
+    try {
+      const responses = await Promise.all(promises);
+      responses.forEach((response) => {
+        collections.push(response.resource as DataModels.Collection);
+      });
 
-    // Sort collections by id before returning
-    collections.sort((a, b) => a.id.localeCompare(b.id));
-    return collections;
+      // Sort collections by id before returning
+      collections.sort((a, b) => a.id.localeCompare(b.id));
+      return collections;
+    } catch (error) {
+      handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
+      throw error;
+    } finally {
+      clearMessage();
+    }
   }
 
   try {

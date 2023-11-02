@@ -69,7 +69,9 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                 setErrorMessage("");
 
                 if (await isAccountRestrictedForConnectionStringLogin(connectionString)) {
-                  setErrorMessage("This account has been blocked from connection-string login.");
+                  setErrorMessage(
+                    "This account has been blocked from connection-string login. Please go to cosmos.azure.com/aad for AAD based login.",
+                  );
                   return;
                 }
 
