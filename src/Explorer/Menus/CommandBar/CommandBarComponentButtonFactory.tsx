@@ -523,7 +523,7 @@ function createOpenTerminalButtonByKind(
       case ViewModels.TerminalKind.Postgres:
         return "PSQL";
       case ViewModels.TerminalKind.VCoreMongo:
-        return "MongoDB (vcore)";
+        return "MongoDB (vCore)";
       default:
         return "";
     }
