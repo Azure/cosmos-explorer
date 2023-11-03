@@ -80,7 +80,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
     if (explorer) {
       applyExplorerBindings(explorer);
       if (userContext.features.enableCopilot) {
-        updateContextForCopilot(explorer).then((_res) => updateContextForSampleData(explorer));
+        updateContextForCopilot(explorer).then(() => updateContextForSampleData(explorer));
       }
     }
   }, [explorer]);

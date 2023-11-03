@@ -16,7 +16,7 @@ import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient"
 import React from "react";
 import { getUserEmail } from "../../../Utils/UserUtils";
 
-export const QueryCopilotFeedbackModal = ({ explorer }: { explorer: Explorer }): JSX.Element => {
+export const QueryCopilotFeedbackModal = ({ explorer, databaseId, containerId, mode }: { explorer: Explorer, databaseId: string, containerId: string, mode: string }): JSX.Element => {
   const {
     generatedQuery,
     userPrompt,
@@ -35,7 +35,10 @@ export const QueryCopilotFeedbackModal = ({ explorer }: { explorer: Explorer }):
     setHideFeedbackModalForLikedQueries(doNotShowAgainChecked);
     SubmitFeedback({
       params: { generatedQuery, likeQuery, description, userPrompt, contact },
-      explorer: explorer,
+      explorer,
+      databaseId,
+      containerId,
+      mode: mode,
     });
   };
 

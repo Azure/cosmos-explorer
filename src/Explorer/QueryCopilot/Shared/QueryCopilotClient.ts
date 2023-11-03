@@ -84,13 +84,13 @@ export const getCopilotEnabled = async (): Promise<boolean> => {
 
 export const allocatePhoenixContainer = async ({
   explorer,
-  userdbId,
-  usercontainerId,
+  databaseId,
+  containerId,
   mode,
 }: {
   explorer: Explorer;
-  userdbId: string;
-  usercontainerId: string;
+  databaseId: string;
+  containerId: string;
   mode: string;
 }): Promise<void> => {
   try {
@@ -102,15 +102,15 @@ export const allocatePhoenixContainer = async ({
     } else {
       const currentAllocatedSchemaInfo = useQueryCopilot.getState().schemaAllocationInfo;
       if (
-        currentAllocatedSchemaInfo.databaseId !== userdbId ||
-        currentAllocatedSchemaInfo.containerId !== usercontainerId
+        currentAllocatedSchemaInfo.databaseId !== databaseId ||
+        currentAllocatedSchemaInfo.containerId !== containerId
       ) {
-        await resetPhoenixContainerSchema({ explorer, userdbId, usercontainerId, mode });
+        await resetPhoenixContainerSchema({ explorer, databaseId, containerId, mode });
       }
     }
     useQueryCopilot.getState().setSchemaAllocationInfo({
-      databaseId: userdbId,
-      containerId: usercontainerId,
+      databaseId,
+      containerId,
     });
   } catch (error) {
     traceFailure(Action.PhoenixConnection, {
@@ -137,20 +137,20 @@ export const allocatePhoenixContainer = async ({
 
 export const resetPhoenixContainerSchema = async ({
   explorer,
-  userdbId,
-  usercontainerId,
+  databaseId,
+  containerId,
   mode,
 }: {
   explorer: Explorer;
-  userdbId: string;
-  usercontainerId: string;
+  databaseId: string;
+  containerId: string;
   mode: string;
 }): Promise<void> => {
   try {
     const provisionData: IProvisionData = {
       poolId: PoolIdType.QueryCopilot,
-      databaseId: userdbId,
-      containerId: usercontainerId,
+      databaseId: databaseId,
+      containerId: containerId,
       mode: mode,
     };
     const connectionInfo = await explorer.phoenixClient.allocateContainer(provisionData);
@@ -251,9 +251,15 @@ export const SendQueryRequest = async ({
 export const SubmitFeedback = async ({
   params,
   explorer,
+  databaseId,
+  containerId,
+  mode,
 }: {
   params: FeedbackParams;
   explorer: Explorer;
+  databaseId: string;
+  containerId: string;
+  mode: string;
 }): Promise<void> => {
   try {
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
@@ -268,7 +274,7 @@ export const SubmitFeedback = async ({
       useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
       !userContext.features.disableCopilotPhoenixGateaway
     ) {
-      await explorer.allocateContainer(PoolIdType.QueryCopilot);
+      await allocatePhoenixContainer({explorer, databaseId, containerId, mode});
     }
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
@@ -279,6 +285,7 @@ export const SubmitFeedback = async ({
       headers: {
         "content-type": "application/json",
         "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+        "Authorization": `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
       },
       body: JSON.stringify(payload),
     });

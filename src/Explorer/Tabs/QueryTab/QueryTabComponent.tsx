@@ -627,7 +627,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
           </div>
         </div>
         {this.props.copilotEnabled && this.props.copilotStore?.showFeedbackModal && (
-          <QueryCopilotFeedbackModal explorer={this.props.collection.container} />
+          <QueryCopilotFeedbackModal explorer={this.props.collection.container} databaseId={this.props.collection.databaseId} containerId={this.props.collection.id()} mode={this.props.isSampleCopilotActive ? "Sample" : "User"} />
         )}
       </Fragment>
     );

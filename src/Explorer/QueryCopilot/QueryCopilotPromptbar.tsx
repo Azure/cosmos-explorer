@@ -46,6 +46,8 @@ import { useCopilotStore } from "../QueryCopilot/QueryCopilotContext";
 import { useSelectedNode } from "../useSelectedNode";
 
 type QueryCopilotPromptProps = QueryCopilotProps & {
+  databaseId: string;
+  containerId: string;
   toggleCopilot: (toggle: boolean) => void;
 };
 
@@ -57,6 +59,8 @@ const promptStyles: IButtonStyles = {
 export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   explorer,
   toggleCopilot,
+  databaseId,
+  containerId,
 }: QueryCopilotPromptProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
@@ -176,11 +180,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       setShowDeletePopup(false);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
-      const userdbId: string = useTabs.getState().activeTab.collection.databaseId;
-      const usercontainerId: string = useTabs.getState().activeTab.collection.id();
       const mode: string = isSampleCopilotActive ? "Sample" : "User";
 
-      await allocatePhoenixContainer({ explorer, userdbId, usercontainerId, mode });
+      await allocatePhoenixContainer({ explorer, databaseId, containerId, mode });
 
       const payload = {
         userPrompt: userPrompt,
@@ -195,6 +197,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         headers: {
           "content-type": "application/json",
           "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+          "Authorization": `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
         },
         body: JSON.stringify(payload),
       });
@@ -213,16 +216,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           setShowFeedbackBar(true);
           resetQueryResults();
           TelemetryProcessor.traceSuccess(Action.QueryGenerationFromCopilotPrompt, {
-            databaseName: userdbId,
-            collectionId: usercontainerId,
+            databaseName: databaseId,
+            collectionId: containerId,
             copilotLatency: Date.parse(generateSQLQueryResponse?.generateEnd) - Date.parse(generateSQLQueryResponse?.generateStart),
             responseCode: response.status
           });
         } else {
           setShowInvalidQueryMessageBar(true);
           TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
-            databaseName: userdbId,
-            collectionId: usercontainerId,
+            databaseName: databaseId,
+            collectionId: containerId,
             responseCode: response.status
           });
         }
@@ -231,8 +234,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         useTabs.getState().setIsQueryErrorThrown(true);
         setShowErrorMessageBar(true);
         TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
-          databaseName: userdbId,
-          collectionId: usercontainerId,
+          databaseName: databaseId,
+          collectionId: containerId,
           responseCode: response.status
         });
       }
@@ -503,7 +506,10 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                     description: "",
                     userPrompt: userPrompt,
                   },
-                  explorer: explorer,
+                  explorer,
+                  databaseId,
+                  containerId,
+                  mode: isSampleCopilotActive ? "Sample" : "User",
                 });
               }}
               directionalHint={DirectionalHint.topCenter}

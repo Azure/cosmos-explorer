@@ -4,12 +4,12 @@ import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/Com
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
-import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
 import { userContext } from "UserContext";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import { ReactTabKind, TabsState, useTabs } from "hooks/useTabs";
 import React, { useState } from "react";
@@ -20,7 +20,7 @@ import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import * as StringUtility from "../../Shared/StringUtility";
 
 export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
-  const { query, setQuery, selectedQuery, setSelectedQuery, isGeneratingQuery } = useCopilotStore();
+  const { query, setQuery, selectedQuery, setSelectedQuery, isGeneratingQuery } = useQueryCopilot();
 
   const cachedCopilotToggleStatus: string = localStorage.getItem(
     `${userContext.databaseAccount?.id}-queryCopilotToggleStatus`,
@@ -36,7 +36,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     const executeQueryBtn = {
       iconSrc: ExecuteQueryIcon,
       iconAlt: executeQueryBtnLabel,
-      onCommandClick: () => OnExecuteQueryClick(),
+      onCommandClick: () => OnExecuteQueryClick(useQueryCopilot),
       commandButtonLabel: executeQueryBtnLabel,
       ariaLabel: executeQueryBtnLabel,
       hasPopup: false,
