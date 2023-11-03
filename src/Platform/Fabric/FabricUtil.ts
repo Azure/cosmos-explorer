@@ -1,7 +1,7 @@
 import { sendCachedDataMessage } from "Common/MessageHandler";
 import { FabricDatabaseConnectionInfo } from "Contracts/FabricContract";
 import { MessageTypes } from "Contracts/MessageTypes";
-import { updateUserContext } from "UserContext";
+import { updateUserContext, userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 
 const TOKEN_VALIDITY_MS = (3600 - 600) * 1000; // 1 hour minus 10 minutes to be safe
@@ -11,7 +11,7 @@ let timeoutId: NodeJS.Timeout;
 // Prevents multiple parallel requests during DEBOUNCE_DELAY_MS
 let lastRequestTimestamp: number = undefined;
 
-const requestDatabaseResourceTokens = async (onComplete: () => void): Promise<void> => {
+const requestDatabaseResourceTokens = async (): Promise<void> => {
   if (lastRequestTimestamp !== undefined && lastRequestTimestamp + DEBOUNCE_DELAY_MS > Date.now()) {
     return;
   }
@@ -21,14 +21,21 @@ const requestDatabaseResourceTokens = async (onComplete: () => void): Promise<vo
     const fabricDatabaseConnectionInfo = await sendCachedDataMessage<FabricDatabaseConnectionInfo>(
       MessageTypes.GetAllResourceTokens,
       [],
+      userContext.fabricContext.connectionId,
     );
-    updateUserContext({ fabricDatabaseConnectionInfo });
-    scheduleRefreshDatabaseResourceToken();
-    if (onComplete) {
-      onComplete();
+
+    if (!userContext.databaseAccount.properties.documentEndpoint) {
+      userContext.databaseAccount.properties.documentEndpoint = fabricDatabaseConnectionInfo.endpoint;
     }
+
+    updateUserContext({
+      fabricContext: { ...userContext.fabricContext, databaseConnectionInfo: fabricDatabaseConnectionInfo },
+      databaseAccount: { ...userContext.databaseAccount },
+    });
+    scheduleRefreshDatabaseResourceToken();
   } catch (error) {
     logConsoleError(error);
+    throw error;
   } finally {
     lastRequestTimestamp = undefined;
   }
@@ -39,18 +46,20 @@ const requestDatabaseResourceTokens = async (onComplete: () => void): Promise<vo
  * @param tokenTimestamp
  * @returns
  */
-export const scheduleRefreshDatabaseResourceToken = (refreshNow?: boolean, onComplete?: () => void): void => {
-  if (timeoutId !== undefined) {
-    clearTimeout(timeoutId);
-    timeoutId = undefined;
-  }
+export const scheduleRefreshDatabaseResourceToken = (refreshNow?: boolean): Promise<void> => {
+  return new Promise((resolve) => {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+      timeoutId = undefined;
+    }
 
-  timeoutId = setTimeout(
-    () => {
-      requestDatabaseResourceTokens(onComplete);
-    },
-    refreshNow ? 0 : TOKEN_VALIDITY_MS,
-  );
+    timeoutId = setTimeout(
+      () => {
+        requestDatabaseResourceTokens().then(resolve);
+      },
+      refreshNow ? 0 : TOKEN_VALIDITY_MS,
+    );
+  });
 };
 
 export const checkDatabaseResourceTokensValidity = (tokenTimestamp: number): void => {

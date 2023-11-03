@@ -381,7 +381,7 @@ export default class Explorer {
 
   public onRefreshResourcesClick = (): void => {
     if (configContext.platform === Platform.Fabric) {
-      scheduleRefreshDatabaseResourceToken(true, () => this.refreshAllDatabases());
+      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 

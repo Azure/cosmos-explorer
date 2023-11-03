@@ -14,8 +14,8 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
 
-  if (configContext.platform === Platform.Fabric && userContext.fabricDatabaseConnectionInfo?.resourceTokens) {
-    const tokensData = userContext.fabricDatabaseConnectionInfo;
+  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.databaseConnectionInfo.resourceTokens) {
+    const tokensData = userContext.fabricContext.databaseConnectionInfo;
 
     const databaseIdsSet = new Set<string>(); // databaseId
 

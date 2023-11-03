@@ -1,5 +1,5 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricDatabaseConnectionInfo, FabricMessage } from "Contracts/FabricContract";
+import { FabricMessage } from "Contracts/FabricContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
@@ -105,20 +105,11 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            const fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo = {
-              endpoint: data.message.endpoint,
-              databaseId: data.message.databaseId,
-              resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
-              resourceTokensTimestamp: data.message.resourceTokensTimestamp,
-            };
-            explorer = await createExplorerFabric(fabricDatabaseConnectionInfo);
+            explorer = createExplorerFabric(data.message);
+            await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
-
-            explorer.refreshAllDatabases().then(() => {
-              openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
-            });
-            // Schedule renewal of resource tokens
-            scheduleRefreshDatabaseResourceToken();
+            await explorer.refreshAllDatabases();
+            openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
             break;
           }
           case "newContainer":
@@ -313,9 +304,12 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo): Explorer {
+function createExplorerFabric(params: { connectionId: string }): Explorer {
   updateUserContext({
-    fabricDatabaseConnectionInfo,
+    fabricContext: {
+      connectionId: params.connectionId,
+      databaseConnectionInfo: undefined,
+    },
     authType: AuthType.ConnectionString,
     databaseAccount: {
       id: "",
@@ -324,7 +318,7 @@ function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnec
       name: "Mounted",
       kind: AccountKind.Default,
       properties: {
-        documentEndpoint: fabricDatabaseConnectionInfo.endpoint,
+        documentEndpoint: undefined,
       },
     },
   });

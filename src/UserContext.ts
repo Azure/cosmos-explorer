@@ -47,8 +47,13 @@ export interface VCoreMongoConnectionParams {
   connectionString: string;
 }
 
+interface FabricContext {
+  connectionId: string;
+  databaseConnectionInfo: FabricDatabaseConnectionInfo | undefined;
+}
+
 interface UserContext {
-  readonly fabricDatabaseConnectionInfo?: FabricDatabaseConnectionInfo;
+  readonly fabricContext?: FabricContext;
   readonly authType?: AuthType;
   readonly masterKey?: string;
   readonly subscriptionId?: string;
