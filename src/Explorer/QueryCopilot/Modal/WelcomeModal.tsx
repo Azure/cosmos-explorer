@@ -70,7 +70,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               <Text>
                 Ask Copilot to generate a query by describing the query in your words.
                 <br />
-                <Link target="_blank" href="https://aka.ms/cdb-copilot-learn-more">
+                <Link target="_blank" href="https://aka.ms/CopilotInAzureCDBDocs">
                   Learn more
                 </Link>
               </Text>
@@ -88,10 +88,10 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 </StackItem>
               </Stack>
               <Text>
-                AI-generated content can have mistakes. Make sure it’s accurate and appropriate before using it.
+                AI-generated content can have mistakes. Make sure it's accurate and appropriate before executing the query.
                 <br />
-                <Link target="_blank" href="https://aka.ms/cdb-copilot-preview-terms">
-                  Read preview terms
+                <Link target="_blank" href="https://azure.microsoft.com/support/legal/preview-supplemental-terms/#AzureOpenAI-PoweredPreviews">
+                  Read our preview terms here
                 </Link>
               </Text>
             </Stack.Item>

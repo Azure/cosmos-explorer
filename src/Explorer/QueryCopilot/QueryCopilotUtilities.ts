@@ -49,9 +49,8 @@ export const getSampleDatabaseSuggestedPrompts = (): SuggestedPrompt[] => {
 
 export const getSuggestedPrompts = (): SuggestedPrompt[] => {
   return [
-    { id: 1, text: "Show me the first 5 records" },
-    { id: 2, text: "Show me all records" },
-    { id: 3, text: "Show me all unique columns?" },
-    { id: 4, text: "How many records are in the table?" },
+    { id: 1, text: "Show the first 10 items" },
+    { id: 2, text: 'Count all the items in my data as "numItems"' },
+    { id: 3, text: "Find the oldest item added to my collection" },
   ];
 };

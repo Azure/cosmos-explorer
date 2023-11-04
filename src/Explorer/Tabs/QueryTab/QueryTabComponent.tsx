@@ -578,6 +578,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             <QueryCopilotPromptbar
               explorer={this.props.collection.container}
               toggleCopilot={this._toggleCopilot}
+              databaseId={this.props.collection.databaseId}
+              containerId={this.props.collection.id()}
             ></QueryCopilotPromptbar>
           )}
           <div className="tabPaneContentContainer">

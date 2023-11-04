@@ -7,7 +7,7 @@ import {
   PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
-  ShortenedQueryCopilotSampleContainerSchema,
+  ShortenedQueryCopilotSampleContainerSchema
 } from "Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
@@ -19,7 +19,7 @@ import {
   ContainerConnectionInfo,
   CopilotEnabledConfiguration,
   FeatureRegistration,
-  IProvisionData,
+  IProvisionData
 } from "Contracts/DataModels";
 import { AuthorizationTokenHeaderMetadata, QueryResults } from "Contracts/ViewModels";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -165,6 +165,7 @@ export const resetPhoenixContainerSchema = async ({
       error: getErrorMessage(error),
       errorStack: getErrorStack(error),
     });
+    throw error
   }
 };
 
@@ -279,7 +280,7 @@ export const SubmitFeedback = async ({
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
       ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
-      : createUri(serverInfo.notebookServerEndpoint, "feedback");
+      : createUri(serverInfo.notebookServerEndpoint, "public/feedback");
     await fetch(feedbackUri, {
       method: "POST",
       headers: {

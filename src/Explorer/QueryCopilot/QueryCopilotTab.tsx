@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { Stack } from "@fluentui/react";
+import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -94,7 +95,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     <Stack className="tab-pane" style={{ width: "100%" }}>
       <div style={isGeneratingQuery ? { height: "100%" } : { overflowY: "auto", height: "100%" }}>
         {tabActive && copilotActive && (
-          <QueryCopilotPromptbar explorer={explorer} toggleCopilot={toggleCopilot}></QueryCopilotPromptbar>
+          <QueryCopilotPromptbar explorer={explorer} toggleCopilot={toggleCopilot} databaseId={QueryCopilotSampleDatabaseId} containerId={QueryCopilotSampleContainerId}></QueryCopilotPromptbar>
         )}
         <Stack className="tabPaneContentContainer">
           <SplitterLayout percentage={true} vertical={true} primaryIndex={0} primaryMinSize={30} secondaryMinSize={70}>
