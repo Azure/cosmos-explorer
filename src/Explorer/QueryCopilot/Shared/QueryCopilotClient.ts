@@ -280,7 +280,7 @@ export const SubmitFeedback = async ({
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
       ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
-      : createUri(serverInfo.notebookServerEndpoint, "public/feedback");
+      : createUri(serverInfo.notebookServerEndpoint, "feedback");
     await fetch(feedbackUri, {
       method: "POST",
       headers: {

@@ -191,7 +191,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       const serverInfo = useQueryCopilot.getState().notebookServerInfo;
       const queryUri = userContext.features.disableCopilotPhoenixGateaway
         ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
-        : createUri(serverInfo.notebookServerEndpoint, "public/generateSQLQuery");
+        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {
