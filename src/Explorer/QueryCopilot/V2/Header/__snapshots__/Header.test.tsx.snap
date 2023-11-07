@@ -1,64 +1,158 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header snapshot test should close on button click  1`] = `
-<Stack
-  horizontal={true}
-  style={
-    Object {
-      "display": "flex",
-      "justifyContent": "space-between",
-      "margin": "15px 0px 0px 0px",
-      "padding": "5px",
-    }
-  }
-  verticalAlign="center"
->
+<Fragment>
   <Stack
     horizontal={true}
-    verticalAlign="center"
-  >
-    <Image
-      src={Object {}}
-    />
-    <Text
-      style={
-        Object {
-          "fontWeight": "bold",
-          "marginLeft": "5px",
-        }
-      }
-    >
-      Copilot
-    </Text>
-    <Text
-      style={
-        Object {
-          "background": "#f0f0f0",
-          "borderRadius": "8px",
-          "fontSize": "10px",
-          "marginLeft": "5px",
-          "padding": "2px 4px",
-        }
-      }
-    >
-      Preview
-    </Text>
-  </Stack>
-  <CustomizedIconButton
-    ariaLabel="Exit"
-    iconProps={
-      Object {
-        "iconName": "Cancel",
-      }
-    }
-    onClick={[Function]}
     style={
       Object {
-        "color": "#424242",
-        "verticalAlign": "middle",
+        "display": "flex",
+        "justifyContent": "space-between",
+        "margin": "15px 0px 0px 0px",
+        "padding": "5px",
       }
     }
-    title="Exit"
-  />
-</Stack>
+    verticalAlign="center"
+  >
+    <Stack
+      horizontal={true}
+      verticalAlign="center"
+    >
+      <Image
+        src={Object {}}
+      />
+      <Text
+        style={
+          Object {
+            "fontWeight": "bold",
+            "marginLeft": "5px",
+          }
+        }
+      >
+        Copilot
+      </Text>
+      <Text
+        style={
+          Object {
+            "background": "#f0f0f0",
+            "borderRadius": "8px",
+            "fontSize": "10px",
+            "marginLeft": "5px",
+            "padding": "2px 4px",
+          }
+        }
+      >
+        Preview
+      </Text>
+    </Stack>
+    <CustomizedIconButton
+      ariaLabel="Delete history"
+      disabled={true}
+      iconProps={
+        Object {
+          "iconName": "History",
+        }
+      }
+      onClick={[Function]}
+      style={
+        Object {
+          "color": "#424242",
+          "verticalAlign": "middle",
+        }
+      }
+      title="Delete history"
+    />
+    <CustomizedIconButton
+      ariaLabel="Exit"
+      iconProps={
+        Object {
+          "iconName": "Cancel",
+        }
+      }
+      onClick={[Function]}
+      style={
+        Object {
+          "color": "#424242",
+          "verticalAlign": "middle",
+        }
+      }
+      title="Exit"
+    />
+  </Stack>
+  <Modal
+    isOpen={true}
+    styles={
+      Object {
+        "main": Object {
+          "minHeight": "122px",
+          "minWidth": "480px",
+        },
+      }
+    }
+  >
+    <Stack
+      style={
+        Object {
+          "height": "auto",
+          "padding": "16px 24px",
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "fontSize": "18px",
+            "height": 24,
+          }
+        }
+      >
+        <b>
+          Delete chat history?
+        </b>
+      </Text>
+      <Text
+        style={
+          Object {
+            "marginBottom": 20,
+            "marginTop": 10,
+          }
+        }
+      >
+        This action will clear all chat history. Are you sure you want to continue?
+      </Text>
+      <Stack
+        horizontal={true}
+        horizontalAlign="start"
+        tokens={
+          Object {
+            "childrenGap": 10,
+          }
+        }
+      >
+        <CustomizedPrimaryButton
+          onClick={[Function]}
+          style={
+            Object {
+              "height": 24,
+              "padding": "0px 20px",
+            }
+          }
+        >
+          Continue
+        </CustomizedPrimaryButton>
+        <CustomizedDefaultButton
+          onClick={[Function]}
+          style={
+            Object {
+              "height": 24,
+              "padding": "0px 20px",
+            }
+          }
+        >
+          Close
+        </CustomizedDefaultButton>
+      </Stack>
+    </Stack>
+  </Modal>
+</Fragment>
 `;
