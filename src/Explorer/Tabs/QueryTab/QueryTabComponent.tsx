@@ -213,12 +213,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }, 100);
     if (this.state.copilotActive) {
       const query = this.state.sqlQueryEditorContent.split("\r\n")?.pop();
-      const isqueryEdited = this.props.copilotStore.generatedQuery && this.props.copilotStore.generatedQuery !== query
+      const isqueryEdited = this.props.copilotStore.generatedQuery && this.props.copilotStore.generatedQuery !== query;
       if (isqueryEdited) {
         TelemetryProcessor.traceMark(Action.QueryEdited, {
           databaseName: this.props.collection.databaseId,
-          collectionId: this.props.collection.id()
-        })
+          collectionId: this.props.collection.id(),
+        });
       }
     }
   };
@@ -469,10 +469,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({ copilotActive: active });
     useQueryCopilot.getState().setCopilotEnabledforExecution(active);
     localStorage.setItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`, active.toString());
-    
+
     TelemetryProcessor.traceSuccess(active ? Action.ActivateQueryCopilot : Action.DeactivateQueryCopilot, {
       databaseName: this.props.collection.databaseId,
-      collectionId: this.props.collection.id(), 
+      collectionId: this.props.collection.id(),
     });
   };
 
@@ -629,7 +629,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
           </div>
         </div>
         {this.props.copilotEnabled && this.props.copilotStore?.showFeedbackModal && (
-          <QueryCopilotFeedbackModal explorer={this.props.collection.container} databaseId={this.props.collection.databaseId} containerId={this.props.collection.id()} mode={this.props.isSampleCopilotActive ? "Sample" : "User"} />
+          <QueryCopilotFeedbackModal
+            explorer={this.props.collection.container}
+            databaseId={this.props.collection.databaseId}
+            containerId={this.props.collection.id()}
+            mode={this.props.isSampleCopilotActive ? "Sample" : "User"}
+          />
         )}
       </Fragment>
     );

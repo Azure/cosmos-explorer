@@ -88,9 +88,13 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 </StackItem>
               </Stack>
               <Text>
-                AI-generated content can have mistakes. Make sure it's accurate and appropriate before executing the query.
+                AI-generated content can have mistakes. Make sure it is accurate and appropriate before executing the
+                query.
                 <br />
-                <Link target="_blank" href="https://azure.microsoft.com/support/legal/preview-supplemental-terms/#AzureOpenAI-PoweredPreviews">
+                <Link
+                  target="_blank"
+                  href="https://azure.microsoft.com/support/legal/preview-supplemental-terms/#AzureOpenAI-PoweredPreviews"
+                >
                   Read our preview terms here
                 </Link>
               </Text>

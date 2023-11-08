@@ -95,7 +95,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     <Stack className="tab-pane" style={{ width: "100%" }}>
       <div style={isGeneratingQuery ? { height: "100%" } : { overflowY: "auto", height: "100%" }}>
         {tabActive && copilotActive && (
-          <QueryCopilotPromptbar explorer={explorer} toggleCopilot={toggleCopilot} databaseId={QueryCopilotSampleDatabaseId} containerId={QueryCopilotSampleContainerId}></QueryCopilotPromptbar>
+          <QueryCopilotPromptbar
+            explorer={explorer}
+            toggleCopilot={toggleCopilot}
+            databaseId={QueryCopilotSampleDatabaseId}
+            containerId={QueryCopilotSampleContainerId}
+          ></QueryCopilotPromptbar>
         )}
         <Stack className="tabPaneContentContainer">
           <SplitterLayout percentage={true} vertical={true} primaryIndex={0} primaryMinSize={30} secondaryMinSize={70}>

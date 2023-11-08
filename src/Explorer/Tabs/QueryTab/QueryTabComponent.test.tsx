@@ -2,7 +2,10 @@ import { fireEvent, render } from "@testing-library/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
-import QueryTabComponent, { IQueryTabComponentProps, QueryTabFunctionComponent } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import QueryTabComponent, {
+  IQueryTabComponentProps,
+  QueryTabFunctionComponent,
+} from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import { updateUserContext, userContext } from "UserContext";
 import { mount } from "enzyme";
@@ -25,8 +28,8 @@ describe("QueryTabComponent", () => {
       features: {
         ...userContext.features,
         copilotVersion: "v3.0",
-      }
-    })
+      },
+    });
     const propsMock: Readonly<IQueryTabComponentProps> = {
       collection: { databaseId: "CopilotSampleDb" },
       onTabAccessor: () => jest.fn(),
@@ -56,16 +59,20 @@ describe("QueryTabComponent", () => {
     activeTab.tabId = "mockTabId";
     useTabs.getState().activeTab = activeTab;
     const propsMock: Readonly<IQueryTabComponentProps> = {
-      collection: { databaseId: "CopilotUserDb" },
+      collection: { databaseId: "CopilotUserDb", id: () => "CopilotUserContainer" },
       onTabAccessor: () => jest.fn(),
       isExecutionError: false,
       tabId: "mockTabId",
       tabsBaseInstance: {
         updateNavbarWithTabsButtons: () => jest.fn(),
       },
-    } as unknown as IQueryTabComponentProps
+    } as unknown as IQueryTabComponentProps;
 
-    const container = mount(<CopilotProvider><QueryTabFunctionComponent {...propsMock} /></CopilotProvider>)
-    expect(container.find(QueryCopilotPromptbar).exists()).toBe(true)
-  })
+    const container = mount(
+      <CopilotProvider>
+        <QueryTabFunctionComponent {...propsMock} />
+      </CopilotProvider>,
+    );
+    expect(container.find(QueryCopilotPromptbar).exists()).toBe(true);
+  });
 });

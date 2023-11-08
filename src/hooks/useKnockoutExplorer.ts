@@ -560,14 +560,16 @@ async function updateContextForCopilot(explorer: Explorer): Promise<void> {
 }
 
 async function updateContextForSampleData(explorer: Explorer): Promise<void> {
-  
-  const copilotEnabled = userContext.apiType === "SQL" && userContext.features.enableCopilot && useQueryCopilot.getState().copilotEnabled
-  
+  const copilotEnabled =
+    userContext.apiType === "SQL" && userContext.features.enableCopilot && useQueryCopilot.getState().copilotEnabled;
+
   if (!copilotEnabled) {
     return;
   }
 
-  const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled ? `/api/tokens/sampledataconnection/v2` : `/api/tokens/sampledataconnection`
+  const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
+    ? `/api/tokens/sampledataconnection/v2`
+    : `/api/tokens/sampledataconnection`;
 
   const url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
   const authorizationHeader = getAuthorizationHeader();

@@ -7,7 +7,7 @@ import {
   PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
-  ShortenedQueryCopilotSampleContainerSchema
+  ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
@@ -19,7 +19,7 @@ import {
   ContainerConnectionInfo,
   CopilotEnabledConfiguration,
   FeatureRegistration,
-  IProvisionData
+  IProvisionData,
 } from "Contracts/DataModels";
 import { AuthorizationTokenHeaderMetadata, QueryResults } from "Contracts/ViewModels";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -165,7 +165,7 @@ export const resetPhoenixContainerSchema = async ({
       error: getErrorMessage(error),
       errorStack: getErrorStack(error),
     });
-    throw error
+    throw error;
   }
 };
 
@@ -275,18 +275,18 @@ export const SubmitFeedback = async ({
       useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
       !userContext.features.disableCopilotPhoenixGateaway
     ) {
-      await allocatePhoenixContainer({explorer, databaseId, containerId, mode});
+      await allocatePhoenixContainer({ explorer, databaseId, containerId, mode });
     }
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
       ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
-      : createUri(serverInfo.notebookServerEndpoint, "public/feedback");
+      : createUri(serverInfo.notebookServerEndpoint, "feedback");
     await fetch(feedbackUri, {
       method: "POST",
       headers: {
         "content-type": "application/json",
         "x-ms-correlationid": useQueryCopilot.getState().correlationId,
-        "Authorization": `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
+        Authorization: `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
       },
       body: JSON.stringify(payload),
     });

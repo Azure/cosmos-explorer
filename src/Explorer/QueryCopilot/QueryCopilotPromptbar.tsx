@@ -191,13 +191,13 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       const serverInfo = useQueryCopilot.getState().notebookServerInfo;
       const queryUri = userContext.features.disableCopilotPhoenixGateaway
         ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
-        : createUri(serverInfo.notebookServerEndpoint, "public/generateSQLQuery");
+        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {
           "content-type": "application/json",
           "x-ms-correlationid": useQueryCopilot.getState().correlationId,
-          "Authorization": `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
+          Authorization: `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
         },
         body: JSON.stringify(payload),
       });
@@ -218,15 +218,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           TelemetryProcessor.traceSuccess(Action.QueryGenerationFromCopilotPrompt, {
             databaseName: databaseId,
             collectionId: containerId,
-            copilotLatency: Date.parse(generateSQLQueryResponse?.generateEnd) - Date.parse(generateSQLQueryResponse?.generateStart),
-            responseCode: response.status
+            copilotLatency:
+              Date.parse(generateSQLQueryResponse?.generateEnd) - Date.parse(generateSQLQueryResponse?.generateStart),
+            responseCode: response.status,
           });
         } else {
           setShowInvalidQueryMessageBar(true);
           TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
             databaseName: databaseId,
             collectionId: containerId,
-            responseCode: response.status
+            responseCode: response.status,
           });
         }
       } else {
@@ -236,7 +237,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
           databaseName: databaseId,
           collectionId: containerId,
-          responseCode: response.status
+          responseCode: response.status,
         });
       }
     } catch (error) {
