@@ -93,7 +93,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 <br />
                 <Link
                   target="_blank"
-                  href="https://azure.microsoft.com/support/legal/preview-supplemental-terms/#AzureOpenAI-PoweredPreviews"
+                  href="https://aka.ms/cdb-copilot-preview-terms"
                 >
                   Read our preview terms here
                 </Link>
