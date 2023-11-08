@@ -15,7 +15,7 @@
     "@fluentui/react": "8.14.3",
     "@fluentui/react-components": "9.32.1",
     "@jupyterlab/services": "6.0.2",
-    "@jupyterlab/terminal": "3.0.3",
+    "@jupyterlab/terminal": "4.0.8",
     "@microsoft/applicationinsights-web": "2.6.1",
     "@nteract/commutable": "7.4.2",
     "@nteract/connected-components": "6.8.2",
