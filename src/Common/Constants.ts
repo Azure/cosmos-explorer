@@ -145,6 +145,9 @@ export class Queries {
   public static QueryEditorMinHeightRatio: number = 0.1;
   public static QueryEditorMaxHeightRatio: number = 0.4;
   public static readonly DefaultMaxDegreeOfParallelism = 6;
+  public static readonly DefaultRetryAttempts = 9;
+  public static readonly DefaultRetryIntervalInMs = 5000;
+  public static readonly DefaultMaxWaitTime = 30;
 }
 
 export class SavedQueries {
