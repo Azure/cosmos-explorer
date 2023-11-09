@@ -345,7 +345,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
   describe("Open Postgres and vCore Mongo buttons", () => {
     const openPostgresShellButtonLabel = "Open PSQL shell";
-    const openVCoreMongoShellButtonLabel = "Open MongoDB (vcore) shell";
+    const openVCoreMongoShellButtonLabel = "Open MongoDB (vCore) shell";
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
