@@ -1385,7 +1385,9 @@ export default class Explorer {
   }
 
   public async configureCopilot(): Promise<void> {
-    if (userContext.apiType !== "SQL") { return; }
+    if (userContext.apiType !== "SQL") {
+      return;
+    }
     const copilotEnabled = await getCopilotEnabled();
     const copilotUserDBEnabled = await isCopilotFeatureRegistered(userContext.subscriptionId);
     useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);

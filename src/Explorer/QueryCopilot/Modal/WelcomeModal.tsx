@@ -91,10 +91,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 AI-generated content can have mistakes. Make sure it is accurate and appropriate before executing the
                 query.
                 <br />
-                <Link
-                  target="_blank"
-                  href="https://aka.ms/cdb-copilot-preview-terms"
-                >
+                <Link target="_blank" href="https://aka.ms/cdb-copilot-preview-terms">
                   Read our preview terms here
                 </Link>
               </Text>
