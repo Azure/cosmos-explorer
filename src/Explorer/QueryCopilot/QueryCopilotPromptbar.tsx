@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import {
   Callout,
   CommandBarButton,
@@ -17,20 +19,20 @@ import {
   TextField,
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
-import {
-  ContainerStatusType,
-  PoolIdType,
-  QueryCopilotSampleContainerSchema,
-  ShortenedQueryCopilotSampleContainerSchema,
-} from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
-import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import {
+  SuggestedPrompt,
+  getSampleDatabaseSuggestedPrompts,
+  getSuggestedPrompts,
+} from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { SubmitFeedback, allocatePhoenixContainer } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { useRef, useState } from "react";
@@ -38,16 +40,16 @@ import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { useTabs } from "../../hooks/useTabs";
+import { useCopilotStore } from "../QueryCopilot/QueryCopilotContext";
+import { useSelectedNode } from "../useSelectedNode";
 
 type QueryCopilotPromptProps = QueryCopilotProps & {
+  databaseId: string;
+  containerId: string;
   toggleCopilot: (toggle: boolean) => void;
 };
-
-interface SuggestedPrompt {
-  id: number;
-  text: string;
-}
 
 const promptStyles: IButtonStyles = {
   root: { border: 0, selectors: { ":hover": { outline: "1px dashed #605e5c" } } },
@@ -57,10 +59,13 @@ const promptStyles: IButtonStyles = {
 export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   explorer,
   toggleCopilot,
+  databaseId,
+  containerId,
 }: QueryCopilotPromptProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
   const {
+    openFeedbackModal,
     hideFeedbackModalForLikedQueries,
     userPrompt,
     setUserPrompt,
@@ -93,7 +98,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setGeneratedQueryComments,
     setQueryResults,
     setErrorMessage,
-  } = useQueryCopilot();
+  } = useCopilotStore();
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -118,14 +123,13 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     }, 6000);
   };
 
+  const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
   const cachedHistories = cachedHistoriesString?.split("|");
   const [histories, setHistories] = useState<string[]>(cachedHistories || []);
-  const suggestedPrompts: SuggestedPrompt[] = [
-    { id: 1, text: 'Show all products that have the word "ultra" in the name or description' },
-    { id: 2, text: "What are all of the possible categories for the products, and their counts?" },
-    { id: 3, text: 'Show me all products that have been reviewed by someone with a username that contains "bob"' },
-  ];
+  const suggestedPrompts: SuggestedPrompt[] = isSampleCopilotActive
+    ? getSampleDatabaseSuggestedPrompts()
+    : getSuggestedPrompts();
   const [filteredHistories, setFilteredHistories] = useState<string[]>(histories);
   const [filteredSuggestedPrompts, setFilteredSuggestedPrompts] = useState<SuggestedPrompt[]>(suggestedPrompts);
 
@@ -176,16 +180,11 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       setShowDeletePopup(false);
       useTabs.getState().setIsTabExecuting(true);
       useTabs.getState().setIsQueryErrorThrown(false);
-      if (
-        useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
-        !userContext.features.disableCopilotPhoenixGateaway
-      ) {
-        await explorer.allocateContainer(PoolIdType.QueryCopilot);
-      }
+      const mode: string = isSampleCopilotActive ? "Sample" : "User";
+
+      await allocatePhoenixContainer({ explorer, databaseId, containerId, mode });
+
       const payload = {
-        containerSchema: userContext.features.enableCopilotFullSchema
-          ? QueryCopilotSampleContainerSchema
-          : ShortenedQueryCopilotSampleContainerSchema,
         userPrompt: userPrompt,
       };
       useQueryCopilot.getState().refreshCorrelationId();
@@ -198,6 +197,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         headers: {
           "content-type": "application/json",
           "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+          Authorization: `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
         },
         body: JSON.stringify(payload),
       });
@@ -215,13 +215,30 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           setGeneratedQueryComments(generateSQLQueryResponse.explanation);
           setShowFeedbackBar(true);
           resetQueryResults();
+          TelemetryProcessor.traceSuccess(Action.QueryGenerationFromCopilotPrompt, {
+            databaseName: databaseId,
+            collectionId: containerId,
+            copilotLatency:
+              Date.parse(generateSQLQueryResponse?.generateEnd) - Date.parse(generateSQLQueryResponse?.generateStart),
+            responseCode: response.status,
+          });
         } else {
           setShowInvalidQueryMessageBar(true);
+          TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
+            databaseName: databaseId,
+            collectionId: containerId,
+            responseCode: response.status,
+          });
         }
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
         useTabs.getState().setIsQueryErrorThrown(true);
         setShowErrorMessageBar(true);
+        TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
+          databaseName: databaseId,
+          collectionId: containerId,
+          responseCode: response.status,
+        });
       }
     } catch (error) {
       handleError(error, "executeNaturalLanguageQuery");
@@ -310,6 +327,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           styles={{ root: { width: "95%" }, fieldGroup: { borderRadius: 6 } }}
           disabled={isGeneratingQuery}
           autoComplete="off"
+          placeholder="Ask a question in natural language and we’ll generate the query for you."
         />
         {copilotTeachingBubbleVisible && (
           <TeachingBubble
@@ -489,7 +507,10 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                     description: "",
                     userPrompt: userPrompt,
                   },
-                  explorer: explorer,
+                  explorer,
+                  databaseId,
+                  containerId,
+                  mode: isSampleCopilotActive ? "Sample" : "User",
                 });
               }}
               directionalHint={DirectionalHint.topCenter}
@@ -499,7 +520,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 <Link
                   onClick={() => {
                     setShowCallout(false);
-                    useQueryCopilot.getState().openFeedbackModal(generatedQuery, true, userPrompt);
+                    openFeedbackModal(generatedQuery, true, userPrompt);
                   }}
                 >
                   more feedback?
@@ -524,7 +545,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
             onClick={() => {
               if (!dislikeQuery) {
-                useQueryCopilot.getState().openFeedbackModal(generatedQuery, false, userPrompt);
+                openFeedbackModal(generatedQuery, false, userPrompt);
                 setLikeQuery(false);
               }
               setDislikeQuery(!dislikeQuery);

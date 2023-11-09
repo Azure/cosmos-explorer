@@ -8,8 +8,10 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
     onDismiss={[Function]}
     styles={
       Object {
-        "scrollableContent": Object {
-          "minHeight": 680,
+        "main": Object {
+          "borderRadius": 10,
+          "maxHeight": 530,
+          "overflow": "hidden",
         },
       }
     }
@@ -76,7 +78,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
           <Text
             className="title bold"
           >
-            Welcome to Copilot in Azure Cosmos DB (Private Preview)
+            Welcome to Copilot in Azure Cosmos DB
           </Text>
         </StackItem>
         <StackItem
@@ -109,7 +111,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             Ask Copilot to generate a query by describing the query in your words.
             <br />
             <StyledLinkBase
-              href="https://aka.ms/cdb-copilot-learn-more"
+              href="https://aka.ms/CopilotInAzureCDBDocs"
               target="_blank"
             >
               Learn more
@@ -143,50 +145,13 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             </StackItem>
           </Stack>
           <Text>
-            AI-generated content can have mistakes. Make sure it’s accurate and appropriate before using it.
+            AI-generated content can have mistakes. Make sure it is accurate and appropriate before executing the query.
             <br />
             <StyledLinkBase
               href="https://aka.ms/cdb-copilot-preview-terms"
               target="_blank"
             >
-              Read preview terms
-            </StyledLinkBase>
-          </Text>
-        </StackItem>
-        <StackItem
-          align="center"
-          className="text"
-        >
-          <Stack
-            horizontal={true}
-          >
-            <StackItem
-              align="start"
-              className="imageTextPadding"
-            >
-              <Image
-                src={Object {}}
-              />
-            </StackItem>
-            <StackItem
-              align="start"
-            >
-              <Text
-                className="bold"
-              >
-                Query Copilot works on a sample database.
-                <br />
-              </Text>
-            </StackItem>
-          </Stack>
-          <Text>
-            While in Private Preview, Query Copilot is setup to work on sample database we have configured for you at no cost.
-            <br />
-            <StyledLinkBase
-              href="https://aka.ms/cdb-copilot-learn-more"
-              target="_blank"
-            >
-              Learn more
+              Read our preview terms here
             </StyledLinkBase>
           </Text>
         </StackItem>

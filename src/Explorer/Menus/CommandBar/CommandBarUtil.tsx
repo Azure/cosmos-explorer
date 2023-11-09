@@ -6,6 +6,7 @@ import {
   IDropdownOption,
   IDropdownStyles,
 } from "@fluentui/react";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
@@ -57,7 +58,11 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         },
         onClick: (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
           btn.onCommandClick(ev);
-          TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label });
+          let copilotEnabled = false;
+          if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
+            copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
+          }
+          TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
         },
         key: `${btn.commandButtonLabel}${index}`,
         text: label,
