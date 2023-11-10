@@ -291,21 +291,6 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
          
         for more information.
       </Text>
-      <StyledCheckboxBase
-        checked={false}
-        label="Don't show me this next time"
-        onChange={[Function]}
-        styles={
-          Object {
-            "label": Object {
-              "paddingLeft": 0,
-            },
-            "root": Object {
-              "marginBottom": 14,
-            },
-          }
-        }
-      />
       <Stack
         horizontal={true}
         horizontalAlign="end"

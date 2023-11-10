@@ -3,6 +3,7 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
+import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
@@ -92,7 +93,7 @@ export default class Explorer {
   };
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
-  private phoenixClient: PhoenixClient;
+  public phoenixClient: PhoenixClient;
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -411,7 +412,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public async allocateContainer(poolId: PoolIdType): Promise<void> {
+  public async allocateContainer(poolId: PoolIdType, mode?: string): Promise<void> {
     const shouldUseNotebookStates = poolId === PoolIdType.DefaultPoolId ? true : false;
     const notebookServerInfo = shouldUseNotebookStates
       ? useNotebook.getState().notebookServerInfo
@@ -425,10 +426,6 @@ export default class Explorer {
       (notebookServerInfo === undefined ||
         (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined))
     ) {
-      const provisionData: IProvisionData = {
-        cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
-        poolId: shouldUseNotebookStates ? undefined : poolId,
-      };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
       };
@@ -436,14 +433,26 @@ export default class Explorer {
       shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
 
       let connectionInfo;
+      let provisionData: IProvisionData;
       try {
         TelemetryProcessor.traceStart(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
-        shouldUseNotebookStates
-          ? useNotebook.getState().setIsAllocating(true)
-          : useQueryCopilot.getState().setIsAllocatingContainer(true);
-
+        if (shouldUseNotebookStates) {
+          useNotebook.getState().setIsAllocating(true);
+          provisionData = {
+            cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
+            poolId: undefined,
+          };
+        } else {
+          useQueryCopilot.getState().setIsAllocatingContainer(true);
+          provisionData = {
+            poolId: poolId,
+            databaseId: useTabs.getState().activeTab.collection.databaseId,
+            containerId: useTabs.getState().activeTab.collection.id(),
+            mode: mode,
+          };
+        }
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         if (!connectionInfo?.data?.phoenixServiceUrl) {
           throw new Error(`PhoenixServiceUrl is invalid!`);
@@ -459,19 +468,21 @@ export default class Explorer {
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         });
-        connectionStatus.status = ConnectionStatusType.Failed;
-        shouldUseNotebookStates
-          ? useNotebook.getState().resetContainerConnection(connectionStatus)
-          : useQueryCopilot.getState().resetContainerConnection();
-        if (error?.status === HttpStatusCodes.Forbidden && error.message) {
-          useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
-        } else {
-          useDialog
-            .getState()
-            .showOkModalDialog(
-              "Connection Failed",
-              "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
-            );
+        if (shouldUseNotebookStates) {
+          connectionStatus.status = ConnectionStatusType.Failed;
+          shouldUseNotebookStates
+            ? useNotebook.getState().resetContainerConnection(connectionStatus)
+            : useQueryCopilot.getState().resetContainerConnection();
+          if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+            useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+          } else {
+            useDialog
+              .getState()
+              .showOkModalDialog(
+                "Connection Failed",
+                "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
+              );
+          }
         }
         throw error;
       } finally {
@@ -485,11 +496,11 @@ export default class Explorer {
     }
   }
 
-  private async setNotebookInfo(
+  public async setNotebookInfo(
     shouldUseNotebookStates: boolean,
     connectionInfo: IResponse<IPhoenixServiceInfo>,
     connectionStatus: DataModels.ContainerConnectionInfo,
-  ) {
+  ): Promise<void> {
     const containerData = {
       forwardingId: connectionInfo.data.forwardingId,
       dbAccountName: userContext.databaseAccount.name,
@@ -510,6 +521,7 @@ export default class Explorer {
     shouldUseNotebookStates
       ? useNotebook.getState().setNotebookServerInfo(noteBookServerInfo)
       : useQueryCopilot.getState().setNotebookServerInfo(noteBookServerInfo);
+
     shouldUseNotebookStates &&
       this.notebookManager?.notebookClient
         .getMemoryUsage()
@@ -1370,6 +1382,16 @@ export default class Explorer {
     }
 
     await this.refreshSampleData();
+  }
+
+  public async configureCopilot(): Promise<void> {
+    if (userContext.apiType !== "SQL") {
+      return;
+    }
+    const copilotEnabled = await getCopilotEnabled();
+    const copilotUserDBEnabled = await isCopilotFeatureRegistered(userContext.subscriptionId);
+    useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
+    useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
   }
 
   public async refreshSampleData(): Promise<void> {

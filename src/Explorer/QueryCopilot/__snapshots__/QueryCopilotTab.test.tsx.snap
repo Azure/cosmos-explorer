@@ -18,6 +18,8 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
     }
   >
     <QueryCopilotPromptbar
+      containerId="SampleContainer"
+      databaseId="CopilotSampleDb"
       explorer={
         Explorer {
           "_isInitializingNotebooks": false,

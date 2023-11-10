@@ -1,10 +1,10 @@
 import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { QueryConstants } from "Shared/Constants";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as ko from "knockout";
 import Q from "q";
 import { format } from "react-string-format";
-import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
@@ -331,6 +331,7 @@ export default class DocumentsTab extends TabsBase {
 
     this.showPartitionKey = this._shouldShowPartitionKey();
     this._isQueryCopilotSampleContainer =
+      this.collection?.isSampleCollection &&
       this.collection?.databaseId === QueryCopilotSampleDatabaseId &&
       this.collection?.id() === QueryCopilotSampleContainerId;
   }

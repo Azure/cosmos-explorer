@@ -174,6 +174,7 @@ export class Areas {
   public static Tab: string = "Tab";
   public static ShareDialog: string = "Share Access Dialog";
   public static Notebook: string = "Notebook";
+  public static Copilot: string = "Copilot";
 }
 
 export class HttpHeaders {

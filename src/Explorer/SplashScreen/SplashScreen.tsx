@@ -19,6 +19,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { useCarousel } from "hooks/useCarousel";
 import { usePostgres } from "hooks/usePostgres";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
@@ -104,6 +105,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           (state) => state.sampleDataResourceTokenCollection,
         ),
       },
+      {
+        dispose: useQueryCopilot.subscribe(
+          () => this.setState({}),
+          (state) => state.copilotEnabled,
+        ),
+      },
     );
   }
 
@@ -114,9 +121,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   private getSplashScreenButtons = (): JSX.Element => {
     if (
-      useDatabases.getState().sampleDataResourceTokenCollection &&
-      userContext.features.enableCopilot &&
-      userContext.apiType === "SQL"
+      userContext.apiType === "SQL" &&
+      useQueryCopilot.getState().copilotEnabled &&
+      useDatabases.getState().sampleDataResourceTokenCollection
     ) {
       return (
         <Stack style={{ width: "66%", cursor: "pointer", margin: "40px auto" }} tokens={{ childrenGap: 16 }}>

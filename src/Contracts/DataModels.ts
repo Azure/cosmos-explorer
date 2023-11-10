@@ -457,8 +457,11 @@ export interface ContainerInfo {
 }
 
 export interface IProvisionData {
-  cosmosEndpoint: string;
+  cosmosEndpoint?: string;
   poolId: string;
+  databaseId?: string;
+  containerId?: string;
+  mode?: string;
 }
 
 export interface IContainerData {
@@ -600,4 +603,15 @@ export enum PhoenixErrorType {
   UnknownError = "UnknownError",
   PhoenixFlightFallback = "PhoenixFlightFallback",
   UserMissingPermissionsError = "UserMissingPermissionsError",
+}
+
+export interface CopilotEnabledConfiguration {
+  isEnabled: boolean;
+}
+
+export interface FeatureRegistration {
+  name: string;
+  properties: {
+    state: string;
+  };
 }
