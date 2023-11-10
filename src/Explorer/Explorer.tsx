@@ -1390,7 +1390,10 @@ export default class Explorer {
     }
     const copilotEnabledPromise = getCopilotEnabled();
     const copilotUserDBEnabledPromise = isCopilotFeatureRegistered(userContext.subscriptionId);
-    const [copilotEnabled, copilotUserDBEnabled] = await Promise.all([copilotEnabledPromise, copilotUserDBEnabledPromise])
+    const [copilotEnabled, copilotUserDBEnabled] = await Promise.all([
+      copilotEnabledPromise,
+      copilotUserDBEnabledPromise,
+    ]);
     useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
     useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
   }

@@ -7,7 +7,7 @@ import {
   PrimaryButton,
   Stack,
   Text,
-  TextField
+  TextField,
 } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
