@@ -10,7 +10,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
       Object {
         "main": Object {
           "borderRadius": 10,
-          "maxHeight": 530,
+          "maxHeight": 600,
           "overflow": "hidden",
         },
       }
@@ -78,7 +78,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
           <Text
             className="title bold"
           >
-            Welcome to Copilot in Azure Cosmos DB
+            Welcome to Microsoft Copilot for Azure in Cosmos DB (preview)
           </Text>
         </StackItem>
         <StackItem

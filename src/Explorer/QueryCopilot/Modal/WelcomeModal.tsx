@@ -23,7 +23,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
         isBlocking={false}
         styles={{
           main: {
-            maxHeight: 530,
+            maxHeight: 600,
             borderRadius: 10,
             overflow: "hidden",
           },
@@ -53,7 +53,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
           </Stack>
           <Stack horizontalAlign="center">
             <Stack.Item align="center" style={{ textAlign: "center" }}>
-              <Text className="title bold">Welcome to Copilot in Azure Cosmos DB</Text>
+              <Text className="title bold">Welcome to Microsoft Copilot for Azure in Cosmos DB (preview)</Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
               <Stack horizontal>

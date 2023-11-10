@@ -1,7 +1,6 @@
 .modalContentPadding {
   padding-top: 15px;
   width: 513px;
-  height: 638px;
 }
 
 .exitPadding {
@@ -39,7 +38,7 @@
 }
 
 .buttonPadding {
-  padding: 15px 0px 0px 0px;
+  padding: 15px 0px 15px 0px;
 }
 
 .tryButton {

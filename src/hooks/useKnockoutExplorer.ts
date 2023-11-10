@@ -58,19 +58,21 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           userContext.features.phoenixNotebooks = true;
           userContext.features.phoenixFeatures = true;
         }
+        let explorer: Explorer;
         if (platform === Platform.Hosted) {
-          const explorer = await configureHosted();
-          setExplorer(explorer);
+          explorer = await configureHosted();
         } else if (platform === Platform.Emulator) {
-          const explorer = configureEmulator();
-          setExplorer(explorer);
+          explorer = configureEmulator();
         } else if (platform === Platform.Portal) {
-          const explorer = await configurePortal();
-          setExplorer(explorer);
+          explorer = await configurePortal();
         } else if (platform === Platform.Fabric) {
-          const explorer = await configureFabric();
-          setExplorer(explorer);
+          explorer = await configureFabric();
         }
+        if (explorer && userContext.features.enableCopilot) {
+          await updateContextForCopilot(explorer);
+          await updateContextForSampleData(explorer);
+        }
+        setExplorer(explorer);
       }
     };
     effect();
@@ -79,9 +81,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
-      if (userContext.features.enableCopilot) {
-        updateContextForCopilot(explorer).then(() => updateContextForSampleData(explorer));
-      }
     }
   }, [explorer]);
 

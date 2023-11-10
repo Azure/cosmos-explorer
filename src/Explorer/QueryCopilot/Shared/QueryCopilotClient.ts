@@ -35,18 +35,38 @@ import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as StringUtility from "../../../Shared/StringUtility";
 
+async function fetchWithTimeout(
+  url: string,
+  headers: {
+    [x: string]: string;
+  },
+) {
+  const timeout = 10000;
+  const options = { timeout };
+
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  const response = await window.fetch(url, {
+    headers,
+    ...options,
+    signal: controller.signal,
+  });
+  clearTimeout(id);
+
+  return response;
+}
+
 export const isCopilotFeatureRegistered = async (subscriptionId: string): Promise<boolean> => {
   const api_version = "2021-07-01";
-  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/CopilotInAzureCDB?api-version=${api_version}`;
+  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/MicrosoftCopilotForAzureInCDB?api-version=${api_version}`;
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
   let response;
 
   try {
-    response = await window.fetch(url, {
-      headers,
-    });
+    response = await fetchWithTimeout(url, headers);
   } catch (error) {
     return false;
   }
@@ -67,9 +87,7 @@ export const getCopilotEnabled = async (): Promise<boolean> => {
   let response;
 
   try {
-    response = await window.fetch(url, {
-      headers,
-    });
+    response = await fetchWithTimeout(url, headers);
   } catch (error) {
     return false;
   }
