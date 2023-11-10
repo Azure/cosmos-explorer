@@ -146,6 +146,109 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div
           className="settingsSectionLabel"
         >
+          Retry Settings
+          <InfoTooltip>
+            Retry policy associated with throttled requests during CosmosDB queries.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          label="Max retry attempts"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="9"
+        />
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1000"
+          incrementButtonAriaLabel="Increase value by 1000"
+          label="Fixed retry interval (ms)"
+          labelPosition={0}
+          min={1000}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1000}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="5000"
+        />
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          label="Max wait time (s)"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="30"
+        />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
           Enable container pagination
           <InfoTooltip>
             Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
@@ -251,6 +354,109 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
   <div
     className="paneMainContent"
   >
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Retry Settings
+          <InfoTooltip>
+            Retry policy associated with throttled requests during CosmosDB queries.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          label="Max retry attempts"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="9"
+        />
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1000"
+          incrementButtonAriaLabel="Increase value by 1000"
+          label="Fixed retry interval (ms)"
+          labelPosition={0}
+          min={1000}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1000}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="5000"
+        />
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          label="Max wait time (s)"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="30"
+        />
+      </div>
+    </div>
     <div
       className="settingsSection"
     >
