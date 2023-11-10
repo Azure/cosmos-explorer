@@ -38,7 +38,7 @@ import * as StringUtility from "../../../Shared/StringUtility";
 async function fetchWithTimeout(url: string, headers: {
   [x: string]: string;
 }) {
-  const timeout = 8000;
+  const timeout = 10000;
   const options = { timeout };
   
   const controller = new AbortController();

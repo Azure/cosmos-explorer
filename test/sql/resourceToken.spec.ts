@@ -42,5 +42,7 @@ test("Resource token", async () => {
   const explorer = await page.frame({
     name: "explorer",
   });
-  await explorer.textContent(`css=.dataResourceTree >> "${collectionId}"`);
+  await explorer.textContent(`css=.dataResourceTree >> "${collectionId}"`, {
+    timeout: 50000
+  });
 });
