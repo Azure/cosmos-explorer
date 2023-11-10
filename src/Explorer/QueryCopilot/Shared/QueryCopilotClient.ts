@@ -37,7 +37,7 @@ import * as StringUtility from "../../../Shared/StringUtility";
 
 export const isCopilotFeatureRegistered = async (subscriptionId: string): Promise<boolean> => {
   const api_version = "2021-07-01";
-  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/CopilotInAzureCDB?api-version=${api_version}`;
+  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/MicrosoftCopilotForAzureInCDB?api-version=${api_version}`;
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
