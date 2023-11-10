@@ -1385,7 +1385,7 @@ export default class Explorer {
   }
 
   public async configureCopilot(): Promise<void> {
-    if (userContext.apiType !== "SQL") {
+    if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
       return;
     }
     const copilotEnabledPromise = getCopilotEnabled();
