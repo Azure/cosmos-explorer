@@ -6,7 +6,7 @@ import {
   IToggleStyles,
   Position,
   SpinButton,
-  Toggle
+  Toggle,
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
@@ -366,9 +366,7 @@ export const SettingsPane: FunctionComponent = () => {
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">
               Retry Settings
-              <InfoTooltip>
-                Retry policy associated with throttled requests during CosmosDB queries.
-              </InfoTooltip>
+              <InfoTooltip>Retry policy associated with throttled requests during CosmosDB queries.</InfoTooltip>
             </div>
             <SpinButton
               label="Max retry attempts"
@@ -385,7 +383,7 @@ export const SettingsPane: FunctionComponent = () => {
               styles={queryTimeoutSpinButtonStyles}
             />
             <SpinButton
-              label="Fixed retry interval (ms)" 
+              label="Fixed retry interval (ms)"
               labelPosition={Position.top}
               min={1000}
               step={1000}

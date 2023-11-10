@@ -16,7 +16,7 @@ export const hasSettingsDefined = (): boolean => {
   return (
     LocalStorageUtility.hasItem(StorageKey.ActualItemPerPage) &&
     LocalStorageUtility.hasItem(StorageKey.IsCrossPartitionQueryEnabled) &&
-    LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism) && 
+    LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism) &&
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts) &&
     LocalStorageUtility.hasItem(StorageKey.RetryInterval) &&
     LocalStorageUtility.hasItem(StorageKey.MaxWaitTime)
