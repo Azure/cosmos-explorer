@@ -23,7 +23,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
         isBlocking={false}
         styles={{
           main: {
-            maxHeight: 530,
+            maxHeight: 600,
             borderRadius: 10,
             overflow: "hidden",
           },
