@@ -35,19 +35,22 @@ import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as StringUtility from "../../../Shared/StringUtility";
 
-async function fetchWithTimeout(url: string, headers: {
-  [x: string]: string;
-}) {
+async function fetchWithTimeout(
+  url: string,
+  headers: {
+    [x: string]: string;
+  },
+) {
   const timeout = 10000;
   const options = { timeout };
-  
+
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
 
   const response = await window.fetch(url, {
     headers,
     ...options,
-    signal: controller.signal  
+    signal: controller.signal,
   });
   clearTimeout(id);
 

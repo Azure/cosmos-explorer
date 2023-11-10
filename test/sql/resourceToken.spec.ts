@@ -43,6 +43,6 @@ test("Resource token", async () => {
     name: "explorer",
   });
   await explorer.textContent(`css=.dataResourceTree >> "${collectionId}"`, {
-    timeout: 50000
+    timeout: 50000,
   });
 });
