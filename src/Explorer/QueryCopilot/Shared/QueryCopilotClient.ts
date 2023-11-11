@@ -215,7 +215,7 @@ export const SendQueryRequest = async ({
 
       const queryUri = userContext.features.disableCopilotPhoenixGateaway
         ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
-        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+        : createUri(serverInfo.notebookServerEndpoint, "public/generateSQLQuery");
 
       const payload = {
         containerSchema: userContext.features.enableCopilotFullSchema
@@ -298,7 +298,7 @@ export const SubmitFeedback = async ({
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
       ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
-      : createUri(serverInfo.notebookServerEndpoint, "feedback");
+      : createUri(serverInfo.notebookServerEndpoint, "public/feedback");
     await fetch(feedbackUri, {
       method: "POST",
       headers: {
