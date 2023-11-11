@@ -48,7 +48,7 @@ describe("Query Copilot Client", () => {
 
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
       ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
-      : createUri(useQueryCopilot.getState().notebookServerInfo.notebookServerEndpoint, "feedback");
+      : createUri(useQueryCopilot.getState().notebookServerInfo.notebookServerEndpoint, "public/feedback");
 
     it("should call fetch with the payload with like", async () => {
       const mockFetch = jest.fn().mockResolvedValueOnce({});

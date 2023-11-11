@@ -111,7 +111,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             Ask Copilot to generate a query by describing the query in your words.
             <br />
             <StyledLinkBase
-              href="https://aka.ms/CopilotInAzureCDBDocs"
+              href="https://aka.ms/MicrosoftCopilotForAzureInCDBHowTo"
               target="_blank"
             >
               Learn more
