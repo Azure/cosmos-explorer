@@ -70,7 +70,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               <Text>
                 Ask Copilot to generate a query by describing the query in your words.
                 <br />
-                <Link target="_blank" href="https://aka.ms/CopilotInAzureCDBDocs">
+                <Link target="_blank" href="https://aka.ms/MicrosoftCopilotForAzureInCDBHowTo">
                   Learn more
                 </Link>
               </Text>
