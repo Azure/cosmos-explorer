@@ -15,7 +15,7 @@ export const queryDocuments = (
   return client().database(databaseId).container(containerId).items.query(query, options);
 };
 
-export const getCommonQueryOptions = (options: FeedOptions) => {
+export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
   const storedItemPerPageSetting: number = LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage);
   options = options || {};
   options.populateQueryMetrics = true;
@@ -31,8 +31,7 @@ export const getCommonQueryOptions = (options: FeedOptions) => {
   return options;
 };
 
-export const getQueryRetryOptions = (retrySettings: RetryOptions) => {
-  retrySettings = retrySettings || {};
+export const getQueryRetryOptions = (retrySettings: RetryOptions): RetryOptions => {
   retrySettings.maxRetryAttemptCount = LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts);
   retrySettings.fixedRetryIntervalInMilliseconds = LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval);
   retrySettings.maxWaitTimeInSeconds = LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime);

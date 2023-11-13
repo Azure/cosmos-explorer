@@ -1,4 +1,4 @@
-import { FeedOptions } from "@azure/cosmos";
+import { FeedOptions, RetryOptions } from "@azure/cosmos";
 import {
   ContainerStatusType,
   PoolIdType,
@@ -7,7 +7,7 @@ import {
   ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
 import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
-import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
+import { getQueryRetryOptions, shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
@@ -154,9 +154,13 @@ export const OnExecuteQueryClick = async (): Promise<void> => {
     executedQuery: useQueryCopilot.getState().selectedQuery || useQueryCopilot.getState().query,
   });
   const queryToExecute = useQueryCopilot.getState().selectedQuery || useQueryCopilot.getState().query;
-  const queryIterator = querySampleDocuments(queryToExecute, {
-    enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
-  } as FeedOptions);
+  const queryIterator = querySampleDocuments(
+    queryToExecute,
+    {
+      enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
+    } as FeedOptions,
+    getQueryRetryOptions() as RetryOptions,
+  );
   useQueryCopilot.getState().setQueryIterator(queryIterator);
 
   setTimeout(async () => {

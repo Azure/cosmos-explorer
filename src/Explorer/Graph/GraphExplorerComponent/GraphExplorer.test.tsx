@@ -339,6 +339,9 @@ describe("GraphExplorer", () => {
 
     beforeAll(() => {
       StorageUtility.LocalStorageUtility.setEntryString(StorageUtility.StorageKey.IsCrossPartitionQueryEnabled, "true");
+      StorageUtility.LocalStorageUtility.setEntryNumber(StorageUtility.StorageKey.RetryAttempts, 1),
+        StorageUtility.LocalStorageUtility.setEntryNumber(StorageUtility.StorageKey.RetryInterval, 1000),
+        StorageUtility.LocalStorageUtility.setEntryNumber(StorageUtility.StorageKey.MaxWaitTime, 1);
     });
 
     describe("Load Graph button", () => {
@@ -367,10 +370,20 @@ describe("GraphExplorer", () => {
       });
 
       it("should submit g.V() as docdb query with proper parameters", () => {
-        expect(queryDocuments).toBeCalledWith("databaseId", "collectionId", DOCDB_G_DOT_V_QUERY, {
-          maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
-          enableCrossPartitionQuery: true,
-        });
+        expect(queryDocuments).toBeCalledWith(
+          "databaseId",
+          "collectionId",
+          DOCDB_G_DOT_V_QUERY,
+          {
+            maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
+            enableCrossPartitionQuery: true,
+          },
+          {
+            maxRetryAttemptCount: 1,
+            maxWaitTimeInSeconds: 1,
+            fixedRetryIntervalInMilliseconds: 1000,
+          },
+        );
       });
 
       it("should call backend thrice (user query, fetch outE, then fetch inE)", () => {
@@ -404,10 +417,20 @@ describe("GraphExplorer", () => {
       });
 
       it("should submit g.V() as docdb query with proper parameters", () => {
-        expect(queryDocuments).toBeCalledWith("databaseId", "collectionId", DOCDB_G_DOT_V_QUERY, {
-          maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
-          enableCrossPartitionQuery: true,
-        });
+        expect(queryDocuments).toBeCalledWith(
+          "databaseId",
+          "collectionId",
+          DOCDB_G_DOT_V_QUERY,
+          {
+            maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
+            enableCrossPartitionQuery: true,
+          },
+          {
+            maxRetryAttemptCount: 1,
+            maxWaitTimeInSeconds: 1,
+            fixedRetryIntervalInMilliseconds: 1000,
+          },
+        );
       });
 
       it("should call backend thrice (user query, fetch outE, then fetch inE)", () => {

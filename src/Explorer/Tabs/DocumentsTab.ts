@@ -1,10 +1,17 @@
-import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import {
+  ItemDefinition,
+  PartitionKey,
+  PartitionKeyDefinition,
+  QueryIterator,
+  Resource,
+  RetryOptions,
+} from "@azure/cosmos";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { QueryConstants } from "Shared/Constants";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as ko from "knockout";
 import Q from "q";
 import { format } from "react-string-format";
-import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
 import UploadIcon from "../../../images/Upload_16x16.svg";
@@ -725,14 +732,14 @@ export default class DocumentsTab extends TabsBase {
     const query: string = this.buildQuery(filter);
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
-
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
     options.abortSignal = this.queryAbortController.signal;
+    const retryOptions: RetryOptions = HeadersUtility.getQueryRetryOptions();
     return this._isQueryCopilotSampleContainer
-      ? querySampleDocuments(query, options)
-      : queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
+      ? querySampleDocuments(query, options, retryOptions)
+      : queryDocuments(this.collection.databaseId, this.collection.id(), query, options, retryOptions);
   }
 
   public async selectDocument(documentId: DocumentId): Promise<void> {

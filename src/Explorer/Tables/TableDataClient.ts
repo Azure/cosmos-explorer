@@ -3,12 +3,12 @@ import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { handleError } from "../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../Common/HeadersUtility";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
-import { handleError } from "../../Common/ErrorHandlingUtils";
-import * as HeadersUtility from "../../Common/HeadersUtility";
 import { configContext } from "../../ConfigContext";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
@@ -104,7 +104,8 @@ export class TablesAPIDataClient extends TableDataClient {
       const options = {
         enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
       } as FeedOptions;
-      const iterator = queryDocuments(collection.databaseId, collection.id(), query, options);
+      const retryOptions = HeadersUtility.getQueryRetryOptions();
+      const iterator = queryDocuments(collection.databaseId, collection.id(), query, options, retryOptions);
       const response = await iterator.fetchNext();
       const documents = response?.resources;
       const entities = TableEntityProcessor.convertDocumentsToEntities(documents);

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { getQueryRetryOptions } from "Common/HeadersUtility";
 import * as Q from "q";
 import * as React from "react";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
@@ -734,6 +735,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
               StorageUtility.StorageKey.IsCrossPartitionQueryEnabled,
             ) === "true",
         } as FeedOptions,
+        getQueryRetryOptions(),
       );
       const response = await iterator.fetchNext();
 
@@ -1786,6 +1788,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           enableCrossPartitionQuery:
             LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true",
         } as FeedOptions,
+        getQueryRetryOptions(),
       );
       this.currentDocDBQueryInfo = {
         iterator: iterator,
