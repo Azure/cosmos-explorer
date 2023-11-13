@@ -3,15 +3,15 @@ import * as Constants from "../../Common/Constants";
 import * as ThemeUtility from "../../Common/ThemeUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { useNotificationConsole } from "../../hooks/useNotificationConsole";
-import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { useNotificationConsole } from "../../hooks/useNotificationConsole";
+import { useTabs } from "../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
-import { useSelectedNode } from "../useSelectedNode";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
+import { useSelectedNode } from "../useSelectedNode";
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
   private static id = 0;

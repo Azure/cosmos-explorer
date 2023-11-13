@@ -156,6 +156,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   }
 
   public getDatabase(): ViewModels.Database {
-    return useDatabases.getState().findDatabaseWithId(this.databaseId);
+    return useDatabases.getState().findDatabaseWithId(this.databaseId, this.isSampleCollection);
   }
 }

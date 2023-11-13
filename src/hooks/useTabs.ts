@@ -5,7 +5,7 @@ import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
 import { Platform, configContext } from "./../ConfigContext";
 
-interface TabsState {
+export interface TabsState {
   openedTabs: TabsBase[];
   openedReactTabs: ReactTabKind[];
   activeTab: TabsBase | undefined;

@@ -32,3 +32,8 @@ export interface FeedbackParams {
 export interface QueryCopilotProps {
   explorer: Explorer;
 }
+
+export interface CopilotSchemaAllocationInfo {
+  databaseId: string;
+  containerId: string;
+}

@@ -1,27 +1,173 @@
 import { FeedOptions, RetryOptions } from "@azure/cosmos";
 import {
+  Areas,
+  ConnectionStatusType,
   ContainerStatusType,
+  HttpStatusCodes,
   PoolIdType,
   QueryCopilotSampleContainerId,
   QueryCopilotSampleContainerSchema,
   ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
-import { getErrorMessage, handleError } from "Common/ErrorHandlingUtils";
+import { getErrorMessage, getErrorStack, handleError } from "Common/ErrorHandlingUtils";
 import { getQueryRetryOptions, shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
-import { QueryResults } from "Contracts/ViewModels";
+import { configContext } from "ConfigContext";
+import {
+  ContainerConnectionInfo,
+  CopilotEnabledConfiguration,
+  FeatureRegistration,
+  IProvisionData,
+} from "Contracts/DataModels";
+import { AuthorizationTokenHeaderMetadata, QueryResults } from "Contracts/ViewModels";
+import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
+import { getAuthorizationHeader } from "Utils/AuthorizationUtils";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as StringUtility from "../../../Shared/StringUtility";
+
+export const isCopilotFeatureRegistered = async (subscriptionId: string): Promise<boolean> => {
+  const api_version = "2021-07-01";
+  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/CopilotInAzureCDB?api-version=${api_version}`;
+  const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  let response;
+
+  try {
+    response = await window.fetch(url, {
+      headers,
+    });
+  } catch (error) {
+    return false;
+  }
+
+  if (!response?.ok) {
+    return false;
+  }
+
+  const featureRegistration = (await response?.json()) as FeatureRegistration;
+  return featureRegistration?.properties?.state === "Registered";
+};
+
+export const getCopilotEnabled = async (): Promise<boolean> => {
+  const url = `${configContext.BACKEND_ENDPOINT}/api/portalsettings/querycopilot`;
+  const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  let response;
+
+  try {
+    response = await window.fetch(url, {
+      headers,
+    });
+  } catch (error) {
+    return false;
+  }
+
+  if (!response?.ok) {
+    throw new Error(await response?.text());
+  }
+
+  const copilotPortalConfiguration = (await response?.json()) as CopilotEnabledConfiguration;
+  return copilotPortalConfiguration?.isEnabled;
+};
+
+export const allocatePhoenixContainer = async ({
+  explorer,
+  databaseId,
+  containerId,
+  mode,
+}: {
+  explorer: Explorer;
+  databaseId: string;
+  containerId: string;
+  mode: string;
+}): Promise<void> => {
+  try {
+    if (
+      useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
+      !userContext.features.disableCopilotPhoenixGateaway
+    ) {
+      await explorer.allocateContainer(PoolIdType.QueryCopilot, mode);
+    } else {
+      const currentAllocatedSchemaInfo = useQueryCopilot.getState().schemaAllocationInfo;
+      if (
+        currentAllocatedSchemaInfo.databaseId !== databaseId ||
+        currentAllocatedSchemaInfo.containerId !== containerId
+      ) {
+        await resetPhoenixContainerSchema({ explorer, databaseId, containerId, mode });
+      }
+    }
+    useQueryCopilot.getState().setSchemaAllocationInfo({
+      databaseId,
+      containerId,
+    });
+  } catch (error) {
+    traceFailure(Action.PhoenixConnection, {
+      dataExplorerArea: Areas.Copilot,
+      status: error.status,
+      error: getErrorMessage(error),
+      errorStack: getErrorStack(error),
+    });
+    useQueryCopilot.getState().resetContainerConnection();
+    if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+      useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+    } else {
+      useDialog
+        .getState()
+        .showOkModalDialog(
+          "Connection Failed",
+          "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
+        );
+    }
+  } finally {
+    useTabs.getState().setIsTabExecuting(false);
+  }
+};
+
+export const resetPhoenixContainerSchema = async ({
+  explorer,
+  databaseId,
+  containerId,
+  mode,
+}: {
+  explorer: Explorer;
+  databaseId: string;
+  containerId: string;
+  mode: string;
+}): Promise<void> => {
+  try {
+    const provisionData: IProvisionData = {
+      poolId: PoolIdType.QueryCopilot,
+      databaseId: databaseId,
+      containerId: containerId,
+      mode: mode,
+    };
+    const connectionInfo = await explorer.phoenixClient.allocateContainer(provisionData);
+    const connectionStatus: ContainerConnectionInfo = {
+      status: ConnectionStatusType.Connecting,
+    };
+    await explorer.setNotebookInfo(false, connectionInfo, connectionStatus);
+  } catch (error) {
+    traceFailure(Action.PhoenixConnection, {
+      dataExplorerArea: Areas.Copilot,
+      status: error.status,
+      error: getErrorMessage(error),
+      errorStack: getErrorStack(error),
+    });
+    throw error;
+  }
+};
 
 export const SendQueryRequest = async ({
   userPrompt,
@@ -106,16 +252,19 @@ export const SendQueryRequest = async ({
 export const SubmitFeedback = async ({
   params,
   explorer,
+  databaseId,
+  containerId,
+  mode,
 }: {
   params: FeedbackParams;
   explorer: Explorer;
+  databaseId: string;
+  containerId: string;
+  mode: string;
 }): Promise<void> => {
   try {
     const { likeQuery, generatedQuery, userPrompt, description, contact } = params;
     const payload = {
-      containerSchema: userContext.features.enableCopilotFullSchema
-        ? QueryCopilotSampleContainerSchema
-        : ShortenedQueryCopilotSampleContainerSchema,
       like: likeQuery ? "like" : "dislike",
       generatedSql: generatedQuery,
       userPrompt,
@@ -126,7 +275,7 @@ export const SubmitFeedback = async ({
       useQueryCopilot.getState().containerStatus.status !== ContainerStatusType.Active &&
       !userContext.features.disableCopilotPhoenixGateaway
     ) {
-      await explorer.allocateContainer(PoolIdType.QueryCopilot);
+      await allocatePhoenixContainer({ explorer, databaseId, containerId, mode });
     }
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
@@ -137,6 +286,7 @@ export const SubmitFeedback = async ({
       headers: {
         "content-type": "application/json",
         "x-ms-correlationid": useQueryCopilot.getState().correlationId,
+        Authorization: `token ${useQueryCopilot.getState().notebookServerInfo.authToken}`,
       },
       body: JSON.stringify(payload),
     });
@@ -145,7 +295,7 @@ export const SubmitFeedback = async ({
   }
 };
 
-export const OnExecuteQueryClick = async (): Promise<void> => {
+export const OnExecuteQueryClick = async (useQueryCopilot: Partial<QueryCopilotState>): Promise<void> => {
   traceStart(Action.ExecuteQueryGeneratedFromQueryCopilot, {
     correlationId: useQueryCopilot.getState().correlationId,
     userPrompt: useQueryCopilot.getState().userPrompt,
@@ -164,13 +314,14 @@ export const OnExecuteQueryClick = async (): Promise<void> => {
   useQueryCopilot.getState().setQueryIterator(queryIterator);
 
   setTimeout(async () => {
-    await QueryDocumentsPerPage(0, queryIterator);
+    await QueryDocumentsPerPage(0, queryIterator, useQueryCopilot);
   }, 100);
 };
 
 export const QueryDocumentsPerPage = async (
   firstItemIndex: number,
   queryIterator: MinimalQueryIterator,
+  useQueryCopilot: Partial<QueryCopilotState>,
 ): Promise<void> => {
   try {
     useQueryCopilot.getState().setIsExecuting(true);

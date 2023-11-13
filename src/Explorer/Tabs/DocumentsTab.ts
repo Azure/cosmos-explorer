@@ -338,6 +338,7 @@ export default class DocumentsTab extends TabsBase {
 
     this.showPartitionKey = this._shouldShowPartitionKey();
     this._isQueryCopilotSampleContainer =
+      this.collection?.isSampleCollection &&
       this.collection?.databaseId === QueryCopilotSampleDatabaseId &&
       this.collection?.id() === QueryCopilotSampleContainerId;
   }

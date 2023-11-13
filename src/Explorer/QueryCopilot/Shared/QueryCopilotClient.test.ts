@@ -1,4 +1,3 @@
-import { QueryCopilotSampleContainerSchema, ShortenedQueryCopilotSampleContainerSchema } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import Explorer from "Explorer/Explorer";
@@ -37,9 +36,6 @@ describe("Query Copilot Client", () => {
       userPrompt: "UserPrompt",
       description: "Description",
       contact: "Contact",
-      containerSchema: userContext.features.enableCopilotFullSchema
-        ? QueryCopilotSampleContainerSchema
-        : ShortenedQueryCopilotSampleContainerSchema,
     };
 
     const mockStore = useQueryCopilot.getState();
@@ -59,6 +55,9 @@ describe("Query Copilot Client", () => {
 
       globalThis.fetch = mockFetch;
       await SubmitFeedback({
+        databaseId: "test",
+        containerId: "test",
+        mode: "User",
         params: {
           likeQuery: true,
           generatedQuery: "GeneratedQuery",
@@ -91,6 +90,9 @@ describe("Query Copilot Client", () => {
       globalThis.fetch = mockFetch;
 
       await SubmitFeedback({
+        databaseId: "test",
+        containerId: "test",
+        mode: "User",
         params: {
           likeQuery: false,
           generatedQuery: "GeneratedQuery",
@@ -108,6 +110,7 @@ describe("Query Copilot Client", () => {
           headers: {
             "content-type": "application/json",
             "x-ms-correlationid": "mocked-correlation-id",
+            Authorization: "token mocked-token",
           },
         }),
       );
@@ -120,6 +123,9 @@ describe("Query Copilot Client", () => {
       globalThis.fetch = jest.fn().mockRejectedValueOnce(new Error("Mock error"));
 
       await SubmitFeedback({
+        databaseId: "test",
+        containerId: "test",
+        mode: "User",
         params: {
           likeQuery: true,
           generatedQuery: "GeneratedQuery",
