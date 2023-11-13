@@ -365,7 +365,7 @@ export const SettingsPane: FunctionComponent = () => {
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">
-              Retry Settings
+              Query Retry Settings
               <InfoTooltip>Retry policy associated with throttled requests during CosmosDB queries.</InfoTooltip>
             </div>
             <SpinButton
@@ -373,7 +373,7 @@ export const SettingsPane: FunctionComponent = () => {
               labelPosition={Position.top}
               min={1}
               step={1}
-              value={"" + retryAttempts}
+              defaultValue={(retryAttempts || 9).toString()}
               onChange={handleOnQueryRetryAttemptsSpinButtonChange}
               incrementButtonAriaLabel="Increase value by 1"
               decrementButtonAriaLabel="Decrease value by 1"
@@ -387,13 +387,13 @@ export const SettingsPane: FunctionComponent = () => {
               labelPosition={Position.top}
               min={1000}
               step={1000}
-              value={"" + retryInterval}
+              defaultValue={(retryInterval || 5000).toString()}
               onChange={handleOnRetryIntervalSpinButtonChange}
               incrementButtonAriaLabel="Increase value by 1000"
               decrementButtonAriaLabel="Decrease value by 1000"
-              onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryAttempts)}
-              onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryAttempts)}
-              onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryAttempts)}
+              onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
+              onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
+              onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
               styles={queryTimeoutSpinButtonStyles}
             />
             <SpinButton
@@ -401,13 +401,13 @@ export const SettingsPane: FunctionComponent = () => {
               labelPosition={Position.top}
               min={1}
               step={1}
-              value={"" + maxWaitTime}
+              defaultValue={(maxWaitTime || 30).toString()}
               onChange={handleOnMaxWaitTimeSpinButtonChange}
               incrementButtonAriaLabel="Increase value by 1"
               decrementButtonAriaLabel="Decrease value by 1"
-              onIncrement={(newValue) => setMaxWaitTime(parseInt(newValue) + 1 || retryAttempts)}
-              onDecrement={(newValue) => setMaxWaitTime(parseInt(newValue) - 1 || retryAttempts)}
-              onValidate={(newValue) => setMaxWaitTime(parseInt(newValue) || retryAttempts)}
+              onIncrement={(newValue) => setMaxWaitTime(parseInt(newValue) + 1 || maxWaitTime)}
+              onDecrement={(newValue) => setMaxWaitTime(parseInt(newValue) - 1 || maxWaitTime)}
+              onValidate={(newValue) => setMaxWaitTime(parseInt(newValue) || maxWaitTime)}
               styles={queryTimeoutSpinButtonStyles}
             />
           </div>
