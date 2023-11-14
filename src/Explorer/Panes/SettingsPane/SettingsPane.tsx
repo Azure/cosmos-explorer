@@ -368,12 +368,17 @@ export const SettingsPane: FunctionComponent = () => {
               Query Retry Settings
               <InfoTooltip>Retry policy associated with throttled requests during CosmosDB queries.</InfoTooltip>
             </div>
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Max retry attempts
+              </legend>
+              <InfoTooltip>Max number of retries to be performed for a request. Default value 9.</InfoTooltip>
+            </div>
             <SpinButton
-              label="Max retry attempts"
               labelPosition={Position.top}
               min={1}
               step={1}
-              defaultValue={(retryAttempts || 9).toString()}
+              value={"" + retryAttempts}
               onChange={handleOnQueryRetryAttemptsSpinButtonChange}
               incrementButtonAriaLabel="Increase value by 1"
               decrementButtonAriaLabel="Decrease value by 1"
@@ -382,12 +387,20 @@ export const SettingsPane: FunctionComponent = () => {
               onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
               styles={queryTimeoutSpinButtonStyles}
             />
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Fixed retry interval (ms)
+              </legend>
+              <InfoTooltip>
+                Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part
+                of the response.
+              </InfoTooltip>
+            </div>
             <SpinButton
-              label="Fixed retry interval (ms)"
               labelPosition={Position.top}
               min={1000}
               step={1000}
-              defaultValue={(retryInterval || 5000).toString()}
+              value={"" + retryInterval}
               onChange={handleOnRetryIntervalSpinButtonChange}
               incrementButtonAriaLabel="Increase value by 1000"
               decrementButtonAriaLabel="Decrease value by 1000"
@@ -396,12 +409,20 @@ export const SettingsPane: FunctionComponent = () => {
               onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
               styles={queryTimeoutSpinButtonStyles}
             />
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Max wait time (s)
+              </legend>
+              <InfoTooltip>
+                Max wait time in seconds to wait for a request while the retries are happening. Default value 30
+                seconds.
+              </InfoTooltip>
+            </div>
             <SpinButton
-              label="Max wait time (s)"
               labelPosition={Position.top}
               min={1}
               step={1}
-              defaultValue={(maxWaitTime || 30).toString()}
+              value={"" + maxWaitTime}
               onChange={handleOnMaxWaitTimeSpinButtonChange}
               incrementButtonAriaLabel="Increase value by 1"
               decrementButtonAriaLabel="Decrease value by 1"

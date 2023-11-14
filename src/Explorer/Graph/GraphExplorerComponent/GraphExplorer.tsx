@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { getQueryRetryOptions } from "Common/HeadersUtility";
+import { FeedOptions, ItemDefinition, QueryIterator, Resource, RetryOptions } from "@azure/cosmos";
 import * as Q from "q";
 import * as React from "react";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
@@ -735,7 +734,11 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
               StorageUtility.StorageKey.IsCrossPartitionQueryEnabled,
             ) === "true",
         } as FeedOptions,
-        getQueryRetryOptions(),
+        {
+          maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+          fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+          maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
+        } as RetryOptions,
       );
       const response = await iterator.fetchNext();
 
@@ -1788,7 +1791,11 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           enableCrossPartitionQuery:
             LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true",
         } as FeedOptions,
-        getQueryRetryOptions(),
+        {
+          maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+          fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+          maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
+        } as RetryOptions,
       );
       this.currentDocDBQueryInfo = {
         iterator: iterator,

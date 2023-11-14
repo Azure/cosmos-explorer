@@ -20,7 +20,7 @@ Object {
 }
 `;
 
-exports[`getQueryRetryOptions builds the correct default retry options objects 1`] = `
+exports[`getQueryRetryOptions builds the correct default options objects 1`] = `
 Object {
   "fixedRetryIntervalInMilliseconds": 0,
   "maxRetryAttemptCount": 0,

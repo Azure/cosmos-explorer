@@ -13,7 +13,7 @@ describe("getCommonQueryOptions", () => {
 });
 
 describe("getQueryRetryOptions", () => {
-  it("builds the correct default retry options objects", () => {
+  it("builds the correct default options objects", () => {
     expect(getQueryRetryOptions({})).toMatchSnapshot();
   });
   it("reads from localStorage", () => {

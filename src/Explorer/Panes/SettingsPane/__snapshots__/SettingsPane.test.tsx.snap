@@ -146,15 +146,25 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div
           className="settingsSectionLabel"
         >
-          Retry Settings
+          Query Retry Settings
           <InfoTooltip>
             Retry policy associated with throttled requests during CosmosDB queries.
+          </InfoTooltip>
+        </div>
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max retry attempts
+          </legend>
+          <InfoTooltip>
+            Max number of retries to be performed for a request. Default value 9.
           </InfoTooltip>
         </div>
         <StyledSpinButton
           decrementButtonAriaLabel="Decrease value by 1"
           incrementButtonAriaLabel="Increase value by 1"
-          label="Max retry attempts"
           labelPosition={0}
           min={1}
           onChange={[Function]}
@@ -180,10 +190,20 @@ exports[`Settings Pane should render Default properly 1`] = `
           }
           value="9"
         />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Fixed retry interval (ms)
+          </legend>
+          <InfoTooltip>
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response.
+          </InfoTooltip>
+        </div>
         <StyledSpinButton
           decrementButtonAriaLabel="Decrease value by 1000"
           incrementButtonAriaLabel="Increase value by 1000"
-          label="Fixed retry interval (ms)"
           labelPosition={0}
           min={1000}
           onChange={[Function]}
@@ -209,10 +229,20 @@ exports[`Settings Pane should render Default properly 1`] = `
           }
           value="5000"
         />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max wait time (s)
+          </legend>
+          <InfoTooltip>
+            Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
+          </InfoTooltip>
+        </div>
         <StyledSpinButton
           decrementButtonAriaLabel="Decrease value by 1"
           incrementButtonAriaLabel="Increase value by 1"
-          label="Max wait time (s)"
           labelPosition={0}
           min={1}
           onChange={[Function]}
@@ -363,15 +393,25 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         <div
           className="settingsSectionLabel"
         >
-          Retry Settings
+          Query Retry Settings
           <InfoTooltip>
             Retry policy associated with throttled requests during CosmosDB queries.
+          </InfoTooltip>
+        </div>
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max retry attempts
+          </legend>
+          <InfoTooltip>
+            Max number of retries to be performed for a request. Default value 9.
           </InfoTooltip>
         </div>
         <StyledSpinButton
           decrementButtonAriaLabel="Decrease value by 1"
           incrementButtonAriaLabel="Increase value by 1"
-          label="Max retry attempts"
           labelPosition={0}
           min={1}
           onChange={[Function]}
@@ -397,10 +437,20 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           }
           value="9"
         />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Fixed retry interval (ms)
+          </legend>
+          <InfoTooltip>
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response.
+          </InfoTooltip>
+        </div>
         <StyledSpinButton
           decrementButtonAriaLabel="Decrease value by 1000"
           incrementButtonAriaLabel="Increase value by 1000"
-          label="Fixed retry interval (ms)"
           labelPosition={0}
           min={1000}
           onChange={[Function]}
@@ -426,10 +476,20 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           }
           value="5000"
         />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max wait time (s)
+          </legend>
+          <InfoTooltip>
+            Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
+          </InfoTooltip>
+        </div>
         <StyledSpinButton
           decrementButtonAriaLabel="Decrease value by 1"
           incrementButtonAriaLabel="Increase value by 1"
-          label="Max wait time (s)"
           labelPosition={0}
           min={1}
           onChange={[Function]}

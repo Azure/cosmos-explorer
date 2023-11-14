@@ -12,7 +12,7 @@ export const queryDocuments = (
 ): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
   retrySettings = getQueryRetryOptions(retrySettings);
-  return client().database(databaseId).container(containerId).items.query(query, options);
+  return client().database(databaseId).container(containerId).items.query(query, retrySettings, options);
 };
 
 export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
@@ -32,6 +32,7 @@ export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
 };
 
 export const getQueryRetryOptions = (retrySettings: RetryOptions): RetryOptions => {
+  retrySettings = retrySettings || {};
   retrySettings.maxRetryAttemptCount = LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts);
   retrySettings.fixedRetryIntervalInMilliseconds = LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval);
   retrySettings.maxWaitTimeInSeconds = LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime);

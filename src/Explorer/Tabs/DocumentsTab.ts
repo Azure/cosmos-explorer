@@ -737,7 +737,11 @@ export default class DocumentsTab extends TabsBase {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
     options.abortSignal = this.queryAbortController.signal;
-    const retryOptions: RetryOptions = HeadersUtility.getQueryRetryOptions();
+    const retryOptions: RetryOptions = {
+      maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+      fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+      maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
+    } as RetryOptions;
     return this._isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options, retryOptions)
       : queryDocuments(this.collection.databaseId, this.collection.id(), query, options, retryOptions);

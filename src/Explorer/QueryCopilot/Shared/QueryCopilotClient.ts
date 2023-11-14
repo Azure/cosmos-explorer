@@ -10,7 +10,7 @@ import {
   ShortenedQueryCopilotSampleContainerSchema,
 } from "Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "Common/ErrorHandlingUtils";
-import { getQueryRetryOptions, shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
+import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
@@ -26,6 +26,7 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
 import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
@@ -309,7 +310,11 @@ export const OnExecuteQueryClick = async (useQueryCopilot: Partial<QueryCopilotS
     {
       enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
     } as FeedOptions,
-    getQueryRetryOptions() as RetryOptions,
+    {
+      maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+      fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+      maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
+    } as RetryOptions,
   );
   useQueryCopilot.getState().setQueryIterator(queryIterator);
 
