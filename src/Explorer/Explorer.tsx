@@ -272,7 +272,7 @@ export default class Explorer {
     if (!Platform.Portal) {
       return;
     }
-    
+
     const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
     const THREE_DAYS_IN_MS = 259200000;
@@ -281,7 +281,7 @@ export default class Explorer {
       NINETY_DAYS_IN_MS,
     );
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
-    
+
     if (lastSubmitted !== null) {
       let lastSubmittedDate: number = parseInt(lastSubmitted);
       if (isNaN(lastSubmittedDate)) {
@@ -297,15 +297,16 @@ export default class Explorer {
 
     // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
     if (userContext.isTryCosmosDBSubscription) {
-      if (
-        isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS) 
-    ) {
+      if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
         this.sendNPSMessage();
       }
     } else {
       // An existing account is older than 3 days but less than 90 days old. For existing account show to 100% of users in Data Explorer.
-       if (!isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) && isAccountNewerThanNinetyDays) {
-          this.sendNPSMessage();
+      if (
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) &&
+        isAccountNewerThanNinetyDays
+      ) {
+        this.sendNPSMessage();
       } else {
         // An existing account is greater than 90 days. For existing account show to random 33% of users in Data Explorer.
         if (this.getRandomInt(100) < 33) {
