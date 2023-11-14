@@ -420,8 +420,9 @@ async function configurePortal(): Promise<Explorer> {
           updateContextsFromPortalMessage(inputs);
           explorer = new Explorer();
           resolve(explorer);
-          if (userContext.apiType === "Postgres") {
-            explorer.openNPSSurveyDialog();
+          
+          if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+            setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
