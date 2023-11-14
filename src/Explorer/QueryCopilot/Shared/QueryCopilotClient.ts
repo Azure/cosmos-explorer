@@ -93,7 +93,7 @@ export const getCopilotEnabled = async (): Promise<boolean> => {
   }
 
   if (!response?.ok) {
-    throw new Error(await response?.text());
+    return false;
   }
 
   const copilotPortalConfiguration = (await response?.json()) as CopilotEnabledConfiguration;
