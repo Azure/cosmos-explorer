@@ -275,6 +275,7 @@ export default class Explorer {
 
     const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
+    const THREE_DAYS_IN_MS = 259200000;
     const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
       userContext.databaseAccount?.systemData?.createdAt || "",
       NINETY_DAYS_IN_MS,
@@ -294,30 +295,30 @@ export default class Explorer {
       }
     }
 
-    // Try Cosmos DB subscription - survey shown to random 25% of users at day 1 in Data Explorer.
+    // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
     if (userContext.isTryCosmosDBSubscription) {
-      if (
-        isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS) &&
-        this.getRandomInt(100) < 25
-      ) {
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-        localStorage.setItem("lastSubmitted", Date.now().toString());
+      if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
+        this.sendNPSMessage();
       }
     } else {
-      // An existing account is lesser than 90 days old. For existing account show to random 10 % of users in Data Explorer.
-      if (isAccountNewerThanNinetyDays) {
-        if (this.getRandomInt(100) < 10) {
-          sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-          localStorage.setItem("lastSubmitted", Date.now().toString());
-        }
+      // An existing account is older than 3 days but less than 90 days old. For existing account show to 100% of users in Data Explorer.
+      if (
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) &&
+        isAccountNewerThanNinetyDays
+      ) {
+        this.sendNPSMessage();
       } else {
-        // An existing account is greater than 90 days. For existing account show to random 25 % of users in Data Explorer.
-        if (this.getRandomInt(100) < 25) {
-          sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-          localStorage.setItem("lastSubmitted", Date.now().toString());
+        // An existing account is greater than 90 days. For existing account show to random 33% of users in Data Explorer.
+        if (this.getRandomInt(100) < 33) {
+          this.sendNPSMessage();
         }
       }
     }
+  }
+
+  private sendNPSMessage() {
+    sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+    localStorage.setItem("lastSubmitted", Date.now().toString());
   }
 
   public async refreshDatabaseForResourceToken(): Promise<void> {
