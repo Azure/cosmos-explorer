@@ -104,7 +104,7 @@ async function configureFabric(): Promise<Explorer> {
         }
 
         switch (data.type) {
-          case "initialize": {
+          case "initialize_fabric2": {
             explorer = createExplorerFabric(data.message);
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
@@ -116,7 +116,7 @@ async function configureFabric(): Promise<Explorer> {
             explorer.onNewCollectionClicked();
             break;
           case "authorizationToken":
-          case "allResourceTokens": {
+          case "allResourceTokens_fabric2": {
             handleCachedDataMessage(data);
             break;
           }
@@ -128,7 +128,7 @@ async function configureFabric(): Promise<Explorer> {
       false,
     );
 
-    sendReadyMessage();
+    sendReadyMessage("ready_fabric2");
   });
 }
 

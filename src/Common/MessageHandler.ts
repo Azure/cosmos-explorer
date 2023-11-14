@@ -63,11 +63,15 @@ export function sendMessage(data: any): void {
   });
 }
 
-export function sendReadyMessage(): void {
+/**
+ *
+ * @param data Overwrite the data property of the message
+ */
+export function sendReadyMessage(data: "ready" | "ready_fabric2" = "ready"): void {
   _sendMessage({
     signature: "pcIframe",
     kind: "ready",
-    data: "ready",
+    data,
   });
 }
 
