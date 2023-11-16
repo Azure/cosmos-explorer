@@ -148,9 +148,6 @@ export function client(): Cosmos.CosmosClient {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
     tokenProvider,
-    connectionPolicy: {
-      enableEndpointDiscovery: true,
-    },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
   };
