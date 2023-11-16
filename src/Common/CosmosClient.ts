@@ -149,7 +149,7 @@ export function client(): Cosmos.CosmosClient {
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
-      enableEndpointDiscovery: false,
+      enableEndpointDiscovery: true,
     },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
