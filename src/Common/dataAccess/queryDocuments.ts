@@ -32,7 +32,6 @@ export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
 };
 
 export const getQueryRetryOptions = (retrySettings: RetryOptions): RetryOptions => {
-  retrySettings = retrySettings || {};
   retrySettings.maxRetryAttemptCount = LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts);
   retrySettings.fixedRetryIntervalInMilliseconds = LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval);
   retrySettings.maxWaitTimeInSeconds = LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime);

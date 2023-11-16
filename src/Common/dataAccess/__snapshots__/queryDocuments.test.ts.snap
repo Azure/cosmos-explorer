@@ -30,7 +30,7 @@ Object {
 
 exports[`getQueryRetryOptions reads from localStorage 1`] = `
 Object {
-  "fixedRetryIntervalInMilliseconds": 5000,
+  "fixedRetryIntervalInMilliseconds": 1000,
   "maxRetryAttemptCount": 1,
   "maxWaitTimeInSeconds": 5,
 }
