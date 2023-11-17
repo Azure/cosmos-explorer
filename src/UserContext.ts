@@ -1,4 +1,4 @@
-import { FabricDatabaseConnectionInfo } from "Contracts/FabricContract";
+import { FabricDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
 import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -13,12 +13,12 @@ import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constan
 interface ThroughputDefaults {
   fixed: number;
   unlimited:
-    | number
-    | {
-        collectionThreshold: number;
-        lessThanOrEqualToThreshold: number;
-        greatThanThreshold: number;
-      };
+  | number
+  | {
+    collectionThreshold: number;
+    lessThanOrEqualToThreshold: number;
+    greatThanThreshold: number;
+  };
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;
@@ -176,3 +176,4 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { updateUserContext, userContext };
+
