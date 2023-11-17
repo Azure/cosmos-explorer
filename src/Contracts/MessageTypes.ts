@@ -39,6 +39,7 @@ export enum MessageTypes {
   OpenVCoreMongoConnectionStringsBlade,
 
   // Data Explorer -> Fabric communication
+  Ready,
   GetAuthorizationToken,
   GetAllResourceTokens,
 }

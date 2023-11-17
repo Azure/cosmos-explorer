@@ -1,5 +1,6 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricMessage } from "Contracts/FabricContract";
+import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
+import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
@@ -85,6 +86,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 }
 
 async function configureFabric(): Promise<Explorer> {
+  // These are the versions of Fabric that Data Explorer supports.
+  const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
+
   let explorer: Explorer;
   return new Promise<Explorer>((resolve) => {
     window.addEventListener(
@@ -98,13 +102,20 @@ async function configureFabric(): Promise<Explorer> {
           return;
         }
 
-        const data: FabricMessage = event.data?.data;
+        const data: FabricMessageV2 = event.data?.data;
         if (!data) {
           return;
         }
 
         switch (data.type) {
-          case "initialize_fabric2": {
+          case "initialize": {
+            const fabricVersion = data.version;
+            if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
+              // TODO Surface error to user
+              console.error(`Unsupported Fabric version: ${fabricVersion}`);
+              return;
+            }
+
             explorer = createExplorerFabric(data.message);
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
@@ -116,7 +127,7 @@ async function configureFabric(): Promise<Explorer> {
             explorer.onNewCollectionClicked();
             break;
           case "authorizationToken":
-          case "allResourceTokens_fabric2": {
+          case "allResourceTokens_v2": {
             handleCachedDataMessage(data);
             break;
           }
@@ -128,7 +139,11 @@ async function configureFabric(): Promise<Explorer> {
       false,
     );
 
-    sendReadyMessage("ready_fabric2");
+    sendMessage({
+      type: MessageTypes.Ready,
+      id: "ready",
+      params: [DATA_EXPLORER_RPC_VERSION],
+    });
   });
 }
 

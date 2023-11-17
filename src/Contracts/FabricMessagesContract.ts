@@ -1,19 +1,17 @@
-import { AuthorizationToken, MessageTypes } from "./MessageTypes";
+import { AuthorizationToken } from "./MessageTypes";
+
+// This is the version of these messages
+export const FABRIC_RPC_VERSION = "2";
 
 // Fabric to Data Explorer
-export type FabricMessage =
+
+// TODO Deprecated. Remove this section once DE is updated
+export type FabricMessageV1 =
   | {
       type: "newContainer";
       databaseName: string;
     }
   | {
-      type: "initialize_fabric2";
-      message: {
-        connectionId: string;
-      };
-    }
-  | {
-      // TODO Deprecated. Remove this section once DE is updated
       type: "initialize";
       message: {
         endpoint: string | undefined;
@@ -32,15 +30,6 @@ export type FabricMessage =
       };
     }
   | {
-      type: "allResourceTokens_fabric2";
-      message: {
-        id: string;
-        error: string | undefined;
-        data: FabricDatabaseConnectionInfo | undefined;
-      };
-    }
-  | {
-      // TODO Deprecated. Remove this section once DE is updated
       type: "allResourceTokens";
       message: {
         id: string;
@@ -51,26 +40,37 @@ export type FabricMessage =
         resourceTokensTimestamp: number | undefined;
       };
     };
+// -----------------------------
 
-// Data Explorer to Fabric
-export type DataExploreMessage =
-  | "ready"
-  | "ready_fabric2"
+export type FabricMessageV2 =
   | {
-      type: MessageTypes.GetAuthorizationToken;
-      id: string;
-      params: GetCosmosTokenMessageOptions[];
+      type: "newContainer";
+      databaseName: string;
     }
   | {
-      type: MessageTypes.GetAllResourceTokens;
+      type: "initialize";
+      version: string;
       id: string;
+      message: {
+        connectionId: string;
+      };
+    }
+  | {
+      type: "authorizationToken";
+      message: {
+        id: string;
+        error: string | undefined;
+        data: AuthorizationToken | undefined;
+      };
+    }
+  | {
+      type: "allResourceTokens_v2";
+      message: {
+        id: string;
+        error: string | undefined;
+        data: FabricDatabaseConnectionInfo | undefined;
+      };
     };
-
-export type GetCosmosTokenMessageOptions = {
-  verb: "connect" | "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
-  resourceType: "" | "dbs" | "colls" | "docs" | "sprocs" | "pkranges";
-  resourceId: string;
-};
 
 export type CosmosDBTokenResponse = {
   token: string;
