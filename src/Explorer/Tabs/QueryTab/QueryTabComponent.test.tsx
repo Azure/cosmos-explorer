@@ -1,6 +1,16 @@
 import { fireEvent, render } from "@testing-library/react";
-import QueryTabComponent, { IQueryTabComponentProps } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import { CollectionTabKind } from "Contracts/ViewModels";
+import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
+import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
+import QueryTabComponent, {
+  IQueryTabComponentProps,
+  QueryTabFunctionComponent,
+} from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import TabsBase from "Explorer/Tabs/TabsBase";
+import { updateUserContext, userContext } from "UserContext";
+import { mount } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { useTabs } from "hooks/useTabs";
 import React from "react";
 
 jest.mock("Explorer/Controls/Editor/EditorReact");
@@ -11,9 +21,15 @@ describe("QueryTabComponent", () => {
     mockStore.showCopilotSidebar = false;
     mockStore.setShowCopilotSidebar = jest.fn();
   });
-  beforeEach(() => jest.clearAllMocks());
+  afterEach(() => jest.clearAllMocks());
 
-  it("should launch Copilot when ALT+C is pressed", () => {
+  it("should launch conversational Copilot when ALT+C is pressed and when copilot version is 3", () => {
+    updateUserContext({
+      features: {
+        ...userContext.features,
+        copilotVersion: "v3.0",
+      },
+    });
     const propsMock: Readonly<IQueryTabComponentProps> = {
       collection: { databaseId: "CopilotSampleDb" },
       onTabAccessor: () => jest.fn(),
@@ -30,5 +46,33 @@ describe("QueryTabComponent", () => {
     fireEvent.keyDown(launchCopilotButton, { key: "c", altKey: true });
 
     expect(mockStore.setShowCopilotSidebar).toHaveBeenCalledWith(true);
+  });
+
+  it("copilot should be enabled by default when tab is active", () => {
+    useQueryCopilot.getState().setCopilotEnabled(true);
+    useQueryCopilot.getState().setCopilotUserDBEnabled(true);
+    const activeTab = new TabsBase({
+      tabKind: CollectionTabKind.Query,
+      title: "Query",
+      tabPath: "",
+    });
+    activeTab.tabId = "mockTabId";
+    useTabs.getState().activeTab = activeTab;
+    const propsMock: Readonly<IQueryTabComponentProps> = {
+      collection: { databaseId: "CopilotUserDb", id: () => "CopilotUserContainer" },
+      onTabAccessor: () => jest.fn(),
+      isExecutionError: false,
+      tabId: "mockTabId",
+      tabsBaseInstance: {
+        updateNavbarWithTabsButtons: () => jest.fn(),
+      },
+    } as unknown as IQueryTabComponentProps;
+
+    const container = mount(
+      <CopilotProvider>
+        <QueryTabFunctionComponent {...propsMock} />
+      </CopilotProvider>,
+    );
+    expect(container.find(QueryCopilotPromptbar).exists()).toBe(true);
   });
 });

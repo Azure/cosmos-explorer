@@ -12,7 +12,7 @@ export const QueryCopilotResults: React.FC = (): JSX.Element => {
       queryResults={useQueryCopilot.getState().queryResults}
       isExecuting={useQueryCopilot.getState().isExecuting}
       executeQueryDocumentsPage={(firstItemIndex: number) =>
-        QueryDocumentsPerPage(firstItemIndex, useQueryCopilot.getState().queryIterator)
+        QueryDocumentsPerPage(firstItemIndex, useQueryCopilot.getState().queryIterator, useQueryCopilot)
       }
     />
   );

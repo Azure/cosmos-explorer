@@ -1,6 +1,6 @@
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { QueryResults } from "Contracts/ViewModels";
-import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
+import { CopilotMessage, CopilotSchemaAllocationInfo } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
 import { useTabs } from "hooks/useTabs";
 import create, { UseStore } from "zustand";
@@ -8,6 +8,8 @@ import * as DataModels from "../Contracts/DataModels";
 import { ContainerInfo } from "../Contracts/DataModels";
 
 export interface QueryCopilotState {
+  copilotEnabled: boolean;
+  copilotUserDBEnabled: boolean;
   generatedQuery: string;
   likeQuery: boolean;
   userPrompt: string;
@@ -40,8 +42,14 @@ export interface QueryCopilotState {
   showExplanationBubble: boolean;
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
   containerStatus: ContainerInfo;
+  schemaAllocationInfo: CopilotSchemaAllocationInfo;
   isAllocatingContainer: boolean;
+  copilotEnabledforExecution: boolean;
 
+  getState?: () => QueryCopilotState;
+
+  setCopilotEnabled: (copilotEnabled: boolean) => void;
+  setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => void;
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
   setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) => void;
@@ -76,6 +84,8 @@ export interface QueryCopilotState {
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
   setContainerStatus: (containerStatus: ContainerInfo) => void;
   setIsAllocatingContainer: (isAllocatingContainer: boolean) => void;
+  setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => void;
+  setCopilotEnabledforExecution: (copilotEnabledforExecution: boolean) => void;
 
   resetContainerConnection: () => void;
   resetQueryCopilotStates: () => void;
@@ -84,6 +94,8 @@ export interface QueryCopilotState {
 type QueryCopilotStore = UseStore<QueryCopilotState>;
 
 export const useQueryCopilot: QueryCopilotStore = create((set) => ({
+  copilotEnabled: false,
+  copilotUserDBEnabled: false,
   generatedQuery: "",
   likeQuery: false,
   userPrompt: "",
@@ -124,8 +136,15 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
     durationLeftInMinutes: undefined,
     phoenixServerInfo: undefined,
   },
+  schemaAllocationInfo: {
+    databaseId: undefined,
+    containerId: undefined,
+  },
   isAllocatingContainer: false,
+  copilotEnabledforExecution: false,
 
+  setCopilotEnabled: (copilotEnabled: boolean) => set({ copilotEnabled }),
+  setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => set({ copilotUserDBEnabled }),
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
   closeFeedbackModal: () => set({ showFeedbackModal: false }),
@@ -163,6 +182,8 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
     set({ notebookServerInfo }),
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   setIsAllocatingContainer: (isAllocatingContainer: boolean) => set({ isAllocatingContainer }),
+  setSchemaAllocationInfo: (schemaAllocationInfo: CopilotSchemaAllocationInfo) => set({ schemaAllocationInfo }),
+  setCopilotEnabledforExecution: (copilotEnabledforExecution: boolean) => set({ copilotEnabledforExecution }),
 
   resetContainerConnection: (): void => {
     useTabs.getState().closeAllNotebookTabs(true);
@@ -172,6 +193,10 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       status: undefined,
       durationLeftInMinutes: undefined,
       phoenixServerInfo: undefined,
+    });
+    useQueryCopilot.getState().setSchemaAllocationInfo({
+      databaseId: undefined,
+      containerId: undefined,
     });
   },
 
@@ -216,6 +241,10 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
         status: undefined,
         durationLeftInMinutes: undefined,
         phoenixServerInfo: undefined,
+      },
+      schemaAllocationInfo: {
+        databaseId: undefined,
+        containerId: undefined,
       },
       isAllocatingContainer: false,
     }));

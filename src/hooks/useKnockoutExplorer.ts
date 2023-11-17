@@ -7,6 +7,7 @@ import {
   scheduleRefreshDatabaseResourceToken,
 } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
@@ -57,19 +58,21 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           userContext.features.phoenixNotebooks = true;
           userContext.features.phoenixFeatures = true;
         }
+        let explorer: Explorer;
         if (platform === Platform.Hosted) {
-          const explorer = await configureHosted();
-          setExplorer(explorer);
+          explorer = await configureHosted();
         } else if (platform === Platform.Emulator) {
-          const explorer = configureEmulator();
-          setExplorer(explorer);
+          explorer = configureEmulator();
         } else if (platform === Platform.Portal) {
-          const explorer = await configurePortal();
-          setExplorer(explorer);
+          explorer = await configurePortal();
         } else if (platform === Platform.Fabric) {
-          const explorer = await configureFabric();
-          setExplorer(explorer);
+          explorer = await configureFabric();
         }
+        if (explorer && userContext.features.enableCopilot) {
+          await updateContextForCopilot(explorer);
+          await updateContextForSampleData(explorer);
+        }
+        setExplorer(explorer);
       }
     };
     effect();
@@ -78,9 +81,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
-      if (userContext.features.enableCopilot) {
-        updateContextForSampleData(explorer);
-      }
     }
   }, [explorer]);
 
@@ -420,9 +420,11 @@ async function configurePortal(): Promise<Explorer> {
           updateContextsFromPortalMessage(inputs);
           explorer = new Explorer();
           resolve(explorer);
-          if (userContext.apiType === "Postgres") {
-            explorer.openNPSSurveyDialog();
+
+          if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+            setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
+
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
@@ -554,12 +556,23 @@ interface PortalMessage {
   inputs?: DataExplorerInputsFrame;
 }
 
+async function updateContextForCopilot(explorer: Explorer): Promise<void> {
+  await explorer.configureCopilot();
+}
+
 async function updateContextForSampleData(explorer: Explorer): Promise<void> {
-  if (!userContext.features.enableCopilot) {
+  const copilotEnabled =
+    userContext.apiType === "SQL" && userContext.features.enableCopilot && useQueryCopilot.getState().copilotEnabled;
+
+  if (!copilotEnabled) {
     return;
   }
 
-  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, `/api/tokens/sampledataconnection`);
+  const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
+    ? `/api/tokens/sampledataconnection/v2`
+    : `/api/tokens/sampledataconnection`;
+
+  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
