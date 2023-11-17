@@ -1,5 +1,5 @@
 import { sendCachedDataMessage } from "Common/MessageHandler";
-import { FabricDatabaseConnectionInfo } from "Contracts/FabricContract";
+import { FabricDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
 import { MessageTypes } from "Contracts/MessageTypes";
 import { updateUserContext, userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
