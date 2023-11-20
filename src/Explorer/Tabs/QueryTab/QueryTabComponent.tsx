@@ -104,12 +104,13 @@ interface IQueryTabStates {
 
 export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
   const copilotStore = useCopilotStore();
+  const copilotGlobalStore = useQueryCopilot();
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
     ...props,
     copilotEnabled:
-      useQueryCopilot().copilotEnabled &&
-      (useQueryCopilot().copilotUserDBEnabled || (isSampleCopilotActive && !!userContext.sampleDataConnectionInfo)),
+      copilotGlobalStore.copilotEnabled &&
+      (copilotGlobalStore.copilotUserDBEnabled || (isSampleCopilotActive && !!userContext.sampleDataConnectionInfo)),
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
   };

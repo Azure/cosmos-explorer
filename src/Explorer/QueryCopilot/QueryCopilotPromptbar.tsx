@@ -72,7 +72,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   containerId,
 }: QueryCopilotPromptProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
-  const inputEdited = useRef(false);
   const {
     openFeedbackModal,
     hideFeedbackModalForLikedQueries,
@@ -109,6 +108,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setErrorMessage,
     errorMessage,
   } = useCopilotStore();
+
+  const inputEdited = useRef(!!userPrompt);
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -274,16 +275,12 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   const showTeachingBubble = (): void => {
     if (!inputEdited.current) {
       setTimeout(() => {
-        if (!inputEdited.current && !isWelcomModalVisible()) {
+        if (!useQueryCopilot.getState().showWelcomeModal && !userPrompt && !inputEdited.current) {
           toggleCopilotTeachingBubbleVisible();
           inputEdited.current = true;
         }
       }, 30000);
     }
-  };
-
-  const isWelcomModalVisible = (): boolean => {
-    return localStorage.getItem("hideWelcomeModal") !== "true";
   };
 
   const clearFeedback = () => {
@@ -305,6 +302,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 
   React.useEffect(() => {
     showTeachingBubble();
+    useQueryCopilot.subscribe((state) => state.showWelcomeModal, showTeachingBubble);
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
@@ -591,7 +589,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           </CommandBarButton>
         </Stack>
       )}
-      <WelcomeModal visible={isWelcomModalVisible()} />
+      <WelcomeModal visible={useQueryCopilot.getState().showWelcomeModal} />
       {isSamplePromptsOpen && <SamplePrompts sampleProps={sampleProps} />}
       {query !== "" && query.trim().length !== 0 && (
         <DeletePopup
