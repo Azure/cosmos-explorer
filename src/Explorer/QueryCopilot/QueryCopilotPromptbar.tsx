@@ -35,7 +35,7 @@ import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopil
 import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/SamplePrompts/SamplePrompts";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { useRef, useState } from "react";
 import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
@@ -302,7 +302,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 
   React.useEffect(() => {
     showTeachingBubble();
-    useQueryCopilot.subscribe((state) => state.showWelcomeModal, showTeachingBubble);
+    useQueryCopilot.subscribe(showTeachingBubble, (state: QueryCopilotState) => state.showWelcomeModal);
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
