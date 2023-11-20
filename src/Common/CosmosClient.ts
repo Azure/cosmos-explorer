@@ -3,6 +3,7 @@ import { sendCachedDataMessage } from "Common/MessageHandler";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
+import * as dns from "dns";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
@@ -144,6 +145,57 @@ export function client(): Cosmos.CosmosClient {
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
 
+  // find the ip address associated with the endpoint
+  function findHostAddress(endpoint: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      // Extract hostname from endpoint
+      const hostname = new URL(endpoint).hostname;
+
+      // Use dns.lookup to find the IP address
+      dns.lookup(hostname, (err, address) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(address);
+        }
+      });
+    });
+  }
+
+  // Parsing out endpoint from diagnostics.  Used to find address I need to add to firewall rule.
+  function parseEndpointFromDiag(json: string): string {
+    const suffix: string = ".documents.azure.com";
+    const start: number = json.indexOf("//") + "//".length;
+    const end: number = json.indexOf(suffix) + suffix.length;
+    const endpoint: string = json.substring(start, end);
+
+    return endpoint;
+  }
+
+  async function fetchConnectedRegions(client: Cosmos.CosmosClient) {
+    // Check currently connected regions.
+    try {
+      const someMoreThings = await client.databases.readAll().fetchAll();
+      console.log(`Current list of databases: ${JSON.stringify(someMoreThings)}`);
+      const currentReadRegion = await client.getReadEndpoint();
+      console.log(`Current read endpoint: ${JSON.stringify(currentReadRegion)}`);
+      const currentReadRegions = await client.getReadEndpoints();
+      console.log(`Current account endpoints: ${JSON.stringify(currentReadRegions)}`);
+      // Getting primary region IP that needs to be blocked.
+      // retrieve the regional endpoint of the account
+      const regionalWriteEndpoint = await client.getWriteEndpoint();
+      console.log(`Current write endpoint: ${JSON.stringify(regionalWriteEndpoint)}`);
+      const parsedWriteEndpoint = parseEndpointFromDiag(JSON.stringify(regionalWriteEndpoint));
+      const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
+      console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
+    } catch (error) {
+      console.error("Error getting read endpoints:", error);
+    }
+
+    const currentWriteRegion = await client.getWriteEndpoint();
+    console.log(`Current write endpoint: ${JSON.stringify(currentWriteRegion)}`);
+  }
+
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
@@ -166,5 +218,9 @@ export function client(): Cosmos.CosmosClient {
   }
 
   _client = new Cosmos.CosmosClient(options);
+
+  // Log debug vals
+  fetchConnectedRegions(_client).catch((error) => console.error(error));
+
   return _client;
 }
