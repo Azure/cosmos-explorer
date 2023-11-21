@@ -189,6 +189,7 @@ export function client(): Cosmos.CosmosClient {
       console.log(`Current parsed write endpoint: ${JSON.stringify(parsedWriteEndpoint)}`);
       // const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
       // console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
+      
     } catch (error) {
       console.error("Error getting read endpoints:", error);
     }
@@ -198,8 +199,8 @@ export function client(): Cosmos.CosmosClient {
   }
 
   const options: Cosmos.CosmosClientOptions = {
-    // endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    endpoint: "https://test-craig-nosql-periodic-eastus.documents.azure.com:443/",
+    endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    // endpoint: "https://test-craig-nosql-periodic-eastus.documents.azure.com:443/",
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
