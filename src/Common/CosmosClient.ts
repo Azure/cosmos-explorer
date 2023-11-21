@@ -149,21 +149,21 @@ export function client(): Cosmos.CosmosClient {
   }
 
   // find the ip address associated with the endpoint
-  function findHostAddress(endpoint: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      // Extract hostname from endpoint
-      const hostname = new URL(endpoint).hostname;
-
-      // Use dns.lookup to find the IP address
-      dns.lookup(hostname, (err, address) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(address);
-        }
-      });
-    });
-  }
+  // function findHostAddress(endpoint: string): Promise<string> {
+  //   return new Promise((resolve, reject) => {
+  //     // Extract hostname from endpoint
+  //     const hostname = new URL(endpoint).hostname;
+  //     const dns = require('dns');
+  //     // Use dns.lookup to find the IP address
+  //     dns.lookup(hostname, (err, address) => {
+  //       if (err) {
+  //         reject(err);
+  //       } else {
+  //         resolve(address);
+  //       }
+  //     });
+  //   });
+  // }
 
   // Parsing out endpoint from diagnostics.  Used to find address I need to add to firewall rule.
   function parseEndpointFromDiag(json: string): string {
@@ -189,8 +189,9 @@ export function client(): Cosmos.CosmosClient {
       const regionalWriteEndpoint = await client.getWriteEndpoint();
       console.log(`Current write endpoint: ${JSON.stringify(regionalWriteEndpoint)}`);
       const parsedWriteEndpoint = parseEndpointFromDiag(JSON.stringify(regionalWriteEndpoint));
-      const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
-      console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
+      console.log(`Current parsed write endpoint: ${JSON.stringify(parsedWriteEndpoint)}`);
+      // const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
+      // console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
     } catch (error) {
       console.error("Error getting read endpoints:", error);
     }
@@ -201,8 +202,13 @@ export function client(): Cosmos.CosmosClient {
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    // endpoint: "https://test-craig-nosql-periodic-eastus.documents.azure.com:443/",
     key: userContext.masterKey,
     tokenProvider,
+    connectionPolicy: {
+      enableEndpointDiscovery: true,
+      // preferredLocations: ["East US", "West US", "East US 2"],
+    },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
