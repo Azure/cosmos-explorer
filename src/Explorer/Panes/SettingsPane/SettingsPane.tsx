@@ -393,7 +393,7 @@ export const SettingsPane: FunctionComponent = () => {
               </legend>
               <InfoTooltip>
                 Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part
-                of the response. 5000 milliseconds is the default value.
+                of the response. Default value is 5000 milliseconds.
               </InfoTooltip>
             </div>
             <SpinButton
