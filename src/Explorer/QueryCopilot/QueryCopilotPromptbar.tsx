@@ -374,6 +374,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         )}
         <IconButton
           iconProps={{ iconName: "Send" }}
+          aria-label="Send"
           disabled={isGeneratingQuery || !userPrompt.trim()}
           style={{ marginLeft: 8 }}
           onClick={() => startGenerateQueryProcess()}
@@ -550,6 +551,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           )}
           <IconButton
             id="likeBtn"
+            aria-label="Like"
             style={{ marginLeft: 20 }}
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
             onClick={() => {
@@ -562,6 +564,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           />
           <IconButton
             style={{ margin: "0 10px" }}
+            aria-label="Dislike"
             iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
             onClick={() => {
               if (!dislikeQuery) {
