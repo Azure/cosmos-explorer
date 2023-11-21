@@ -192,6 +192,7 @@ export function client(): Cosmos.CosmosClient {
       console.log(`Current parsed write endpoint: ${JSON.stringify(parsedWriteEndpoint)}`);
       // const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
       // console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
+      
     } catch (error) {
       console.error("Error getting read endpoints:", error);
     }
