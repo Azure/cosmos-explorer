@@ -37,14 +37,12 @@ exports[`Table query select Panel should render Default properly 1`] = `
             className="column-select-view"
           >
             <StyledCheckboxBase
-              ariaPositionInSet={0}
               checked={true}
               id="availableCheckbox"
               label="Available Columns"
               onChange={[Function]}
             >
               <CheckboxBase
-                ariaPositionInSet={0}
                 checked={true}
                 id="availableCheckbox"
                 label="Available Columns"
@@ -330,7 +328,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
                   <input
                     aria-checked="true"
                     aria-label="Available Columns"
-                    aria-posinset={0}
                     checked={true}
                     className="input-55"
                     data-ktp-execute-target={true}
@@ -649,7 +646,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
               </CheckboxBase>
             </StyledCheckboxBase>
             <StyledCheckboxBase
-              ariaPositionInSet={1}
               checked={true}
               disabled={false}
               key=""
@@ -657,7 +653,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
               onChange={[Function]}
             >
               <CheckboxBase
-                ariaPositionInSet={1}
                 checked={true}
                 disabled={false}
                 label=""
@@ -944,7 +939,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     aria-checked="true"
                     aria-disabled={false}
                     aria-label=""
-                    aria-posinset={1}
                     checked={true}
                     className="input-55"
                     data-ktp-execute-target={true}
