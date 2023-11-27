@@ -45,7 +45,7 @@ export enum MessageTypes {
   OpenVCoreMongoConnectionStringsBlade,
   GetAuthorizationToken, // Data Explorer -> Fabric
   GetAllResourceTokens, // Data Explorer -> Fabric
-  Ready // Data Explorer -> Fabric
+  Ready, // Data Explorer -> Fabric
 }
 
 export interface AuthorizationToken {
