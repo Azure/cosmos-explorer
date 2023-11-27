@@ -25,6 +25,11 @@ export const readDocument = async (collection: CollectionBase, documentId: Docum
       .item(documentId.id(), getPartitionKeyValue(documentId))
       .read(options);
 
+    const currentReadRegion = await client().getReadEndpoint();
+    console.log(`Current account endpoints - readDocument: ${JSON.stringify(currentReadRegion)}`);
+    
+    console.log(response.diagnostics);
+
     return response?.resource;
   } catch (error) {
     handleError(error, "ReadDocument", `Failed to read ${entityName} ${documentId.id()}`);

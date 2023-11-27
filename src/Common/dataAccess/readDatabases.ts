@@ -47,7 +47,8 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
     clearMessage();
     return databases;
   }
-
+  const currentReadRegion = await client().getReadEndpoint();
+  console.log(`Current account endpoints - readDatabases: ${JSON.stringify(currentReadRegion)}`);
   try {
     if (
       userContext.authType === AuthType.AAD &&

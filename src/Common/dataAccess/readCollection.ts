@@ -35,6 +35,8 @@ export async function readCollectionInternal(
   try {
     const response = await cosmosClient.database(databaseId).container(collectionId).read();
     collection = response.resource as DataModels.Collection;
+    const currentReadRegions = await cosmosClient.getReadEndpoint();
+    console.log(`Current account endpoints - readCollection: ${JSON.stringify(currentReadRegions)}`);
   } catch (error) {
     handleError(error, "ReadCollection", `Error while querying container ${collectionId}`);
     throw error;

@@ -132,6 +132,10 @@ let _client: Cosmos.CosmosClient;
 export function client(): Cosmos.CosmosClient {
   if (_client) return _client;
 
+  // if (_client) {
+  //   _client.dispose();
+  // }
+
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
@@ -192,7 +196,6 @@ export function client(): Cosmos.CosmosClient {
       console.log(`Current parsed write endpoint: ${JSON.stringify(parsedWriteEndpoint)}`);
       // const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
       // console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
-      
     } catch (error) {
       console.error("Error getting read endpoints:", error);
     }
@@ -208,7 +211,10 @@ export function client(): Cosmos.CosmosClient {
     tokenProvider,
     connectionPolicy: {
       enableEndpointDiscovery: true,
-      // preferredLocations: ["East US", "West US", "East US 2"],
+      preferredLocations: ["East US", "Central US"],
+      connectionMode: Cosmos.ConnectionMode.Gateway,
+      enableBackgroundEndpointRefreshing: true,
+      endpointRefreshRateInMs: 5000,
     },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
