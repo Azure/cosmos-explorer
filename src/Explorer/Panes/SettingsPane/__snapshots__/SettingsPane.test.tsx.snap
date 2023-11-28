@@ -146,7 +146,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div
           className="settingsSectionLabel"
         >
-          Query Retry Settings
+          Retry Settings
           <InfoTooltip>
             Retry policy associated with throttled requests during CosmosDB queries.
           </InfoTooltip>
@@ -198,7 +198,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             Fixed retry interval (ms)
           </legend>
           <InfoTooltip>
-            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response.
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 5000 milliseconds.
           </InfoTooltip>
         </div>
         <StyledSpinButton
@@ -393,7 +393,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         <div
           className="settingsSectionLabel"
         >
-          Query Retry Settings
+          Retry Settings
           <InfoTooltip>
             Retry policy associated with throttled requests during CosmosDB queries.
           </InfoTooltip>
@@ -445,7 +445,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
             Fixed retry interval (ms)
           </legend>
           <InfoTooltip>
-            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response.
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 5000 milliseconds.
           </InfoTooltip>
         </div>
         <StyledSpinButton

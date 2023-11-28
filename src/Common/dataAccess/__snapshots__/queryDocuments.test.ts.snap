@@ -19,19 +19,3 @@ Object {
   "populateQueryMetrics": true,
 }
 `;
-
-exports[`getQueryRetryOptions builds the correct default options objects 1`] = `
-Object {
-  "fixedRetryIntervalInMilliseconds": 0,
-  "maxRetryAttemptCount": 0,
-  "maxWaitTimeInSeconds": 0,
-}
-`;
-
-exports[`getQueryRetryOptions reads from localStorage 1`] = `
-Object {
-  "fixedRetryIntervalInMilliseconds": 1000,
-  "maxRetryAttemptCount": 1,
-  "maxWaitTimeInSeconds": 5,
-}
-`;

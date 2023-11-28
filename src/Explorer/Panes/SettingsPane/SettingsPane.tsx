@@ -365,7 +365,7 @@ export const SettingsPane: FunctionComponent = () => {
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">
-              Query Retry Settings
+              Retry Settings
               <InfoTooltip>Retry policy associated with throttled requests during CosmosDB queries.</InfoTooltip>
             </div>
             <div>

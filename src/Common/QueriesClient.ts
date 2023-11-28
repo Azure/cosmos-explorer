@@ -122,7 +122,6 @@ export class QueriesClient {
       SavedQueries.CollectionName,
       this.fetchQueriesQuery(),
       options,
-      retrySettings,
     ).fetchAll();
 
     let queries: DataModels.Query[] = _.map(results.resources, (document: DataModels.Query) => {

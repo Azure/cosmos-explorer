@@ -1,4 +1,4 @@
-import { FeedOptions, RetryOptions } from "@azure/cosmos";
+import { FeedOptions } from "@azure/cosmos";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import * as commonUtils from "Common/dataAccess/queryDocuments";
@@ -33,7 +33,6 @@ jest.mock("Common/ErrorHandlingUtils", () => ({
 
 jest.mock("Common/dataAccess/queryDocuments", () => ({
   getCommonQueryOptions: jest.fn((options) => options),
-  getQueryRetryOptions: jest.fn((retryOptions) => retryOptions),
 }));
 
 jest.mock("Common/SampleDataClient");
@@ -76,12 +75,7 @@ describe("QueryCopilotUtilities", () => {
     it("calls getCommonQueryOptions with the provided options", () => {
       const query = "sample query";
       const options: FeedOptions = { maxItemCount: 10 };
-      const retryOptions: RetryOptions = {
-        maxRetryAttemptCount: 1,
-        maxWaitTimeInSeconds: 1,
-        fixedRetryIntervalInMilliseconds: 1000,
-      };
-      querySampleDocuments(query, options, retryOptions);
+      querySampleDocuments(query, options);
 
       expect(commonUtils.getCommonQueryOptions).toHaveBeenCalledWith(options);
     });
@@ -89,12 +83,7 @@ describe("QueryCopilotUtilities", () => {
     it("returns the result of items.query method", () => {
       const query = "sample query";
       const options: FeedOptions = { maxItemCount: 10 };
-      const retryOptions: RetryOptions = {
-        maxRetryAttemptCount: 1,
-        maxWaitTimeInSeconds: 1,
-        fixedRetryIntervalInMilliseconds: 1000,
-      };
-      querySampleDocuments(query, options, retryOptions);
+      querySampleDocuments(query, options);
       const mockResult = [
         { id: 1, name: "Document 1" },
         { id: 2, name: "Document 2" },
@@ -105,7 +94,7 @@ describe("QueryCopilotUtilities", () => {
         sampleDataClient().database("CopilotSampleDb").container("SampleContainer").items.query as jest.Mock
       ).mockReturnValue(mockResult);
 
-      const result = querySampleDocuments(query, options, retryOptions);
+      const result = querySampleDocuments(query, options);
 
       expect(result).toEqual(mockResult);
     });

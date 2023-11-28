@@ -3,6 +3,7 @@ import { sendCachedDataMessage } from "Common/MessageHandler";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
@@ -89,6 +90,15 @@ export const endpoint = () => {
   return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
 };
 
+export const getRetryOptions = (): Cosmos.RetryOptions => {
+  const retrySettings = {
+    maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+    fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+    maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
+  } as Cosmos.RetryOptions;
+  return retrySettings;
+};
+
 export async function getTokenFromAuthService(
   verb: string,
   resourceType: string,
@@ -149,7 +159,7 @@ export function client(): Cosmos.CosmosClient {
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
-      enableEndpointDiscovery: false,
+      retryOptions: getRetryOptions(),
     },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
