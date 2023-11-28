@@ -213,8 +213,8 @@ export function client(): Cosmos.CosmosClient {
       enableEndpointDiscovery: true,
       preferredLocations: ["East US", "Central US"],
       connectionMode: Cosmos.ConnectionMode.Gateway,
-      enableBackgroundEndpointRefreshing: true,
-      endpointRefreshRateInMs: 5000,
+      // enableBackgroundEndpointRefreshing: true,
+      // endpointRefreshRateInMs: 5000
     },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
