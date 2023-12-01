@@ -74,7 +74,7 @@ describe("QueryCopilotUtilities", () => {
     it("calls getCommonQueryOptions with the provided options", () => {
       const query = "sample query";
       const options: FeedOptions = { maxItemCount: 10 };
-      
+
       querySampleDocuments(query, options);
 
       expect(commonUtils.getCommonQueryOptions).toHaveBeenCalledWith(options);
@@ -83,7 +83,6 @@ describe("QueryCopilotUtilities", () => {
     it("returns the result of items.query method", () => {
       const query = "sample query";
       const options: FeedOptions = { maxItemCount: 10 };
-      querySampleDocuments(query, options);
       const mockResult = [
         { id: 1, name: "Document 1" },
         { id: 2, name: "Document 2" },

@@ -726,7 +726,7 @@ export default class DocumentsTab extends TabsBase {
     const query: string = this.buildQuery(filter);
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
-    
+
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }

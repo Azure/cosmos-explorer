@@ -12,8 +12,7 @@ export interface SuggestedPrompt {
   text: string;
 }
 
-export const querySampleDocuments = (query: string, options: FeedOptions): QueryIterator<ItemDefinition & 
-Resource> => {
+export const querySampleDocuments = (query: string, options: FeedOptions): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
   return sampleDataClient()
     .database(QueryCopilotSampleDatabaseId)
