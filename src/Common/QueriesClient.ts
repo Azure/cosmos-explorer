@@ -15,7 +15,6 @@ import { createDocument } from "./dataAccess/createDocument";
 import { deleteDocument } from "./dataAccess/deleteDocument";
 import { queryDocuments } from "./dataAccess/queryDocuments";
 
-
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
     paths: [`/${SavedQueries.PartitionKeyProperty}`],
