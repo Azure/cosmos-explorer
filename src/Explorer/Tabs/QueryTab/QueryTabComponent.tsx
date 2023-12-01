@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-import { FeedOptions, RetryOptions } from "@azure/cosmos";
+import { FeedOptions } from "@azure/cosmos";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
@@ -291,11 +291,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
               enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
               abortSignal: this.queryAbortController.signal,
             } as FeedOptions,
-            {
-              maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
-              fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
-              maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
-            } as RetryOptions,
           );
     }
 

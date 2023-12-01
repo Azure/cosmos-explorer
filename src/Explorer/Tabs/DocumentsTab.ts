@@ -3,8 +3,7 @@ import {
   PartitionKey,
   PartitionKeyDefinition,
   QueryIterator,
-  Resource,
-  RetryOptions,
+  Resource
 } from "@azure/cosmos";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { QueryConstants } from "Shared/Constants";
@@ -737,14 +736,9 @@ export default class DocumentsTab extends TabsBase {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
     options.abortSignal = this.queryAbortController.signal;
-    const retryOptions: RetryOptions = {
-      maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
-      fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
-      maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
-    } as RetryOptions;
     return this._isQueryCopilotSampleContainer
-      ? querySampleDocuments(query, options, retryOptions)
-      : queryDocuments(this.collection.databaseId, this.collection.id(), query, options, retryOptions);
+      ? querySampleDocuments(query, options)
+      : queryDocuments(this.collection.databaseId, this.collection.id(), query, options);
   }
 
   public async selectDocument(documentId: DocumentId): Promise<void> {

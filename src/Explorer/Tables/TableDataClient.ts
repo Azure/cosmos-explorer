@@ -1,5 +1,4 @@
-import { FeedOptions, RetryOptions } from "@azure/cosmos";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { FeedOptions } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
@@ -105,12 +104,7 @@ export class TablesAPIDataClient extends TableDataClient {
       const options = {
         enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
       } as FeedOptions;
-      const retryOptions = {
-        maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
-        fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
-        maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
-      } as RetryOptions;
-      const iterator = queryDocuments(collection.databaseId, collection.id(), query, options, retryOptions);
+      const iterator = queryDocuments(collection.databaseId, collection.id(), query, options);
       const response = await iterator.fetchNext();
       const documents = response?.resources;
       const entities = TableEntityProcessor.convertDocumentsToEntities(documents);

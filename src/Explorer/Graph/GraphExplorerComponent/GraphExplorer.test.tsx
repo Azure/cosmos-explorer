@@ -339,9 +339,6 @@ describe("GraphExplorer", () => {
 
     beforeAll(() => {
       StorageUtility.LocalStorageUtility.setEntryString(StorageUtility.StorageKey.IsCrossPartitionQueryEnabled, "true");
-      StorageUtility.LocalStorageUtility.setEntryNumber(StorageUtility.StorageKey.RetryAttempts, 1),
-        StorageUtility.LocalStorageUtility.setEntryNumber(StorageUtility.StorageKey.RetryInterval, 1000),
-        StorageUtility.LocalStorageUtility.setEntryNumber(StorageUtility.StorageKey.MaxWaitTime, 1);
     });
 
     describe("Load Graph button", () => {
@@ -377,11 +374,6 @@ describe("GraphExplorer", () => {
           {
             maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
             enableCrossPartitionQuery: true,
-          },
-          {
-            maxRetryAttemptCount: 1,
-            maxWaitTimeInSeconds: 1,
-            fixedRetryIntervalInMilliseconds: 1000,
           },
         );
       });
@@ -424,11 +416,6 @@ describe("GraphExplorer", () => {
           {
             maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
             enableCrossPartitionQuery: true,
-          },
-          {
-            maxRetryAttemptCount: 1,
-            maxWaitTimeInSeconds: 1,
-            fixedRetryIntervalInMilliseconds: 1000,
           },
         );
       });
