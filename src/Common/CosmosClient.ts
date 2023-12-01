@@ -91,6 +91,7 @@ export const endpoint = () => {
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
   return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
+  // return "https://test-craig-nosql-periodic-centralus.documents.azure.com:443";
 };
 
 export async function getTokenFromAuthService(
@@ -206,12 +207,12 @@ export function client(): Cosmos.CosmosClient {
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    // endpoint: "https://test-craig-nosql-periodic-eastus.documents.azure.com:443/",
+    // endpoint: "https://test-craig-nosql-periodic-centralus.documents.azure.com:443",
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
       enableEndpointDiscovery: true,
-      preferredLocations: ["East US", "Central US"],
+      // preferredLocations: ["East US", "Central US"],
       connectionMode: Cosmos.ConnectionMode.Gateway,
       // enableBackgroundEndpointRefreshing: true,
       // endpointRefreshRateInMs: 5000
@@ -227,6 +228,8 @@ export function client(): Cosmos.CosmosClient {
     },
   };
 
+  // The proxy path is added as part of the dev environment.
+  // This is what is used to route all requests back to the global endpoint.
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
