@@ -304,9 +304,7 @@ export const OnExecuteQueryClick = async (useQueryCopilot: Partial<QueryCopilotS
     executedQuery: useQueryCopilot.getState().selectedQuery || useQueryCopilot.getState().query,
   });
   const queryToExecute = useQueryCopilot.getState().selectedQuery || useQueryCopilot.getState().query;
-  const queryIterator = querySampleDocuments(
-    queryToExecute,
-    {
+  const queryIterator = querySampleDocuments(queryToExecute, {
       enableCrossPartitionQuery: shouldEnableCrossPartitionKey(),
     } as FeedOptions,
   );

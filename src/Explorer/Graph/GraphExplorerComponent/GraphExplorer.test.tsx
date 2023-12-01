@@ -367,11 +367,7 @@ describe("GraphExplorer", () => {
       });
 
       it("should submit g.V() as docdb query with proper parameters", () => {
-        expect(queryDocuments).toBeCalledWith(
-          "databaseId",
-          "collectionId",
-          DOCDB_G_DOT_V_QUERY,
-          {
+        expect(queryDocuments).toBeCalledWith("databaseId", "collectionId", DOCDB_G_DOT_V_QUERY, {
             maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
             enableCrossPartitionQuery: true,
           },
@@ -409,11 +405,7 @@ describe("GraphExplorer", () => {
       });
 
       it("should submit g.V() as docdb query with proper parameters", () => {
-        expect(queryDocuments).toBeCalledWith(
-          "databaseId",
-          "collectionId",
-          DOCDB_G_DOT_V_QUERY,
-          {
+        expect(queryDocuments).toBeCalledWith("databaseId", "collectionId", DOCDB_G_DOT_V_QUERY, {
             maxItemCount: GraphExplorer.ROOT_LIST_PAGE_SIZE,
             enableCrossPartitionQuery: true,
           },

@@ -21,7 +21,6 @@ jest.mock("Utils/NotificationConsoleUtils", () => ({
 
 jest.mock("@azure/cosmos", () => ({
   FeedOptions: jest.fn(),
-  RetryOptions: jest.fn(),
   QueryIterator: jest.fn(),
   Constants: {
     HttpHeaders: {},
@@ -75,6 +74,7 @@ describe("QueryCopilotUtilities", () => {
     it("calls getCommonQueryOptions with the provided options", () => {
       const query = "sample query";
       const options: FeedOptions = { maxItemCount: 10 };
+      
       querySampleDocuments(query, options);
 
       expect(commonUtils.getCommonQueryOptions).toHaveBeenCalledWith(options);

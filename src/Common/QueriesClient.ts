@@ -1,5 +1,3 @@
-import { RetryOptions } from "@azure/cosmos";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import * as _ from "underscore";
 import * as DataModels from "../Contracts/DataModels";
@@ -16,6 +14,7 @@ import { createCollection } from "./dataAccess/createCollection";
 import { createDocument } from "./dataAccess/createDocument";
 import { deleteDocument } from "./dataAccess/deleteDocument";
 import { queryDocuments } from "./dataAccess/queryDocuments";
+
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -111,11 +110,6 @@ export class QueriesClient {
     }
 
     const options: any = { enableCrossPartitionQuery: true };
-    const retrySettings: RetryOptions = {
-      maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
-      fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
-      maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
-    };
     const clearMessage = NotificationConsoleUtils.logConsoleProgress("Fetching saved queries");
     const results = await queryDocuments(
       SavedQueries.DatabaseName,

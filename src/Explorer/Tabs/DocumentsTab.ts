@@ -1,10 +1,4 @@
-import {
-  ItemDefinition,
-  PartitionKey,
-  PartitionKeyDefinition,
-  QueryIterator,
-  Resource
-} from "@azure/cosmos";
+import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
@@ -732,6 +726,7 @@ export default class DocumentsTab extends TabsBase {
     const query: string = this.buildQuery(filter);
     let options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
+    
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
