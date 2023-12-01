@@ -1248,6 +1248,9 @@ export interface SqlContainerResource {
 
   /* Analytical TTL. */
   analyticalStorageTtl?: number;
+
+  computedProperties?: ComputedProperties;
+
   /* Parameters to indicate the information about the restore */
   restoreParameters?: ResourceRestoreParameters;
 
@@ -1276,6 +1279,13 @@ export interface IndexingPolicy {
 
   /* List of spatial specifics */
   spatialIndexes?: SpatialSpec[];
+}
+
+export type ComputedProperties = ComputedProperty[];
+
+export interface ComputedProperty {
+  name?: string;
+  query?: string;
 }
 
 /* undocumented */

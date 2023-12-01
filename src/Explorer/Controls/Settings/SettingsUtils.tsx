@@ -4,7 +4,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 
 const zeroValue = 0;
-export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
+export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy | DataModels.ComputedProperties;
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
@@ -45,6 +45,7 @@ export enum SettingsV2TabTypes {
   ConflictResolutionTab,
   SubSettingsTab,
   IndexingPolicyTab,
+  ComputedPropertiesTab,
 }
 
 export interface IsComponentDirtyResult {
@@ -146,6 +147,8 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
       return "Settings";
     case SettingsV2TabTypes.IndexingPolicyTab:
       return "Indexing Policy";
+    case SettingsV2TabTypes.ComputedPropertiesTab:
+      return "Computed Properties (preview)";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
