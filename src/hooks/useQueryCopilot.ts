@@ -104,7 +104,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   correlationId: "",
   query: "SELECT * FROM c",
   selectedQuery: "",
-  isGeneratingQuery: false,
+  isGeneratingQuery: null,
   isGeneratingExplanation: false,
   isExecuting: false,
   dislikeQuery: undefined,

@@ -303,6 +303,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     resetButtonState();
   };
 
+  const getAriaLabel = () => {
+    if (isGeneratingQuery === null) {
+      return " ";
+    } else if (isGeneratingQuery) {
+      return "Content is loading";
+    } else {
+      return "Content is updated";
+    }
+  };
+
   React.useEffect(() => {
     showTeachingBubble();
     useTabs.getState().setIsQueryErrorThrown(false);
@@ -378,7 +388,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           style={{ marginLeft: 8 }}
           onClick={() => startGenerateQueryProcess()}
         />
-        {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
+        <div role="alert" aria-label={getAriaLabel()}>
+          {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
+        </div>
         {showSamplePrompts && (
           <Callout
             styles={{ root: { minWidth: 400, maxWidth: "70vw" } }}
