@@ -309,7 +309,11 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   }, []);
 
   return (
-    <Stack className="copilot-prompt-pane" styles={{ root: { backgroundColor: "#FAFAFA", padding: "16px 24px 0px" } }}>
+    <Stack
+      className="copilot-prompt-pane"
+      styles={{ root: { backgroundColor: "#FAFAFA", padding: "16px 24px 0px" } }}
+      id="copilot-textfield-label"
+    >
       <Stack horizontal>
         <Image src={CopilotIcon} style={{ width: 24, height: 24 }} />
         <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
@@ -348,6 +352,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           disabled={isGeneratingQuery}
           autoComplete="off"
           placeholder="Ask a question in natural language and we’ll generate the query for you."
+          aria-labelledby="copilot-textfield-label"
         />
         {copilotTeachingBubbleVisible && (
           <TeachingBubble
