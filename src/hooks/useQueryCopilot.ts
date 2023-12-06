@@ -36,6 +36,7 @@ export interface QueryCopilotState {
   generatedQueryComments: string;
   wasCopilotUsed: boolean;
   showWelcomeSidebar: boolean;
+  showWelcomeModal: boolean;
   showCopilotSidebar: boolean;
   chatMessages: CopilotMessage[];
   shouldIncludeInMessages: boolean;
@@ -77,6 +78,7 @@ export interface QueryCopilotState {
   setGeneratedQueryComments: (generatedQueryComments: string) => void;
   setWasCopilotUsed: (wasCopilotUsed: boolean) => void;
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => void;
+  setShowWelcomeModal: (showWelcomeModal: boolean) => void;
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => void;
   setChatMessages: (chatMessages: CopilotMessage[]) => void;
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => void;
@@ -122,6 +124,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   generatedQueryComments: "",
   wasCopilotUsed: false,
   showWelcomeSidebar: true,
+  showWelcomeModal: true,
   showCopilotSidebar: false,
   chatMessages: [],
   shouldIncludeInMessages: true,
@@ -174,6 +177,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setGeneratedQueryComments: (generatedQueryComments: string) => set({ generatedQueryComments }),
   setWasCopilotUsed: (wasCopilotUsed: boolean) => set({ wasCopilotUsed }),
   setShowWelcomeSidebar: (showWelcomeSidebar: boolean) => set({ showWelcomeSidebar }),
+  setShowWelcomeModal: (showWelcomeModal: boolean) => set({ showWelcomeModal }),
   setShowCopilotSidebar: (showCopilotSidebar: boolean) => set({ showCopilotSidebar }),
   setChatMessages: (chatMessages: CopilotMessage[]) => set({ chatMessages }),
   setShouldIncludeInMessages: (shouldIncludeInMessages: boolean) => set({ shouldIncludeInMessages }),

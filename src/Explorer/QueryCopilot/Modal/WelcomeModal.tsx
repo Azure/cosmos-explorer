@@ -1,5 +1,6 @@
 import { IconButton, Image, Link, Modal, PrimaryButton, Stack, StackItem, Text } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React from "react";
 import Flash from "../../../../images/CopilotFlash.svg";
 import Thumb from "../../../../images/CopilotThumb.svg";
@@ -13,7 +14,11 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
     if (visible) {
       window.localStorage.setItem("hideWelcomeModal", "true");
     }
-  });
+  }, []);
+
+  React.useEffect(() => {
+    useQueryCopilot.getState().setShowWelcomeModal(isModalVisible);
+  }, [isModalVisible]);
 
   return (
     <>

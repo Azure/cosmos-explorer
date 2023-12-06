@@ -1397,6 +1397,7 @@ export default class Explorer {
     ]);
     useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
     useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
+    useQueryCopilot.getState().setShowWelcomeModal(window.localStorage.getItem("hideWelcomeModal") !== "true");
   }
 
   public async refreshSampleData(): Promise<void> {
