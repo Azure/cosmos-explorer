@@ -201,7 +201,6 @@ async function configureHosted(): Promise<Explorer> {
   } else {
     throw new Error(`Unknown hosted config: ${win.hostedConfig}`);
   }
-
   window.addEventListener(
     "message",
     (event) => {

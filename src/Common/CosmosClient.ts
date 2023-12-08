@@ -80,7 +80,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
+  console.log(`REQUEST CONTEXT ENDPOINT: ${JSON.stringify(requestContext.endpoint)}`);
   requestContext.headers["x-ms-proxy-target"] = endpoint();
+  console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
   return next(requestContext);
 };
 
@@ -90,8 +92,11 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
+  // TODO: Add logic here to go through and possibly select a different endpoint from those available.
+  // TODO: Will need flag to set write enabled.
+  // If user is going to connect to an account with primary region down, need to connect directly to document service
+  // with regional endpoint.
   return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
-  // return "https://test-craig-nosql-periodic-centralus.documents.azure.com:443";
 };
 
 export async function getTokenFromAuthService(
@@ -133,9 +138,7 @@ let _client: Cosmos.CosmosClient;
 export function client(): Cosmos.CosmosClient {
   if (_client) return _client;
 
-  // if (_client) {
-  //   _client.dispose();
-  // }
+  console.log(`Creating new client.......`);
 
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
@@ -152,23 +155,6 @@ export function client(): Cosmos.CosmosClient {
     // The header will be ignored if priority based execution is disabled on the account.
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
-
-  // find the ip address associated with the endpoint
-  // function findHostAddress(endpoint: string): Promise<string> {
-  //   return new Promise((resolve, reject) => {
-  //     // Extract hostname from endpoint
-  //     const hostname = new URL(endpoint).hostname;
-  //     const dns = require('dns');
-  //     // Use dns.lookup to find the IP address
-  //     dns.lookup(hostname, (err, address) => {
-  //       if (err) {
-  //         reject(err);
-  //       } else {
-  //         resolve(address);
-  //       }
-  //     });
-  //   });
-  // }
 
   // Parsing out endpoint from diagnostics.  Used to find address I need to add to firewall rule.
   function parseEndpointFromDiag(json: string): string {
@@ -207,15 +193,15 @@ export function client(): Cosmos.CosmosClient {
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    // endpoint: "https://test-craig-nosql-periodic-centralus.documents.azure.com:443",
+    // endpoint: "https://test-craig-nosql-periodic-eastus.documents.azure.com:443",
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
       enableEndpointDiscovery: true,
-      // preferredLocations: ["East US", "Central US"],
+      preferredLocations: ["East US", "Central US"],
       connectionMode: Cosmos.ConnectionMode.Gateway,
-      // enableBackgroundEndpointRefreshing: true,
-      // endpointRefreshRateInMs: 5000
+      enableBackgroundEndpointRefreshing: true,
+      endpointRefreshRateInMs: 5000,
     },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
@@ -228,8 +214,28 @@ export function client(): Cosmos.CosmosClient {
     },
   };
 
+  // Account details from userContext.
+  console.log(`userContext details: ${JSON.stringify(userContext)}`);
+  console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
+  console.log(
+    `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.documentEndpoint,
+    )}`,
+  );
+  console.log(
+    `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.readLocations,
+    )}`,
+  );
+  console.log(
+    `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.writeLocations,
+    )}`,
+  );
+
   // The proxy path is added as part of the dev environment.
   // This is what is used to route all requests back to the global endpoint.
+  // In order for local page running in browser to make cross-origin requests to the Cosmos DB backend.
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
