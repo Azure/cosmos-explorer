@@ -3,7 +3,7 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { getCopilotEnabled } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
@@ -1389,14 +1389,9 @@ export default class Explorer {
     if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
       return;
     }
-    const copilotEnabledPromise = getCopilotEnabled();
-    const copilotUserDBEnabledPromise = isCopilotFeatureRegistered(userContext.subscriptionId);
-    const [copilotEnabled, copilotUserDBEnabled] = await Promise.all([
-      copilotEnabledPromise,
-      copilotUserDBEnabledPromise,
-    ]);
+    const copilotEnabled = await getCopilotEnabled();
     useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
-    useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
+    useQueryCopilot.getState().setCopilotUserDBEnabled(copilotEnabled);
   }
 
   public async refreshSampleData(): Promise<void> {
