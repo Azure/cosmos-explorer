@@ -90,15 +90,6 @@ export const endpoint = () => {
   return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
 };
 
-export const getRetryOptions = (): Cosmos.RetryOptions => {
-  const retrySettings = {
-    maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
-    fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
-    maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
-  } as Cosmos.RetryOptions;
-  return retrySettings;
-};
-
 export async function getTokenFromAuthService(
   verb: string,
   resourceType: string,
@@ -159,7 +150,11 @@ export function client(): Cosmos.CosmosClient {
     key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
-      retryOptions: getRetryOptions(),
+      retryOptions: {
+        maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+        maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
+      }
     },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
