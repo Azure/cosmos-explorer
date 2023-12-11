@@ -37,9 +37,6 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               </Stack.Item>
             </Stack>
             <Stack horizontal grow={1} horizontalAlign="end" verticalAlign="start" className="exitPadding">
-              <Stack.Item className="previewMargin">
-                <Text className="preview">Preview</Text>
-              </Stack.Item>
               <Stack.Item>
                 <IconButton
                   onClick={hideModal}
@@ -53,7 +50,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
           </Stack>
           <Stack horizontalAlign="center">
             <Stack.Item align="center" style={{ textAlign: "center" }}>
-              <Text className="title bold">Welcome to Microsoft Copilot for Azure in Cosmos DB (preview)</Text>
+              <Text className="title bold">Welcome to Microsoft Copilot for Azure in Cosmos DB</Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
               <Stack horizontal>
