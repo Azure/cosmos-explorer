@@ -334,8 +334,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 
   const handleSelection = (selectedIndex: number) => {
     const selecteditem = suggestionsnhistory[selectedIndex];
-    if (!selecteditem) return resetSearchComplete();
-    else {
+    if (!selecteditem) {
+      return resetSearchComplete();
+    } else {
       handlepromptset(selecteditem);
     }
   };
