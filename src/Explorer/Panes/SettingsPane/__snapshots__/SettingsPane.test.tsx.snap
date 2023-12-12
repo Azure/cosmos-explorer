@@ -227,7 +227,7 @@ exports[`Settings Pane should render Default properly 1`] = `
               "spinButtonWrapper": Object {},
             }
           }
-          value="5000"
+          value="0"
         />
         <div>
           <legend
@@ -474,7 +474,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
               "spinButtonWrapper": Object {},
             }
           }
-          value="5000"
+          value="0"
         />
         <div>
           <legend

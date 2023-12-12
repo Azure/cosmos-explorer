@@ -154,7 +154,7 @@ export function client(): Cosmos.CosmosClient {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
         maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime),
-      }
+      },
     },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
