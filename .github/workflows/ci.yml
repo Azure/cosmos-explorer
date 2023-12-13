@@ -204,7 +204,7 @@ jobs:
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
       - name: Download Dist Folder
-        uses: actions/upload-artifact@v3
+        uses: actions/download-artifact@v3
         with:
           name: dist
       - run: cp ./configs/mpac.json config.json
