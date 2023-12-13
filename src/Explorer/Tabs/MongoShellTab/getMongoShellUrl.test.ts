@@ -47,11 +47,11 @@ describe("getMongoShellUrl", () => {
     queryString = `resourceId=${userContext.databaseAccount.id}&accountName=${userContext.databaseAccount.name}&mongoEndpoint=${userContext.databaseAccount.properties.documentEndpoint}`;
   });
 
-  it("should return /mongoshell/indexv2.html by default ", () => {
+  it("should return /mongoshell/indexv2.html by default", () => {
     expect(getMongoShellUrl()).toBe(`/mongoshell/indexv2.html?${queryString}`);
   });
 
-  it("should return /mongoshell/indexv2.html when portalEnv==localhost ", () => {
+  it("should return /mongoshell/indexv2.html when portalEnv==localhost", () => {
     updateUserContext({
       portalEnv: "localhost",
     });
@@ -149,7 +149,7 @@ describe("getMongoShellUrl", () => {
       expect(getMongoShellUrl()).toBe(`${endpoint}/content/mongoshell/debug/index.html?${queryString}`);
     });
 
-    it("configContext.BACKEND_ENDPOINT === '' and configContext.platform === Platform.Hosted, should return /mongoshell/indexv2.html ", () => {
+    it("configContext.BACKEND_ENDPOINT === '' and configContext.platform === Platform.Hosted, should return /mongoshell/indexv2.html", () => {
       resetConfigContext();
       updateConfigContext({
         platform: Platform.Hosted,
@@ -172,7 +172,7 @@ describe("getMongoShellUrl", () => {
 });
 
 describe("getExtensionEndpoint", () => {
-  it("when platform === Platform.Hosted, backendEndpoint is undefined ", () => {
+  it("when platform === Platform.Hosted, backendEndpoint is undefined", () => {
     expect(getExtensionEndpoint(Platform.Hosted, undefined)).toBe("");
   });
 
@@ -184,15 +184,15 @@ describe("getExtensionEndpoint", () => {
     expect(getExtensionEndpoint(Platform.Hosted, null)).toBe("");
   });
 
-  it("when platform === Platform.Hosted, backendEndpoint != '' ", () => {
+  it("when platform === Platform.Hosted, backendEndpoint != ''", () => {
     expect(getExtensionEndpoint(Platform.Hosted, "foo")).toBe("foo");
   });
 
-  it("when platform === Platform.Portal, backendEndpoint is udefined ", () => {
+  it("when platform === Platform.Portal, backendEndpoint is udefined", () => {
     expect(getExtensionEndpoint(Platform.Portal, undefined)).toBe("");
   });
 
-  it("when platform === Platform.Portal, backendEndpoint === '' ", () => {
+  it("when platform === Platform.Portal, backendEndpoint === ''", () => {
     expect(getExtensionEndpoint(Platform.Portal, "")).toBe("");
   });
 
@@ -200,7 +200,7 @@ describe("getExtensionEndpoint", () => {
     expect(getExtensionEndpoint(Platform.Portal, null)).toBe("");
   });
 
-  it("when platform !== Platform.Portal, backendEndpoint != '' ", () => {
+  it("when platform !== Platform.Portal, backendEndpoint != ''", () => {
     expect(getExtensionEndpoint(Platform.Portal, "foo")).toBe("foo");
   });
 });

@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Welcome Sidebar Modal snapshot test should close on button click  1`] = `""`;
+exports[`Welcome Sidebar Modal snapshot test should close on button click 1`] = `""`;
 
 exports[`Welcome Sidebar Modal snapshot test should not reneder with local  storage key 1`] = `""`;

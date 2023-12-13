@@ -99,7 +99,7 @@ export class DiffEditorViewModel {
   ) {
     this.editorContainer = document.getElementById(this.getEditorId());
     this.editorContainer.innerHTML = "";
-    const options: monaco.editor.IDiffEditorConstructionOptions = {
+    const options: monaco.editor.IStandaloneDiffEditorConstructionOptions = {
       lineNumbers: this.params.lineNumbers || "off",
       fontSize: 12,
       ariaLabel: this.params.ariaLabel,

@@ -14,11 +14,11 @@ jobs:
     name: "Log Code Metrics"
     if: github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: node utils/codeMetrics.js
         env:
@@ -27,11 +27,11 @@ jobs:
     runs-on: ubuntu-latest
     name: "Compile TypeScript"
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run compile
       - run: npm run compile:strict
@@ -39,44 +39,44 @@ jobs:
     runs-on: ubuntu-latest
     name: "Check Format"
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run format:check
   lint:
     runs-on: ubuntu-latest
     name: "Lint"
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run lint
   unittest:
     runs-on: ubuntu-latest
     name: "Unit Tests"
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run test
   build:
     runs-on: ubuntu-latest
     name: "Build"
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm run build:contracts
       - name: Restore Build Cache
@@ -86,10 +86,10 @@ jobs:
           key: ${{ runner.os }}-build-cache
       - run: npm run pack:prod
         env:
-          NODE_OPTIONS: '--max-old-space-size=4096'
+          NODE_OPTIONS: "--max-old-space-size=4096"
       - run: cp -r ./Contracts ./dist/contracts
       - run: cp -r ./configs ./dist/configs
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist/
@@ -107,11 +107,11 @@ jobs:
     if: false
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - uses: southpolesteve/cosmos-emulator-github-action@v1
       - name: End to End Tests
         run: |
@@ -124,7 +124,7 @@ jobs:
           DATA_EXPLORER_ENDPOINT: "https://localhost:1234/explorer.html?platform=Emulator"
           PLATFORM: "Emulator"
           NODE_TLS_REJECT_UNAUTHORIZED: 0
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: screenshots
@@ -149,11 +149,11 @@ jobs:
           - ./test/sql/resourceToken.spec.ts
           - ./test/tables/container.spec.ts
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 18.x
       - run: npm ci
       - run: npm start &
       - run: npm run wait-for-server
@@ -162,7 +162,7 @@ jobs:
           # Run tests up to three times
           for i in $(seq 1 3); do npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }} && s=0 && break || s=$? && sleep 1; done; (exit $s)
         shell: bash
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: screenshots
@@ -180,14 +180,14 @@ jobs:
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
       - name: Download Dist Folder
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: dist
       - run: cp ./configs/prod.json config.json
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "jawelton@microsoft.com" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: packages
         with:
           path: "*.nupkg"
@@ -204,7 +204,7 @@ jobs:
         with:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
       - name: Download Dist Folder
-        uses: actions/download-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dist
       - run: cp ./configs/mpac.json config.json
@@ -212,7 +212,7 @@ jobs:
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "jawelton@microsoft.com" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       - run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: packages
         with:
           path: "*.nupkg"

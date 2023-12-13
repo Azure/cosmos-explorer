@@ -1,7 +1,6 @@
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import { selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import {
-  ChoiceItem,
   Description,
   DescriptionType,
   Info,
@@ -12,6 +11,9 @@ import {
   SelfServeBaseClass,
   SmartUiInput,
 } from "../SelfServeTypes";
+
+import type { ChoiceItem } from "../SelfServeTypes";
+
 import {
   getMaxCollectionThroughput,
   getMaxDatabaseThroughput,
@@ -82,7 +84,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   };
 
   /*
-    In this example, the onSave callback simply sets the value for keys corresponding to the field name in the  SessionStorage. 
+    In this example, the onSave callback simply sets the value for keys corresponding to the field name in the  SessionStorage.
     It uses the currentValues and baselineValues maps to perform custom validations as well.
   */
   public onSave = async (
@@ -198,7 +200,7 @@ This is an alternative to updating the throughput from the 'scale & settings' ta
 
   /*
     In this example, the onRegionsChange function sets the enableLogging property to false (and disables
-    the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for 
+    the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for
     any other value of "regions"
   */
   @OnChange(onRegionsChange)
