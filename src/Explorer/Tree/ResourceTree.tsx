@@ -162,7 +162,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       iconSrc: GalleryIcon,
       // Disable gallery callout for now
       // className: "notebookHeader galleryHeader",
-      className: "notebookHeader galleryHeader",
+      className: "notebookHeader",
       onClick: () => container.openGallery(),
       isSelected: () => activeTab?.tabKind === ViewModels.CollectionTabKind.Gallery,
     };
