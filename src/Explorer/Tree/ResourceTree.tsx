@@ -160,9 +160,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     return {
       label: "Gallery",
       iconSrc: GalleryIcon,
-      // Disable gallery callout for now
-      // className: "notebookHeader galleryHeader",
-      className: "notebookHeader",
+      className: "notebookHeader galleryHeader",
       onClick: () => container.openGallery(),
       isSelected: () => activeTab?.tabKind === ViewModels.CollectionTabKind.Gallery,
     };
@@ -790,7 +788,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
       {!isNotebookEnabled && isSampleDataEnabled && (
@@ -804,7 +802,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
       {isNotebookEnabled && isSampleDataEnabled && (
@@ -821,7 +819,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
     </>
