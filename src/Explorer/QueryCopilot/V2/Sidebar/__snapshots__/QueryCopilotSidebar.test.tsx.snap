@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Query Copilot Sidebar snapshot test should render and not set copilot used flag  1`] = `
+exports[`Query Copilot Sidebar snapshot test should render and not set copilot used flag 1`] = `
 <Stack
   style={
     Object {
@@ -15,7 +15,7 @@ exports[`Query Copilot Sidebar snapshot test should render and not set copilot u
 </Stack>
 `;
 
-exports[`Query Copilot Sidebar snapshot test should render and set copilot used flag  1`] = `
+exports[`Query Copilot Sidebar snapshot test should render and set copilot used flag 1`] = `
 <Stack
   style={
     Object {

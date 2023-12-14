@@ -15,13 +15,13 @@ describe("useSelectedNode", () => {
       useSelectedNode.getState().setSelectedNode(undefined);
       useTabs.setState({ activeTab: undefined });
     });
-    it("it should not select if no selected node", () => {
+    it("should not select if no selected node", () => {
       useTabs.setState({ activeTab: mockTab });
       const isDataNodeSelected = useSelectedNode.getState().isDataNodeSelected("foo", "bar", undefined);
       expect(isDataNodeSelected).toBeFalsy();
     });
 
-    it("it should not select incorrect subnodekinds", () => {
+    it("should not select incorrect subnodekinds", () => {
       useTabs.setState({ activeTab: mockTab });
       useSelectedNode.getState().setSelectedNode({
         nodeKind: "nodeKind",
@@ -32,7 +32,7 @@ describe("useSelectedNode", () => {
       expect(isDataNodeSelected).toBeFalsy();
     });
 
-    it("it should not select if no active tab", () => {
+    it("should not select if no active tab", () => {
       useSelectedNode.getState().setSelectedNode({
         nodeKind: "nodeKind",
         rid: "rid",

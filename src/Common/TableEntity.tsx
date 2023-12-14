@@ -146,6 +146,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
                 onClick={onEditEntity}
                 tabIndex={0}
                 onKeyPress={handleKeyPress}
+                role="button"
               />
             </div>
           </TooltipHost>
@@ -160,6 +161,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
               onClick={onDeleteEntity}
               tabIndex={0}
               onKeyPress={handleKeyPressdelete}
+              role="button"
             />
           </TooltipHost>
         )}

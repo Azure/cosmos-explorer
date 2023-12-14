@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  ChoiceGroup,
   DefaultButton,
   IconButton,
   Link,
@@ -14,7 +13,6 @@ import Explorer from "Explorer/Explorer";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { SubmitFeedback } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import React from "react";
-import { getUserEmail } from "../../../Utils/UserUtils";
 
 export const QueryCopilotFeedbackModal = ({
   explorer,
@@ -35,16 +33,14 @@ export const QueryCopilotFeedbackModal = ({
     closeFeedbackModal,
     setHideFeedbackModalForLikedQueries,
   } = useCopilotStore();
-  const [isContactAllowed, setIsContactAllowed] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [doNotShowAgainChecked, setDoNotShowAgainChecked] = React.useState<boolean>(false);
-  const [contact, setContact] = React.useState<string>(getUserEmail());
 
   const handleSubmit = () => {
     closeFeedbackModal();
     setHideFeedbackModalForLikedQueries(doNotShowAgainChecked);
     SubmitFeedback({
-      params: { generatedQuery, likeQuery, description, userPrompt, contact },
+      params: { generatedQuery, likeQuery, description, userPrompt },
       explorer,
       databaseId,
       containerId,
@@ -77,30 +73,6 @@ export const QueryCopilotFeedbackModal = ({
             defaultValue={generatedQuery}
             readOnly
           />
-          <ChoiceGroup
-            styles={{
-              root: {
-                marginBottom: 14,
-              },
-              flexContainer: {
-                selectors: {
-                  ".ms-ChoiceField-field::before": { marginTop: 4 },
-                  ".ms-ChoiceField-field::after": { marginTop: 4 },
-                  ".ms-ChoiceFieldLabel": { paddingLeft: 6 },
-                },
-              },
-            }}
-            label="May we contact you about your feedback?"
-            options={[
-              { key: "yes", text: "Yes, you may contact me." },
-              { key: "no", text: "No, do not contact me." },
-            ]}
-            selectedKey={isContactAllowed ? "yes" : "no"}
-            onChange={(_, option) => {
-              setIsContactAllowed(option.key === "yes");
-              setContact(option.key === "yes" ? getUserEmail() : "");
-            }}
-          ></ChoiceGroup>
           <Text style={{ fontSize: 12, marginBottom: 14 }}>
             By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the{" "}
             {

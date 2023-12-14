@@ -92,7 +92,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     if (active && focusTab.current) {
       focusTab.current.focus();
     }
-  });
+  }, [active]);
   return (
     <li
       onMouseOver={() => setHovering(true)}

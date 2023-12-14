@@ -23,7 +23,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
         isBlocking={false}
         styles={{
           main: {
-            maxHeight: 530,
+            maxHeight: 600,
             borderRadius: 10,
             overflow: "hidden",
           },
@@ -37,9 +37,6 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               </Stack.Item>
             </Stack>
             <Stack horizontal grow={1} horizontalAlign="end" verticalAlign="start" className="exitPadding">
-              <Stack.Item className="previewMargin">
-                <Text className="preview">Preview</Text>
-              </Stack.Item>
               <Stack.Item>
                 <IconButton
                   onClick={hideModal}
@@ -53,7 +50,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
           </Stack>
           <Stack horizontalAlign="center">
             <Stack.Item align="center" style={{ textAlign: "center" }}>
-              <Text className="title bold">Welcome to Copilot in Azure Cosmos DB</Text>
+              <Text className="title bold">Welcome to Microsoft Copilot for Azure in Cosmos DB</Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
               <Stack horizontal>
@@ -70,7 +67,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               <Text>
                 Ask Copilot to generate a query by describing the query in your words.
                 <br />
-                <Link target="_blank" href="https://aka.ms/CopilotInAzureCDBDocs">
+                <Link target="_blank" href="https://aka.ms/MicrosoftCopilotForAzureInCDBHowTo">
                   Learn more
                 </Link>
               </Text>

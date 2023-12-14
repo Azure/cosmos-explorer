@@ -14,7 +14,7 @@ describe("Query Copilot Sidebar snapshot test", () => {
     useQueryCopilot.setState(initialState, true);
   });
 
-  it("should render and set copilot used flag ", () => {
+  it("should render and set copilot used flag", () => {
     withHooks(() => {
       useQueryCopilot.getState().setShowCopilotSidebar(true);
       const wrapper = shallow(<QueryCopilotSidebar explorer={new Explorer()} />);
@@ -24,7 +24,7 @@ describe("Query Copilot Sidebar snapshot test", () => {
     });
   });
 
-  it("should render and not set copilot used flag ", () => {
+  it("should render and not set copilot used flag", () => {
     withHooks(() => {
       const wrapper = shallow(<QueryCopilotSidebar explorer={new Explorer()} />);
 

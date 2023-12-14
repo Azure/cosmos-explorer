@@ -19,6 +19,7 @@ import {
   TextField,
 } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { HttpStatusCodes } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
 import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
@@ -53,7 +54,15 @@ type QueryCopilotPromptProps = QueryCopilotProps & {
 
 const promptStyles: IButtonStyles = {
   root: { border: 0, selectors: { ":hover": { outline: "1px dashed #605e5c" } } },
-  label: { fontWeight: 400, textAlign: "left", paddingLeft: 8 },
+  label: {
+    fontWeight: 400,
+    textAlign: "left",
+    paddingLeft: 8,
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+  },
+  textContainer: { overflow: "hidden" },
 };
 
 export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
@@ -98,6 +107,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setGeneratedQueryComments,
     setQueryResults,
     setErrorMessage,
+    errorMessage,
   } = useCopilotStore();
 
   const sampleProps: SamplePromptsProps = {
@@ -191,7 +201,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       const serverInfo = useQueryCopilot.getState().notebookServerInfo;
       const queryUri = userContext.features.disableCopilotPhoenixGateaway
         ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
-        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+        : createUri(serverInfo.notebookServerEndpoint, "public/generateSQLQuery");
       const response = await fetch(queryUri, {
         method: "POST",
         headers: {
@@ -230,6 +240,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             responseCode: response.status,
           });
         }
+      } else if (response?.status === HttpStatusCodes.TooManyRequests) {
+        handleError(JSON.stringify(generateSQLQueryResponse), "copilotTooManyRequestError");
+        useTabs.getState().setIsQueryErrorThrown(true);
+        setShowErrorMessageBar(true);
+        setErrorMessage("Ratelimit exceeded 5 per 1 minute. Please try again after sometime");
+        TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
+          databaseName: databaseId,
+          collectionId: containerId,
+          responseCode: response.status,
+        });
       } else {
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotInternalServerError");
         useTabs.getState().setIsQueryErrorThrown(true);
@@ -361,7 +381,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
         {showSamplePrompts && (
           <Callout
-            styles={{ root: { minWidth: 400 } }}
+            styles={{ root: { minWidth: 400, maxWidth: "70vw" } }}
             target="#naturalLanguageInput"
             isBeakVisible={false}
             onDismiss={() => setShowSamplePrompts(false)}
@@ -393,7 +413,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                         setShowSamplePrompts(false);
                         inputEdited.current = true;
                       }}
-                      onRenderIcon={() => <Image src={RecentIcon} />}
+                      onRenderIcon={() => <Image src={RecentIcon} styles={{ root: { overflow: "unset" } }} />}
                       styles={promptStyles}
                     >
                       {history}
@@ -469,7 +489,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           </Link>
           {showErrorMessageBar && (
             <MessageBar messageBarType={MessageBarType.error}>
-              We ran into an error and were not able to execute query.
+              {errorMessage ? errorMessage : "We ran into an error and were not able to execute query."}
             </MessageBar>
           )}
           {showInvalidQueryMessageBar && (

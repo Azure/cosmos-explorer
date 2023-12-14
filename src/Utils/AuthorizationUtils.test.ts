@@ -1,7 +1,7 @@
-import * as Constants from "../Common/Constants";
-import * as AuthorizationUtils from "./AuthorizationUtils";
 import { AuthType } from "../AuthType";
+import * as Constants from "../Common/Constants";
 import { updateUserContext } from "../UserContext";
+import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
 
 describe("AuthorizationUtils", () => {
@@ -29,11 +29,11 @@ describe("AuthorizationUtils", () => {
 
   describe("decryptJWTToken()", () => {
     it("should throw an error if token is undefined", () => {
-      expect(() => AuthorizationUtils.decryptJWTToken(undefined)).toThrowError();
+      expect(() => AuthorizationUtils.decryptJWTToken(undefined)).toThrow();
     });
 
     it("should throw an error if token is empty", () => {
-      expect(() => AuthorizationUtils.decryptJWTToken("")).toThrowError();
+      expect(() => AuthorizationUtils.decryptJWTToken("")).toThrow();
     });
 
     it("should throw an error if token is malformed", () => {
@@ -41,7 +41,7 @@ describe("AuthorizationUtils", () => {
         AuthorizationUtils.decryptJWTToken(
           "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImFQY3R3X29kdlJPb0VOZzNWb09sSWgydGlFcyIsImtpZCI6ImFQY3R3X29kdlJPb0VOZzNWb09sSWgydGlFcyJ9.",
         ),
-      ).toThrowError();
+      ).toThrow();
     });
 
     it("should return decrypted token payload", () => {

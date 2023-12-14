@@ -15,12 +15,7 @@ import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { configContext } from "ConfigContext";
-import {
-  ContainerConnectionInfo,
-  CopilotEnabledConfiguration,
-  FeatureRegistration,
-  IProvisionData,
-} from "Contracts/DataModels";
+import { ContainerConnectionInfo, CopilotEnabledConfiguration, IProvisionData } from "Contracts/DataModels";
 import { AuthorizationTokenHeaderMetadata, QueryResults } from "Contracts/ViewModels";
 import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
@@ -35,29 +30,27 @@ import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as StringUtility from "../../../Shared/StringUtility";
 
-export const isCopilotFeatureRegistered = async (subscriptionId: string): Promise<boolean> => {
-  const api_version = "2021-07-01";
-  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/CopilotInAzureCDB?api-version=${api_version}`;
-  const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
-  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+async function fetchWithTimeout(
+  url: string,
+  headers: {
+    [x: string]: string;
+  },
+) {
+  const timeout = 10000;
+  const options = { timeout };
 
-  let response;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
 
-  try {
-    response = await window.fetch(url, {
-      headers,
-    });
-  } catch (error) {
-    return false;
-  }
+  const response = await window.fetch(url, {
+    headers,
+    ...options,
+    signal: controller.signal,
+  });
+  clearTimeout(id);
 
-  if (!response?.ok) {
-    return false;
-  }
-
-  const featureRegistration = (await response?.json()) as FeatureRegistration;
-  return featureRegistration?.properties?.state === "Registered";
-};
+  return response;
+}
 
 export const getCopilotEnabled = async (): Promise<boolean> => {
   const url = `${configContext.BACKEND_ENDPOINT}/api/portalsettings/querycopilot`;
@@ -67,15 +60,13 @@ export const getCopilotEnabled = async (): Promise<boolean> => {
   let response;
 
   try {
-    response = await window.fetch(url, {
-      headers,
-    });
+    response = await fetchWithTimeout(url, headers);
   } catch (error) {
     return false;
   }
 
   if (!response?.ok) {
-    throw new Error(await response?.text());
+    return false;
   }
 
   const copilotPortalConfiguration = (await response?.json()) as CopilotEnabledConfiguration;
@@ -197,7 +188,7 @@ export const SendQueryRequest = async ({
 
       const queryUri = userContext.features.disableCopilotPhoenixGateaway
         ? createUri("https://copilotorchestrater.azurewebsites.net/", "generateSQLQuery")
-        : createUri(serverInfo.notebookServerEndpoint, "generateSQLQuery");
+        : createUri(serverInfo.notebookServerEndpoint, "public/generateSQLQuery");
 
       const payload = {
         containerSchema: userContext.features.enableCopilotFullSchema
@@ -280,7 +271,7 @@ export const SubmitFeedback = async ({
     const serverInfo = useQueryCopilot.getState().notebookServerInfo;
     const feedbackUri = userContext.features.disableCopilotPhoenixGateaway
       ? createUri("https://copilotorchestrater.azurewebsites.net/", "feedback")
-      : createUri(serverInfo.notebookServerEndpoint, "feedback");
+      : createUri(serverInfo.notebookServerEndpoint, "public/feedback");
     await fetch(feedbackUri, {
       method: "POST",
       headers: {

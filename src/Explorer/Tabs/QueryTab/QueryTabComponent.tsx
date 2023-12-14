@@ -290,7 +290,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             {
               enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
               abortSignal: this.queryAbortController.signal,
-            } as FeedOptions,
+            } as unknown as FeedOptions,
           );
     }
 
@@ -443,7 +443,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         onCommandClick: () => {
           this._toggleCopilot(!this.state.copilotActive);
         },
-        commandButtonLabel: "Copilot",
+        commandButtonLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
         ariaLabel: "Copilot",
         hasPopup: false,
       };

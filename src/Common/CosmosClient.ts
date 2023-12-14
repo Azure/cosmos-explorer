@@ -149,6 +149,8 @@ export function client(): Cosmos.CosmosClient {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
     tokenProvider,
+    userAgentSuffix: "Azure Portal",
+    defaultHeaders: _defaultHeaders,
     connectionPolicy: {
       retryOptions: {
         maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
@@ -156,8 +158,6 @@ export function client(): Cosmos.CosmosClient {
         maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds),
       },
     },
-    userAgentSuffix: "Azure Portal",
-    defaultHeaders: _defaultHeaders,
   };
 
   if (configContext.PROXY_PATH !== undefined) {

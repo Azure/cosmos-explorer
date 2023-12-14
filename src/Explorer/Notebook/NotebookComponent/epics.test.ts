@@ -1,14 +1,14 @@
+import { makeNotebookRecord } from "@nteract/commutable";
+import { actions, state } from "@nteract/core";
 import * as Immutable from "immutable";
 import { StateObservable } from "redux-observable";
 import { Subject, of } from "rxjs";
 import { toArray } from "rxjs/operators";
-import { makeNotebookRecord } from "@nteract/commutable";
-import { actions, state, epics } from "@nteract/core";
 import * as sinon from "sinon";
 
-import { CdbAppState, makeCdbRecord } from "./types";
-import { launchWebSocketKernelEpic } from "./epics";
 import { NotebookUtil } from "../NotebookUtil";
+import { launchWebSocketKernelEpic } from "./epics";
+import { CdbAppState, makeCdbRecord } from "./types";
 
 import { sessions } from "rx-jupyter";
 
@@ -117,7 +117,7 @@ describe("launchWebSocketKernelEpic", () => {
   const kernelRef = "fake";
 
   it("launches remote kernels", async () => {
-    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+    const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
     const cwd = "/";
     const kernelId = "123";
@@ -183,7 +183,7 @@ describe("launchWebSocketKernelEpic", () => {
   });
 
   it("launches any kernel with no kernelspecs in the state", async () => {
-    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+    const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
     const cwd = "/";
     const kernelId = "123";
@@ -236,7 +236,7 @@ describe("launchWebSocketKernelEpic", () => {
   });
 
   it("launches no kernel if no kernel is specified and state has no kernelspecs", async () => {
-    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+    const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
     const cwd = "/";
     const kernelId = "123";
@@ -289,7 +289,7 @@ describe("launchWebSocketKernelEpic", () => {
   });
 
   it("emits an error if backend returns an error", async () => {
-    const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+    const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
     const cwd = "/";
     const action$ = of(
@@ -388,7 +388,7 @@ describe("launchWebSocketKernelEpic", () => {
     });
 
     it("launches supported kernel in kernelspecs", async () => {
-      const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+      const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
       const action$ = of(
         actions.launchKernelByName({
@@ -409,7 +409,7 @@ describe("launchWebSocketKernelEpic", () => {
     });
 
     it("launches undefined kernel uses default kernel from kernelspecs", async () => {
-      const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+      const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
       const action$ = of(
         actions.launchKernelByName({
@@ -431,7 +431,7 @@ describe("launchWebSocketKernelEpic", () => {
     });
 
     it("launches unsupported kernel uses default kernel from kernelspecs", async () => {
-      const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+      const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
       const action$ = of(
         actions.launchKernelByName({
@@ -453,7 +453,7 @@ describe("launchWebSocketKernelEpic", () => {
     });
 
     it("launches unsupported kernel uses kernelspecs with similar name", async () => {
-      const state$ = new StateObservable(new Subject<CdbAppState>(), initialState);
+      const state$ = new StateObservable(new Subject<CdbAppState>() as any, initialState);
 
       const action$ = of(
         actions.launchKernelByName({

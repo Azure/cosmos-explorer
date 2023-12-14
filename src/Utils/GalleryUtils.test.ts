@@ -48,8 +48,8 @@ describe("GalleryUtils", () => {
 
     await GalleryUtils.favoriteItem(container, junoClient, galleryItem, onComplete);
 
-    expect(junoClient.favoriteNotebook).toBeCalledWith(galleryItem.id);
-    expect(onComplete).toBeCalledWith(galleryItem);
+    expect(junoClient.favoriteNotebook).toHaveBeenCalledWith(galleryItem.id);
+    expect(onComplete).toHaveBeenCalledWith(galleryItem);
   });
 
   it("unfavoriteItem unfavorites item", async () => {
@@ -62,8 +62,8 @@ describe("GalleryUtils", () => {
 
     await GalleryUtils.unfavoriteItem(container, junoClient, galleryItem, onComplete);
 
-    expect(junoClient.unfavoriteNotebook).toBeCalledWith(galleryItem.id);
-    expect(onComplete).toBeCalledWith(galleryItem);
+    expect(junoClient.unfavoriteNotebook).toHaveBeenCalledWith(galleryItem.id);
+    expect(onComplete).toHaveBeenCalledWith(galleryItem);
   });
 
   it("deleteItem shows dialog in data explorer", () => {

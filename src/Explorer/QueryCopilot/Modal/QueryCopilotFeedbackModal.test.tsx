@@ -1,4 +1,4 @@
-import { Checkbox, ChoiceGroup, DefaultButton, IconButton, PrimaryButton, TextField } from "@fluentui/react";
+import { Checkbox, DefaultButton, IconButton, PrimaryButton, TextField } from "@fluentui/react";
 import Explorer from "Explorer/Explorer";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
@@ -83,42 +83,6 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("should record user contact choice no", () => {
-    const wrapper = shallow(
-      <QueryCopilotFeedbackModal
-        explorer={new Explorer()}
-        databaseId="CopilotUserDb"
-        containerId="CopilotUserContainer"
-        mode="User"
-      />,
-    );
-    const contactAllowed = wrapper.find(ChoiceGroup);
-
-    contactAllowed.simulate("change", {}, { key: "no" });
-
-    expect(getUserEmail).toHaveBeenCalledTimes(3);
-    expect(wrapper.find(ChoiceGroup).props().selectedKey).toEqual("no");
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it("should record user contact choice yes", () => {
-    const wrapper = shallow(
-      <QueryCopilotFeedbackModal
-        explorer={new Explorer()}
-        databaseId="CopilotUserDb"
-        containerId="CopilotUserContainer"
-        mode="User"
-      />,
-    );
-    const contactAllowed = wrapper.find(ChoiceGroup);
-
-    contactAllowed.simulate("change", {}, { key: "yes" });
-
-    expect(getUserEmail).toHaveBeenCalledTimes(4);
-    expect(wrapper.find(ChoiceGroup).props().selectedKey).toEqual("yes");
-    expect(wrapper).toMatchSnapshot();
-  });
-
   it("should not render dont show again button", () => {
     const wrapper = shallow(
       <QueryCopilotFeedbackModal
@@ -135,7 +99,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("should render dont show again button and check it ", () => {
+  it("should render dont show again button and check it", () => {
     mockUseCopilotStore.mockReturnValue({
       ...mockReturnValue,
       showFeedbackModal: true,
@@ -219,7 +183,6 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
         generatedQuery: "test query",
         userPrompt: "test prompt",
         description: "",
-        contact: getUserEmail(),
       },
       explorer: explorer,
     });
