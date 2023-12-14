@@ -198,7 +198,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             Fixed retry interval (ms)
           </legend>
           <InfoTooltip>
-            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 5000 milliseconds.
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
           </InfoTooltip>
         </div>
         <StyledSpinButton
@@ -445,7 +445,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
             Fixed retry interval (ms)
           </legend>
           <InfoTooltip>
-            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 5000 milliseconds.
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
           </InfoTooltip>
         </div>
         <StyledSpinButton

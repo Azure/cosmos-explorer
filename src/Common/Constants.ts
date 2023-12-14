@@ -147,7 +147,7 @@ export class Queries {
   public static readonly DefaultMaxDegreeOfParallelism = 6;
   public static readonly DefaultRetryAttempts = 9;
   public static readonly DefaultRetryIntervalInMs = 0;
-  public static readonly DefaultMaxWaitTime = 30;
+  public static readonly DefaultMaxWaitTimeInSeconds = 30;
 }
 
 export class SavedQueries {

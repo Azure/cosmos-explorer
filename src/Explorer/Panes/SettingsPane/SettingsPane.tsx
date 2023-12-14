@@ -66,7 +66,7 @@ export const SettingsPane: FunctionComponent = () => {
   const [maxWaitTime, setMaxWaitTime] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.MaxWaitTime)
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime)
-      : Constants.Queries.DefaultMaxWaitTime,
+      : Constants.Queries.DefaultMaxWaitTimeInSeconds,
   );
   const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism)
@@ -393,7 +393,7 @@ export const SettingsPane: FunctionComponent = () => {
               </legend>
               <InfoTooltip>
                 Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part
-                of the response. Default value is 5000 milliseconds.
+                of the response. Default value is 0 milliseconds.
               </InfoTooltip>
             </div>
             <SpinButton

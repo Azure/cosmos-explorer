@@ -8,7 +8,7 @@ export const createDefaultSettings = () => {
   LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, Constants.Queries.DefaultMaxDegreeOfParallelism);
   LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, Constants.Queries.DefaultRetryAttempts);
   LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, Constants.Queries.DefaultRetryIntervalInMs);
-  LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTime, Constants.Queries.DefaultMaxWaitTime);
+  LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTime, Constants.Queries.DefaultMaxWaitTimeInSeconds);
   LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Default);
 };
 
