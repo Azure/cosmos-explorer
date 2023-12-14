@@ -8,7 +8,7 @@ export const createDefaultSettings = () => {
   LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, Constants.Queries.DefaultMaxDegreeOfParallelism);
   LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, Constants.Queries.DefaultRetryAttempts);
   LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, Constants.Queries.DefaultRetryIntervalInMs);
-  LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTime, Constants.Queries.DefaultMaxWaitTimeInSeconds);
+  LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, Constants.Queries.DefaultMaxWaitTimeInSeconds);
   LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, Constants.PriorityLevel.Default);
 };
 
@@ -19,7 +19,7 @@ export const hasSettingsDefined = (): boolean => {
     LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism) &&
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts) &&
     LocalStorageUtility.hasItem(StorageKey.RetryInterval) &&
-    LocalStorageUtility.hasItem(StorageKey.MaxWaitTime)
+    LocalStorageUtility.hasItem(StorageKey.MaxWaitTimeInSeconds)
   );
 };
 

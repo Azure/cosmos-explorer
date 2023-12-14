@@ -8,7 +8,7 @@ export enum StorageKey {
   QueryTimeout,
   RetryAttempts,
   RetryInterval,
-  MaxWaitTime,
+  MaxWaitTimeInSeconds,
   AutomaticallyCancelQueryAfterTimeout,
   ContainerPaginationEnabled,
   CustomItemPerPage,

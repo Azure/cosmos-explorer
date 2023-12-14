@@ -63,9 +63,9 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval)
       : Constants.Queries.DefaultRetryIntervalInMs,
   );
-  const [maxWaitTime, setMaxWaitTime] = useState<number>(
-    LocalStorageUtility.hasItem(StorageKey.MaxWaitTime)
-      ? LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTime)
+  const [MaxWaitTimeInSeconds, setMaxWaitTimeInSeconds] = useState<number>(
+    LocalStorageUtility.hasItem(StorageKey.MaxWaitTimeInSeconds)
+      ? LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
       : Constants.Queries.DefaultMaxWaitTimeInSeconds,
   );
   const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState<number>(
@@ -95,7 +95,7 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
-    LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTime, maxWaitTime);
+    LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
@@ -212,9 +212,9 @@ export const SettingsPane: FunctionComponent = () => {
   };
 
   const handleOnMaxWaitTimeSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
-    const maxWaitTime = Number(newValue);
-    if (!isNaN(maxWaitTime)) {
-      setMaxWaitTime(maxWaitTime);
+    const MaxWaitTimeInSeconds = Number(newValue);
+    if (!isNaN(MaxWaitTimeInSeconds)) {
+      setMaxWaitTimeInSeconds(MaxWaitTimeInSeconds);
     }
   };
 
@@ -422,13 +422,13 @@ export const SettingsPane: FunctionComponent = () => {
               labelPosition={Position.top}
               min={1}
               step={1}
-              value={"" + maxWaitTime}
+              value={"" + MaxWaitTimeInSeconds}
               onChange={handleOnMaxWaitTimeSpinButtonChange}
               incrementButtonAriaLabel="Increase value by 1"
               decrementButtonAriaLabel="Decrease value by 1"
-              onIncrement={(newValue) => setMaxWaitTime(parseInt(newValue) + 1 || maxWaitTime)}
-              onDecrement={(newValue) => setMaxWaitTime(parseInt(newValue) - 1 || maxWaitTime)}
-              onValidate={(newValue) => setMaxWaitTime(parseInt(newValue) || maxWaitTime)}
+              onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
+              onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
+              onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
               styles={queryTimeoutSpinButtonStyles}
             />
           </div>
