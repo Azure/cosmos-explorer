@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
 
+import loadingIndicator3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as Constants from "../Constants";
 import * as Entities from "../Entities";
@@ -116,7 +117,7 @@ function createDataTable(
         sPrevious: "<",
         sLast: ">>",
       },
-      sProcessing: '<img style="width: 28px; height: 6px; " src="images/LoadingIndicator_3Squares.gif">',
+      sProcessing: `<img style="width: 28px; height: 6px; " src="${loadingIndicator3Squares}">`,
       oAria: {
         sSortAscending: "",
         sSortDescending: "",
