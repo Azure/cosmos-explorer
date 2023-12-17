@@ -4,7 +4,6 @@ import { mount, ReactWrapper } from "enzyme";
 import * as Q from "q";
 import React from "react";
 import * as sinon from "sinon";
-import "../../../../externals/jquery.typeahead.min";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 import * as DataModels from "../../../Contracts/DataModels";
