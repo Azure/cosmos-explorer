@@ -1,4 +1,3 @@
-import Q from "q";
 import _ from "underscore";
 import * as QueryBuilderConstants from "../Constants";
 import * as Entities from "../Entities";
@@ -13,7 +12,7 @@ export function getRowSelector(selectorSchema: Entities.IProperty[]): string {
   return QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector + selector;
 }
 
-export function isRowVisible(dataTableScrollBodyQuery: JQuery, element: HTMLElement): boolean {
+export function isRowVisible(dataTableScrollBodyQuery: JQuery<Element>, element: Element): boolean {
   let isVisible = false;
 
   if (dataTableScrollBodyQuery.length && element) {
@@ -26,16 +25,18 @@ export function isRowVisible(dataTableScrollBodyQuery: JQuery, element: HTMLElem
   return isVisible;
 }
 
-export function scrollToRowIfNeeded(dataTableRows: JQuery, currentIndex: number, isScrollUp: boolean): void {
+export function scrollToRowIfNeeded(dataTableRows: JQuery<Element>, currentIndex: number, isScrollUp: boolean): void {
   if (dataTableRows.length) {
-    const dataTableScrollBodyQuery: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector),
-      selectedRowElement: HTMLElement = dataTableRows.get(currentIndex);
+    const dataTableScrollBodyQuery: JQuery<Element> = $(
+        QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector,
+      ),
+      selectedRowElement: Element = dataTableRows.get(currentIndex);
 
     if (dataTableScrollBodyQuery.length && selectedRowElement) {
       const isVisible: boolean = isRowVisible(dataTableScrollBodyQuery, selectedRowElement);
 
       if (!isVisible) {
-        const selectedRowQuery: JQuery = $(selectedRowElement),
+        const selectedRowQuery: JQuery<Element> = $(selectedRowElement),
           scrollPosition: number = dataTableScrollBodyQuery.scrollTop(),
           selectedElementPosition: number = selectedRowQuery.position().top;
         let newScrollPosition = 0;
@@ -54,8 +55,8 @@ export function scrollToRowIfNeeded(dataTableRows: JQuery, currentIndex: number,
 }
 
 export function scrollToTopIfNeeded(): void {
-  const $dataTableRows: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector),
-    $dataTableScrollBody: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector);
+  const $dataTableRows: JQuery<Element> = $(QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector),
+    $dataTableScrollBody: JQuery<Element> = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector);
 
   if ($dataTableRows.length && $dataTableScrollBody.length) {
     $dataTableScrollBody.scrollTop(0);
@@ -71,54 +72,54 @@ export function setPaginationButtonEventHandlers(): void {
     .attr("role", "button");
 }
 
-export function filterColumns(table: DataTables.DataTable, settings: boolean[]): void {
-  settings &&
-    settings.forEach((value: boolean, index: number) => {
-      table.column(index).visible(value, false);
-    });
-  table.columns.adjust().draw(false);
-}
+// export function filterColumns(table: DataTables.DataTable, settings: boolean[]): void {
+//   settings &&
+//     settings.forEach((value: boolean, index: number) => {
+//       table.column(index).visible(value, false);
+//     });
+//   table.columns.adjust().draw(false);
+// }
 
 /**
  * Reorder columns based on current order.
  * If no current order is specified, reorder the columns based on intial order.
  */
-export function reorderColumns(
-  table: DataTables.DataTable,
-  targetOrder: number[],
-  currentOrder?: number[],
-  //eslint-disable-next-line
-): Q.Promise<any> {
-  const columnsCount: number = targetOrder.length;
-  const isCurrentOrderPassedIn = !!currentOrder;
-  if (!isCurrentOrderPassedIn) {
-    currentOrder = getInitialOrder(columnsCount);
-  }
-  const isSameOrder: boolean = Utilities.isEqual(currentOrder, targetOrder);
+// export function reorderColumns(
+//   table: DataTables.DataTable,
+//   targetOrder: number[],
+//   currentOrder?: number[],
+//   //eslint-disable-next-line
+// ): Q.Promise<any> {
+//   const columnsCount: number = targetOrder.length;
+//   const isCurrentOrderPassedIn = !!currentOrder;
+//   if (!isCurrentOrderPassedIn) {
+//     currentOrder = getInitialOrder(columnsCount);
+//   }
+//   const isSameOrder: boolean = Utilities.isEqual(currentOrder, targetOrder);
 
-  // if the targetOrder is the same as current order, do nothing.
-  if (!isSameOrder) {
-    // Otherwise, calculate the transformation order.
-    // If current order not specified, then it'll be set to initial order,
-    //  i.e., either no reorder happened before or reordering to its initial order,
-    //  Then the transformation order will be the same as target order.
-    // If current order is specified, then a transformation order is calculated.
-    //  Refer to calculateTransformationOrder for details about transformation order.
-    const transformationOrder: number[] = isCurrentOrderPassedIn
-      ? calculateTransformationOrder(currentOrder, targetOrder)
-      : targetOrder;
-    try {
-      $.fn.dataTable.ColReorder(table).fnOrder(transformationOrder);
-    } catch (err) {
-      return Q.reject(err);
-    }
-  }
-  return Q.resolve(null);
-}
+//   // if the targetOrder is the same as current order, do nothing.
+//   if (!isSameOrder) {
+//     // Otherwise, calculate the transformation order.
+//     // If current order not specified, then it'll be set to initial order,
+//     //  i.e., either no reorder happened before or reordering to its initial order,
+//     //  Then the transformation order will be the same as target order.
+//     // If current order is specified, then a transformation order is calculated.
+//     //  Refer to calculateTransformationOrder for details about transformation order.
+//     const transformationOrder: number[] = isCurrentOrderPassedIn
+//       ? calculateTransformationOrder(currentOrder, targetOrder)
+//       : targetOrder;
+//     try {
+//       $.fn.dataTable.ColReorder(table).fnOrder(transformationOrder);
+//     } catch (err) {
+//       return Q.reject(err);
+//     }
+//   }
+//   return Q.resolve(null);
+// }
 
-export function resetColumns(table: DataTables.DataTable): void {
-  $.fn.dataTable.ColReorder(table).fnReset();
-}
+// export function resetColumns(table: DataTables.DataTable): void {
+//   $.fn.dataTable.ColReorder(table).fnReset();
+// }
 
 /**
  * A table's initial order is described in the form of a natural ascending order.
@@ -133,9 +134,9 @@ export function getInitialOrder(columnsCount: number): number[] {
  * Initial order:  I = [0, 1, 2, 3, 4, 5, 6, 7, 8]   <---->   {prop0, prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8}
  * Current order:  C = [0, 1, 2, 6, 7, 3, 4, 5, 8]   <---->   {prop0, prop1, prop2, prop6, prop7, prop3, prop4, prop5, prop8}
  */
-export function getCurrentOrder(table: DataTables.DataTable): number[] {
-  return $.fn.dataTable.ColReorder(table).fnOrder();
-}
+// export function getCurrentOrder(table: DataTables.DataTable): number[] {
+//   return $.fn.dataTable.ColReorder(table).fnOrder();
+// }
 
 /**
  * Switch the index and value for each element of an array. e.g.,
@@ -178,16 +179,16 @@ export function calculateTransformationOrder(currentOrder: number[], targetOrder
   return transformationOrder;
 }
 
-export function getDataTableHeaders(table: DataTables.DataTable): string[] {
-  const columns: DataTables.ColumnsMethods = table.columns();
-  let headers: string[] = [];
-  if (columns) {
-    // table.columns() return ColumnsMethods which is an array of arrays
-    //eslint-disable-next-line
-    const columnIndexes: number[] = (<any>columns)[0];
-    if (columnIndexes) {
-      headers = columnIndexes.map((value: number) => $(table.columns(value).header()).html());
-    }
-  }
-  return headers;
-}
+// export function getDataTableHeaders(table: DataTables.DataTable): string[] {
+//   const columns: DataTables.ColumnsMethods = table.columns();
+//   let headers: string[] = [];
+//   if (columns) {
+//     // table.columns() return ColumnsMethods which is an array of arrays
+//     //eslint-disable-next-line
+//     const columnIndexes: number[] = (<any>columns)[0];
+//     if (columnIndexes) {
+//       headers = columnIndexes.map((value: number) => $(table.columns(value).header()).html());
+//     }
+//   }
+//   return headers;
+// }

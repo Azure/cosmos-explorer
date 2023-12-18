@@ -1,9 +1,10 @@
+import * as DataTables from "datatables.net";
 import * as ko from "knockout";
 import React from "react";
 import * as _ from "underscore";
 import { KeyCodes } from "../../../Common/Constants";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { TableQuerySelectPanel } from "../../Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
@@ -158,7 +159,7 @@ export default class QueryViewModel {
       notify: "always",
     });
 
-  public runQuery = (): DataTables.DataTable => {
+  public runQuery = (): DataTables.Api<Element> => {
     let filter = this.setFilter();
     if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
@@ -176,7 +177,7 @@ export default class QueryViewModel {
     return this._tableEntityListViewModel.reloadTable(/*useSetting*/ false, /*resetHeaders*/ false);
   };
 
-  public clearQuery = (): DataTables.DataTable => {
+  public clearQuery = (): DataTables.Api<Element> => {
     this.queryText();
     this.topValue();
     this.selectText();

@@ -1,11 +1,11 @@
 import ko from "knockout";
 
-import * as DataTableOperations from "./DataTableOperations";
 import * as Constants from "../Constants";
+import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
+import * as DataTableOperations from "./DataTableOperations";
 import TableCommands from "./TableCommands";
 import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
 
 /*
  * Base class for data table row selection.
@@ -13,9 +13,9 @@ import * as Entities from "../Entities";
 export default class DataTableOperationManager {
   private _tableEntityListViewModel: TableEntityListViewModel;
   private _tableCommands: TableCommands;
-  private dataTable: JQuery;
+  private dataTable: JQuery<Element>;
 
-  constructor(table: JQuery, viewModel: TableEntityListViewModel, tableCommands: TableCommands) {
+  constructor(table: JQuery<Element>, viewModel: TableEntityListViewModel, tableCommands: TableCommands) {
     this.dataTable = table;
     this._tableEntityListViewModel = viewModel;
     this._tableCommands = tableCommands;
@@ -25,7 +25,7 @@ export default class DataTableOperationManager {
   }
 
   private click = (event: JQueryEventObject) => {
-    var elem: JQuery = $(event.currentTarget);
+    var elem: JQuery<Element> = $(event.currentTarget);
     this.updateLastSelectedItem(elem, event.shiftKey);
 
     if (Utilities.isEnvironmentCtrlPressed(event)) {
@@ -48,7 +48,7 @@ export default class DataTableOperationManager {
 
     if (isUpArrowKey || isDownArrowKey) {
       var lastSelectedItem: Entities.ITableEntity = this._tableEntityListViewModel.lastSelectedItem;
-      var dataTableRows: JQuery = $(Constants.htmlSelectors.dataTableAllRowsSelector);
+      var dataTableRows: JQuery<Element> = $(Constants.htmlSelectors.dataTableAllRowsSelector);
       var maximumIndex = dataTableRows.length - 1;
 
       // If can't find an index for lastSelectedItem, then either no item is previously selected or it goes across page.
@@ -60,7 +60,7 @@ export default class DataTableOperationManager {
         : -1;
       var nextIndex: number = isUpArrowKey ? lastSelectedItemIndex - 1 : lastSelectedItemIndex + 1;
       var safeIndex: number = Utilities.ensureBetweenBounds(nextIndex, 0, maximumIndex);
-      var selectedRowElement: JQuery = dataTableRows.eq(safeIndex);
+      var selectedRowElement: JQuery<Element> = dataTableRows.eq(safeIndex);
 
       if (selectedRowElement) {
         if (event.shiftKey) {
@@ -143,13 +143,13 @@ export default class DataTableOperationManager {
     return handled;
   }
 
-  private getEntityIdentity($elem: JQuery): Entities.ITableEntityIdentity {
+  private getEntityIdentity($elem: JQuery<Element>): Entities.ITableEntityIdentity {
     return {
       RowKey: $elem.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr),
     };
   }
 
-  private updateLastSelectedItem($elem: JQuery, isShiftSelect: boolean) {
+  private updateLastSelectedItem($elem: JQuery<Element>, isShiftSelect: boolean) {
     var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
     var entity = this._tableEntityListViewModel.getItemFromCurrentPage(
       this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
@@ -162,7 +162,7 @@ export default class DataTableOperationManager {
     }
   }
 
-  private applySingleSelection($elem: JQuery) {
+  private applySingleSelection($elem: JQuery<Element>) {
     if ($elem) {
       var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
 
@@ -179,7 +179,7 @@ export default class DataTableOperationManager {
     );
   }
 
-  private applyCtrlSelection($elem: JQuery): void {
+  private applyCtrlSelection($elem: JQuery<Element>): void {
     var koSelected: ko.ObservableArray<Entities.ITableEntity> = this._tableEntityListViewModel
       ? this._tableEntityListViewModel.selected
       : null;
@@ -200,7 +200,7 @@ export default class DataTableOperationManager {
     }
   }
 
-  private applyShiftSelection($elem: JQuery): void {
+  private applyShiftSelection($elem: JQuery<Element>): void {
     var anchorItem = this._tableEntityListViewModel.lastSelectedAnchorItem;
 
     // If anchor item doesn't exist, use the first available item of current page instead
@@ -228,7 +228,7 @@ export default class DataTableOperationManager {
     }
   }
 
-  private applyContextMenuSelection($elem: JQuery) {
+  private applyContextMenuSelection($elem: JQuery<Element>) {
     var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
 
     if (

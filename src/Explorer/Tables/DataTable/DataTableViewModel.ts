@@ -1,14 +1,15 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
 
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import CacheBase from "./CacheBase";
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import * as DataTables from "datatables.net";
 import * as CommonConstants from "../../../Common/Constants";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as Constants from "../Constants";
 import * as Entities from "../Entities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
+import CacheBase from "./CacheBase";
 
 // This is the format of the data we will have to pass to Datatable render callback,
 // and property names are defined by Datatable as well.
@@ -27,7 +28,7 @@ abstract class DataTableViewModel {
   public items = ko.observableArray<Entities.ITableEntity>();
   public selected = ko.observableArray<Entities.ITableEntity>();
 
-  public table: DataTables.DataTable;
+  public table: DataTables.Api<HTMLElement>;
 
   // The anchor item is for shift selection. i.e., select all items between anchor item and a give item.
   public lastSelectedAnchorItem: Entities.ITableEntity;
