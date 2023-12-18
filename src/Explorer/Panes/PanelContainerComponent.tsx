@@ -29,7 +29,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     };
   }
 
-  omponentDidMount(): void {
+  componentDidMount(): void {
     window.addEventListener("resize", () => this.setState({ height: this.getPanelHeight() }));
   }
 
@@ -62,12 +62,12 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         customWidth={this.props.panelWidth ? this.props.panelWidth : "440px"}
         headerClassName="panelHeader"
         onRenderNavigationContent={this.props.onRenderNavigationContent}
+        isFooterAtBottom={true}
         styles={{
           navigation: { borderBottom: "1px solid #cccccc" },
-          content: { padding: 0, height: "100%" },
-          scrollableContent: { height: "100%" },
+          content: { padding: 0 },
           header: { padding: "0 0 8px 34px" },
-          commands: { marginTop: 8 },
+          commands: { marginTop: 8, paddingTop: 0 },
         }}
         style={{ height: this.state.height }}
       >
