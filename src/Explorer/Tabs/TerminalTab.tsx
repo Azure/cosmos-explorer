@@ -35,7 +35,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
     private getUsername: () => string,
     private isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
     private kind: ViewModels.TerminalKind,
-  ) { }
+  ) {}
 
   public renderComponent(): JSX.Element {
     if (!this.isAllPublicIPAddressesEnabled()) {
