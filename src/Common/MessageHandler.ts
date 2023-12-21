@@ -56,6 +56,10 @@ export function sendCachedDataMessage<TResponseDataModel>(
   );
 }
 
+/**
+ *
+ * @param data Overwrite the data property of the message
+ */
 export function sendMessage(data: any): void {
   _sendMessage({
     signature: "pcIframe",
@@ -63,10 +67,6 @@ export function sendMessage(data: any): void {
   });
 }
 
-/**
- *
- * @param data Overwrite the data property of the message
- */
 export function sendReadyMessage(): void {
   _sendMessage({
     signature: "pcIframe",
