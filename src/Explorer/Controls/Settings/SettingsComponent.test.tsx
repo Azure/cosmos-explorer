@@ -9,7 +9,7 @@ import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
-import { isDirty, TtlType } from "./SettingsUtils";
+import { TtlType, isDirty } from "./SettingsUtils";
 import { collection } from "./TestUtils";
 jest.mock("../../../Common/dataAccess/getIndexTransformationProgress", () => ({
   getIndexTransformationProgress: jest.fn().mockReturnValue(undefined),
@@ -190,8 +190,8 @@ describe("SettingsComponent", () => {
       id: "id",
     };
     await settingsComponentInstance.onSaveClick();
-    expect(updateCollection).toBeCalled();
-    expect(updateOffer).toBeCalled();
+    expect(updateCollection).toHaveBeenCalled();
+    expect(updateOffer).toHaveBeenCalled();
   });
 
   it("revert resets state values", async () => {

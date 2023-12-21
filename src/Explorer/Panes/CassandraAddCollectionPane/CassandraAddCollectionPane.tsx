@@ -314,7 +314,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
         </Stack>
 
         {!isServerlessAccount() && isKeyspaceShared && !keyspaceCreateNew && (
-          <Stack>
+          <Stack horizontal verticalAlign="center">
             <input
               type="checkbox"
               id="tableSharedThroughput"

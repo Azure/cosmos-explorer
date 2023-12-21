@@ -3,6 +3,7 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
+import { getCopilotEnabled } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
@@ -92,7 +93,7 @@ export default class Explorer {
   };
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
-  private phoenixClient: PhoenixClient;
+  public phoenixClient: PhoenixClient;
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -274,6 +275,7 @@ export default class Explorer {
 
     const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
+    const THREE_DAYS_IN_MS = 259200000;
     const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
       userContext.databaseAccount?.systemData?.createdAt || "",
       NINETY_DAYS_IN_MS,
@@ -293,30 +295,30 @@ export default class Explorer {
       }
     }
 
-    // Try Cosmos DB subscription - survey shown to random 25% of users at day 1 in Data Explorer.
+    // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
     if (userContext.isTryCosmosDBSubscription) {
-      if (
-        isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS) &&
-        this.getRandomInt(100) < 25
-      ) {
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-        localStorage.setItem("lastSubmitted", Date.now().toString());
+      if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
+        this.sendNPSMessage();
       }
     } else {
-      // An existing account is lesser than 90 days old. For existing account show to random 10 % of users in Data Explorer.
-      if (isAccountNewerThanNinetyDays) {
-        if (this.getRandomInt(100) < 10) {
-          sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-          localStorage.setItem("lastSubmitted", Date.now().toString());
-        }
+      // An existing account is older than 3 days but less than 90 days old. For existing account show to 100% of users in Data Explorer.
+      if (
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) &&
+        isAccountNewerThanNinetyDays
+      ) {
+        this.sendNPSMessage();
       } else {
-        // An existing account is greater than 90 days. For existing account show to random 25 % of users in Data Explorer.
-        if (this.getRandomInt(100) < 25) {
-          sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-          localStorage.setItem("lastSubmitted", Date.now().toString());
+        // An existing account is greater than 90 days. For existing account show to random 33% of users in Data Explorer.
+        if (this.getRandomInt(100) < 33) {
+          this.sendNPSMessage();
         }
       }
     }
+  }
+
+  private sendNPSMessage() {
+    sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+    localStorage.setItem("lastSubmitted", Date.now().toString());
   }
 
   public async refreshDatabaseForResourceToken(): Promise<void> {
@@ -409,7 +411,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public async allocateContainer(poolId: PoolIdType): Promise<void> {
+  public async allocateContainer(poolId: PoolIdType, mode?: string): Promise<void> {
     const shouldUseNotebookStates = poolId === PoolIdType.DefaultPoolId ? true : false;
     const notebookServerInfo = shouldUseNotebookStates
       ? useNotebook.getState().notebookServerInfo
@@ -423,10 +425,6 @@ export default class Explorer {
       (notebookServerInfo === undefined ||
         (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined))
     ) {
-      const provisionData: IProvisionData = {
-        cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
-        poolId: shouldUseNotebookStates ? undefined : poolId,
-      };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
       };
@@ -434,14 +432,26 @@ export default class Explorer {
       shouldUseNotebookStates && useNotebook.getState().setConnectionInfo(connectionStatus);
 
       let connectionInfo;
+      let provisionData: IProvisionData;
       try {
         TelemetryProcessor.traceStart(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
-        shouldUseNotebookStates
-          ? useNotebook.getState().setIsAllocating(true)
-          : useQueryCopilot.getState().setIsAllocatingContainer(true);
-
+        if (shouldUseNotebookStates) {
+          useNotebook.getState().setIsAllocating(true);
+          provisionData = {
+            cosmosEndpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
+            poolId: undefined,
+          };
+        } else {
+          useQueryCopilot.getState().setIsAllocatingContainer(true);
+          provisionData = {
+            poolId: poolId,
+            databaseId: useTabs.getState().activeTab.collection.databaseId,
+            containerId: useTabs.getState().activeTab.collection.id(),
+            mode: mode,
+          };
+        }
         connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         if (!connectionInfo?.data?.phoenixServiceUrl) {
           throw new Error(`PhoenixServiceUrl is invalid!`);
@@ -457,19 +467,21 @@ export default class Explorer {
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         });
-        connectionStatus.status = ConnectionStatusType.Failed;
-        shouldUseNotebookStates
-          ? useNotebook.getState().resetContainerConnection(connectionStatus)
-          : useQueryCopilot.getState().resetContainerConnection();
-        if (error?.status === HttpStatusCodes.Forbidden && error.message) {
-          useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
-        } else {
-          useDialog
-            .getState()
-            .showOkModalDialog(
-              "Connection Failed",
-              "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
-            );
+        if (shouldUseNotebookStates) {
+          connectionStatus.status = ConnectionStatusType.Failed;
+          shouldUseNotebookStates
+            ? useNotebook.getState().resetContainerConnection(connectionStatus)
+            : useQueryCopilot.getState().resetContainerConnection();
+          if (error?.status === HttpStatusCodes.Forbidden && error.message) {
+            useDialog.getState().showOkModalDialog("Connection Failed", `${error.message}`);
+          } else {
+            useDialog
+              .getState()
+              .showOkModalDialog(
+                "Connection Failed",
+                "We are unable to connect to the temporary workspace. Please try again in a few minutes. If the error persists, file a support ticket.",
+              );
+          }
         }
         throw error;
       } finally {
@@ -483,11 +495,11 @@ export default class Explorer {
     }
   }
 
-  private async setNotebookInfo(
+  public async setNotebookInfo(
     shouldUseNotebookStates: boolean,
     connectionInfo: IResponse<IPhoenixServiceInfo>,
     connectionStatus: DataModels.ContainerConnectionInfo,
-  ) {
+  ): Promise<void> {
     const containerData = {
       forwardingId: connectionInfo.data.forwardingId,
       dbAccountName: userContext.databaseAccount.name,
@@ -508,6 +520,7 @@ export default class Explorer {
     shouldUseNotebookStates
       ? useNotebook.getState().setNotebookServerInfo(noteBookServerInfo)
       : useQueryCopilot.getState().setNotebookServerInfo(noteBookServerInfo);
+
     shouldUseNotebookStates &&
       this.notebookManager?.notebookClient
         .getMemoryUsage()
@@ -1368,6 +1381,15 @@ export default class Explorer {
     }
 
     await this.refreshSampleData();
+  }
+
+  public async configureCopilot(): Promise<void> {
+    if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
+      return;
+    }
+    const copilotEnabled = await getCopilotEnabled();
+    useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
+    useQueryCopilot.getState().setCopilotUserDBEnabled(copilotEnabled);
   }
 
   public async refreshSampleData(): Promise<void> {

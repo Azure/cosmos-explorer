@@ -133,6 +133,10 @@ export enum Action {
   CompleteUITour,
   OpenQueryCopilotFromSplashScreen,
   OpenQueryCopilotFromNewQuery,
+  ActivateQueryCopilot,
+  DeactivateQueryCopilot,
+  QueryGenerationFromCopilotPrompt,
+  QueryEdited,
   ExecuteQueryGeneratedFromQueryCopilot,
 }
 

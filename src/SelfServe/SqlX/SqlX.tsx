@@ -7,7 +7,6 @@ import {
   selfServeTraceSuccess,
 } from "../SelfServeTelemetryProcessor";
 import {
-  ChoiceItem,
   Description,
   DescriptionType,
   Info,
@@ -18,6 +17,9 @@ import {
   SelfServeBaseClass,
   SmartUiInput,
 } from "../SelfServeTypes";
+
+import type { ChoiceItem } from "../SelfServeTypes";
+
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,

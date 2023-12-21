@@ -69,8 +69,8 @@ const addInitialCodeCellEpic = (
   state$: StateObservable<AppState>,
 ): Observable<{} | actions.CreateCellBelow> => {
   return action$.pipe(
-    ofType(actions.FETCH_CONTENT_FULFILLED),
-    mergeMap((action) => {
+    ofType(actions.FETCH_CONTENT_FULFILLED) as any,
+    mergeMap((action: any) => {
       const state = state$.value;
       const contentRef = action.payload.contentRef;
       const model = selectors.model(state, { contentRef });
@@ -116,7 +116,7 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
  */
 export const acquireKernelInfoEpic = (action$: Observable<actions.NewKernelAction>) => {
   return action$.pipe(
-    ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
+    ofType(actions.LAUNCH_KERNEL_SUCCESSFUL) as any,
     switchMap((action: actions.NewKernelAction) => {
       const {
         payload: {
@@ -271,9 +271,9 @@ export const launchWebSocketKernelEpic = (
   state$: StateObservable<CdbAppState>,
 ) => {
   return action$.pipe(
-    ofType(actions.LAUNCH_KERNEL_BY_NAME),
+    ofType(actions.LAUNCH_KERNEL_BY_NAME) as any,
     // Only accept jupyter servers for the host with this epic
-    filter(() => selectors.isCurrentHostJupyter(state$.value)),
+    filter(() => selectors.isCurrentHostJupyter(state$.value as never)),
     switchMap((action: actions.LaunchKernelByNameAction) => {
       const state = state$.value;
       const host = selectors.currentHost(state);
@@ -382,7 +382,7 @@ export const restartWebSocketKernelEpic = (
   state$: StateObservable<AppState>,
 ) =>
   action$.pipe(
-    ofType(actions.RESTART_KERNEL),
+    ofType(actions.RESTART_KERNEL) as any,
     concatMap((action: actions.RestartKernel) => {
       const state = state$.value;
 
@@ -449,7 +449,7 @@ export const restartWebSocketKernelEpic = (
       });
 
       const awaitKernelReady = action$.pipe(
-        ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
+        ofType(actions.LAUNCH_KERNEL_SUCCESSFUL) as any,
         filter((action: actions.NewKernelAction | actions.RestartKernel) => action.payload.kernelRef === newKernelRef),
         take(1),
         timeout(60000), // If kernel doesn't come up within this interval we will abort follow-on actions.
@@ -492,9 +492,9 @@ const changeWebSocketKernelEpic = (
   state$: StateObservable<AppState>,
 ) => {
   return action$.pipe(
-    ofType(actions.CHANGE_KERNEL_BY_NAME),
+    ofType(actions.CHANGE_KERNEL_BY_NAME) as any,
     // Only accept jupyter servers for the host with this epic
-    filter(() => selectors.isCurrentHostJupyter(state$.value)),
+    filter(() => selectors.isCurrentHostJupyter(state$.value as never)),
     switchMap((action: actions.ChangeKernelByName) => {
       const {
         payload: { contentRef, oldKernelRef, kernelSpecName },
@@ -574,8 +574,8 @@ const focusInitialCodeCellEpic = (
   state$: StateObservable<AppState>,
 ): Observable<{} | actions.FocusCell> => {
   return action$.pipe(
-    ofType(actions.CREATE_CELL_APPEND),
-    mergeMap((action) => {
+    ofType(actions.CREATE_CELL_APPEND) as any,
+    mergeMap((action: any) => {
       const state = state$.value;
       const contentRef = action.payload.contentRef;
       const model = selectors.model(state, { contentRef });
@@ -616,8 +616,8 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
       actions.SAVE_FULFILLED,
       actions.SAVE_FAILED,
       actions.FETCH_CONTENT_FAILED,
-    ),
-    mergeMap((action) => {
+    ) as any,
+    mergeMap((action: any) => {
       switch (action.type) {
         case actions.RESTART_KERNEL_SUCCESSFUL: {
           const title = "Kernel restart";
@@ -662,8 +662,8 @@ const handleKernelConnectionLostEpic = (
   state$: StateObservable<CdbAppState>,
 ): Observable<CdbActions.UpdateKernelRestartDelayAction | actions.RestartKernel | {}> => {
   return action$.pipe(
-    ofType(actions.UPDATE_DISPLAY_FAILED),
-    mergeMap((action) => {
+    ofType(actions.UPDATE_DISPLAY_FAILED) as any,
+    mergeMap((action: any) => {
       const state = state$.value;
 
       const msg = "Notebook was disconnected from kernel";
@@ -721,8 +721,8 @@ export const cleanKernelOnConnectionLostEpic = (
   state$: StateObservable<AppState>,
 ): Observable<actions.KillKernelSuccessful> => {
   return action$.pipe(
-    ofType(actions.UPDATE_DISPLAY_FAILED),
-    switchMap((action) => {
+    ofType(actions.UPDATE_DISPLAY_FAILED) as any,
+    switchMap((action: any) => {
       const contentRef = action.payload.contentRef;
       const kernelRef = selectors.kernelRefByContentRef(state$.value, { contentRef });
       return of(
@@ -744,8 +744,8 @@ const executeFocusedCellAndFocusNextEpic = (
   state$: StateObservable<AppState>,
 ): Observable<{} | actions.FocusNextCellEditor> => {
   return action$.pipe(
-    ofType(CdbActions.EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT),
-    mergeMap((action) => {
+    ofType(CdbActions.EXECUTE_FOCUSED_CELL_AND_FOCUS_NEXT) as any,
+    mergeMap((action: any) => {
       const contentRef = action.payload.contentRef;
       return concat(
         of(actions.executeFocusedCell({ contentRef })),
@@ -765,8 +765,8 @@ const closeUnsupportedMimetypesEpic = (
   state$: StateObservable<AppState>,
 ): Observable<{}> => {
   return action$.pipe(
-    ofType(actions.FETCH_CONTENT_FULFILLED),
-    mergeMap((action) => {
+    ofType(actions.FETCH_CONTENT_FULFILLED) as any,
+    mergeMap((action: any) => {
       const mimetype = action.payload.model.mimetype;
       if (!TextFile.handles(mimetype)) {
         const filepath = action.payload.filepath;
@@ -796,8 +796,8 @@ const closeContentFailedToFetchEpic = (
   state$: StateObservable<AppState>,
 ): Observable<{}> => {
   return action$.pipe(
-    ofType(actions.FETCH_CONTENT_FAILED),
-    mergeMap((action) => {
+    ofType(actions.FETCH_CONTENT_FAILED) as any,
+    mergeMap((action: any) => {
       const filepath = action.payload.filepath;
       // Close tab and show error message
       useTabs
@@ -818,7 +818,7 @@ const traceNotebookTelemetryEpic = (
   state$: StateObservable<CdbAppState>,
 ): Observable<{}> => {
   return action$.pipe(
-    ofType(cdbActions.TRACE_NOTEBOOK_TELEMETRY),
+    ofType(cdbActions.TRACE_NOTEBOOK_TELEMETRY) as any,
     mergeMap((action: cdbActions.TraceNotebookTelemetryAction) => {
       const state = state$.value;
 
@@ -844,7 +844,7 @@ const traceNotebookInfoEpic = (
   state$: StateObservable<AppState>,
 ): Observable<{} | cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
-    ofType(actions.FETCH_CONTENT_FULFILLED),
+    ofType(actions.FETCH_CONTENT_FULFILLED) as any,
     mergeMap((action: { payload: any }) => {
       const state = state$.value;
       const contentRef = action.payload.contentRef;
@@ -897,7 +897,7 @@ const traceNotebookKernelEpic = (
   state$: StateObservable<AppState>,
 ): Observable<cdbActions.TraceNotebookTelemetryAction> => {
   return action$.pipe(
-    ofType(actions.LAUNCH_KERNEL_SUCCESSFUL),
+    ofType(actions.LAUNCH_KERNEL_SUCCESSFUL) as any,
     mergeMap((action: { payload: any; type: string }) => {
       return of(
         cdbActions.traceNotebookTelemetry({
@@ -917,8 +917,8 @@ const resetCellStatusOnExecuteCanceledEpic = (
   state$: StateObservable<AppState>,
 ): Observable<actions.UpdateCellStatus> => {
   return action$.pipe(
-    ofType(actions.EXECUTE_CANCELED),
-    mergeMap((action) => {
+    ofType(actions.EXECUTE_CANCELED) as any,
+    mergeMap((action: any) => {
       const contentRef = action.payload.contentRef;
       const model = state$.value.core.entities.contents.byRef.get(contentRef).model;
       let busyCellIds: string[] = [];
@@ -960,8 +960,8 @@ export function autoSaveCurrentContentEpic(
   state$: StateObservable<AppState>,
 ): Observable<actions.Save> {
   return state$.pipe(
-    map((state) => autoSaveInterval(state)),
-    switchMap((time) => interval(time)),
+    map((state) => autoSaveInterval(state)) as any,
+    switchMap((time) => interval(time as number)) as any,
     mergeMap(() => {
       const state = state$.value;
       return from(
@@ -976,7 +976,7 @@ export function autoSaveCurrentContentEpic(
           )
           .keys(),
       );
-    }),
+    }) as any,
     filter((contentRef: ContentRef) => {
       const model = selectors.model(state$.value, { contentRef });
       const content = selectors.content(state$.value, { contentRef });
@@ -985,12 +985,12 @@ export function autoSaveCurrentContentEpic(
         model.type === "notebook" &&
         NotebookUtil.getContentProviderType(content.filepath) !== NotebookContentProviderType.JupyterContentProviderType
       ) {
-        return selectors.notebook.isDirty(model);
+        return selectors.notebook.isDirty(model as never);
       }
       return false;
-    }),
-    map((contentRef: ContentRef) => actions.save({ contentRef })),
-  );
+    }) as any,
+    map((contentRef: ContentRef) => actions.save({ contentRef })) as any,
+  ) as any;
 }
 
 export const allEpics = [

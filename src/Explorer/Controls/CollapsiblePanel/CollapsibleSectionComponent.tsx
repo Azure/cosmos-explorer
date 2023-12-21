@@ -7,6 +7,7 @@ export interface CollapsibleSectionProps {
   title: string;
   isExpandedByDefault: boolean;
   onExpand?: () => void;
+  children: JSX.Element;
 }
 
 export interface CollapsibleSectionState {

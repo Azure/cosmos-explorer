@@ -48,7 +48,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   public componentDidUpdate(previous: EditorReactProps) {
     if (this.props.content !== previous.content) {
-      this.editor.setValue(this.props.content);
+      this.editor?.setValue(this.props.content);
     }
   }
 
@@ -93,7 +93,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
    * Create the monaco editor and attach to DOM
    */
   private async createEditor(createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
-    const options: monaco.editor.IEditorConstructionOptions = {
+    const options: monaco.editor.IStandaloneEditorConstructionOptions = {
       language: this.props.language,
       value: this.props.content,
       readOnly: this.props.isReadOnly,
@@ -111,7 +111,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
     this.rootNode.innerHTML = "";
     const monaco = await loadMonaco();
-    createCallback(monaco.editor.create(this.rootNode, options));
+    createCallback(monaco?.editor?.create(this.rootNode, options));
 
     if (this.rootNode.innerHTML) {
       this.setState({

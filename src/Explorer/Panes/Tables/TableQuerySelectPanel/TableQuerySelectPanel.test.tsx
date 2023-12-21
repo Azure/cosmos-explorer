@@ -29,7 +29,6 @@ describe("Table query select Panel", () => {
   it("Should checked availableCheckbox by default", () => {
     const wrapper = mount(<TableQuerySelectPanel {...props} />);
     expect(wrapper.find("#availableCheckbox").first().props()).toEqual({
-      ariaPositionInSet: 0,
       id: "availableCheckbox",
       label: "Available Columns",
       checked: true,

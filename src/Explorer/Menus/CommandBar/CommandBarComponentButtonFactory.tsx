@@ -1,6 +1,3 @@
-import { Action } from "Shared/Telemetry/TelemetryConstants";
-import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
-import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
@@ -337,13 +334,8 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        if (useSelectedNode.getState().isQueryCopilotCollectionSelected()) {
-          useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
-          traceOpen(Action.OpenQueryCopilotFromNewQuery, { apiType: userContext.apiType });
-        } else {
-          const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-          selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
-        }
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
+        selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
@@ -523,7 +515,7 @@ function createOpenTerminalButtonByKind(
       case ViewModels.TerminalKind.Postgres:
         return "PSQL";
       case ViewModels.TerminalKind.VCoreMongo:
-        return "MongoDB (vcore)";
+        return "MongoDB (vCore)";
       default:
         return "";
     }

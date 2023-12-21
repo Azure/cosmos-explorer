@@ -28,7 +28,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
         >
           <Text>
             <span
-              className="css-53"
+              className="css-109"
             >
               Select the columns that you want to query.
             </span>
@@ -37,14 +37,12 @@ exports[`Table query select Panel should render Default properly 1`] = `
             className="column-select-view"
           >
             <StyledCheckboxBase
-              ariaPositionInSet={0}
               checked={true}
               id="availableCheckbox"
               label="Available Columns"
               onChange={[Function]}
             >
               <CheckboxBase
-                ariaPositionInSet={0}
                 checked={true}
                 id="availableCheckbox"
                 label="Available Columns"
@@ -325,33 +323,30 @@ exports[`Table query select Panel should render Default properly 1`] = `
                 }
               >
                 <div
-                  className="ms-Checkbox is-checked is-enabled root-54"
+                  className="ms-Checkbox is-checked is-enabled root-110"
                 >
                   <input
-                    aria-checked="true"
-                    aria-label="Available Columns"
-                    aria-posinset={0}
                     checked={true}
-                    className="input-55"
+                    className="input-111"
                     data-ktp-execute-target={true}
                     id="availableCheckbox"
                     onChange={[Function]}
                     type="checkbox"
                   />
                   <label
-                    className="ms-Checkbox-label label-56"
+                    className="ms-Checkbox-label label-112"
                     htmlFor="availableCheckbox"
                   >
                     <div
-                      className="ms-Checkbox-checkbox checkbox-57"
+                      className="ms-Checkbox-checkbox checkbox-113"
                       data-ktp-target={true}
                     >
                       <StyledIconBase
-                        className="ms-Checkbox-checkmark checkmark-58"
+                        className="ms-Checkbox-checkmark checkmark-114"
                         iconName="CheckMark"
                       >
                         <IconBase
-                          className="ms-Checkbox-checkmark checkmark-58"
+                          className="ms-Checkbox-checkmark checkmark-114"
                           iconName="CheckMark"
                           styles={[Function]}
                           theme={
@@ -630,7 +625,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         >
                           <i
                             aria-hidden={true}
-                            className="ms-Checkbox-checkmark checkmark-61"
+                            className="ms-Checkbox-checkmark checkmark-118"
                             data-icon-name="CheckMark"
                           >
                             
@@ -639,8 +634,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                       </StyledIconBase>
                     </div>
                     <span
-                      aria-hidden="true"
-                      className="ms-Checkbox-text text-59"
+                      className="ms-Checkbox-text text-115"
                     >
                       Available Columns
                     </span>
@@ -649,7 +643,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
               </CheckboxBase>
             </StyledCheckboxBase>
             <StyledCheckboxBase
-              ariaPositionInSet={1}
               checked={true}
               disabled={false}
               key=""
@@ -657,7 +650,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
               onChange={[Function]}
             >
               <CheckboxBase
-                ariaPositionInSet={1}
                 checked={true}
                 disabled={false}
                 label=""
@@ -938,15 +930,12 @@ exports[`Table query select Panel should render Default properly 1`] = `
                 }
               >
                 <div
-                  className="ms-Checkbox is-checked is-enabled root-54"
+                  className="ms-Checkbox is-checked is-enabled root-110"
                 >
                   <input
-                    aria-checked="true"
                     aria-disabled={false}
-                    aria-label=""
-                    aria-posinset={1}
                     checked={true}
-                    className="input-55"
+                    className="input-111"
                     data-ktp-execute-target={true}
                     disabled={false}
                     id="checkbox-0"
@@ -954,19 +943,19 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     type="checkbox"
                   />
                   <label
-                    className="ms-Checkbox-label label-56"
+                    className="ms-Checkbox-label label-112"
                     htmlFor="checkbox-0"
                   >
                     <div
-                      className="ms-Checkbox-checkbox checkbox-57"
+                      className="ms-Checkbox-checkbox checkbox-113"
                       data-ktp-target={true}
                     >
                       <StyledIconBase
-                        className="ms-Checkbox-checkmark checkmark-58"
+                        className="ms-Checkbox-checkmark checkmark-114"
                         iconName="CheckMark"
                       >
                         <IconBase
-                          className="ms-Checkbox-checkmark checkmark-58"
+                          className="ms-Checkbox-checkmark checkmark-114"
                           iconName="CheckMark"
                           styles={[Function]}
                           theme={
@@ -1245,7 +1234,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         >
                           <i
                             aria-hidden={true}
-                            className="ms-Checkbox-checkmark checkmark-61"
+                            className="ms-Checkbox-checkmark checkmark-118"
                             data-icon-name="CheckMark"
                           >
                             
@@ -2149,7 +2138,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         "iconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -2175,7 +2164,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         "menuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -2187,14 +2176,16 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -2225,7 +2216,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "display": "inline-block",
                             "padding": "0 16px",
                             "selectors": Object {
-                              ":active > *": Object {
+                              ":active > span": Object {
                                 "left": 0,
                                 "position": "relative",
                                 "top": 0,
@@ -2252,7 +2243,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "borderColor": "WindowText",
@@ -2277,14 +2268,16 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -2318,7 +2311,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "backgroundColor": "#f3f2f1",
                             "color": "#d2d0ce",
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -2335,7 +2328,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "border": "1px solid #106ebe",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "Highlight",
                               "borderColor": "Highlight",
                               "color": "Window",
@@ -2347,7 +2340,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "border": "1px solid #005a9e",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "WindowText",
                               "borderColor": "WindowText",
@@ -2363,12 +2356,13 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "overflow": "hidden",
                           "padding": 0,
                           "position": "absolute",
+                          "whiteSpace": "nowrap",
                           "width": 1,
                         },
                         "splitButtonContainer": Array [
                           Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "border": "none",
                               },
                             },
@@ -2379,14 +2373,16 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid #ffffff",
+                                "borderRadius": undefined,
                                 "bottom": 3,
                                 "content": "\\"\\"",
                                 "left": 3,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": "none",
                                 "position": "absolute",
                                 "right": 3,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "none",
                                     "bottom": -2,
                                     "left": -2,
@@ -2409,13 +2405,21 @@ exports[`Table query select Panel should render Default properly 1`] = `
                                 "borderBottomRightRadius": "0",
                                 "borderRight": "none",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                               },
                               ".ms-Button--primary": Object {
                                 "border": "none",
                                 "borderBottomRightRadius": "0",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  ":active": Object {
+                                    "border": "none",
+                                  },
+                                  ":hover": Object {
+                                    "border": "none",
+                                  },
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "MsHighContrastAdjust": "none",
                                     "backgroundColor": "Window",
                                     "border": "1px solid WindowText",
@@ -2428,7 +2432,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                               ".ms-Button--primary + .ms-Button": Object {
                                 "border": "none",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "1px solid WindowText",
                                     "borderLeftWidth": "0",
                                   },
@@ -2441,7 +2445,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -2455,7 +2459,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -2469,7 +2473,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "border": "none",
                           "outline": "none",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "Window",
                               "borderColor": "GrayText",
@@ -2485,7 +2489,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Highlight",
                                   "color": "Window",
                                 },
@@ -2494,7 +2498,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             ".ms-Button.is-disabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -2510,7 +2514,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                               },
                             },
@@ -2522,7 +2526,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "WindowText",
                               },
                             },
@@ -2535,7 +2539,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "position": "absolute",
                           "right": 31,
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "GrayText",
                             },
                           },
@@ -2557,18 +2561,18 @@ exports[`Table query select Panel should render Default properly 1`] = `
                               ":hover": Object {
                                 "backgroundColor": "#106ebe",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "Highlight",
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
-                                "backgroundColor": "WindowText",
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "backgroundColor": "Canvas",
                               },
                             },
                           },
                           Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               ".ms-Button-menuIcon": Object {
                                 "color": "WindowText",
                               },
@@ -2618,7 +2622,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Button--primary": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
@@ -2627,7 +2631,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                               },
                               ".ms-Button-menuIcon": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
@@ -2635,7 +2639,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                               ":hover": Object {
                                 "cursor": "default",
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "border": "1px solid GrayText",
                                 "color": "GrayText",
@@ -2657,14 +2661,16 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Fabric--isFocusVisible &:focus:after": Object {
                               "border": "1px solid #ffffff",
+                              "borderRadius": undefined,
                               "bottom": 3,
                               "content": "\\"\\"",
                               "left": 3,
                               "outline": "1px solid #605e5c",
+                              "pointerEvents": undefined,
                               "position": "absolute",
                               "right": 3,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "border": "none",
                                   "bottom": -2,
                                   "left": -2,
@@ -2686,7 +2692,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         "splitButtonMenuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -2976,7 +2982,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                   >
                     <button
                       aria-label="OK"
-                      className="ms-Button ms-Button--primary root-68"
+                      className="ms-Button ms-Button--primary root-125"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2988,14 +2994,14 @@ exports[`Table query select Panel should render Default properly 1`] = `
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-69"
+                        className="ms-Button-flexContainer flexContainer-126"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-70"
+                          className="ms-Button-textContainer textContainer-127"
                         >
                           <span
-                            className="ms-Button-label label-72"
+                            className="ms-Button-label label-129"
                             id="id__1"
                             key="id__1"
                           >

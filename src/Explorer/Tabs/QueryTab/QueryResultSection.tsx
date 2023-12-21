@@ -475,7 +475,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
                   {queryResults && !error && (
                     <div className="queryMetricsSummaryContainer">
                       <div className="queryMetricsSummary">
-                        <h5>Query Statistics</h5>
+                        <h3>Query Statistics</h3>
                         <DetailsList
                           items={generateQueryStatsItems()}
                           columns={columns}

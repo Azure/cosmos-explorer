@@ -35,10 +35,11 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
 
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
+
   const onSubmit = async (): Promise<void> => {
     const collection = useSelectedNode.getState().findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
-      const errorMessage = "Input " + collectionName + " id does not match the selected " + collectionName;
+      const errorMessage = "Input id " + inputCollectionName + " does not match the selected " + collection.id();
       setFormError(errorMessage);
       NotificationConsoleUtils.logConsoleError(
         `Error while deleting ${collectionName} ${collection.id()}: ${errorMessage}`,

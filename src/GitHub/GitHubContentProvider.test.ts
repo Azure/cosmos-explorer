@@ -53,130 +53,152 @@ const sampleNotebookModel: IContent<"notebook"> = {
 };
 
 describe("GitHubContentProvider remove", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync");
+    jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
     const response = await gitHubContentProvider.remove(undefined, "invalid path").toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
-    expect(gitHubClient.getContentsAsync).not.toBeCalled();
+    expect(gitHubClient.getContentsAsync).not.toHaveBeenCalled();
   });
 
   it("errors on failed read", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.remove(undefined, sampleGitHubUri).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
   });
 
   it("errors on failed delete", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
-    );
-    spyOn(GitHubClient.prototype, "deleteFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }));
+    jest
+      .spyOn(GitHubClient.prototype, "deleteFileAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.remove(undefined, sampleGitHubUri).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
-    expect(gitHubClient.deleteFileAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
+    expect(gitHubClient.deleteFileAsync).toHaveBeenCalled();
   });
 
   it("removes notebook", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
-    );
-    spyOn(GitHubClient.prototype, "deleteFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }),
-    );
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }));
+    jest
+      .spyOn(GitHubClient.prototype, "deleteFileAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }));
 
     const response = await gitHubContentProvider.remove(undefined, sampleGitHubUri).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.NoContent);
-    expect(gitHubClient.deleteFileAsync).toBeCalled();
+    expect(gitHubClient.deleteFileAsync).toHaveBeenCalled();
     expect(response.response).toBeUndefined();
   });
 });
 
 describe("GitHubContentProvider get", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync");
+    jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
     const response = await gitHubContentProvider.get(undefined, "invalid path", undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
-    expect(gitHubClient.getContentsAsync).not.toBeCalled();
+    expect(gitHubClient.getContentsAsync).not.toHaveBeenCalled();
   });
 
   it("errors on failed read", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.get(undefined, sampleGitHubUri, undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
   });
 
   it("reads notebook", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
-    );
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }));
 
     const response = await gitHubContentProvider.get(undefined, sampleGitHubUri, {}).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
     expect(response.response).toEqual(sampleNotebookModel);
   });
 });
 
 describe("GitHubContentProvider update", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync");
+    jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
     const response = await gitHubContentProvider.update(undefined, "invalid path", undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
-    expect(gitHubClient.getContentsAsync).not.toBeCalled();
+    expect(gitHubClient.getContentsAsync).not.toHaveBeenCalled();
   });
 
   it("errors on failed read", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.update(undefined, sampleGitHubUri, undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
   });
 
   it("errors on failed rename", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
-    );
-    spyOn(GitHubClient.prototype, "renameFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }));
+    jest
+      .spyOn(GitHubClient.prototype, "renameFileAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.update(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
-    expect(gitHubClient.renameFileAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
+    expect(gitHubClient.renameFileAsync).toHaveBeenCalled();
   });
 
   it("updates notebook", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
-    );
-    spyOn(GitHubClient.prototype, "renameFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }),
-    );
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }));
+    jest
+      .spyOn(GitHubClient.prototype, "renameFileAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }));
 
     const response = await gitHubContentProvider.update(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
-    expect(gitHubClient.renameFileAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
+    expect(gitHubClient.renameFileAsync).toHaveBeenCalled();
     expect(response.response.type).toEqual(sampleNotebookModel.type);
     expect(response.response.name).toEqual(sampleNotebookModel.name);
     expect(response.response.path).toEqual(sampleNotebookModel.path);
@@ -185,33 +207,39 @@ describe("GitHubContentProvider update", () => {
 });
 
 describe("GitHubContentProvider create", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
-    spyOn(GitHubClient.prototype, "createOrUpdateFileAsync");
+    jest.spyOn(GitHubClient.prototype, "createOrUpdateFileAsync");
 
     const response = await gitHubContentProvider.create(undefined, "invalid path", sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
-    expect(gitHubClient.createOrUpdateFileAsync).not.toBeCalled();
+    expect(gitHubClient.createOrUpdateFileAsync).not.toHaveBeenCalled();
   });
 
   it("errors on failed create", async () => {
-    spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "createOrUpdateFileAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.create(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.createOrUpdateFileAsync).toBeCalled();
+    expect(gitHubClient.createOrUpdateFileAsync).toHaveBeenCalled();
   });
 
   it("creates notebook", async () => {
-    spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.Created, data: gitHubCommit }),
-    );
+    jest
+      .spyOn(GitHubClient.prototype, "createOrUpdateFileAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.Created, data: gitHubCommit }));
 
     const response = await gitHubContentProvider.create(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.Created);
-    expect(gitHubClient.createOrUpdateFileAsync).toBeCalled();
+    expect(gitHubClient.createOrUpdateFileAsync).toHaveBeenCalled();
     expect(response.response.type).toEqual(sampleNotebookModel.type);
     expect(response.response.name).toBeDefined();
     expect(response.response.path).toBeDefined();
@@ -220,50 +248,58 @@ describe("GitHubContentProvider create", () => {
 });
 
 describe("GitHubContentProvider save", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors on invalid path", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync");
+    jest.spyOn(GitHubClient.prototype, "getContentsAsync");
 
     const response = await gitHubContentProvider.save(undefined, "invalid path", undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
-    expect(gitHubClient.getContentsAsync).not.toBeCalled();
+    expect(gitHubClient.getContentsAsync).not.toHaveBeenCalled();
   });
 
   it("errors on failed read", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.save(undefined, sampleGitHubUri, undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
   });
 
   it("errors on failed update", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
-    );
-    spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }));
+    jest
+      .spyOn(GitHubClient.prototype, "createOrUpdateFileAsync")
+      .mockReturnValue(Promise.resolve({ status: 888, data: undefined }));
 
     const response = await gitHubContentProvider.save(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
-    expect(gitHubClient.createOrUpdateFileAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
+    expect(gitHubClient.createOrUpdateFileAsync).toHaveBeenCalled();
   });
 
   it("saves notebook", async () => {
-    spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }),
-    );
-    spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(
-      Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }),
-    );
+    jest
+      .spyOn(GitHubClient.prototype, "getContentsAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile }));
+    jest
+      .spyOn(GitHubClient.prototype, "createOrUpdateFileAsync")
+      .mockReturnValue(Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit }));
 
     const response = await gitHubContentProvider.save(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(gitHubClient.getContentsAsync).toBeCalled();
-    expect(gitHubClient.createOrUpdateFileAsync).toBeCalled();
+    expect(gitHubClient.getContentsAsync).toHaveBeenCalled();
+    expect(gitHubClient.createOrUpdateFileAsync).toHaveBeenCalled();
     expect(response.response.type).toEqual(sampleNotebookModel.type);
     expect(response.response.name).toEqual(sampleNotebookModel.name);
     expect(response.response.path).toEqual(sampleNotebookModel.path);
@@ -272,6 +308,10 @@ describe("GitHubContentProvider save", () => {
 });
 
 describe("GitHubContentProvider listCheckpoints", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.listCheckpoints().toPromise();
     expect(response).toBeDefined();
@@ -280,6 +320,10 @@ describe("GitHubContentProvider listCheckpoints", () => {
 });
 
 describe("GitHubContentProvider createCheckpoint", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.createCheckpoint().toPromise();
     expect(response).toBeDefined();
@@ -288,6 +332,10 @@ describe("GitHubContentProvider createCheckpoint", () => {
 });
 
 describe("GitHubContentProvider deleteCheckpoint", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.deleteCheckpoint().toPromise();
     expect(response).toBeDefined();
@@ -296,6 +344,10 @@ describe("GitHubContentProvider deleteCheckpoint", () => {
 });
 
 describe("GitHubContentProvider restoreFromCheckpoint", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("errors for everything", async () => {
     const response = await gitHubContentProvider.restoreFromCheckpoint().toPromise();
     expect(response).toBeDefined();

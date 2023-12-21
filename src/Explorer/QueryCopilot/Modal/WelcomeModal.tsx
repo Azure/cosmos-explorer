@@ -1,7 +1,6 @@
 import { IconButton, Image, Link, Modal, PrimaryButton, Stack, StackItem, Text } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import React from "react";
-import Database from "../../../../images/CopilotDatabase.svg";
 import Flash from "../../../../images/CopilotFlash.svg";
 import Thumb from "../../../../images/CopilotThumb.svg";
 import CoplilotWelcomeIllustration from "../../../../images/CopliotWelcomeIllustration.svg";
@@ -23,8 +22,10 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
         onDismiss={hideModal}
         isBlocking={false}
         styles={{
-          scrollableContent: {
-            minHeight: 680,
+          main: {
+            maxHeight: 600,
+            borderRadius: 10,
+            overflow: "hidden",
           },
         }}
       >
@@ -36,9 +37,6 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               </Stack.Item>
             </Stack>
             <Stack horizontal grow={1} horizontalAlign="end" verticalAlign="start" className="exitPadding">
-              <Stack.Item className="previewMargin">
-                <Text className="preview">Preview</Text>
-              </Stack.Item>
               <Stack.Item>
                 <IconButton
                   onClick={hideModal}
@@ -52,7 +50,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
           </Stack>
           <Stack horizontalAlign="center">
             <Stack.Item align="center" style={{ textAlign: "center" }}>
-              <Text className="title bold">Welcome to Copilot in Azure Cosmos DB (Private Preview)</Text>
+              <Text className="title bold">Welcome to Microsoft Copilot for Azure in Cosmos DB</Text>
             </Stack.Item>
             <Stack.Item align="center" className="text">
               <Stack horizontal>
@@ -69,7 +67,7 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               <Text>
                 Ask Copilot to generate a query by describing the query in your words.
                 <br />
-                <Link target="_blank" href="https://aka.ms/cdb-copilot-learn-more">
+                <Link target="_blank" href="https://aka.ms/MicrosoftCopilotForAzureInCDBHowTo">
                   Learn more
                 </Link>
               </Text>
@@ -87,31 +85,11 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
                 </StackItem>
               </Stack>
               <Text>
-                AI-generated content can have mistakes. Make sure it’s accurate and appropriate before using it.
+                AI-generated content can have mistakes. Make sure it is accurate and appropriate before executing the
+                query.
                 <br />
                 <Link target="_blank" href="https://aka.ms/cdb-copilot-preview-terms">
-                  Read preview terms
-                </Link>
-              </Text>
-            </Stack.Item>
-            <Stack.Item align="center" className="text">
-              <Stack horizontal>
-                <StackItem align="start" className="imageTextPadding">
-                  <Image src={Database} />
-                </StackItem>
-                <StackItem align="start">
-                  <Text className="bold">
-                    Query Copilot works on a sample database.
-                    <br />
-                  </Text>
-                </StackItem>
-              </Stack>
-              <Text>
-                While in Private Preview, Query Copilot is setup to work on sample database we have configured for you
-                at no cost.
-                <br />
-                <Link target="_blank" href="https://aka.ms/cdb-copilot-learn-more">
-                  Learn more
+                  Read our preview terms here
                 </Link>
               </Text>
             </Stack.Item>

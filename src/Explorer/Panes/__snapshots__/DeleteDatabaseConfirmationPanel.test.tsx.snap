@@ -25,13 +25,13 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
           verticalAlign="center"
         >
           <div
-            className="ms-Stack panelInfoErrorContainer css-53"
+            className="ms-Stack panelInfoErrorContainer css-109"
           >
             <StyledIconBase
               aria-label="warning"
               className="panelWarningIcon"
               iconName="WarningSolid"
-              key=".0:$.0"
+              key=".0:$.$.0"
             >
               <IconBase
                 aria-label="warning"
@@ -314,7 +314,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               >
                 <i
                   aria-label="warning"
-                  className="panelWarningIcon root-55"
+                  className="panelWarningIcon root-112"
                   data-icon-name="WarningSolid"
                   role="img"
                 >
@@ -325,7 +325,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             <span
               aria-live="assertive"
               className="panelWarningErrorDetailsLinkContainer"
-              key=".0:$.1"
+              key=".0:$.$.1"
               role="alert"
             >
               <Text
@@ -335,7 +335,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               >
                 <span
                   aria-label="Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources."
-                  className="panelWarningErrorMessage css-56"
+                  className="panelWarningErrorMessage css-113"
                 >
                   Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
                 </span>
@@ -359,7 +359,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             variant="small"
           >
             <span
-              className="css-56"
+              className="css-113"
             >
               Confirm by typing the database id
             </span>
@@ -663,19 +663,19 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               validateOnLoad={true}
             >
               <div
-                className="ms-TextField is-required root-58"
+                className="ms-TextField is-required root-115"
               >
                 <div
                   className="ms-TextField-wrapper"
                 >
                   <div
-                    className="ms-TextField-fieldGroup fieldGroup-59"
+                    className="ms-TextField-fieldGroup fieldGroup-116"
                   >
                     <input
                       aria-invalid={false}
                       aria-label="Confirm by typing the database id"
                       autoFocus={true}
-                      className="ms-TextField-field field-60"
+                      className="ms-TextField-field field-117"
                       id="confirmDatabaseId"
                       onBlur={[Function]}
                       onChange={[Function]}
@@ -699,7 +699,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             variant="small"
           >
             <span
-              className="css-69"
+              className="css-126"
             >
               Help us improve Azure Cosmos DB!
             </span>
@@ -709,7 +709,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             variant="small"
           >
             <span
-              className="css-69"
+              className="css-126"
             >
               What is the reason why you are deleting this database?
             </span>
@@ -1013,18 +1013,18 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               validateOnLoad={true}
             >
               <div
-                className="ms-TextField ms-TextField--multiline root-58"
+                className="ms-TextField ms-TextField--multiline root-115"
               >
                 <div
                   className="ms-TextField-wrapper"
                 >
                   <div
-                    className="ms-TextField-fieldGroup fieldGroup-70"
+                    className="ms-TextField-fieldGroup fieldGroup-127"
                   >
                     <textarea
                       aria-invalid={false}
                       aria-label="Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?"
-                      className="ms-TextField-field field-71"
+                      className="ms-TextField-field field-128"
                       id="deleteDatabaseFeedbackInput"
                       onBlur={[Function]}
                       onChange={[Function]}
@@ -1929,7 +1929,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                         "iconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -1955,7 +1955,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                         "menuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -1967,14 +1967,16 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -2005,7 +2007,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "display": "inline-block",
                             "padding": "0 16px",
                             "selectors": Object {
-                              ":active > *": Object {
+                              ":active > span": Object {
                                 "left": 0,
                                 "position": "relative",
                                 "top": 0,
@@ -2032,7 +2034,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "borderColor": "WindowText",
@@ -2057,14 +2059,16 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -2098,7 +2102,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "backgroundColor": "#f3f2f1",
                             "color": "#d2d0ce",
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -2115,7 +2119,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "border": "1px solid #106ebe",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "Highlight",
                               "borderColor": "Highlight",
                               "color": "Window",
@@ -2127,7 +2131,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "border": "1px solid #005a9e",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "WindowText",
                               "borderColor": "WindowText",
@@ -2143,12 +2147,13 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "overflow": "hidden",
                           "padding": 0,
                           "position": "absolute",
+                          "whiteSpace": "nowrap",
                           "width": 1,
                         },
                         "splitButtonContainer": Array [
                           Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "border": "none",
                               },
                             },
@@ -2159,14 +2164,16 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid #ffffff",
+                                "borderRadius": undefined,
                                 "bottom": 3,
                                 "content": "\\"\\"",
                                 "left": 3,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": "none",
                                 "position": "absolute",
                                 "right": 3,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "none",
                                     "bottom": -2,
                                     "left": -2,
@@ -2189,13 +2196,21 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                                 "borderBottomRightRadius": "0",
                                 "borderRight": "none",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                               },
                               ".ms-Button--primary": Object {
                                 "border": "none",
                                 "borderBottomRightRadius": "0",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  ":active": Object {
+                                    "border": "none",
+                                  },
+                                  ":hover": Object {
+                                    "border": "none",
+                                  },
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "MsHighContrastAdjust": "none",
                                     "backgroundColor": "Window",
                                     "border": "1px solid WindowText",
@@ -2208,7 +2223,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                               ".ms-Button--primary + .ms-Button": Object {
                                 "border": "none",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "1px solid WindowText",
                                     "borderLeftWidth": "0",
                                   },
@@ -2221,7 +2236,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -2235,7 +2250,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -2249,7 +2264,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "border": "none",
                           "outline": "none",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "Window",
                               "borderColor": "GrayText",
@@ -2265,7 +2280,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Highlight",
                                   "color": "Window",
                                 },
@@ -2274,7 +2289,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             ".ms-Button.is-disabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -2290,7 +2305,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                               },
                             },
@@ -2302,7 +2317,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "WindowText",
                               },
                             },
@@ -2315,7 +2330,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "position": "absolute",
                           "right": 31,
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "GrayText",
                             },
                           },
@@ -2337,18 +2352,18 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                               ":hover": Object {
                                 "backgroundColor": "#106ebe",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "Highlight",
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
-                                "backgroundColor": "WindowText",
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "backgroundColor": "Canvas",
                               },
                             },
                           },
                           Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               ".ms-Button-menuIcon": Object {
                                 "color": "WindowText",
                               },
@@ -2398,7 +2413,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                             "selectors": Object {
                               ".ms-Button--primary": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
@@ -2407,7 +2422,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                               },
                               ".ms-Button-menuIcon": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
@@ -2415,7 +2430,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                               ":hover": Object {
                                 "cursor": "default",
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "border": "1px solid GrayText",
                                 "color": "GrayText",
@@ -2437,14 +2452,16 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                           "selectors": Object {
                             ".ms-Fabric--isFocusVisible &:focus:after": Object {
                               "border": "1px solid #ffffff",
+                              "borderRadius": undefined,
                               "bottom": 3,
                               "content": "\\"\\"",
                               "left": 3,
                               "outline": "1px solid #605e5c",
+                              "pointerEvents": undefined,
                               "position": "absolute",
                               "right": 3,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "border": "none",
                                   "bottom": -2,
                                   "left": -2,
@@ -2466,7 +2483,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                         "splitButtonMenuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -2756,7 +2773,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                   >
                     <button
                       aria-label="OK"
-                      className="ms-Button ms-Button--primary root-73"
+                      className="ms-Button ms-Button--primary root-130"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2768,16 +2785,16 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-74"
+                        className="ms-Button-flexContainer flexContainer-131"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-75"
+                          className="ms-Button-textContainer textContainer-132"
                         >
                           <span
-                            className="ms-Button-label label-77"
-                            id="id__6"
-                            key="id__6"
+                            className="ms-Button-label label-134"
+                            id="id__10"
+                            key="id__10"
                           >
                             OK
                           </span>
