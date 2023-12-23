@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "Microsoft Corporation",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "http-proxy-middleware": "^1.1.0",
     "node-fetch": "^2.6.1"
   }
