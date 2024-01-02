@@ -106,7 +106,9 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         const focusableParent = this.findFocusableParent(targetElement);
         if (focusableParent) {
           setTimeout(() => {
-            if (focusableParent) focusableParent.focus();
+            if (focusableParent) {
+              focusableParent.focus();
+            }
           }, 100);
           sessionStorage.removeItem("focusedElementId");
         }
