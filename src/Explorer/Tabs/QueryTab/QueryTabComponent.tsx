@@ -224,6 +224,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public onSaveQueryClick = (): void => {
+    sessionStorage.setItem("focusedElementId", "savequery");
     useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this.props.collection.container} />);
   };
 
@@ -394,6 +395,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       const label = "Save Query";
       buttons.push({
         iconSrc: SaveQueryIcon,
+        id: "savequery",
         iconAlt: label,
         onCommandClick: this.onSaveQueryClick,
         commandButtonLabel: label,

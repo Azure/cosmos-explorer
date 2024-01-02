@@ -76,7 +76,42 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     );
   }
 
+  public isFocusable(element: HTMLElement) {
+    return (
+      element.tabIndex >= 0 ||
+      (element instanceof HTMLAnchorElement && element.href) ||
+      (element instanceof HTMLAreaElement && element.href) ||
+      (element instanceof HTMLInputElement && !element.disabled) ||
+      (element instanceof HTMLSelectElement && !element.disabled) ||
+      (element instanceof HTMLTextAreaElement && !element.disabled) ||
+      (element instanceof HTMLButtonElement && !element.disabled)
+    );
+  }
+  private findFocusableParent = (element: HTMLElement) => {
+    while (element) {
+      if (this.isFocusable(element)) {
+        return element;
+      }
+      element = element.parentNode as HTMLElement;
+    }
+    return null;
+  };
+
   private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
+    let elementIdToFocus = sessionStorage.getItem("focusedElementId") || null;
+    if (elementIdToFocus) {
+      let targetElement = document.getElementById(elementIdToFocus);
+
+      if (targetElement) {
+        let focusableParent = this.findFocusableParent(targetElement);
+        if (focusableParent) {
+          setTimeout(() => {
+            focusableParent.focus();
+          }, 100);
+          sessionStorage.removeItem("focusedElementId");
+        }
+      }
+    }
     if (ev && (ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
     } else {
