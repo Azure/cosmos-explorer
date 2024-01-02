@@ -516,6 +516,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
           {showCallout && !hideFeedbackModalForLikedQueries && (
             <Callout
+              role="status"
               style={{ padding: 8 }}
               target="#likeBtn"
               onDismiss={() => {
@@ -551,10 +552,18 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           <IconButton
             id="likeBtn"
             style={{ marginLeft: 20 }}
+            aria-label="like"
+            role="toggle"
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
             onClick={() => {
               setShowCallout(!likeQuery);
               setLikeQuery(!likeQuery);
+              if (likeQuery === true) {
+                document.getElementById("likeStatus").innerHTML = "Unpressed";
+              }
+              if (likeQuery === false) {
+                document.getElementById("likeStatus").innerHTML = "Liked";
+              }
               if (dislikeQuery) {
                 setDislikeQuery(!dislikeQuery);
               }
@@ -562,16 +571,24 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           />
           <IconButton
             style={{ margin: "0 10px" }}
+            role="toggle"
+            aria-label="Dislike"
             iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
             onClick={() => {
+              let toggleStatusValue = "Unpressed";
               if (!dislikeQuery) {
                 openFeedbackModal(generatedQuery, false, userPrompt);
                 setLikeQuery(false);
+                toggleStatusValue = "Disliked";
               }
               setDislikeQuery(!dislikeQuery);
               setShowCallout(false);
+              document.getElementById("likeStatus").innerHTML = toggleStatusValue;
             }}
           />
+
+          <span role="status" style={{ position: "absolute", left: "-9999px" }} id="likeStatus"></span>
+
           <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton
             onClick={copyGeneratedCode}
