@@ -98,15 +98,15 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
   };
 
   private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
-    let elementIdToFocus = sessionStorage.getItem("focusedElementId") || null;
+    const elementIdToFocus = sessionStorage.getItem("focusedElementId") || null;
     if (elementIdToFocus) {
-      let targetElement = document.getElementById(elementIdToFocus);
+      const targetElement = document.getElementById(elementIdToFocus);
 
       if (targetElement) {
-        let focusableParent = this.findFocusableParent(targetElement);
+        const focusableParent = this.findFocusableParent(targetElement);
         if (focusableParent) {
           setTimeout(() => {
-            focusableParent.focus();
+            if (focusableParent) focusableParent.focus();
           }, 100);
           sessionStorage.removeItem("focusedElementId");
         }
