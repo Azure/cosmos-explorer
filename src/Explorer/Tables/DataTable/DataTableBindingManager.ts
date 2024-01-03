@@ -1,6 +1,8 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
 
+import * as DataTable from "datatables.net-dt";
+import loadingIndicator3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as Constants from "../Constants";
 import * as Entities from "../Entities";
@@ -94,7 +96,7 @@ function createDataTable(
     });
   }
 
-  tableEntityListViewModel.table = DataTableBuilder.createDataTable($dataTable, <DataTables.Settings>{
+  tableEntityListViewModel.table = DataTableBuilder.createDataTable($dataTable, <DataTable.Config>{
     // WARNING!!! SECURITY: If you add new columns, make sure you encode them if they are user strings from Azure (see encodeText)
     // so that they don't get interpreted as HTML in our page.
     colReorder: true,
@@ -116,7 +118,7 @@ function createDataTable(
         sPrevious: "<",
         sLast: ">>",
       },
-      sProcessing: '<img style="width: 28px; height: 6px; " src="images/LoadingIndicator_3Squares.gif">',
+      sProcessing: `<img style="width: 28px; height: 6px; " src="${loadingIndicator3Squares}">`,
       oAria: {
         sSortAscending: "",
         sSortDescending: "",
@@ -345,7 +347,7 @@ function updateSelectionStatus(oSettings: any): void {
 // TODO consider centralizing this "post-command" logic into some sort of Command Manager entity.
 // See VSO:166520: "[Storage Explorer] Consider adding a 'command manager' to track command post-effects."
 function updateDataTableFocus(queryTablesTabId: string): void {
-  var $activeElement: JQuery = $(document.activeElement);
+  var $activeElement: JQuery<Element> = $(document.activeElement);
   var isFocusLost: boolean = $activeElement.is("body"); // When focus is lost, "body" becomes the active element.
   var storageExplorerFrameHasFocus: boolean = document.hasFocus();
   var operationManager = tableEntityListViewModelMap[queryTablesTabId].operationManager;

@@ -1163,15 +1163,12 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       )}"`,
     ).then(
       (documents: DataModels.DocumentId[]) => {
-        $.each(
-          documents,
-          (index: number, doc: { _graph_icon_property_value: string; icon: string; format: string }) => {
-            newIconsMap[doc["_graph_icon_property_value"]] = {
-              data: doc["icon"],
-              format: doc["format"],
-            };
-          },
-        );
+        $.each(documents, (index: number, doc: any) => {
+          newIconsMap[doc["_graph_icon_property_value"]] = {
+            data: doc["icon"],
+            format: doc["format"],
+          };
+        });
 
         // Update graph configuration
         this.setState({
