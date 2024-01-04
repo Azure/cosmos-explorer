@@ -189,7 +189,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <input
             id="Autoscale-input"
             className="throughputInputRadioBtn"
-            aria-label="Autoscale database throughput"
+            aria-label={`${getThroughputLabelText()} Autoscale`}
             aria-required={true}
             checked={isAutoscaleSelected}
             type="radio"
@@ -204,7 +204,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <input
             id="Manual-input"
             className="throughputInputRadioBtn"
-            aria-label="Manual database throughput"
+            aria-label={`${getThroughputLabelText()} Manual`}
             checked={!isAutoscaleSelected}
             type="radio"
             aria-required={true}
