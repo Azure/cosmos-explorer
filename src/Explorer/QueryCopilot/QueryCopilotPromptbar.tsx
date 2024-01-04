@@ -325,7 +325,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       id="copilot-textfield-label"
     >
       <Stack horizontal>
-        <Image src={CopilotIcon} style={{ width: 24, height: 24 }} />
+        <Image src={CopilotIcon} style={{ width: 24, height: 24 }} alt="Copilot" role="none" />
         <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
         <IconButton
           iconProps={{ imageProps: { src: errorIcon } }}
