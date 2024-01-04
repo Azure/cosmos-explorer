@@ -39,6 +39,7 @@ function validateEndpointInternal(
 }
 
 export const defaultAllowedArmEndpoints: ReadonlyArray<string> = [
+  "https://api-dogfood.resources.windows-int.net/",
   "https://​management.azure.com",
   "https://​management.usgovcloudapi.net",
   "https://management.chinacloudapi.cn",

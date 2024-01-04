@@ -6,7 +6,7 @@ const mockedDate = new Date(2023, 7, 15);
 jest.spyOn(global, "Date").mockImplementation(() => mockedDate as unknown as string);
 
 describe("Welcome Bubble snapshot test", () => {
-  it("should render ", () => {
+  it("should render", () => {
     const wrapper = shallow(<WelcomeBubble />);
     expect(wrapper).toMatchSnapshot();
   });

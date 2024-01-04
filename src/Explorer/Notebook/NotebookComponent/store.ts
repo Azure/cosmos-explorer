@@ -34,11 +34,11 @@ export default function configureStore(
 
   const protect = (epic: Epic) => {
     return (action$: Observable<any>, state$: any, dependencies: any) =>
-      epic(action$, state$, dependencies).pipe(
+      epic(action$ as any, state$, dependencies).pipe(
         catchError((error, caught) => {
           traceFailure("Epic failure", error);
           return caught;
-        }),
+        }) as any,
       );
   };
 
@@ -52,7 +52,7 @@ export default function configureStore(
   };
 
   const protectEpics = (epics: Epic[]): Epic[] => {
-    return epics.map((epic) => protect(epic));
+    return epics.map((epic) => protect(epic)) as any;
   };
 
   const filteredCoreEpics = getCoreEpics(autoStartKernelOnNotebookOpen);
@@ -64,7 +64,7 @@ export default function configureStore(
       core: coreReducer as any,
       cdb: cdbReducer,
     },
-    epics: protectEpics([...filteredCoreEpics, ...allEpics]),
+    epics: protectEpics([...filteredCoreEpics, ...allEpics] as any),
     epicDependencies: { contentProvider },
     epicMiddleware: customMiddlewares.concat(catchErrorMiddleware),
     enhancer: composeEnhancers,
@@ -106,5 +106,5 @@ export const getCoreEpics = (autoStartKernelOnNotebookOpen: boolean): Epic[] => 
     filteredCoreEpics.push(coreEpics.launchKernelWhenNotebookSetEpic);
   }
 
-  return filteredCoreEpics;
+  return filteredCoreEpics as any;
 };

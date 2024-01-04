@@ -35,7 +35,7 @@ describe("CommandBarUtil tests", () => {
 
     // Click gets called
     converted.onClick();
-    expect(btn.onCommandClick).toBeCalled();
+    expect(btn.onCommandClick).toHaveBeenCalled();
   });
 
   it("should convert NavbarButtonConfig to split button", () => {

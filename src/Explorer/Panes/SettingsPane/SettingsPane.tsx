@@ -53,6 +53,21 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false",
   );
+  const [retryAttempts, setRetryAttempts] = useState<number>(
+    LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
+      ? LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts)
+      : Constants.Queries.DefaultRetryAttempts,
+  );
+  const [retryInterval, setRetryInterval] = useState<number>(
+    LocalStorageUtility.hasItem(StorageKey.RetryInterval)
+      ? LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval)
+      : Constants.Queries.DefaultRetryIntervalInMs,
+  );
+  const [MaxWaitTimeInSeconds, setMaxWaitTimeInSeconds] = useState<number>(
+    LocalStorageUtility.hasItem(StorageKey.MaxWaitTimeInSeconds)
+      ? LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
+      : Constants.Queries.DefaultMaxWaitTimeInSeconds,
+  );
   const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism)
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism)
@@ -78,6 +93,9 @@ export const SettingsPane: FunctionComponent = () => {
     );
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
+    LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
+    LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
+    LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
@@ -176,6 +194,27 @@ export const SettingsPane: FunctionComponent = () => {
     const queryTimeout = Number(newValue);
     if (!isNaN(queryTimeout)) {
       setQueryTimeout(queryTimeout);
+    }
+  };
+
+  const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const retryAttempts = Number(newValue);
+    if (!isNaN(retryAttempts)) {
+      setRetryAttempts(retryAttempts);
+    }
+  };
+
+  const handleOnRetryIntervalSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const retryInterval = Number(newValue);
+    if (!isNaN(retryInterval)) {
+      setRetryInterval(retryInterval);
+    }
+  };
+
+  const handleOnMaxWaitTimeSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const MaxWaitTimeInSeconds = Number(newValue);
+    if (!isNaN(MaxWaitTimeInSeconds)) {
+      setMaxWaitTimeInSeconds(MaxWaitTimeInSeconds);
     }
   };
 
@@ -323,6 +362,77 @@ export const SettingsPane: FunctionComponent = () => {
             </div>
           </div>
         )}
+        <div className="settingsSection">
+          <div className="settingsSectionPart">
+            <div className="settingsSectionLabel">
+              Retry Settings
+              <InfoTooltip>Retry policy associated with throttled requests during CosmosDB queries.</InfoTooltip>
+            </div>
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Max retry attempts
+              </legend>
+              <InfoTooltip>Max number of retries to be performed for a request. Default value 9.</InfoTooltip>
+            </div>
+            <SpinButton
+              labelPosition={Position.top}
+              min={1}
+              step={1}
+              value={"" + retryAttempts}
+              onChange={handleOnQueryRetryAttemptsSpinButtonChange}
+              incrementButtonAriaLabel="Increase value by 1"
+              decrementButtonAriaLabel="Decrease value by 1"
+              onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
+              onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
+              onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
+              styles={queryTimeoutSpinButtonStyles}
+            />
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Fixed retry interval (ms)
+              </legend>
+              <InfoTooltip>
+                Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part
+                of the response. Default value is 0 milliseconds.
+              </InfoTooltip>
+            </div>
+            <SpinButton
+              labelPosition={Position.top}
+              min={1000}
+              step={1000}
+              value={"" + retryInterval}
+              onChange={handleOnRetryIntervalSpinButtonChange}
+              incrementButtonAriaLabel="Increase value by 1000"
+              decrementButtonAriaLabel="Decrease value by 1000"
+              onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
+              onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
+              onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
+              styles={queryTimeoutSpinButtonStyles}
+            />
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Max wait time (s)
+              </legend>
+              <InfoTooltip>
+                Max wait time in seconds to wait for a request while the retries are happening. Default value 30
+                seconds.
+              </InfoTooltip>
+            </div>
+            <SpinButton
+              labelPosition={Position.top}
+              min={1}
+              step={1}
+              value={"" + MaxWaitTimeInSeconds}
+              onChange={handleOnMaxWaitTimeSpinButtonChange}
+              incrementButtonAriaLabel="Increase value by 1"
+              decrementButtonAriaLabel="Decrease value by 1"
+              onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
+              onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
+              onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
+              styles={queryTimeoutSpinButtonStyles}
+            />
+          </div>
+        </div>
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">

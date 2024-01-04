@@ -788,7 +788,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
       {!isNotebookEnabled && isSampleDataEnabled && (
@@ -802,7 +802,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
       {isNotebookEnabled && isSampleDataEnabled && (
@@ -819,7 +819,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
     </>

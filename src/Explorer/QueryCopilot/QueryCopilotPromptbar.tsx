@@ -306,6 +306,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     resetButtonState();
   };
 
+  const getAriaLabel = () => {
+    if (isGeneratingQuery === null) {
+      return " ";
+    } else if (isGeneratingQuery) {
+      return "Content is loading";
+    } else {
+      return "Content is updated";
+    }
+  };
+
   React.useEffect(() => {
     showTeachingBubble();
     useTabs.getState().setIsQueryErrorThrown(false);
@@ -352,9 +362,13 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   return (
-    <Stack className="copilot-prompt-pane" styles={{ root: { backgroundColor: "#FAFAFA", padding: "16px 24px 0px" } }}>
+    <Stack
+      className="copilot-prompt-pane"
+      styles={{ root: { backgroundColor: "#FAFAFA", padding: "16px 24px 0px" } }}
+      id="copilot-textfield-label"
+    >
       <Stack horizontal>
-        <Image src={CopilotIcon} style={{ width: 24, height: 24 }} />
+        <Image src={CopilotIcon} style={{ width: 24, height: 24 }} alt="Copilot" role="none" />
         <Text style={{ marginLeft: 8, fontWeight: 600, fontSize: 16 }}>Copilot</Text>
         <IconButton
           iconProps={{ imageProps: { src: errorIcon } }}
@@ -387,7 +401,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           disabled={isGeneratingQuery}
           autoComplete="off"
           placeholder="Ask a question in natural language and we’ll generate the query for you."
-          tabIndex={0}
+          aria-labelledby="copilot-textfield-label"
         />
         {copilotTeachingBubbleVisible && (
           <TeachingBubble
@@ -420,8 +434,11 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             startGenerateQueryProcess();
             setShowSamplePrompts(false);
           }}
+          aria-label="Send"
         />
-        {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
+        <div role="alert" aria-label={getAriaLabel()}>
+          {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
+        </div>
         {showSamplePrompts && (
           <Callout
             styles={{ root: { minWidth: 400, maxWidth: "70vw" } }}
@@ -529,7 +546,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       <Stack style={{ margin: "8px 0" }}>
         <Text style={{ fontSize: 12 }}>
           AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
-          <Link href="https://aka.ms/cdb-copilot-preview-terms" target="_blank">
+          <Link href="https://aka.ms/cdb-copilot-preview-terms" target="_blank" style={{ color: "#0072c9" }}>
             Read preview terms
           </Link>
           {showErrorMessageBar && (
@@ -597,6 +614,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             id="likeBtn"
             style={{ marginLeft: 20 }}
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
+            aria-label="Like"
             onClick={() => {
               setShowCallout(!likeQuery);
               setLikeQuery(!likeQuery);
@@ -616,6 +634,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
               setDislikeQuery(!dislikeQuery);
               setShowCallout(false);
             }}
+            aria-label="Dislike"
           />
           <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton

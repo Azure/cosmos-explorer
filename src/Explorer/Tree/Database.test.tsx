@@ -42,7 +42,7 @@ describe("Add Schema", () => {
 
     database.addSchema(collection);
 
-    expect(database.junoClient.requestSchema).toBeCalledTimes(0);
+    expect(database.junoClient.requestSchema).toHaveBeenCalledTimes(0);
   });
 
   it("should call requestSchema or getSchema if analyticalStorageTtl is not undefined", () => {
@@ -66,7 +66,7 @@ describe("Add Schema", () => {
     const checkForSchema: NodeJS.Timeout = database.addSchema(collection, interval);
     jest.advanceTimersByTime(interval + 1000);
 
-    expect(database.junoClient.requestSchema).toBeCalledWith({
+    expect(database.junoClient.requestSchema).toHaveBeenCalledWith({
       id: undefined,
       subscriptionId: userContext.subscriptionId,
       resourceGroup: userContext.resourceGroup,
@@ -75,7 +75,7 @@ describe("Add Schema", () => {
       status: "new",
     });
     expect(checkForSchema).not.toBeNull();
-    expect(database.junoClient.getSchema).toBeCalledWith(
+    expect(database.junoClient.getSchema).toHaveBeenCalledWith(
       userContext.subscriptionId,
       userContext.resourceGroup,
       userContext.databaseAccount.name,

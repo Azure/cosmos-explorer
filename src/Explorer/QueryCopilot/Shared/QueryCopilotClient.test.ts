@@ -135,6 +135,7 @@ describe("Query Copilot Client", () => {
         },
         explorer: new Explorer(),
       }).catch((error) => {
+        // eslint-disable-next-line jest/no-conditional-expect
         expect(error.message).toEqual("Mock error");
       });
 

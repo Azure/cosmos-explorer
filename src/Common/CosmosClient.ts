@@ -3,6 +3,7 @@ import { sendCachedDataMessage } from "Common/MessageHandler";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
@@ -148,11 +149,15 @@ export function client(): Cosmos.CosmosClient {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
     tokenProvider,
-    connectionPolicy: {
-      enableEndpointDiscovery: false,
-    },
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
+    connectionPolicy: {
+      retryOptions: {
+        maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+        maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds),
+      },
+    },
   };
 
   if (configContext.PROXY_PATH !== undefined) {
