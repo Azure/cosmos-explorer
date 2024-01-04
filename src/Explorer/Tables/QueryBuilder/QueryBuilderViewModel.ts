@@ -1,3 +1,4 @@
+import * as DataTable from "datatables.net-dt";
 import * as ko from "knockout";
 import { KeyCodes } from "../../../Common/Constants";
 import { userContext } from "../../../UserContext";
@@ -643,7 +644,7 @@ export default class QueryBuilderViewModel {
     return groupViewModels;
   };
 
-  public runQuery = (): DataTables.DataTable => {
+  public runQuery = (): DataTable.Api<Element> => {
     return this._queryViewModel.runQuery();
   };
 

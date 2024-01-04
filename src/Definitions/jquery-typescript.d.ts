@@ -5,7 +5,7 @@
  * https://github.com/running-coder/jquery-typeahead/issues/156
  * TODO: Replace this minimum definition by the official one when it comes out.
  */
-/// <reference path="jquery.d.ts" />
+/// <reference types="jquery" />
 
 interface JQueryTypeaheadParam {
   input: string;

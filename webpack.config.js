@@ -43,17 +43,17 @@ const lessRule = {
 
 const imagesRule = {
   test: /\.(jpg|jpeg|png|gif|svg|pdf|ico)$/,
-  loader: "file-loader",
-  options: {
-    name: "images/[name].[ext]",
+  type: "asset/resource",
+  generator: {
+    // Add hash, because there are multiple versions of "delete.svg"
+    filename: "images/[name].[hash][ext]",
   },
 };
 
 const fontRule = {
   test: /\.(woff|woff2|ttf|eot)$/,
-  loader: "file-loader",
-  options: {
-    name: "[name].[ext]",
+  generator: {
+    filename: "[name][ext]",
   },
 };
 
@@ -120,7 +120,9 @@ module.exports = function (_env = {}, argv = {}) {
       fileName: "version.txt",
       content: `${gitSha.trim()} ${new Date().toUTCString()}`,
     }),
-    new CaseSensitivePathsPlugin(),
+    // TODO Enable when @nteract once removed
+    // ./node_modules/@nteract/markdown/node_modules/@nteract/presentational-components/lib/index.js line 63 breaks this with physical file Icon.js referred to as icon.js
+    // new CaseSensitivePathsPlugin(),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",
     }),
@@ -220,6 +222,7 @@ module.exports = function (_env = {}, argv = {}) {
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist"),
       publicPath: "",
+      hashFunction: "xxhash64",
     },
     devtool: mode === "development" ? "eval-source-map" : "source-map",
     plugins,
@@ -230,11 +233,17 @@ module.exports = function (_env = {}, argv = {}) {
       modules: [path.resolve(__dirname, "src"), "node_modules"],
       alias: {
         process: "process/browser",
+        "/sort_both.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_both.png"),
+        "/sort_asc.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_asc.png"),
+        "/sort_desc.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_desc.png"),
+        "/sort_asc_disabled.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_asc_disabled.png"),
+        "/sort_desc_disabled.png": path.resolve(__dirname, "images/jquery.dataTables-images/sort_desc_disabled.png"),
       },
 
       fallback: {
         crypto: false,
         fs: false,
+        querystring: require.resolve("querystring-es3"),
       },
       extensions: [".tsx", ".ts", ".js"],
     },
@@ -258,13 +267,14 @@ module.exports = function (_env = {}, argv = {}) {
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
       hot: false,
-      disableHostCheck: true,
-      inline: !isCI,
+      // disableHostCheck is removed in webpack 5, use: allowedHosts: "all",
+      // disableHostCheck: true,
       liveReload: !isCI,
-      https: true,
+      server: {
+        type: "https",
+      },
       host: "0.0.0.0",
       port: envVars.PORT,
-      stats: "minimal",
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Credentials": "true",

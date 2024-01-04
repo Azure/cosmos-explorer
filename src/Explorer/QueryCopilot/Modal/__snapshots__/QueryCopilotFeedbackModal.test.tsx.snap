@@ -610,7 +610,7 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
 </Modal>
 `;
 
-exports[`Query Copilot Feedback Modal snapshot test should render dont show again button and check it  1`] = `
+exports[`Query Copilot Feedback Modal snapshot test should render dont show again button and check it 1`] = `
 <Modal
   isOpen={true}
 >

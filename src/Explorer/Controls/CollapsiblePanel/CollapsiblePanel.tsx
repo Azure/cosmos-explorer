@@ -16,6 +16,7 @@ export interface CollapsiblePanelProps {
   isCollapsed: boolean;
   onCollapsedChanged: (newValue: boolean) => void;
   collapseToLeft?: boolean;
+  children: JSX.Element | JSX.Element[];
 }
 
 export class CollapsiblePanel extends React.Component<CollapsiblePanelProps> {

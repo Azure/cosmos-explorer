@@ -6,7 +6,7 @@ import React from "react";
 import { WelcomeSidebarModal } from "./WelcomeSidebarModal";
 
 describe("Welcome Sidebar Modal snapshot test", () => {
-  it("should close on button click ", () => {
+  it("should close on button click", () => {
     withHooks(() => {
       const wrapper = shallow(<WelcomeSidebarModal />);
       const spy = jest.spyOn(localStorage, "setItem");

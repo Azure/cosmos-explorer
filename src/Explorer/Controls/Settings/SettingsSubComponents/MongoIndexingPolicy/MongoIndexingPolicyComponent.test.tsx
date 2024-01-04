@@ -1,8 +1,8 @@
 import { shallow } from "enzyme";
 import React from "react";
+import { renderToString } from "react-dom/server";
 import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType } from "../../SettingsUtils";
 import { MongoIndexingPolicyComponent, MongoIndexingPolicyComponentProps } from "./MongoIndexingPolicyComponent";
-import { renderToString } from "react-dom/server";
 
 describe("MongoIndexingPolicyComponent", () => {
   const baseProps: MongoIndexingPolicyComponentProps = {
@@ -84,7 +84,7 @@ describe("MongoIndexingPolicyComponent", () => {
     ];
 
     test.each(cases)(
-      "",
+      "mongo indexing policy saveable and discardable",
       (
         notification: MongoNotificationMessage,
         indexToDropIsPresent: boolean,
@@ -111,8 +111,10 @@ describe("MongoIndexingPolicyComponent", () => {
         );
         if (mongoWarningNotificationMessage) {
           const elementAsString = renderToString(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage());
+          // eslint-disable-next-line jest/no-conditional-expect
           expect(elementAsString).toContain(mongoWarningNotificationMessage);
         } else {
+          // eslint-disable-next-line jest/no-conditional-expect
           expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toBeUndefined();
         }
       },
