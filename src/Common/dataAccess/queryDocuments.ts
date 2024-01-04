@@ -26,6 +26,5 @@ export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
     (storedItemPerPageSetting !== undefined && storedItemPerPageSetting) ||
     Queries.itemsPerPage;
   options.maxDegreeOfParallelism = LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism);
-
   return options;
 };

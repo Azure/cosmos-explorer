@@ -1,3 +1,4 @@
+import { isServerlessAccount } from "Utils/CapabilityUtils";
 import * as _ from "underscore";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -8,12 +9,11 @@ import { useDatabases } from "../Explorer/useDatabases";
 import { userContext } from "../UserContext";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
+import { handleError } from "./ErrorHandlingUtils";
 import { createCollection } from "./dataAccess/createCollection";
 import { createDocument } from "./dataAccess/createDocument";
 import { deleteDocument } from "./dataAccess/deleteDocument";
 import { queryDocuments } from "./dataAccess/queryDocuments";
-import { handleError } from "./ErrorHandlingUtils";
-import { isServerlessAccount } from "Utils/CapabilityUtils";
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {

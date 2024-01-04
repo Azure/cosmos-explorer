@@ -29,6 +29,6 @@ describe("CodeOfConduct", () => {
     const wrapper = shallow(<CodeOfConduct {...codeOfConductProps} />);
     wrapper.find(".genericPaneSubmitBtn").first().simulate("click");
     await Promise.resolve();
-    expect(codeOfConductProps.onAcceptCodeOfConduct).toBeCalled();
+    expect(codeOfConductProps.onAcceptCodeOfConduct).toHaveBeenCalled();
   });
 });

@@ -290,7 +290,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             {
               enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
               abortSignal: this.queryAbortController.signal,
-            } as FeedOptions,
+            } as unknown as FeedOptions,
           );
     }
 

@@ -5,7 +5,7 @@ import React from "react";
 import { Header } from "./Header";
 
 describe("Header snapshot test", () => {
-  it("should close on button click ", () => {
+  it("should close on button click", () => {
     const wrapper = shallow(<Header />);
 
     const iconButton = wrapper.find(IconButton).first();

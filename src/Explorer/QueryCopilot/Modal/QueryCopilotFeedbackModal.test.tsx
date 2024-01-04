@@ -99,7 +99,7 @@ describe("Query Copilot Feedback Modal snapshot test", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("should render dont show again button and check it ", () => {
+  it("should render dont show again button and check it", () => {
     mockUseCopilotStore.mockReturnValue({
       ...mockReturnValue,
       showFeedbackModal: true,

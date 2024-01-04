@@ -1,3 +1,4 @@
+import * as DataTables from "datatables.net";
 import Q from "q";
 import _ from "underscore";
 import * as QueryBuilderConstants from "../Constants";
@@ -13,7 +14,7 @@ export function getRowSelector(selectorSchema: Entities.IProperty[]): string {
   return QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector + selector;
 }
 
-export function isRowVisible(dataTableScrollBodyQuery: JQuery, element: HTMLElement): boolean {
+export function isRowVisible(dataTableScrollBodyQuery: JQuery<Element>, element: Element): boolean {
   let isVisible = false;
 
   if (dataTableScrollBodyQuery.length && element) {
@@ -26,16 +27,18 @@ export function isRowVisible(dataTableScrollBodyQuery: JQuery, element: HTMLElem
   return isVisible;
 }
 
-export function scrollToRowIfNeeded(dataTableRows: JQuery, currentIndex: number, isScrollUp: boolean): void {
+export function scrollToRowIfNeeded(dataTableRows: JQuery<Element>, currentIndex: number, isScrollUp: boolean): void {
   if (dataTableRows.length) {
-    const dataTableScrollBodyQuery: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector),
-      selectedRowElement: HTMLElement = dataTableRows.get(currentIndex);
+    const dataTableScrollBodyQuery: JQuery<Element> = $(
+        QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector,
+      ),
+      selectedRowElement: Element = dataTableRows.get(currentIndex);
 
     if (dataTableScrollBodyQuery.length && selectedRowElement) {
       const isVisible: boolean = isRowVisible(dataTableScrollBodyQuery, selectedRowElement);
 
       if (!isVisible) {
-        const selectedRowQuery: JQuery = $(selectedRowElement),
+        const selectedRowQuery: JQuery<Element> = $(selectedRowElement),
           scrollPosition: number = dataTableScrollBodyQuery.scrollTop(),
           selectedElementPosition: number = selectedRowQuery.position().top;
         let newScrollPosition = 0;
@@ -54,8 +57,8 @@ export function scrollToRowIfNeeded(dataTableRows: JQuery, currentIndex: number,
 }
 
 export function scrollToTopIfNeeded(): void {
-  const $dataTableRows: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector),
-    $dataTableScrollBody: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector);
+  const $dataTableRows: JQuery<Element> = $(QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector),
+    $dataTableScrollBody: JQuery<Element> = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector);
 
   if ($dataTableRows.length && $dataTableScrollBody.length) {
     $dataTableScrollBody.scrollTop(0);
@@ -71,7 +74,7 @@ export function setPaginationButtonEventHandlers(): void {
     .attr("role", "button");
 }
 
-export function filterColumns(table: DataTables.DataTable, settings: boolean[]): void {
+export function filterColumns(table: DataTables.Api<HTMLElement>, settings: boolean[]): void {
   settings &&
     settings.forEach((value: boolean, index: number) => {
       table.column(index).visible(value, false);
@@ -84,7 +87,7 @@ export function filterColumns(table: DataTables.DataTable, settings: boolean[]):
  * If no current order is specified, reorder the columns based on intial order.
  */
 export function reorderColumns(
-  table: DataTables.DataTable,
+  table: DataTables.Api<HTMLElement>,
   targetOrder: number[],
   currentOrder?: number[],
   //eslint-disable-next-line
@@ -108,7 +111,9 @@ export function reorderColumns(
       ? calculateTransformationOrder(currentOrder, targetOrder)
       : targetOrder;
     try {
-      $.fn.dataTable.ColReorder(table).fnOrder(transformationOrder);
+      // TODO: This possibly does not work with the new version of datatables.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ($.fn.dataTable as any).ColReorder(table).fnOrder(transformationOrder);
     } catch (err) {
       return Q.reject(err);
     }
@@ -116,9 +121,9 @@ export function reorderColumns(
   return Q.resolve(null);
 }
 
-export function resetColumns(table: DataTables.DataTable): void {
-  $.fn.dataTable.ColReorder(table).fnReset();
-}
+// export function resetColumns(table: DataTables.DataTable): void {
+//   $.fn.dataTable.ColReorder(table).fnReset();
+// }
 
 /**
  * A table's initial order is described in the form of a natural ascending order.
@@ -133,8 +138,10 @@ export function getInitialOrder(columnsCount: number): number[] {
  * Initial order:  I = [0, 1, 2, 3, 4, 5, 6, 7, 8]   <---->   {prop0, prop1, prop2, prop3, prop4, prop5, prop6, prop7, prop8}
  * Current order:  C = [0, 1, 2, 6, 7, 3, 4, 5, 8]   <---->   {prop0, prop1, prop2, prop6, prop7, prop3, prop4, prop5, prop8}
  */
-export function getCurrentOrder(table: DataTables.DataTable): number[] {
-  return $.fn.dataTable.ColReorder(table).fnOrder();
+export function getCurrentOrder(table: DataTables.Api<HTMLElement>): number[] {
+  // TODO: This possibly does not work with the new version of datatables.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return ($.fn.dataTable as any).ColReorder(table).fnOrder();
 }
 
 /**
@@ -178,8 +185,8 @@ export function calculateTransformationOrder(currentOrder: number[], targetOrder
   return transformationOrder;
 }
 
-export function getDataTableHeaders(table: DataTables.DataTable): string[] {
-  const columns: DataTables.ColumnsMethods = table.columns();
+export function getDataTableHeaders(table: DataTables.Api<HTMLElement>): string[] {
+  const columns = table.columns();
   let headers: string[] = [];
   if (columns) {
     // table.columns() return ColumnsMethods which is an array of arrays

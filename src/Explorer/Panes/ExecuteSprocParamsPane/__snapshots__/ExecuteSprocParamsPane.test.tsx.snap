@@ -306,7 +306,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               }
             >
               <label
-                className="ms-Label root-53"
+                className="ms-Label root-109"
               >
                 Partition key value
               </label>
@@ -316,11 +316,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
             horizontal={true}
           >
             <div
-              className="ms-Stack css-54"
+              className="ms-Stack css-110"
             >
               <Dropdown
                 defaultSelectedKey="string"
-                key=".0:$.0"
+                key=".0:$.$.0"
                 label="Key"
                 onChange={[Function]}
                 options={
@@ -661,7 +661,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         },
                       ]
                     }
-                    responsiveMode={3}
+                    responsiveMode={0}
                     styles={[Function]}
                     tabIndex={0}
                     theme={
@@ -1225,7 +1225,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           }
                         >
                           <label
-                            className="ms-Label ms-Dropdown-label root-71"
+                            className="ms-Label ms-Dropdown-label root-129"
                             id="Dropdown0-label"
                           >
                             Key
@@ -1236,7 +1236,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         aria-expanded="false"
                         aria-haspopup="listbox"
                         aria-labelledby="Dropdown0-label Dropdown0-option"
-                        className="ms-Dropdown dropdown-55"
+                        className="ms-Dropdown dropdown-111"
                         data-is-focusable={true}
                         data-ktp-target={true}
                         id="Dropdown0"
@@ -1251,25 +1251,23 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         tabIndex={0}
                       >
                         <span
-                          aria-atomic={true}
                           aria-invalid={false}
-                          aria-live="polite"
-                          className="ms-Dropdown-title title-97"
+                          className="ms-Dropdown-title title-156"
                           id="Dropdown0-option"
                         >
                           String
                         </span>
                         <span
-                          className="ms-Dropdown-caretDownWrapper caretDownWrapper-57"
+                          className="ms-Dropdown-caretDownWrapper caretDownWrapper-113"
                         >
                           <StyledIconBase
                             aria-hidden={true}
-                            className="ms-Dropdown-caretDown caretDown-58"
+                            className="ms-Dropdown-caretDown caretDown-114"
                             iconName="ChevronDown"
                           >
                             <IconBase
                               aria-hidden={true}
-                              className="ms-Dropdown-caretDown caretDown-58"
+                              className="ms-Dropdown-caretDown caretDown-114"
                               iconName="ChevronDown"
                               styles={[Function]}
                               theme={
@@ -1548,7 +1546,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             >
                               <i
                                 aria-hidden={true}
-                                className="ms-Dropdown-caretDown caretDown-73"
+                                className="ms-Dropdown-caretDown caretDown-132"
                                 data-icon-name="ChevronDown"
                               >
                                 
@@ -1563,7 +1561,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               </Dropdown>
               <StyledTextFieldBase
                 id="confirmCollectionId"
-                key=".0:$.1"
+                key=".0:$.$.1"
                 label="Value"
                 onChange={[Function]}
                 tabIndex={0}
@@ -1852,7 +1850,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   validateOnLoad={true}
                 >
                   <div
-                    className="ms-TextField root-75"
+                    className="ms-TextField root-134"
                   >
                     <div
                       className="ms-TextField-wrapper"
@@ -2141,7 +2139,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           }
                         >
                           <label
-                            className="ms-Label root-53"
+                            className="ms-Label root-109"
                             htmlFor="confirmCollectionId"
                             id="TextFieldLabel3"
                           >
@@ -2150,12 +2148,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         </LabelBase>
                       </StyledLabelBase>
                       <div
-                        className="ms-TextField-fieldGroup fieldGroup-76"
+                        className="ms-TextField-fieldGroup fieldGroup-135"
                       >
                         <input
                           aria-invalid={false}
                           aria-labelledby="TextFieldLabel3"
-                          className="ms-TextField-field field-77"
+                          className="ms-TextField-field field-136"
                           id="confirmCollectionId"
                           onBlur={[Function]}
                           onChange={[Function]}
@@ -2464,7 +2462,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               }
             >
               <label
-                className="ms-Label root-53"
+                className="ms-Label root-109"
               >
                 Enter input parameters (if any)
               </label>
@@ -2474,11 +2472,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
             horizontal={true}
           >
             <div
-              className="ms-Stack css-54"
+              className="ms-Stack css-110"
             >
               <Dropdown
                 defaultSelectedKey="string"
-                key=".0:$.0"
+                key=".0:$.$.0"
                 label="Key"
                 onChange={[Function]}
                 options={
@@ -2819,7 +2817,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         },
                       ]
                     }
-                    responsiveMode={3}
+                    responsiveMode={0}
                     styles={[Function]}
                     tabIndex={0}
                     theme={
@@ -3101,12 +3099,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     >
                       <StyledLabelBase
                         className="ms-Dropdown-label"
-                        id="Dropdown4-label"
+                        id="Dropdown6-label"
                         styles={[Function]}
                       >
                         <LabelBase
                           className="ms-Dropdown-label"
-                          id="Dropdown4-label"
+                          id="Dropdown6-label"
                           styles={[Function]}
                           theme={
                             Object {
@@ -3383,8 +3381,8 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           }
                         >
                           <label
-                            className="ms-Label ms-Dropdown-label root-71"
-                            id="Dropdown4-label"
+                            className="ms-Label ms-Dropdown-label root-129"
+                            id="Dropdown6-label"
                           >
                             Key
                           </label>
@@ -3393,11 +3391,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       <div
                         aria-expanded="false"
                         aria-haspopup="listbox"
-                        aria-labelledby="Dropdown4-label Dropdown4-option"
-                        className="ms-Dropdown dropdown-55"
+                        aria-labelledby="Dropdown6-label Dropdown6-option"
+                        className="ms-Dropdown dropdown-111"
                         data-is-focusable={true}
                         data-ktp-target={true}
-                        id="Dropdown4"
+                        id="Dropdown6"
                         onBlur={[Function]}
                         onChange={[Function]}
                         onClick={[Function]}
@@ -3409,25 +3407,23 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         tabIndex={0}
                       >
                         <span
-                          aria-atomic={true}
                           aria-invalid={false}
-                          aria-live="polite"
-                          className="ms-Dropdown-title title-97"
-                          id="Dropdown4-option"
+                          className="ms-Dropdown-title title-156"
+                          id="Dropdown6-option"
                         >
                           String
                         </span>
                         <span
-                          className="ms-Dropdown-caretDownWrapper caretDownWrapper-57"
+                          className="ms-Dropdown-caretDownWrapper caretDownWrapper-113"
                         >
                           <StyledIconBase
                             aria-hidden={true}
-                            className="ms-Dropdown-caretDown caretDown-58"
+                            className="ms-Dropdown-caretDown caretDown-114"
                             iconName="ChevronDown"
                           >
                             <IconBase
                               aria-hidden={true}
-                              className="ms-Dropdown-caretDown caretDown-58"
+                              className="ms-Dropdown-caretDown caretDown-114"
                               iconName="ChevronDown"
                               styles={[Function]}
                               theme={
@@ -3706,7 +3702,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             >
                               <i
                                 aria-hidden={true}
-                                className="ms-Dropdown-caretDown caretDown-73"
+                                className="ms-Dropdown-caretDown caretDown-132"
                                 data-icon-name="ChevronDown"
                               >
                                 
@@ -3722,7 +3718,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
               <StyledTextFieldBase
                 defaultValue=""
                 id="confirmCollectionId"
-                key=".0:$.1"
+                key=".0:$.$.1"
                 label="Param"
                 onChange={[Function]}
                 tabIndex={0}
@@ -4012,19 +4008,19 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   validateOnLoad={true}
                 >
                   <div
-                    className="ms-TextField root-75"
+                    className="ms-TextField root-134"
                   >
                     <div
                       className="ms-TextField-wrapper"
                     >
                       <StyledLabelBase
                         htmlFor="confirmCollectionId"
-                        id="TextFieldLabel7"
+                        id="TextFieldLabel9"
                         styles={[Function]}
                       >
                         <LabelBase
                           htmlFor="confirmCollectionId"
-                          id="TextFieldLabel7"
+                          id="TextFieldLabel9"
                           styles={[Function]}
                           theme={
                             Object {
@@ -4301,21 +4297,21 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           }
                         >
                           <label
-                            className="ms-Label root-53"
+                            className="ms-Label root-109"
                             htmlFor="confirmCollectionId"
-                            id="TextFieldLabel7"
+                            id="TextFieldLabel9"
                           >
                             Param
                           </label>
                         </LabelBase>
                       </StyledLabelBase>
                       <div
-                        className="ms-TextField-fieldGroup fieldGroup-76"
+                        className="ms-TextField-fieldGroup fieldGroup-135"
                       >
                         <input
                           aria-invalid={false}
-                          aria-labelledby="TextFieldLabel7"
-                          className="ms-TextField-field field-77"
+                          aria-labelledby="TextFieldLabel9"
+                          className="ms-TextField-field field-136"
                           id="confirmCollectionId"
                           onBlur={[Function]}
                           onChange={[Function]}
@@ -4331,6 +4327,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 </TextFieldBase>
               </StyledTextFieldBase>
               <div
+                key=".0:$.$.2/.$.$.0"
                 tabIndex={0}
               >
                 <StyledImageBase
@@ -4628,7 +4625,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     width={20}
                   >
                     <div
-                      className="ms-Image addRemoveIconLabel root-86"
+                      className="ms-Image addRemoveIconLabel root-145"
                       style={
                         Object {
                           "height": 30,
@@ -4638,7 +4635,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     >
                       <img
                         alt="Delete param"
-                        className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
+                        className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-146"
                         id="deleteparam"
                         key="fabricImage[object Object]"
                         onClick={[Function]}
@@ -4652,6 +4649,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 </StyledImageBase>
               </div>
               <div
+                key=".0:$.$.2/.$.$.1"
                 tabIndex={0}
               >
                 <StyledImageBase
@@ -4949,7 +4947,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     width={20}
                   >
                     <div
-                      className="ms-Image addRemoveIconLabel root-86"
+                      className="ms-Image addRemoveIconLabel root-145"
                       style={
                         Object {
                           "height": 30,
@@ -4959,7 +4957,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     >
                       <img
                         alt="Add param"
-                        className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
+                        className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-146"
                         id="addparam"
                         key="fabricImage[object Object]"
                         onClick={[Function]}
@@ -4981,14 +4979,14 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
           tabIndex={0}
         >
           <div
-            className="ms-Stack css-54"
+            className="ms-Stack css-110"
             onClick={[Function]}
             tabIndex={0}
           >
             <StyledImageBase
               alt="Add param"
               height={30}
-              key=".0:$.0"
+              key=".0:$.$.0"
               src={Object {}}
               width={20}
             >
@@ -5273,7 +5271,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 width={20}
               >
                 <div
-                  className="ms-Image root-86"
+                  className="ms-Image root-145"
                   style={
                     Object {
                       "height": 30,
@@ -5283,7 +5281,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 >
                   <img
                     alt="Add param"
-                    className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
+                    className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-146"
                     key="fabricImage[object Object]"
                     onError={[Function]}
                     onLoad={[Function]}
@@ -5294,10 +5292,10 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
             </StyledImageBase>
             <Text
               className="addNewParamStyle"
-              key=".0:$.1"
+              key=".0:$.$.1"
             >
               <span
-                className="addNewParamStyle css-88"
+                className="addNewParamStyle css-147"
               >
                 Add New Param
               </span>
@@ -6194,7 +6192,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "iconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -6220,7 +6218,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "menuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -6232,14 +6230,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -6270,7 +6270,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "display": "inline-block",
                             "padding": "0 16px",
                             "selectors": Object {
-                              ":active > *": Object {
+                              ":active > span": Object {
                                 "left": 0,
                                 "position": "relative",
                                 "top": 0,
@@ -6297,7 +6297,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "borderColor": "WindowText",
@@ -6322,14 +6322,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -6363,7 +6365,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "backgroundColor": "#f3f2f1",
                             "color": "#d2d0ce",
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -6380,7 +6382,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "border": "1px solid #106ebe",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "Highlight",
                               "borderColor": "Highlight",
                               "color": "Window",
@@ -6392,7 +6394,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "border": "1px solid #005a9e",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "WindowText",
                               "borderColor": "WindowText",
@@ -6408,12 +6410,13 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "overflow": "hidden",
                           "padding": 0,
                           "position": "absolute",
+                          "whiteSpace": "nowrap",
                           "width": 1,
                         },
                         "splitButtonContainer": Array [
                           Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "border": "none",
                               },
                             },
@@ -6424,14 +6427,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid #ffffff",
+                                "borderRadius": undefined,
                                 "bottom": 3,
                                 "content": "\\"\\"",
                                 "left": 3,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": "none",
                                 "position": "absolute",
                                 "right": 3,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "none",
                                     "bottom": -2,
                                     "left": -2,
@@ -6454,13 +6459,21 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 "borderBottomRightRadius": "0",
                                 "borderRight": "none",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                               },
                               ".ms-Button--primary": Object {
                                 "border": "none",
                                 "borderBottomRightRadius": "0",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  ":active": Object {
+                                    "border": "none",
+                                  },
+                                  ":hover": Object {
+                                    "border": "none",
+                                  },
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "MsHighContrastAdjust": "none",
                                     "backgroundColor": "Window",
                                     "border": "1px solid WindowText",
@@ -6473,7 +6486,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               ".ms-Button--primary + .ms-Button": Object {
                                 "border": "none",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "1px solid WindowText",
                                     "borderLeftWidth": "0",
                                   },
@@ -6486,7 +6499,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -6500,7 +6513,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -6514,7 +6527,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "border": "none",
                           "outline": "none",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "Window",
                               "borderColor": "GrayText",
@@ -6530,7 +6543,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Highlight",
                                   "color": "Window",
                                 },
@@ -6539,7 +6552,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             ".ms-Button.is-disabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -6555,7 +6568,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                               },
                             },
@@ -6567,7 +6580,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "WindowText",
                               },
                             },
@@ -6580,7 +6593,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "position": "absolute",
                           "right": 31,
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "GrayText",
                             },
                           },
@@ -6602,18 +6615,18 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               ":hover": Object {
                                 "backgroundColor": "#106ebe",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "Highlight",
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
-                                "backgroundColor": "WindowText",
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "backgroundColor": "Canvas",
                               },
                             },
                           },
                           Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               ".ms-Button-menuIcon": Object {
                                 "color": "WindowText",
                               },
@@ -6663,7 +6676,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "selectors": Object {
                               ".ms-Button--primary": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
@@ -6672,7 +6685,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               },
                               ".ms-Button-menuIcon": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
@@ -6680,7 +6693,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               ":hover": Object {
                                 "cursor": "default",
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "border": "1px solid GrayText",
                                 "color": "GrayText",
@@ -6702,14 +6715,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "selectors": Object {
                             ".ms-Fabric--isFocusVisible &:focus:after": Object {
                               "border": "1px solid #ffffff",
+                              "borderRadius": undefined,
                               "bottom": 3,
                               "content": "\\"\\"",
                               "left": 3,
                               "outline": "1px solid #605e5c",
+                              "pointerEvents": undefined,
                               "position": "absolute",
                               "right": 3,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "border": "none",
                                   "bottom": -2,
                                   "left": -2,
@@ -6731,7 +6746,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "splitButtonMenuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -7021,7 +7036,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   >
                     <button
                       aria-label="Execute"
-                      className="ms-Button ms-Button--primary root-89"
+                      className="ms-Button ms-Button--primary root-148"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -7033,16 +7048,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-90"
+                        className="ms-Button-flexContainer flexContainer-149"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-91"
+                          className="ms-Button-textContainer textContainer-150"
                         >
                           <span
-                            className="ms-Button-label label-93"
-                            id="id__8"
-                            key="id__8"
+                            className="ms-Button-label label-152"
+                            id="id__12"
+                            key="id__12"
                           >
                             Execute
                           </span>

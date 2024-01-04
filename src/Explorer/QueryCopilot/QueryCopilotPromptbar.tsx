@@ -377,6 +377,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           disabled={isGeneratingQuery || !userPrompt.trim()}
           style={{ marginLeft: 8 }}
           onClick={() => startGenerateQueryProcess()}
+          aria-label="Send"
         />
         {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
         {showSamplePrompts && (
@@ -484,7 +485,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       <Stack style={{ margin: "8px 0" }}>
         <Text style={{ fontSize: 12 }}>
           AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
-          <Link href="https://aka.ms/cdb-copilot-preview-terms" target="_blank">
+          <Link href="https://aka.ms/cdb-copilot-preview-terms" target="_blank" style={{ color: "#0072c9" }}>
             Read preview terms
           </Link>
           {showErrorMessageBar && (
@@ -552,6 +553,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             id="likeBtn"
             style={{ marginLeft: 20 }}
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
+            aria-label="Like"
             onClick={() => {
               setShowCallout(!likeQuery);
               setLikeQuery(!likeQuery);
@@ -571,6 +573,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
               setDislikeQuery(!dislikeQuery);
               setShowCallout(false);
             }}
+            aria-label="Dislike"
           />
           <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton

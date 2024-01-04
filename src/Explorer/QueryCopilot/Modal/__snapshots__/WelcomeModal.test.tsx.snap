@@ -40,15 +40,6 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
           horizontalAlign="end"
           verticalAlign="start"
         >
-          <StackItem
-            className="previewMargin"
-          >
-            <Text
-              className="preview"
-            >
-              Preview
-            </Text>
-          </StackItem>
           <StackItem>
             <CustomizedIconButton
               ariaLabel="Exit"
@@ -79,7 +70,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
             as="h1"
             className="title bold"
           >
-            Welcome to Microsoft Copilot for Azure in Cosmos DB (preview)
+            Welcome to Microsoft Copilot for Azure in Cosmos DB
           </Text>
         </StackItem>
         <StackItem

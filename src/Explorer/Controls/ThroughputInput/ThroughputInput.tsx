@@ -189,7 +189,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <input
             id="Autoscale-input"
             className="throughputInputRadioBtn"
-            aria-label="Autoscale database throughput"
+            aria-label={`${getThroughputLabelText()} Autoscale`}
             aria-required={true}
             checked={isAutoscaleSelected}
             type="radio"
@@ -204,7 +204,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <input
             id="Manual-input"
             className="throughputInputRadioBtn"
-            aria-label="Manual database throughput"
+            aria-label={`${getThroughputLabelText()} Manual`}
             checked={!isAutoscaleSelected}
             type="radio"
             aria-required={true}
@@ -276,6 +276,12 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             </Link>
             .
           </Text>
+          <Stack horizontal>
+            <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} aria-label="maxRUDescription">
+              {isDatabase ? "Database" : getCollectionName()} Required RU/s
+            </Text>
+            <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
+          </Stack>
 
           <TooltipHost
             directionalHint={DirectionalHint.topLeftEdge}
@@ -296,7 +302,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               min={SharedConstants.CollectionCreation.DefaultCollectionRUs400}
               max={userContext.isTryCosmosDBSubscription ? Constants.TryCosmosExperience.maxRU : Infinity}
               value={throughput.toString()}
-              aria-label="Max request units per second"
+              ariaLabel={`${isDatabase ? "Database" : getCollectionName()} Required RU/s`}
               required={true}
               errorMessage={throughputError}
             />

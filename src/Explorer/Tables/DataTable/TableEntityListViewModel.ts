@@ -1,3 +1,4 @@
+import * as DataTables from "datatables.net";
 import * as ko from "knockout";
 import Q from "q";
 import * as _ from "underscore";
@@ -56,7 +57,7 @@ function _parse(err: any): ErrorDataModel[] {
 
 function _getInnerErrors(message: string): any[] {
   /*
-            The backend error message has an inner-message which is a stringified object. 
+            The backend error message has an inner-message which is a stringified object.
             For SQL errors, the "errors" property is an array of SqlErrorDataModel.
             Example:
                 "Message: {"Errors":["Resource with specified id or name already exists"]}\r\nActivityId: 80005000008d40b6a, Request URI: /apps/19000c000c0a0005/services/mctestdocdbprod-MasterService-0-00066ab9937/partitions/900005f9000e676fb8/replicas/13000000000955p"
@@ -131,7 +132,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     return [{ key: Constants.EntityKeyNames.RowKey, value: rowKey }];
   }
 
-  public reloadTable(useSetting: boolean = true, resetHeaders: boolean = true): DataTables.DataTable {
+  public reloadTable(useSetting: boolean = true, resetHeaders: boolean = true): DataTables.Api<Element> {
     this.clearCache();
     this.clearSelection();
     this.isCancelled = false;

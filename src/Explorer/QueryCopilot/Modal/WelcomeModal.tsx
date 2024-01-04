@@ -37,9 +37,6 @@ export const WelcomeModal = ({ visible }: { visible: boolean }): JSX.Element => 
               </Stack.Item>
             </Stack>
             <Stack horizontal grow={1} horizontalAlign="end" verticalAlign="start" className="exitPadding">
-              <Stack.Item className="previewMargin">
-                <Text className="preview">Preview</Text>
-              </Stack.Item>
               <Stack.Item>
                 <IconButton
                   onClick={hideModal}

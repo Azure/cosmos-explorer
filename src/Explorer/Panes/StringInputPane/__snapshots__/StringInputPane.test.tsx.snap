@@ -357,7 +357,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
             value=""
           >
             <div
-              className="ms-TextField is-required root-54"
+              className="ms-TextField is-required root-110"
             >
               <div
                 className="ms-TextField-wrapper"
@@ -648,7 +648,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                     }
                   >
                     <label
-                      className="ms-Label root-65"
+                      className="ms-Label root-121"
                       htmlFor="TextField0"
                       id="TextFieldLabel2"
                     >
@@ -657,13 +657,13 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                   </LabelBase>
                 </StyledLabelBase>
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-55"
+                  className="ms-TextField-fieldGroup fieldGroup-111"
                 >
                   <input
                     aria-invalid={false}
                     aria-labelledby="TextFieldLabel2"
                     autoFocus={true}
-                    className="ms-TextField-field field-56"
+                    className="ms-TextField-field field-112"
                     id="TextField0"
                     name="collectionIdConfirmation"
                     onBlur={[Function]}
@@ -1569,7 +1569,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         "iconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -1595,7 +1595,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         "menuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -1607,14 +1607,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -1645,7 +1647,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "display": "inline-block",
                             "padding": "0 16px",
                             "selectors": Object {
-                              ":active > *": Object {
+                              ":active > span": Object {
                                 "left": 0,
                                 "position": "relative",
                                 "top": 0,
@@ -1672,7 +1674,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "borderColor": "WindowText",
@@ -1697,14 +1699,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid transparent",
+                                "borderRadius": undefined,
                                 "bottom": 2,
                                 "content": "\\"\\"",
                                 "left": 2,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": undefined,
                                 "position": "absolute",
                                 "right": 2,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "bottom": -2,
                                     "left": -2,
                                     "outlineColor": "ButtonText",
@@ -1738,7 +1742,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "backgroundColor": "#f3f2f1",
                             "color": "#d2d0ce",
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -1755,7 +1759,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "border": "1px solid #106ebe",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "Highlight",
                               "borderColor": "Highlight",
                               "color": "Window",
@@ -1767,7 +1771,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "border": "1px solid #005a9e",
                           "color": "#ffffff",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "WindowText",
                               "borderColor": "WindowText",
@@ -1783,12 +1787,13 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "overflow": "hidden",
                           "padding": 0,
                           "position": "absolute",
+                          "whiteSpace": "nowrap",
                           "width": 1,
                         },
                         "splitButtonContainer": Array [
                           Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "border": "none",
                               },
                             },
@@ -1799,14 +1804,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "selectors": Object {
                               ".ms-Fabric--isFocusVisible &:focus:after": Object {
                                 "border": "1px solid #ffffff",
+                                "borderRadius": undefined,
                                 "bottom": 3,
                                 "content": "\\"\\"",
                                 "left": 3,
                                 "outline": "1px solid #605e5c",
+                                "pointerEvents": "none",
                                 "position": "absolute",
                                 "right": 3,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "none",
                                     "bottom": -2,
                                     "left": -2,
@@ -1829,13 +1836,21 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                                 "borderBottomRightRadius": "0",
                                 "borderRight": "none",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                               },
                               ".ms-Button--primary": Object {
                                 "border": "none",
                                 "borderBottomRightRadius": "0",
                                 "borderTopRightRadius": "0",
+                                "flexGrow": "1",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  ":active": Object {
+                                    "border": "none",
+                                  },
+                                  ":hover": Object {
+                                    "border": "none",
+                                  },
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "MsHighContrastAdjust": "none",
                                     "backgroundColor": "Window",
                                     "border": "1px solid WindowText",
@@ -1848,7 +1863,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                               ".ms-Button--primary + .ms-Button": Object {
                                 "border": "none",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "border": "1px solid WindowText",
                                     "borderLeftWidth": "0",
                                   },
@@ -1861,7 +1876,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -1875,7 +1890,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -1889,7 +1904,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "border": "none",
                           "outline": "none",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "Window",
                               "borderColor": "GrayText",
@@ -1905,7 +1920,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Highlight",
                                   "color": "Window",
                                 },
@@ -1914,7 +1929,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             ".ms-Button.is-disabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -1930,7 +1945,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                               },
                             },
@@ -1942,7 +1957,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "position": "absolute",
                             "right": 31,
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "WindowText",
                               },
                             },
@@ -1955,7 +1970,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "position": "absolute",
                           "right": 31,
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "backgroundColor": "GrayText",
                             },
                           },
@@ -1977,18 +1992,18 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                               ":hover": Object {
                                 "backgroundColor": "#106ebe",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "Highlight",
                                   },
                                 },
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
-                                "backgroundColor": "WindowText",
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "backgroundColor": "Canvas",
                               },
                             },
                           },
                           Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               ".ms-Button-menuIcon": Object {
                                 "color": "WindowText",
                               },
@@ -2038,7 +2053,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "selectors": Object {
                               ".ms-Button--primary": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
@@ -2047,7 +2062,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                               },
                               ".ms-Button-menuIcon": Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
@@ -2055,7 +2070,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                               ":hover": Object {
                                 "cursor": "default",
                               },
-                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "border": "1px solid GrayText",
                                 "color": "GrayText",
@@ -2077,14 +2092,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "selectors": Object {
                             ".ms-Fabric--isFocusVisible &:focus:after": Object {
                               "border": "1px solid #ffffff",
+                              "borderRadius": undefined,
                               "bottom": 3,
                               "content": "\\"\\"",
                               "left": 3,
                               "outline": "1px solid #605e5c",
+                              "pointerEvents": undefined,
                               "position": "absolute",
                               "right": 3,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                   "border": "none",
                                   "bottom": -2,
                                   "left": -2,
@@ -2106,7 +2123,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         "splitButtonMenuIconDisabled": Object {
                           "color": "#a19f9d",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                               "color": "GrayText",
                             },
                           },
@@ -2396,7 +2413,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                   >
                     <button
                       aria-label="Create"
-                      className="ms-Button ms-Button--primary root-66"
+                      className="ms-Button ms-Button--primary root-122"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2408,16 +2425,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-67"
+                        className="ms-Button-flexContainer flexContainer-123"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-68"
+                          className="ms-Button-textContainer textContainer-124"
                         >
                           <span
-                            className="ms-Button-label label-70"
-                            id="id__3"
-                            key="id__3"
+                            className="ms-Button-label label-126"
+                            id="id__5"
+                            key="id__5"
                           >
                             Create
                           </span>
