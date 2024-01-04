@@ -15,6 +15,7 @@ export const CopyPopup = ({
 
   return showCopyPopup ? (
     <Stack
+      role="status"
       style={{
         position: "fixed",
         width: 345,
