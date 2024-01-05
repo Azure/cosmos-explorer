@@ -149,8 +149,6 @@ export const SettingsPane = ({ explorer }: { explorer: Explorer }): JSX.Element 
     logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
     );
-    // eslint-disable-next-line no-console
-    console.log(refreshExplorer);
     refreshExplorer && (await explorer.refreshExplorer());
     closeSidePanel();
   };
