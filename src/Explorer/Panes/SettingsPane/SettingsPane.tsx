@@ -16,13 +16,16 @@ import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
-import React, { FunctionComponent, useState } from "react";
+import React, { useState } from "react";
+import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export const SettingsPane: FunctionComponent = () => {
+export const SettingsPane = ({ explorer }: { explorer: Explorer }): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [refreshExplorer, setRefreshExplorer] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
       ? Constants.Queries.UnlimitedPageOption
@@ -78,13 +81,19 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
       : Constants.PriorityLevel.Default,
   );
+  const [copilotSampleDBEnabled, setCopilotSampleDBEnabled] = useState<boolean>(
+    LocalStorageUtility.hasItem(StorageKey.CopilotSampleDBEnabled)
+      ? LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true"
+      : false,
+  );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
-  const handlerOnSubmit = () => {
+  const shouldShowCopilotSampleDBOption = userContext.apiType === "SQL" && useQueryCopilot.getState().copilotEnabled;
+  const handlerOnSubmit = async () => {
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
@@ -100,6 +109,7 @@ export const SettingsPane: FunctionComponent = () => {
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
     LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
+    LocalStorageUtility.setEntryString(StorageKey.CopilotSampleDBEnabled, copilotSampleDBEnabled.toString());
 
     if (shouldShowGraphAutoVizOption) {
       LocalStorageUtility.setEntryBoolean(
@@ -139,6 +149,9 @@ export const SettingsPane: FunctionComponent = () => {
     logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
     );
+    // eslint-disable-next-line no-console
+    console.log(refreshExplorer);
+    refreshExplorer && (await explorer.refreshExplorer());
     closeSidePanel();
   };
 
@@ -216,6 +229,12 @@ export const SettingsPane: FunctionComponent = () => {
     if (!isNaN(MaxWaitTimeInSeconds)) {
       setMaxWaitTimeInSeconds(MaxWaitTimeInSeconds);
     }
+  };
+
+  const handleSampleDatabaseChange = async (ev: React.MouseEvent<HTMLElement>, checked?: boolean): Promise<void> => {
+    setCopilotSampleDBEnabled(checked);
+    useQueryCopilot.getState().setCopilotSampleDBEnabled(checked);
+    setRefreshExplorer(!refreshExplorer);
   };
 
   const choiceButtonStyles = {
@@ -434,7 +453,7 @@ export const SettingsPane: FunctionComponent = () => {
           </div>
         </div>
         <div className="settingsSection">
-          <div className="settingsSectionPart">
+          <div className="settingsSectionPart settingsSectionInlineCheckbox">
             <div className="settingsSectionLabel">
               Enable container pagination
               <InfoTooltip>
@@ -454,7 +473,7 @@ export const SettingsPane: FunctionComponent = () => {
         </div>
         {shouldShowCrossPartitionOption && (
           <div className="settingsSection">
-            <div className="settingsSectionPart">
+            <div className="settingsSectionPart settingsSectionInlineCheckbox">
               <div className="settingsSectionLabel">
                 Enable cross-partition query
                 <InfoTooltip>
@@ -541,6 +560,30 @@ export const SettingsPane: FunctionComponent = () => {
                 options={graphAutoOptionList}
                 onChange={handleOnGremlinChange}
                 aria-label="Graph Auto-visualization"
+              />
+            </div>
+          </div>
+        )}
+        {shouldShowCopilotSampleDBOption && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart settingsSectionInlineCheckbox">
+              <div className="settingsSectionLabel">
+                Enable sample database
+                <InfoTooltip>
+                  This is a sample database and collection with synthetic product data you can use to explore using
+                  NoSQL queries and Copilot. This will appear as another database in the Data Explorer UI, and is
+                  created by, and maintained by Microsoft at no cost to you.
+                </InfoTooltip>
+              </div>
+
+              <Checkbox
+                styles={{
+                  label: { padding: 0 },
+                }}
+                className="padding"
+                ariaLabel="Enable sample db for Copilot"
+                checked={copilotSampleDBEnabled}
+                onChange={handleSampleDatabaseChange}
               />
             </div>
           </div>

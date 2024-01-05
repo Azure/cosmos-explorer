@@ -274,7 +274,7 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"
@@ -303,7 +303,7 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"
@@ -521,7 +521,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"

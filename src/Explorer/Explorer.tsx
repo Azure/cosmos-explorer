@@ -3,9 +3,10 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { getCopilotEnabled } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -1389,9 +1390,20 @@ export default class Explorer {
     if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
       return;
     }
-    const copilotEnabled = await getCopilotEnabled();
-    useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
-    useQueryCopilot.getState().setCopilotUserDBEnabled(copilotEnabled);
+    const copilotEnabledPromise = getCopilotEnabled();
+    const copilotUserDBEnabledPromise = isCopilotFeatureRegistered(userContext.subscriptionId);
+    const [copilotEnabled, copilotUserDBEnabled] = await Promise.all([
+      copilotEnabledPromise,
+      copilotUserDBEnabledPromise,
+    ]);
+    const copilotSampleDBEnabled = LocalStorageUtility.hasItem(StorageKey.CopilotSampleDBEnabled)
+      ? LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true"
+      : false;
+    useQueryCopilot.getState().setCopilotEnabled(copilotEnabled && copilotUserDBEnabled);
+    useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
+    useQueryCopilot
+      .getState()
+      .setCopilotSampleDBEnabled(copilotEnabled && copilotUserDBEnabled && copilotSampleDBEnabled);
   }
 
   public async refreshSampleData(): Promise<void> {
