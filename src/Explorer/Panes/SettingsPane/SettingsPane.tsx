@@ -18,11 +18,15 @@ import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
-import React, { useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export const SettingsPane = ({ explorer }: { explorer: Explorer }): JSX.Element => {
+export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
+  explorer,
+}: {
+  explorer: Explorer;
+}): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [refreshExplorer, setRefreshExplorer] = useState<boolean>(false);
@@ -82,9 +86,7 @@ export const SettingsPane = ({ explorer }: { explorer: Explorer }): JSX.Element 
       : Constants.PriorityLevel.Default,
   );
   const [copilotSampleDBEnabled, setCopilotSampleDBEnabled] = useState<boolean>(
-    LocalStorageUtility.hasItem(StorageKey.CopilotSampleDBEnabled)
-      ? LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true"
-      : false,
+    LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true",
   );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";

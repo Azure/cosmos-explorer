@@ -1396,9 +1396,7 @@ export default class Explorer {
       copilotEnabledPromise,
       copilotUserDBEnabledPromise,
     ]);
-    const copilotSampleDBEnabled = LocalStorageUtility.hasItem(StorageKey.CopilotSampleDBEnabled)
-      ? LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true"
-      : false;
+    const copilotSampleDBEnabled = LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true";
     useQueryCopilot.getState().setCopilotEnabled(copilotEnabled && copilotUserDBEnabled);
     useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
     useQueryCopilot
