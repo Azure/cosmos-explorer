@@ -9,7 +9,6 @@ __mocks__/
 .vscode/
 azure-pipelines.cg.yml
 babel.config.js
-canvas/
 configs/
 copyToConsumers.js
 DataExplorer.nuspec

@@ -50,7 +50,6 @@
     "@types/node-fetch": "2.5.7",
     "applicationinsights": "1.8.0",
     "bootstrap": "3.4.1",
-    "canvas": "file:./canvas",
     "clean-webpack-plugin": "4.0.0",
     "clipboard-copy": "4.0.1",
     "copy-webpack-plugin": "11.0.0",
