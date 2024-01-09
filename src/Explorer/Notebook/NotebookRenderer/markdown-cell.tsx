@@ -10,7 +10,7 @@ import { defineConfigOption } from "@nteract/mythic-configuration";
 import { Source as BareSource } from "@nteract/presentational-components";
 import Editor, { EditorSlots } from "@nteract/stateful-components/lib/inputs/editor";
 import React from "react";
-import { ReactMarkdownProps } from "react-markdown";
+// import { ReactMarkdownProps } from "react-markdown";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import styled from "styled-components";
@@ -37,7 +37,7 @@ interface StateProps {
   isCellFocused: boolean;
   isEditorFocused: boolean;
   cell?: ImmutableCell;
-  markdownOptions: ReactMarkdownProps;
+  markdownOptions: any; // ReactMarkdownProps;
 }
 
 interface DispatchProps {
@@ -48,7 +48,7 @@ interface DispatchProps {
 }
 
 // Add missing style to make the editor show https://github.com/nteract/nteract/commit/7fa580011578350e56deac81359f6294fdfcad20#diff-07829a1908e4bf98d4420f868a1c6f890b95d77297b9805c9590d2dba11e80ce
-export const Source = styled(BareSource)`
+const Source = styled(BareSource)`
   width: 100%;
   width: -webkit-fill-available;
   width: -moz-available;

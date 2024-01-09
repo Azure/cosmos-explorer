@@ -52,6 +52,7 @@ module.exports = {
         message: "Do not use JSON.stringify(error). It will print '{}'",
       },
     ],
+    "react/no-deprecated": "off",
   },
   settings: {
     react: {

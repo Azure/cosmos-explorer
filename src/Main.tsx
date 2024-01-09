@@ -7,7 +7,6 @@ import { userContext } from "UserContext";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -61,7 +60,7 @@ import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 
 initializeIcons();
 
-const App: React.FunctionComponent = () => {
+export const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
@@ -137,8 +136,9 @@ const App: React.FunctionComponent = () => {
   );
 };
 
-const mainElement = document.getElementById("Main");
-ReactDOM.render(<App />, mainElement);
+// const mainElement = document.getElementById("Main");
+// ReactDOM.render(<App />, mainElement);
+console.log("======> App.tsxno");
 
 function LoadingExplorer(): JSX.Element {
   return (

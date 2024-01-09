@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "sourceMap": true,
+    "noEmit": false,
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "exclude": [
+    "./src/**/__mocks__/**/*",
+    "./src/**/*.test.tsx",
+    "./src/**/*.test.ts",
+    "./src/Explorer/Notebook/NotebookRenderer/markdown-cell.tsx",
+    "./src/Explorer/Notebook/NotebookRenderer/NotebookRenderer.tsx",
+    "./src/Explorer/Notebook/NotebookRenderer/NotebookReadOnlyRenderer.tsx",
+    "./test/**/*",
+    "externals/jquery.typeahead.min.js"
+  ]
+}

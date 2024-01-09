@@ -1,8 +1,9 @@
 {
-  "name": "cosmos-explorer",
+  "name": "cosmosexplorer",
   "version": "1.0.0",
   "description": "Cosmos Explorer",
-  "main": "index.js",
+  "main": "dist/cosmosexplorer.js",
+  "types": "dist/cosmosexplorer.d.ts",
   "dependencies": {
     "@azure/arm-cosmosdb": "9.1.0",
     "@azure/cosmos": "4.0.0",
@@ -30,6 +31,7 @@
     "@nteract/logos": "1.0.0",
     "@nteract/markdown": "4.6.0",
     "@nteract/monaco-editor": "3.2.2",
+    "@nteract/myths": "0.2.13",
     "@nteract/octicons": "2.0.0",
     "@nteract/outputs": "3.0.9",
     "@nteract/presentational-components": "3.0.7",
@@ -82,11 +84,9 @@
     "plotly.js-cartesian-dist-min": "1.52.3",
     "post-robot": "10.0.42",
     "q": "1.5.1",
-    "react": "16.14.0",
     "react-animate-height": "2.0.8",
     "react-dnd": "14.0.2",
     "react-dnd-html5-backend": "14.0.0",
-    "react-dom": "16.14.0",
     "react-hotkeys": "2.0.0",
     "react-i18next": "11.8.5",
     "react-notification-system": "0.2.17",
@@ -172,6 +172,8 @@
     "process": "0.11.10",
     "querystring-es3": "0.2.1",
     "raw-loader": "0.5.1",
+    "react": "^16",
+    "react-dom": "^16",
     "react-dev-utils": "11.0.4",
     "rimraf": "3.0.0",
     "sinon": "3.2.1",
@@ -179,6 +181,7 @@
     "ts-loader": "9.2.4",
     "typedoc": "0.21.5",
     "typescript": "4.3.5",
+    "types-webpack-bundler": "1.0.2",
     "url-loader": "4.1.1",
     "wait-on": "4.0.2",
     "webpack": "5.88.2",
@@ -186,11 +189,17 @@
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "4.15.1"
   },
+  "peerDependencies": {
+    "react": "^16",
+    "react-dom": "^16"
+  },
   "scripts": {
+    "prepublish": "rimraf dist && npm run build",
+    "clean": "rimraf dist cosmosexplorer*.tgz",
     "start": "webpack serve --mode development",
     "dev": "echo \"WARNING: npm run dev has been deprecated\" && npm run build",
     "build:dataExplorer:ci": "npm run build:ci",
-    "build": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers",
+    "build": "npm run format:check && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers",
     "build:ci": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:fast",
     "pack:prod": "webpack  --mode production",
     "pack:fast": "webpack  --mode development --progress",
@@ -212,7 +221,10 @@
     "strict:find": "node ./strict-null-checks/find.js",
     "strict:add": "node ./strict-null-checks/auto-add.js",
     "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks",
-    "generateARMClients": "npx ts-node utils/armClientGenerator/generator.ts"
+    "generateARMClients": "npx ts-node utils/armClientGenerator/generator.ts",
+    "generateTypes": "tsc -p tsconfig.types.json",
+    "pack:viz": "webpack --mode production --analyze",
+    "pack:library": "npm run clean && webpack --mode production --config webpack.library.config.js && npm pack"
   },
   "repository": {
     "type": "git",

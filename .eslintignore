@@ -146,3 +146,11 @@ src/Explorer/Tree/ResourceTreeAdapter.tsx
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTree.tsx
 src/Utils/PriorityBasedExecutionUtils.ts
+
+src\CellOutputViewer\CellOutputViewer.tsx
+src\GalleryViewer\GalleryViewer.tsx
+src\HostedExplorer.tsx
+src\Index.tsx
+src\Main.tsx
+src\NotebookViewer\NotebookViewer.tsx
+src\SelfServe\SelfServe.tsx
