@@ -42,7 +42,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
         ? CommandBarComponentButtonFactory.createPostgreButtons(container)
         : CommandBarComponentButtonFactory.createVCoreMongoButtons(container);
     return (
-      <div className="commandBarContainer">
+      <div className="commandBarContainer" id="cde-commandBarContainer">
         <FluentCommandBar
           ariaLabel="Use left and right arrow keys to navigate between commands"
           items={CommandBarUtil.convertButton(buttons, backgroundColor)}
@@ -91,7 +91,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
       ? {
           root: {
             backgroundColor: "transparent",
-            padding: "0px 14px 0px 14px",
+            padding: "2px 8px 0px 8px",
           },
         }
       : {
@@ -101,7 +101,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
         };
 
   return (
-    <div className="commandBarContainer">
+    <div className="commandBarContainer" id="cde-commandBarContainer">
       <FluentCommandBar
         ariaLabel="Use left and right arrow keys to navigate between commands"
         items={uiFabricStaticButtons.concat(uiFabricTabsButtons)}
