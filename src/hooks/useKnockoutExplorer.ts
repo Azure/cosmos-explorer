@@ -131,6 +131,11 @@ async function configureFabric(): Promise<Explorer> {
             handleCachedDataMessage(data);
             break;
           }
+          case "setToolbarStatus": {
+            const cdeToolbar = document.getElementById("cde-commandBarContainer");
+            cdeToolbar?.style.setProperty("display", data.message.visible === false ? "none" : "initial");
+            break;
+          }
           default:
             console.error(`Unknown Fabric message type: ${JSON.stringify(data)}`);
             break;

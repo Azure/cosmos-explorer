@@ -70,6 +70,12 @@ export type FabricMessageV2 =
         error: string | undefined;
         data: FabricDatabaseConnectionInfo | undefined;
       };
+    }
+  | {
+      type: "setToolbarStatus";
+      message: {
+        visible: boolean;
+      };
     };
 
 export type CosmosDBTokenResponse = {
