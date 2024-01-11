@@ -25,7 +25,10 @@ import { MemoryTracker } from "./MemoryTrackerComponent";
  * @param btns
  */
 export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
-  const buttonHeightPx = configContext.platform == Platform.Fabric ? StyleConstants.FabricCommandBarButtonHeight : StyleConstants.CommandBarButtonHeight;
+  const buttonHeightPx =
+    configContext.platform == Platform.Fabric
+      ? StyleConstants.FabricCommandBarButtonHeight
+      : StyleConstants.CommandBarButtonHeight;
 
   const hoverColor =
     configContext.platform == Platform.Fabric ? StyleConstants.FabricAccentLight : StyleConstants.AccentLight;
