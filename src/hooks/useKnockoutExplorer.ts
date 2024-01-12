@@ -2,6 +2,7 @@ import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -132,8 +133,7 @@ async function configureFabric(): Promise<Explorer> {
             break;
           }
           case "setToolbarStatus": {
-            const cdeToolbar = document.getElementById("cde-commandBarContainer");
-            cdeToolbar?.style.setProperty("display", data.message.visible === false ? "none" : "initial");
+            useCommandBar.getState().setIsHidden(data.message.visible === false);
             break;
           }
           default:
