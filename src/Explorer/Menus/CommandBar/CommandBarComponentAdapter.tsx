@@ -24,16 +24,21 @@ interface Props {
 export interface CommandBarStore {
   contextButtons: CommandButtonComponentProps[];
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => void;
+  isHidden: boolean;
+  setIsHidden: (isHidden: boolean) => void;
 }
 
 export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
   contextButtons: [],
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => set((state) => ({ ...state, contextButtons })),
+  isHidden: false,
+  setIsHidden: (isHidden: boolean) => set((state) => ({ ...state, isHidden })),
 }));
 
 export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const selectedNodeState = useSelectedNode();
   const buttons = useCommandBar((state) => state.contextButtons);
+  const isHidden = useCommandBar((state) => state.isHidden);
   const backgroundColor = StyleConstants.BaseLight;
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
@@ -42,7 +47,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
         ? CommandBarComponentButtonFactory.createPostgreButtons(container)
         : CommandBarComponentButtonFactory.createVCoreMongoButtons(container);
     return (
-      <div className="commandBarContainer">
+      <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
         <FluentCommandBar
           ariaLabel="Use left and right arrow keys to navigate between commands"
           items={CommandBarUtil.convertButton(buttons, backgroundColor)}
@@ -89,19 +94,19 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const rootStyle =
     configContext.platform === Platform.Fabric
       ? {
-          root: {
-            backgroundColor: "transparent",
-            padding: "0px 14px 0px 14px",
-          },
-        }
+        root: {
+          backgroundColor: "transparent",
+          padding: "2px 8px 0px 8px",
+        },
+      }
       : {
-          root: {
-            backgroundColor: backgroundColor,
-          },
-        };
+        root: {
+          backgroundColor: backgroundColor,
+        },
+      };
 
   return (
-    <div className="commandBarContainer">
+    <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
       <FluentCommandBar
         ariaLabel="Use left and right arrow keys to navigate between commands"
         items={uiFabricStaticButtons.concat(uiFabricTabsButtons)}
