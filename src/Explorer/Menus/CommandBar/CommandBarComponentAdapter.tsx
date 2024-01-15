@@ -94,16 +94,16 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const rootStyle =
     configContext.platform === Platform.Fabric
       ? {
-        root: {
-          backgroundColor: "transparent",
-          padding: "2px 8px 0px 8px",
-        },
-      }
+          root: {
+            backgroundColor: "transparent",
+            padding: "2px 8px 0px 8px",
+          },
+        }
       : {
-        root: {
-          backgroundColor: backgroundColor,
-        },
-      };
+          root: {
+            backgroundColor: backgroundColor,
+          },
+        };
 
   return (
     <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
