@@ -10,6 +10,7 @@ import { ContainerInfo } from "../Contracts/DataModels";
 export interface QueryCopilotState {
   copilotEnabled: boolean;
   copilotUserDBEnabled: boolean;
+  copilotSampleDBEnabled: boolean;
   generatedQuery: string;
   likeQuery: boolean;
   userPrompt: string;
@@ -50,6 +51,7 @@ export interface QueryCopilotState {
 
   setCopilotEnabled: (copilotEnabled: boolean) => void;
   setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => void;
+  setCopilotSampleDBEnabled: (copilotSampleDBEnabled: boolean) => void;
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
   setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) => void;
@@ -96,6 +98,7 @@ type QueryCopilotStore = UseStore<QueryCopilotState>;
 export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   copilotEnabled: false,
   copilotUserDBEnabled: false,
+  copilotSampleDBEnabled: false,
   generatedQuery: "",
   likeQuery: false,
   userPrompt: "",
@@ -104,7 +107,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   correlationId: "",
   query: "SELECT * FROM c",
   selectedQuery: "",
-  isGeneratingQuery: false,
+  isGeneratingQuery: null,
   isGeneratingExplanation: false,
   isExecuting: false,
   dislikeQuery: undefined,
@@ -145,6 +148,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
 
   setCopilotEnabled: (copilotEnabled: boolean) => set({ copilotEnabled }),
   setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => set({ copilotUserDBEnabled }),
+  setCopilotSampleDBEnabled: (copilotSampleDBEnabled: boolean) => set({ copilotSampleDBEnabled }),
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
   closeFeedbackModal: () => set({ showFeedbackModal: false }),

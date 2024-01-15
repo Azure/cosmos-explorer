@@ -200,7 +200,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
-      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane />),
+      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
       commandButtonLabel: undefined,
       ariaLabel: "Settings",
       tooltipText: "Settings",

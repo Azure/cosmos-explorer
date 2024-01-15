@@ -154,7 +154,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     action.paneKind === ActionContracts.PaneKind.GlobalSettings ||
     action.paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.GlobalSettings]
   ) {
-    useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
+    useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={explorer} />);
   }
 }
 

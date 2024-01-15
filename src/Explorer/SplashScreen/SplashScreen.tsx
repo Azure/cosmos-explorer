@@ -148,23 +148,25 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             />
           </Stack>
           <Stack horizontal tokens={{ childrenGap: 16 }}>
-            <SplashScreenButton
-              imgSrc={CopilotIcon}
-              title={"Query faster with Copilot"}
-              description={
-                "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
-              }
-              onClick={() => {
-                const copilotVersion = userContext.features.copilotVersion;
-                if (copilotVersion === "v1.0") {
-                  useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
-                } else if (copilotVersion === "v2.0") {
-                  const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
-                  sampleCollection.onNewQueryClick(sampleCollection, undefined);
+            {useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotSampleDBEnabled && (
+              <SplashScreenButton
+                imgSrc={CopilotIcon}
+                title={"Query faster with Copilot"}
+                description={
+                  "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
                 }
-                traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
-              }}
-            />
+                onClick={() => {
+                  const copilotVersion = userContext.features.copilotVersion;
+                  if (copilotVersion === "v1.0") {
+                    useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+                  } else if (copilotVersion === "v2.0") {
+                    const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
+                    sampleCollection.onNewQueryClick(sampleCollection, undefined);
+                  }
+                  traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
+                }}
+              />
+            )}
             <SplashScreenButton
               imgSrc={ConnectIcon}
               title={"Connect"}

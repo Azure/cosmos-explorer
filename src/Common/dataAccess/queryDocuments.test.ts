@@ -1,5 +1,5 @@
-import { getCommonQueryOptions } from "./queryDocuments";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import { getCommonQueryOptions } from "./queryDocuments";
 
 describe("getCommonQueryOptions", () => {
   it("builds the correct default options objects", () => {
