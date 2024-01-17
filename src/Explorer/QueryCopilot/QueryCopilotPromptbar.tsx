@@ -348,6 +348,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             },
           }}
           ariaLabel="Close"
+          title="Close copilot"
         />
       </Stack>
       <Stack horizontal verticalAlign="center">
