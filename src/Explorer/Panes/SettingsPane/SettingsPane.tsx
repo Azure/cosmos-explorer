@@ -234,7 +234,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const handleSampleDatabaseChange = async (ev: React.MouseEvent<HTMLElement>, checked?: boolean): Promise<void> => {
     setCopilotSampleDBEnabled(checked);
     useQueryCopilot.getState().setCopilotSampleDBEnabled(checked);
-    setRefreshExplorer(!refreshExplorer);
+    setRefreshExplorer(false);
   };
 
   const choiceButtonStyles = {
