@@ -5,7 +5,7 @@ import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
+import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -384,9 +384,7 @@ export default class Explorer {
 
   public onRefreshResourcesClick = (): void => {
     if (configContext.platform === Platform.Fabric) {
-      // Requesting the tokens will trigger a refresh of the databases
-      // TODO: Once the id is returned from Fabric, we can await this call and then refresh the databases here
-      requestDatabaseResourceTokens();
+      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 
