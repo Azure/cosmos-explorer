@@ -302,17 +302,11 @@ export default class Explorer {
         this.sendNPSMessage();
       }
     } else {
-      // An existing account is older than 3 days but less than 90 days old. For existing account show to 100% of users in Data Explorer.
+      // Display survey when an existing account is older than 3 days but less than 90 days old. Also, show for accounts greater than 90 days old. For existing account show to 100% of users in Data Explorer.
       if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) &&
-        isAccountNewerThanNinetyDays
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
       ) {
         this.sendNPSMessage();
-      } else {
-        // An existing account is greater than 90 days. For existing account show to random 33% of users in Data Explorer.
-        if (this.getRandomInt(100) < 33) {
-          this.sendNPSMessage();
-        }
       }
     }
   }
