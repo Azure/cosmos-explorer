@@ -298,8 +298,7 @@ export default class Explorer {
         this.sendNPSMessage();
       }
     } else {
-      // Display survey when an existing account is older than 3 days but less than 90 days old. Also, show for accounts greater than 90 days old. For existing account show to 100% of users in Data Explorer.
-      if (
+      // Show survey when an existing account is older than 3 days
         !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
       ) {
         this.sendNPSMessage();
