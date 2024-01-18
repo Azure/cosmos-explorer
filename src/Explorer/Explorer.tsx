@@ -299,6 +299,7 @@ export default class Explorer {
       }
     } else {
       // Show survey when an existing account is older than 3 days
+      if (
         !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
       ) {
         this.sendNPSMessage();
