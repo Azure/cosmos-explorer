@@ -277,10 +277,6 @@ export default class Explorer {
     const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
     const THREE_DAYS_IN_MS = 259200000;
-    const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
-      userContext.databaseAccount?.systemData?.createdAt || "",
-      NINETY_DAYS_IN_MS,
-    );
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
 
     if (lastSubmitted !== null) {
