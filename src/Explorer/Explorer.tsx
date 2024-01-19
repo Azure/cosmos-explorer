@@ -277,10 +277,6 @@ export default class Explorer {
     const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
     const THREE_DAYS_IN_MS = 259200000;
-    const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
-      userContext.databaseAccount?.systemData?.createdAt || "",
-      NINETY_DAYS_IN_MS,
-    );
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
 
     if (lastSubmitted !== null) {
@@ -302,17 +298,11 @@ export default class Explorer {
         this.sendNPSMessage();
       }
     } else {
-      // An existing account is older than 3 days but less than 90 days old. For existing account show to 100% of users in Data Explorer.
+      // Show survey when an existing account is older than 3 days
       if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) &&
-        isAccountNewerThanNinetyDays
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
       ) {
         this.sendNPSMessage();
-      } else {
-        // An existing account is greater than 90 days. For existing account show to random 33% of users in Data Explorer.
-        if (this.getRandomInt(100) < 33) {
-          this.sendNPSMessage();
-        }
       }
     }
   }
