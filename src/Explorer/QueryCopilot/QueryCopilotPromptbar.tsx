@@ -18,7 +18,6 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
-import { useBoolean } from "@fluentui/react-hooks";
 import { HttpStatusCodes } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
@@ -71,7 +70,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   databaseId,
   containerId,
 }: QueryCopilotPromptProps): JSX.Element => {
-  const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
+  const [copilotTeachingBubbleVisible, setCopilotTeachingBubbleVisible] = useState<boolean>(false);
   const inputEdited = useRef(false);
   const {
     openFeedbackModal,
@@ -94,6 +93,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setIsSamplePromptsOpen,
     showSamplePrompts,
     setShowSamplePrompts,
+    showPromptTeachingBubble,
+    setShowPromptTeachingBubble,
     showDeletePopup,
     setShowDeletePopup,
     showFeedbackBar,
@@ -272,14 +273,21 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   const showTeachingBubble = (): void => {
-    if (!inputEdited.current) {
+    if (showPromptTeachingBubble && !inputEdited.current) {
       setTimeout(() => {
         if (!inputEdited.current && !isWelcomModalVisible()) {
-          toggleCopilotTeachingBubbleVisible();
+          setCopilotTeachingBubbleVisible(true);
           inputEdited.current = true;
         }
       }, 30000);
+    } else {
+      toggleCopilotTeachingBubbleVisible(false);
     }
+  };
+
+  const toggleCopilotTeachingBubbleVisible = (visible: boolean): void => {
+    setCopilotTeachingBubbleVisible(visible);
+    setShowPromptTeachingBubble(visible);
   };
 
   const isWelcomModalVisible = (): boolean => {
@@ -340,6 +348,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             },
           }}
           ariaLabel="Close"
+          title="Close copilot"
         />
       </Stack>
       <Stack horizontal verticalAlign="center">
@@ -364,13 +373,13 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           placeholder="Ask a question in natural language and we’ll generate the query for you."
           aria-labelledby="copilot-textfield-label"
         />
-        {copilotTeachingBubbleVisible && (
+        {showPromptTeachingBubble && copilotTeachingBubbleVisible && (
           <TeachingBubble
             calloutProps={{ directionalHint: DirectionalHint.bottomCenter }}
             target="#naturalLanguageInput"
             hasCloseButton={true}
             closeButtonAriaLabel="Close"
-            onDismiss={toggleCopilotTeachingBubbleVisible}
+            onDismiss={() => toggleCopilotTeachingBubbleVisible(false)}
             hasSmallHeadline={true}
             headline="Write a prompt"
           >
@@ -378,7 +387,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             <Link
               onClick={() => {
                 setShowSamplePrompts(true);
-                toggleCopilotTeachingBubbleVisible();
+                toggleCopilotTeachingBubbleVisible(false);
               }}
               style={{ color: "white", fontWeight: 600 }}
             >

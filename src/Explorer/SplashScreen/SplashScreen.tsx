@@ -148,7 +148,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             />
           </Stack>
           <Stack horizontal tokens={{ childrenGap: 16 }}>
-            {useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotSampleDBEnabled && (
+            {useQueryCopilot.getState().copilotEnabled && (
               <SplashScreenButton
                 imgSrc={CopilotIcon}
                 title={"Query faster with Copilot"}

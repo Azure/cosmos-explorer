@@ -29,6 +29,7 @@ export interface QueryCopilotState {
   queryResults: QueryResults | undefined;
   errorMessage: string;
   isSamplePromptsOpen: boolean;
+  showPromptTeachingBubble: boolean;
   showDeletePopup: boolean;
   showFeedbackBar: boolean;
   showCopyPopup: boolean;
@@ -71,6 +72,7 @@ export interface QueryCopilotState {
   setQueryResults: (queryResults: QueryResults | undefined) => void;
   setErrorMessage: (errorMessage: string) => void;
   setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => void;
+  setShowPromptTeachingBubble: (showPromptTeachingBubble: boolean) => void;
   setShowDeletePopup: (showDeletePopup: boolean) => void;
   setShowFeedbackBar: (showFeedbackBar: boolean) => void;
   setshowCopyPopup: (showCopyPopup: boolean) => void;
@@ -93,7 +95,7 @@ export interface QueryCopilotState {
   resetQueryCopilotStates: () => void;
 }
 
-type QueryCopilotStore = UseStore<QueryCopilotState>;
+type QueryCopilotStore = UseStore<Partial<QueryCopilotState>>;
 
 export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   copilotEnabled: false,
