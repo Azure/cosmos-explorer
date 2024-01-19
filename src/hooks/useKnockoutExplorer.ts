@@ -1,5 +1,6 @@
 import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -145,7 +146,7 @@ async function configureFabric(): Promise<Explorer> {
     );
 
     sendMessage({
-      type: MessageTypes.Ready,
+      type: FabricMessageTypes.Ready,
       id: "ready",
       params: [DATA_EXPLORER_RPC_VERSION],
     });

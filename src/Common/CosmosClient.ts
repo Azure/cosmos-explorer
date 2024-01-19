@@ -1,7 +1,7 @@
 import * as Cosmos from "@azure/cosmos";
 import { sendCachedDataMessage } from "Common/MessageHandler";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
-import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
+import { AuthorizationToken, FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
@@ -53,7 +53,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       case Cosmos.ResourceType.permission:
         // User master tokens
         const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(
-          MessageTypes.GetAuthorizationToken,
+          FabricMessageTypes.GetAuthorizationToken,
           [requestInfo],
           userContext.fabricContext.connectionId,
         );
