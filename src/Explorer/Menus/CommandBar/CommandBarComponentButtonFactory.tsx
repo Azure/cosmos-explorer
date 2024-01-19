@@ -55,7 +55,7 @@ export function createStaticCommandBarButtons(
       buttons.push(createDivider());
     }
   };
-
+  console.log(`userContext 1: ${JSON.stringify(userContext.databaseAccount.properties.writeLocations)}`);
   if (configContext.platform !== Platform.Fabric) {
     const newCollectionBtn = createNewCollectionGroup(container);
     buttons.push(newCollectionBtn);
