@@ -127,6 +127,8 @@ enum SDKSupportedCapabilities {
   PartitionMerge = 1 << 0,
 }
 
+// Need to put in some kind of function here to recreate the CosmosClient with a new endpoint.
+
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
