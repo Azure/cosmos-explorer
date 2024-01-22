@@ -11,6 +11,7 @@ export interface TabsState {
   activeTab: TabsBase | undefined;
   activeReactTab: ReactTabKind | undefined;
   networkSettingsWarning: string;
+  showRUThresholdMessageBar: boolean;
   queryCopilotTabInitialInput: string;
   isTabExecuting: boolean;
   isQueryErrorThrown: boolean;
@@ -26,6 +27,7 @@ export interface TabsState {
   openAndActivateReactTab: (tabKind: ReactTabKind) => void;
   closeReactTab: (tabKind: ReactTabKind) => void;
   setNetworkSettingsWarning: (warningMessage: string) => void;
+  setShowRUThresholdMessageBar: (showRUThresholdMessageBar: boolean) => void;
   setQueryCopilotTabInitialInput: (input: string) => void;
   setIsTabExecuting: (state: boolean) => void;
   setIsQueryErrorThrown: (state: boolean) => void;
@@ -55,6 +57,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   activeTab: undefined,
   activeReactTab: !isPlatformFabric ? ReactTabKind.Home : undefined,
   networkSettingsWarning: "",
+  showRUThresholdMessageBar: false,
   queryCopilotTabInitialInput: "",
   isTabExecuting: false,
   isQueryErrorThrown: false,
@@ -168,6 +171,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     set({ openedReactTabs: updatedOpenedReactTabs });
   },
   setNetworkSettingsWarning: (warningMessage: string) => set({ networkSettingsWarning: warningMessage }),
+  setShowRUThresholdMessageBar: (showRUThresholdMessageBar: boolean) => set({ showRUThresholdMessageBar }),
   setQueryCopilotTabInitialInput: (input: string) => set({ queryCopilotTabInitialInput: input }),
   setIsTabExecuting: (state: boolean) => {
     set({ isTabExecuting: state });
