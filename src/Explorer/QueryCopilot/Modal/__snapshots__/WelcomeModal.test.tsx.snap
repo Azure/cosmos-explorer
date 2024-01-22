@@ -67,9 +67,10 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
           }
         >
           <Text
+            as="h1"
             className="title bold"
           >
-            Welcome to Microsoft Copilot for Azure in Cosmos DB
+            Welcome to Microsoft Copilot for Azure in Cosmos DB (preview)
           </Text>
         </StackItem>
         <StackItem
