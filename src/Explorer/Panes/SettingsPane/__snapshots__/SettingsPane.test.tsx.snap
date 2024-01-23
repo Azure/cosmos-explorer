@@ -100,7 +100,7 @@ exports[`Settings Pane should render Default properly 1`] = `
     <div
       className="settingsSection"
     >
-      <div>
+      <div
         className="settingsSectionPart"
       >
         <div>
