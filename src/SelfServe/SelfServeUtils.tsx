@@ -54,6 +54,8 @@ export enum BladeType {
   /**
    * Keys blade of a Azure Cosmos DB for Apache Gremlin account.
    */
+  // TODO This is a obviously a bug, but for now, let's ignore the eslint error
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   GremlinKeys = "keys",
   /**
    * Keys blade of a Azure Cosmos DB for Table account.

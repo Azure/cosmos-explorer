@@ -27,6 +27,7 @@ export interface AccordionItemComponentProps {
   isExpanded?: boolean;
   containerStyles?: React.CSSProperties;
   styles?: React.CSSProperties;
+  children: JSX.Element;
 }
 
 interface AccordionItemComponentState {

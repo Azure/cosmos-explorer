@@ -1,3 +1,4 @@
+import * as DataTable from "datatables.net-dt";
 import * as Utilities from "../Utilities";
 
 /**
@@ -8,7 +9,7 @@ import * as Utilities from "../Utilities";
  * @param{$dataTableElem} JQuery data table element
  * @param{$settings} Settings to use when creating the data table
  */
-export function createDataTable($dataTableElem: JQuery, settings: any): DataTables.DataTable {
+export function createDataTable($dataTableElem: JQuery, settings: any): DataTable.Api<HTMLElement> {
   return $dataTableElem.DataTable(applyDefaultRendering(settings));
 }
 
@@ -18,14 +19,14 @@ export function createDataTable($dataTableElem: JQuery, settings: any): DataTabl
  * @param{settings} The settings to check
  * @return The given settings with all columns having a rendering function
  */
-function applyDefaultRendering(settings: any): DataTables.SettingsLegacy {
-  var tableColumns: DataTables.ColumnLegacy[] = null;
+function applyDefaultRendering(settings: DataTable.Config): any {
+  var tableColumns: any[] = null;
 
-  if (settings.aoColumns) {
-    tableColumns = settings.aoColumns;
-  } else if (settings.aoColumnDefs) {
+  if (settings.columns) {
+    tableColumns = settings.columns;
+  } else if (settings.columnDefs) {
     // for tables we use aoColumnDefs instead of aoColumns
-    tableColumns = settings.aoColumnDefs;
+    tableColumns = settings.columnDefs;
   }
 
   // either the settings had no columns defined, or they were called

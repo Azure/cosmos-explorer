@@ -5,7 +5,8 @@ import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
+import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
@@ -276,10 +277,6 @@ export default class Explorer {
     const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
     const THREE_DAYS_IN_MS = 259200000;
-    const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
-      userContext.databaseAccount?.systemData?.createdAt || "",
-      NINETY_DAYS_IN_MS,
-    );
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
 
     if (lastSubmitted !== null) {
@@ -301,17 +298,11 @@ export default class Explorer {
         this.sendNPSMessage();
       }
     } else {
-      // An existing account is older than 3 days but less than 90 days old. For existing account show to 100% of users in Data Explorer.
+      // Show survey when an existing account is older than 3 days
       if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) &&
-        isAccountNewerThanNinetyDays
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
       ) {
         this.sendNPSMessage();
-      } else {
-        // An existing account is greater than 90 days. For existing account show to random 33% of users in Data Explorer.
-        if (this.getRandomInt(100) < 33) {
-          this.sendNPSMessage();
-        }
       }
     }
   }
@@ -383,9 +374,7 @@ export default class Explorer {
 
   public onRefreshResourcesClick = (): void => {
     if (configContext.platform === Platform.Fabric) {
-      // Requesting the tokens will trigger a refresh of the databases
-      // TODO: Once the id is returned from Fabric, we can await this call and then refresh the databases here
-      requestDatabaseResourceTokens();
+      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 
@@ -1395,8 +1384,12 @@ export default class Explorer {
       copilotEnabledPromise,
       copilotUserDBEnabledPromise,
     ]);
-    useQueryCopilot.getState().setCopilotEnabled(copilotEnabled);
+    const copilotSampleDBEnabled = LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true";
+    useQueryCopilot.getState().setCopilotEnabled(copilotEnabled && copilotUserDBEnabled);
     useQueryCopilot.getState().setCopilotUserDBEnabled(copilotUserDBEnabled);
+    useQueryCopilot
+      .getState()
+      .setCopilotSampleDBEnabled(copilotEnabled && copilotUserDBEnabled && copilotSampleDBEnabled);
   }
 
   public async refreshSampleData(): Promise<void> {

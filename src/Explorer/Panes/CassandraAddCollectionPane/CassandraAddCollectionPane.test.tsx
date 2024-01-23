@@ -23,7 +23,7 @@ describe("Cassandra add collection pane test", () => {
     expect(screen.getByRole("combobox", { name: "Choose existing keyspace id" })).toBeDefined();
   });
 
-  it("enter Keyspace name ", () => {
+  it("enter Keyspace name", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "Keyspace id" }), { target: { value: "table1" } });
     expect(screen.getByText("CREATE TABLE table1.")).toBeDefined();
   });

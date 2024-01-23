@@ -769,7 +769,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
   const dataRootNode = buildDataTree();
   const isSampleDataEnabled =
-    useQueryCopilot().copilotEnabled && userContext.sampleDataConnectionInfo && userContext.apiType === "SQL";
+    useQueryCopilot().copilotEnabled &&
+    useQueryCopilot().copilotSampleDBEnabled &&
+    userContext.sampleDataConnectionInfo &&
+    userContext.apiType === "SQL";
   const sampleDataResourceTokenCollection = useDatabases((state) => state.sampleDataResourceTokenCollection);
 
   return (
@@ -788,7 +791,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
       {!isNotebookEnabled && isSampleDataEnabled && (
@@ -802,7 +805,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
       {isNotebookEnabled && isSampleDataEnabled && (
@@ -819,7 +822,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {buildGalleryCallout()}
+          {/* {buildGalleryCallout()} */}
         </>
       )}
     </>

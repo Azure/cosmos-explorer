@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Welcome Bubble snapshot test should render  1`] = `
+exports[`Welcome Bubble snapshot test should render 1`] = `
 <Stack>
   <Stack
     horizontalAlign="center"

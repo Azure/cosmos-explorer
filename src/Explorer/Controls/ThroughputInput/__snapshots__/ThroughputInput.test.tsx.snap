@@ -18,17 +18,17 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       horizontal={true}
     >
       <div
-        className="ms-Stack css-53"
+        className="ms-Stack css-109"
       >
         <span
           className="mandatoryStar"
-          key=".0:$.0"
+          key=".0:$.$.0"
         >
           * 
         </span>
         <Text
           aria-label="Throughput header"
-          key=".0:$.1"
+          key=".0:$.$.1"
           style={
             Object {
               "fontWeight": 600,
@@ -39,7 +39,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         >
           <span
             aria-label="Throughput header"
-            className="css-54"
+            className="css-110"
             style={
               Object {
                 "fontWeight": 600,
@@ -51,7 +51,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           </span>
         </Text>
         <InfoTooltip
-          key=".0:$.2"
+          key=".0:$.$.2"
         >
           <span>
             <StyledTooltipHostBase
@@ -336,12 +336,13 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 }
               >
                 <div
-                  className="ms-TooltipHost root-55"
+                  className="ms-TooltipHost root-111"
                   onBlurCapture={[Function]}
                   onFocusCapture={[Function]}
                   onKeyDown={[Function]}
                   onMouseEnter={[Function]}
                   onMouseLeave={[Function]}
+                  role="none"
                 >
                   <StyledIconBase
                     ariaLabel="Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage."
@@ -631,7 +632,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     >
                       <i
                         aria-label="Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage."
-                        className="panelInfoIcon root-57"
+                        className="panelInfoIcon root-114"
                         data-icon-name="Info"
                         role="img"
                         tabIndex={0}
@@ -640,6 +641,24 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       </i>
                     </IconBase>
                   </StyledIconBase>
+                  <div
+                    hidden={true}
+                    id="tooltip0"
+                    style={
+                      Object {
+                        "border": 0,
+                        "height": 1,
+                        "margin": -1,
+                        "overflow": "hidden",
+                        "padding": 0,
+                        "position": "absolute",
+                        "whiteSpace": "nowrap",
+                        "width": 1,
+                      }
+                    }
+                  >
+                    Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage.
+                  </div>
                 </div>
               </TooltipHostBase>
             </StyledTooltipHostBase>
@@ -652,14 +671,14 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       verticalAlign="center"
     >
       <div
-        className="ms-Stack css-58"
+        className="ms-Stack css-115"
       >
         <div
-          key=".0:$.0"
+          key=".0:$.$.0"
           role="radiogroup"
         >
           <input
-            aria-label="Autoscale database throughput"
+            aria-label="Container throughput (autoscale) Autoscale"
             aria-required={true}
             checked={true}
             className="throughputInputRadioBtn"
@@ -676,7 +695,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             Autoscale
           </label>
           <input
-            aria-label="Manual database throughput"
+            aria-label="Container throughput (autoscale) Manual"
             aria-required={true}
             checked={false}
             className="throughputInputRadioBtn"
@@ -699,16 +718,16 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       className="throughputInputSpacing"
     >
       <div
-        className="ms-Stack throughputInputSpacing css-59"
+        className="ms-Stack throughputInputSpacing css-116"
       >
         <Text
           aria-label="capacity calculator of azure cosmos db"
-          key=".0:$.0"
+          key=".0:$.$.0"
           variant="small"
         >
           <span
             aria-label="capacity calculator of azure cosmos db"
-            className="css-54"
+            className="css-110"
           >
             Estimate your required RU/s with
              
@@ -998,7 +1017,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               >
                 <a
                   aria-label="capacity calculator of azure cosmos db"
-                  className="ms-Link root-60"
+                  className="ms-Link root-117"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
                   target="_blank"
@@ -1012,14 +1031,14 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         </Text>
         <Stack
           horizontal={true}
-          key=".0:$.1"
+          key=".0:$.$.1"
         >
           <div
-            className="ms-Stack css-53"
+            className="ms-Stack css-109"
           >
             <Text
               aria-label="maxRUDescription"
-              key=".0:$.0"
+              key=".0:$.$.0"
               style={
                 Object {
                   "fontWeight": 600,
@@ -1030,7 +1049,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             >
               <span
                 aria-label="maxRUDescription"
-                className="css-54"
+                className="css-110"
                 style={
                   Object {
                     "fontWeight": 600,
@@ -1043,7 +1062,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               </span>
             </Text>
             <InfoTooltip
-              key=".0:$.1"
+              key=".0:$.$.1"
             >
               <span>
                 <StyledTooltipHostBase
@@ -1328,12 +1347,13 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     }
                   >
                     <div
-                      className="ms-TooltipHost root-55"
+                      className="ms-TooltipHost root-111"
                       onBlurCapture={[Function]}
                       onFocusCapture={[Function]}
                       onKeyDown={[Function]}
                       onMouseEnter={[Function]}
                       onMouseLeave={[Function]}
+                      role="none"
                     >
                       <StyledIconBase
                         ariaLabel="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
@@ -1623,7 +1643,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         >
                           <i
                             aria-label="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
-                            className="panelInfoIcon root-57"
+                            className="panelInfoIcon root-114"
                             data-icon-name="Info"
                             role="img"
                             tabIndex={0}
@@ -1632,6 +1652,24 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           </i>
                         </IconBase>
                       </StyledIconBase>
+                      <div
+                        hidden={true}
+                        id="tooltip1"
+                        style={
+                          Object {
+                            "border": 0,
+                            "height": 1,
+                            "margin": -1,
+                            "overflow": "hidden",
+                            "padding": 0,
+                            "position": "absolute",
+                            "whiteSpace": "nowrap",
+                            "width": 1,
+                          }
+                        }
+                      >
+                        Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage.
+                      </div>
                     </div>
                   </TooltipHostBase>
                 </StyledTooltipHostBase>
@@ -1643,7 +1681,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           ariaLabel="Container max RU/s"
           errorMessage=""
           id="autoscaleRUValueField"
-          key=".0:$.2"
+          key=".0:$.$.2"
           max="9007199254740991"
           min={1000}
           onChange={[Function]}
@@ -1953,18 +1991,18 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             value="4000"
           >
             <div
-              className="ms-TextField is-required root-62"
+              className="ms-TextField is-required root-119"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-63"
+                  className="ms-TextField-fieldGroup fieldGroup-120"
                 >
                   <input
                     aria-invalid={false}
                     aria-label="Container max RU/s"
-                    className="ms-TextField-field field-64"
+                    className="ms-TextField-field field-121"
                     id="autoscaleRUValueField"
                     max="9007199254740991"
                     min={1000}
@@ -1983,11 +2021,11 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           </TextFieldBase>
         </StyledTextFieldBase>
         <Text
-          key=".0:$.3"
+          key=".0:$.$.3"
           variant="small"
         >
           <span
-            className="css-54"
+            className="css-110"
           >
             Your 
             container

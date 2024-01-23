@@ -90,7 +90,7 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
   protected async createEditor(content: string, createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
     this.registerCompletionItemProvider();
     this.editorContainer = document.getElementById(this.getEditorId());
-    const options: monaco.editor.IEditorConstructionOptions = {
+    const options: monaco.editor.IStandaloneEditorConstructionOptions = {
       value: content,
       language: this.getEditorLanguage(),
       readOnly: this.params.isReadOnly,

@@ -109,6 +109,7 @@ describe("iframe rendering when there is no data", () => {
           theme: 4,
         },
       },
+      origin: "http://localhost",
     };
 
     const divElement = `<div id="${Heatmap.elementId}"></div>`;
@@ -129,6 +130,7 @@ describe("iframe rendering when there is no data", () => {
           theme: 2,
         },
       },
+      origin: "http://localhost",
     };
 
     const divElement = `<div id="${Heatmap.elementId}"></div>`;

@@ -27,15 +27,24 @@ export function handleCachedDataMessage(message: any): void {
   runGarbageCollector();
 }
 
+/**
+ *
+ * @param messageType
+ * @param params
+ * @param scope Use this string to identify request Useful to distinguish response from different senders
+ * @param timeoutInMs
+ * @returns
+ */
 export function sendCachedDataMessage<TResponseDataModel>(
   messageType: MessageTypes,
   params: Object[],
+  scope?: string,
   timeoutInMs?: number,
 ): Q.Promise<TResponseDataModel> {
   let cachedDataPromise: CachedDataPromise<TResponseDataModel> = {
     deferred: Q.defer<TResponseDataModel>(),
     startTime: new Date(),
-    id: _.uniqueId(),
+    id: _.uniqueId(scope),
   };
   RequestMap[cachedDataPromise.id] = cachedDataPromise;
   sendMessage({ type: messageType, params: params, id: cachedDataPromise.id });
@@ -47,6 +56,10 @@ export function sendCachedDataMessage<TResponseDataModel>(
   );
 }
 
+/**
+ *
+ * @param data Overwrite the data property of the message
+ */
 export function sendMessage(data: any): void {
   _sendMessage({
     signature: "pcIframe",
