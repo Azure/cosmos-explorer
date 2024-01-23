@@ -463,7 +463,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
               onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
               onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
-              styles={queryTimeoutSpinButtonStyles}
+              styles={spinButtonStyles}
             />
             <div>
               <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
@@ -485,7 +485,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
               onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
               onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
-              styles={queryTimeoutSpinButtonStyles}
+              styles={spinButtonStyles}
             />
             <div>
               <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
@@ -507,7 +507,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
               onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
               onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
-              styles={queryTimeoutSpinButtonStyles}
+              styles={spinButtonStyles}
             />
           </div>
         </div>
