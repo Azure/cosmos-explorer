@@ -303,10 +303,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isExecutionError: false,
     });
 
-    let queryQueryOperationOptions: QueryOperationOptions;
+    let queryOperationOptions: QueryOperationOptions;
     if (!this.isPreferredApiMongoDB && ruThresholdEnabled()) {
       const ruThreshold: number = getRUThreshold();
-      queryQueryOperationOptions = {
+      queryOperationOptions = {
         ruCapPerOperation: ruThreshold,
       } as QueryOperationOptions;
     }
@@ -315,7 +315,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         this.props.collection && this.props.collection.id(),
         this._iterator,
         firstItemIndex,
-        queryQueryOperationOptions,
+        queryOperationOptions,
       );
     this.props.tabsBaseInstance.isExecuting(true);
     this.setState({

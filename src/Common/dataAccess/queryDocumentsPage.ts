@@ -9,13 +9,13 @@ export const queryDocumentsPage = async (
   resourceName: string,
   documentsIterator: MinimalQueryIterator,
   firstItemIndex: number,
-  queryQueryOperationOptions?: QueryOperationOptions,
+  queryOperationOptions?: QueryOperationOptions,
 ): Promise<QueryResults> => {
   const entityName = getEntityName();
   const clearMessage = logConsoleProgress(`Querying ${entityName} for container ${resourceName}`);
 
   try {
-    const result: QueryResults = await nextPage(documentsIterator, firstItemIndex, queryQueryOperationOptions);
+    const result: QueryResults = await nextPage(documentsIterator, firstItemIndex, queryOperationOptions);
     const itemCount = (result.documents && result.documents.length) || 0;
     logConsoleInfo(`Successfully fetched ${itemCount} ${entityName} for container ${resourceName}`);
     return result;
