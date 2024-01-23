@@ -16,7 +16,7 @@ import {
   LocalStorageUtility,
   StorageKey,
   getRUThreshold,
-  isRUThresholdEnabled,
+  ruThresholdEnabled as isRUThresholdEnabled,
 } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";

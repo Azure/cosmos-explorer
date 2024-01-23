@@ -10,7 +10,7 @@ import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopil
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey, getRUThreshold, isRUThresholdEnabled } from "Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
@@ -304,7 +304,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     });
 
     let queryQueryOperationOptions: QueryOperationOptions;
-    if (!this.isPreferredApiMongoDB && isRUThresholdEnabled()) {
+    if (!this.isPreferredApiMongoDB && ruThresholdEnabled()) {
       const ruThreshold: number = getRUThreshold();
       queryQueryOperationOptions = {
         ruCapPerOperation: ruThreshold,

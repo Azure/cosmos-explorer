@@ -32,7 +32,7 @@ export const hasRUThresholdBeenConfigured = (): boolean => {
   return ruThresholdEnabledLocalStorageRaw === "true" || ruThresholdEnabledLocalStorageRaw === "false";
 };
 
-export const isRUThresholdEnabled = (): boolean => {
+export const ruThresholdEnabled = (): boolean => {
   const ruThresholdEnabledLocalStorageRaw: string | null = LocalStorageUtility.getEntryString(
     StorageKey.RUThresholdEnabled,
   );
