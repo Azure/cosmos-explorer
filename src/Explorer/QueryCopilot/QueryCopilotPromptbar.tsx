@@ -18,6 +18,7 @@ import {
   Text,
   TextField,
 } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import { HttpStatusCodes } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
@@ -70,7 +71,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   databaseId,
   containerId,
 }: QueryCopilotPromptProps): JSX.Element => {
-  const [copilotTeachingBubbleVisible, setCopilotTeachingBubbleVisible] = useState<boolean>(false);
+  const [copilotTeachingBubbleVisible, { toggle: toggleCopilotTeachingBubbleVisible }] = useBoolean(false);
   const inputEdited = useRef(false);
   const {
     openFeedbackModal,
@@ -93,8 +94,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setIsSamplePromptsOpen,
     showSamplePrompts,
     setShowSamplePrompts,
-    showPromptTeachingBubble,
-    setShowPromptTeachingBubble,
     showDeletePopup,
     setShowDeletePopup,
     showFeedbackBar,
@@ -273,21 +272,14 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   const showTeachingBubble = (): void => {
-    if (showPromptTeachingBubble && !inputEdited.current) {
+    if (!inputEdited.current) {
       setTimeout(() => {
         if (!inputEdited.current && !isWelcomModalVisible()) {
-          setCopilotTeachingBubbleVisible(true);
+          toggleCopilotTeachingBubbleVisible();
           inputEdited.current = true;
         }
       }, 30000);
-    } else {
-      toggleCopilotTeachingBubbleVisible(false);
     }
-  };
-
-  const toggleCopilotTeachingBubbleVisible = (visible: boolean): void => {
-    setCopilotTeachingBubbleVisible(visible);
-    setShowPromptTeachingBubble(visible);
   };
 
   const isWelcomModalVisible = (): boolean => {
@@ -348,7 +340,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             },
           }}
           ariaLabel="Close"
-          title="Close copilot"
         />
       </Stack>
       <Stack horizontal verticalAlign="center">
@@ -373,13 +364,13 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           placeholder="Ask a question in natural language and we’ll generate the query for you."
           aria-labelledby="copilot-textfield-label"
         />
-        {showPromptTeachingBubble && copilotTeachingBubbleVisible && (
+        {copilotTeachingBubbleVisible && (
           <TeachingBubble
             calloutProps={{ directionalHint: DirectionalHint.bottomCenter }}
             target="#naturalLanguageInput"
             hasCloseButton={true}
             closeButtonAriaLabel="Close"
-            onDismiss={() => toggleCopilotTeachingBubbleVisible(false)}
+            onDismiss={toggleCopilotTeachingBubbleVisible}
             hasSmallHeadline={true}
             headline="Write a prompt"
           >
@@ -387,7 +378,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             <Link
               onClick={() => {
                 setShowSamplePrompts(true);
-                toggleCopilotTeachingBubbleVisible(false);
+                toggleCopilotTeachingBubbleVisible();
               }}
               style={{ color: "white", fontWeight: 600 }}
             >
@@ -543,7 +534,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
           {showCallout && !hideFeedbackModalForLikedQueries && (
             <Callout
-              role="status"
               style={{ padding: 8 }}
               target="#likeBtn"
               onDismiss={() => {
@@ -579,19 +569,11 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           <IconButton
             id="likeBtn"
             style={{ marginLeft: 20 }}
-            aria-label="like"
-            role="toggle"
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
             aria-label="Like"
             onClick={() => {
               setShowCallout(!likeQuery);
               setLikeQuery(!likeQuery);
-              if (likeQuery === true) {
-                document.getElementById("likeStatus").innerHTML = "Unpressed";
-              }
-              if (likeQuery === false) {
-                document.getElementById("likeStatus").innerHTML = "Liked";
-              }
               if (dislikeQuery) {
                 setDislikeQuery(!dislikeQuery);
               }
@@ -599,25 +581,17 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           />
           <IconButton
             style={{ margin: "0 10px" }}
-            role="toggle"
-            aria-label="Dislike"
             iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
             onClick={() => {
-              let toggleStatusValue = "Unpressed";
               if (!dislikeQuery) {
                 openFeedbackModal(generatedQuery, false, userPrompt);
                 setLikeQuery(false);
-                toggleStatusValue = "Disliked";
               }
               setDislikeQuery(!dislikeQuery);
               setShowCallout(false);
-              document.getElementById("likeStatus").innerHTML = toggleStatusValue;
             }}
             aria-label="Dislike"
           />
-
-          <span role="status" style={{ position: "absolute", left: "-9999px" }} id="likeStatus"></span>
-
           <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton
             onClick={copyGeneratedCode}
