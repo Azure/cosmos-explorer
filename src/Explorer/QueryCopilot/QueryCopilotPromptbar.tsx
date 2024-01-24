@@ -579,7 +579,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           <IconButton
             id="likeBtn"
             style={{ marginLeft: 20 }}
-            aria-label="like"
+            aria-label="Like"
             role="toggle"
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
             onClick={() => {
@@ -595,6 +595,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 setDislikeQuery(!dislikeQuery);
               }
             }}
+            aria-label="Like"
           />
           <IconButton
             style={{ margin: "0 10px" }}
@@ -612,6 +613,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
               setShowCallout(false);
               document.getElementById("likeStatus").innerHTML = toggleStatusValue;
             }}
+            aria-label="Dislike"
           />
 
           <span role="status" style={{ position: "absolute", left: "-9999px" }} id="likeStatus"></span>
