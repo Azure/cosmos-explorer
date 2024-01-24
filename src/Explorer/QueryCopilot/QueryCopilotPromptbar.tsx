@@ -579,7 +579,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           <IconButton
             id="likeBtn"
             style={{ marginLeft: 20 }}
-            aria-label="Like"
+            aria-label="like"
             role="toggle"
             iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
             onClick={() => {
