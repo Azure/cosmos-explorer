@@ -190,7 +190,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
 
   const onSubmit = async (): Promise<void> => {
     for (let i = 0; i < entities.length; i++) {
-      const { property, type } = entities[i];
+      const { property, type, value } = entities[i];
       if (property === "" || property === undefined) {
         setFormError(`Property name cannot be empty. Please enter a property name`);
         return;
@@ -198,6 +198,11 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
 
       if (!type) {
         setFormError(`Property type cannot be empty. Please select a type from the dropdown for property ${property}`);
+        return;
+      }
+
+      if (value === "" || value === undefined) {
+        setFormError(`Value cannot be empty. Please enter a value`);
         return;
       }
     }
@@ -283,11 +288,11 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   const entityChange = (value: string | Date, indexOfInput: number, key: string): void => {
     const cloneEntities = [...entities];
     if (key === "property") {
-      cloneEntities[indexOfInput].property = value.toString();
+      cloneEntities[indexOfInput].property = value.toString().trim();
     } else if (key === "time") {
       cloneEntities[indexOfInput].entityTimeValue = value.toString();
     } else {
-      cloneEntities[indexOfInput].value = value.toString();
+      cloneEntities[indexOfInput].value = value.toString().trim();
     }
     setEntities(cloneEntities);
   };
@@ -359,7 +364,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
               selectedKey={entity.type}
               entityPropertyPlaceHolder={detailedHelp}
               entityValuePlaceholder={entity.entityValuePlaceholder}
-              entityValue={entity.value?.toString()}
+              entityValue={entity.value.toString()}
               isEntityTypeDate={entity.isEntityTypeDate}
               entityTimeValue={entity.entityTimeValue}
               isEntityValueDisable={entity.isEntityValueDisable}

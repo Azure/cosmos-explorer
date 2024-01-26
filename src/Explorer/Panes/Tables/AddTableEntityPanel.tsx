@@ -1,5 +1,6 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
@@ -97,9 +98,15 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   /* Add new entity attribute */
   const onSubmit = async (): Promise<void> => {
     for (let i = 0; i < entities.length; i++) {
-      const { property, type } = entities[i];
+      const { property, type, value } = entities[i];
       if (property === "" || property === undefined) {
         setFormError(`Property name cannot be empty. Please enter a property name`);
+        return;
+      }
+
+      if (value === "" || value === undefined) {
+        logConsoleError(`Value cannot be empty. Please input a value for ${property}`);
+        setFormError(`Value cannot be empty. Please input a value for ${property}`);
         return;
       }
 
@@ -107,6 +114,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         setFormError(`Property type cannot be empty. Please select a type from the dropdown for property ${property}`);
         return;
       }
+
+      setFormError("");
     }
 
     setIsExecuting(true);
@@ -182,11 +191,11 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   const entityChange = (value: string | Date, indexOfInput: number, key: string): void => {
     const cloneEntities: EntityRowType[] = [...entities];
     if (key === "property") {
-      cloneEntities[indexOfInput].property = value.toString();
+      cloneEntities[indexOfInput].property = value.toString().trim();
     } else if (key === "time") {
       cloneEntities[indexOfInput].entityTimeValue = value.toString();
     } else {
-      cloneEntities[indexOfInput].value = value.toString();
+      cloneEntities[indexOfInput].value = value.toString().trim();
     }
     setEntities(cloneEntities);
   };
