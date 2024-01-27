@@ -280,12 +280,24 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       throw new Error(`List keys failed: ${e.message}`);
     }
   }
+  // Updating database account endpoint for testing purposes.
+  const updatedDatabaseAccount = {
+    ...config.databaseAccount,
+    properties: {
+      ...config.databaseAccount.properties,
+      documentEndpoint: "https://test-craig-nosql-periodic.documents.azure.com:443/",
+    },
+  };
   updateUserContext({
     subscriptionId,
     resourceGroup,
     aadToken,
-    databaseAccount: config.databaseAccount,
+    databaseAccount: updatedDatabaseAccount,
     masterKey: keys.primaryMasterKey,
+  });
+  console.log(`INITIALIZED ENDPOINT: ${JSON.stringify(userContext.databaseAccount.properties.documentEndpoint)}`);
+  userContext.databaseAccount.properties.readLocations.forEach((readLocation) => {
+    console.log(`REGIONAL READ ENDPOINT(S): ${JSON.stringify(readLocation)}`);
   });
   const explorer = new Explorer();
   return explorer;

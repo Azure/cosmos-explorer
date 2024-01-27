@@ -168,6 +168,8 @@ export function createStaticCommandBarButtons(
     }
   }
 
+  // Attempting to add region selection button here.
+
   return buttons;
 }
 
