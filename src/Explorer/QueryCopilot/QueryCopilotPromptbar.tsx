@@ -325,18 +325,15 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 
   const handlekeydown: React.KeyboardEventHandler = (e) => {
     const { key } = e;
-    let nexIndexCount = 0;
+    const nexIndexCount = 0;
     if (key === "ArrowDown") {
       nexIndexCount = (focusedindex + 1) % suggestionsnhistory.length;
-      console.log(nexIndexCount);
     }
     if (key === "ArrowUp") {
       nexIndexCount = (focusedindex + suggestionsnhistory.length - 1) % suggestionsnhistory.length;
-      console.log(nexIndexCount);
     }
     if (key === "Enter") {
       e.preventDefault();
-      console.log(focusedindex);
       handleSelection(focusedindex);
     }
     setFocusedindex(nexIndexCount);
@@ -358,7 +355,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   const handlepromptset = (prompttext: string) => {
     inputEdited.current = true;
     setUserPrompt(prompttext);
-    console.log("prompt", userPrompt);
   };
 
   return (
