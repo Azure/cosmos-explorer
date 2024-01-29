@@ -221,19 +221,19 @@ function handleArrowKey(
   bindingContext: any,
   event: JQueryEventObject,
 ) {
-  let isUpArrowKey: boolean = event.keyCode === Constants.keyCodes.UpArrow;
-  let isDownArrowKey: boolean = event.keyCode === Constants.keyCodes.DownArrow;
+  const isUpArrowKey: boolean = event.keyCode === Constants.keyCodes.UpArrow;
+  const isDownArrowKey: boolean = event.keyCode === Constants.keyCodes.DownArrow;
 
   if (isUpArrowKey || isDownArrowKey) {
-    let $dataTable = $(element);
-    let $selectedRow = $dataTable.find("tr.selected");
+    const $dataTable = $(element);
+    const $selectedRow = $dataTable.find("tr.selected");
 
     if ($selectedRow.length === 0) {
       // No row is currently selected, select the first row
       $selectedRow = $dataTable.find("tr:first");
       $selectedRow.addClass("selected");
     } else {
-      let $targetRow = isUpArrowKey ? $selectedRow.prev("tr") : $selectedRow.next("tr");
+      const $targetRow = isUpArrowKey ? $selectedRow.prev("tr") : $selectedRow.next("tr");
 
       if ($targetRow.length > 0) {
         // Remove the selected class from the current row and add it to the target row
