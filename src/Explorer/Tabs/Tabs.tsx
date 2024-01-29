@@ -65,7 +65,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           }}
         >
           {
-            "Avoid high cost queries! We automatically abort them if they exceed the set RU limit.  To adjust your limit go to Settings > RU threshold. Learn more."
+            "Avoid high cost queries! We automatically abort them if they exceed the set RU limit.  To adjust your limit go to Settings > RU threshold."
           }
         </MessageBar>
       )}
