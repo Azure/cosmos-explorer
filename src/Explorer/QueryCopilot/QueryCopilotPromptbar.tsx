@@ -325,7 +325,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 
   const handlekeydown: React.KeyboardEventHandler = (e) => {
     const { key } = e;
-    const nexIndexCount = 0;
+    let nexIndexCount = 0;
     if (key === "ArrowDown") {
       nexIndexCount = (focusedindex + 1) % suggestionsnhistory.length;
     }
