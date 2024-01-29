@@ -226,7 +226,7 @@ function handleArrowKey(
 
   if (isUpArrowKey || isDownArrowKey) {
     const $dataTable = $(element);
-    const $selectedRow = $dataTable.find("tr.selected");
+    let $selectedRow = $dataTable.find("tr.selected");
 
     if ($selectedRow.length === 0) {
       // No row is currently selected, select the first row
