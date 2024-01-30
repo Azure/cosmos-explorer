@@ -1,5 +1,6 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
@@ -201,9 +202,11 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
         return;
       }
 
-      if (value === "" || value === undefined) {
-        setFormError(`Value cannot be empty. Please enter a value`);
-        return;
+      if (property === "PartitionKey" && value === "" || property === "PartitionKey" && value === undefined || 
+        property === "RowKey" && value === "" || property === "RowKey" && value === undefined) {
+          logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
+          setFormError(`${property} cannot be empty. Please input a value for ${property}`);
+          return;
       }
     }
 
@@ -288,11 +291,11 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   const entityChange = (value: string | Date, indexOfInput: number, key: string): void => {
     const cloneEntities = [...entities];
     if (key === "property") {
-      cloneEntities[indexOfInput].property = value.toString().trim();
+      cloneEntities[indexOfInput].property = value.toString();
     } else if (key === "time") {
       cloneEntities[indexOfInput].entityTimeValue = value.toString();
     } else {
-      cloneEntities[indexOfInput].value = value.toString().trim();
+      cloneEntities[indexOfInput].value = value.toString();
     }
     setEntities(cloneEntities);
   };
