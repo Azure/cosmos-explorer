@@ -1,3 +1,4 @@
+import { QueryOperationOptions } from "@azure/cosmos";
 import { QueryResults } from "../Contracts/ViewModels";
 
 interface QueryResponse {
@@ -10,13 +11,17 @@ interface QueryResponse {
 }
 
 export interface MinimalQueryIterator {
-  fetchNext: () => Promise<QueryResponse>;
+  fetchNext: (queryOperationOptions?: QueryOperationOptions) => Promise<QueryResponse>;
 }
 
 // Pick<QueryIterator<any>, "fetchNext">;
 
-export function nextPage(documentsIterator: MinimalQueryIterator, firstItemIndex: number): Promise<QueryResults> {
-  return documentsIterator.fetchNext().then((response) => {
+export function nextPage(
+  documentsIterator: MinimalQueryIterator,
+  firstItemIndex: number,
+  queryOperationOptions?: QueryOperationOptions,
+): Promise<QueryResults> {
+  return documentsIterator.fetchNext(queryOperationOptions).then((response) => {
     const documents = response.resources;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const headers = (response as any).headers || {}; // TODO this is a private key. Remove any
