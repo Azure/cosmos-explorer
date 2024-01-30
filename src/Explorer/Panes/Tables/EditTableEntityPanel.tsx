@@ -202,11 +202,15 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
         return;
       }
 
-      if (property === "PartitionKey" && value === "" || property === "PartitionKey" && value === undefined || 
-        property === "RowKey" && value === "" || property === "RowKey" && value === undefined) {
-          logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
-          setFormError(`${property} cannot be empty. Please input a value for ${property}`);
-          return;
+      if (
+        (property === "PartitionKey" && value === "") ||
+        (property === "PartitionKey" && value === undefined) ||
+        (property === "RowKey" && value === "") ||
+        (property === "RowKey" && value === undefined)
+      ) {
+        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
+        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
+        return;
       }
     }
 

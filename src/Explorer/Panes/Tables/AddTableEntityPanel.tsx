@@ -104,11 +104,15 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         return;
       }
 
-      if (property === "PartitionKey" && value === "" || property === "PartitionKey" && value === undefined || 
-        property === "RowKey" && value === "" || property === "RowKey" && value === undefined) {
-          logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
-          setFormError(`${property} cannot be empty. Please input a value for ${property}`);
-          return;
+      if (
+        (property === "PartitionKey" && value === "") ||
+        (property === "PartitionKey" && value === undefined) ||
+        (property === "RowKey" && value === "") ||
+        (property === "RowKey" && value === undefined)
+      ) {
+        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
+        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
+        return;
       }
 
       if (!type) {
@@ -195,7 +199,10 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
       cloneEntities[indexOfInput].property = value.toString().trim();
     } else if (key === "time") {
       cloneEntities[indexOfInput].entityTimeValue = value.toString();
-    } else if ((cloneEntities[indexOfInput].property === "PartitionKey") || (cloneEntities[indexOfInput].property === "RowKey")) {
+    } else if (
+      cloneEntities[indexOfInput].property === "PartitionKey" ||
+      cloneEntities[indexOfInput].property === "RowKey"
+    ) {
       cloneEntities[indexOfInput].value = value.toString().trim();
     } else {
       cloneEntities[indexOfInput].value = value.toString();
