@@ -5,7 +5,7 @@ import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
+import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -277,21 +277,32 @@ export default class Explorer {
     const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
     const THREE_DAYS_IN_MS = 259200000;
-    const isAccountNewerThanNinetyDays = isAccountNewerThanThresholdInMs(
-      userContext.databaseAccount?.systemData?.createdAt || "",
-      NINETY_DAYS_IN_MS,
-    );
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
+    Logger.logInfo(`NPS Survey last shown date: ${lastSubmitted}`, "Explorer/openNPSSurveyDialog");
 
     if (lastSubmitted !== null) {
+      Logger.logInfo(`NPS Survey last shown is not empty ${lastSubmitted}`, "Explorer/openNPSSurveyDialog");
+
       let lastSubmittedDate: number = parseInt(lastSubmitted);
+      Logger.logInfo(`NPS Survey last shown is parsed ${lastSubmittedDate.toString()}`, "Explorer/openNPSSurveyDialog");
+
       if (isNaN(lastSubmittedDate)) {
+        Logger.logInfo(
+          `NPS Survey last shown is not a number ${lastSubmittedDate.toString()}`,
+          "Explorer/openNPSSurveyDialog",
+        );
         lastSubmittedDate = 0;
       }
 
       const nowMs: number = Date.now();
+      Logger.logInfo(`NPS Survey current date ${nowMs.toString()}`, "Explorer/openNPSSurveyDialog");
+
       const millisecsSinceLastSubmitted = nowMs - lastSubmittedDate;
       if (millisecsSinceLastSubmitted < NINETY_DAYS_IN_MS) {
+        Logger.logInfo(
+          `NPS Survey last shown is less than ninety days ${millisecsSinceLastSubmitted.toString()}`,
+          "Explorer/openNPSSurveyDialog",
+        );
         return;
       }
     }
@@ -299,26 +310,32 @@ export default class Explorer {
     // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
     if (userContext.isTryCosmosDBSubscription) {
       if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
+        Logger.logInfo(
+          `Displaying NPS Survey for Try Cosmos DB ${userContext.apiType}`,
+          "Explorer/openNPSSurveyDialog",
+        );
         this.sendNPSMessage();
       }
     } else {
-      // An existing account is older than 3 days but less than 90 days old. For existing account show to 100% of users in Data Explorer.
+      // Show survey when an existing account is older than 3 days
       if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS) &&
-        isAccountNewerThanNinetyDays
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
       ) {
+        Logger.logInfo(
+          `Displaying NPS Survey for users with existing ${userContext.apiType} account older than 3 days`,
+          "Explorer/openNPSSurveyDialog",
+        );
         this.sendNPSMessage();
-      } else {
-        // An existing account is greater than 90 days. For existing account show to random 33% of users in Data Explorer.
-        if (this.getRandomInt(100) < 33) {
-          this.sendNPSMessage();
-        }
       }
     }
   }
 
   private sendNPSMessage() {
     sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+    Logger.logInfo(
+      `NPS Survey logging current date when survey is shown ${Date.now().toString()}`,
+      "Explorer/openNPSSurveyDialog",
+    );
     localStorage.setItem("lastSubmitted", Date.now().toString());
   }
 
@@ -384,9 +401,7 @@ export default class Explorer {
 
   public onRefreshResourcesClick = (): void => {
     if (configContext.platform === Platform.Fabric) {
-      // Requesting the tokens will trigger a refresh of the databases
-      // TODO: Once the id is returned from Fabric, we can await this call and then refresh the databases here
-      requestDatabaseResourceTokens();
+      scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 

@@ -1,11 +1,10 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricDatabaseConnectionInfo, FabricMessage } from "Contracts/FabricContract";
+import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
+import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import {
-  handleRequestDatabaseResourceTokensResponse,
-  scheduleRefreshDatabaseResourceToken,
-} from "Platform/Fabric/FabricUtil";
+import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -88,6 +87,9 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 }
 
 async function configureFabric(): Promise<Explorer> {
+  // These are the versions of Fabric that Data Explorer supports.
+  const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
+
   let explorer: Explorer;
   return new Promise<Explorer>((resolve) => {
     window.addEventListener(
@@ -101,38 +103,37 @@ async function configureFabric(): Promise<Explorer> {
           return;
         }
 
-        const data: FabricMessage = event.data?.data;
+        const data: FabricMessageV2 = event.data?.data;
         if (!data) {
           return;
         }
 
         switch (data.type) {
           case "initialize": {
-            const fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo = {
-              endpoint: data.message.endpoint,
-              databaseId: data.message.databaseId,
-              resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
-              resourceTokensTimestamp: data.message.resourceTokensTimestamp,
-            };
-            explorer = await createExplorerFabric(fabricDatabaseConnectionInfo);
-            resolve(explorer);
+            const fabricVersion = data.version;
+            if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
+              // TODO Surface error to user
+              console.error(`Unsupported Fabric version: ${fabricVersion}`);
+              return;
+            }
 
-            explorer.refreshAllDatabases().then(() => {
-              openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
-            });
-            scheduleRefreshDatabaseResourceToken();
+            explorer = createExplorerFabric(data.message);
+            await scheduleRefreshDatabaseResourceToken(true);
+            resolve(explorer);
+            await explorer.refreshAllDatabases();
+            openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
             break;
           }
           case "newContainer":
             explorer.onNewCollectionClicked();
             break;
-          case "authorizationToken": {
+          case "authorizationToken":
+          case "allResourceTokens_v2": {
             handleCachedDataMessage(data);
             break;
           }
-          case "allResourceTokens": {
-            // TODO call handleCachedDataMessage when Fabric echoes message id back
-            handleRequestDatabaseResourceTokensResponse(explorer, data.message as FabricDatabaseConnectionInfo);
+          case "setToolbarStatus": {
+            useCommandBar.getState().setIsHidden(data.message.visible === false);
             break;
           }
           default:
@@ -143,7 +144,11 @@ async function configureFabric(): Promise<Explorer> {
       false,
     );
 
-    sendReadyMessage();
+    sendMessage({
+      type: MessageTypes.Ready,
+      id: "ready",
+      params: [DATA_EXPLORER_RPC_VERSION],
+    });
   });
 }
 
@@ -319,9 +324,12 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo): Explorer {
+function createExplorerFabric(params: { connectionId: string }): Explorer {
   updateUserContext({
-    fabricDatabaseConnectionInfo,
+    fabricContext: {
+      connectionId: params.connectionId,
+      databaseConnectionInfo: undefined,
+    },
     authType: AuthType.ConnectionString,
     databaseAccount: {
       id: "",
@@ -330,7 +338,7 @@ function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnec
       name: "Mounted",
       kind: AccountKind.Default,
       properties: {
-        documentEndpoint: fabricDatabaseConnectionInfo.endpoint,
+        documentEndpoint: undefined,
       },
     },
   });

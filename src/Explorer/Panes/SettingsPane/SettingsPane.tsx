@@ -11,7 +11,13 @@ import {
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import {
+  DefaultRUThreshold,
+  LocalStorageUtility,
+  StorageKey,
+  getRUThreshold,
+  ruThresholdEnabled as isRUThresholdEnabled,
+} from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
@@ -35,6 +41,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? Constants.Queries.UnlimitedPageOption
       : Constants.Queries.CustomPageOption,
   );
+  const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
+  const [ruThreshold, setRUThreshold] = useState<number>(getRUThreshold());
   const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
     LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
   );
@@ -103,6 +111,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage,
     );
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
+    LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
@@ -118,6 +127,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         StorageKey.IsGraphAutoVizDisabled,
         StringUtility.toBoolean(graphAutoVizDisabled),
       );
+    }
+
+    if (ruThresholdEnabled) {
+      LocalStorageUtility.setEntryNumber(StorageKey.RUThreshold, ruThreshold);
     }
 
     if (queryTimeoutEnabled) {
@@ -195,6 +208,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     setPageOption(option.key);
   };
 
+  const handleOnRUThresholdToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
+    setRUThresholdEnabled(checked);
+  };
+
+  const handleOnRUThresholdSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const ruThreshold = Number(newValue);
+    if (!isNaN(ruThreshold)) {
+      setRUThreshold(ruThreshold);
+    }
+  };
+
   const handleOnQueryTimeoutToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
     setQueryTimeoutEnabled(checked);
   };
@@ -234,7 +258,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const handleSampleDatabaseChange = async (ev: React.MouseEvent<HTMLElement>, checked?: boolean): Promise<void> => {
     setCopilotSampleDBEnabled(checked);
     useQueryCopilot.getState().setCopilotSampleDBEnabled(checked);
-    setRefreshExplorer(!refreshExplorer);
+    setRefreshExplorer(false);
   };
 
   const choiceButtonStyles = {
@@ -259,7 +283,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     ],
   };
 
-  const queryTimeoutToggleStyles: IToggleStyles = {
+  const toggleStyles: IToggleStyles = {
     label: {
       fontSize: 12,
       fontWeight: 400,
@@ -272,7 +296,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     text: {},
   };
 
-  const queryTimeoutSpinButtonStyles: ISpinButtonStyles = {
+  const spinButtonStyles: ISpinButtonStyles = {
     label: {
       fontSize: 12,
       fontWeight: 400,
@@ -338,48 +362,83 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           </div>
         )}
         {userContext.apiType === "SQL" && (
-          <div className="settingsSection">
-            <div className="settingsSectionPart">
-              <div>
-                <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
-                  Query Timeout
-                </legend>
-                <InfoTooltip>
-                  When a query reaches a specified time limit, a popup with an option to cancel the query will show
-                  unless automatic cancellation has been enabled
-                </InfoTooltip>
-              </div>
-              <div>
-                <Toggle
-                  styles={queryTimeoutToggleStyles}
-                  label="Enable query timeout"
-                  onChange={handleOnQueryTimeoutToggleChange}
-                  defaultChecked={queryTimeoutEnabled}
-                />
-              </div>
-              {queryTimeoutEnabled && (
+          <>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
                 <div>
-                  <SpinButton
-                    label="Query timeout (ms)"
-                    labelPosition={Position.top}
-                    defaultValue={(queryTimeout || 5000).toString()}
-                    min={100}
-                    step={1000}
-                    onChange={handleOnQueryTimeoutSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1000"
-                    decrementButtonAriaLabel="Decrease value by 1000"
-                    styles={queryTimeoutSpinButtonStyles}
-                  />
+                  <legend id="ruThresholdLabel" className="settingsSectionLabel legendLabel">
+                    RU Threshold
+                  </legend>
+                  <InfoTooltip>If a query exceeds a configured RU threshold, the query will be aborted.</InfoTooltip>
+                </div>
+                <div>
                   <Toggle
-                    label="Automatically cancel query after timeout"
-                    styles={queryTimeoutToggleStyles}
-                    onChange={handleOnAutomaticallyCancelQueryToggleChange}
-                    defaultChecked={automaticallyCancelQueryAfterTimeout}
+                    styles={toggleStyles}
+                    label="Enable RU threshold"
+                    onChange={handleOnRUThresholdToggleChange}
+                    defaultChecked={ruThresholdEnabled}
                   />
                 </div>
-              )}
+                {ruThresholdEnabled && (
+                  <div>
+                    <SpinButton
+                      label="RU Threshold (RU)"
+                      labelPosition={Position.top}
+                      defaultValue={(ruThreshold || DefaultRUThreshold).toString()}
+                      min={1}
+                      step={10}
+                      onChange={handleOnRUThresholdSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 10"
+                      decrementButtonAriaLabel="Decrease value by 10"
+                      styles={spinButtonStyles}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
+                <div>
+                  <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
+                    Query Timeout
+                  </legend>
+                  <InfoTooltip>
+                    When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                    unless automatic cancellation has been enabled
+                  </InfoTooltip>
+                </div>
+                <div>
+                  <Toggle
+                    styles={toggleStyles}
+                    label="Enable query timeout"
+                    onChange={handleOnQueryTimeoutToggleChange}
+                    defaultChecked={queryTimeoutEnabled}
+                  />
+                </div>
+                {queryTimeoutEnabled && (
+                  <div>
+                    <SpinButton
+                      label="Query timeout (ms)"
+                      labelPosition={Position.top}
+                      defaultValue={(queryTimeout || 5000).toString()}
+                      min={100}
+                      step={1000}
+                      onChange={handleOnQueryTimeoutSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1000"
+                      decrementButtonAriaLabel="Decrease value by 1000"
+                      styles={spinButtonStyles}
+                    />
+                    <Toggle
+                      label="Automatically cancel query after timeout"
+                      styles={toggleStyles}
+                      onChange={handleOnAutomaticallyCancelQueryToggleChange}
+                      defaultChecked={automaticallyCancelQueryAfterTimeout}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
         )}
         <div className="settingsSection">
           <div className="settingsSectionPart">
@@ -404,7 +463,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
               onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
               onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
-              styles={queryTimeoutSpinButtonStyles}
+              styles={spinButtonStyles}
             />
             <div>
               <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
@@ -426,7 +485,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
               onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
               onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
-              styles={queryTimeoutSpinButtonStyles}
+              styles={spinButtonStyles}
             />
             <div>
               <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
@@ -448,7 +507,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
               onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
               onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
-              styles={queryTimeoutSpinButtonStyles}
+              styles={spinButtonStyles}
             />
           </div>
         </div>
