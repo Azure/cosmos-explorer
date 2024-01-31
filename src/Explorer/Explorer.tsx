@@ -265,7 +265,6 @@ export default class Explorer {
     // TODO: return result
   }
 
-
   public openNPSSurveyDialog(): void {
     if (!Platform.Portal) {
       return;
