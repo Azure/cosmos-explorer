@@ -99,19 +99,22 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   const onSubmit = async (): Promise<void> => {
     for (let i = 0; i < entities.length; i++) {
       const { property, type, value } = entities[i];
-      if (property === "" || property === undefined) {
-        setFormError(`Property name cannot be empty. Please enter a property name`);
+      if (
+        (property === "PartitionKey" && value === "") ||
+        (property === "RowKey" && value === "")
+      )
+      {
+        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
+        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
         return;
       }
 
       if (
-        (property === "PartitionKey" && value === "") ||
-        (property === "PartitionKey" && value === undefined) ||
-        (property === "RowKey" && value === "") ||
-        (property === "RowKey" && value === undefined)
+        (property === "PartitionKey" && containsWhiteSpace(value) == true) ||
+        (property === "RowKey" && containsWhiteSpace(value) == true)
       ) {
-        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
-        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
+        logConsoleError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
+        setFormError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
         return;
       }
 
@@ -139,6 +142,10 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     } finally {
       setIsExecuting(false);
     }
+  };
+
+  const containsWhiteSpace = (entityValue: String) => {
+    return entityValue.indexOf(' ') >= 0;
   };
 
   const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
