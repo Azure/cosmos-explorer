@@ -281,7 +281,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           query,
           paginationToken,
         },
-        beforeSend: this.setAuthorizationHeader,
+        beforeSend: this.setAuthorizationHeader as any,
         cache: false,
       });
       shouldNotify &&
@@ -423,7 +423,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       },
-      beforeSend: this.setAuthorizationHeader,
+      beforeSend: this.setAuthorizationHeader as any,
       cache: false,
     })
       .then(
@@ -463,7 +463,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       },
-      beforeSend: this.setAuthorizationHeader,
+      beforeSend: this.setAuthorizationHeader as any,
       cache: false,
     })
       .then(
@@ -496,7 +496,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         resourceId: resourceId,
         query: query,
       },
-      beforeSend: this.setAuthorizationHeader,
+      beforeSend: this.setAuthorizationHeader as any,
       cache: false,
     }).then(
       (data: any) => {
