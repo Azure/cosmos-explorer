@@ -140,7 +140,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     }
   };
 
-  const containsWhiteSpace = (entityValue: String) => {
+  const containsWhiteSpace = (entityValue: string) => {
     return entityValue.indexOf(" ") >= 0;
   };
 
