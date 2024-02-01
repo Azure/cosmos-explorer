@@ -141,7 +141,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   };
 
   const containsAnyWhiteSpace = (entityValue: string) => {
-    if (/^ *$/.test(entityValue)) {
+    if (/\s/.test(entityValue)) {
       return true;
     }
     return false;
