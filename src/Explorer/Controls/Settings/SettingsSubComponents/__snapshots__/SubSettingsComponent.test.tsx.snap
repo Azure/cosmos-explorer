@@ -195,6 +195,42 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     />
   </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
+    </Text>
+  </Stack>
 </Stack>
 `;
 
@@ -448,6 +484,42 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     />
   </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
+    </Text>
+  </Stack>
 </Stack>
 `;
 
@@ -660,6 +732,42 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       type="number"
       value="2000"
     />
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
+    </Text>
   </Stack>
 </Stack>
 `;
@@ -939,6 +1047,42 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     />
   </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
+    </Text>
+  </Stack>
 </Stack>
 `;
 
@@ -1190,6 +1334,42 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         }
       }
     />
+  </Stack>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+      }
+    }
+  >
+    <StyledTextFieldBase
+      defaultValue="/partitionKey"
+      disabled={true}
+      label="Partition key"
+      styles={
+        Object {
+          "fieldGroup": Object {
+            "borderColor": "",
+            "height": 25,
+            "selectors": Object {
+              ":disabled": Object {
+                "backgroundColor": undefined,
+                "borderColor": undefined,
+              },
+            },
+            "width": 300,
+          },
+        }
+      }
+    />
+    <Text>
+      Large 
+      partition key
+       has been enabled.
+    </Text>
+    <Text>
+      Non-hierarchically partitioned container.
+    </Text>
   </Stack>
 </Stack>
 `;
