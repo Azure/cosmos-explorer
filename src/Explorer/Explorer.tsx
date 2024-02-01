@@ -283,7 +283,7 @@ export default class Explorer {
         sendMessage({ type: MessageTypes.DisplayNPSSurvey });
       }
     } else {
-      // Show survey when an existing account is older than 3 days
+      // Show survey when an existing account is older than 7 days
       if (
         !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", SEVEN_DAYS_IN_MS)
       ) {
