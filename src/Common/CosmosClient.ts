@@ -128,6 +128,7 @@ enum SDKSupportedCapabilities {
 }
 
 // Need to put in some kind of function here to recreate the CosmosClient with a new endpoint.
+// changeClientEndpoint.......
 
 let _client: Cosmos.CosmosClient;
 
