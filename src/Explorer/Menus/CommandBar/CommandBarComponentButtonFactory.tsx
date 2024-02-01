@@ -23,7 +23,7 @@ import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { JunoClient } from "../../../Juno/JunoClient";
-import { userContext } from "../../../UserContext";
+import { updateUserContext, userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
@@ -169,6 +169,12 @@ export function createStaticCommandBarButtons(
   }
 
   // Attempting to add region selection button here.
+  addDivider();
+  const [selectedRegion, setSelectedRegion] = React.useState(
+    userContext.databaseAccount.properties.locations[0].locationName,
+  );
+  const newReadRegionSelectionBtn = createReadRegionSelectionGroup(container, selectedRegion, setSelectedRegion);
+  buttons.push(newReadRegionSelectionBtn);
 
   return buttons;
 }
@@ -602,6 +608,103 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
     ariaLabel: label,
   };
 }
+
+// function createReadRegionSelectionGroup(container: Explorer): CommandButtonComponentProps {
+//   const label = "Select a Read Region";
+//   return {
+//     iconAlt: label,
+//     commandButtonLabel: label,
+//     hasPopup: false,
+//     disabled: false,
+//     ariaLabel: label,
+//     onCommandClick: async () => {
+//       console.log(
+//         `CURRENT DOCUMENT ENDPOINT: ${JSON.stringify(userContext.databaseAccount.properties.documentEndpoint)}`,
+//       );
+//       userContext.databaseAccount.properties.readLocations.forEach((readLocation) => {
+//         console.log(`CURRENT READ ENDPOINT(S): ${JSON.stringify(readLocation)}`);
+//       });
+//       const updatedDatabaseAccount = {
+//         ...userContext.databaseAccount,
+//         properties: {
+//           ...userContext.databaseAccount.properties,
+//           documentEndpoint: "https://test-craig-nosql-periodic-eastus.documents.azure.com:443/",
+//         },
+//       };
+//       updateUserContext({
+//         databaseAccount: updatedDatabaseAccount,
+//       });
+//     },
+//   };
+// }
+
+function createReadRegionSelectionGroup(
+  container: Explorer,
+  selectedRegion: string,
+  setSelectedRegion: (region: string) => void,
+): CommandButtonComponentProps {
+  const children = userContext.databaseAccount.properties.readLocations.map((readLocation) => ({
+    commandButtonLabel: readLocation.locationName,
+    onCommandClick: async () => {
+      const updatedDatabaseAccount = {
+        ...userContext.databaseAccount,
+        properties: {
+          ...userContext.databaseAccount.properties,
+          documentEndpoint: readLocation.documentEndpoint,
+        },
+      };
+      updateUserContext({
+        databaseAccount: updatedDatabaseAccount,
+      });
+      setSelectedRegion(readLocation.locationName);
+    },
+    hasPopup: false,
+    ariaLabel: `Select ${readLocation.locationName}`,
+  }));
+  const label = selectedRegion || "Select a Read Region";
+  return {
+    iconAlt: label,
+    commandButtonLabel: label,
+    onCommandClick: () => {},
+    hasPopup: true,
+    ariaLabel: label,
+    isDropdown: true,
+    children,
+    dropdownWidth: 100,
+  };
+}
+
+// function createAccountRegionSelectionButton(container: Explorer): JSX.Element {
+//   const [selectedEndpoint, setSelectedEndpoint] = useState(userContext.databaseAccount.properties.documentEndpoint);
+
+//   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+//     const endpoint = event.target.value as string;
+//     setSelectedEndpoint(endpoint);
+
+//     const updatedDatabaseAccount = {
+//       ...userContext.databaseAccount,
+//       properties: {
+//         ...userContext.databaseAccount.properties,
+//         documentEndpoint: endpoint,
+//       },
+//     };
+//     updateUserContext({
+//       databaseAccount: updatedDatabaseAccount,
+//     });
+//   };
+
+//   return (
+//     <Select
+//       value={selectedEndpoint}
+//       onChange={handleChange}
+//       displayEmpty
+//     >
+//       {userContext.databaseAccount.properties.readLocations.map((readLocation) => (
+//         <MenuItem value={readLocation}>{readLocation}</MenuItem>
+//       ))}
+//     </Select>
+//   );
+// }
 
 function createStaticCommandBarButtonsForResourceToken(
   container: Explorer,
