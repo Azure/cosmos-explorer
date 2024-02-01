@@ -18,6 +18,10 @@ import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import {
+  PartitionKeyComponent,
+  PartitionKeyComponentProps,
+} from "../../Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
@@ -128,6 +132,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
+  private shouldShowPartitionKeyEditor: boolean;
   private totalThroughputUsed: number;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
@@ -140,6 +145,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
+      this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
@@ -1056,6 +1062,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onConflictResolutionDirtyChange: this.onConflictResolutionDirtyChange,
     };
 
+    const partitionKeyComponentProps: PartitionKeyComponentProps = {
+      database: useDatabases.getState().findDatabaseWithId(this.collection.databaseId),
+      collection: this.collection,
+      explorer: this.props.settingsTab.getContainer(),
+    };
+
     const tabs: SettingsV2TabInfo[] = [];
     if (!hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
@@ -1088,6 +1100,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.ConflictResolutionTab,
         content: <ConflictResolutionComponent {...conflictResolutionPolicyComponentProps} />,
+      });
+    }
+
+    if (this.shouldShowPartitionKeyEditor) {
+      tabs.push({
+        tab: SettingsV2TabTypes.PartitionKeyTab,
+        content: <PartitionKeyComponent {...partitionKeyComponentProps} />,
       });
     }
 
