@@ -106,8 +106,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
       }
 
       if (
-        (property === "PartitionKey" && containsWhiteSpace(value) === true) ||
-        (property === "RowKey" && containsWhiteSpace(value) === true)
+        (property === "PartitionKey" && containsAnyWhiteSpace(value) === true) ||
+        (property === "RowKey" && containsAnyWhiteSpace(value) === true)
       ) {
         logConsoleError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
         setFormError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
@@ -140,8 +140,11 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     }
   };
 
-  const containsWhiteSpace = (entityValue: string) => {
-    return entityValue.indexOf(" ") >= 0;
+  const containsAnyWhiteSpace = (entityValue: string) => {
+    if (/^ *$/.test(entityValue)) {
+      return true;
+    }
+    return false;
   };
 
   const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
