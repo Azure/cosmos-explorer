@@ -362,7 +362,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
         {this.props.changeFeedPolicyVisible && this.getChangeFeedComponent()}
 
-        {userContext.apiType !== "SQL" && this.getPartitionKeyComponent()}
+        {this.getPartitionKeyComponent()}
       </Stack>
     );
   }

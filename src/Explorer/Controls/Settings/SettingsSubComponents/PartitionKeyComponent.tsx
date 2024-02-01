@@ -11,7 +11,6 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import { relaxedSpacingStackProps } from "../SettingsRenderUtils";
 
 import { handleError } from "Common/ErrorHandlingUtils";
 import { cancelDataTransferJob, pollDataTransferJob } from "Common/dataAccess/dataTransfers";
@@ -57,7 +56,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
   const partitionKeyValue = getPartitionKeyValue();
 
   const textHeadingStyle = {
-    root: { fontWeight: FontWeights.semibold, fontSize: 14 },
+    root: { fontWeight: FontWeights.semibold, fontSize: 16 },
   };
 
   const textSubHeadingStyle = {
@@ -152,12 +151,12 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
       <Stack tokens={{ childrenGap: 10 }}>
         <Text styles={textHeadingStyle}>Change {partitionKeyName.toLowerCase()}</Text>
         <Stack horizontal tokens={{ childrenGap: 20 }}>
-          <Stack {...relaxedSpacingStackProps}>
+          <Stack tokens={{ childrenGap: 5 }}>
             <Text styles={textSubHeadingStyle}>Current {partitionKeyName.toLowerCase()}</Text>
             <Text styles={textSubHeadingStyle}>Large {partitionKeyName.toLowerCase()}</Text>
             <Text styles={textSubHeadingStyle}>Partitioning</Text>
           </Stack>
-          <Stack {...relaxedSpacingStackProps}>
+          <Stack tokens={{ childrenGap: 5 }}>
             <Text>{partitionKeyValue}</Text>
             <Text>{isLargePartitionKeyEnabled() ? "Enabled" : "Disabled"}</Text>
             <Text>{isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}</Text>
