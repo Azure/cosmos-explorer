@@ -182,6 +182,7 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
         styles={{ root: { width: "fit-content" } }}
         text="Change"
         onClick={startPartitionkeyChangeWorkflow}
+        disabled={isCurrentJobInProgress(portalDataTransferJob)}
       />
       {portalDataTransferJob && (
         <Stack>
