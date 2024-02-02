@@ -386,10 +386,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       labelPosition={Position.top}
                       defaultValue={(ruThreshold || DefaultRUThreshold).toString()}
                       min={1}
-                      step={10}
+                      step={1000}
                       onChange={handleOnRUThresholdSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 10"
-                      decrementButtonAriaLabel="Decrease value by 10"
+                      incrementButtonAriaLabel="Increase value by 1000"
+                      decrementButtonAriaLabel="Decrease value by 1000"
                       styles={spinButtonStyles}
                     />
                   </div>

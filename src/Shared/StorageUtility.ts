@@ -51,4 +51,4 @@ export const getRUThreshold = (): number => {
   return DefaultRUThreshold;
 };
 
-export const DefaultRUThreshold = 100;
+export const DefaultRUThreshold = 5000;

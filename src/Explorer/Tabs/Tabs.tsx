@@ -63,9 +63,14 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           onDismiss={() => {
             setShowRUThresholdMessageBar(false);
           }}
+          styles={{
+            innerText: {
+              fontWeight: "bold",
+            },
+          }}
         >
           {
-            "Avoid high cost queries! We automatically abort them if they exceed the set RU limit.  To adjust your limit go to Settings > RU threshold."
+            "To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove the limit, go to the Settings cog on the right and find 'RU Threshold'."
           }
         </MessageBar>
       )}
