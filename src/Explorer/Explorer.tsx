@@ -278,16 +278,31 @@ export default class Explorer {
     const ONE_DAY_IN_MS = 86400000;
     const THREE_DAYS_IN_MS = 259200000;
     const lastSubmitted: string = localStorage.getItem("lastSubmitted");
+    Logger.logInfo(`NPS Survey last shown date: ${lastSubmitted}`, "Explorer/openNPSSurveyDialog");
 
     if (lastSubmitted !== null) {
+      Logger.logInfo(`NPS Survey last shown is not empty ${lastSubmitted}`, "Explorer/openNPSSurveyDialog");
+
       let lastSubmittedDate: number = parseInt(lastSubmitted);
+      Logger.logInfo(`NPS Survey last shown is parsed ${lastSubmittedDate.toString()}`, "Explorer/openNPSSurveyDialog");
+
       if (isNaN(lastSubmittedDate)) {
+        Logger.logInfo(
+          `NPS Survey last shown is not a number ${lastSubmittedDate.toString()}`,
+          "Explorer/openNPSSurveyDialog",
+        );
         lastSubmittedDate = 0;
       }
 
       const nowMs: number = Date.now();
+      Logger.logInfo(`NPS Survey current date ${nowMs.toString()}`, "Explorer/openNPSSurveyDialog");
+
       const millisecsSinceLastSubmitted = nowMs - lastSubmittedDate;
       if (millisecsSinceLastSubmitted < NINETY_DAYS_IN_MS) {
+        Logger.logInfo(
+          `NPS Survey last shown is less than ninety days ${millisecsSinceLastSubmitted.toString()}`,
+          "Explorer/openNPSSurveyDialog",
+        );
         return;
       }
     }
@@ -295,6 +310,10 @@ export default class Explorer {
     // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
     if (userContext.isTryCosmosDBSubscription) {
       if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
+        Logger.logInfo(
+          `Displaying NPS Survey for Try Cosmos DB ${userContext.apiType}`,
+          "Explorer/openNPSSurveyDialog",
+        );
         this.sendNPSMessage();
       }
     } else {
@@ -302,6 +321,10 @@ export default class Explorer {
       if (
         !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
       ) {
+        Logger.logInfo(
+          `Displaying NPS Survey for users with existing ${userContext.apiType} account older than 3 days`,
+          "Explorer/openNPSSurveyDialog",
+        );
         this.sendNPSMessage();
       }
     }
@@ -309,6 +332,10 @@ export default class Explorer {
 
   private sendNPSMessage() {
     sendMessage({ type: MessageTypes.DisplayNPSSurvey });
+    Logger.logInfo(
+      `NPS Survey logging current date when survey is shown ${Date.now().toString()}`,
+      "Explorer/openNPSSurveyDialog",
+    );
     localStorage.setItem("lastSubmitted", Date.now().toString());
   }
 
