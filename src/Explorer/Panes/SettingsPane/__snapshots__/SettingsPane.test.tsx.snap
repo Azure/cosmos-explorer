@@ -137,9 +137,9 @@ exports[`Settings Pane should render Default properly 1`] = `
         </div>
         <div>
           <StyledSpinButton
-            decrementButtonAriaLabel="Decrease value by 10"
-            defaultValue="100"
-            incrementButtonAriaLabel="Increase value by 10"
+            decrementButtonAriaLabel="Decrease value by 1000"
+            defaultValue="5000"
+            incrementButtonAriaLabel="Increase value by 1000"
             label="RU Threshold (RU)"
             labelPosition={0}
             min={1}
