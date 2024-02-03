@@ -302,6 +302,7 @@ module.exports = function (_env = {}, argv = {}) {
           pathRewrite: { "^/proxy": "" },
           router: (req) => {
             let newTarget = req.headers["x-ms-proxy-target"];
+            console.log(`Proxy path used. New target is: ${newTarget}`);
             return newTarget;
           },
         },

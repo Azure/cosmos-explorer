@@ -9,13 +9,12 @@ import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
-import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
 
 const _global = typeof self === "undefined" ? window : self;
 
-export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
+export const tokenProvider2 = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
   if (userContext.features.enableAadDataPlane && userContext.aadToken) {
@@ -73,28 +72,29 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     return userContext.resourceToken;
   }
 
-  const result = await getTokenFromAuthService(verb, resourceType, resourceId);
+  const result = await getTokenFromAuthService2(verb, resourceType, resourceId);
   headers[HttpHeaders.msDate] = result.XDate;
   return decodeURIComponent(result.PrimaryReadWriteToken);
 };
 
-export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
+export const requestPlugin2: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
-  requestContext.headers["x-ms-proxy-target"] = endpoint();
-  console.log(`Request context: ${JSON.stringify(requestContext)}`);
+  requestContext.headers["x-ms-proxy-target"] = endpoint2();
+  console.log(`Client2 request context: ${JSON.stringify(requestContext)}`);
   return next(requestContext);
 };
 
-export const endpoint = () => {
+export const endpoint2 = () => {
   if (configContext.platform === Platform.Emulator) {
     // In worker scope, _global(self).parent does not exist
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
+  // return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
+  return "https://test-craig-nosql-periodic-eastus.documents.azure.com:443/";
 };
 
-export async function getTokenFromAuthService(
+export async function getTokenFromAuthService2(
   verb: string,
   resourceType: string,
   resourceId?: string,
@@ -128,14 +128,11 @@ enum SDKSupportedCapabilities {
   PartitionMerge = 1 << 0,
 }
 
-// Need to put in some kind of function here to recreate the CosmosClient with a new endpoint.
-// changeClientEndpoint.......
+let _client2: Cosmos.CosmosClient;
 
-let _client: Cosmos.CosmosClient;
-
-export function client(): Cosmos.CosmosClient {
-  console.log(`Called primary client`);
-  if (_client) return _client;
+export function client2(): Cosmos.CosmosClient {
+  console.log(`Called client2`);
+  if (_client2) return _client2;
 
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
@@ -154,9 +151,9 @@ export function client(): Cosmos.CosmosClient {
   }
 
   const options: Cosmos.CosmosClientOptions = {
-    endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    endpoint: endpoint2() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
-    tokenProvider,
+    tokenProvider: tokenProvider2,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
@@ -189,15 +186,15 @@ export function client(): Cosmos.CosmosClient {
   );
 
   if (configContext.PROXY_PATH !== undefined) {
-    (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
+    (options as any).plugins = [{ on: "request", plugin: requestPlugin2 }];
   }
 
-  if (PriorityBasedExecutionUtils.isFeatureEnabled()) {
-    const plugins = (options as any).plugins || [];
-    plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
-    (options as any).plugins = plugins;
-  }
+  // if (PriorityBasedExecutionUtils.isFeatureEnabled()) {
+  //   const plugins = (options as any).plugins || [];
+  //   plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
+  //   (options as any).plugins = plugins;
+  // }
 
-  _client = new Cosmos.CosmosClient(options);
-  return _client;
+  _client2 = new Cosmos.CosmosClient(options);
+  return _client2;
 }
