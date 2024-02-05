@@ -46,6 +46,7 @@ export enum MessageTypes {
   GetAuthorizationToken, // Data Explorer -> Fabric
   GetAllResourceTokens, // Data Explorer -> Fabric
   Ready, // Data Explorer -> Fabric
+  OpenCESCVAFeedbackBlade,
 }
 
 export interface AuthorizationToken {

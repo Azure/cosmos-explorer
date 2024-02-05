@@ -236,7 +236,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     const feedbackButtonOptions: CommandButtonComponentProps = {
       iconSrc: FeedbackIcon,
       iconAlt: label,
-      onCommandClick: () => container.provideFeedbackEmail(),
+      onCommandClick: () => container.openCESCVAFeedbackBlade(), // container.provideFeedbackEmail(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,

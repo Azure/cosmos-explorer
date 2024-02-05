@@ -339,6 +339,14 @@ export default class Explorer {
     localStorage.setItem("lastSubmitted", Date.now().toString());
   }
 
+  public openCESCVAFeedbackBlade(): void {
+    sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
+    Logger.logInfo(
+      `CES CVA Feedback logging current date when survey is shown ${Date.now().toString()}`,
+      "Explorer/openCESCVAFeedbackBlade",
+    );
+  }
+
   public async refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
