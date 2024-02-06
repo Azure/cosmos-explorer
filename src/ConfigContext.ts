@@ -218,4 +218,3 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
-
