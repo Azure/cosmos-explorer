@@ -3,6 +3,7 @@ import { sendCachedDataMessage } from "Common/MessageHandler";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { AuthorizationToken, MessageTypes } from "Contracts/MessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
@@ -39,9 +40,10 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       case Cosmos.ResourceType.item:
       case Cosmos.ResourceType.pkranges:
         // User resource tokens
+        // TODO userContext.fabricContext.databaseConnectionInfo can be undefined
         headers[HttpHeaders.msDate] = new Date().toUTCString();
-        const resourceTokens = userContext.fabricDatabaseConnectionInfo.resourceTokens;
-        checkDatabaseResourceTokensValidity(userContext.fabricDatabaseConnectionInfo.resourceTokensTimestamp);
+        const resourceTokens = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
+        checkDatabaseResourceTokensValidity(userContext.fabricContext.databaseConnectionInfo.resourceTokensTimestamp);
         return getAuthorizationTokenUsingResourceTokens(resourceTokens, requestInfo.path, requestInfo.resourceId);
 
       case Cosmos.ResourceType.none:
@@ -50,9 +52,11 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       case Cosmos.ResourceType.user:
       case Cosmos.ResourceType.permission:
         // User master tokens
-        const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(MessageTypes.GetAuthorizationToken, [
-          requestInfo,
-        ]);
+        const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(
+          MessageTypes.GetAuthorizationToken,
+          [requestInfo],
+          userContext.fabricContext.connectionId,
+        );
         console.log("Response from Fabric: ", authorizationToken);
         headers[HttpHeaders.msDate] = authorizationToken.XDate;
         return decodeURIComponent(authorizationToken.PrimaryReadWriteToken);
@@ -150,6 +154,13 @@ export function client(): Cosmos.CosmosClient {
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
+    connectionPolicy: {
+      retryOptions: {
+        maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+        maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds),
+      },
+    },
   };
 
   if (configContext.PROXY_PATH !== undefined) {

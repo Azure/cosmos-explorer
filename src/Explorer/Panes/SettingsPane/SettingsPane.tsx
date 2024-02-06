@@ -11,23 +11,38 @@ import {
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import {
+  DefaultRUThreshold,
+  LocalStorageUtility,
+  StorageKey,
+  getRUThreshold,
+  ruThresholdEnabled as isRUThresholdEnabled,
+} from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
+import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export const SettingsPane: FunctionComponent = () => {
+export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
+  explorer,
+}: {
+  explorer: Explorer;
+}): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [refreshExplorer, setRefreshExplorer] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
       ? Constants.Queries.UnlimitedPageOption
       : Constants.Queries.CustomPageOption,
   );
+  const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
+  const [ruThreshold, setRUThreshold] = useState<number>(getRUThreshold());
   const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
     LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
   );
@@ -53,6 +68,21 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false",
   );
+  const [retryAttempts, setRetryAttempts] = useState<number>(
+    LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
+      ? LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts)
+      : Constants.Queries.DefaultRetryAttempts,
+  );
+  const [retryInterval, setRetryInterval] = useState<number>(
+    LocalStorageUtility.hasItem(StorageKey.RetryInterval)
+      ? LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval)
+      : Constants.Queries.DefaultRetryIntervalInMs,
+  );
+  const [MaxWaitTimeInSeconds, setMaxWaitTimeInSeconds] = useState<number>(
+    LocalStorageUtility.hasItem(StorageKey.MaxWaitTimeInSeconds)
+      ? LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
+      : Constants.Queries.DefaultMaxWaitTimeInSeconds,
+  );
   const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism)
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism)
@@ -63,13 +93,17 @@ export const SettingsPane: FunctionComponent = () => {
       ? LocalStorageUtility.getEntryString(StorageKey.PriorityLevel)
       : Constants.PriorityLevel.Default,
   );
+  const [copilotSampleDBEnabled, setCopilotSampleDBEnabled] = useState<boolean>(
+    LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true",
+  );
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
-  const handlerOnSubmit = () => {
+  const shouldShowCopilotSampleDBOption = userContext.apiType === "SQL" && useQueryCopilot.getState().copilotEnabled;
+  const handlerOnSubmit = async () => {
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
@@ -77,17 +111,26 @@ export const SettingsPane: FunctionComponent = () => {
       isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage,
     );
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
+    LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
+    LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
+    LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
+    LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
     LocalStorageUtility.setEntryString(StorageKey.ContainerPaginationEnabled, containerPaginationEnabled.toString());
     LocalStorageUtility.setEntryString(StorageKey.IsCrossPartitionQueryEnabled, crossPartitionQueryEnabled.toString());
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
     LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
+    LocalStorageUtility.setEntryString(StorageKey.CopilotSampleDBEnabled, copilotSampleDBEnabled.toString());
 
     if (shouldShowGraphAutoVizOption) {
       LocalStorageUtility.setEntryBoolean(
         StorageKey.IsGraphAutoVizDisabled,
         StringUtility.toBoolean(graphAutoVizDisabled),
       );
+    }
+
+    if (ruThresholdEnabled) {
+      LocalStorageUtility.setEntryNumber(StorageKey.RUThreshold, ruThreshold);
     }
 
     if (queryTimeoutEnabled) {
@@ -121,6 +164,7 @@ export const SettingsPane: FunctionComponent = () => {
     logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`,
     );
+    refreshExplorer && (await explorer.refreshExplorer());
     closeSidePanel();
   };
 
@@ -164,6 +208,17 @@ export const SettingsPane: FunctionComponent = () => {
     setPageOption(option.key);
   };
 
+  const handleOnRUThresholdToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
+    setRUThresholdEnabled(checked);
+  };
+
+  const handleOnRUThresholdSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const ruThreshold = Number(newValue);
+    if (!isNaN(ruThreshold)) {
+      setRUThreshold(ruThreshold);
+    }
+  };
+
   const handleOnQueryTimeoutToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
     setQueryTimeoutEnabled(checked);
   };
@@ -177,6 +232,33 @@ export const SettingsPane: FunctionComponent = () => {
     if (!isNaN(queryTimeout)) {
       setQueryTimeout(queryTimeout);
     }
+  };
+
+  const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const retryAttempts = Number(newValue);
+    if (!isNaN(retryAttempts)) {
+      setRetryAttempts(retryAttempts);
+    }
+  };
+
+  const handleOnRetryIntervalSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const retryInterval = Number(newValue);
+    if (!isNaN(retryInterval)) {
+      setRetryInterval(retryInterval);
+    }
+  };
+
+  const handleOnMaxWaitTimeSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
+    const MaxWaitTimeInSeconds = Number(newValue);
+    if (!isNaN(MaxWaitTimeInSeconds)) {
+      setMaxWaitTimeInSeconds(MaxWaitTimeInSeconds);
+    }
+  };
+
+  const handleSampleDatabaseChange = async (ev: React.MouseEvent<HTMLElement>, checked?: boolean): Promise<void> => {
+    setCopilotSampleDBEnabled(checked);
+    useQueryCopilot.getState().setCopilotSampleDBEnabled(checked);
+    setRefreshExplorer(false);
   };
 
   const choiceButtonStyles = {
@@ -201,7 +283,7 @@ export const SettingsPane: FunctionComponent = () => {
     ],
   };
 
-  const queryTimeoutToggleStyles: IToggleStyles = {
+  const toggleStyles: IToggleStyles = {
     label: {
       fontSize: 12,
       fontWeight: 400,
@@ -214,7 +296,7 @@ export const SettingsPane: FunctionComponent = () => {
     text: {},
   };
 
-  const queryTimeoutSpinButtonStyles: ISpinButtonStyles = {
+  const spinButtonStyles: ISpinButtonStyles = {
     label: {
       fontSize: 12,
       fontWeight: 400,
@@ -280,51 +362,157 @@ export const SettingsPane: FunctionComponent = () => {
           </div>
         )}
         {userContext.apiType === "SQL" && (
-          <div className="settingsSection">
-            <div className="settingsSectionPart">
-              <div>
-                <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
-                  Query Timeout
-                </legend>
-                <InfoTooltip>
-                  When a query reaches a specified time limit, a popup with an option to cancel the query will show
-                  unless automatic cancellation has been enabled
-                </InfoTooltip>
-              </div>
-              <div>
-                <Toggle
-                  styles={queryTimeoutToggleStyles}
-                  label="Enable query timeout"
-                  onChange={handleOnQueryTimeoutToggleChange}
-                  defaultChecked={queryTimeoutEnabled}
-                />
-              </div>
-              {queryTimeoutEnabled && (
+          <>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
                 <div>
-                  <SpinButton
-                    label="Query timeout (ms)"
-                    labelPosition={Position.top}
-                    defaultValue={(queryTimeout || 5000).toString()}
-                    min={100}
-                    step={1000}
-                    onChange={handleOnQueryTimeoutSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1000"
-                    decrementButtonAriaLabel="Decrease value by 1000"
-                    styles={queryTimeoutSpinButtonStyles}
-                  />
+                  <legend id="ruThresholdLabel" className="settingsSectionLabel legendLabel">
+                    RU Threshold
+                  </legend>
+                  <InfoTooltip>If a query exceeds a configured RU threshold, the query will be aborted.</InfoTooltip>
+                </div>
+                <div>
                   <Toggle
-                    label="Automatically cancel query after timeout"
-                    styles={queryTimeoutToggleStyles}
-                    onChange={handleOnAutomaticallyCancelQueryToggleChange}
-                    defaultChecked={automaticallyCancelQueryAfterTimeout}
+                    styles={toggleStyles}
+                    label="Enable RU threshold"
+                    onChange={handleOnRUThresholdToggleChange}
+                    defaultChecked={ruThresholdEnabled}
                   />
                 </div>
-              )}
+                {ruThresholdEnabled && (
+                  <div>
+                    <SpinButton
+                      label="RU Threshold (RU)"
+                      labelPosition={Position.top}
+                      defaultValue={(ruThreshold || DefaultRUThreshold).toString()}
+                      min={1}
+                      step={1000}
+                      onChange={handleOnRUThresholdSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1000"
+                      decrementButtonAriaLabel="Decrease value by 1000"
+                      styles={spinButtonStyles}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
+                <div>
+                  <legend id="queryTimeoutLabel" className="settingsSectionLabel legendLabel">
+                    Query Timeout
+                  </legend>
+                  <InfoTooltip>
+                    When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                    unless automatic cancellation has been enabled
+                  </InfoTooltip>
+                </div>
+                <div>
+                  <Toggle
+                    styles={toggleStyles}
+                    label="Enable query timeout"
+                    onChange={handleOnQueryTimeoutToggleChange}
+                    defaultChecked={queryTimeoutEnabled}
+                  />
+                </div>
+                {queryTimeoutEnabled && (
+                  <div>
+                    <SpinButton
+                      label="Query timeout (ms)"
+                      labelPosition={Position.top}
+                      defaultValue={(queryTimeout || 5000).toString()}
+                      min={100}
+                      step={1000}
+                      onChange={handleOnQueryTimeoutSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1000"
+                      decrementButtonAriaLabel="Decrease value by 1000"
+                      styles={spinButtonStyles}
+                    />
+                    <Toggle
+                      label="Automatically cancel query after timeout"
+                      styles={toggleStyles}
+                      onChange={handleOnAutomaticallyCancelQueryToggleChange}
+                      defaultChecked={automaticallyCancelQueryAfterTimeout}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
         )}
         <div className="settingsSection">
           <div className="settingsSectionPart">
+            <div className="settingsSectionLabel">
+              Retry Settings
+              <InfoTooltip>Retry policy associated with throttled requests during CosmosDB queries.</InfoTooltip>
+            </div>
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Max retry attempts
+              </legend>
+              <InfoTooltip>Max number of retries to be performed for a request. Default value 9.</InfoTooltip>
+            </div>
+            <SpinButton
+              labelPosition={Position.top}
+              min={1}
+              step={1}
+              value={"" + retryAttempts}
+              onChange={handleOnQueryRetryAttemptsSpinButtonChange}
+              incrementButtonAriaLabel="Increase value by 1"
+              decrementButtonAriaLabel="Decrease value by 1"
+              onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
+              onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
+              onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
+              styles={spinButtonStyles}
+            />
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Fixed retry interval (ms)
+              </legend>
+              <InfoTooltip>
+                Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part
+                of the response. Default value is 0 milliseconds.
+              </InfoTooltip>
+            </div>
+            <SpinButton
+              labelPosition={Position.top}
+              min={1000}
+              step={1000}
+              value={"" + retryInterval}
+              onChange={handleOnRetryIntervalSpinButtonChange}
+              incrementButtonAriaLabel="Increase value by 1000"
+              decrementButtonAriaLabel="Decrease value by 1000"
+              onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
+              onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
+              onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
+              styles={spinButtonStyles}
+            />
+            <div>
+              <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
+                Max wait time (s)
+              </legend>
+              <InfoTooltip>
+                Max wait time in seconds to wait for a request while the retries are happening. Default value 30
+                seconds.
+              </InfoTooltip>
+            </div>
+            <SpinButton
+              labelPosition={Position.top}
+              min={1}
+              step={1}
+              value={"" + MaxWaitTimeInSeconds}
+              onChange={handleOnMaxWaitTimeSpinButtonChange}
+              incrementButtonAriaLabel="Increase value by 1"
+              decrementButtonAriaLabel="Decrease value by 1"
+              onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
+              onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
+              onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
+              styles={spinButtonStyles}
+            />
+          </div>
+        </div>
+        <div className="settingsSection">
+          <div className="settingsSectionPart settingsSectionInlineCheckbox">
             <div className="settingsSectionLabel">
               Enable container pagination
               <InfoTooltip>
@@ -344,7 +532,7 @@ export const SettingsPane: FunctionComponent = () => {
         </div>
         {shouldShowCrossPartitionOption && (
           <div className="settingsSection">
-            <div className="settingsSectionPart">
+            <div className="settingsSectionPart settingsSectionInlineCheckbox">
               <div className="settingsSectionLabel">
                 Enable cross-partition query
                 <InfoTooltip>
@@ -431,6 +619,30 @@ export const SettingsPane: FunctionComponent = () => {
                 options={graphAutoOptionList}
                 onChange={handleOnGremlinChange}
                 aria-label="Graph Auto-visualization"
+              />
+            </div>
+          </div>
+        )}
+        {shouldShowCopilotSampleDBOption && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart settingsSectionInlineCheckbox">
+              <div className="settingsSectionLabel">
+                Enable sample database
+                <InfoTooltip>
+                  This is a sample database and collection with synthetic product data you can use to explore using
+                  NoSQL queries and Copilot. This will appear as another database in the Data Explorer UI, and is
+                  created by, and maintained by Microsoft at no cost to you.
+                </InfoTooltip>
+              </div>
+
+              <Checkbox
+                styles={{
+                  label: { padding: 0 },
+                }}
+                className="padding"
+                ariaLabel="Enable sample db for Copilot"
+                checked={copilotSampleDBEnabled}
+                onChange={handleSampleDatabaseChange}
               />
             </div>
           </div>

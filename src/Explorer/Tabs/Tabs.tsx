@@ -10,6 +10,7 @@ import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
+import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
@@ -29,7 +30,9 @@ interface TabsProps {
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
-
+  const [showRUThresholdMessageBar, setShowRUThresholdMessageBar] = useState<boolean>(
+    userContext.apiType === "SQL" && !hasRUThresholdBeenConfigured(),
+  );
   return (
     <div className="tabsManagerContainer">
       {networkSettingsWarning && (
@@ -52,6 +55,23 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
         >
           {networkSettingsWarning}
+        </MessageBar>
+      )}
+      {showRUThresholdMessageBar && (
+        <MessageBar
+          messageBarType={MessageBarType.info}
+          onDismiss={() => {
+            setShowRUThresholdMessageBar(false);
+          }}
+          styles={{
+            innerText: {
+              fontWeight: "bold",
+            },
+          }}
+        >
+          {
+            "To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove the limit, go to the Settings cog on the right and find 'RU Threshold'."
+          }
         </MessageBar>
       )}
       <div id="content" className="flexContainer hideOverflows">

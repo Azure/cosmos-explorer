@@ -1,5 +1,6 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
@@ -190,7 +191,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
 
   const onSubmit = async (): Promise<void> => {
     for (let i = 0; i < entities.length; i++) {
-      const { property, type } = entities[i];
+      const { property, type, value } = entities[i];
       if (property === "" || property === undefined) {
         setFormError(`Property name cannot be empty. Please enter a property name`);
         return;
@@ -198,6 +199,17 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
 
       if (!type) {
         setFormError(`Property type cannot be empty. Please select a type from the dropdown for property ${property}`);
+        return;
+      }
+
+      if (
+        (property === "PartitionKey" && value === "") ||
+        (property === "PartitionKey" && value === undefined) ||
+        (property === "RowKey" && value === "") ||
+        (property === "RowKey" && value === undefined)
+      ) {
+        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
+        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
         return;
       }
     }
@@ -359,7 +371,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
               selectedKey={entity.type}
               entityPropertyPlaceHolder={detailedHelp}
               entityValuePlaceholder={entity.entityValuePlaceholder}
-              entityValue={entity.value?.toString()}
+              entityValue={entity.value.toString()}
               isEntityTypeDate={entity.isEntityTypeDate}
               entityTimeValue={entity.entityTimeValue}
               isEntityValueDisable={entity.isEntityValueDisable}

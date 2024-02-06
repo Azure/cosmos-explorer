@@ -106,6 +106,74 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div>
           <legend
             className="settingsSectionLabel legendLabel"
+            id="ruThresholdLabel"
+          >
+            RU Threshold
+          </legend>
+          <InfoTooltip>
+            If a query exceeds a configured RU threshold, the query will be aborted.
+          </InfoTooltip>
+        </div>
+        <div>
+          <StyledToggleBase
+            defaultChecked={true}
+            label="Enable RU threshold"
+            onChange={[Function]}
+            styles={
+              Object {
+                "container": Object {},
+                "label": Object {
+                  "display": "block",
+                  "fontSize": 12,
+                  "fontWeight": 400,
+                },
+                "pill": Object {},
+                "root": Object {},
+                "text": Object {},
+                "thumb": Object {},
+              }
+            }
+          />
+        </div>
+        <div>
+          <StyledSpinButton
+            decrementButtonAriaLabel="Decrease value by 1000"
+            defaultValue="5000"
+            incrementButtonAriaLabel="Increase value by 1000"
+            label="RU Threshold (RU)"
+            labelPosition={0}
+            min={1}
+            onChange={[Function]}
+            step={1000}
+            styles={
+              Object {
+                "arrowButtonsContainer": Object {},
+                "icon": Object {},
+                "input": Object {},
+                "label": Object {
+                  "fontSize": 12,
+                  "fontWeight": 400,
+                },
+                "labelWrapper": Object {},
+                "root": Object {
+                  "paddingBottom": 10,
+                },
+                "spinButtonWrapper": Object {},
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
             id="queryTimeoutLabel"
           >
             Query Timeout
@@ -146,6 +214,139 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div
           className="settingsSectionLabel"
         >
+          Retry Settings
+          <InfoTooltip>
+            Retry policy associated with throttled requests during CosmosDB queries.
+          </InfoTooltip>
+        </div>
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max retry attempts
+          </legend>
+          <InfoTooltip>
+            Max number of retries to be performed for a request. Default value 9.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="9"
+        />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Fixed retry interval (ms)
+          </legend>
+          <InfoTooltip>
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1000"
+          incrementButtonAriaLabel="Increase value by 1000"
+          labelPosition={0}
+          min={1000}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1000}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="0"
+        />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max wait time (s)
+          </legend>
+          <InfoTooltip>
+            Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="30"
+        />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart settingsSectionInlineCheckbox"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
           Enable container pagination
           <InfoTooltip>
             Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
@@ -170,7 +371,7 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"
@@ -256,6 +457,139 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
     >
       <div
         className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Retry Settings
+          <InfoTooltip>
+            Retry policy associated with throttled requests during CosmosDB queries.
+          </InfoTooltip>
+        </div>
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max retry attempts
+          </legend>
+          <InfoTooltip>
+            Max number of retries to be performed for a request. Default value 9.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="9"
+        />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Fixed retry interval (ms)
+          </legend>
+          <InfoTooltip>
+            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1000"
+          incrementButtonAriaLabel="Increase value by 1000"
+          labelPosition={0}
+          min={1000}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1000}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="0"
+        />
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="queryRetryAttemptsLabel"
+          >
+            Max wait time (s)
+          </legend>
+          <InfoTooltip>
+            Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
+          </InfoTooltip>
+        </div>
+        <StyledSpinButton
+          decrementButtonAriaLabel="Decrease value by 1"
+          incrementButtonAriaLabel="Increase value by 1"
+          labelPosition={0}
+          min={1}
+          onChange={[Function]}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          step={1}
+          styles={
+            Object {
+              "arrowButtonsContainer": Object {},
+              "icon": Object {},
+              "input": Object {},
+              "label": Object {
+                "fontSize": 12,
+                "fontWeight": 400,
+              },
+              "labelWrapper": Object {},
+              "root": Object {
+                "paddingBottom": 10,
+              },
+              "spinButtonWrapper": Object {},
+            }
+          }
+          value="30"
+        />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"

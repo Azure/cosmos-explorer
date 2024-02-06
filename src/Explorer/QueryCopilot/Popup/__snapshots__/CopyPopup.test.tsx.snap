@@ -4,6 +4,7 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is false 1`] 
 
 exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] = `
 <Stack
+  role="status"
   style={
     Object {
       "background": "#FFFFFF",

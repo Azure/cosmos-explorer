@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-import { FeedOptions } from "@azure/cosmos";
+import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
@@ -10,7 +10,7 @@ import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopil
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
@@ -303,8 +303,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isExecutionError: false,
     });
 
+    let queryOperationOptions: QueryOperationOptions;
+    if (!this.isPreferredApiMongoDB && ruThresholdEnabled()) {
+      const ruThreshold: number = getRUThreshold();
+      queryOperationOptions = {
+        ruCapPerOperation: ruThreshold,
+      } as QueryOperationOptions;
+    }
     const queryDocuments = async (firstItemIndex: number) =>
-      await queryDocumentsPage(this.props.collection && this.props.collection.id(), this._iterator, firstItemIndex);
+      await queryDocumentsPage(
+        this.props.collection && this.props.collection.id(),
+        this._iterator,
+        firstItemIndex,
+        queryOperationOptions,
+      );
     this.props.tabsBaseInstance.isExecuting(true);
     this.setState({
       isExecuting: true,
@@ -444,7 +456,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
           this._toggleCopilot(!this.state.copilotActive);
         },
         commandButtonLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
-        ariaLabel: "Copilot",
+        ariaLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
         hasPopup: false,
       };
       buttons.push(toggleCopilotButton);
