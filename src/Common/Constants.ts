@@ -208,6 +208,10 @@ export class HttpHeaders {
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
 }
 
+export class ContentType {
+  public static applicationJson: string = "application/json";
+}
+
 export class ApiType {
   // Mapped to hexadecimal values in the backend
   public static readonly MongoDB: number = 1;

@@ -6,7 +6,7 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { getCopilotEnabled } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { requestDatabaseResourceTokens } from "Platform/Fabric/FabricUtil";
-import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
+import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
