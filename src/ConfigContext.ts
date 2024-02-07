@@ -7,6 +7,7 @@ import {
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
   allowedMongoBackendEndpoints,
+  allowedMongoProxyEndpoints,
   allowedMsalRedirectEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
@@ -136,6 +137,10 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     )
   ) {
     delete newContext.BACKEND_ENDPOINT;
+  }
+
+  if (!validateEndpoint(newContext.MONGO_PROXY_ENDPOINT, allowedMongoProxyEndpoints)) {
+    delete newContext.MONGO_PROXY_ENDPOINT;
   }
 
   if (!validateEndpoint(newContext.MONGO_BACKEND_ENDPOINT, allowedMongoBackendEndpoints)) {
