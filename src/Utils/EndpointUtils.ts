@@ -75,20 +75,20 @@ export class MongoProxyEndpoints {
   public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
 }
 
-export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
-];
-
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
   MongoProxyEndpoints.Development,
   MongoProxyEndpoints.MPAC,
   MongoProxyEndpoints.Prod,
   MongoProxyEndpoints.Fairfax,
   MongoProxyEndpoints.Mooncake,
+];
+
+export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
+  "https://main.documentdb.ext.azure.com",
+  "https://main.documentdb.ext.azure.cn",
+  "https://main.documentdb.ext.azure.us",
+  "https://main.cosmos.ext.azure",
+  "https://localhost:12901",
 ];
 
 export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localhost:8081"];
