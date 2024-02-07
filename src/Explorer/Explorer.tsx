@@ -7,7 +7,7 @@ import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCop
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
+import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";

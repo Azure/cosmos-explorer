@@ -2,7 +2,7 @@ import { configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
-import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import promiseRetry, { AbortError } from "p-retry";
 import {
