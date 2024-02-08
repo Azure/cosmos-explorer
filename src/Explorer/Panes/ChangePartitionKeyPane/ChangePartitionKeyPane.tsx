@@ -24,6 +24,7 @@ import {
 } from "Explorer/Controls/Settings/SettingsUtils";
 import Explorer from "Explorer/Explorer";
 import { RightPaneForm } from "Explorer/Panes/RightPaneForm/RightPaneForm";
+import { useDatabases } from "Explorer/useDatabases";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
 import { useSidePanel } from "hooks/useSidePanel";
@@ -60,8 +61,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
   };
 
   const submit = async () => {
-    if (!createNewContainer && !targetCollectionId) {
-      setFormError("Choose an existing container");
+    if (!validateInputs()) {
       return;
     }
     setIsExecuting(true);
@@ -74,6 +74,14 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
     }
     setIsExecuting(false);
     useSidePanel.getState().closeSidePanel();
+  };
+
+  const validateInputs = (): boolean => {
+    if (!createNewContainer && !targetCollectionId) {
+      setFormError("Choose an existing container");
+      return false;
+    }
+    return true;
   };
 
   const createDataTransferJob = async () => {
@@ -106,11 +114,20 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
       createNewDatabase: false,
       collectionId: targetCollectionId,
       databaseId: sourceDatabase.id(),
-      databaseLevelThroughput: false,
+      databaseLevelThroughput: isSelectedDatabaseSharedThroughput(),
+      offerThroughput: sourceCollection.offer()?.manualThroughput,
+      autoPilotMaxThroughput: sourceCollection.offer()?.autoscaleMaxThroughput,
       partitionKey: partitionKeyData,
     };
     await createCollection(createCollectionParams);
     await explorer.refreshAllDatabases();
+  };
+
+  const isSelectedDatabaseSharedThroughput = (): boolean => {
+    const selectedDatabase = useDatabases
+      .getState()
+      .databases?.find((database) => database.id() === sourceDatabase.id());
+    return !!selectedDatabase?.offer();
   };
 
   return (
@@ -127,17 +144,48 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
             Learn more
           </Link>
         </Text>
+        <Stack>
+          <Stack horizontal>
+            <span className="mandatoryStar">*&nbsp;</span>
+            <Text className="panelTextBold" variant="small">
+              Database id
+            </Text>
+            <TooltipHost
+              directionalHint={DirectionalHint.bottomLeftEdge}
+              content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+                true,
+              ).toLocaleLowerCase()}.`}
+            >
+              <Icon
+                iconName="Info"
+                className="panelInfoIcon"
+                tabIndex={0}
+                aria-label={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+                  true,
+                ).toLocaleLowerCase()}.`}
+              />
+            </TooltipHost>
+          </Stack>
+          <Dropdown
+            styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
+            style={{ width: 300, fontSize: 12 }}
+            options={[]}
+            placeholder={sourceDatabase.id()}
+            responsiveMode={999}
+            disabled={true}
+          />
+        </Stack>
         <Stack className="panelGroupSpacing" horizontal verticalAlign="center">
           <div role="radiogroup">
             <input
               className="panelRadioBtn"
               checked={createNewContainer}
-              aria-label="Create new database"
+              aria-label="Create new container"
               aria-checked={createNewContainer}
-              name="databaseType"
+              name="containerType"
               type="radio"
               role="radio"
-              id="databaseCreateNew"
+              id="containerCreateNew"
               tabIndex={0}
               onChange={() => setCreateNewContainer(true)}
             />
@@ -146,9 +194,9 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
             <input
               className="panelRadioBtn"
               checked={!createNewContainer}
-              aria-label="Use existing database"
+              aria-label="Use existing container"
               aria-checked={!createNewContainer}
-              name="databaseType"
+              name="containerType"
               type="radio"
               role="radio"
               tabIndex={0}

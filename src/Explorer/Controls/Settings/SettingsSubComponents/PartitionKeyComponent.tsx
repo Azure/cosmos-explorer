@@ -139,11 +139,13 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
   const getPercentageComplete = () => {
     const processedCount = portalDataTransferJob?.properties?.processedCount;
     const totalCount = portalDataTransferJob?.properties?.totalCount;
-    const isCancelled = portalDataTransferJob?.properties?.status === "Cancelled";
-    if (totalCount <= 0) {
+    const jobStatus = portalDataTransferJob?.properties?.status;
+    const isCancelled = jobStatus === "Cancelled";
+    const isCompleted = jobStatus === "Completed";
+    if (totalCount <= 0 && !isCompleted) {
       return isCancelled ? 0 : null;
     }
-    return processedCount / totalCount;
+    return isCompleted ? 1 : processedCount / totalCount;
   };
 
   return (
