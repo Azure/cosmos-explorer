@@ -155,12 +155,10 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <Stack tokens={{ childrenGap: 5 }}>
             <Text styles={textSubHeadingStyle}>Current {partitionKeyName.toLowerCase()}</Text>
-            <Text styles={textSubHeadingStyle}>Large {partitionKeyName.toLowerCase()}</Text>
             <Text styles={textSubHeadingStyle}>Partitioning</Text>
           </Stack>
           <Stack tokens={{ childrenGap: 5 }}>
             <Text>{partitionKeyValue}</Text>
-            <Text>{isLargePartitionKeyEnabled() ? "Enabled" : "Disabled"}</Text>
             <Text>{isHierarchicalPartitionedContainer() ? "Hierarchical" : "Non-hierarchical"}</Text>
           </Stack>
         </Stack>

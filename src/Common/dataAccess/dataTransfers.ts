@@ -92,7 +92,7 @@ export const pollDataTransferJob = async (
   }
   let clearMessage = NotificationConsoleUtils.logConsoleProgress(`Data transfer job ${jobName} in progress`);
   return await promiseRetry(
-    () => pollDataTransferJobOperation(jobName, subscriptionId, resourceGroupName, accountName),
+    () => pollDataTransferJobOperation(jobName, subscriptionId, resourceGroupName, accountName, clearMessage),
     {
       retries: 500,
       maxTimeout: 5000,
@@ -109,6 +109,7 @@ const pollDataTransferJobOperation = async (
   subscriptionId: string,
   resourceGroupName: string,
   accountName: string,
+  clearMessage?: () => void,
 ): Promise<DataTransferJobGetResults> => {
   if (!userContext.authorizationToken) {
     throw new Error("No authority token provided");
@@ -127,11 +128,13 @@ const pollDataTransferJobOperation = async (
       ? JSON.stringify(body?.properties?.error)
       : "Operation could not be completed";
     const error = new Error(errorMessage);
+    clearMessage && clearMessage();
     NotificationConsoleUtils.logConsoleError(`Data transfer job ${jobName} Failed`);
     throw new AbortError(error);
   }
   if (status === "Completed") {
     removeFromPolling(jobName);
+    clearMessage && clearMessage();
     NotificationConsoleUtils.logConsoleInfo(`Data transfer job ${jobName} completed`);
     return body;
   }
