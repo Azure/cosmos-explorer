@@ -135,7 +135,7 @@ export function createStaticCommandBarButtons(
       buttons.push(newSqlQueryBtn);
     }
 
-    if (isQuerySupported && selectedNodeState.findSelectedCollection()) {
+    if (isQuerySupported && selectedNodeState.findSelectedCollection() && configContext.platform !== Platform.Fabric) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
       buttons.push(openQueryBtn);
