@@ -54,7 +54,6 @@ const initTestExplorer = async (): Promise<void> => {
       extensionEndpoint: "/proxy",
       subscriptionType: 3,
       quotaId: "Internal_2014-09-01",
-      addCollectionDefaultFlight: "2",
       isTryCosmosDBSubscription: false,
       masterKey: keys.primaryMasterKey,
       loadDatabaseAccountTimestamp: 1604663109836,
