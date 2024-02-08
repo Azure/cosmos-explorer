@@ -72,7 +72,6 @@ interface UserContext {
   readonly isTryCosmosDBSubscription?: boolean;
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
-  readonly addCollectionFlight: string;
   readonly hasWriteAccess: boolean;
   readonly parsedResourceToken?: {
     databaseId: string;
@@ -99,7 +98,6 @@ const userContext: UserContext = {
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
   features,
-  addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
   collectionCreationDefaults: CollectionCreationDefaults,
 };

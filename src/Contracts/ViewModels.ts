@@ -388,7 +388,6 @@ export interface DataExplorerInputsFrame {
   extensionEndpoint?: string;
   subscriptionType?: SubscriptionType;
   quotaId?: string;
-  addCollectionDefaultFlight?: string;
   isTryCosmosDBSubscription?: boolean;
   loadDatabaseAccountTimestamp?: number;
   sharedThroughputMinimum?: number;

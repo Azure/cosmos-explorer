@@ -172,7 +172,6 @@ export class CollectionCreation {
   public static readonly DefaultCollectionRUs100K: number = 100000;
   public static readonly DefaultCollectionRUs1Million: number = 1000000;
 
-  public static readonly DefaultAddCollectionDefaultFlight: string = "0";
   public static readonly DefaultSubscriptionType: SubscriptionType = SubscriptionType.Free;
 
   public static readonly TablesAPIDefaultDatabase: string = "TablesDB";
