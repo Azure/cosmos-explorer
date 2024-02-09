@@ -67,7 +67,23 @@ export const PortalBackendIPs: { [key: string]: string[] } = {
   //usnat: ["7.28.202.68"],
 };
 
+export class MongoProxyEndpoints {
+  public static readonly Development: string = "https://localhost:7238";
+  public static readonly MPAC: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
+}
+
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
+  MongoProxyEndpoints.Development,
+  MongoProxyEndpoints.MPAC,
+  MongoProxyEndpoints.Prod,
+  MongoProxyEndpoints.Fairfax,
+  MongoProxyEndpoints.Mooncake,
+];
+
+export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
   "https://main.documentdb.ext.azure.cn",
   "https://main.documentdb.ext.azure.us",

@@ -59,7 +59,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     defaultsCheck: {
       storage: "u",
       throughput: newKeySpaceThroughput || tableThroughput,
-      flight: userContext.addCollectionFlight,
     },
     dataExplorerArea: Constants.Areas.ContextualPane,
   };

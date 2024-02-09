@@ -1,7 +1,7 @@
 import { resetConfigContext, updateConfigContext } from "ConfigContext";
 import { DatabaseAccount, IpRule } from "Contracts/DataModels";
 import { updateUserContext } from "UserContext";
-import { PortalBackendIPs } from "Utils/EndpointValidation";
+import { PortalBackendIPs } from "Utils/EndpointUtils";
 import { getNetworkSettingsWarningMessage } from "./NetworkUtility";
 
 describe("NetworkUtility tests", () => {

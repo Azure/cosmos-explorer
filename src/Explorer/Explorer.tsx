@@ -7,7 +7,7 @@ import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCop
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointValidation";
+import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
@@ -265,67 +265,33 @@ export default class Explorer {
     // TODO: return result
   }
 
-  private getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
-  }
-
   public openNPSSurveyDialog(): void {
     if (!Platform.Portal) {
       return;
     }
 
-    const NINETY_DAYS_IN_MS = 7776000000;
     const ONE_DAY_IN_MS = 86400000;
-    const THREE_DAYS_IN_MS = 259200000;
-    const lastSubmitted: string = localStorage.getItem("lastSubmitted");
-    Logger.logInfo(`NPS Survey last shown date: ${lastSubmitted}`, "Explorer/openNPSSurveyDialog");
-
-    if (lastSubmitted !== null) {
-      Logger.logInfo(`NPS Survey last shown is not empty ${lastSubmitted}`, "Explorer/openNPSSurveyDialog");
-
-      let lastSubmittedDate: number = parseInt(lastSubmitted);
-      Logger.logInfo(`NPS Survey last shown is parsed ${lastSubmittedDate.toString()}`, "Explorer/openNPSSurveyDialog");
-
-      if (isNaN(lastSubmittedDate)) {
-        Logger.logInfo(
-          `NPS Survey last shown is not a number ${lastSubmittedDate.toString()}`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        lastSubmittedDate = 0;
-      }
-
-      const nowMs: number = Date.now();
-      Logger.logInfo(`NPS Survey current date ${nowMs.toString()}`, "Explorer/openNPSSurveyDialog");
-
-      const millisecsSinceLastSubmitted = nowMs - lastSubmittedDate;
-      if (millisecsSinceLastSubmitted < NINETY_DAYS_IN_MS) {
-        Logger.logInfo(
-          `NPS Survey last shown is less than ninety days ${millisecsSinceLastSubmitted.toString()}`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        return;
-      }
-    }
+    const SEVEN_DAYS_IN_MS = 604800000;
 
     // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
     if (userContext.isTryCosmosDBSubscription) {
       if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
         Logger.logInfo(
-          `Displaying NPS Survey for Try Cosmos DB ${userContext.apiType}`,
+          `Sending message to Portal to check if NPS Survey can be displayed in Try Cosmos DB ${userContext.apiType}`,
           "Explorer/openNPSSurveyDialog",
         );
-        this.sendNPSMessage();
+        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
       }
     } else {
-      // Show survey when an existing account is older than 3 days
+      // Show survey when an existing account is older than 7 days
       if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", THREE_DAYS_IN_MS)
+        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", SEVEN_DAYS_IN_MS)
       ) {
         Logger.logInfo(
-          `Displaying NPS Survey for users with existing ${userContext.apiType} account older than 3 days`,
+          `Sending message to Portal to check if NPS Survey can be displayed for existing ${userContext.apiType} account older than 7 days`,
           "Explorer/openNPSSurveyDialog",
         );
-        this.sendNPSMessage();
+        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
       }
     }
   }

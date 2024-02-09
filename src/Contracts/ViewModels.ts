@@ -386,9 +386,9 @@ export interface DataExplorerInputsFrame {
   dnsSuffix?: string;
   serverId?: string;
   extensionEndpoint?: string;
+  mongoProxyEndpoint?: string;
   subscriptionType?: SubscriptionType;
   quotaId?: string;
-  addCollectionDefaultFlight?: string;
   isTryCosmosDBSubscription?: boolean;
   loadDatabaseAccountTimestamp?: number;
   sharedThroughputMinimum?: number;
