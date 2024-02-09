@@ -45,7 +45,6 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
     startPollingforUpdate(currentJob);
   }, [dataTransferJobs]);
 
-  const isLargePartitionKeyEnabled = (): boolean => collection.partitionKey?.version >= 2;
   const isHierarchicalPartitionedContainer = (): boolean => collection.partitionKey?.kind === "MultiHash";
 
   const getPartitionKeyValue = (): string => {
