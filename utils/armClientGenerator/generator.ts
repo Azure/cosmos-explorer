@@ -19,10 +19,10 @@ Results of this file should be checked into the repo.
 const version = "2023-11-15-preview";
 /* The following are legal options for resourceName but you generally will only use cosmos-db:
 "cosmos-db" | "managedCassandra" | "mongorbac" | "notebook" | "privateEndpointConnection" | "privateLinkResources" |
-"rbac" | "restorable" | "services"
+"rbac" | "restorable" | "services" | "dataTransferService"
 */
-const githubResourceName = "dataTransferService";
-const deResourceName = "dataTransferService";
+const githubResourceName = "cosmos-db";
+const deResourceName = "cosmos-db";
 const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/${version}/${githubResourceName}.json`;
 const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${deResourceName}`);
 
