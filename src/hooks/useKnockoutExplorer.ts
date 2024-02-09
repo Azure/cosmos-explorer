@@ -478,6 +478,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   updateConfigContext({
     BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+    MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
   });
 
   updateUserContext({
