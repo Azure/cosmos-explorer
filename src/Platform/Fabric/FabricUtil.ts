@@ -31,6 +31,7 @@ const requestDatabaseResourceTokens = async (): Promise<void> => {
     updateUserContext({
       fabricContext: { ...userContext.fabricContext, databaseConnectionInfo: fabricDatabaseConnectionInfo },
       databaseAccount: { ...userContext.databaseAccount },
+      hasWriteAccess: false, // TODO: receive from fabricDatabaseConnectionInfo
     });
     scheduleRefreshDatabaseResourceToken();
   } catch (error) {

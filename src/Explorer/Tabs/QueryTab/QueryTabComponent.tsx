@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
@@ -402,7 +403,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
-    if (this.saveQueryButton.visible) {
+    if (this.saveQueryButton.visible && configContext.platform !== Platform.Fabric) {
       const label = "Save Query";
       buttons.push({
         iconSrc: SaveQueryIcon,
