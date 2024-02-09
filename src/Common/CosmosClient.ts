@@ -88,7 +88,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
-  console.log(`Request context: ${JSON.stringify(requestContext)}`);
+  // console.log(`Request context: ${JSON.stringify(requestContext)}`);
   return next(requestContext);
 };
 
@@ -142,7 +142,29 @@ let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
   console.log(`Called primary client`);
-  if (_client) return _client;
+  const currentUserContextDocumentEndpoint = userContext?.databaseAccount?.properties?.documentEndpoint;
+  console.log(`Current selected endpoint in userContext: ${currentUserContextDocumentEndpoint}`);
+  let mydatabaseAccountEndpoint = "Ahhhhhhhhh";
+  if (_client) {
+    _client
+      .getDatabaseAccount()
+      .then((databaseAccount) => {
+        console.log(
+          `Current primary client endpoint contacted: ${JSON.stringify(
+            databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted,
+          )}`,
+        );
+        mydatabaseAccountEndpoint =
+          databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted[0];
+      })
+      .catch((error) => {
+        console.error("Error getting database account:", error);
+      });
+  }
+
+  if (_client && currentUserContextDocumentEndpoint === mydatabaseAccountEndpoint) {
+    return _client;
+  }
 
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
@@ -176,24 +198,24 @@ export function client(): Cosmos.CosmosClient {
   };
 
   // Account details from userContext.
-  console.log(`userContext details: ${JSON.stringify(userContext)}`);
-  console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
+  // console.log(`userContext details: ${JSON.stringify(userContext)}`);
+  // console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
   console.log(
     `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
       userContext?.databaseAccount?.properties?.documentEndpoint,
     )}`,
   );
-  console.log(`userContext?.endpoint details: ${JSON.stringify(userContext?.endpoint)}`);
-  console.log(
-    `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
-      userContext?.databaseAccount?.properties?.readLocations,
-    )}`,
-  );
-  console.log(
-    `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
-      userContext?.databaseAccount?.properties?.writeLocations,
-    )}`,
-  );
+  // console.log(`userContext?.endpoint details: ${JSON.stringify(userContext?.endpoint)}`);
+  // console.log(
+  //   `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
+  //     userContext?.databaseAccount?.properties?.readLocations,
+  //   )}`,
+  // );
+  // console.log(
+  //   `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
+  //     userContext?.databaseAccount?.properties?.writeLocations,
+  //   )}`,
+  // );
 
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
