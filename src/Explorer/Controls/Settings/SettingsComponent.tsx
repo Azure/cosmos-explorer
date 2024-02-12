@@ -1,6 +1,6 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
 import { useDatabases } from "Explorer/useDatabases";
-import { isRunningOnNationalCloud } from "Utils/CloudUtils";
+import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
@@ -146,7 +146,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
-      this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && !isRunningOnNationalCloud();
+      this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 

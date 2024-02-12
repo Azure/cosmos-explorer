@@ -87,7 +87,7 @@ interface UserContext {
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
-export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
+export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod1" | "rx" | "ex" | "prod" | "dev";
 
 const ONE_WEEK_IN_MS = 604800000;
 
