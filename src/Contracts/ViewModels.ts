@@ -406,6 +406,7 @@ export interface DataExplorerInputsFrame {
   features?: {
     [key: string]: string;
   };
+  feedbackPolicies?: any;
 }
 
 export interface SelfServeFrameInputs {
