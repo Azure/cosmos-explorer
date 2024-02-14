@@ -296,16 +296,7 @@ export default class Explorer {
     }
   }
 
-  private sendNPSMessage() {
-    sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-    Logger.logInfo(
-      `NPS Survey logging current date when survey is shown ${Date.now().toString()}`,
-      "Explorer/openNPSSurveyDialog",
-    );
-    localStorage.setItem("lastSubmitted", Date.now().toString());
-  }
-
-  public openCESCVAFeedbackBlade(): void {
+  public async openCESCVAFeedbackBlade(): Promise<void> {
     sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
     Logger.logInfo(
       `CES CVA Feedback logging current date when survey is shown ${Date.now().toString()}`,
