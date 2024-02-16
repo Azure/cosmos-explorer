@@ -136,9 +136,7 @@ const App: React.FunctionComponent = () => {
         ></iframe>
       )}
       {!isLoggedIn && !encryptedTokenMetadata && (
-        <ConnectExplorer
-          {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString, authFailure }}
-        />
+        <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
       )}
       {isLoggedIn && authFailure && <AadAuthorizationFailure {...{ authFailure }} />}
       {isLoggedIn && !authFailure && (

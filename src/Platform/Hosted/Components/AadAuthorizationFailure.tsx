@@ -9,10 +9,10 @@ interface Props {
 
 export const AadAuthorizationFailure: React.FunctionComponent<Props> = ({ authFailure }: Props) => {
   return (
-    <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
-      <div className="connectExplorerFormContainer">
-        <div className="connectExplorer">
-          <p className="connectExplorerContent">
+    <div id="aadAuthFailure" className="aadAuthFailureContainer" style={{ display: "flex" }}>
+      <div className="aadAuthFailureFormContainer">
+        <div className="aadAuthFailure">
+          <p className="aadAuthFailureContent">
             <img src={ConnectImage} alt="Azure Cosmos DB" />
           </p>
           <p className="authFailureTitle">Authorization Failure</p>
