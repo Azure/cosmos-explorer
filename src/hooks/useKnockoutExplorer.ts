@@ -6,6 +6,7 @@ import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdap
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -247,17 +248,15 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     const cachedAccount = msalInstance.getAllAccounts()?.[0];
     msalInstance.setActiveAccount(cachedAccount);
     const cachedTenantId = localStorage.getItem("cachedTenantId");
-    //const aadTokenResponse = await msalInstance.acquireTokenSilent({
-    //  forceRefresh: true,
-    //  scopes: [hrefEndpoint],
-    //  authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
-    //});
-    //aadToken = aadTokenResponse.accessToken;
-    aadToken = await acquireTokenWithMsal(msalInstance, {
-      forceRefresh: true,
-      scopes: [hrefEndpoint],
-      authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
-    });
+    try {
+      aadToken = await acquireTokenWithMsal(msalInstance, {
+        forceRefresh: true,
+        scopes: [hrefEndpoint],
+        authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
+      });
+    } catch (authError) {
+      logConsoleError("Failed to acquire authorization token: " + authError);
+    }
   }
   try {
     if (!account.properties.disableLocalAuth) {

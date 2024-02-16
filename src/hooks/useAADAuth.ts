@@ -69,7 +69,7 @@ export function useAADAuth(): ReturnType {
     [account, tenantId],
   );
 
-  const acquireTokens = async () => {
+  const acquireTokens = React.useCallback(async () => {
     if (!(account && tenantId)) {
       return;
     }
@@ -84,17 +84,21 @@ export function useAADAuth(): ReturnType {
       setAuthFailure(null);
     } catch (error) {
       if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorCodes.popupWindowError) {
-        // TODO comment
+        // This error can occur when acquireTokenWithMsal() has attempted to acquire token interactively
+        // and user has popups disabled in browser. This fails as the popup is not the result of a explicit user
+        // action. In this case, we display the failure and a link to repeat the operation. Clicking on the
+        // link is a user action so it will work even if popups have been disabled.
+        // See: https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/76#issuecomment-324787539
         setAuthFailure({
           failureMessage:
-            "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser. Please click below to retry authorization.",
-          failureLinkTitle: "Retry authorization",
+            "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease click below to retry authorization without requiring popups being enabled.",
+          failureLinkTitle: "Retry Authorization",
           failureLinkAction: acquireTokens,
         });
       } else {
+        const errorJson = JSON.stringify(error);
         setAuthFailure({
-          failureMessage:
-            "We were unable to establish authorization for this account, due to the following error: \n{error}",
+          failureMessage: `We were unable to establish authorization for this account, due to the following error: \n${errorJson}`,
         });
       }
     }
@@ -107,9 +111,11 @@ export function useAADAuth(): ReturnType {
 
       setGraphToken(graphToken);
     } catch (error) {
+      // Graph token is used only for retrieving user phot at the moment, so
+      // it's not critical if this fails.
       console.warn("Error acquiring graph token: " + error);
     }
-  };
+  }, [account, tenantId]);
 
   React.useEffect(() => {
     if (account && tenantId && !authFailure) {
