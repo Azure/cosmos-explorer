@@ -138,7 +138,7 @@ enum SDKSupportedCapabilities {
 // Need to put in some kind of function here to recreate the CosmosClient with a new endpoint.
 // changeClientEndpoint.......
 
-let _clients: Map<string, Cosmos.CosmosClient> = new Map();
+// let _clients: Map<string, Cosmos.CosmosClient> = new Map();
 
 let _client: Cosmos.CosmosClient;
 
@@ -146,29 +146,33 @@ export function client(): Cosmos.CosmosClient {
   console.log(`Called primary client`);
   const currentUserContextDocumentEndpoint = userContext?.databaseAccount?.properties?.documentEndpoint;
   console.log(`Current selected endpoint in userContext: ${currentUserContextDocumentEndpoint}`);
-  // let mydatabaseAccountEndpoint = "Ahhhhhhhhh";
-  // if (_client) {
-  //   _client
-  //     .getDatabaseAccount()
-  //     .then((databaseAccount) => {
-  //       console.log(
-  //         `Current primary client endpoint contacted: ${JSON.stringify(
-  //           databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted,
-  //         )}`,
-  //       );
-  //       mydatabaseAccountEndpoint =
-  //         databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted[0];
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error getting database account:", error);
-  //     });
-  // }
+  let mydatabaseAccountEndpoint = "Ahhhhhhhhh";
+  if (_client) {
+    _client
+      .getDatabaseAccount()
+      .then((databaseAccount) => {
+        console.log(
+          `Current primary client endpoint contacted: ${JSON.stringify(
+            databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted,
+          )}`,
+        );
+        mydatabaseAccountEndpoint =
+          databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted[0];
+      })
+      .catch((error) => {
+        console.error("Error getting database account:", error);
+      });
+  }
 
   const retrievedEndpoint = endpoint() || "https://cosmos.azure.com";
 
-  if (_clients.has(retrievedEndpoint)) {
-    console.log(`Current Client List: ${JSON.stringify(_clients)}`);
-    return _clients.get(retrievedEndpoint);
+  // if (_clients.has(retrievedEndpoint)) {
+  //   console.log(`Current Client List: ${JSON.stringify(_clients)}`);
+  //   return _clients.get(retrievedEndpoint);
+  // }
+
+  if (_client && currentUserContextDocumentEndpoint === mydatabaseAccountEndpoint) {
+    return _client;
   }
 
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
@@ -232,7 +236,11 @@ export function client(): Cosmos.CosmosClient {
     (options as any).plugins = plugins;
   }
 
-  _clients.set(retrievedEndpoint, new Cosmos.CosmosClient(options));
+  _client = null;
+  _client = new Cosmos.CosmosClient(options);
+  return _client;
 
-  return _clients.get(retrievedEndpoint);
+  // _clients.set(retrievedEndpoint, new Cosmos.CosmosClient(options));
+
+  // return _clients.get(retrievedEndpoint);
 }
