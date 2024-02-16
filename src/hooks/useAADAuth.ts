@@ -2,9 +2,9 @@ import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
 import { configContext } from "../ConfigContext";
-import { getMsalInstance } from "../Utils/AuthorizationUtils";
+import { acquireTokenWithMsal, getMsalInstance } from "../Utils/AuthorizationUtils";
 
-const msalInstance = getMsalInstance();
+const msalInstance = await getMsalInstance();
 
 const cachedAccount = msalInstance.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
@@ -18,6 +18,13 @@ interface ReturnType {
   tenantId: string;
   account: msal.AccountInfo;
   switchTenant: (tenantId: string) => void;
+  authFailure: AadAuthFailure;
+}
+
+export interface AadAuthFailure {
+  failureMessage: string;
+  failureLinkTitle?: string;
+  failureLinkAction?: () => void;
 }
 
 export function useAADAuth(): ReturnType {
@@ -28,6 +35,7 @@ export function useAADAuth(): ReturnType {
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
+  const [authFailure, setAuthFailure] = React.useState<AadAuthFailure>(undefined);
 
   msalInstance.setActiveAccount(account);
   const login = React.useCallback(async () => {
@@ -61,23 +69,53 @@ export function useAADAuth(): ReturnType {
     [account, tenantId],
   );
 
-  React.useEffect(() => {
-    if (account && tenantId) {
-      Promise.all([
-        msalInstance.acquireTokenSilent({
-          authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
-          scopes: [`${configContext.GRAPH_ENDPOINT}/.default`],
-        }),
-        msalInstance.acquireTokenSilent({
-          authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
-          scopes: [`${configContext.ARM_ENDPOINT}/.default`],
-        }),
-      ]).then(([graphTokenResponse, armTokenResponse]) => {
-        setGraphToken(graphTokenResponse.accessToken);
-        setArmToken(armTokenResponse.accessToken);
-      });
+  const acquireTokens = async () => {
+    if (!(account && tenantId)) {
+      return;
     }
-  }, [account, tenantId]);
+
+    try {
+      const armToken = await acquireTokenWithMsal(msalInstance, {
+        authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
+        scopes: [`${configContext.ARM_ENDPOINT}/.default`],
+      });
+
+      setArmToken(armToken);
+      setAuthFailure(null);
+    } catch (error) {
+      if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorCodes.popupWindowError) {
+        // TODO comment
+        setAuthFailure({
+          failureMessage:
+            "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser. Please click below to retry authorization.",
+          failureLinkTitle: "Retry authorization",
+          failureLinkAction: acquireTokens,
+        });
+      } else {
+        setAuthFailure({
+          failureMessage:
+            "We were unable to establish authorization for this account, due to the following error: \n{error}",
+        });
+      }
+    }
+
+    try {
+      const graphToken = await acquireTokenWithMsal(msalInstance, {
+        authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
+        scopes: [`${configContext.GRAPH_ENDPOINT}/.default`],
+      });
+
+      setGraphToken(graphToken);
+    } catch (error) {
+      console.warn("Error acquiring graph token: " + error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (account && tenantId && !authFailure) {
+      acquireTokens();
+    }
+  }, [account, tenantId, acquireTokens, authFailure]);
 
   return {
     account,
@@ -88,5 +126,6 @@ export function useAADAuth(): ReturnType {
     login,
     logout,
     switchTenant,
+    authFailure,
   };
 }

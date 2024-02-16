@@ -43,8 +43,8 @@ export function decryptJWTToken(token: string) {
   return JSON.parse(tokenPayload);
 }
 
-export function getMsalInstance() {
-  const config: msal.Configuration = {
+export async function getMsalInstance() {
+  const msalConfig: msal.Configuration = {
     cache: {
       cacheLocation: "localStorage",
     },
@@ -55,8 +55,30 @@ export function getMsalInstance() {
   };
 
   if (process.env.NODE_ENV === "development") {
-    config.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
+    msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
   }
-  const msalInstance = new msal.PublicClientApplication(config);
+
+  const msalInstance = await msal.PublicClientApplication.createPublicClientApplication(msalConfig);
   return msalInstance;
+}
+
+export async function acquireTokenWithMsal(msalInstance: msal.IPublicClientApplication, request: msal.SilentRequest) {
+  const tokenRequest = {
+    account: msalInstance.getActiveAccount() || null,
+    ...request,
+  };
+
+  try {
+    // attempt silent acquisition first
+    return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
+  } catch (silentError) {
+    if (silentError instanceof msal.InteractionRequiredAuthError) {
+      // The error indicates that we need to acquire the token interactively.
+      // This will display a pop-up to re-establish authorization. If user does not
+      // have pop-ups enabled in their browser, this will fail.
+      return (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
+    } else {
+      throw silentError;
+    }
+  }
 }

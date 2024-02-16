@@ -35,7 +35,7 @@ import {
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
+import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
@@ -243,16 +243,21 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   let keys: DatabaseAccountListKeysResult = {};
   if (account.properties?.documentEndpoint) {
     const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
-    const msalInstance = getMsalInstance();
+    const msalInstance = await getMsalInstance();
     const cachedAccount = msalInstance.getAllAccounts()?.[0];
     msalInstance.setActiveAccount(cachedAccount);
     const cachedTenantId = localStorage.getItem("cachedTenantId");
-    const aadTokenResponse = await msalInstance.acquireTokenSilent({
+    //const aadTokenResponse = await msalInstance.acquireTokenSilent({
+    //  forceRefresh: true,
+    //  scopes: [hrefEndpoint],
+    //  authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
+    //});
+    //aadToken = aadTokenResponse.accessToken;
+    aadToken = await acquireTokenWithMsal(msalInstance, {
       forceRefresh: true,
       scopes: [hrefEndpoint],
       authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
     });
-    aadToken = aadTokenResponse.accessToken;
   }
   try {
     if (!account.properties.disableLocalAuth) {
