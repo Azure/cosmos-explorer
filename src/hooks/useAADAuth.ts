@@ -111,7 +111,7 @@ export function useAADAuth(): ReturnType {
 
       setGraphToken(graphToken);
     } catch (error) {
-      // Graph token is used only for retrieving user phot at the moment, so
+      // Graph token is used only for retrieving user photo at the moment, so
       // it's not critical if this fails.
       console.warn("Error acquiring graph token: " + error);
     }
