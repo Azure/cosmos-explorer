@@ -58,7 +58,7 @@ export async function getMsalInstance() {
     msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
   }
 
-  const msalInstance = await msal.PublicClientApplication.createPublicClientApplication(msalConfig);
+  const msalInstance = new msal.PublicClientApplication(msalConfig);
   return msalInstance;
 }
 

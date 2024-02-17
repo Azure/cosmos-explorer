@@ -83,7 +83,7 @@ export function useAADAuth(): ReturnType {
       setArmToken(armToken);
       setAuthFailure(null);
     } catch (error) {
-      if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorCodes.popupWindowError) {
+      if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
         // This error can occur when acquireTokenWithMsal() has attempted to acquire token interactively
         // and user has popups disabled in browser. This fails as the popup is not the result of a explicit user
         // action. In this case, we display the failure and a link to repeat the operation. Clicking on the
