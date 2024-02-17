@@ -138,8 +138,6 @@ enum SDKSupportedCapabilities {
 // Need to put in some kind of function here to recreate the CosmosClient with a new endpoint.
 // changeClientEndpoint.......
 
-// let _clients: Map<string, Cosmos.CosmosClient> = new Map();
-
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
@@ -164,13 +162,6 @@ export function client(): Cosmos.CosmosClient {
       });
   }
 
-  const retrievedEndpoint = endpoint() || "https://cosmos.azure.com";
-
-  // if (_clients.has(retrievedEndpoint)) {
-  //   console.log(`Current Client List: ${JSON.stringify(_clients)}`);
-  //   return _clients.get(retrievedEndpoint);
-  // }
-
   if (_client && currentUserContextDocumentEndpoint === mydatabaseAccountEndpoint) {
     return _client;
   }
@@ -192,7 +183,7 @@ export function client(): Cosmos.CosmosClient {
   }
 
   const options: Cosmos.CosmosClientOptions = {
-    endpoint: retrievedEndpoint, // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
@@ -236,11 +227,6 @@ export function client(): Cosmos.CosmosClient {
     (options as any).plugins = plugins;
   }
 
-  _client = null;
   _client = new Cosmos.CosmosClient(options);
   return _client;
-
-  // _clients.set(retrievedEndpoint, new Cosmos.CosmosClient(options));
-
-  // return _clients.get(retrievedEndpoint);
 }
