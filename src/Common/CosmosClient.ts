@@ -132,30 +132,31 @@ enum SDKSupportedCapabilities {
 // changeClientEndpoint.......
 
 let _client: Cosmos.CosmosClient;
+let _currentClientEndpoint: string;
 
 export function client(): Cosmos.CosmosClient {
   console.log(`Called primary client`);
   const currentUserContextDocumentEndpoint = userContext?.databaseAccount?.properties?.documentEndpoint;
   console.log(`Current selected endpoint in userContext: ${currentUserContextDocumentEndpoint}`);
-  let mydatabaseAccountEndpoint = "Ahhhhhhhhh";
-  if (_client) {
-    _client
-      .getDatabaseAccount()
-      .then((databaseAccount) => {
-        console.log(
-          `Current primary client endpoint contacted: ${JSON.stringify(
-            databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted,
-          )}`,
-        );
-        mydatabaseAccountEndpoint =
-          databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted[0];
-      })
-      .catch((error) => {
-        console.error("Error getting database account:", error);
-      });
-  }
+  // let mydatabaseAccountEndpoint = "Ahhhhhhhhh";
+  // if (_client) {
+  //   _client
+  //     .getDatabaseAccount()
+  //     .then((databaseAccount) => {
+  //       console.log(
+  //         `Current primary client endpoint contacted: ${JSON.stringify(
+  //           databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted,
+  //         )}`,
+  //       );
+  //       mydatabaseAccountEndpoint =
+  //         databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted[0];
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error getting database account:", error);
+  //     });
+  // }
 
-  if (_client && currentUserContextDocumentEndpoint === mydatabaseAccountEndpoint) {
+  if (_client && currentUserContextDocumentEndpoint === _currentClientEndpoint) {
     return _client;
   }
 
@@ -175,8 +176,11 @@ export function client(): Cosmos.CosmosClient {
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
 
+  const clientEndpoint = endpoint() || "https://cosmos.azure.com";
+  _currentClientEndpoint = clientEndpoint;
+
   const options: Cosmos.CosmosClientOptions = {
-    endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    endpoint: clientEndpoint, // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
