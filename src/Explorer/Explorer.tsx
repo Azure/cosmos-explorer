@@ -296,6 +296,14 @@ export default class Explorer {
     }
   }
 
+  public async openCESCVAFeedbackBlade(): Promise<void> {
+    sendMessage({ type: MessageTypes.OpenCESCVAFeedbackBlade });
+    Logger.logInfo(
+      `CES CVA Feedback logging current date when survey is shown ${Date.now().toString()}`,
+      "Explorer/openCESCVAFeedbackBlade",
+    );
+  }
+
   public async refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
