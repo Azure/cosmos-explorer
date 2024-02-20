@@ -22,7 +22,7 @@ test("SQL CRUD", async () => {
   await explorer.click('button[role="menuitem"]:has-text("Delete Container")');
   await explorer.fill('text=* Confirm by typing the container id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');
-  await explorer.click(`[data-test="${databaseId}"] [aria-label="More"]`);
+  await explorer.click(`[data-test="${databaseId}"] [aria-label="More options"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Database")');
   await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
   await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', databaseId);
