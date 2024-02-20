@@ -32,7 +32,7 @@ test("Mongo CRUD", async () => {
   await explorer.click('[aria-label="Delete index Button"]');
   await explorer.click('[data-test="Save"]');
   // Delete database and collection
-  await explorer.click(`[data-test="${containerId}"] [aria-label="More"]`);
+  await explorer.click(`[data-test="${containerId}"] [aria-label="More options"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Collection")');
   await explorer.fill('text=* Confirm by typing the collection id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');

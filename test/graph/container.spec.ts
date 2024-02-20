@@ -21,7 +21,7 @@ test("Graph CRUD", async () => {
   await explorer.click(`.nodeItem >> text=${databaseId}`);
   await explorer.click(`.nodeItem >> text=${containerId}`);
   // Delete database and graph
-  await explorer.click(`[data-test="${containerId}"] [aria-label="More"]`);
+  await explorer.click(`[data-test="${containerId}"] [aria-label="More options"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Graph")');
   await explorer.fill('text=* Confirm by typing the graph id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');

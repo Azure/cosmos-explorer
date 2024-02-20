@@ -21,7 +21,7 @@ test("Mongo CRUD", async () => {
   explorer.click(`.nodeItem >> text=${databaseId}`);
   explorer.click(`.nodeItem >> text=${containerId}`);
   // Delete database and collection
-  explorer.click(`[data-test="${containerId}"] [aria-label="More"]`);
+  explorer.click(`[data-test="${containerId}"] [aria-label="More options"]`);
   explorer.click('button[role="menuitem"]:has-text("Delete Collection")');
   await explorer.fill('text=* Confirm by typing the collection id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');
