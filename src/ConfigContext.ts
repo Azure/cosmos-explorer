@@ -4,6 +4,7 @@ import {
   MongoProxyEndpoints,
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
+  allowedCassandraProxyEndpoints,
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
@@ -153,6 +154,10 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
+  if (!validateEndpoint(newContext.CASSANDRA_PROXY_ENDPOINT, allowedCassandraProxyEndpoints)) {
+    delete newContext.CASSANDRA_PROXY_ENDPOINT;
+  }
+
   if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoOrigins)) {
     delete newContext.JUNO_ENDPOINT;
   }
@@ -170,10 +175,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
 // Injected for local development. These will be removed in the production bundle by webpack
 if (process.env.NODE_ENV === "development") {
-  const port: string = process.env.PORT || "1234";
   updateConfigContext({
-    BACKEND_ENDPOINT: "https://localhost:" + port,
-    MONGO_BACKEND_ENDPOINT: "https://localhost:" + port,
     PROXY_PATH: "/proxy",
     EMULATOR_ENDPOINT: "https://localhost:8081",
   });
@@ -229,4 +231,3 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
-

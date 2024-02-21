@@ -106,6 +106,14 @@ export class CassandraProxyEndpoints {
   public static readonly Mooncake: string = "https://cdb-mc-prod-cp.cosmos.azure.cn";
 }
 
+export const allowedCassandraProxyEndpoints: ReadonlyArray<string> = [
+  CassandraProxyEndpoints.Development,
+  CassandraProxyEndpoints.Mpac,
+  CassandraProxyEndpoints.Prod,
+  CassandraProxyEndpoints.Fairfax,
+  CassandraProxyEndpoints.Mooncake,
+];
+
 export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
   [CassandraProxyEndpoints.Mpac]: ["40.113.96.14", "104.42.11.145"],
   [CassandraProxyEndpoints.Prod]: ["137.117.230.240", "168.61.72.237"],

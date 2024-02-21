@@ -82,8 +82,8 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             },
           }}
         >
-          To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove
-          the limit, go to the Settings cog on the right and find 'RU Threshold'.
+          {`To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove
+          the limit, go to the Settings cog on the right and find "RU Threshold".`}
           <Link
             href="https://review.learn.microsoft.com/en-us/azure/cosmos-db/data-explorer?branch=main#configure-request-unit-threshold"
             target="_blank"
@@ -99,8 +99,8 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             setShowMongoAndCassandraProxiesNetworkSettingsWarningState(false);
           }}
         >
-          We are moving our middleware to new infrastructure. To avoid future issues with Data Explorer access, please
-          re-enable "Allow access from Azure Portal" on the Networking blade for your account.
+          {`We are moving our middleware to new infrastructure. To avoid future issues with Data Explorer access, please
+          re-enable "Allow access from Azure Portal" on the Networking blade for your account.`}
         </MessageBar>
       )}
       <div id="content" className="flexContainer hideOverflows">
