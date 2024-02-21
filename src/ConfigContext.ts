@@ -42,7 +42,7 @@ export interface ConfigContext {
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   BACKEND_ENDPOINT?: string;
   MONGO_BACKEND_ENDPOINT?: string;
-  MONGO_PROXY_ENDPOINT?: string;
+  MONGO_PROXY_ENDPOINT: string;
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   NEW_MONGO_APIS?: string[];
   CASSANDRA_PROXY_ENDPOINT?: string;
@@ -231,3 +231,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
