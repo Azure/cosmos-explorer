@@ -1,7 +1,6 @@
-import { JunoEndpoints } from "Common/Constants";
+import { JunoEndpoints, MongoProxyEndpointsV2 } from "Common/Constants";
 import {
   CassandraProxyEndpoints,
-  MongoProxyEndpoints,
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
   allowedCassandraProxyEndpoints,
@@ -14,7 +13,7 @@ import {
   allowedMsalRedirectEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
-  validateEndpoint,
+  validateEndpoint
 } from "Utils/EndpointUtils";
 
 export enum Platform {
@@ -42,7 +41,7 @@ export interface ConfigContext {
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   BACKEND_ENDPOINT?: string;
   MONGO_BACKEND_ENDPOINT?: string;
-  MONGO_PROXY_ENDPOINT: string;
+  MONGO_PROXY_ENDPOINT?: string;
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   NEW_MONGO_APIS?: string[];
   CASSANDRA_PROXY_ENDPOINT?: string;
@@ -90,7 +89,7 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
+  MONGO_PROXY_ENDPOINT: MongoProxyEndpointsV2.Prod,
   NEW_MONGO_APIS: [
     // "resourcelist",
     // "createDocument",
