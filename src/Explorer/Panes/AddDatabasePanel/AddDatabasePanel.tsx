@@ -1,12 +1,11 @@
 import { Checkbox, Stack, Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
-import { createDatabase } from "../../../Common/dataAccess/createDatabase";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
+import { createDatabase } from "../../../Common/dataAccess/createDatabase";
 import * as DataModels from "../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../Contracts/SubscriptionType";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import * as SharedConstants from "../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -14,6 +13,7 @@ import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { getUpsellMessage } from "../../../Utils/PricingUtils";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
@@ -63,9 +63,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     },
     subscriptionType: SubscriptionType[subscriptionType],
     subscriptionQuotaId: userContext.quotaId,
-    defaultsCheck: {
-      flight: userContext.addCollectionFlight,
-    },
     dataExplorerArea: Constants.Areas.ContextualPane,
   };
 
@@ -75,7 +72,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput,
-        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };

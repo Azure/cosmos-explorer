@@ -33,7 +33,6 @@ import {
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
-import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
@@ -493,7 +492,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     quotaId: inputs.quotaId,
     portalEnv: inputs.serverId as PortalEnv,
     hasWriteAccess: inputs.hasWriteAccess ?? true,
-    addCollectionFlight: inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
   });

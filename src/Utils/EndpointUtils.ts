@@ -83,6 +83,14 @@ export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
 };
 
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
+  MongoProxyEndpoints.Development,
+  MongoProxyEndpoints.Mpac,
+  MongoProxyEndpoints.Prod,
+  MongoProxyEndpoints.Fairfax,
+  MongoProxyEndpoints.Mooncake,
+];
+
+export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
   "https://main.documentdb.ext.azure.cn",
   "https://main.documentdb.ext.azure.us",

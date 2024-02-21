@@ -304,7 +304,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     });
 
     let queryOperationOptions: QueryOperationOptions;
-    if (!this.isPreferredApiMongoDB && ruThresholdEnabled()) {
+    if (userContext.apiType === "SQL" && ruThresholdEnabled()) {
       const ruThreshold: number = getRUThreshold();
       queryOperationOptions = {
         ruCapPerOperation: ruThreshold,

@@ -306,7 +306,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     };
 
     const costElement = (): JSX.Element => {
-      const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, true);
+      const prices: PriceBreakdown = getRuPriceBreakdown(throughput, serverId, numberOfRegions, isMultimaster, false);
       return (
         <Stack {...checkBoxAndInputStackProps} style={{ marginTop: 15 }}>
           {newThroughput && newThroughputCostElement()}

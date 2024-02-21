@@ -72,7 +72,6 @@ interface UserContext {
   readonly isTryCosmosDBSubscription?: boolean;
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
-  readonly addCollectionFlight: string;
   readonly hasWriteAccess: boolean;
   readonly parsedResourceToken?: {
     databaseId: string;
@@ -87,7 +86,7 @@ interface UserContext {
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
-export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
+export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod1" | "rx" | "ex" | "prod" | "dev";
 
 const ONE_WEEK_IN_MS = 604800000;
 
@@ -99,7 +98,6 @@ const userContext: UserContext = {
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
   features,
-  addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
   collectionCreationDefaults: CollectionCreationDefaults,
 };

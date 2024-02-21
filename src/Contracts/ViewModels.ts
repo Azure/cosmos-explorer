@@ -390,7 +390,6 @@ export interface DataExplorerInputsFrame {
   cassandraProxyEndpoint?: string;
   subscriptionType?: SubscriptionType;
   quotaId?: string;
-  addCollectionDefaultFlight?: string;
   isTryCosmosDBSubscription?: boolean;
   loadDatabaseAccountTimestamp?: number;
   sharedThroughputMinimum?: number;
