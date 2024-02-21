@@ -1,9 +1,9 @@
-import ConflictId from "../../Explorer/Tree/ConflictId";
-import { CollectionBase } from "../../Contracts/ViewModels";
 import { RequestOptions } from "@azure/cosmos";
-import { client } from "../CosmosClient";
+import { CollectionBase } from "../../Contracts/ViewModels";
+import ConflictId from "../../Explorer/Tree/ConflictId";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 
 export const deleteConflict = async (collection: CollectionBase, conflictId: ConflictId): Promise<void> => {
   const clearMessage = logConsoleProgress(`Deleting conflict ${conflictId.id()}`);
@@ -13,7 +13,7 @@ export const deleteConflict = async (collection: CollectionBase, conflictId: Con
       partitionKey: getPartitionKeyHeaderForConflict(conflictId),
     };
 
-    await client()
+    await client(ClientOperationType.WRITE)
       .database(collection.databaseId)
       .container(collection.id())
       .conflict(conflictId.id())

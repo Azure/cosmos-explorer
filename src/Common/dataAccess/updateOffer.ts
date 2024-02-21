@@ -2,6 +2,7 @@ import { OfferDefinition, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import {
   migrateCassandraKeyspaceToAutoscale,
   migrateCassandraKeyspaceToManualThroughput,
@@ -40,9 +41,8 @@ import {
   updateTableThroughput,
 } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { HttpHeaders } from "../Constants";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 import { parseSDKOfferResponse } from "../OfferUtility";
 import { readCollectionOffer } from "./readCollectionOffer";
@@ -401,7 +401,7 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
     newOffer.content.offerAutopilotSettings = { maxThroughput: 0 };
   }
 
-  const sdkResponse = await client()
+  const sdkResponse = await client(ClientOperationType.WRITE)
     .offer(params.currentOffer.id)
     // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
     .replace(newOffer as unknown as OfferDefinition, options);

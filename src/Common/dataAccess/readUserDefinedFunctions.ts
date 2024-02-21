@@ -1,9 +1,9 @@
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { listSqlUserDefinedFunctions } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { listSqlUserDefinedFunctions } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readUserDefinedFunctions(
@@ -24,7 +24,7 @@ export async function readUserDefinedFunctions(
       return rpResponse?.value?.map((udf) => udf.properties?.resource as UserDefinedFunctionDefinition & Resource);
     }
 
-    const response = await client()
+    const response = await client(ClientOperationType.READ)
       .database(databaseId)
       .container(collectionId)
       .scripts.userDefinedFunctions.readAll()

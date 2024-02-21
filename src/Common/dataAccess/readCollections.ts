@@ -10,7 +10,7 @@ import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/greml
 import { listMongoDBCollections } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { listSqlContainers } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { listTables } from "../../Utils/arm/generatedClients/cosmos/tableResources";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
@@ -31,7 +31,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       const tokenCollectionId = resourceIdObj[3];
 
       if (tokenDatabaseId === databaseId) {
-        promises.push(client().database(databaseId).container(tokenCollectionId).read());
+        promises.push(client(ClientOperationType.READ).database(databaseId).container(tokenCollectionId).read());
       }
     }
 
@@ -61,7 +61,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
       return await readCollectionsWithARM(databaseId);
     }
 
-    const sdkResponse = await client().database(databaseId).containers.readAll().fetchAll();
+    const sdkResponse = await client(ClientOperationType.READ).database(databaseId).containers.readAll().fetchAll();
     return sdkResponse.resources as DataModels.Collection[];
   } catch (error) {
     handleError(error, "ReadCollections", `Error while querying containers for database ${databaseId}`);
@@ -77,7 +77,7 @@ export async function readCollectionsWithPagination(
 ): Promise<DataModels.CollectionsWithPagination> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
-    const sdkResponse = await client()
+    const sdkResponse = await client(ClientOperationType.READ)
       .database(databaseId)
       .containers.query(
         { query: "SELECT * FROM c" },

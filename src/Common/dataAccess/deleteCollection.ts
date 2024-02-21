@@ -6,7 +6,7 @@ import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/cosmos
 import { deleteSqlContainer } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { deleteTable } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { client, ClientOperationType } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteCollection(databaseId: string, collectionId: string): Promise<void> {
@@ -15,7 +15,7 @@ export async function deleteCollection(databaseId: string, collectionId: string)
     if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
       await deleteCollectionWithARM(databaseId, collectionId);
     } else {
-      await client().database(databaseId).container(collectionId).delete();
+      await client(ClientOperationType.WRITE).database(databaseId).container(collectionId).delete();
     }
     logConsoleInfo(`Successfully deleted container ${collectionId}`);
   } catch (error) {

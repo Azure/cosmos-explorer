@@ -1,6 +1,7 @@
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import {
   createUpdateSqlUserDefinedFunction,
   getSqlUserDefinedFunction,
@@ -9,8 +10,7 @@ import {
   SqlUserDefinedFunctionCreateUpdateParameters,
   SqlUserDefinedFunctionResource,
 } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function createUserDefinedFunction(
@@ -63,7 +63,7 @@ export async function createUserDefinedFunction(
       return rpResponse && (rpResponse.properties?.resource as UserDefinedFunctionDefinition & Resource);
     }
 
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(databaseId)
       .container(collectionId)
       .scripts.userDefinedFunctions.create(userDefinedFunction);

@@ -3,10 +3,9 @@ import { CollectionBase } from "../../Contracts/ViewModels";
 import DocumentId from "../../Explorer/Tree/DocumentId";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { HttpHeaders } from "../Constants";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
-// import { client2 } from "../ReadRegionCosmosClient";
 import { getPartitionKeyValue } from "./getPartitionKeyValue";
 
 export const readDocument = async (collection: CollectionBase, documentId: DocumentId): Promise<Item> => {
@@ -20,17 +19,11 @@ export const readDocument = async (collection: CollectionBase, documentId: Docum
             [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
           }
         : {};
-    const response = await client()
+    const response = await client(ClientOperationType.READ)
       .database(collection.databaseId)
       .container(collection.id())
       .item(documentId.id(), getPartitionKeyValue(documentId))
       .read(options);
-
-    // const response = await client2()
-    //   .database(collection.databaseId)
-    //   .container(collection.id())
-    //   .item(documentId.id(), getPartitionKeyValue(documentId))
-    //   .read(options);
 
     return response?.resource;
   } catch (error) {

@@ -6,14 +6,14 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { createUpdateCassandraTable } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { createUpdateGremlinGraph } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { createUpdateMongoDBCollection } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { createUpdateSqlContainer } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { createUpdateTable } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import * as ARMTypes from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 import { createMongoCollectionWithProxy } from "../MongoProxyClient";
 import { createDatabase } from "./createDatabase";
@@ -284,7 +284,9 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
     }
   }
 
-  const databaseResponse: DatabaseResponse = await client().databases.createIfNotExists(createDatabaseBody);
+  const databaseResponse: DatabaseResponse = await client(ClientOperationType.WRITE).databases.createIfNotExists(
+    createDatabaseBody,
+  );
   const collectionResponse: ContainerResponse = await databaseResponse?.database.containers.create(
     createCollectionBody,
     collectionOptions,

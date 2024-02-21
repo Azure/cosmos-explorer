@@ -3,11 +3,11 @@ import { sampleDataClient } from "Common/SampleDataClient";
 import { userContext } from "UserContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollection(databaseId: string, collectionId: string): Promise<DataModels.Collection> {
-  const cosmosClient = client();
+  const cosmosClient = client(ClientOperationType.READ);
   return await readCollectionInternal(cosmosClient, databaseId, collectionId);
 }
 

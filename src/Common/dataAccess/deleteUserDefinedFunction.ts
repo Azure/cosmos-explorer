@@ -2,7 +2,7 @@ import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import { deleteSqlUserDefinedFunction } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { client, ClientOperationType } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteUserDefinedFunction(databaseId: string, collectionId: string, id: string): Promise<void> {
@@ -22,7 +22,11 @@ export async function deleteUserDefinedFunction(databaseId: string, collectionId
         id,
       );
     } else {
-      await client().database(databaseId).container(collectionId).scripts.userDefinedFunction(id).delete();
+      await client(ClientOperationType.WRITE)
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.userDefinedFunction(id)
+        .delete();
     }
   } catch (error) {
     handleError(error, "DeleteUserDefinedFunction", `Error while deleting user defined function ${id}`);

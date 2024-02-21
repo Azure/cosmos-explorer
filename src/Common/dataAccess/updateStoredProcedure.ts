@@ -1,6 +1,7 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import {
   createUpdateSqlStoredProcedure,
   getSqlStoredProcedure,
@@ -9,8 +10,7 @@ import {
   SqlStoredProcedureCreateUpdateParameters,
   SqlStoredProcedureResource,
 } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateStoredProcedure(
@@ -54,7 +54,7 @@ export async function updateStoredProcedure(
       throw new Error(`Failed to update stored procedure: ${storedProcedure.id} does not exist.`);
     }
 
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(databaseId)
       .container(collectionId)
       .scripts.storedProcedure(storedProcedure.id)
