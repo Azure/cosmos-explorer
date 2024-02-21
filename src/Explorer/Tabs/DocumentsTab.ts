@@ -881,11 +881,6 @@ export default class DocumentsTab extends TabsBase {
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
-    if (!userContext.hasWriteAccess) {
-      // All the following buttons require write access
-      return [];
-    }
-
     const buttons: CommandButtonComponentProps[] = [];
     const label = !this.isPreferredApiMongoDB ? "New Item" : "New Document";
     if (this.newDocumentButton.visible()) {
