@@ -69,11 +69,18 @@ export const PortalBackendIPs: { [key: string]: string[] } = {
 
 export class MongoProxyEndpoints {
   public static readonly Development: string = "https://localhost:7238";
-  public static readonly MPAC: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
   public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
   public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
 }
+
+export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
+  [MongoProxyEndpoints.Mpac]: ["20.245.81.54", "40.118.23.126"],
+  [MongoProxyEndpoints.Prod]: ["40.80.152.199", "13.95.130.121"],
+  [MongoProxyEndpoints.Fairfax]: ["52.244.176.112", "52.247.148.42"],
+  [MongoProxyEndpoints.Mooncake]: ["52.131.240.99", "143.64.61.130"],
+};
 
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
@@ -82,6 +89,21 @@ export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
   "https://main.cosmos.ext.azure",
   "https://localhost:12901",
 ];
+
+export class CassandraProxyEndpoints {
+  public static readonly Development: string = "https://localhost:7240";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-cp.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-cp.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-cp.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-cp.cosmos.azure.cn";
+}
+
+export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
+  [CassandraProxyEndpoints.Mpac]: ["40.113.96.14", "104.42.11.145"],
+  [CassandraProxyEndpoints.Prod]: ["137.117.230.240", "168.61.72.237"],
+  [CassandraProxyEndpoints.Fairfax]: ["52.244.50.101", "52.227.165.24"],
+  [CassandraProxyEndpoints.Mooncake]: ["40.73.99.146", "143.64.62.47"],
+};
 
 export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localhost:8081"];
 

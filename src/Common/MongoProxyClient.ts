@@ -683,8 +683,14 @@ export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameter
 }
 
 function useMongoProxyEndpoint(api: string): boolean {
+  let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
+  if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+    canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
+  }
+
   return (
+    canAccessMongoProxy &&
     configContext.NEW_MONGO_APIS?.includes(api) &&
-    [MongoProxyEndpoints.Development, MongoProxyEndpoints.MPAC].includes(configContext.MONGO_PROXY_ENDPOINT)
+    [MongoProxyEndpoints.Development, MongoProxyEndpoints.Mpac].includes(configContext.MONGO_PROXY_ENDPOINT)
   );
 }

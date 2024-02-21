@@ -1,5 +1,7 @@
 import { JunoEndpoints } from "Common/Constants";
 import {
+  CassandraProxyEndpoints,
+  MongoProxyEndpoints,
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
   allowedEmulatorEndpoints,
@@ -39,7 +41,9 @@ export interface ConfigContext {
   BACKEND_ENDPOINT?: string;
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT?: string;
+  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   NEW_MONGO_APIS?: string[];
+  CASSANDRA_PROXY_ENDPOINT?: string;
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -84,7 +88,7 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-  MONGO_PROXY_ENDPOINT: "https://cdb-ms-prod-mp.cosmos.azure.com",
+  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
     // "resourcelist",
     // "createDocument",
@@ -93,6 +97,8 @@ let configContext: Readonly<ConfigContext> = {
     // "deleteDocument",
     // "createCollectionWithProxy",
   ],
+  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
+  CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
 };
