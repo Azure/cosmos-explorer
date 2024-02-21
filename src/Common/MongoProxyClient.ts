@@ -1,6 +1,5 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import {
-  MongoProxyEndpoints,
   allowedMongoProxyEndpoints,
   allowedMongoProxyEndpoints_ToBeDeprecated,
   validateEndpoint,
@@ -15,7 +14,7 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import { hasFlag } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
-import { ApiType, ContentType, HttpHeaders, HttpStatusCodes } from "./Constants";
+import { ApiType, ContentType, HttpHeaders, HttpStatusCodes, MongoProxyEndpoints } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
 

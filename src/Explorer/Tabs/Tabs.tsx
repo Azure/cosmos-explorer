@@ -1,4 +1,5 @@
 import { Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
 import { configContext, updateConfigContext } from "ConfigContext";
 import { IpRule } from "Contracts/DataModels";
@@ -14,13 +15,7 @@ import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
-import {
-  CassandraProxyEndpoints,
-  CassandraProxyOutboundIPs,
-  MongoProxyEndpoints,
-  MongoProxyOutboundIPs,
-  PortalBackendIPs,
-} from "Utils/EndpointUtils";
+import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";

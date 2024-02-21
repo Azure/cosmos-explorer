@@ -1,4 +1,4 @@
-import { JunoEndpoints } from "Common/Constants";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -67,14 +67,6 @@ export const PortalBackendIPs: { [key: string]: string[] } = {
   //usnat: ["7.28.202.68"],
 };
 
-export class MongoProxyEndpoints {
-  public static readonly Development: string = "https://localhost:7238";
-  public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
-  public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
-  public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
-  public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
-}
-
 export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
   [MongoProxyEndpoints.Mpac]: ["20.245.81.54", "40.118.23.126"],
   [MongoProxyEndpoints.Prod]: ["40.80.152.199", "13.95.130.121"],
@@ -97,14 +89,6 @@ export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = 
   "https://main.cosmos.ext.azure",
   "https://localhost:12901",
 ];
-
-export class CassandraProxyEndpoints {
-  public static readonly Development: string = "https://localhost:7240";
-  public static readonly Mpac: string = "https://cdb-ms-mpac-cp.cosmos.azure.com";
-  public static readonly Prod: string = "https://cdb-ms-prod-cp.cosmos.azure.com";
-  public static readonly Fairfax: string = "https://cdb-ff-prod-cp.cosmos.azure.us";
-  public static readonly Mooncake: string = "https://cdb-mc-prod-cp.cosmos.azure.cn";
-}
 
 export const allowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Development,
