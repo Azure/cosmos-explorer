@@ -5,7 +5,7 @@ import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/cosmos/g
 import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { client, ClientOperationType } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteDatabase(databaseId: string): Promise<void> {
@@ -15,7 +15,7 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
     if (userContext.authType === AuthType.AAD && !userContext.features.enableSDKoperations) {
       await deleteDatabaseWithARM(databaseId);
     } else {
-      await client().database(databaseId).delete();
+      await client(ClientOperationType.WRITE).database(databaseId).delete();
     }
     logConsoleInfo(`Successfully deleted database ${databaseId}`);
   } catch (error) {

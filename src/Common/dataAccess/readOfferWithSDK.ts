@@ -1,7 +1,7 @@
 import { RequestOptions } from "@azure/cosmos";
 import { Offer } from "../../Contracts/DataModels";
 import { HttpHeaders } from "../Constants";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { parseSDKOfferResponse } from "../OfferUtility";
 import { readOffers } from "./readOffers";
 
@@ -21,7 +21,7 @@ export const readOfferWithSDK = async (offerId: string, resourceId: string): Pro
       [HttpHeaders.populateCollectionThroughputInfo]: true,
     },
   };
-  const response = await client().offer(offerId).read(options);
+  const response = await client(ClientOperationType.READ).offer(offerId).read(options);
 
   return parseSDKOfferResponse(response);
 };

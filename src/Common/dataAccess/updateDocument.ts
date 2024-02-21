@@ -3,7 +3,7 @@ import { HttpHeaders } from "Common/Constants";
 import { CollectionBase } from "../../Contracts/ViewModels";
 import DocumentId from "../../Explorer/Tree/DocumentId";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
 import { getPartitionKeyValue } from "./getPartitionKeyValue";
@@ -23,7 +23,7 @@ export const updateDocument = async (
             [HttpHeaders.partitionKey]: documentId.partitionKeyValue,
           }
         : {};
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(collection.databaseId)
       .container(collection.id())
       .item(documentId.id(), getPartitionKeyValue(documentId))

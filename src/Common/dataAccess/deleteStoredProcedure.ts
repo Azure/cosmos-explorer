@@ -2,7 +2,7 @@ import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import { deleteSqlStoredProcedure } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { client, ClientOperationType } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteStoredProcedure(
@@ -26,7 +26,11 @@ export async function deleteStoredProcedure(
         storedProcedureId,
       );
     } else {
-      await client().database(databaseId).container(collectionId).scripts.storedProcedure(storedProcedureId).delete();
+      await client(ClientOperationType.WRITE)
+        .database(databaseId)
+        .container(collectionId)
+        .scripts.storedProcedure(storedProcedureId)
+        .delete();
     }
   } catch (error) {
     handleError(error, "DeleteStoredProcedure", `Error while deleting stored procedure ${storedProcedureId}`);

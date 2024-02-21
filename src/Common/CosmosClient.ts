@@ -85,10 +85,11 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   return decodeURIComponent(result.PrimaryReadWriteToken);
 };
 
+// TODO
+// Need to create separate plugins or change endpoint logic to return the correct write or read endpoint.
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
-  // console.log(`Request context: ${JSON.stringify(requestContext)}`);
   return next(requestContext);
 };
 
@@ -135,36 +136,89 @@ enum SDKSupportedCapabilities {
   PartitionMerge = 1 << 0,
 }
 
-// Need to put in some kind of function here to recreate the CosmosClient with a new endpoint.
-// changeClientEndpoint.......
+// Client Management
 
 let _client: Cosmos.CosmosClient;
-let _currentClientEndpoint: string;
+let _readClients: Map<string, Cosmos.CosmosClient> = new Map();
 
-export function client(): Cosmos.CosmosClient {
+export enum ClientOperationType {
+  READ,
+  WRITE,
+}
+
+export function client(clientOperationType: ClientOperationType): Cosmos.CosmosClient {
+  switch (clientOperationType) {
+    case ClientOperationType.READ:
+      return readClients();
+    case ClientOperationType.WRITE:
+      return writeClient();
+    default:
+      throw new Error("Invalid operation type");
+  }
+}
+
+export function writeClient(): Cosmos.CosmosClient {
   console.log(`Called primary client`);
   const currentUserContextDocumentEndpoint = userContext?.databaseAccount?.properties?.documentEndpoint;
   console.log(`Current selected endpoint in userContext: ${currentUserContextDocumentEndpoint}`);
-  // let mydatabaseAccountEndpoint = "Ahhhhhhhhh";
-  // if (_client) {
-  //   _client
-  //     .getDatabaseAccount()
-  //     .then((databaseAccount) => {
-  //       console.log(
-  //         `Current primary client endpoint contacted: ${JSON.stringify(
-  //           databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted,
-  //         )}`,
-  //       );
-  //       mydatabaseAccountEndpoint =
-  //         databaseAccount.diagnostics.clientSideRequestStatistics.locationEndpointsContacted[0];
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error getting database account:", error);
-  //     });
-  // }
 
-  if (_client && currentUserContextDocumentEndpoint === _currentClientEndpoint) {
-    return _client;
+  if (_client) return _client;
+
+  let _defaultHeaders: Cosmos.CosmosHeaders = {};
+  _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
+    SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
+
+  if (
+    userContext.authType === AuthType.ConnectionString ||
+    userContext.authType === AuthType.EncryptedToken ||
+    userContext.authType === AuthType.ResourceToken
+  ) {
+    // Default to low priority. Needed for non-AAD-auth scenarios
+    // where we cannot use RP API, and thus, cannot detect whether priority
+    // based execution is enabled.
+    // The header will be ignored if priority based execution is disabled on the account.
+    _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
+  }
+
+  const options: Cosmos.CosmosClientOptions = {
+    endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    key: userContext.masterKey,
+    tokenProvider,
+    userAgentSuffix: "Azure Portal",
+    defaultHeaders: _defaultHeaders,
+    connectionPolicy: {
+      retryOptions: {
+        maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
+        maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds),
+      },
+    },
+  };
+
+  if (configContext.PROXY_PATH !== undefined) {
+    (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
+  }
+
+  if (PriorityBasedExecutionUtils.isFeatureEnabled()) {
+    const plugins = (options as any).plugins || [];
+    plugins.push({ on: "request", plugin: PriorityBasedExecutionUtils.requestPlugin });
+    (options as any).plugins = plugins;
+  }
+
+  _client = new Cosmos.CosmosClient(options);
+  return _client;
+}
+
+export function readClients(): Cosmos.CosmosClient {
+  console.log(`Called read only client`);
+  const currentUserContextDocumentEndpoint = userContext?.databaseAccount?.properties?.documentEndpoint;
+  console.log(`Current selected read endpoint in userContext: ${currentUserContextDocumentEndpoint}`);
+  3;
+
+  const selectedEndpoint = endpoint() || "https://cosmos.azure.com";
+
+  if (_readClients.has(selectedEndpoint)) {
+    return _readClients.get(selectedEndpoint);
   }
 
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
@@ -183,11 +237,8 @@ export function client(): Cosmos.CosmosClient {
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
 
-  const clientEndpoint = endpoint() || "https://cosmos.azure.com";
-  _currentClientEndpoint = clientEndpoint;
-
   const options: Cosmos.CosmosClientOptions = {
-    endpoint: clientEndpoint, // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    endpoint: selectedEndpoint, // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
@@ -201,26 +252,6 @@ export function client(): Cosmos.CosmosClient {
     },
   };
 
-  // Account details from userContext.
-  // console.log(`userContext details: ${JSON.stringify(userContext)}`);
-  // console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
-  console.log(
-    `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
-      userContext?.databaseAccount?.properties?.documentEndpoint,
-    )}`,
-  );
-  // console.log(`userContext?.endpoint details: ${JSON.stringify(userContext?.endpoint)}`);
-  // console.log(
-  //   `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
-  //     userContext?.databaseAccount?.properties?.readLocations,
-  //   )}`,
-  // );
-  // console.log(
-  //   `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
-  //     userContext?.databaseAccount?.properties?.writeLocations,
-  //   )}`,
-  // );
-
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
@@ -231,6 +262,7 @@ export function client(): Cosmos.CosmosClient {
     (options as any).plugins = plugins;
   }
 
-  _client = new Cosmos.CosmosClient(options);
-  return _client;
+  _readClients.set(selectedEndpoint, new Cosmos.CosmosClient(options));
+
+  return _readClients.get(selectedEndpoint);
 }

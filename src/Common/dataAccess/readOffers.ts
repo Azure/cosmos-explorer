@@ -1,13 +1,13 @@
 import { SDKOfferDefinition } from "../../Contracts/DataModels";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
-import { handleError, getErrorMessage } from "../ErrorHandlingUtils";
+import { ClientOperationType, client } from "../CosmosClient";
+import { getErrorMessage, handleError } from "../ErrorHandlingUtils";
 
 export const readOffers = async (): Promise<SDKOfferDefinition[]> => {
   const clearMessage = logConsoleProgress(`Querying offers`);
 
   try {
-    const response = await client().offers.readAll().fetchAll();
+    const response = await client(ClientOperationType.READ).offers.readAll().fetchAll();
     return response?.resources;
   } catch (error) {
     // This should be removed when we can correctly identify if an account is serverless when connected using connection string too.

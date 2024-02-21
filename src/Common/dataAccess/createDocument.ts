@@ -1,6 +1,6 @@
 import { CollectionBase } from "../../Contracts/ViewModels";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
 
@@ -9,7 +9,7 @@ export const createDocument = async (collection: CollectionBase, newDocument: un
   const clearMessage = logConsoleProgress(`Creating new ${entityName} for container ${collection.id()}`);
 
   try {
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(collection.databaseId)
       .container(collection.id())
       .items.create(newDocument);

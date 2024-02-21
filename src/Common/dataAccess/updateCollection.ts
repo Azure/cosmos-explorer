@@ -2,6 +2,7 @@ import { ContainerDefinition, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import {
   createUpdateCassandraTable,
   getCassandraTable,
@@ -19,8 +20,7 @@ import {
   SqlContainerCreateUpdateParameters,
   SqlContainerResource,
 } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateCollection(
@@ -40,7 +40,7 @@ export async function updateCollection(
     ) {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {
-      const sdkResponse = await client()
+      const sdkResponse = await client(ClientOperationType.WRITE)
         .database(databaseId)
         .container(collectionId)
         .replace(newCollection as ContainerDefinition, options);

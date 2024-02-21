@@ -4,6 +4,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import { useDatabases } from "../../Explorer/useDatabases";
 import { userContext } from "../../UserContext";
 import { getDatabaseName } from "../../Utils/APITypeUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { createUpdateCassandraKeyspace } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { createUpdateGremlinDatabase } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { createUpdateMongoDBDatabase } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
@@ -15,8 +16,7 @@ import {
   MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
 } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function createDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
@@ -153,7 +153,7 @@ async function createDatabaseWithSDK(params: DataModels.CreateDatabaseParams): P
     }
   }
 
-  const response: DatabaseResponse = await client().databases.create(createBody);
+  const response: DatabaseResponse = await client(ClientOperationType.WRITE).databases.create(createBody);
   return response.resource;
 }
 

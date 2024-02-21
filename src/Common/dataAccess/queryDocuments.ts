@@ -1,8 +1,7 @@
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Queries } from "../Constants";
-// import { client2 } from "../ReadRegionCosmosClient";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 
 export const queryDocuments = (
   databaseId: string,
@@ -11,9 +10,7 @@ export const queryDocuments = (
   options: FeedOptions,
 ): QueryIterator<ItemDefinition & Resource> => {
   options = getCommonQueryOptions(options);
-  // console.log(`${JSON.stringify(client2().getReadEndpoint())}`);
-  // return client2().database(databaseId).container(containerId).items.query(query, options);
-  return client().database(databaseId).container(containerId).items.query(query, options);
+  return client(ClientOperationType.READ).database(databaseId).container(containerId).items.query(query, options);
 };
 
 export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {

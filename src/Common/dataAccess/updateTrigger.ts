@@ -1,10 +1,10 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { SqlTriggerCreateUpdateParameters, SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateTrigger(
@@ -47,7 +47,7 @@ export async function updateTrigger(
       throw new Error(`Failed to update trigger: ${trigger.id} does not exist.`);
     }
 
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(databaseId)
       .container(collectionId)
       .scripts.trigger(trigger.id)

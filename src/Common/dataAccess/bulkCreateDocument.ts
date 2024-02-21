@@ -1,7 +1,7 @@
 import { JSONObject, OperationResponse } from "@azure/cosmos";
 import { CollectionBase } from "../../Contracts/ViewModels";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export const bulkCreateDocument = async (
@@ -13,7 +13,7 @@ export const bulkCreateDocument = async (
   );
 
   try {
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(collection.databaseId)
       .container(collection.id())
       .items.bulk(

@@ -1,10 +1,10 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { SqlTriggerCreateUpdateParameters, SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function createTrigger(
@@ -55,7 +55,7 @@ export async function createTrigger(
       return rpResponse && rpResponse.properties?.resource;
     }
 
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(databaseId)
       .container(collectionId)
       .scripts.triggers.create(trigger as unknown as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type

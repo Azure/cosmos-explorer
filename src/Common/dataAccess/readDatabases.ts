@@ -7,7 +7,7 @@ import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/cosmos/
 import { listGremlinDatabases } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import { listSqlDatabases } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readDatabases(): Promise<DataModels.Database[]> {
@@ -56,7 +56,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
     ) {
       databases = await readDatabasesWithARM();
     } else {
-      const sdkResponse = await client().databases.readAll().fetchAll();
+      const sdkResponse = await client(ClientOperationType.READ).databases.readAll().fetchAll();
       databases = sdkResponse.resources as DataModels.Database[];
     }
   } catch (error) {

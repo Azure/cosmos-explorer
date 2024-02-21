@@ -1,9 +1,9 @@
 import { Collection } from "../../Contracts/ViewModels";
-import { ClientDefaults, HttpHeaders } from "../Constants";
-import { client } from "../CosmosClient";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import StoredProcedure from "../../Explorer/Tree/StoredProcedure";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { ClientDefaults, HttpHeaders } from "../Constants";
+import { ClientOperationType, client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export interface ExecuteSprocResult {
   result: StoredProcedure;
@@ -22,7 +22,7 @@ export const executeStoredProcedure = async (
   }, ClientDefaults.requestTimeoutMs);
 
   try {
-    const response = await client()
+    const response = await client(ClientOperationType.WRITE)
       .database(collection.databaseId)
       .container(collection.id())
       .scripts.storedProcedure(storedProcedure.id())

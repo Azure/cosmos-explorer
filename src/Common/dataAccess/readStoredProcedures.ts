@@ -4,7 +4,7 @@ import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { listSqlStoredProcedures } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
-import { client } from "../CosmosClient";
+import { ClientOperationType, client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
 export async function readStoredProcedures(
@@ -34,7 +34,7 @@ export async function readStoredProcedures(
       throw new Error(cloudError?.error?.message);
     }
 
-    const response = await client()
+    const response = await client(ClientOperationType.READ)
       .database(databaseId)
       .container(collectionId)
       .scripts.storedProcedures.readAll()
