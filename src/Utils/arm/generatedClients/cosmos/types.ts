@@ -1248,6 +1248,9 @@ export interface SqlContainerResource {
 
   /* Analytical TTL. */
   analyticalStorageTtl?: number;
+
+  computedProperties?: ComputedProperties;
+
   /* Parameters to indicate the information about the restore */
   restoreParameters?: ResourceRestoreParameters;
 
