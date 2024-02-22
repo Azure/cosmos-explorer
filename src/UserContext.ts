@@ -50,6 +50,7 @@ export interface VCoreMongoConnectionParams {
 interface FabricContext {
   connectionId: string;
   databaseConnectionInfo: FabricDatabaseConnectionInfo | undefined;
+  isReadOnly: boolean;
 }
 
 interface UserContext {

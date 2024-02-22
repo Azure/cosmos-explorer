@@ -29,7 +29,11 @@ const requestDatabaseResourceTokens = async (): Promise<void> => {
     }
 
     updateUserContext({
-      fabricContext: { ...userContext.fabricContext, databaseConnectionInfo: fabricDatabaseConnectionInfo },
+      fabricContext: {
+        ...userContext.fabricContext,
+        databaseConnectionInfo: fabricDatabaseConnectionInfo,
+        isReadOnly: true,
+      },
       databaseAccount: { ...userContext.databaseAccount },
     });
     scheduleRefreshDatabaseResourceToken();
