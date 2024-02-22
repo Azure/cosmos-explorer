@@ -333,47 +333,48 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
       ipAddressesFromIPRules.filter((ipAddressFromIPRule) => legacyPortalBackendIPs.includes(ipAddressFromIPRule))
         ?.length === legacyPortalBackendIPs.length;
 
-    if (ipRulesIncludeLegacyPortalBackend) {
-      if (userContext.apiType === "Mongo") {
-        const isProdOrMpacMongoProxyEndpoint: boolean = [MongoProxyEndpoints.Mpac, MongoProxyEndpoints.Prod].includes(
-          configContext.MONGO_PROXY_ENDPOINT,
-        );
+    if (!ipRulesIncludeLegacyPortalBackend) {
+      return false;
+    }
 
-        const mongoProxyOutboundIPs: string[] = isProdOrMpacMongoProxyEndpoint
-          ? [...MongoProxyOutboundIPs[MongoProxyEndpoints.Mpac], ...MongoProxyOutboundIPs[MongoProxyEndpoints.Prod]]
-          : MongoProxyOutboundIPs[configContext.MONGO_PROXY_ENDPOINT];
+    if (userContext.apiType === "Mongo") {
+      const isProdOrMpacMongoProxyEndpoint: boolean = [MongoProxyEndpoints.Mpac, MongoProxyEndpoints.Prod].includes(
+        configContext.MONGO_PROXY_ENDPOINT,
+      );
 
-        const ipRulesIncludeMongoProxy: boolean =
-          ipAddressesFromIPRules.filter((ipAddressFromIPRule) => mongoProxyOutboundIPs.includes(ipAddressFromIPRule))
-            ?.length === mongoProxyOutboundIPs.length;
+      const mongoProxyOutboundIPs: string[] = isProdOrMpacMongoProxyEndpoint
+        ? [...MongoProxyOutboundIPs[MongoProxyEndpoints.Mpac], ...MongoProxyOutboundIPs[MongoProxyEndpoints.Prod]]
+        : MongoProxyOutboundIPs[configContext.MONGO_PROXY_ENDPOINT];
 
-        if (ipRulesIncludeMongoProxy) {
-          updateConfigContext({
-            MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
-          });
-        }
+      const ipRulesIncludeMongoProxy: boolean =
+        ipAddressesFromIPRules.filter((ipAddressFromIPRule) => mongoProxyOutboundIPs.includes(ipAddressFromIPRule))
+          ?.length === mongoProxyOutboundIPs.length;
 
-        return !ipRulesIncludeMongoProxy;
-      } else if (userContext.apiType === "Cassandra") {
-        const isProdOrMpacCassandraProxyEndpoint: boolean = [
-          CassandraProxyEndpoints.Mpac,
-          CassandraProxyEndpoints.Prod,
-        ].includes(configContext.CASSANDRA_PROXY_ENDPOINT);
-
-        const cassandraProxyOutboundIPs: string[] = isProdOrMpacCassandraProxyEndpoint
-          ? [
-              ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Mpac],
-              ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Prod],
-            ]
-          : CassandraProxyOutboundIPs[configContext.CASSANDRA_PROXY_ENDPOINT];
-
-        const ipRulesIncludeCassandraProxy: boolean =
-          ipAddressesFromIPRules.filter((ipAddressFromIPRule) =>
-            cassandraProxyOutboundIPs.includes(ipAddressFromIPRule),
-          )?.length === cassandraProxyOutboundIPs.length;
-
-        return !ipRulesIncludeCassandraProxy;
+      if (ipRulesIncludeMongoProxy) {
+        updateConfigContext({
+          MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
+        });
       }
+
+      return !ipRulesIncludeMongoProxy;
+    } else if (userContext.apiType === "Cassandra") {
+      const isProdOrMpacCassandraProxyEndpoint: boolean = [
+        CassandraProxyEndpoints.Mpac,
+        CassandraProxyEndpoints.Prod,
+      ].includes(configContext.CASSANDRA_PROXY_ENDPOINT);
+
+      const cassandraProxyOutboundIPs: string[] = isProdOrMpacCassandraProxyEndpoint
+        ? [
+            ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Mpac],
+            ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Prod],
+          ]
+        : CassandraProxyOutboundIPs[configContext.CASSANDRA_PROXY_ENDPOINT];
+
+      const ipRulesIncludeCassandraProxy: boolean =
+        ipAddressesFromIPRules.filter((ipAddressFromIPRule) => cassandraProxyOutboundIPs.includes(ipAddressFromIPRule))
+          ?.length === cassandraProxyOutboundIPs.length;
+
+      return !ipRulesIncludeCassandraProxy;
     }
   }
   return false;
