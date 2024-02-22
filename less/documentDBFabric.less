@@ -25,29 +25,30 @@ a:focus {
 }
 
 .resourceTreeAndTabs {
-  border-radius: @FabricBoxBorderRadius;
+  border-radius: 0px;
   box-shadow: @FabricBoxBorderShadow;
   margin: @FabricBoxMargin;
-  margin-top: 4px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   background-color: #ffffff;
 }
 
 .tabsManagerContainer {
-  background-color: #fafafa
+  background-color: #ffffff
 }
 
 .nav-tabs-margin {
   padding-top: 8px;
-  background-color: #fafafa
+  background-color: #ffffff
 }
 
 .commandBarContainer {
   background-color: #ffffff;
-  border-bottom: none;
-  border-radius: @FabricBoxBorderRadius;
+  border-radius: @FabricBoxBorderRadius @FabricBoxBorderRadius 0px 0px;
   box-shadow: @FabricBoxBorderShadow;
   margin: @FabricBoxMargin;
   margin-top: 0px;
+  margin-bottom: 0px;
   padding-top: 2px;
   padding: 0px;
   height: 40px;
@@ -162,9 +163,10 @@ a:focus {
 
 
 .dataExplorerErrorConsoleContainer {
-  border-radius: @FabricBoxBorderRadius;
+  border-radius:  0px 0px @FabricBoxBorderRadius @FabricBoxBorderRadius;
   box-shadow: @FabricBoxBorderShadow;
   margin: @FabricBoxMargin;
+  margin-top: 0px;
   width: auto;
   align-self: auto;
 }
