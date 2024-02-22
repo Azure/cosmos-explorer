@@ -1,5 +1,8 @@
-import { MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
+import { configContext, updateConfigContext } from "ConfigContext";
+import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
@@ -12,6 +15,7 @@ import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
+import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -33,6 +37,10 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const [showRUThresholdMessageBar, setShowRUThresholdMessageBar] = useState<boolean>(
     userContext.apiType === "SQL" && !hasRUThresholdBeenConfigured(),
   );
+  const [
+    showMongoAndCassandraProxiesNetworkSettingsWarningState,
+    setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
+  ] = useState<boolean>(showMongoAndCassandraProxiesNetworkSettingsWarning());
   return (
     <div className="tabsManagerContainer">
       {networkSettingsWarning && (
@@ -69,9 +77,25 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             },
           }}
         >
-          {
-            "To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove the limit, go to the Settings cog on the right and find 'RU Threshold'."
-          }
+          {`To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove
+          the limit, go to the Settings cog on the right and find "RU Threshold".`}
+          <Link
+            href="https://review.learn.microsoft.com/en-us/azure/cosmos-db/data-explorer?branch=main#configure-request-unit-threshold"
+            target="_blank"
+          >
+            Learn More
+          </Link>
+        </MessageBar>
+      )}
+      {showMongoAndCassandraProxiesNetworkSettingsWarningState && (
+        <MessageBar
+          messageBarType={MessageBarType.warning}
+          onDismiss={() => {
+            setShowMongoAndCassandraProxiesNetworkSettingsWarningState(false);
+          }}
+        >
+          {`We are moving our middleware to new infrastructure. To avoid future issues with Data Explorer access, please
+          re-enable "Allow access from Azure Portal" on the Networking blade for your account.`}
         </MessageBar>
       )}
       <div id="content" className="flexContainer hideOverflows">
@@ -298,4 +322,60 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
+};
+
+const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
+  const ipRules: IpRule[] = userContext.databaseAccount?.properties?.ipRules;
+  if ((userContext.apiType === "Mongo" || userContext.apiType === "Cassandra") && ipRules?.length) {
+    const legacyPortalBackendIPs: string[] = PortalBackendIPs[configContext.BACKEND_ENDPOINT];
+    const ipAddressesFromIPRules: string[] = ipRules.map((ipRule) => ipRule.ipAddressOrRange);
+    const ipRulesIncludeLegacyPortalBackend: boolean =
+      ipAddressesFromIPRules.filter((ipAddressFromIPRule) => legacyPortalBackendIPs.includes(ipAddressFromIPRule))
+        ?.length === legacyPortalBackendIPs.length;
+
+    if (!ipRulesIncludeLegacyPortalBackend) {
+      return false;
+    }
+
+    if (userContext.apiType === "Mongo") {
+      const isProdOrMpacMongoProxyEndpoint: boolean = [MongoProxyEndpoints.Mpac, MongoProxyEndpoints.Prod].includes(
+        configContext.MONGO_PROXY_ENDPOINT,
+      );
+
+      const mongoProxyOutboundIPs: string[] = isProdOrMpacMongoProxyEndpoint
+        ? [...MongoProxyOutboundIPs[MongoProxyEndpoints.Mpac], ...MongoProxyOutboundIPs[MongoProxyEndpoints.Prod]]
+        : MongoProxyOutboundIPs[configContext.MONGO_PROXY_ENDPOINT];
+
+      const ipRulesIncludeMongoProxy: boolean =
+        ipAddressesFromIPRules.filter((ipAddressFromIPRule) => mongoProxyOutboundIPs.includes(ipAddressFromIPRule))
+          ?.length === mongoProxyOutboundIPs.length;
+
+      if (ipRulesIncludeMongoProxy) {
+        updateConfigContext({
+          MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
+        });
+      }
+
+      return !ipRulesIncludeMongoProxy;
+    } else if (userContext.apiType === "Cassandra") {
+      const isProdOrMpacCassandraProxyEndpoint: boolean = [
+        CassandraProxyEndpoints.Mpac,
+        CassandraProxyEndpoints.Prod,
+      ].includes(configContext.CASSANDRA_PROXY_ENDPOINT);
+
+      const cassandraProxyOutboundIPs: string[] = isProdOrMpacCassandraProxyEndpoint
+        ? [
+            ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Mpac],
+            ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Prod],
+          ]
+        : CassandraProxyOutboundIPs[configContext.CASSANDRA_PROXY_ENDPOINT];
+
+      const ipRulesIncludeCassandraProxy: boolean =
+        ipAddressesFromIPRules.filter((ipAddressFromIPRule) => cassandraProxyOutboundIPs.includes(ipAddressFromIPRule))
+          ?.length === cassandraProxyOutboundIPs.length;
+
+      return !ipRulesIncludeCassandraProxy;
+    }
+  }
+  return false;
 };

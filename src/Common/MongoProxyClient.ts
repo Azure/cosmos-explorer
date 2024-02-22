@@ -1,5 +1,9 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
-import { MongoProxyEndpoints, allowedMongoProxyEndpoints_ToBeDeprecated, validateEndpoint } from "Utils/EndpointUtils";
+import {
+  allowedMongoProxyEndpoints,
+  allowedMongoProxyEndpoints_ToBeDeprecated,
+  validateEndpoint,
+} from "Utils/EndpointUtils";
 import queryString from "querystring";
 import { AuthType } from "../AuthType";
 import { configContext } from "../ConfigContext";
@@ -10,7 +14,7 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import { hasFlag } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
-import { ApiType, ContentType, HttpHeaders, HttpStatusCodes } from "./Constants";
+import { ApiType, ContentType, HttpHeaders, HttpStatusCodes, MongoProxyEndpoints } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
 
@@ -644,7 +648,10 @@ export function getFeatureEndpointOrDefault(feature: string): string {
   } else {
     endpoint =
       hasFlag(userContext.features.mongoProxyAPIs, feature) &&
-      validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints_ToBeDeprecated)
+      validateEndpoint(userContext.features.mongoProxyEndpoint, [
+        ...allowedMongoProxyEndpoints,
+        ...allowedMongoProxyEndpoints_ToBeDeprecated,
+      ])
         ? userContext.features.mongoProxyEndpoint
         : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
   }
@@ -683,8 +690,14 @@ export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameter
 }
 
 function useMongoProxyEndpoint(api: string): boolean {
+  let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
+  if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+    canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
+  }
+
   return (
+    canAccessMongoProxy &&
     configContext.NEW_MONGO_APIS?.includes(api) &&
-    [MongoProxyEndpoints.Development, MongoProxyEndpoints.MPAC].includes(configContext.MONGO_PROXY_ENDPOINT)
+    [MongoProxyEndpoints.Development, MongoProxyEndpoints.Mpac].includes(configContext.MONGO_PROXY_ENDPOINT)
   );
 }
