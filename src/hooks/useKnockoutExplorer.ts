@@ -328,6 +328,7 @@ function createExplorerFabric(params: { connectionId: string }): Explorer {
     fabricContext: {
       connectionId: params.connectionId,
       databaseConnectionInfo: undefined,
+      isReadOnly: true,
     },
     authType: AuthType.ConnectionString,
     databaseAccount: {
