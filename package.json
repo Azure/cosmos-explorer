@@ -46,6 +46,7 @@
     "@types/lodash": "4.14.171",
     "@types/mkdirp": "1.0.1",
     "@types/node-fetch": "2.5.7",
+    "@uiw/react-split": "5.9.3",
     "applicationinsights": "1.8.0",
     "bootstrap": "3.4.1",
     "canvas": "file:./canvas",
