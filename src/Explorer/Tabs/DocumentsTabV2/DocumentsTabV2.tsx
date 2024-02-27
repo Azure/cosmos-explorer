@@ -1,5 +1,5 @@
 import { ItemDefinition, QueryIterator, Resource } from '@azure/cosmos';
-import { FluentProvider, Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useArrowNavigationGroup, useTableFeatures, useTableSelection } from '@fluentui/react-components';
+import { FluentProvider } from '@fluentui/react-components';
 import Split from '@uiw/react-split';
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from 'Common/ErrorHandlingUtils';
@@ -25,11 +25,7 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import DocumentId from "../../Tree/DocumentId";
 import TabsBase from "../TabsBase";
-
-type Item = {
-  id: string;
-  type: string;
-};
+import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
 
 export class DocumentsTabV2 extends TabsBase {
   public partitionKey: DataModels.PartitionKey;
@@ -97,6 +93,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   const [isExecutionError, setIsExecutionError] = useState<boolean>(false);
   const [onLoadStartKey, setOnLoadStartKey] = useState<number>(props.onLoadStartKey);
+
+
+  const [currentDocument, setCurrentDocument] = useState<unknown>(undefined);
 
   // TODO remove this?
   const applyFilterButton = {
@@ -423,119 +422,25 @@ const DocumentsTabComponent: React.FunctionComponent<{
     props.collection?.databaseId === QueryCopilotSampleDatabaseId &&
     props.collection?.id() === QueryCopilotSampleContainerId;
 
-  /* Below is for the table config */
-  const items = documentIds.map((documentId) => ({
+
+  // Table config here
+  const tableItems: DocumentsTableComponentItem[] = documentIds.map((documentId) => ({
     id: documentId.id(),
     // TODO: for now, merge all the pk values into a single string/column
     type: documentId.partitionKeyProperties ? documentId.stringPartitionKeyValues.join(",") : undefined,
   }));
 
-  const columns: TableColumnDefinition<Item>[] = [
-    createTableColumn<Item>({
-      columnId: "id",
-      compare: (a, b) => {
-        return a.id.localeCompare(b.id);
-      },
-      renderHeaderCell: () => {
-        return "id";
-      },
-      renderCell: (item) => {
-        return (
-          <TableCellLayout>{item.id}</TableCellLayout>
-        );
-      },
-    }),
-    createTableColumn<Item>({
-      columnId: "type",
-      compare: (a, b) => {
-        return a.type.localeCompare(b.type);
-      },
-      renderHeaderCell: () => {
-        return "/type";
-      },
-      renderCell: (item) => {
-        return (
-          <TableCellLayout>{item.type}</TableCellLayout>
-        );
-      },
-    }),
-  ];
-  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(
-    () => new Set<TableRowId>([0])
-  );
 
-  const {
-    getRows,
-    selection: {
-      allRowsSelected,
-      someRowsSelected,
-      toggleAllRows,
-      toggleRow,
-      isRowSelected,
-    },
-  } = useTableFeatures(
-    {
-      columns,
-      items,
-    },
-    [
-      useTableSelection({
-        selectionMode: "multiselect",
-        selectedItems: selectedRows,
-        onSelectionChange: (e, data) => setSelectedRows(data.selectedItems),
-      }),
-    ]
-  );
+  const onSelectedDocument = (index: number) => readSingleDocument(documentIds[index]);
 
-  const rows = getRows((row) => {
-    const selected = isRowSelected(row.rowId);
-    return {
-      ...row,
-      onClick: (e: React.MouseEvent) => toggleRow(e, row.rowId),
-      onKeyDown: (e: React.KeyboardEvent) => {
-        if (e.key === " ") {
-          e.preventDefault();
-          toggleRow(e, row.rowId);
-        }
-      },
-      selected,
-      appearance: selected ? ("brand" as const) : ("none" as const),
-    };
-  });
-
-  const toggleAllKeydown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === " ") {
-        toggleAllRows(e);
-        e.preventDefault();
-      }
-    },
-    [toggleAllRows]
-  );
-
-  const [currentDocument, setCurrentDocument] = useState<unknown>(undefined);
-
-  // Load document depending on selection
-  useEffect(() => {
-    if (selectedRows.size === 1 && documentIds.length > 0) {
-      const documentId = documentIds[selectedRows.values().next().value];
-
-      // TODO: replicate logic of selectedDocument.click();
-      // TODO: Check if editor is dirty
-
-      (_isQueryCopilotSampleContainer
-        ? readSampleDocument(documentId)
-        : readDocument(props.collection, documentId)).then((content) => {
-          // this.initDocumentEditor(documentId, content);
-          setCurrentDocument(content);
-        });
-    }
-  }, [selectedRows, documentIds]);
-
-  // Cell keyboard navigation
-  const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });
-
-  /* End of table config */
+  // TODO: replicate logic of selectedDocument.click();
+  // TODO: Check if editor is dirty
+  const readSingleDocument = (documentId: DocumentId) => (_isQueryCopilotSampleContainer
+    ? readSampleDocument(documentId)
+    : readDocument(props.collection, documentId)).then((content) => {
+      // this.initDocumentEditor(documentId, content);
+      setCurrentDocument(content);
+    });
 
   return <FluentProvider theme={dataExplorerLightTheme} style={{ overflow: "hidden" }}>
     <div
@@ -645,47 +550,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
       <Split style={{ height: "100%" }}>
         <div style={{ minWidth: "20%", width: "20%" }}>
-          <Table aria-label="Filtered documents table" size="extra-small" {...keyboardNavAttr} role="grid">
-            <TableHeader>
-              <TableRow>
-                <TableSelectionCell
-                  checked={
-                    allRowsSelected ? true : someRowsSelected ? "mixed" : false
-                  }
-                  onClick={toggleAllRows}
-                  onKeyDown={toggleAllKeydown}
-                  checkboxIndicator={{ "aria-label": "Select all rows " }}
-                />
-                <TableHeaderCell>id</TableHeaderCell>
-                <TableHeaderCell>/type</TableHeaderCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map(({ item, selected, onClick, onKeyDown, appearance }, index: number) => (
-                <TableRow
-                  key={item.id}
-                  // onClick={onClick}
-                  // onKeyDown={onKeyDown}
-                  aria-selected={selected}
-                  appearance={appearance}
-                >
-                  <TableSelectionCell
-                    checked={selected}
-                    checkboxIndicator={{ "aria-label": "Select row" }}
-                    onClick={onClick}
-                    onKeyDown={onKeyDown}
-                  />
-                  <TableCell onClick={e => setSelectedRows(new Set<TableRowId>([index]))} onKeyDown={onKeyDown}>
-                    <TableCellLayout>{item.id}</TableCellLayout>
-                  </TableCell>
-                  <TableCell>
-                    <TableCellLayout>{item.type}</TableCellLayout>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
+          <DocumentsTableComponent items={tableItems} onSelectedItem={onSelectedDocument} />
         </div>
         <div style={{ minWidth: "20%", flex: 1 }}><pre>{JSON.stringify(currentDocument, undefined, " ")}</pre></div>
       </Split>
