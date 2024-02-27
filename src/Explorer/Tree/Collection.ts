@@ -1,6 +1,6 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2";
+import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";

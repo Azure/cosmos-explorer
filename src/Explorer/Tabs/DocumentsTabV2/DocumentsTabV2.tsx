@@ -1,5 +1,5 @@
 import { ItemDefinition, QueryIterator, Resource } from '@azure/cosmos';
-import { FluentProvider, Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useTableFeatures, useTableSelection } from '@fluentui/react-components';
+import { FluentProvider, Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useArrowNavigationGroup, useTableFeatures, useTableSelection } from '@fluentui/react-components';
 import Split from '@uiw/react-split';
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from 'Common/ErrorHandlingUtils';
@@ -7,6 +7,7 @@ import { queryDocuments } from 'Common/dataAccess/queryDocuments';
 import { readDocument } from 'Common/dataAccess/readDocument';
 import { useDialog } from 'Explorer/Controls/Dialog';
 import { querySampleDocuments, readSampleDocument } from 'Explorer/QueryCopilot/QueryCopilotUtilities';
+import DocumentsTab from 'Explorer/Tabs/DocumentsTab';
 import { dataExplorerLightTheme } from 'Explorer/Theme/ThemeUtil';
 import { QueryConstants } from 'Shared/Constants';
 import { LocalStorageUtility, StorageKey } from 'Shared/StorageUtility';
@@ -15,15 +16,15 @@ import { userContext } from "UserContext";
 import { logConsoleError } from 'Utils/NotificationConsoleUtils';
 import React, { KeyboardEventHandler, useEffect, useMemo, useState } from "react";
 import { format } from "react-string-format";
-import CloseIcon from "../../../images/close-black.svg";
-import * as Constants from "../../Common/Constants";
-import * as HeadersUtility from "../../Common/HeadersUtility";
-import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as QueryUtils from "../../Utils/QueryUtils";
-import DocumentId from "../Tree/DocumentId";
-import TabsBase from "./TabsBase";
+import CloseIcon from "../../../../images/close-black.svg";
+import * as Constants from "../../../Common/Constants";
+import * as HeadersUtility from "../../../Common/HeadersUtility";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as QueryUtils from "../../../Utils/QueryUtils";
+import DocumentId from "../../Tree/DocumentId";
+import TabsBase from "../TabsBase";
 
 type Item = {
   id: string;
@@ -322,7 +323,19 @@ const DocumentsTabComponent: React.FunctionComponent<{
             // map raw response to view model
             .map((rawDocument: any) => {
               const partitionKeyValue = rawDocument._partitionKeyValue;
-              return new DocumentId(this, rawDocument, partitionKeyValue);
+
+              // TODO: Mock documentsTab. Fix this
+              const partitionKey = props.partitionKey || (props.collection && props.collection.partitionKey);
+              const partitionKeyPropertyHeaders = props.collection?.partitionKeyPropertyHeaders || partitionKey?.paths;
+              const partitionKeyProperties = partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
+                partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
+              );
+
+              return new DocumentId({
+                partitionKey,
+                partitionKeyPropertyHeaders,
+                partitionKeyProperties
+              } as DocumentsTab, rawDocument, partitionKeyValue);
             });
 
           const merged = currentDocuments.concat(nextDocumentIds);
@@ -413,7 +426,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
   /* Below is for the table config */
   const items = documentIds.map((documentId) => ({
     id: documentId.id(),
-    type: JSON.stringify(documentId.partitionKeyValue),
+    // TODO: for now, merge all the pk values into a single string/column
+    type: documentId.partitionKeyProperties ? documentId.stringPartitionKeyValues.join(",") : undefined,
   }));
 
   const columns: TableColumnDefinition<Item>[] = [
@@ -517,6 +531,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
         });
     }
   }, [selectedRows, documentIds]);
+
+  // Cell keyboard navigation
+  const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });
 
   /* End of table config */
 
@@ -628,7 +645,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
       <Split style={{ height: "100%" }}>
         <div style={{ minWidth: "20%", width: "20%" }}>
-          <Table aria-label="Table with controlled multiselect" size="extra-small">
+          <Table aria-label="Filtered documents table" size="extra-small" {...keyboardNavAttr} role="grid">
             <TableHeader>
               <TableRow>
                 <TableSelectionCell
