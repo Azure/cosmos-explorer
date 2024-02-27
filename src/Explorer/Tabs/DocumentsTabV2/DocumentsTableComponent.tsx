@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useArrowNavigationGroup, useTableFeatures, useTableSelection } from '@fluentui/react-components';
+import { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableColumnSizingOptions, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useArrowNavigationGroup, useTableColumnSizing_unstable, useTableFeatures, useTableSelection } from '@fluentui/react-components';
 import React, { useEffect } from 'react';
 
 export type DocumentsTableComponentItem = {
@@ -12,50 +12,60 @@ export interface IDocumentsTableComponentProps {
   style?: React.CSSProperties;
 }
 
+const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = [
+  createTableColumn<DocumentsTableComponentItem>({
+    columnId: "id",
+    compare: (a, b) => {
+      return a.id.localeCompare(b.id);
+    },
+    renderHeaderCell: () => {
+      return "id";
+    },
+    renderCell: (item) => {
+      return (
+        <TableCellLayout>{item.id}</TableCellLayout>
+      );
+    },
+  }),
+  createTableColumn<DocumentsTableComponentItem>({
+    columnId: "type",
+    compare: (a, b) => {
+      return a.type.localeCompare(b.type);
+    },
+    renderHeaderCell: () => {
+      return "/type";
+    },
+    renderCell: (item) => {
+      return (
+        <TableCellLayout>{item.type}</TableCellLayout>
+      );
+    },
+  }),
+];
+
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items, onSelectedItem, style,
 }: IDocumentsTableComponentProps) => {
-  const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = [
-    createTableColumn<DocumentsTableComponentItem>({
-      columnId: "id",
-      compare: (a, b) => {
-        return a.id.localeCompare(b.id);
-      },
-      renderHeaderCell: () => {
-        return "id";
-      },
-      renderCell: (item) => {
-        return (
-          <TableCellLayout>{item.id}</TableCellLayout>
-        );
-      },
-    }),
-    createTableColumn<DocumentsTableComponentItem>({
-      columnId: "type",
-      compare: (a, b) => {
-        return a.type.localeCompare(b.type);
-      },
-      renderHeaderCell: () => {
-        return "/type";
-      },
-      renderCell: (item) => {
-        return (
-          <TableCellLayout>{item.type}</TableCellLayout>
-        );
-      },
-    }),
-  ];
+  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>({
+    id: {
+      idealWidth: 300,
+      minWidth: 273,
+    },
+    type: {
+      minWidth: 110,
+      defaultWidth: 120,
+    },
+  });
 
-  // const [columnSizingOptions] = React.useState<TableColumnSizingOptions>({
-  //   id: {
-  //     idealWidth: 300,
-  //     minWidth: 150,
-  //   },
-  //   type: {
-  //     minWidth: 110,
-  //     defaultWidth: 250,
-  //   },
-  // });
+  const onColumnResize = React.useCallback((_, { columnId, width }) => {
+    setColumnSizingOptions((state) => ({
+      ...state,
+      [columnId]: {
+        ...state[columnId],
+        idealWidth: width,
+      },
+    }));
+  }, []);
 
   const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(
     () => new Set<TableRowId>([0])
@@ -63,8 +73,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 
   const {
     getRows,
-    // columnSizing_unstable,
-    // tableRef,
+    columnSizing_unstable: columnSizing,
+    tableRef,
     selection: {
       allRowsSelected,
       someRowsSelected,
@@ -78,7 +88,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       items,
     },
     [
-      // useTableColumnSizing_unstable({ columnSizingOptions }),
+      useTableColumnSizing_unstable({ columnSizingOptions, onColumnResize }),
       useTableSelection({
         selectionMode: "multiselect",
         selectedItems: selectedRows,
@@ -126,10 +136,10 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const tableProps = {
     "aria-label": "Filtered documents table",
     role: "grid",
+    ...columnSizing.getTableProps(),
     ...keyboardNavAttr,
-    // ...columnSizing_unstable.getTableProps(),
     size: "extra-small",
-    // ref: tableRef,
+    ref: tableRef,
     ...style,
   };
 
@@ -145,8 +155,29 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             onKeyDown={toggleAllKeydown}
             checkboxIndicator={{ "aria-label": "Select all rows " }}
           />
-          <TableHeaderCell>id</TableHeaderCell>
-          <TableHeaderCell>/type</TableHeaderCell>
+          {columns.map((column, index) => (
+            <Menu openOnContext key={column.columnId}>
+              <MenuTrigger>
+                <TableHeaderCell
+                  key={column.columnId}
+                  {...columnSizing.getTableHeaderCellProps(column.columnId)}
+                >
+                  {column.renderHeaderCell()}
+                </TableHeaderCell>
+              </MenuTrigger>
+              <MenuPopover>
+                <MenuList>
+                  <MenuItem
+                    onClick={columnSizing.enableKeyboardMode(
+                      column.columnId
+                    )}
+                  >
+                    Keyboard Column Resizing
+                  </MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
+          ))}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -164,12 +195,16 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
               onClick={onClick}
               onKeyDown={onKeyDown}
             />
-            <TableCell onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))} onKeyDown={onKeyDown}>
-              <TableCellLayout>{item.id}</TableCellLayout>
-            </TableCell>
-            <TableCell>
-              <TableCellLayout>{item.type}</TableCellLayout>
-            </TableCell>
+            {columns.map((column) => (
+              <TableCell
+                key={column.columnId}
+                onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
+                onKeyDown={onKeyDown}
+                {...columnSizing.getTableCellProps(column.columnId)}
+              >
+                {column.renderCell(item)}
+              </TableCell>
+            ))}
           </TableRow>
         ))}
       </TableBody>
