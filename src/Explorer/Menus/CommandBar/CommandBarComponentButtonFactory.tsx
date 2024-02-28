@@ -196,18 +196,22 @@ export function createContextCommandBarButtons(
 }
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly ? [] : [
-    {
-      iconSrc: SettingsIcon,
-      iconAlt: "Settings",
-      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
-      commandButtonLabel: undefined,
-      ariaLabel: "Settings",
-      tooltipText: "Settings",
-      hasPopup: true,
-      disabled: false,
-    },
-  ];
+  const buttons: CommandButtonComponentProps[] =
+    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
+      ? []
+      : [
+          {
+            iconSrc: SettingsIcon,
+            iconAlt: "Settings",
+            onCommandClick: () =>
+              useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
+            commandButtonLabel: undefined,
+            ariaLabel: "Settings",
+            tooltipText: "Settings",
+            hasPopup: true,
+            disabled: false,
+          },
+        ];
 
   const showOpenFullScreen =
     configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
