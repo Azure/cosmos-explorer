@@ -196,7 +196,7 @@ export function createContextCommandBarButtons(
 }
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = [
+  const buttons: CommandButtonComponentProps[] = configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly ? [] : [
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
