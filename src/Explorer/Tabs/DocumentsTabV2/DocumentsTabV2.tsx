@@ -448,16 +448,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
     if (!tableContainerRef.current) {
       return undefined;
     }
-
-    const resizeObserver = new ResizeObserver(() => {
-      // Do what you want to do when the size of the element changes
-      setTableContainerHeightPx(tableContainerRef.current.offsetHeight);
-      console.log('height', tableContainerRef.current.offsetHeight);
-    });
+    const resizeObserver = new ResizeObserver(() => tableContainerRef.current.offsetHeight !== undefined && setTableContainerHeightPx(tableContainerRef.current.offsetHeight));
     resizeObserver.observe(tableContainerRef.current);
     return () => resizeObserver.disconnect(); // clean up
-
-
   }, []);
 
   return <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
@@ -571,9 +564,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
       {/* <Split> doesn't like to be a flex child */}
       <div style={{ overflow: "hidden", height: "100%" }}>
         <Split>
-          <div style={{ minWidth: 440, width: "20%", display: "flex", flexDirection: "column", height: "100%" }}
+          <div style={{ minWidth: 440, width: "20%", display: "flex", height: "100%" }}
             ref={tableContainerRef}>
-            <DocumentsTableComponent style={{ width: "100%", height: "100%" }} items={tableItems} onSelectedItem={onSelectedDocument} height={tableContainerHeightPx} />
+            <DocumentsTableComponent style={{ width: "100%" }} items={tableItems} onSelectedItem={onSelectedDocument} height={tableContainerHeightPx} />
           </div>
           <div style={{ minWidth: "20%" }}><pre>{JSON.stringify(currentDocument, undefined, " ")}</pre></div>
         </Split>
