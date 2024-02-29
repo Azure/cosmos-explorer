@@ -448,7 +448,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     if (!tableContainerRef.current) {
       return undefined;
     }
-    const resizeObserver = new ResizeObserver(() => tableContainerRef.current.offsetHeight !== undefined && setTableContainerHeightPx(tableContainerRef.current.offsetHeight));
+    const resizeObserver = new ResizeObserver(() => setTableContainerHeightPx(tableContainerRef.current.offsetHeight));
     resizeObserver.observe(tableContainerRef.current);
     return () => resizeObserver.disconnect(); // clean up
   }, []);
