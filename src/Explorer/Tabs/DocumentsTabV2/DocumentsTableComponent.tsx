@@ -235,7 +235,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       </TableHeader>
       <TableBody style={{ height: "100%", flex: 1 }}>
         <List
-          height={height - 32}
+          height={height !== undefined ? height - 32 : 0}
           itemCount={items.length}
           itemSize={45}
           width="100%"

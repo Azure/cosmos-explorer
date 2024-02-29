@@ -448,16 +448,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
     if (!tableContainerRef.current) {
       return undefined;
     }
-
-    const resizeObserver = new ResizeObserver(() => {
-      // Do what you want to do when the size of the element changes
-      setTableContainerHeightPx(tableContainerRef.current.offsetHeight);
-      console.log('height', tableContainerRef.current.offsetHeight);
-    });
+    const resizeObserver = new ResizeObserver(() => setTableContainerHeightPx(tableContainerRef.current.offsetHeight));
     resizeObserver.observe(tableContainerRef.current);
     return () => resizeObserver.disconnect(); // clean up
-
-
   }, []);
 
   return <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
