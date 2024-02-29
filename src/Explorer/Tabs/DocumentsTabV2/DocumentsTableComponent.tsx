@@ -46,9 +46,11 @@ const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = [
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items, onSelectedItem, style,
 }: IDocumentsTableComponentProps) => {
+  const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
+
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>({
     id: {
-      idealWidth: 300,
+      idealWidth: 280,
       minWidth: 273,
     },
     type: {
@@ -126,7 +128,11 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   // Load document depending on selection
   useEffect(() => {
     if (selectedRows.size === 1 && items.length > 0) {
-      onSelectedItem(selectedRows.values().next().value);
+      const newActiveItemIndex = selectedRows.values().next().value;
+      if (newActiveItemIndex !== activeItemIndex) {
+        onSelectedItem(newActiveItemIndex);
+        setActiveItemIndex(newActiveItemIndex);
+      }
     }
   }, [selectedRows, items]);
 

@@ -442,16 +442,18 @@ const DocumentsTabComponent: React.FunctionComponent<{
       setCurrentDocument(content);
     });
 
-  return <FluentProvider theme={dataExplorerLightTheme} style={{ overflow: "hidden" }}>
+  return <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
     <div
-      className="tab-pane active tabdocuments flexContainer"
-      data-bind="
+      className="tab-pane active"
+      /* data-bind="
     setTemplateReady: true,
     attr:{
         id: tabId
     },
     visible: isActive"
+    */
       role="tabpanel"
+      style={{ display: "flex" }}
     >
       {/* <!-- Filter - Start --> */}
       {isFilterCreated &&
@@ -548,13 +550,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
       }
       {/* <!-- Filter - End --> */}
 
-      <Split style={{ height: "100%" }}>
-        <div style={{ minWidth: "20%", width: "20%" }}>
-          <DocumentsTableComponent items={tableItems} onSelectedItem={onSelectedDocument} />
-        </div>
-        <div style={{ minWidth: "20%", flex: 1 }}><pre>{JSON.stringify(currentDocument, undefined, " ")}</pre></div>
-      </Split>
-
+      {/* <Split> doesn't like to be a flex child */}
+      <div style={{ overflow: "hidden" }}>
+        <Split>
+          <div style={{ minWidth: 440, width: "20%" }}>
+            <DocumentsTableComponent style={{ width: "100%", height: "100%" }} items={tableItems} onSelectedItem={onSelectedDocument} />
+          </div>
+          <div style={{ minWidth: "20%" }}><pre>{JSON.stringify(currentDocument, undefined, " ")}</pre></div>
+        </Split>
+      </div>
     </div >
   </FluentProvider>;
 }
