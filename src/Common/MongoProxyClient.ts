@@ -465,7 +465,7 @@ export function updateDocument_ToBeDeprecated(
 
 export function deleteDocument(databaseId: string, collection: Collection, documentId: DocumentId): Promise<void> {
   if (!useMongoProxyEndpoint("deleteDocument")) {
-    deleteDocument_ToBeDeprecated(databaseId, collection, documentId);
+    return deleteDocument_ToBeDeprecated(databaseId, collection, documentId);
   }
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
@@ -554,7 +554,7 @@ export function createMongoCollectionWithProxy(
   params: DataModels.CreateCollectionParams,
 ): Promise<DataModels.Collection> {
   if (!useMongoProxyEndpoint("createCollectionWithProxy")) {
-    createMongoCollectionWithProxy_ToBeDeprecated(params);
+    return createMongoCollectionWithProxy_ToBeDeprecated(params);
   }
   const { databaseAccount } = userContext;
   const shardKey: string = params.partitionKey?.paths[0];
