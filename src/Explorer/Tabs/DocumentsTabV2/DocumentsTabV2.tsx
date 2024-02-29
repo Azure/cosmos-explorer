@@ -443,12 +443,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
     });
 
   const tableContainerRef = useRef(null);
-  const [tableContainerHeightPx, setTableContainerHeightPx] = useState<number>(undefined);
+  const [tableContainerSizePx, setTableContainerSizePx] = useState<{ height: number, width: number }>(undefined);
   useEffect(() => {
     if (!tableContainerRef.current) {
       return undefined;
     }
-    const resizeObserver = new ResizeObserver(() => setTableContainerHeightPx(tableContainerRef.current.offsetHeight));
+    const resizeObserver = new ResizeObserver(() => setTableContainerSizePx({
+      height: tableContainerRef.current.offsetHeight,
+      width: tableContainerRef.current.offsetWidth,
+    }));
     resizeObserver.observe(tableContainerRef.current);
     return () => resizeObserver.disconnect(); // clean up
   }, []);
@@ -564,9 +567,10 @@ const DocumentsTabComponent: React.FunctionComponent<{
       {/* <Split> doesn't like to be a flex child */}
       <div style={{ overflow: "hidden", height: "100%" }}>
         <Split>
-          <div style={{ minWidth: 440, width: "20%", display: "flex", height: "100%" }}
+          <div style={{ minWidth: 480, width: "20%" }}
             ref={tableContainerRef}>
-            <DocumentsTableComponent style={{ width: "100%" }} items={tableItems} onSelectedItem={onSelectedDocument} height={tableContainerHeightPx} />
+            <DocumentsTableComponent style={{ width: 200 }} items={tableItems} onSelectedItem={onSelectedDocument} size={tableContainerSizePx} />
+            <a className="loadMore" role="button" onClick={() => loadNextPage(false)}>Load more</a>
           </div>
           <div style={{ minWidth: "20%" }}><pre>{JSON.stringify(currentDocument, undefined, " ")}</pre></div>
         </Split>

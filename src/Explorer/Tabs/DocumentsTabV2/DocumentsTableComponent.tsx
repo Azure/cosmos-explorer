@@ -10,7 +10,7 @@ export type DocumentsTableComponentItem = {
 export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
   onSelectedItem: (index: number) => void;
-  height: number;
+  size: { height: number; width: number };
   style?: React.CSSProperties;
 }
 
@@ -25,7 +25,7 @@ const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = [
     },
     renderCell: (item) => {
       return (
-        <TableCellLayout>{item.id}</TableCellLayout>
+        <TableCellLayout truncate>{item.id}</TableCellLayout>
       );
     },
   }),
@@ -39,7 +39,7 @@ const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = [
     },
     renderCell: (item) => {
       return (
-        <TableCellLayout>{item.type}</TableCellLayout>
+        <TableCellLayout truncate>{item.type}</TableCellLayout>
       );
     },
   }),
@@ -56,7 +56,7 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
 }
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
-  items, onSelectedItem, style, height,
+  items, onSelectedItem, style, size,
 }: IDocumentsTableComponentProps) => {
   const { targetDocument } = useFluent();
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
@@ -66,11 +66,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>({
     id: {
       idealWidth: 280,
-      minWidth: 273,
+      // minWidth: 273,
     },
     type: {
-      minWidth: 110,
-      defaultWidth: 120,
+      defaultWidth: 100
+      // minWidth: 110,
+      // defaultWidth: 120,
     },
   });
 
@@ -94,8 +95,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       aria-rowindex={index + 2}
       style={style}
       key={item.id}
-      // onClick={onClick}
-      // onKeyDown={onKeyDown}
       aria-selected={selected}
       appearance={appearance}
     >
@@ -206,7 +205,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             onKeyDown={toggleAllKeydown}
             checkboxIndicator={{ "aria-label": "Select all rows " }}
           />
-          {columns.map((column, index) => (
+          {columns.map((column, /* index */) => (
             <Menu openOnContext key={column.columnId}>
               <MenuTrigger>
                 <TableHeaderCell
@@ -233,12 +232,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           <div role="presentation" style={{ width: scrollbarWidth }} />
         </TableRow>
       </TableHeader>
-      <TableBody style={{ height: "100%", flex: 1 }}>
+      <TableBody>
         <List
-          height={height !== undefined ? height - 32 : 0}
+          height={size !== undefined ? size.height - 32 /* table header */ - 21 /* load more */ : 0}
           itemCount={items.length}
-          itemSize={45}
-          width="100%"
+          itemSize={30}
+          width={size ? size.width : 0}
           itemData={rows}
         >
           {RenderRow}
