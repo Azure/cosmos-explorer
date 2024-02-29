@@ -14,7 +14,7 @@ import { LocalStorageUtility, StorageKey } from 'Shared/StorageUtility';
 import { Action } from 'Shared/Telemetry/TelemetryConstants';
 import { userContext } from "UserContext";
 import { logConsoleError } from 'Utils/NotificationConsoleUtils';
-import React, { KeyboardEventHandler, useEffect, useMemo, useState } from "react";
+import React, { KeyboardEventHandler, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
 import CloseIcon from "../../../../images/close-black.svg";
 import * as Constants from "../../../Common/Constants";
@@ -442,6 +442,24 @@ const DocumentsTabComponent: React.FunctionComponent<{
       setCurrentDocument(content);
     });
 
+  const tableContainerRef = useRef(null);
+  const [tableContainerHeightPx, setTableContainerHeightPx] = useState<number>(undefined);
+  useEffect(() => {
+    if (!tableContainerRef.current) {
+      return undefined;
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      // Do what you want to do when the size of the element changes
+      setTableContainerHeightPx(tableContainerRef.current.offsetHeight);
+      console.log('height', tableContainerRef.current.offsetHeight);
+    });
+    resizeObserver.observe(tableContainerRef.current);
+    return () => resizeObserver.disconnect(); // clean up
+
+
+  }, []);
+
   return <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
     <div
       className="tab-pane active"
@@ -551,10 +569,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
       {/* <!-- Filter - End --> */}
 
       {/* <Split> doesn't like to be a flex child */}
-      <div style={{ overflow: "hidden" }}>
+      <div style={{ overflow: "hidden", height: "100%" }}>
         <Split>
-          <div style={{ minWidth: 440, width: "20%" }}>
-            <DocumentsTableComponent style={{ width: "100%", height: "100%" }} items={tableItems} onSelectedItem={onSelectedDocument} />
+          <div style={{ minWidth: 440, width: "20%", display: "flex", flexDirection: "column", height: "100%" }}
+            ref={tableContainerRef}>
+            <DocumentsTableComponent style={{ width: "100%", height: "100%" }} items={tableItems} onSelectedItem={onSelectedDocument} height={tableContainerHeightPx} />
           </div>
           <div style={{ minWidth: "20%" }}><pre>{JSON.stringify(currentDocument, undefined, " ")}</pre></div>
         </Split>

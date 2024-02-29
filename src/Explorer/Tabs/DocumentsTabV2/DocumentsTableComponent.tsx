@@ -1,5 +1,6 @@
-import { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableColumnSizingOptions, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useArrowNavigationGroup, useTableColumnSizing_unstable, useTableFeatures, useTableSelection } from '@fluentui/react-components';
+import { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, TableRowData as RowStateBase, Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableColumnSizingOptions, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useArrowNavigationGroup, useFluent, useScrollbarWidth, useTableColumnSizing_unstable, useTableFeatures, useTableSelection } from '@fluentui/react-components';
 import React, { useEffect } from 'react';
+import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
 export type DocumentsTableComponentItem = {
   id: string;
@@ -9,6 +10,7 @@ export type DocumentsTableComponentItem = {
 export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
   onSelectedItem: (index: number) => void;
+  height: number;
   style?: React.CSSProperties;
 }
 
@@ -43,9 +45,52 @@ const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = [
   }),
 ];
 
+interface TableRowData extends RowStateBase<DocumentsTableComponentItem> {
+  onClick: (e: React.MouseEvent) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  selected: boolean;
+  appearance: "brand" | "none";
+}
+interface ReactWindowRenderFnProps extends ListChildComponentProps {
+  data: TableRowData[];
+}
+
+const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
+  const { item, selected, appearance, onClick, onKeyDown } = data[index];
+  return <TableRow
+    aria-rowindex={index + 2}
+    style={style}
+    key={item.id}
+    // onClick={onClick}
+    // onKeyDown={onKeyDown}
+    aria-selected={selected}
+    appearance={appearance}
+  >
+    <TableSelectionCell
+      checked={selected}
+      checkboxIndicator={{ "aria-label": "Select row" }}
+      onClick={onClick}
+      onKeyDown={onKeyDown}
+    />
+    {columns.map((column) => (
+      <TableCell
+        key={column.columnId}
+        // onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
+        onKeyDown={onKeyDown}
+      // {...columnSizing.getTableCellProps(column.columnId)}
+      >
+        {column.renderCell(item)}
+      </TableCell>
+    ))}
+  </TableRow>;
+};
+
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
-  items, onSelectedItem, style,
+  items, onSelectedItem, style, height,
 }: IDocumentsTableComponentProps) => {
+  const { targetDocument } = useFluent();
+  const scrollbarWidth = useScrollbarWidth({ targetDocument });
+
   const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>({
@@ -99,7 +144,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     ]
   );
 
-  const rows = getRows((row) => {
+  const rows: TableRowData[] = getRows((row) => {
     const selected = isRowSelected(row.rowId);
     return {
       ...row,
@@ -150,7 +195,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   };
 
   return (
-    <Table {...tableProps}>
+    <Table noNativeElements {...tableProps}>
       <TableHeader>
         <TableRow>
           <TableSelectionCell
@@ -184,35 +229,20 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
               </MenuPopover>
             </Menu>
           ))}
+          {/** Scrollbar alignment for the header */}
+          <div role="presentation" style={{ width: scrollbarWidth }} />
         </TableRow>
       </TableHeader>
-      <TableBody>
-        {rows.map(({ item, selected, onClick, onKeyDown, appearance }, index: number) => (
-          <TableRow
-            key={item.id}
-            // onClick={onClick}
-            // onKeyDown={onKeyDown}
-            aria-selected={selected}
-            appearance={appearance}
-          >
-            <TableSelectionCell
-              checked={selected}
-              checkboxIndicator={{ "aria-label": "Select row" }}
-              onClick={onClick}
-              onKeyDown={onKeyDown}
-            />
-            {columns.map((column) => (
-              <TableCell
-                key={column.columnId}
-                onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
-                onKeyDown={onKeyDown}
-                {...columnSizing.getTableCellProps(column.columnId)}
-              >
-                {column.renderCell(item)}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
+      <TableBody style={{ height: "100%", flex: 1 }}>
+        <List
+          height={height - 32}
+          itemCount={items.length}
+          itemSize={45}
+          width="100%"
+          itemData={rows}
+        >
+          {RenderRow}
+        </List>
       </TableBody>
     </Table>
   );
