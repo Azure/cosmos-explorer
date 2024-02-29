@@ -55,36 +55,6 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
   data: TableRowData[];
 }
 
-const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
-  const { item, selected, appearance, onClick, onKeyDown } = data[index];
-  return <TableRow
-    aria-rowindex={index + 2}
-    style={style}
-    key={item.id}
-    // onClick={onClick}
-    // onKeyDown={onKeyDown}
-    aria-selected={selected}
-    appearance={appearance}
-  >
-    <TableSelectionCell
-      checked={selected}
-      checkboxIndicator={{ "aria-label": "Select row" }}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-    />
-    {columns.map((column) => (
-      <TableCell
-        key={column.columnId}
-        // onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
-        onKeyDown={onKeyDown}
-      // {...columnSizing.getTableCellProps(column.columnId)}
-      >
-        {column.renderCell(item)}
-      </TableCell>
-    ))}
-  </TableRow>;
-};
-
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items, onSelectedItem, style, height,
 }: IDocumentsTableComponentProps) => {
@@ -117,6 +87,36 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(
     () => new Set<TableRowId>([0])
   );
+
+  const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
+    const { item, selected, appearance, onClick, onKeyDown } = data[index];
+    return <TableRow
+      aria-rowindex={index + 2}
+      style={style}
+      key={item.id}
+      // onClick={onClick}
+      // onKeyDown={onKeyDown}
+      aria-selected={selected}
+      appearance={appearance}
+    >
+      <TableSelectionCell
+        checked={selected}
+        checkboxIndicator={{ "aria-label": "Select row" }}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+      />
+      {columns.map((column) => (
+        <TableCell
+          key={column.columnId}
+          onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
+          onKeyDown={onKeyDown}
+          {...columnSizing.getTableCellProps(column.columnId)}
+        >
+          {column.renderCell(item)}
+        </TableCell>
+      ))}
+    </TableRow>;
+  };
 
   const {
     getRows,
