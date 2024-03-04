@@ -1,9 +1,11 @@
 import * as msal from "@azure/msal-browser";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import * as ViewModels from "../Contracts/ViewModels";
+import { traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
@@ -73,11 +75,27 @@ export async function acquireTokenWithMsal(msalInstance: msal.IPublicClientAppli
     return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
   } catch (silentError) {
     if (silentError instanceof msal.InteractionRequiredAuthError) {
-      // The error indicates that we need to acquire the token interactively.
-      // This will display a pop-up to re-establish authorization. If user does not
-      // have pop-ups enabled in their browser, this will fail.
-      return (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
+      try {
+        // The error indicates that we need to acquire the token interactively.
+        // This will display a pop-up to re-establish authorization. If user does not
+        // have pop-ups enabled in their browser, this will fail.
+        return (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
+      } catch (interactiveError) {
+        traceFailure(Action.SignInAad, {
+          request: JSON.stringify(tokenRequest),
+          acquireTokenType: "interactive",
+          errorMessage: JSON.stringify(interactiveError),
+        });
+
+        throw interactiveError;
+      }
     } else {
+      traceFailure(Action.SignInAad, {
+        request: JSON.stringify(tokenRequest),
+        acquireTokenType: "silent",
+        errorMessage: JSON.stringify(silentError),
+      });
+
       throw silentError;
     }
   }
