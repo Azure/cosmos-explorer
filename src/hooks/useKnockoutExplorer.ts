@@ -332,6 +332,7 @@ function createExplorerFabric(params: { connectionId: string }): Explorer {
     fabricContext: {
       connectionId: params.connectionId,
       databaseConnectionInfo: undefined,
+      isReadOnly: true,
     },
     authType: AuthType.ConnectionString,
     databaseAccount: {
@@ -483,6 +484,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
     MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
+    CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
   });
 
   updateUserContext({

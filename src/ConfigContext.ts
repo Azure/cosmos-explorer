@@ -1,7 +1,8 @@
-import { JunoEndpoints } from "Common/Constants";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
+  allowedCassandraProxyEndpoints,
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
@@ -40,7 +41,9 @@ export interface ConfigContext {
   BACKEND_ENDPOINT?: string;
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT?: string;
+  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   NEW_MONGO_APIS?: string[];
+  CASSANDRA_PROXY_ENDPOINT?: string;
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -85,7 +88,7 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-  MONGO_PROXY_ENDPOINT: "https://cdb-ms-prod-mp.cosmos.azure.com",
+  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
     // "resourcelist",
     // "createDocument",
@@ -94,6 +97,8 @@ let configContext: Readonly<ConfigContext> = {
     // "deleteDocument",
     // "createCollectionWithProxy",
   ],
+  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
+  CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
 };
@@ -147,6 +152,10 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
+  if (!validateEndpoint(newContext.CASSANDRA_PROXY_ENDPOINT, allowedCassandraProxyEndpoints)) {
+    delete newContext.CASSANDRA_PROXY_ENDPOINT;
+  }
+
   if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoOrigins)) {
     delete newContext.JUNO_ENDPOINT;
   }
@@ -164,10 +173,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
 // Injected for local development. These will be removed in the production bundle by webpack
 if (process.env.NODE_ENV === "development") {
-  const port: string = process.env.PORT || "1234";
   updateConfigContext({
-    BACKEND_ENDPOINT: "https://localhost:" + port,
-    MONGO_BACKEND_ENDPOINT: "https://localhost:" + port,
     PROXY_PATH: "/proxy",
     EMULATOR_ENDPOINT: "https://localhost:8081",
   });

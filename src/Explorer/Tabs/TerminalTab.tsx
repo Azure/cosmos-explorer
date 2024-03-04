@@ -34,6 +34,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
     private getTabId: () => string,
     private getUsername: () => string,
     private isAllPublicIPAddressesEnabled: ko.Observable<boolean>,
+    private kind: ViewModels.TerminalKind,
   ) {}
 
   public renderComponent(): JSX.Element {
@@ -42,7 +43,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
         <QuickstartFirewallNotification
           messageType={MessageTypes.OpenPostgresNetworkingBlade}
           screenshot={FirewallRuleScreenshot}
-          shellName="PostgreSQL"
+          shellName={this.getShellNameForDisplay(this.kind)}
         />
       );
     }
@@ -57,6 +58,18 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
     ) : (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
+  }
+
+  private getShellNameForDisplay(terminalKind: ViewModels.TerminalKind): string {
+    switch (terminalKind) {
+      case ViewModels.TerminalKind.Postgres:
+        return "PostgreSQL";
+      case ViewModels.TerminalKind.Mongo:
+      case ViewModels.TerminalKind.VCoreMongo:
+        return "MongoDB";
+      default:
+        return "";
+    }
   }
 }
 
@@ -76,6 +89,7 @@ export default class TerminalTab extends TabsBase {
       () => this.tabId,
       () => this.getUsername(),
       this.isAllPublicIPAddressesEnabled,
+      options.kind,
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
       if (
