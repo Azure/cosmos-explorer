@@ -21,7 +21,6 @@ import {
 import { HttpStatusCodes } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
-import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import {
@@ -272,26 +271,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     }
   };
 
-  const showTeachingBubble = (): void => {
-    if (showPromptTeachingBubble && !inputEdited.current) {
-      setTimeout(() => {
-        if (!inputEdited.current && !isWelcomModalVisible()) {
-          setCopilotTeachingBubbleVisible(true);
-          inputEdited.current = true;
-        }
-      }, 30000);
-    } else {
-      toggleCopilotTeachingBubbleVisible(false);
-    }
-  };
-
   const toggleCopilotTeachingBubbleVisible = (visible: boolean): void => {
     setCopilotTeachingBubbleVisible(visible);
     setShowPromptTeachingBubble(visible);
-  };
-
-  const isWelcomModalVisible = (): boolean => {
-    return localStorage.getItem("hideWelcomeModal") !== "true";
   };
 
   const clearFeedback = () => {
@@ -322,7 +304,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   React.useEffect(() => {
-    showTeachingBubble();
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
@@ -641,7 +622,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           </CommandBarButton>
         </Stack>
       )}
-      <WelcomeModal visible={isWelcomModalVisible()} />
       {isSamplePromptsOpen && <SamplePrompts sampleProps={sampleProps} />}
       {query !== "" && query.trim().length !== 0 && (
         <DeletePopup
