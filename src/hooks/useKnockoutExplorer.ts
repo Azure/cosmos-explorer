@@ -6,6 +6,7 @@ import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdap
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -35,7 +36,7 @@ import {
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
+import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
@@ -243,16 +244,19 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   let keys: DatabaseAccountListKeysResult = {};
   if (account.properties?.documentEndpoint) {
     const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
-    const msalInstance = getMsalInstance();
+    const msalInstance = await getMsalInstance();
     const cachedAccount = msalInstance.getAllAccounts()?.[0];
     msalInstance.setActiveAccount(cachedAccount);
     const cachedTenantId = localStorage.getItem("cachedTenantId");
-    const aadTokenResponse = await msalInstance.acquireTokenSilent({
-      forceRefresh: true,
-      scopes: [hrefEndpoint],
-      authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
-    });
-    aadToken = aadTokenResponse.accessToken;
+    try {
+      aadToken = await acquireTokenWithMsal(msalInstance, {
+        forceRefresh: true,
+        scopes: [hrefEndpoint],
+        authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
+      });
+    } catch (authError) {
+      logConsoleError("Failed to acquire authorization token: " + authError);
+    }
   }
   try {
     if (!account.properties.disableLocalAuth) {
