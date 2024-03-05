@@ -2,7 +2,7 @@
 
 exports[`PaneContainerComponent test should be resize if notification console is expanded 1`] = `
 <StyledPanelBase
-  closeButtonAriaLabel="Close"
+  closeButtonAriaLabel="Close test"
   customWidth="440px"
   headerClassName="panelHeader"
   headerText="test"
@@ -42,7 +42,7 @@ exports[`PaneContainerComponent test should render nothing if content is undefin
 
 exports[`PaneContainerComponent test should render with panel content and header 1`] = `
 <StyledPanelBase
-  closeButtonAriaLabel="Close"
+  closeButtonAriaLabel="Close test"
   customWidth="440px"
   headerClassName="panelHeader"
   headerText="test"
