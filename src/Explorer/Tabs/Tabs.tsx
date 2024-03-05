@@ -1,7 +1,7 @@
 import { Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
-import { configContext, updateConfigContext } from "ConfigContext";
+import { Platform, configContext, updateConfigContext } from "ConfigContext";
 import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
@@ -35,7 +35,7 @@ interface TabsProps {
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
   const [showRUThresholdMessageBar, setShowRUThresholdMessageBar] = useState<boolean>(
-    userContext.apiType === "SQL" && !hasRUThresholdBeenConfigured(),
+    userContext.apiType === "SQL" && configContext.platform !== Platform.Fabric && !hasRUThresholdBeenConfigured(),
   );
   const [
     showMongoAndCassandraProxiesNetworkSettingsWarningState,
