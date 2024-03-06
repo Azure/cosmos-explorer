@@ -98,7 +98,7 @@ export class ComputedPropertiesComponent extends React.Component<
     const computedPropertiesEditorModel = this.computedPropertiesEditor.getModel();
     try {
       const newComputedPropertiesContent = JSON.parse(
-        computedPropertiesEditorModel.getValue()
+        computedPropertiesEditorModel.getValue(),
       ) as DataModels.ComputedProperties;
       this.props.onComputedPropertiesContentChange(newComputedPropertiesContent);
       this.setState({ computedPropertiesContentIsValid: true });

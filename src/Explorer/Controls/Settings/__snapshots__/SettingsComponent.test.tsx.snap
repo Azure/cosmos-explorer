@@ -221,6 +221,7 @@ exports[`SettingsComponent renders 1`] = `
             Object {
               "analyticalStorageTtl": [Function],
               "changeFeedPolicy": [Function],
+              "computedProperties": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
