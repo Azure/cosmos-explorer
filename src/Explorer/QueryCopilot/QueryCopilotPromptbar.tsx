@@ -618,6 +618,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 
           <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton
+            className="copyQuery"
             onClick={copyGeneratedCode}
             iconProps={{ iconName: "Copy" }}
             style={{ margin: "0 10px", backgroundColor: "#FFF8F0", transition: "background-color 0.3s ease" }}
@@ -625,6 +626,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             Copy query
           </CommandBarButton>
           <CommandBarButton
+            className="deleteQuery"
             onClick={() => {
               setShowDeletePopup(true);
             }}
