@@ -100,18 +100,6 @@ exports[`SettingsUtils functions render 1`] = `
     .
   </Text>
   <Text
-    styles={
-      Object {
-        "root": Object {
-          "color": "windowtext",
-          "fontSize": 14,
-        },
-      }
-    }
-  >
-    You have not saved the latest changes made to your indexing policy. Please click save to confirm the changes.
-  </Text>
-  <Text
     id="updateThroughputDelayedApplyWarningMessage"
     styles={
       Object {

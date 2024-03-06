@@ -19,7 +19,6 @@ import {
   addMongoIndexStackProps,
   createAndAddMongoIndexStackProps,
   customDetailsListStyles,
-  indexingPolicynUnsavedWarningMessage,
   infoAndToolTipTextStyle,
   mediumWidthStackStyles,
   mongoCompoundIndexNotSupportedMessage,
@@ -27,15 +26,16 @@ import {
   onRenderRow,
   separatorStyles,
   subComponentStackProps,
+  unsavedEditorWarningMessage,
 } from "../../SettingsRenderUtils";
 import {
   AddMongoIndexProps,
-  getMongoIndexType,
-  getMongoIndexTypeText,
-  isIndexTransforming,
   MongoIndexIdField,
   MongoIndexTypes,
   MongoNotificationType,
+  getMongoIndexType,
+  getMongoIndexTypeText,
+  isIndexTransforming,
 } from "../../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "../IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
@@ -297,7 +297,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     if (this.getMongoWarningNotificationMessage()) {
       warningMessage = this.getMongoWarningNotificationMessage();
     } else if (this.isMongoIndexingPolicySaveable()) {
-      warningMessage = indexingPolicynUnsavedWarningMessage;
+      warningMessage = unsavedEditorWarningMessage("indexPolicy");
     }
 
     return (

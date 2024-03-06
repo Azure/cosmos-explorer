@@ -11,7 +11,6 @@ import {
   getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
   getToolTipContainer,
-  indexingPolicynUnsavedWarningMessage,
   manualToAutoscaleDisclaimerElement,
   mongoIndexTransformationRefreshingMessage,
   mongoIndexingPolicyAADError,
@@ -39,7 +38,6 @@ class SettingsRenderUtilsTestComponent extends React.Component {
 
         {manualToAutoscaleDisclaimerElement}
         {ttlWarning}
-        {indexingPolicynUnsavedWarningMessage}
         {updateThroughputDelayedApplyWarningMessage}
 
         {getThroughputApplyDelayedMessage(false, 1000, "RU/s", "sampleDb", "sampleCollection", 2000)}
