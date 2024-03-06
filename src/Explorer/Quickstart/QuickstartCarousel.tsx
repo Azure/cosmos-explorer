@@ -24,7 +24,9 @@ export const QuickstartCarousel: React.FC<QuickstartCarouselProps> = ({
     >
       <Stack>
         <Stack horizontal horizontalAlign="space-between" style={{ padding: 16 }}>
-          <Text variant="xLarge">{getHeaderText(page)}</Text>
+          <Text role="heading" aria-level={1} variant="xLarge">
+            {getHeaderText(page)}
+          </Text>
           <IconButton iconProps={{ iconName: "Cancel" }} onClick={() => setPage(4)} ariaLabel="Close" />
         </Stack>
         {getContent(page)}
