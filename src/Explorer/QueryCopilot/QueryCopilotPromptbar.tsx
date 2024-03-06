@@ -321,9 +321,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
-  const suggestionsnhistory = filteredHistories.concat(filteredSuggestedPrompts.map((item) => item.text));
+  const suggestionsnHistory = filteredHistories.concat(filteredSuggestedPrompts.map((item) => item.text));
 
-  const handlekeydown: React.KeyboardEventHandler = (e) => {
+  const handleKeyDown: React.KeyboardEventHandler = (e) => {
     const { key } = e;
     let nexIndexCount = 0;
     if (key === "ArrowDown") {
@@ -352,7 +352,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setShowSamplePrompts(false);
   }, []);
 
-  const handlepromptset = (prompttext: string) => {
+  const handlePromptSet = (prompttext: string) => {
     inputEdited.current = true;
     setUserPrompt(prompttext);
   };
