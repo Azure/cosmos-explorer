@@ -17,7 +17,7 @@ test("Tables CRUD", async () => {
   await explorer.fill('[aria-label="Table id, Example Table1"]', tableId);
   await explorer.click("#sidePanelOkButton");
   await explorer.click(`[data-test="TablesDB"]`);
-  await explorer.click(`[data-test="${tableId}"] [aria-label="More"]`);
+  await explorer.click(`[data-test="${tableId}"] [aria-label="More options"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Table")');
   await explorer.fill('text=* Confirm by typing the table id >> input[type="text"]', tableId);
   await explorer.click('[aria-label="OK"]');

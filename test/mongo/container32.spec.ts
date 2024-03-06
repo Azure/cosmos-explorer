@@ -21,11 +21,11 @@ test("Mongo CRUD", async () => {
   explorer.click(`.nodeItem >> text=${databaseId}`);
   explorer.click(`.nodeItem >> text=${containerId}`);
   // Delete database and collection
-  explorer.click(`[data-test="${containerId}"] [aria-label="More"]`);
+  explorer.click(`[data-test="${containerId}"] [aria-label="More options"]`);
   explorer.click('button[role="menuitem"]:has-text("Delete Collection")');
   await explorer.fill('text=* Confirm by typing the collection id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');
-  await explorer.click(`[data-test="${databaseId}"] [aria-label="More"]`);
+  await explorer.click(`[data-test="${databaseId}"] [aria-label="More options"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Database")');
   await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
   await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', databaseId);
