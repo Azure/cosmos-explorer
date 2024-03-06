@@ -1,5 +1,5 @@
 {
-  "JUNO_ENDPOINT": "https://tools-staging.cosmos.azure.com",
-  "isTerminalEnabled" : true,
-  "isPhoenixEnabled" : true
+  "JUNO_ENDPOINT": "https://tools.cosmos.azure.com",
+  "isTerminalEnabled": true,
+  "isPhoenixEnabled": true
 }

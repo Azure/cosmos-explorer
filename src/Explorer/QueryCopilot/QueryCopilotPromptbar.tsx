@@ -21,7 +21,6 @@ import {
 import { HttpStatusCodes } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
 import { createUri } from "Common/UrlUtility";
-import { WelcomeModal } from "Explorer/QueryCopilot/Modal/WelcomeModal";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
 import {
@@ -272,26 +271,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     }
   };
 
-  const showTeachingBubble = (): void => {
-    if (showPromptTeachingBubble && !inputEdited.current) {
-      setTimeout(() => {
-        if (!inputEdited.current && !isWelcomModalVisible()) {
-          setCopilotTeachingBubbleVisible(true);
-          inputEdited.current = true;
-        }
-      }, 30000);
-    } else {
-      toggleCopilotTeachingBubbleVisible(false);
-    }
-  };
-
   const toggleCopilotTeachingBubbleVisible = (visible: boolean): void => {
     setCopilotTeachingBubbleVisible(visible);
     setShowPromptTeachingBubble(visible);
-  };
-
-  const isWelcomModalVisible = (): boolean => {
-    return localStorage.getItem("hideWelcomeModal") !== "true";
   };
 
   const clearFeedback = () => {
@@ -322,7 +304,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   React.useEffect(() => {
-    showTeachingBubble();
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
@@ -539,84 +520,90 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       </Stack>
 
       {showFeedbackBar && (
-        <Stack style={{ backgroundColor: "#FFF8F0", padding: "2px 8px" }} horizontal verticalAlign="center">
-          <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
-          {showCallout && !hideFeedbackModalForLikedQueries && (
-            <Callout
-              role="status"
-              style={{ padding: 8 }}
-              target="#likeBtn"
-              onDismiss={() => {
-                setShowCallout(false);
-                SubmitFeedback({
-                  params: {
-                    generatedQuery: generatedQuery,
-                    likeQuery: likeQuery,
-                    description: "",
-                    userPrompt: userPrompt,
-                  },
-                  explorer,
-                  databaseId,
-                  containerId,
-                  mode: isSampleCopilotActive ? "Sample" : "User",
-                });
-              }}
-              directionalHint={DirectionalHint.topCenter}
-            >
-              <Text>
-                Thank you. Need to give{" "}
-                <Link
-                  onClick={() => {
+        <Stack
+          style={{ backgroundColor: "#FFF8F0", padding: "2px 8px", minHeight: 32 }}
+          horizontal
+          verticalAlign="center"
+        >
+          {userContext.feedbackPolicies?.policyAllowFeedback && (
+            <Stack horizontal verticalAlign="center">
+              <Text style={{ fontWeight: 600, fontSize: 12 }}>Provide feedback on the query generated</Text>
+              {showCallout && !hideFeedbackModalForLikedQueries && (
+                <Callout
+                  role="status"
+                  style={{ padding: 8 }}
+                  target="#likeBtn"
+                  onDismiss={() => {
                     setShowCallout(false);
-                    openFeedbackModal(generatedQuery, true, userPrompt);
+                    SubmitFeedback({
+                      params: {
+                        generatedQuery: generatedQuery,
+                        likeQuery: likeQuery,
+                        description: "",
+                        userPrompt: userPrompt,
+                      },
+                      explorer,
+                      databaseId,
+                      containerId,
+                      mode: isSampleCopilotActive ? "Sample" : "User",
+                    });
                   }}
+                  directionalHint={DirectionalHint.topCenter}
                 >
-                  more feedback?
-                </Link>
-              </Text>
-            </Callout>
+                  <Text>
+                    Thank you. Need to give{" "}
+                    <Link
+                      onClick={() => {
+                        setShowCallout(false);
+                        openFeedbackModal(generatedQuery, true, userPrompt);
+                      }}
+                    >
+                      more feedback?
+                    </Link>
+                  </Text>
+                </Callout>
+              )}
+              <IconButton
+                id="likeBtn"
+                style={{ marginLeft: 20 }}
+                aria-label="Like"
+                role="toggle"
+                iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
+                onClick={() => {
+                  setShowCallout(!likeQuery);
+                  setLikeQuery(!likeQuery);
+                  if (likeQuery === true) {
+                    document.getElementById("likeStatus").innerHTML = "Unpressed";
+                  }
+                  if (likeQuery === false) {
+                    document.getElementById("likeStatus").innerHTML = "Liked";
+                  }
+                  if (dislikeQuery) {
+                    setDislikeQuery(!dislikeQuery);
+                  }
+                }}
+              />
+              <IconButton
+                style={{ margin: "0 10px" }}
+                role="toggle"
+                aria-label="Dislike"
+                iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
+                onClick={() => {
+                  let toggleStatusValue = "Unpressed";
+                  if (!dislikeQuery) {
+                    openFeedbackModal(generatedQuery, false, userPrompt);
+                    setLikeQuery(false);
+                    toggleStatusValue = "Disliked";
+                  }
+                  setDislikeQuery(!dislikeQuery);
+                  setShowCallout(false);
+                  document.getElementById("likeStatus").innerHTML = toggleStatusValue;
+                }}
+              />
+              <span role="status" style={{ position: "absolute", left: "-9999px" }} id="likeStatus"></span>
+              <Separator vertical style={{ color: "#EDEBE9" }} />
+            </Stack>
           )}
-          <IconButton
-            id="likeBtn"
-            style={{ marginLeft: 20 }}
-            aria-label="Like"
-            role="toggle"
-            iconProps={{ iconName: likeQuery === true ? "LikeSolid" : "Like" }}
-            onClick={() => {
-              setShowCallout(!likeQuery);
-              setLikeQuery(!likeQuery);
-              if (likeQuery === true) {
-                document.getElementById("likeStatus").innerHTML = "Unpressed";
-              }
-              if (likeQuery === false) {
-                document.getElementById("likeStatus").innerHTML = "Liked";
-              }
-              if (dislikeQuery) {
-                setDislikeQuery(!dislikeQuery);
-              }
-            }}
-          />
-          <IconButton
-            style={{ margin: "0 10px" }}
-            role="toggle"
-            aria-label="Dislike"
-            iconProps={{ iconName: dislikeQuery === true ? "DislikeSolid" : "Dislike" }}
-            onClick={() => {
-              let toggleStatusValue = "Unpressed";
-              if (!dislikeQuery) {
-                openFeedbackModal(generatedQuery, false, userPrompt);
-                setLikeQuery(false);
-                toggleStatusValue = "Disliked";
-              }
-              setDislikeQuery(!dislikeQuery);
-              setShowCallout(false);
-              document.getElementById("likeStatus").innerHTML = toggleStatusValue;
-            }}
-          />
-
-          <span role="status" style={{ position: "absolute", left: "-9999px" }} id="likeStatus"></span>
-
-          <Separator vertical style={{ color: "#EDEBE9" }} />
           <CommandBarButton
             className="copyQuery"
             onClick={copyGeneratedCode}
@@ -637,7 +624,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           </CommandBarButton>
         </Stack>
       )}
-      <WelcomeModal visible={isWelcomModalVisible()} />
       {isSamplePromptsOpen && <SamplePrompts sampleProps={sampleProps} />}
       {query !== "" && query.trim().length !== 0 && (
         <DeletePopup

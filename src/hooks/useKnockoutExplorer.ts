@@ -499,6 +499,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     hasWriteAccess: inputs.hasWriteAccess ?? true,
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
+    feedbackPolicies: inputs.feedbackPolicies,
   });
 
   if (inputs.isPostgresAccount) {
