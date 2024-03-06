@@ -327,10 +327,10 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     const { key } = e;
     let nexIndexCount = 0;
     if (key === "ArrowDown") {
-      nexIndexCount = (focusedindex + 1) % suggestionsnhistory.length;
+      nexIndexCount = (focusedindex + 1) % suggestionsnHistory.length;
     }
     if (key === "ArrowUp") {
-      nexIndexCount = (focusedindex + suggestionsnhistory.length - 1) % suggestionsnhistory.length;
+      nexIndexCount = (focusedindex + suggestionsnHistory.length - 1) % suggestionsnHistory.length;
     }
     if (key === "Enter") {
       e.preventDefault();
@@ -340,11 +340,11 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   const handleSelection = (selectedIndex: number) => {
-    const selecteditem = suggestionsnhistory[selectedIndex];
+    const selecteditem = suggestionsnHistory[selectedIndex];
     if (!selecteditem) {
       return resetSearchComplete();
     } else {
-      handlepromptset(selecteditem);
+      handlePromptSet(selecteditem);
     }
   };
   const resetSearchComplete = useCallback(() => {
@@ -390,7 +390,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             inputEdited.current = true;
             setShowSamplePrompts(true);
           }}
-          onKeyDown={handlekeydown}
+          onKeyDown={handleKeyDown}
           onFocus={() => setShowSamplePrompts(true)}
           style={{ lineHeight: 30 }}
           styles={{ root: { width: "95%" }, fieldGroup: { borderRadius: 6 } }}
