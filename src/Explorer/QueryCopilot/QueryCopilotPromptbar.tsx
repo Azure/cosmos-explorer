@@ -35,13 +35,14 @@ import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import HintIcon from "../../../images/Hint.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { useTabs } from "../../hooks/useTabs";
+import "../Controls/ThroughputInput/ThroughputInput.less";
 import { useCopilotStore } from "../QueryCopilot/QueryCopilotContext";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -110,6 +111,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setErrorMessage,
     errorMessage,
   } = useCopilotStore();
+
+  const [focusedindex, setFocusedindex] = useState(-1);
 
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
@@ -326,6 +329,42 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
 
+  const suggestionsnHistory = filteredHistories.concat(filteredSuggestedPrompts.map((item) => item.text));
+
+  const handleKeyDown: React.KeyboardEventHandler = (e) => {
+    const { key } = e;
+    let nexIndexCount = 0;
+    if (key === "ArrowDown") {
+      nexIndexCount = (focusedindex + 1) % suggestionsnhistory.length;
+    }
+    if (key === "ArrowUp") {
+      nexIndexCount = (focusedindex + suggestionsnhistory.length - 1) % suggestionsnhistory.length;
+    }
+    if (key === "Enter") {
+      e.preventDefault();
+      handleSelection(focusedindex);
+    }
+    setFocusedindex(nexIndexCount);
+  };
+
+  const handleSelection = (selectedIndex: number) => {
+    const selecteditem = suggestionsnhistory[selectedIndex];
+    if (!selecteditem) {
+      return resetSearchComplete();
+    } else {
+      handlepromptset(selecteditem);
+    }
+  };
+  const resetSearchComplete = useCallback(() => {
+    setFocusedindex(-1);
+    setShowSamplePrompts(false);
+  }, []);
+
+  const handlePromptSet = (prompttext: string) => {
+    inputEdited.current = true;
+    setUserPrompt(prompttext);
+  };
+
   return (
     <Stack
       className="copilot-prompt-pane"
@@ -360,12 +399,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             inputEdited.current = true;
             setShowSamplePrompts(true);
           }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && userPrompt) {
-              inputEdited.current = true;
-              startGenerateQueryProcess();
-            }
-          }}
+          onKeyDown={handlekeydown}
+          onFocus={() => setShowSamplePrompts(true)}
           style={{ lineHeight: 30 }}
           styles={{ root: { width: "95%" }, fieldGroup: { borderRadius: 6 } }}
           disabled={isGeneratingQuery}
@@ -400,7 +435,10 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
           iconProps={{ iconName: "Send" }}
           disabled={isGeneratingQuery || !userPrompt.trim()}
           style={{ marginLeft: 8 }}
-          onClick={() => startGenerateQueryProcess()}
+          onClick={() => {
+            startGenerateQueryProcess();
+            setShowSamplePrompts(false);
+          }}
           aria-label="Send"
         />
         <div role="alert" aria-label={getAriaLabel()}>
@@ -442,6 +480,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       }}
                       onRenderIcon={() => <Image src={RecentIcon} styles={{ root: { overflow: "unset" } }} />}
                       styles={promptStyles}
+                      className={focusedindex === i ? "highlighted-buttonstyles" : "buttonstyles"}
                     >
                       {history}
                     </DefaultButton>
@@ -462,7 +501,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                   >
                     Suggested Prompts
                   </Text>
-                  {filteredSuggestedPrompts.map((prompt) => (
+                  {filteredSuggestedPrompts.map((prompt, index) => (
                     <DefaultButton
                       key={prompt.id}
                       onClick={() => {
@@ -472,6 +511,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       }}
                       onRenderIcon={() => <Image src={HintIcon} />}
                       styles={promptStyles}
+                      className={focusedindex === filteredHistories.length + index ? "highlighted-buttonstyles" : ""}
                     >
                       {prompt.text}
                     </DefaultButton>
