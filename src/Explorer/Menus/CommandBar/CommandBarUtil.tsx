@@ -37,7 +37,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
     if (isDisabled) {
       return StyleConstants.GrayScale;
     }
-    return configContext.platform == Platform.Fabric ? StyleConstants.NoColor : undefined;
+    return configContext.platform == Platform.Fabric ? StyleConstants.FabricToolbarIconColor : undefined;
   };
 
   return btns
@@ -96,7 +96,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             },
             width: 16,
           },
-          label: { fontSize: StyleConstants.mediumFontSize },
+          label: {
+            fontSize:
+              configContext.platform == Platform.Fabric
+                ? StyleConstants.DefaultFontSize
+                : StyleConstants.mediumFontSize,
+          },
           rootHovered: { backgroundColor: hoverColor },
           rootPressed: { backgroundColor: hoverColor },
           splitButtonMenuButtonExpanded: {
@@ -133,7 +138,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               // TODO Figure out how to do it the proper way with subComponentStyles.
               // TODO Remove all this crazy styling once we adopt Ui-Fabric Azure themes
               selectors: {
-                ".ms-ContextualMenu-itemText": { fontSize: StyleConstants.mediumFontSize },
+                ".ms-ContextualMenu-itemText": {
+                  fontSize:
+                    configContext.platform == Platform.Fabric
+                      ? StyleConstants.DefaultFontSize
+                      : StyleConstants.mediumFontSize,
+                },
                 ".ms-ContextualMenu-link:hover": { backgroundColor: hoverColor },
                 ".ms-ContextualMenu-icon": { width: 16, height: 16 },
               },
