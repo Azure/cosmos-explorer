@@ -42,6 +42,11 @@ function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewM
 
   createDataTable(0, tableEntityListViewModel, queryTablesTab); // Fake a DataTable to start.
   $(window).resize(updateTableScrollableRegionMetrics);
+  operationManager.focusTable(); // Also selects the first row if needed.
+  // Attach the arrow key event handler to the table element
+  $dataTable.on("keydown", (event: JQueryEventObject) => {
+    handleArrowKey(element, valueAccessor, allBindings, viewModel, bindingContext, event);
+  });
 }
 
 function onTableColumnChange(enablePrompt: boolean = true, queryTablesTab: QueryTablesTab) {
@@ -209,6 +214,39 @@ function selectionChanged(element: any, valueAccessor: any, allBindings: any, vi
       $(sel).attr("tabindex", "0").focus().addClass("selected");
     });
   //selected = bindingContext.$data.selected();
+}
+function handleArrowKey(
+  element: any,
+  valueAccessor: any,
+  allBindings: any,
+  viewModel: any,
+  bindingContext: any,
+  event: JQueryEventObject,
+) {
+  const isUpArrowKey: boolean = event.keyCode === Constants.keyCodes.UpArrow;
+  const isDownArrowKey: boolean = event.keyCode === Constants.keyCodes.DownArrow;
+
+  if (isUpArrowKey || isDownArrowKey) {
+    const $dataTable = $(element);
+    let $selectedRow = $dataTable.find("tr.selected");
+
+    if ($selectedRow.length === 0) {
+      // No row is currently selected, select the first row
+      $selectedRow = $dataTable.find("tr:first");
+      $selectedRow.addClass("selected");
+    } else {
+      const $targetRow = isUpArrowKey ? $selectedRow.prev("tr") : $selectedRow.next("tr");
+
+      if ($targetRow.length > 0) {
+        // Remove the selected class from the current row and add it to the target row
+        $selectedRow.removeClass("selected").attr("tabindex", "-1");
+        $targetRow.addClass("selected").attr("tabindex", "0");
+        $targetRow.focus();
+      }
+    }
+
+    event.preventDefault();
+  }
 }
 
 function dataChanged(element: any, valueAccessor: any, allBindings: any, viewModel: any, bindingContext: any) {
