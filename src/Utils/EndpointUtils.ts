@@ -98,6 +98,14 @@ export const allowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Mooncake,
 ];
 
+export const allowedCassandraProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
+  "https://main.documentdb.ext.azure.com",
+  "https://main.documentdb.ext.azure.cn",
+  "https://main.documentdb.ext.azure.us",
+  "https://main.cosmos.ext.azure",
+  "https://localhost:12901",
+];
+
 export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
   [CassandraProxyEndpoints.Mpac]: ["40.113.96.14", "104.42.11.145"],
   [CassandraProxyEndpoints.Prod]: ["137.117.230.240", "168.61.72.237"],
