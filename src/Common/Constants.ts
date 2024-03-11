@@ -124,7 +124,7 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
-// TODO: 435619 Add default endpoints per cloud and use regional only when available
+//TODO: Remove this when new backend is migrated over
 export class CassandraBackend {
   public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
   public static readonly guestCreateOrDeleteApi: string = "api/guest/cassandra/createordelete";
@@ -134,6 +134,17 @@ export class CassandraBackend {
   public static readonly guestKeysApi: string = "api/guest/cassandra/keys";
   public static readonly schemaApi: string = "api/cassandra/schema";
   public static readonly guestSchemaApi: string = "api/guest/cassandra/schema";
+}
+
+export class CassandraProxyAPIs {
+  public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
+  public static readonly connectionStringCreateOrDeleteApi: string = "api/connectionstring/cassandra/createordelete";
+  public static readonly queryApi: string = "api/cassandra/postquery";
+  public static readonly connectionStringQueryApi: string = "api/connectionstring/cassandra";
+  public static readonly keysApi: string = "api/cassandra/keys";
+  public static readonly connectionStringKeysApi: string = "api/connectionstring/cassandra/keys";
+  public static readonly schemaApi: string = "api/cassandra/schema";
+  public static readonly connectionStringSchemaApi: string = "api/connectionstring/cassandra/schema";
 }
 
 export class Queries {
