@@ -135,6 +135,7 @@ export interface Collection extends CollectionBase {
   changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
+  computedProperties: ko.Observable<DataModels.ComputedProperties>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];

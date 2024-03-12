@@ -61,6 +61,8 @@ export interface PriceBreakdown {
   currencySign: string;
 }
 
+export type editorType = "indexPolicy" | "computedProperties";
+
 export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14, color: "windowtext" } };
 
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
@@ -254,9 +256,10 @@ export const ttlWarning: JSX.Element = (
   </Text>
 );
 
-export const indexingPolicynUnsavedWarningMessage: JSX.Element = (
+export const unsavedEditorWarningMessage = (editor: editorType): JSX.Element => (
   <Text styles={infoAndToolTipTextStyle}>
-    You have not saved the latest changes made to your indexing policy. Please click save to confirm the changes.
+    You have not saved the latest changes made to your{" "}
+    {editor === "indexPolicy" ? "indexing policy" : "computed properties"}. Please click save to confirm the changes.
   </Text>
 );
 
