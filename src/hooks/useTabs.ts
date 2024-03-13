@@ -105,7 +105,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       return true;
     });
     if (updatedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
-      set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
+      set({ activeTab: undefined, activeReactTab: undefined });
     }
 
     if (tab.tabId === activeTab.tabId && tabIndex !== -1) {
@@ -143,7 +143,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       });
 
       if (get().openedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
-        set({ activeTab: undefined, activeReactTab: ReactTabKind.Home });
+        set({ activeTab: undefined, activeReactTab: undefined });
       }
     }
   },
