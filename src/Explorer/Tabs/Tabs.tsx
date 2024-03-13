@@ -182,11 +182,9 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
             )}
           </span>
           <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
-          {tabKind !== ReactTabKind.Home && (
-            <span className="tabIconSection">
-              <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
-            </span>
-          )}
+          <span className="tabIconSection">
+            <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
+          </span>
         </div>
       </span>
     </li>
