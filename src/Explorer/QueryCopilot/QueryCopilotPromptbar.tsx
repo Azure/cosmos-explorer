@@ -529,7 +529,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
               )}
               {showFeedbackBar && (
                 <Stack horizontal verticalAlign="center" style={{ maxHeight: 20 }}>
-                  {!userContext.feedbackPolicies?.policyAllowFeedback && (
+                  {userContext.feedbackPolicies?.policyAllowFeedback && (
                     <Stack horizontal verticalAlign="center">
                       <Text style={{ fontSize: 12 }}>Provide feedback</Text>
                       {showCallout && !hideFeedbackModalForLikedQueries && (
