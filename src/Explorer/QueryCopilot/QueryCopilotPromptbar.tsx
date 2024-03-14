@@ -297,9 +297,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     if (isGeneratingQuery === null) {
       return " ";
     } else if (isGeneratingQuery) {
-      return "Content is loading";
+      return "Content is loading!";
     } else {
-      return "Content is updated";
+      return "Content is updated!";
     }
   };
 
