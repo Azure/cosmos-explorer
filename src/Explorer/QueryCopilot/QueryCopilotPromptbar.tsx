@@ -36,7 +36,6 @@ import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import React, { useRef, useState } from "react";
 import HintIcon from "../../../images/Hint.svg";
-// import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -216,9 +215,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       if (response.ok) {
         if (generateSQLQueryResponse?.sql !== "N/A") {
           let currentGeneratedQuery = `-- **Prompt:** ${userPrompt}\r\n`;
-          // if (generateSQLQueryResponse.explanation) {
-          //   query += `-- **Explanation of query:** ${generateSQLQueryResponse.explanation}\r\n`;
-          // }
           currentGeneratedQuery += generateSQLQueryResponse.sql;
           const lastQuery = generatedQuery && query ? `${query}\r\n` : "";
           setQuery(`${lastQuery}${currentGeneratedQuery}`);
@@ -399,9 +395,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 or write your own query
               </TeachingBubble>
             )}
-            {/* <div role="alert" aria-label={getAriaLabel()}>
-              {isGeneratingQuery && <Spinner style={{ marginLeft: 8 }} />}
-            </div> */}
             {showSamplePrompts && (
               <Callout
                 styles={{ root: { minWidth: 400, maxWidth: "70vw" } }}
