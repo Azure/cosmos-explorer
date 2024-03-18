@@ -139,7 +139,7 @@ export class CassandraBackend {
 export class CassandraProxyAPIs {
   public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
   public static readonly connectionStringCreateOrDeleteApi: string = "api/connectionstring/cassandra/createordelete";
-  public static readonly queryApi: string = "api/cassandra/postquery";
+  public static readonly queryApi: string = "api/cassandra";
   public static readonly connectionStringQueryApi: string = "api/connectionstring/cassandra";
   public static readonly keysApi: string = "api/cassandra/keys";
   public static readonly connectionStringKeysApi: string = "api/connectionstring/cassandra/keys";
