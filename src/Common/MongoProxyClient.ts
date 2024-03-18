@@ -683,8 +683,13 @@ export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameter
 }
 
 function useMongoProxyEndpoint(api: string): boolean {
+  const activeMongoProxyEndpoints: string[] = [
+    MongoProxyEndpoints.Development,
+    MongoProxyEndpoints.Mpac,
+  ];
+
   return (
     configContext.NEW_MONGO_APIS?.includes(api) &&
-    [MongoProxyEndpoints.Development, MongoProxyEndpoints.MPAC].includes(configContext.MONGO_PROXY_ENDPOINT)
+    activeMongoProxyEndpoints.includes(configContext.MONGO_PROXY_ENDPOINT)
   );
 }

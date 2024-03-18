@@ -1,4 +1,5 @@
-import { JunoEndpoints } from "Common/Constants";
+import { BackendApi, JunoEndpoints } from "Common/Constants";
+import { configContext } from "ConfigContext";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -67,9 +68,17 @@ export const PortalBackendIPs: { [key: string]: string[] } = {
   //usnat: ["7.28.202.68"],
 };
 
+export class PortalBackendEndpoints {
+  public static readonly Development: string = "https://localhost:7235";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-pbe.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-pbe.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-pbe.cosmos.azure.cn";
+}
+
 export class MongoProxyEndpoints {
   public static readonly Development: string = "https://localhost:7238";
-  public static readonly MPAC: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
   public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
   public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
@@ -77,7 +86,7 @@ export class MongoProxyEndpoints {
 
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
   MongoProxyEndpoints.Development,
-  MongoProxyEndpoints.MPAC,
+  MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
   MongoProxyEndpoints.Fairfax,
   MongoProxyEndpoints.Mooncake,
@@ -115,3 +124,11 @@ export const allowedJunoOrigins: ReadonlyArray<string> = [
 ];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
+
+export function usePortalBackendEndpoint(backendApi: BackendApi): boolean {
+  const activePortalBackendEndpoints: string[] = [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac];
+  return (
+    configContext.NEW_BACKEND_APIS?.includes(backendApi) &&
+    activePortalBackendEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT)
+  );
+}

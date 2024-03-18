@@ -136,6 +136,10 @@ export class CassandraBackend {
   public static readonly guestSchemaApi: string = "api/guest/cassandra/schema";
 }
 
+export enum BackendApi {
+  GenerateToken,
+}
+
 export class Queries {
   public static CustomPageOption: string = "custom";
   public static UnlimitedPageOption: string = "unlimited";

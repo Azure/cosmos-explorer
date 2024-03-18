@@ -1,5 +1,7 @@
-import { JunoEndpoints } from "Common/Constants";
+import { BackendApi, JunoEndpoints } from "Common/Constants";
 import {
+  MongoProxyEndpoints,
+  PortalBackendEndpoints,
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
   allowedEmulatorEndpoints,
@@ -38,6 +40,8 @@ export interface ConfigContext {
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   BACKEND_ENDPOINT?: string;
+  PORTAL_BACKEND_ENDPOINT?: string;
+  NEW_BACKEND_APIS?: BackendApi[];
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT?: string;
   NEW_MONGO_APIS?: string[];
@@ -85,7 +89,9 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-  MONGO_PROXY_ENDPOINT: "https://cdb-ms-prod-mp.cosmos.azure.com",
+  PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
+  NEW_BACKEND_APIS: [BackendApi.GenerateToken],
+  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
     // "resourcelist",
     // "createDocument",
