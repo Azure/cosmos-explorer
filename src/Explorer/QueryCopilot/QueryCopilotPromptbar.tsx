@@ -310,19 +310,20 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       styles={{ root: { backgroundColor: "#FAFAFA", padding: "8px" } }}
       id="copilot-textfield-label"
     >
-      <Stack horizontal>
-        <Stack
-          styles={{
-            root: {
-              width: "100%",
-              borderWidth: 1,
-              borderStyle: "solid",
-              borderColor: "#D1D1D1",
-              borderRadius: 8,
-              boxShadow: "0px 4px 8px 0px #00000024",
-            },
-          }}
-        >
+      <Stack
+        horizontal
+        styles={{
+          root: {
+            width: "100%",
+            borderWidth: 1,
+            borderStyle: "solid",
+            borderColor: "#D1D1D1",
+            borderRadius: 8,
+            boxShadow: "0px 4px 8px 0px #00000024",
+          },
+        }}
+      >
+        <Stack style={{ width: "100%" }}>
           <Stack horizontal verticalAlign="center" style={{ padding: "8px 8px 0px 8px" }}>
             <TextField
               id="naturalLanguageInput"
@@ -616,7 +617,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                         }}
                       />
                       <span role="status" style={{ position: "absolute", left: "-9999px" }} id="likeStatus"></span>
-                      <Separator vertical style={{ color: "#EDEBE9" }} />
+                      <Separator
+                        vertical
+                        styles={{
+                          root: {
+                            "::after": {
+                              backgroundColor: "#767676",
+                            },
+                          },
+                        }}
+                      />
                     </Stack>
                   )}
                   <CommandBarButton
@@ -630,7 +640,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       },
                     }}
                   >
-                    Copy query
+                    Copy code
                   </CommandBarButton>
                   <CommandBarButton
                     className="deleteQuery"
@@ -645,7 +655,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       },
                     }}
                   >
-                    Delete query
+                    Clear editor
                   </CommandBarButton>
                 </Stack>
               )}
@@ -685,11 +695,6 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             toggleCopilot(false);
             clearFeedback();
             resetMessageStates();
-          }}
-          styles={{
-            root: {
-              marginLeft: "auto !important",
-            },
           }}
           ariaLabel="Close"
           title="Close copilot"
