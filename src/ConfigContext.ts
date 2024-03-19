@@ -1,9 +1,14 @@
-import { BackendApi, JunoEndpoints } from "Common/Constants";
 import {
+  BackendApi,
+  CassandraProxyEndpoints,
+  JunoEndpoints,
   MongoProxyEndpoints,
   PortalBackendEndpoints,
+} from "Common/Constants";
+import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
+  allowedCassandraProxyEndpoints,
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
@@ -44,7 +49,11 @@ export interface ConfigContext {
   NEW_BACKEND_APIS?: BackendApi[];
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT?: string;
+  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   NEW_MONGO_APIS?: string[];
+  CASSANDRA_PROXY_ENDPOINT?: string;
+  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: boolean;
+  NEW_CASSANDRA_APIS?: string[];
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -89,17 +98,26 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-  PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
+  PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
   NEW_BACKEND_APIS: [BackendApi.GenerateToken],
-  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
+  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
   NEW_MONGO_APIS: [
-    // "resourcelist",
-    // "createDocument",
-    // "readDocument",
-    // "updateDocument",
-    // "deleteDocument",
-    // "createCollectionWithProxy",
+    "resourcelist",
+    "createDocument",
+    "readDocument",
+    "updateDocument",
+    "deleteDocument",
+    "createCollectionWithProxy",
   ],
+  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
+  CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
+  NEW_CASSANDRA_APIS: [
+    // "postQuery",
+    // "createOrDelete",
+    // "getKeys",
+    // "getSchema",
+  ],
+  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
 };
@@ -153,6 +171,10 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
+  if (!validateEndpoint(newContext.CASSANDRA_PROXY_ENDPOINT, allowedCassandraProxyEndpoints)) {
+    delete newContext.CASSANDRA_PROXY_ENDPOINT;
+  }
+
   if (!validateEndpoint(newContext.JUNO_ENDPOINT, allowedJunoOrigins)) {
     delete newContext.JUNO_ENDPOINT;
   }
@@ -170,10 +192,7 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
 // Injected for local development. These will be removed in the production bundle by webpack
 if (process.env.NODE_ENV === "development") {
-  const port: string = process.env.PORT || "1234";
   updateConfigContext({
-    BACKEND_ENDPOINT: "https://localhost:" + port,
-    MONGO_BACKEND_ENDPOINT: "https://localhost:" + port,
     PROXY_PATH: "/proxy",
     EMULATOR_ENDPOINT: "https://localhost:8081",
   });

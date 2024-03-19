@@ -1,5 +1,6 @@
 import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
 import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";
@@ -32,7 +33,8 @@ const App: React.FunctionComponent = () => {
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
   const config = useConfig();
-  const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
+  const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant, authFailure } =
+    useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
@@ -136,7 +138,10 @@ const App: React.FunctionComponent = () => {
       {!isLoggedIn && !encryptedTokenMetadata && (
         <ConnectExplorer {...{ login, setEncryptedToken, setAuthType, connectionString, setConnectionString }} />
       )}
-      {isLoggedIn && <DirectoryPickerPanel {...{ isOpen, dismissPanel, armToken, tenantId, switchTenant }} />}
+      {isLoggedIn && authFailure && <AadAuthorizationFailure {...{ authFailure }} />}
+      {isLoggedIn && !authFailure && (
+        <DirectoryPickerPanel {...{ isOpen, dismissPanel, armToken, tenantId, switchTenant }} />
+      )}
     </>
   );
 };

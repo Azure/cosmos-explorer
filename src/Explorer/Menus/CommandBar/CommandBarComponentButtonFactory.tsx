@@ -1,3 +1,4 @@
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
@@ -8,6 +9,7 @@ import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
+import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import GitHubIcon from "../../../../images/github.svg";
@@ -55,6 +57,9 @@ export function createStaticCommandBarButtons(
       buttons.push(createDivider());
     }
   };
+
+  const homeBtn = createHomeButton();
+  buttons.push(homeBtn);
 
   if (configContext.platform !== Platform.Fabric) {
     const newCollectionBtn = createNewCollectionGroup(container);
@@ -196,18 +201,22 @@ export function createContextCommandBarButtons(
 }
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = [
-    {
-      iconSrc: SettingsIcon,
-      iconAlt: "Settings",
-      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
-      commandButtonLabel: undefined,
-      ariaLabel: "Settings",
-      tooltipText: "Settings",
-      hasPopup: true,
-      disabled: false,
-    },
-  ];
+  const buttons: CommandButtonComponentProps[] =
+    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
+      ? []
+      : [
+          {
+            iconSrc: SettingsIcon,
+            iconAlt: "Settings",
+            onCommandClick: () =>
+              useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
+            commandButtonLabel: undefined,
+            ariaLabel: "Settings",
+            tooltipText: "Settings",
+            hasPopup: true,
+            disabled: false,
+          },
+        ];
 
   const showOpenFullScreen =
     configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
@@ -236,7 +245,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     const feedbackButtonOptions: CommandButtonComponentProps = {
       iconSrc: FeedbackIcon,
       iconAlt: label,
-      onCommandClick: () => container.provideFeedbackEmail(),
+      onCommandClick: () => container.openCESCVAFeedbackBlade(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,
@@ -278,6 +287,18 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
     ariaLabel: label,
     hasPopup: true,
     id: "createNewContainerCommandButton",
+  };
+}
+
+function createHomeButton(): CommandButtonComponentProps {
+  const label = "Home";
+  return {
+    iconSrc: HomeIcon,
+    iconAlt: label,
+    onCommandClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Home),
+    commandButtonLabel: label,
+    hasPopup: false,
+    ariaLabel: label,
   };
 }
 

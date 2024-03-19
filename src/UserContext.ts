@@ -50,7 +50,23 @@ export interface VCoreMongoConnectionParams {
 interface FabricContext {
   connectionId: string;
   databaseConnectionInfo: FabricDatabaseConnectionInfo | undefined;
+  isReadOnly: boolean;
 }
+
+export type AdminFeedbackControlPolicy =
+  | "connectedExperiences"
+  | "policyAllowFeedback"
+  | "policyAllowSurvey"
+  | "policyAllowScreenshot"
+  | "policyAllowContact"
+  | "policyAllowContent"
+  | "policyEmailCollectionDefault"
+  | "policyScreenshotDefault"
+  | "policyContentSamplesDefault";
+
+export type AdminFeedbackPolicySettings = {
+  [key in AdminFeedbackControlPolicy]: boolean;
+};
 
 interface UserContext {
   readonly fabricContext?: FabricContext;
@@ -83,6 +99,7 @@ interface UserContext {
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
+  readonly feedbackPolicies?: AdminFeedbackPolicySettings;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
