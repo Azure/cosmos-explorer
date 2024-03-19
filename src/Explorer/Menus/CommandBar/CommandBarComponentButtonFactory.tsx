@@ -240,7 +240,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     buttons.push(fullScreenButton);
   }
 
-  if (configContext.platform !== Platform.Emulator) {
+  if (configContext.platform === Platform.Portal) {
     const label = "Feedback";
     const feedbackButtonOptions: CommandButtonComponentProps = {
       iconSrc: FeedbackIcon,
