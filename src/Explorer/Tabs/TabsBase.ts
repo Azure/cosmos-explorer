@@ -144,7 +144,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public getTitle(): string {
-    return (this.collection?.id()) || (this.database?.id());
+    return this.collection?.id() || this.database?.id();
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
