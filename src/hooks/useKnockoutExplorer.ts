@@ -89,7 +89,6 @@ async function configureFabric(): Promise<Explorer> {
   // These are the versions of Fabric that Data Explorer supports.
   const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
 
-  let isExplorerVisible = true;
   let firstContainerOpened = false;
   let explorer: Explorer;
   return new Promise<Explorer>((resolve) => {
@@ -111,7 +110,6 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            isExplorerVisible = data.message.isVisible ?? true; // preserve glitchy behavior if Fabric UX doesn't send isVisible
             const fabricVersion = data.version;
             if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
               // TODO Surface error to user
@@ -123,7 +121,7 @@ async function configureFabric(): Promise<Explorer> {
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
             await explorer.refreshAllDatabases();
-            if (isExplorerVisible && !firstContainerOpened) {
+            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
               firstContainerOpened = true;
               openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
             }
@@ -138,8 +136,12 @@ async function configureFabric(): Promise<Explorer> {
             break;
           }
           case "explorerVisible": {
-            isExplorerVisible = data.message.visible;
-            if (isExplorerVisible && !firstContainerOpened && explorer !== undefined) {
+            userContext.fabricContext.isVisible = data.message.visible;
+            if (
+              userContext.fabricContext.isVisible &&
+              !firstContainerOpened &&
+              userContext?.fabricContext?.databaseConnectionInfo?.databaseId !== undefined
+            ) {
               firstContainerOpened = true;
               openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
             }
@@ -336,12 +338,13 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function createExplorerFabric(params: { connectionId: string }): Explorer {
+function createExplorerFabric(params: { connectionId: string; isVisible: boolean }): Explorer {
   updateUserContext({
     fabricContext: {
       connectionId: params.connectionId,
       databaseConnectionInfo: undefined,
       isReadOnly: true,
+      isVisible: params.isVisible ?? true,
     },
     authType: AuthType.ConnectionString,
     databaseAccount: {
