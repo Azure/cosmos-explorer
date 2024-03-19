@@ -111,7 +111,7 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
-            isExplorerVisible = data.message.isVisible;
+            isExplorerVisible = data.message.isVisible ?? true; // preserve glitchy behavior if Fabric UX doesn't send isVisible
             const fabricVersion = data.version;
             if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
               // TODO Surface error to user
