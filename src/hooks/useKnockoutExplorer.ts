@@ -2,7 +2,6 @@ import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -90,6 +89,8 @@ async function configureFabric(): Promise<Explorer> {
   // These are the versions of Fabric that Data Explorer supports.
   const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
 
+  let isExplorerVisible = true;
+  let firstContainerOpened = false;
   let explorer: Explorer;
   return new Promise<Explorer>((resolve) => {
     window.addEventListener(
@@ -110,6 +111,7 @@ async function configureFabric(): Promise<Explorer> {
 
         switch (data.type) {
           case "initialize": {
+            isExplorerVisible = data.message.isVisible;
             const fabricVersion = data.version;
             if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
               // TODO Surface error to user
@@ -121,7 +123,10 @@ async function configureFabric(): Promise<Explorer> {
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
             await explorer.refreshAllDatabases();
-            openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            if (isExplorerVisible && !firstContainerOpened) {
+              firstContainerOpened = true;
+              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            }
             break;
           }
           case "newContainer":
@@ -132,8 +137,12 @@ async function configureFabric(): Promise<Explorer> {
             handleCachedDataMessage(data);
             break;
           }
-          case "setToolbarStatus": {
-            useCommandBar.getState().setIsHidden(data.message.visible === false);
+          case "explorerVisible": {
+            isExplorerVisible = data.message.visible;
+            if (isExplorerVisible && !firstContainerOpened && explorer !== undefined) {
+              firstContainerOpened = true;
+              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            }
             break;
           }
           default:
