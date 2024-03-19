@@ -40,7 +40,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.database = options.database;
     this.rid = options.rid || (this.collection && this.collection.rid) || "";
     this.tabKind = options.tabKind;
-    this.tabTitle = ko.observable<string>(options.title);
+    this.tabTitle = ko.observable<string>((this.getTitle()) + " - " + options.title);
     this.tabPath =
       ko.observable(options.tabPath ?? "") ||
       (this.collection &&
@@ -141,6 +141,10 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   public getContainer(): Explorer {
     return (this.collection && this.collection.container) || (this.database && this.database.container);
+  }
+
+  public getTitle(): string {
+    return (this.collection.id()) || (this.database.id());
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
