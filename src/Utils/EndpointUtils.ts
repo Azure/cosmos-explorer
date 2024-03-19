@@ -147,8 +147,9 @@ export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
 
 export function usePortalBackendEndpoint(backendApi: BackendApi): boolean {
   const activePortalBackendEndpoints: string[] = [PortalBackendEndpoints.Development];
+  const activeBackendApi: boolean = configContext.NEW_BACKEND_APIS?.includes(backendApi) || false;
   return (
-    configContext.NEW_BACKEND_APIS?.includes(backendApi) &&
-    activePortalBackendEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT)
+    activeBackendApi &&
+    activePortalBackendEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT as string)
   );
 }
