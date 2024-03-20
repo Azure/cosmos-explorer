@@ -440,7 +440,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
       }
     }
 
-
     return item;
     // TODO: for now, merge all the pk values into a single string/column
     // type: documentId.partitionKeyProperties ? documentId.stringPartitionKeyValues.join(",") : undefined,

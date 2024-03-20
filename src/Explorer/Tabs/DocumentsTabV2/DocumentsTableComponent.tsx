@@ -65,18 +65,21 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 
   const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
 
-  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>({
+
+  const initialSizingOptions: TableColumnSizingOptions = {
     id: {
       idealWidth: 280,
       // minWidth: 273,
     },
-    // TODO FIX THIS
-    // type: {
-    //   defaultWidth: 100,
-    //   // minWidth: 110,
-    //   // defaultWidth: 120,
-    // },
+  };
+  columnHeaders.partitionKeyHeaders.forEach((pkHeader) => {
+    initialSizingOptions[pkHeader] = {
+      idealWidth: 200,
+      minWidth: 50,
+    };
   });
+
+  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(initialSizingOptions);
 
   const onColumnResize = React.useCallback((_, { columnId, width }) => {
     setColumnSizingOptions((state) => ({
