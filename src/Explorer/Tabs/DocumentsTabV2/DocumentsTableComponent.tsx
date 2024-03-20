@@ -1,53 +1,47 @@
-import { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, TableRowData as RowStateBase, Table, TableBody, TableCell, TableCellLayout, TableColumnDefinition, TableColumnSizingOptions, TableHeader, TableHeaderCell, TableRow, TableRowId, TableSelectionCell, createTableColumn, useArrowNavigationGroup, useFluent, useScrollbarWidth, useTableColumnSizing_unstable, useTableFeatures, useTableSelection } from '@fluentui/react-components';
-import React, { useEffect } from 'react';
+import {
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  TableRowData as RowStateBase,
+  Table,
+  TableBody,
+  TableCell,
+  TableCellLayout,
+  TableColumnDefinition,
+  TableColumnSizingOptions,
+  TableHeader,
+  TableHeaderCell,
+  TableRow,
+  TableRowId,
+  TableSelectionCell,
+  createTableColumn,
+  useArrowNavigationGroup,
+  useFluent,
+  useScrollbarWidth,
+  useTableColumnSizing_unstable,
+  useTableFeatures,
+  useTableSelection,
+} from "@fluentui/react-components";
+import React, { useEffect, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
 export type DocumentsTableComponentItem = {
   id: string;
-  type: string;
-};
+} & Record<string, string>;
 
+export type ColumnHeaders = {
+  idHeader: string;
+  partitionKeyHeaders: string[];
+};
 export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
   onSelectedItem: (index: number) => void;
   size: { height: number; width: number };
-  columnHeaders: {
-    idHeader: string;
-    partitionKeyHeader: string;
-  };
+  columnHeaders: ColumnHeaders;
   style?: React.CSSProperties;
 }
-
-const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = [
-  createTableColumn<DocumentsTableComponentItem>({
-    columnId: "id",
-    compare: (a, b) => {
-      return a.id.localeCompare(b.id);
-    },
-    renderHeaderCell: () => {
-      return "id";
-    },
-    renderCell: (item) => {
-      return (
-        <TableCellLayout truncate>{item.id}</TableCellLayout>
-      );
-    },
-  }),
-  createTableColumn<DocumentsTableComponentItem>({
-    columnId: "type",
-    compare: (a, b) => {
-      return a.type.localeCompare(b.type);
-    },
-    renderHeaderCell: () => {
-      return "/type";
-    },
-    renderCell: (item) => {
-      return (
-        <TableCellLayout truncate>{item.type}</TableCellLayout>
-      );
-    },
-  }),
-];
 
 interface TableRowData extends RowStateBase<DocumentsTableComponentItem> {
   onClick: (e: React.MouseEvent) => void;
@@ -60,7 +54,11 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
 }
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
-  items, onSelectedItem, style, size,
+  items,
+  onSelectedItem,
+  style,
+  size,
+  columnHeaders,
 }: IDocumentsTableComponentProps) => {
   const { targetDocument } = useFluent();
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
@@ -72,11 +70,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       idealWidth: 280,
       // minWidth: 273,
     },
-    type: {
-      defaultWidth: 100
-      // minWidth: 110,
-      // defaultWidth: 120,
-    },
+    // TODO FIX THIS
+    // type: {
+    //   defaultWidth: 100,
+    //   // minWidth: 110,
+    //   // defaultWidth: 120,
+    // },
   });
 
   const onColumnResize = React.useCallback((_, { columnId, width }) => {
@@ -89,49 +88,72 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     }));
   }, []);
 
-  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(
-    () => new Set<TableRowId>([0])
+  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
+
+  // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
+  const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
+    () =>
+      [
+        createTableColumn<DocumentsTableComponentItem>({
+          columnId: "id",
+          compare: (a, b) => {
+            return a.id.localeCompare(b.id);
+          },
+          renderHeaderCell: () => {
+            return "id";
+          },
+          renderCell: (item) => {
+            return <TableCellLayout truncate>{item.id}</TableCellLayout>;
+          },
+        }),
+      ].concat(
+        columnHeaders.partitionKeyHeaders.map((pkHeader) =>
+          createTableColumn<DocumentsTableComponentItem>({
+            columnId: pkHeader,
+            compare: (a, b) => {
+              return a[pkHeader].localeCompare(b[pkHeader]);
+            },
+            renderHeaderCell: () => {
+              return `/${pkHeader}`;
+            },
+            renderCell: (item) => {
+              return <TableCellLayout truncate>{item[pkHeader]}</TableCellLayout>;
+            },
+          }),
+        ),
+      ),
+    [columnHeaders],
   );
 
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
     const { item, selected, appearance, onClick, onKeyDown } = data[index];
-    return <TableRow
-      aria-rowindex={index + 2}
-      style={style}
-      key={item.id}
-      aria-selected={selected}
-      appearance={appearance}
-    >
-      <TableSelectionCell
-        checked={selected}
-        checkboxIndicator={{ "aria-label": "Select row" }}
-        onClick={onClick}
-        onKeyDown={onKeyDown}
-      />
-      {columns.map((column) => (
-        <TableCell
-          key={column.columnId}
-          onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
+    return (
+      <TableRow aria-rowindex={index + 2} style={style} key={item.id} aria-selected={selected} appearance={appearance}>
+        <TableSelectionCell
+          checked={selected}
+          checkboxIndicator={{ "aria-label": "Select row" }}
+          onClick={onClick}
           onKeyDown={onKeyDown}
-          {...columnSizing.getTableCellProps(column.columnId)}
-        >
-          {column.renderCell(item)}
-        </TableCell>
-      ))}
-    </TableRow>;
+        />
+        {columns.map((column) => (
+          <TableCell
+            key={column.columnId}
+            onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
+            onKeyDown={onKeyDown}
+            {...columnSizing.getTableCellProps(column.columnId)}
+          >
+            {column.renderCell(item)}
+          </TableCell>
+        ))}
+      </TableRow>
+    );
   };
 
   const {
     getRows,
     columnSizing_unstable: columnSizing,
     tableRef,
-    selection: {
-      allRowsSelected,
-      someRowsSelected,
-      toggleAllRows,
-      toggleRow,
-      isRowSelected,
-    },
+    selection: { allRowsSelected, someRowsSelected, toggleAllRows, toggleRow, isRowSelected },
   } = useTableFeatures(
     {
       columns,
@@ -144,7 +166,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         selectedItems: selectedRows,
         onSelectionChange: (e, data) => setSelectedRows(data.selectedItems),
       }),
-    ]
+    ],
   );
 
   const rows: TableRowData[] = getRows((row) => {
@@ -170,7 +192,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         e.preventDefault();
       }
     },
-    [toggleAllRows]
+    [toggleAllRows],
   );
 
   // Load document depending on selection
@@ -202,30 +224,21 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       <TableHeader>
         <TableRow>
           <TableSelectionCell
-            checked={
-              allRowsSelected ? true : someRowsSelected ? "mixed" : false
-            }
+            checked={allRowsSelected ? true : someRowsSelected ? "mixed" : false}
             onClick={toggleAllRows}
             onKeyDown={toggleAllKeydown}
             checkboxIndicator={{ "aria-label": "Select all rows " }}
           />
-          {columns.map((column, /* index */) => (
+          {columns.map((column /* index */) => (
             <Menu openOnContext key={column.columnId}>
               <MenuTrigger>
-                <TableHeaderCell
-                  key={column.columnId}
-                  {...columnSizing.getTableHeaderCellProps(column.columnId)}
-                >
+                <TableHeaderCell key={column.columnId} {...columnSizing.getTableHeaderCellProps(column.columnId)}>
                   {column.renderHeaderCell()}
                 </TableHeaderCell>
               </MenuTrigger>
               <MenuPopover>
                 <MenuList>
-                  <MenuItem
-                    onClick={columnSizing.enableKeyboardMode(
-                      column.columnId
-                    )}
-                  >
+                  <MenuItem onClick={columnSizing.enableKeyboardMode(column.columnId)}>
                     Keyboard Column Resizing
                   </MenuItem>
                 </MenuList>

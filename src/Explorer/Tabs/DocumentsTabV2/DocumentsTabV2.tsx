@@ -1,20 +1,20 @@
-import { ItemDefinition, QueryIterator, Resource } from '@azure/cosmos';
-import { FluentProvider } from '@fluentui/react-components';
-import Split from '@uiw/react-split';
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { FluentProvider } from "@fluentui/react-components";
+import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
-import { getErrorMessage, getErrorStack } from 'Common/ErrorHandlingUtils';
-import { queryDocuments } from 'Common/dataAccess/queryDocuments';
-import { readDocument } from 'Common/dataAccess/readDocument';
-import { useDialog } from 'Explorer/Controls/Dialog';
-import { EditorReact } from 'Explorer/Controls/Editor/EditorReact';
-import { querySampleDocuments, readSampleDocument } from 'Explorer/QueryCopilot/QueryCopilotUtilities';
-import DocumentsTab from 'Explorer/Tabs/DocumentsTab';
-import { dataExplorerLightTheme } from 'Explorer/Theme/ThemeUtil';
-import { QueryConstants } from 'Shared/Constants';
-import { LocalStorageUtility, StorageKey } from 'Shared/StorageUtility';
-import { Action } from 'Shared/Telemetry/TelemetryConstants';
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { queryDocuments } from "Common/dataAccess/queryDocuments";
+import { readDocument } from "Common/dataAccess/readDocument";
+import { useDialog } from "Explorer/Controls/Dialog";
+import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import DocumentsTab from "Explorer/Tabs/DocumentsTab";
+import { dataExplorerLightTheme } from "Explorer/Theme/ThemeUtil";
+import { QueryConstants } from "Shared/Constants";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
-import { logConsoleError } from 'Utils/NotificationConsoleUtils';
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { KeyboardEventHandler, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
 import CloseIcon from "../../../../images/close-black.svg";
@@ -42,15 +42,17 @@ export class DocumentsTabV2 extends TabsBase {
   }
 
   public render(): JSX.Element {
-    return <DocumentsTabComponent
-      isPreferredApiMongoDB={undefined}
-      documentIds={this.documentIds}
-      tabId={this.tabId}
-      collection={this.collection}
-      partitionKey={this.partitionKey}
-      onLoadStartKey={this.onLoadStartKey}
-      tabTitle={this.title}
-    />;
+    return (
+      <DocumentsTabComponent
+        isPreferredApiMongoDB={undefined}
+        documentIds={this.documentIds}
+        tabId={this.tabId}
+        collection={this.collection}
+        partitionKey={this.partitionKey}
+        onLoadStartKey={this.onLoadStartKey}
+        tabTitle={this.title}
+      />
+    );
   }
 
   public onActivate(): void {
@@ -84,8 +86,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   // Query
   const [documentsIterator, setDocumentsIterator] = useState<{
-    iterator: QueryIterator<ItemDefinition & Resource>,
-    applyFilterButtonPressed: boolean
+    iterator: QueryIterator<ItemDefinition & Resource>;
+    applyFilterButtonPressed: boolean;
   }>(undefined);
   const [queryAbortController, setQueryAbortController] = useState<AbortController>(undefined);
   const [resourceTokenPartitionKey, setResourceTokenPartitionKey] = useState<string>(undefined);
@@ -94,7 +96,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   const [isExecutionError, setIsExecutionError] = useState<boolean>(false);
   const [onLoadStartKey, setOnLoadStartKey] = useState<number>(props.onLoadStartKey);
-
 
   const [currentDocument, setCurrentDocument] = useState<unknown>(undefined);
 
@@ -106,14 +107,17 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const documentContentsContainerId = `documentContentsContainer${props.tabId}`;
   const documentContentsGridId = `documentContentsGrid${props.tabId}`;
 
-  const partitionKey: DataModels.PartitionKey = props.partitionKey || (props.collection && props.collection.partitionKey);
+  const partitionKey: DataModels.PartitionKey =
+    props.partitionKey || (props.collection && props.collection.partitionKey);
   const partitionKeyPropertyHeaders: string[] = props.collection?.partitionKeyPropertyHeaders || partitionKey?.paths;
   const partitionKeyProperties = partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
     partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
   );
 
-  const isPreferredApiMongoDB = useMemo(() => userContext.apiType === "Mongo" || props.isPreferredApiMongoDB,
-    [props.isPreferredApiMongoDB]);
+  const isPreferredApiMongoDB = useMemo(
+    () => userContext.apiType === "Mongo" || props.isPreferredApiMongoDB,
+    [props.isPreferredApiMongoDB],
+  );
 
   useEffect(() => {
     setDocumentIds(props.documentIds);
@@ -125,12 +129,10 @@ const DocumentsTabComponent: React.FunctionComponent<{
       try {
         refreshDocumentsGrid();
 
-
         // // Select first document and load content
         // if (documentIds.length > 0) {
         //   documentIds[0].click();
         // }
-
       } catch (error) {
         if (onLoadStartKey !== null && onLoadStartKey !== undefined) {
           TelemetryProcessor.traceFailure(
@@ -190,7 +192,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options)
       : queryDocuments(props.collection.databaseId, props.collection.id(), query, options);
-  }
+  };
 
   /**
    * Query first page of documents
@@ -223,7 +225,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
         iterator: createIterator(),
         applyFilterButtonPressed,
       });
-
 
       // collapse filter
       setAppliedFilter(filterContent);
@@ -331,11 +332,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
               );
 
-              return new DocumentId({
-                partitionKey,
-                partitionKeyPropertyHeaders,
-                partitionKeyProperties
-              } as DocumentsTab, rawDocument, partitionKeyValue);
+              return new DocumentId(
+                {
+                  partitionKey,
+                  partitionKeyPropertyHeaders,
+                  partitionKeyProperties,
+                } as DocumentsTab,
+                rawDocument,
+                partitionKeyValue,
+              );
             });
 
           const merged = currentDocuments.concat(nextDocumentIds);
@@ -423,181 +428,229 @@ const DocumentsTabComponent: React.FunctionComponent<{
     props.collection?.databaseId === QueryCopilotSampleDatabaseId &&
     props.collection?.id() === QueryCopilotSampleContainerId;
 
-
   // Table config here
-  const tableItems: DocumentsTableComponentItem[] = documentIds.map((documentId) => ({
-    id: documentId.id(),
-    // TODO: for now, merge all the pk values into a single string/column
-    type: documentId.partitionKeyProperties ? documentId.stringPartitionKeyValues.join(",") : undefined,
-  }));
+  const tableItems: DocumentsTableComponentItem[] = documentIds.map((documentId) => {
+    const item: Record<string, string> = {
+      id: documentId.id(),
+    };
 
+    if (partitionKeyPropertyHeaders && documentId.partitionKeyProperties) {
+      for (let i = 0; i < partitionKeyPropertyHeaders.length; i++) {
+        item[partitionKeyPropertyHeaders[i]] = documentId.stringPartitionKeyValues[i];
+      }
+    }
+
+
+    return item;
+    // TODO: for now, merge all the pk values into a single string/column
+    // type: documentId.partitionKeyProperties ? documentId.stringPartitionKeyValues.join(",") : undefined,
+  });
 
   const onSelectedDocument = (index: number) => readSingleDocument(documentIds[index]);
 
   // TODO: replicate logic of selectedDocument.click();
   // TODO: Check if editor is dirty
-  const readSingleDocument = (documentId: DocumentId) => (_isQueryCopilotSampleContainer
-    ? readSampleDocument(documentId)
-    : readDocument(props.collection, documentId)).then((content) => {
-      // this.initDocumentEditor(documentId, content);
-      setCurrentDocument(content);
-    });
+  const readSingleDocument = (documentId: DocumentId) =>
+    (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(props.collection, documentId)).then(
+      (content) => {
+        // this.initDocumentEditor(documentId, content);
+        setCurrentDocument(content);
+      },
+    );
 
   const tableContainerRef = useRef(null);
-  const [tableContainerSizePx, setTableContainerSizePx] = useState<{ height: number, width: number }>(undefined);
+  const [tableContainerSizePx, setTableContainerSizePx] = useState<{ height: number; width: number }>(undefined);
   useEffect(() => {
     if (!tableContainerRef.current) {
       return undefined;
     }
-    const resizeObserver = new ResizeObserver(() => setTableContainerSizePx({
-      height: tableContainerRef.current.offsetHeight,
-      width: tableContainerRef.current.offsetWidth,
-    }));
+    const resizeObserver = new ResizeObserver(() =>
+      setTableContainerSizePx({
+        height: tableContainerRef.current.offsetHeight,
+        width: tableContainerRef.current.offsetWidth,
+      }),
+    );
     resizeObserver.observe(tableContainerRef.current);
     return () => resizeObserver.disconnect(); // clean up
   }, []);
 
   const columnHeaders = {
     idHeader: isPreferredApiMongoDB ? "_id" : "id",
-    pkeyHeaders: partitionKeyPropertyHeaders
+    partitionKeyHeaders: partitionKeyPropertyHeaders || [],
   };
 
-  return <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
-    <div
-      className="tab-pane active"
-      /* data-bind="
+  return (
+    <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
+      <div
+        className="tab-pane active"
+        /* data-bind="
     setTemplateReady: true,
     attr:{
         id: tabId
     },
     visible: isActive"
     */
-      role="tabpanel"
-      style={{ display: "flex" }}
-    >
-      {/* <!-- Filter - Start --> */}
-      {isFilterCreated &&
-        <div className="filterdivs" /*data-bind="visible: isFilterCreated "*/>
-          {/* <!-- Read-only Filter - Start --> */}
-          {!isFilterExpanded && !isPreferredApiMongoDB &&
-            <div className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && !isPreferredApiMongoDB"*/>
-              <span className="selectQuery">SELECT * FROM c</span>
-              <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
-              <button className="filterbtnstyle queryButton" onClick={onShowFilterClick}
-                /*data-bind="click: onShowFilterClick"*/>Edit Filter</button>
-            </div>
-          }
-          {!isFilterExpanded && isPreferredApiMongoDB &&
-            <div className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && isPreferredApiMongoDB"*/>
-              {appliedFilter.length > 0 &&
-                <span className="selectQuery" /*data-bind="visible: appliedFilter().length > 0"*/>Filter :</span>
-              }
-              {!(appliedFilter.length > 0) &&
-                <span className="noFilterApplied" /*data-bind="visible: !appliedFilter().length > 0"*/>No filter applied</span>
-              }
-              <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
-              <button className="filterbtnstyle queryButton" onClick={onShowFilterClick} /*data-bind="click: onShowFilterClick"*/>
-                Edit Filter
-              </button>
-            </div>
-          }
-          {/* <!-- Read-only Filter - End --> */}
+        role="tabpanel"
+        style={{ display: "flex" }}
+      >
+        {/* <!-- Filter - Start --> */}
+        {isFilterCreated && (
+          <div className="filterdivs" /*data-bind="visible: isFilterCreated "*/>
+            {/* <!-- Read-only Filter - Start --> */}
+            {!isFilterExpanded && !isPreferredApiMongoDB && (
+              <div
+                className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && !isPreferredApiMongoDB"*/
+              >
+                <span className="selectQuery">SELECT * FROM c</span>
+                <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
+                <button
+                  className="filterbtnstyle queryButton"
+                  onClick={onShowFilterClick}
+                /*data-bind="click: onShowFilterClick"*/
+                >
+                  Edit Filter
+                </button>
+              </div>
+            )}
+            {!isFilterExpanded && isPreferredApiMongoDB && (
+              <div className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && isPreferredApiMongoDB"*/>
+                {appliedFilter.length > 0 && (
+                  <span className="selectQuery" /*data-bind="visible: appliedFilter().length > 0"*/>Filter :</span>
+                )}
+                {!(appliedFilter.length > 0) && (
+                  <span className="noFilterApplied" /*data-bind="visible: !appliedFilter().length > 0"*/>
+                    No filter applied
+                  </span>
+                )}
+                <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
+                <button
+                  className="filterbtnstyle queryButton"
+                  onClick={onShowFilterClick} /*data-bind="click: onShowFilterClick"*/
+                >
+                  Edit Filter
+                </button>
+              </div>
+            )}
+            {/* <!-- Read-only Filter - End --> */}
 
-          {/* <!-- Editable Filter - start --> */}
-          {isFilterExpanded &&
-            <div className="filterDocExpanded" /*data-bind="visible: isFilterExpanded"*/>
-              <div>
-                <div className="editFilterContainer">
-                  {!isPreferredApiMongoDB &&
-                    <span className="filterspan" /*data-bind="visible: !isPreferredApiMongoDB"*/> SELECT * FROM c </span>
-                  }
-                  <input
-                    type="text"
-                    list="filtersList"
-                    className={`querydropdown ${filterContent.length === 0 ? "placeholderVisible" : ""}`}
-                    title="Type a query predicate or choose one from the list."
-                    placeholder={isPreferredApiMongoDB ?
-                      "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents." :
-                      "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."}
-                    value={filterContent}
-                    onChange={(e) => setFilterContent(e.target.value)}
-                  /*
-                data-bind="
-                          W  attr:{
-                                placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-                            },
-                            css: { placeholderVisible: filterContent().length === 0 },
-                            textInput: filterContent"
-                            */
-                  />
-
-                  <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
-                    {lastFilterContents.map((filter) =>
-                      <option key={filter} value={filter} /*data-bind="value: $data"*/ />
+            {/* <!-- Editable Filter - start --> */}
+            {isFilterExpanded && (
+              <div className="filterDocExpanded" /*data-bind="visible: isFilterExpanded"*/>
+                <div>
+                  <div className="editFilterContainer">
+                    {!isPreferredApiMongoDB && (
+                      <span className="filterspan" /*data-bind="visible: !isPreferredApiMongoDB"*/>
+                        {" "}
+                        SELECT * FROM c{" "}
+                      </span>
                     )}
-                  </datalist>
+                    <input
+                      type="text"
+                      list="filtersList"
+                      className={`querydropdown ${filterContent.length === 0 ? "placeholderVisible" : ""}`}
+                      title="Type a query predicate or choose one from the list."
+                      placeholder={
+                        isPreferredApiMongoDB
+                          ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
+                          : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
+                      }
+                      value={filterContent}
+                      onChange={(e) => setFilterContent(e.target.value)}
+                    /*
+            data-bind="
+                      W  attr:{
+                            placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+                        },
+                        css: { placeholderVisible: filterContent().length === 0 },
+                        textInput: filterContent"
+                        */
+                    />
 
-                  <span className="filterbuttonpad">
-                    <button className="filterbtnstyle queryButton" onClick={() => refreshDocumentsGrid(true)}
-                      disabled={!applyFilterButton.enabled}
-                      /* data-bind="
+                    <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
+                      {lastFilterContents.map((filter) => (
+                        <option key={filter} value={filter} /*data-bind="value: $data"*/ />
+                      ))}
+                    </datalist>
+
+                    <span className="filterbuttonpad">
+                      <button
+                        className="filterbtnstyle queryButton"
+                        onClick={() => refreshDocumentsGrid(true)}
+                        disabled={!applyFilterButton.enabled}
+                        /* data-bind="
                                 click: refreshDocumentsGrid.bind($data, true),
                                 enable: applyFilterButton.enabled"
                       */
-                      aria-label="Apply filter" tabIndex={0}>Apply Filter</button>
-                  </span>
-                  <span className="filterbuttonpad">
-                    {!isPreferredApiMongoDB && isExecuting &&
-                      <button className="filterbtnstyle queryButton"
-                        /* data-bind="
+                        aria-label="Apply filter"
+                        tabIndex={0}
+                      >
+                        Apply Filter
+                      </button>
+                    </span>
+                    <span className="filterbuttonpad">
+                      {!isPreferredApiMongoDB && isExecuting && (
+                        <button
+                          className="filterbtnstyle queryButton"
+                          /* data-bind="
                                   visible: !isPreferredApiMongoDB && isExecuting,
                                   click: onAbortQueryClick"
                         */
-                        aria-label="Cancel Query" tabIndex={0}>Cancel Query</button>
-                    }
-                  </span>
-                  <span className="filterclose" role="button" aria-label="close filter" tabIndex={0}
-                    onClick={() => onHideFilterClick()} onKeyDown={onCloseButtonKeyDown}
-                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/>
-                    <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
-                  </span>
+                          aria-label="Cancel Query"
+                          tabIndex={0}
+                        >
+                          Cancel Query
+                        </button>
+                      )}
+                    </span>
+                    <span
+                      className="filterclose"
+                      role="button"
+                      aria-label="close filter"
+                      tabIndex={0}
+                      onClick={() => onHideFilterClick()}
+                      onKeyDown={onCloseButtonKeyDown}
+                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                    >
+                      <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
+                    </span>
+                  </div>
                 </div>
               </div>
+            )}
+            {/* <!-- Editable Filter - End --> */}
+          </div>
+        )}
+        {/* <!-- Filter - End --> */}
+
+        {/* <Split> doesn't like to be a flex child */}
+        <div style={{ overflow: "hidden", height: "100%" }}>
+          <Split>
+            <div style={{ minWidth: 480, width: "20%" }} ref={tableContainerRef}>
+              <DocumentsTableComponent
+                style={{ width: 200 }}
+                items={tableItems}
+                onSelectedItem={onSelectedDocument}
+                size={tableContainerSizePx}
+                columnHeaders={columnHeaders}
+              />
+              <a className="loadMore" role="button" onClick={() => loadNextPage(false)}>
+                Load more
+              </a>
             </div>
-          }
-          {/* <!-- Editable Filter - End --> */}
+            <div style={{ minWidth: "20%", width: "100%" }}>
+              <EditorReact
+                language={"json"}
+                content={JSON.stringify(currentDocument, undefined, "  ")}
+                isReadOnly={false}
+                ariaLabel={"Stored procedure body"}
+                lineNumbers={"on"}
+                theme={"_theme"}
+                onContentChanged={(newContent: string) => { }}
+              />
+            </div>
+          </Split>
         </div>
-      }
-      {/* <!-- Filter - End --> */}
-
-      {/* <Split> doesn't like to be a flex child */}
-      <div style={{ overflow: "hidden", height: "100%" }}>
-        <Split>
-          <div style={{ minWidth: 480, width: "20%" }}
-            ref={tableContainerRef}>
-            <DocumentsTableComponent
-              style={{ width: 200 }}
-              items={tableItems}
-              onSelectedItem={onSelectedDocument}
-              size={tableContainerSizePx}
-              columnHeaders={columnHeaders}
-            />
-            <a className="loadMore" role="button" onClick={() => loadNextPage(false)}>Load more</a>
-          </div>
-          <div style={{ minWidth: "20%", width: "100%" }}>
-            <EditorReact
-              language={"json"}
-              content={JSON.stringify(currentDocument, undefined, "  ")}
-              isReadOnly={false}
-              ariaLabel={"Stored procedure body"}
-              lineNumbers={"on"}
-              theme={"_theme"}
-              onContentChanged={(newContent: string) => { }}
-            />
-          </div>
-        </Split>
       </div>
-    </div >
-  </FluentProvider >;
-}
-
+    </FluentProvider>
+  );
+};
