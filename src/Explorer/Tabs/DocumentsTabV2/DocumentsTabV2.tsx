@@ -6,6 +6,7 @@ import { getErrorMessage, getErrorStack } from 'Common/ErrorHandlingUtils';
 import { queryDocuments } from 'Common/dataAccess/queryDocuments';
 import { readDocument } from 'Common/dataAccess/readDocument';
 import { useDialog } from 'Explorer/Controls/Dialog';
+import { EditorReact } from 'Explorer/Controls/Editor/EditorReact';
 import { querySampleDocuments, readSampleDocument } from 'Explorer/QueryCopilot/QueryCopilotUtilities';
 import DocumentsTab from 'Explorer/Tabs/DocumentsTab';
 import { dataExplorerLightTheme } from 'Explorer/Theme/ThemeUtil';
@@ -456,6 +457,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return () => resizeObserver.disconnect(); // clean up
   }, []);
 
+  const columnHeaders = {
+    idHeader: isPreferredApiMongoDB ? "_id" : "id",
+    pkeyHeaders: partitionKeyPropertyHeaders
+  };
+
   return <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
     <div
       className="tab-pane active"
@@ -569,13 +575,29 @@ const DocumentsTabComponent: React.FunctionComponent<{
         <Split>
           <div style={{ minWidth: 480, width: "20%" }}
             ref={tableContainerRef}>
-            <DocumentsTableComponent style={{ width: 200 }} items={tableItems} onSelectedItem={onSelectedDocument} size={tableContainerSizePx} />
+            <DocumentsTableComponent
+              style={{ width: 200 }}
+              items={tableItems}
+              onSelectedItem={onSelectedDocument}
+              size={tableContainerSizePx}
+              columnHeaders={columnHeaders}
+            />
             <a className="loadMore" role="button" onClick={() => loadNextPage(false)}>Load more</a>
           </div>
-          <div style={{ minWidth: "20%" }}><pre>{JSON.stringify(currentDocument, undefined, " ")}</pre></div>
+          <div style={{ minWidth: "20%", width: "100%" }}>
+            <EditorReact
+              language={"json"}
+              content={JSON.stringify(currentDocument, undefined, "  ")}
+              isReadOnly={false}
+              ariaLabel={"Stored procedure body"}
+              lineNumbers={"on"}
+              theme={"_theme"}
+              onContentChanged={(newContent: string) => { }}
+            />
+          </div>
         </Split>
       </div>
     </div >
-  </FluentProvider>;
+  </FluentProvider >;
 }
 

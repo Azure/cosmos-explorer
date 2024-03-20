@@ -11,6 +11,10 @@ export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
   onSelectedItem: (index: number) => void;
   size: { height: number; width: number };
+  columnHeaders: {
+    idHeader: string;
+    partitionKeyHeader: string;
+  };
   style?: React.CSSProperties;
 }
 
