@@ -98,9 +98,9 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-  PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
+  PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   NEW_BACKEND_APIS: [BackendApi.GenerateToken],
-  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
+  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
     // "resourcelist",
     // "createDocument",
@@ -248,3 +248,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
