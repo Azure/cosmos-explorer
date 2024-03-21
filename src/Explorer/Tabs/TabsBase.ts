@@ -42,8 +42,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.tabKind = options.tabKind;
     this.tabTitle = ko.observable<string>(this.getTitle(options));
     this.tabPath =
-      (this.collection &&
-        ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${options.title}`));
+      this.collection &&
+      ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${options.title}`);
     this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
     this.onLoadStartKey = options.onLoadStartKey;
     this.closeTabButton = {
@@ -145,11 +145,11 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public getTitle(options: ViewModels.TabOptions): string {
     const coll = this.collection?.id();
     if (coll) {
-      if (coll.length > 8){
-        return coll.slice(0,5) + '....' + options.title;
+      if (coll.length > 8) {
+        return coll.slice(0, 5) + "...." + options.title;
       } else {
-      return coll + "." + options.title;
-    }
+        return coll + "." + options.title;
+      }
     } else {
       return this.database?.id() + "." + options.title;
     }
