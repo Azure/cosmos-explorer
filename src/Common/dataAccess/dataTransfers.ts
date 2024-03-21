@@ -122,14 +122,21 @@ const pollDataTransferJobOperation = async (
 
   updateDataTransferJob(body);
 
-  if (status === "Cancelled" || status === "Failed" || status === "Faulted") {
+  if (status === "Cancelled") {
+    removeFromPolling(jobName);
+    clearMessage && clearMessage();
+    const cancelMessage = `Data transfer job ${jobName} cancelled`;
+    NotificationConsoleUtils.logConsoleError(cancelMessage);
+    throw new AbortError(cancelMessage);
+  }
+  if (status === "Failed" || status === "Faulted") {
     removeFromPolling(jobName);
     const errorMessage = body?.properties?.error
       ? JSON.stringify(body?.properties?.error)
       : "Operation could not be completed";
     const error = new Error(errorMessage);
     clearMessage && clearMessage();
-    NotificationConsoleUtils.logConsoleError(`Data transfer job ${jobName} Failed`);
+    NotificationConsoleUtils.logConsoleError(`Data transfer job ${jobName} failed: ${errorMessage}`);
     throw new AbortError(error);
   }
   if (status === "Completed") {
