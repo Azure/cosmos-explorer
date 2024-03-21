@@ -33,11 +33,12 @@ export const getPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/SqlDedicatedGateway`;
 };
 
-export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<string> => {
+export const updateDedicatedGatewayResource = async (sku: string, dedicatedGatewayType: string, instances: number): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const body: UpdateDedicatedGatewayRequestParameters = {
     properties: {
       instanceSize: sku,
+      // TODO: pass in DedicatedGatewayType into the properties on Update
       instanceCount: instances,
       serviceType: "SqlDedicatedGateway",
     },
