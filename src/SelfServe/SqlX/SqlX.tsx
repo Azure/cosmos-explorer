@@ -73,7 +73,10 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
 const IntegratedCache = "IntegratedCache";
 const DistributedQuery = "DistributedQuery";
 
-const onDedicatedGatewayTypeChange = (newValue: InputType, currentValues: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
+const onDedicatedGatewayTypeChange = (
+  newValue: InputType,
+  currentValues: Map<string, SmartUiInput>,
+): Map<string, SmartUiInput> => {
   currentValues.set("dedicatedGatewayType", { value: newValue });
   return currentValues;
 };
@@ -202,7 +205,7 @@ const getSkus = async (): Promise<ChoiceItem[]> => {
 
 const dedicatedGatewayTypeDropDownItems: ChoiceItem[] = [
   { labelTKey: "Integrated Cache", key: IntegratedCache },
-  { labelTKey: "Distributed Query", key: DistributedQuery }
+  { labelTKey: "Distributed Query", key: DistributedQuery },
 ];
 
 const getDedicatedGatewayType = async (): Promise<ChoiceItem[]> => {
