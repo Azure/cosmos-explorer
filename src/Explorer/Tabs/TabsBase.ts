@@ -146,7 +146,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     const coll = this.collection?.id();
     if (coll) {
       if (coll.length > 8){
-        return coll.substr(0,5) + '....' + options.title;
+        return coll.slice(0,5) + '....' + options.title;
       } else {
       return coll + "." + options.title;
     }
