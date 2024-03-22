@@ -147,13 +147,13 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     const db = this.database?.id();
     if (coll) {
       if (coll.length > 8) {
-        return coll.slice(0, 5) + "...." + options.title;
+        return coll.slice(0, 5) + "…" + options.title;
       } else {
         return coll + "." + options.title;
       }
     } else if (db) {
       if (db.length > 8) {
-        return db.slice(0, 5) + "...." + options.title;
+        return db.slice(0, 5) + "…" + options.title;
       } else {
         return db + "." + options.title;
       }
