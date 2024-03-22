@@ -151,12 +151,14 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       } else {
         return coll + "." + options.title;
       }
-    } else {
+    } else if (db) {
       if (db.length > 8) {
         return db.slice(0, 5) + "...." + options.title;
       } else {
         return db + "." + options.title;
       }
+    } else {
+      return "";
     }
   }
 
