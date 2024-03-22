@@ -1,4 +1,11 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
+import {
+  BackendApi,
+  CassandraProxyEndpoints,
+  JunoEndpoints,
+  MongoProxyEndpoints,
+  PortalBackendEndpoints,
+} from "Common/Constants";
+import { configContext } from "ConfigContext";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -137,3 +144,9 @@ export const allowedJunoOrigins: ReadonlyArray<string> = [
 ];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
+
+export function usePortalBackendEndpoint(backendApi: BackendApi): boolean {
+  const activePortalBackendEndpoints: string[] = [PortalBackendEndpoints.Development];
+  const activeBackendApi: boolean = configContext.NEW_BACKEND_APIS?.includes(backendApi) || false;
+  return activeBackendApi && activePortalBackendEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT as string);
+}
