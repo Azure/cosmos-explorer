@@ -20,7 +20,7 @@ interface Props {
 
 export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
   if (!usePortalBackendEndpoint(BackendApi.GenerateToken)) {
-    return fetchEncryptedToken_ToBeDeprecated(connectionString);
+    return await fetchEncryptedToken_ToBeDeprecated(connectionString);
   }
 
   const headers = new Headers();
