@@ -144,6 +144,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   public getTitle(options: ViewModels.TabOptions): string {
     const coll = this.collection?.id();
+    const db = this.database?.id();
     if (coll) {
       if (coll.length > 8) {
         return coll.slice(0, 5) + "...." + options.title;
@@ -151,7 +152,11 @@ export default class TabsBase extends WaitsForTemplateViewModel {
         return coll + "." + options.title;
       }
     } else {
-      return this.database?.id() + "." + options.title;
+      if (db.length > 8) {
+        return db.slice(0, 5) + "...." + options.title;
+      } else {
+        return db + "." + options.title;
+      }
     }
   }
 
