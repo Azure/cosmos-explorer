@@ -113,7 +113,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [isExecutionError, setIsExecutionError] = useState<boolean>(false);
   const [onLoadStartKey, setOnLoadStartKey] = useState<number>(props.onLoadStartKey);
 
-  const [selectedDocumentContent, setSelectedDocumentContent] = useState<unknown>(undefined);
+  const [selectedDocumentContent, setSelectedDocumentContent] = useState<string>(undefined);
   const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<unknown>(undefined);
 
   // Command buttons
@@ -787,7 +787,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(props.collection, documentId)).then(
       (content) => {
         initDocumentEditor(documentId, content);
-        setSelectedDocumentContent(content);
       },
     );
 
@@ -795,13 +794,56 @@ const DocumentsTabComponent: React.FunctionComponent<{
     if (documentId) {
       const content: string = renderObjectForEditor(documentContent, null, 4);
       setSelectedDocumentContentBaseline(content);
-      setInitialDocumentContent(content);
+      setInitialDocumentContent(content); // TODO Remove this?
+      setSelectedDocumentContent(content);
       const newState = documentId
         ? ViewModels.DocumentExplorerState.exisitingDocumentNoEdits
         : ViewModels.DocumentExplorerState.newDocumentValid;
       setEditorState(newState);
     }
   };
+
+  const _onEditorContentChange = (newContent: string): void => {
+    setSelectedDocumentContent(newContent);
+
+    try {
+      JSON.parse(newContent);
+      onValidDocumentEdit();
+    } catch (e) {
+      onInvalidDocumentEdit();
+    }
+  };
+
+  const onValidDocumentEdit = (): void => {
+    if (
+      editorState === ViewModels.DocumentExplorerState.newDocumentInvalid ||
+      editorState === ViewModels.DocumentExplorerState.newDocumentValid
+    ) {
+      setEditorState(ViewModels.DocumentExplorerState.newDocumentValid);
+      return;
+    }
+
+    setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid);
+  }
+
+  const onInvalidDocumentEdit = (): void => {
+    if (
+      editorState === ViewModels.DocumentExplorerState.newDocumentInvalid ||
+      editorState === ViewModels.DocumentExplorerState.newDocumentValid
+    ) {
+      setEditorState(ViewModels.DocumentExplorerState.newDocumentInvalid);
+      return;
+    }
+
+    if (
+      editorState === ViewModels.DocumentExplorerState.exisitingDocumentNoEdits ||
+      editorState === ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid
+    ) {
+      setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid);
+      return;
+    }
+  }
+
 
   const tableContainerRef = useRef(null);
   const [tableContainerSizePx, setTableContainerSizePx] = useState<{ height: number; width: number }>(undefined);
@@ -851,7 +893,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                  /*data-bind="click: onShowFilterClick"*/
+                /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -901,14 +943,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                      /*
-            data-bind="
-                      W  attr:{
-                            placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-                        },
-                        css: { placeholderVisible: filterContent().length === 0 },
-                        textInput: filterContent"
-                        */
+                    /*
+          data-bind="
+                    W  attr:{
+                          placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+                      },
+                      css: { placeholderVisible: filterContent().length === 0 },
+                      textInput: filterContent"
+                      */
                     />
 
                     <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
@@ -954,7 +996,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       tabIndex={0}
                       onClick={() => onHideFilterClick()}
                       onKeyDown={onCloseButtonKeyDown}
-                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
@@ -992,7 +1034,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   ariaLabel={"Document editor"}
                   lineNumbers={"on"}
                   theme={"_theme"}
-                  onContentChanged={(newContent: string) => {}}
+                  onContentChanged={_onEditorContentChange}
                 />
               )}
             </div>
