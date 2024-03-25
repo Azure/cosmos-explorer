@@ -1,4 +1,5 @@
 import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { Platform, configContext } from "ConfigContext";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
@@ -881,7 +882,7 @@ export default class DocumentsTab extends TabsBase {
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
-    if (!userContext.hasWriteAccess) {
+    if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
       // All the following buttons require write access
       return [];
     }

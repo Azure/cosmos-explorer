@@ -19,6 +19,7 @@ import Explorer from "../Explorer";
 import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
+import { CassandraProxyAPIs } from "../../Common/Constants";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -262,6 +263,57 @@ export class CassandraAPIDataClient extends TableDataClient {
     shouldNotify?: boolean,
     paginationToken?: string,
   ): Promise<Entities.IListTableEntitiesResult> {
+    if (!this.useCassandraProxyEndpoint("postQuery")) {
+      return this.queryDocuments_ToBeDeprecated(collection, query, shouldNotify, paginationToken);
+    }
+    const clearMessage =
+      shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
+    try {
+      const { authType, databaseAccount } = userContext;
+
+      const apiEndpoint: string =
+        authType === AuthType.EncryptedToken
+          ? CassandraProxyAPIs.connectionStringQueryApi
+          : CassandraProxyAPIs.queryApi;
+
+      const data: any = await $.ajax(`${configContext.CASSANDRA_PROXY_ENDPOINT}/${apiEndpoint}`, {
+        type: "POST",
+        contentType: Constants.ContentType.applicationJson,
+        data: JSON.stringify({
+          accountName: databaseAccount?.name,
+          cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+          resourceId: databaseAccount?.id,
+          keyspaceId: collection.databaseId,
+          tableId: collection.id(),
+          query,
+          paginationToken,
+        }),
+        beforeSend: this.setAuthorizationHeader as any,
+        cache: false,
+      });
+      shouldNotify &&
+        NotificationConsoleUtils.logConsoleInfo(
+          `Successfully fetched ${data.result.length} rows for table ${collection.id()}`,
+        );
+      return {
+        Results: data.result,
+        ContinuationToken: data.paginationToken,
+      };
+    } catch (error) {
+      shouldNotify &&
+        handleError(error, "QueryDocumentsCassandra", `Failed to query rows for table ${collection.id()}`);
+      throw error;
+    } finally {
+      clearMessage?.();
+    }
+  }
+
+  public async queryDocuments_ToBeDeprecated(
+    collection: ViewModels.Collection,
+    query: string,
+    shouldNotify?: boolean,
+    paginationToken?: string,
+  ): Promise<Entities.IListTableEntitiesResult> {
     const clearMessage =
       shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
     try {
@@ -294,7 +346,11 @@ export class CassandraAPIDataClient extends TableDataClient {
       };
     } catch (error) {
       shouldNotify &&
-        handleError(error, "QueryDocumentsCassandra", `Failed to query rows for table ${collection.id()}`);
+        handleError(
+          error,
+          "QueryDocuments_ToBeDeprecated_Cassandra",
+          `Failed to query rows for table ${collection.id()}`,
+        );
       throw error;
     } finally {
       clearMessage?.();
@@ -402,6 +458,50 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   public getTableKeys(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
+    if (!this.useCassandraProxyEndpoint("getTableKeys")) {
+      return this.getTableKeys_ToBeDeprecated(collection);
+    }
+
+    if (!!collection.cassandraKeys) {
+      return Q.resolve(collection.cassandraKeys);
+    }
+    const clearInProgressMessage = logConsoleProgress(`Fetching keys for table ${collection.id()}`);
+    const { authType, databaseAccount } = userContext;
+    const apiEndpoint: string =
+      authType === AuthType.EncryptedToken ? CassandraProxyAPIs.connectionStringKeysApi : CassandraProxyAPIs.keysApi;
+
+    let endpoint = `${configContext.CASSANDRA_PROXY_ENDPOINT}/${apiEndpoint}`;
+    const deferred = Q.defer<CassandraTableKeys>();
+
+    $.ajax(endpoint, {
+      type: "POST",
+      contentType: Constants.ContentType.applicationJson,
+      data: JSON.stringify({
+        accountName: databaseAccount?.name,
+        cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+        resourceId: databaseAccount?.id,
+        keyspaceId: collection.databaseId,
+        tableId: collection.id(),
+      }),
+      beforeSend: this.setAuthorizationHeader as any,
+      cache: false,
+    })
+      .then(
+        (data: CassandraTableKeys) => {
+          collection.cassandraKeys = data;
+          logConsoleInfo(`Successfully fetched keys for table ${collection.id()}`);
+          deferred.resolve(data);
+        },
+        (error: any) => {
+          handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
+          deferred.reject(error);
+        },
+      )
+      .done(clearInProgressMessage);
+    return deferred.promise;
+  }
+
+  public getTableKeys_ToBeDeprecated(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
     if (!!collection.cassandraKeys) {
       return Q.resolve(collection.cassandraKeys);
     }
@@ -442,6 +542,51 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   public getTableSchema(collection: ViewModels.Collection): Q.Promise<CassandraTableKey[]> {
+    if (!this.useCassandraProxyEndpoint("getSchema")) {
+      return this.getTableSchema_ToBeDeprecated(collection);
+    }
+
+    if (!!collection.cassandraSchema) {
+      return Q.resolve(collection.cassandraSchema);
+    }
+    const clearInProgressMessage = logConsoleProgress(`Fetching schema for table ${collection.id()}`);
+    const { databaseAccount, authType } = userContext;
+    const apiEndpoint: string =
+      authType === AuthType.EncryptedToken
+        ? CassandraProxyAPIs.connectionStringSchemaApi
+        : CassandraProxyAPIs.schemaApi;
+    let endpoint = `${configContext.CASSANDRA_PROXY_ENDPOINT}/${apiEndpoint}`;
+    const deferred = Q.defer<CassandraTableKey[]>();
+
+    $.ajax(endpoint, {
+      type: "POST",
+      contentType: Constants.ContentType.applicationJson,
+      data: JSON.stringify({
+        accountName: databaseAccount?.name,
+        cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+        resourceId: databaseAccount?.id,
+        keyspaceId: collection.databaseId,
+        tableId: collection.id(),
+      }),
+      beforeSend: this.setAuthorizationHeader as any,
+      cache: false,
+    })
+      .then(
+        (data: any) => {
+          collection.cassandraSchema = data.columns;
+          logConsoleInfo(`Successfully fetched schema for table ${collection.id()}`);
+          deferred.resolve(data.columns);
+        },
+        (error: any) => {
+          handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
+          deferred.reject(error);
+        },
+      )
+      .done(clearInProgressMessage);
+    return deferred.promise;
+  }
+
+  public getTableSchema_ToBeDeprecated(collection: ViewModels.Collection): Q.Promise<CassandraTableKey[]> {
     if (!!collection.cassandraSchema) {
       return Q.resolve(collection.cassandraSchema);
     }
@@ -482,6 +627,44 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   private createOrDeleteQuery(cassandraEndpoint: string, resourceId: string, query: string): Q.Promise<any> {
+    if (!this.useCassandraProxyEndpoint("createOrDelete")) {
+      return this.createOrDeleteQuery_ToBeDeprecated(cassandraEndpoint, resourceId, query);
+    }
+
+    const deferred = Q.defer();
+    const { authType, databaseAccount } = userContext;
+    const apiEndpoint: string =
+      authType === AuthType.EncryptedToken
+        ? CassandraProxyAPIs.connectionStringCreateOrDeleteApi
+        : CassandraProxyAPIs.createOrDeleteApi;
+
+    $.ajax(`${configContext.CASSANDRA_PROXY_ENDPOINT}/${apiEndpoint}`, {
+      type: "POST",
+      contentType: Constants.ContentType.applicationJson,
+      data: JSON.stringify({
+        accountName: databaseAccount?.name,
+        cassandraEndpoint: this.trimCassandraEndpoint(cassandraEndpoint),
+        resourceId: resourceId,
+        query: query,
+      }),
+      beforeSend: this.setAuthorizationHeader as any,
+      cache: false,
+    }).then(
+      (data: any) => {
+        deferred.resolve();
+      },
+      (reason) => {
+        deferred.reject(reason);
+      },
+    );
+    return deferred.promise;
+  }
+
+  private createOrDeleteQuery_ToBeDeprecated(
+    cassandraEndpoint: string,
+    resourceId: string,
+    query: string,
+  ): Q.Promise<any> {
     const deferred = Q.defer();
     const { authType, databaseAccount } = userContext;
     const apiEndpoint: string =
@@ -546,5 +729,20 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private getCassandraPartitionKeyProperty(collection: ViewModels.Collection): string {
     return collection.cassandraKeys.partitionKeys[0].property;
+  }
+
+  private useCassandraProxyEndpoint(api: string): boolean {
+    let canAccessCassandraProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
+    if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+      canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
+    }
+
+    return (
+      canAccessCassandraProxy &&
+      configContext.NEW_CASSANDRA_APIS?.includes(api) &&
+      [Constants.CassandraProxyEndpoints.Development, Constants.CassandraProxyEndpoints.Mpac].includes(
+        configContext.CASSANDRA_PROXY_ENDPOINT,
+      )
+    );
   }
 }

@@ -58,6 +58,7 @@ export default class Collection implements ViewModels.Collection {
   public indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   public uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   public usageSizeInKB: ko.Observable<number>;
+  public computedProperties: ko.Observable<DataModels.ComputedProperties>;
 
   public offer: ko.Observable<DataModels.Offer>;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
@@ -121,6 +122,7 @@ export default class Collection implements ViewModels.Collection {
     this.schema = data.schema;
     this.requestSchema = data.requestSchema;
     this.geospatialConfig = ko.observable(data.geospatialConfig);
+    this.computedProperties = ko.observable(data.computedProperties);
 
     this.partitionKeyPropertyHeaders = this.partitionKey?.paths;
     this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {

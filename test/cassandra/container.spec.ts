@@ -20,11 +20,11 @@ test("Cassandra keyspace and table CRUD", async () => {
   await explorer.fill('[aria-label="addCollection-table Id Create table"]', tableId);
   await explorer.click("#sidePanelOkButton");
   await explorer.click(`.nodeItem >> text=${keyspaceId}`);
-  await explorer.click(`[data-test="${tableId}"] [aria-label="More"]`);
+  await explorer.click(`[data-test="${tableId}"] [aria-label="More options"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Table")');
   await explorer.fill('text=* Confirm by typing the table id >> input[type="text"]', tableId);
   await explorer.click('[aria-label="OK"]');
-  await explorer.click(`[data-test="${keyspaceId}"] [aria-label="More"]`);
+  await explorer.click(`[data-test="${keyspaceId}"] [aria-label="More options"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Keyspace")');
   await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
   await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', keyspaceId);

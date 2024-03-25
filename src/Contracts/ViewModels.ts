@@ -135,6 +135,7 @@ export interface Collection extends CollectionBase {
   changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
+  computedProperties: ko.Observable<DataModels.ComputedProperties>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];
@@ -387,6 +388,7 @@ export interface DataExplorerInputsFrame {
   serverId?: string;
   extensionEndpoint?: string;
   mongoProxyEndpoint?: string;
+  cassandraProxyEndpoint?: string;
   subscriptionType?: SubscriptionType;
   quotaId?: string;
   isTryCosmosDBSubscription?: boolean;
@@ -406,6 +408,7 @@ export interface DataExplorerInputsFrame {
   features?: {
     [key: string]: string;
   };
+  feedbackPolicies?: any;
 }
 
 export interface SelfServeFrameInputs {

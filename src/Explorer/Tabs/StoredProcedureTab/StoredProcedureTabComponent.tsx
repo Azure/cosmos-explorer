@@ -1,8 +1,8 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
 import React from "react";
-import DiscardIcon from "../../../../images/discard.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
+import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { createStoredProcedure } from "../../../Common/dataAccess/createStoredProcedure";
@@ -512,7 +512,12 @@ export default class StoredProcedureTabComponent extends React.Component<
     return (
       <div className="tab-pane flexContainer stored-procedure-tab" role="tabpanel">
         <div className="storedTabForm flexContainer">
-          <div className="formTitleFirst">Stored Procedure Id</div>
+          <div className="formTitleFirst">
+            Stored Procedure Id
+            <span className="mandatoryStar" style={{ color: "#ff0707", fontSize: "14px", fontWeight: "bold" }}>
+              *&nbsp;
+            </span>
+          </div>
           <span className="formTitleTextbox">
             <input
               className="formTree"

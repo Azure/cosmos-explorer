@@ -162,6 +162,7 @@ export class NotificationConsoleComponent extends React.Component<
                 role="button"
                 onKeyDown={(event: React.KeyboardEvent<HTMLSpanElement>) => this.onClearNotificationsKeyPress(event)}
                 tabIndex={0}
+                style={{ border: "1px solid black", borderRadius: "2px" }}
               >
                 <img src={ClearIcon} alt="clear notifications image" />
                 Clear Notifications

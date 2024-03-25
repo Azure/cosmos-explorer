@@ -247,7 +247,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
           name="More"
           title="More"
           className="treeMenuEllipsis"
-          ariaLabel={menuItemLabel}
+          ariaLabel={`${menuItemLabel} options`}
           menuIconProps={{
             iconName: menuItemLabel,
             styles: { root: { fontSize: "18px", fontWeight: "bold" } },

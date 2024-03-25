@@ -3,7 +3,7 @@ import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import { loadMonaco } from "../../../LazyMonaco";
-import { indexingPolicynUnsavedWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
+import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
 import { isDirty, isIndexTransforming } from "../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 
@@ -120,7 +120,7 @@ export class IndexingPolicyComponent extends React.Component<
           refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
         />
         {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
-          <MessageBar messageBarType={MessageBarType.warning}>{indexingPolicynUnsavedWarningMessage}</MessageBar>
+          <MessageBar messageBarType={MessageBarType.warning}>{unsavedEditorWarningMessage("indexPolicy")}</MessageBar>
         )}
         <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>
       </Stack>

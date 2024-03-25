@@ -1,9 +1,11 @@
 import * as msal from "@azure/msal-browser";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import * as ViewModels from "../Contracts/ViewModels";
+import { traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
@@ -43,8 +45,8 @@ export function decryptJWTToken(token: string) {
   return JSON.parse(tokenPayload);
 }
 
-export function getMsalInstance() {
-  const config: msal.Configuration = {
+export async function getMsalInstance() {
+  const msalConfig: msal.Configuration = {
     cache: {
       cacheLocation: "localStorage",
     },
@@ -55,8 +57,46 @@ export function getMsalInstance() {
   };
 
   if (process.env.NODE_ENV === "development") {
-    config.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
+    msalConfig.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
   }
-  const msalInstance = new msal.PublicClientApplication(config);
+
+  const msalInstance = new msal.PublicClientApplication(msalConfig);
   return msalInstance;
+}
+
+export async function acquireTokenWithMsal(msalInstance: msal.IPublicClientApplication, request: msal.SilentRequest) {
+  const tokenRequest = {
+    account: msalInstance.getActiveAccount() || null,
+    ...request,
+  };
+
+  try {
+    // attempt silent acquisition first
+    return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
+  } catch (silentError) {
+    if (silentError instanceof msal.InteractionRequiredAuthError) {
+      try {
+        // The error indicates that we need to acquire the token interactively.
+        // This will display a pop-up to re-establish authorization. If user does not
+        // have pop-ups enabled in their browser, this will fail.
+        return (await msalInstance.acquireTokenPopup(tokenRequest)).accessToken;
+      } catch (interactiveError) {
+        traceFailure(Action.SignInAad, {
+          request: JSON.stringify(tokenRequest),
+          acquireTokenType: "interactive",
+          errorMessage: JSON.stringify(interactiveError),
+        });
+
+        throw interactiveError;
+      }
+    } else {
+      traceFailure(Action.SignInAad, {
+        request: JSON.stringify(tokenRequest),
+        acquireTokenType: "silent",
+        errorMessage: JSON.stringify(silentError),
+      });
+
+      throw silentError;
+    }
+  }
 }
