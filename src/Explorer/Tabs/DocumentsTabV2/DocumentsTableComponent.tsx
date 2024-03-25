@@ -37,7 +37,8 @@ export type ColumnHeaders = {
 };
 export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
-  onSelectedItem: (index: number) => void;
+  onItemClicked: (index: number) => void;
+  onSelectedItemsChange: (selectedItemsIndices: Set<number>) => void;
   size: { height: number; width: number };
   columnHeaders: ColumnHeaders;
   style?: React.CSSProperties;
@@ -55,7 +56,8 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
-  onSelectedItem,
+  onItemClicked,
+  onSelectedItemsChange,
   style,
   size,
   columnHeaders,
@@ -64,7 +66,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
 
   const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
-
 
   const initialSizingOptions: TableColumnSizingOptions = {
     id: {
@@ -92,6 +93,13 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   }, []);
 
   const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
+
+  // If selected rows change, call props
+  useEffect(() => {
+    if (onSelectedItemsChange) {
+      onSelectedItemsChange(selectedRows);
+    }
+  }, [selectedRows, onSelectedItemsChange]);
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
   const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
@@ -203,7 +211,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     if (selectedRows.size === 1 && items.length > 0) {
       const newActiveItemIndex = selectedRows.values().next().value;
       if (newActiveItemIndex !== activeItemIndex) {
-        onSelectedItem(newActiveItemIndex);
+        onItemClicked(newActiveItemIndex);
         setActiveItemIndex(newActiveItemIndex);
       }
     }

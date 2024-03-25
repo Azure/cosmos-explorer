@@ -5,19 +5,27 @@ import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId }
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
+import { Platform, configContext } from "ConfigContext";
+import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import DocumentsTab from "Explorer/Tabs/DocumentsTab";
 import { dataExplorerLightTheme } from "Explorer/Theme/ThemeUtil";
+import { useSelectedNode } from "Explorer/useSelectedNode";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
-import React, { KeyboardEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
+import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
+import NewDocumentIcon from "../../../../images/NewDocument.svg";
 import CloseIcon from "../../../../images/close-black.svg";
+import DiscardIcon from "../../../../images/discard.svg";
+import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -42,6 +50,10 @@ export class DocumentsTabV2 extends TabsBase {
   }
 
   public render(): JSX.Element {
+    if (!this.isActive) {
+      return <></>;
+    }
+
     return (
       <DocumentsTabComponent
         isPreferredApiMongoDB={undefined}
@@ -60,6 +72,10 @@ export class DocumentsTabV2 extends TabsBase {
     this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 }
+
+// From TabsBase.renderObjectForEditor()
+const renderObjectForEditor = (value: unknown, replacer: unknown, space: string | number): string =>
+  JSON.stringify(value, replacer, space);
 
 const DocumentsTabComponent: React.FunctionComponent<{
   isPreferredApiMongoDB: boolean;
@@ -97,11 +113,145 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [isExecutionError, setIsExecutionError] = useState<boolean>(false);
   const [onLoadStartKey, setOnLoadStartKey] = useState<number>(props.onLoadStartKey);
 
-  const [currentDocument, setCurrentDocument] = useState<unknown>(undefined);
+  const [selectedDocumentContent, setSelectedDocumentContent] = useState<unknown>(undefined);
+  const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<unknown>(undefined);
 
-  // TODO remove this?
+  // Command buttons
+  const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
+    ViewModels.DocumentExplorerState.noDocumentSelected,
+  );
+
+  // Editor
+  const [initialDocumentContent, setInitialDocumentContent] = useState<string>(undefined);
+
+  const getNewDocumentButtonState = () => ({
+    enabled: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.noDocumentSelected:
+        case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+    visible: true,
+  });
+
+  const getSaveNewDocumentButtonState = () => ({
+    enabled: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.newDocumentValid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+
+    visible: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.newDocumentValid:
+        case ViewModels.DocumentExplorerState.newDocumentInvalid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+  });
+
+  const getDiscardNewDocumentChangesButtonState = () => ({
+    enabled: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.newDocumentValid:
+        case ViewModels.DocumentExplorerState.newDocumentInvalid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+
+    visible: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.newDocumentValid:
+        case ViewModels.DocumentExplorerState.newDocumentInvalid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+  });
+
+  const getSaveExistingDocumentButtonState = () => ({
+    enabled: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+
+    visible: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+  });
+
+  const getDiscardExisitingDocumentChangesButtonState = () => ({
+    enabled: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+
+    visible: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+  });
+
+  const getDeleteExisitingDocumentButtonState = () => ({
+    enabled: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+
+    visible: (() => {
+      switch (editorState) {
+        case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+          return true;
+        default:
+          return false;
+      }
+    })(),
+  });
+
   const applyFilterButton = {
     enabled: true,
+    visible: true,
   };
 
   const documentContentsContainerId = `documentContentsContainer${props.tabId}`;
@@ -118,6 +268,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
     () => userContext.apiType === "Mongo" || props.isPreferredApiMongoDB,
     [props.isPreferredApiMongoDB],
   );
+
+  const updateNavbarWithTabsButtons = (): void => {
+    // if (this.isActive()) {
+    useCommandBar.getState().setContextButtons(getTabsButtons());
+    // }
+  };
 
   useEffect(() => {
     setDocumentIds(props.documentIds);
@@ -152,13 +308,47 @@ const DocumentsTabComponent: React.FunctionComponent<{
         }
       }
     }
+
+    updateNavbarWithTabsButtons();
   }, []);
+
+  // If editor state changes, update the nav
+  useEffect(() => updateNavbarWithTabsButtons(), [editorState]);
 
   useEffect(() => {
     if (documentsIterator) {
       loadNextPage(documentsIterator.applyFilterButtonPressed);
     }
   }, [documentsIterator]);
+
+  useEffect(() => {
+    setShouldShowEditor(!!selectedDocumentContent);
+  }, [selectedDocumentContent]);
+
+  const onNewDocumentClick = useCallback((): void => {
+    if (isEditorDirty()) {
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          "Unsaved changes",
+          "Changes will be lost. Do you want to continue?",
+          "OK",
+          () => initializeNewDocument(),
+          "Cancel",
+          undefined,
+        );
+    } else {
+      initializeNewDocument();
+    }
+  }, [editorState /* TODO isEditorDirty depends on more than just editorState */]);
+
+  const initializeNewDocument = (): void => {
+    this.selectedDocumentId(null);
+    const defaultDocument: string = renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
+    this.initialDocumentContent(defaultDocument);
+    this.selectedDocumentContent.setBaseline(defaultDocument);
+    this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
+  };
 
   const onShowFilterClick = () => {
     setIsFilterCreated(true);
@@ -423,6 +613,108 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return true;
   })();
 
+  const getTabsButtons = useCallback((): CommandButtonComponentProps[] => {
+    if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
+      // All the following buttons require write access
+      return [];
+    }
+
+    const buttons: CommandButtonComponentProps[] = [];
+    const label = !isPreferredApiMongoDB ? "New Item" : "New Document";
+    if (getNewDocumentButtonState().visible) {
+      buttons.push({
+        iconSrc: NewDocumentIcon,
+        iconAlt: label,
+        onCommandClick: onNewDocumentClick,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+        disabled: !getNewDocumentButtonState().enabled || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+        id: "mongoNewDocumentBtn",
+      });
+    }
+
+    if (getSaveNewDocumentButtonState().visible) {
+      const label = "Save";
+      buttons.push({
+        iconSrc: SaveIcon,
+        iconAlt: label,
+        onCommandClick: undefined, // TODO implement: onSaveNewDocumentClick,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+        disabled:
+          getSaveNewDocumentButtonState().enabled || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      });
+    }
+
+    if (getDiscardNewDocumentChangesButtonState().visible) {
+      const label = "Discard";
+      buttons.push({
+        iconSrc: DiscardIcon,
+        iconAlt: label,
+        onCommandClick: undefined, // TODO implement: onRevertNewDocumentClick,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+        disabled:
+          !getDiscardNewDocumentChangesButtonState().enabled ||
+          useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      });
+    }
+
+    if (getSaveExistingDocumentButtonState().visible) {
+      const label = "Update";
+      buttons.push({
+        iconSrc: SaveIcon,
+        iconAlt: label,
+        onCommandClick: undefined, // TODO implement: onSaveExistingDocumentClick,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+        disabled:
+          !getSaveExistingDocumentButtonState().enabled ||
+          useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      });
+    }
+
+    if (getDiscardExisitingDocumentChangesButtonState().visible) {
+      const label = "Discard";
+      buttons.push({
+        iconSrc: DiscardIcon,
+        iconAlt: label,
+        onCommandClick: undefined, // TODO implement: onRevertExisitingDocumentClick,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+        disabled:
+          !getDiscardExisitingDocumentChangesButtonState().enabled ||
+          useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      });
+    }
+
+    if (getDeleteExisitingDocumentButtonState().visible) {
+      const label = "Delete";
+      buttons.push({
+        iconSrc: DeleteDocumentIcon,
+        iconAlt: label,
+        onCommandClick: undefined, // TODO implement: onDeleteExisitingDocumentClick,
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: false,
+        disabled:
+          !getDeleteExisitingDocumentButtonState().enabled ||
+          useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      });
+    }
+
+    if (!isPreferredApiMongoDB) {
+      buttons.push(DocumentsTab._createUploadButton(props.collection.container));
+    }
+
+    return buttons;
+  }, [editorState]);
+
   const _isQueryCopilotSampleContainer =
     props.collection?.isSampleCollection &&
     props.collection?.databaseId === QueryCopilotSampleDatabaseId &&
@@ -441,21 +733,75 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
 
     return item;
-    // TODO: for now, merge all the pk values into a single string/column
-    // type: documentId.partitionKeyProperties ? documentId.stringPartitionKeyValues.join(",") : undefined,
   });
 
-  const onSelectedDocument = (index: number) => readSingleDocument(documentIds[index]);
+  const isEditorDirty = (): boolean => {
+    switch (editorState) {
+      case ViewModels.DocumentExplorerState.noDocumentSelected:
+      case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+        return false;
 
-  // TODO: replicate logic of selectedDocument.click();
-  // TODO: Check if editor is dirty
-  const readSingleDocument = (documentId: DocumentId) =>
+      case ViewModels.DocumentExplorerState.newDocumentValid:
+      case ViewModels.DocumentExplorerState.newDocumentInvalid:
+      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+        return true;
+
+      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+        return (
+          this.selectedDocumentContent.getEditableOriginalValue() !==
+          this.selectedDocumentContent.getEditableCurrentValue()
+        );
+
+      default:
+        return false;
+    }
+  };
+
+  /**
+   * replicate logic of selectedDocument.click();
+   * Document has been clicked on in table
+   * @param index
+   */
+  const onDocumentClicked = (index: number) => {
+    if (isEditorDirty()) {
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          "Unsaved changes",
+          "Your unsaved changes will be lost. Do you want to continue?",
+          "OK",
+          () => loadDocument(documentIds[index]),
+          "Cancel",
+          undefined,
+        );
+    } else {
+      loadDocument(documentIds[index]);
+    }
+  };
+
+  const onDocumentsSelectionChange = (selectedItemsIndices: Set<number>) => {
+    // TODO: Update some state?
+  };
+
+  const loadDocument = (documentId: DocumentId) =>
     (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(props.collection, documentId)).then(
       (content) => {
-        // this.initDocumentEditor(documentId, content);
-        setCurrentDocument(content);
+        initDocumentEditor(documentId, content);
+        setSelectedDocumentContent(content);
       },
     );
+
+  const initDocumentEditor = (documentId: DocumentId, documentContent: unknown): void => {
+    if (documentId) {
+      const content: string = renderObjectForEditor(documentContent, null, 4);
+      setSelectedDocumentContentBaseline(content);
+      setInitialDocumentContent(content);
+      const newState = documentId
+        ? ViewModels.DocumentExplorerState.exisitingDocumentNoEdits
+        : ViewModels.DocumentExplorerState.newDocumentValid;
+      setEditorState(newState);
+    }
+  };
 
   const tableContainerRef = useRef(null);
   const [tableContainerSizePx, setTableContainerSizePx] = useState<{ height: number; width: number }>(undefined);
@@ -505,7 +851,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                /*data-bind="click: onShowFilterClick"*/
+                  /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -555,7 +901,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                    /*
+                      /*
             data-bind="
                       W  attr:{
                             placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
@@ -608,7 +954,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       tabIndex={0}
                       onClick={() => onHideFilterClick()}
                       onKeyDown={onCloseButtonKeyDown}
-                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
@@ -624,11 +970,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Split>
-            <div style={{ minWidth: 480, width: "20%" }} ref={tableContainerRef}>
+            <div style={{ minWidth: 200, width: "20%" }} ref={tableContainerRef}>
               <DocumentsTableComponent
                 style={{ width: 200 }}
                 items={tableItems}
-                onSelectedItem={onSelectedDocument}
+                onItemClicked={onDocumentClicked}
+                onSelectedItemsChange={onDocumentsSelectionChange}
                 size={tableContainerSizePx}
                 columnHeaders={columnHeaders}
               />
@@ -637,15 +984,17 @@ const DocumentsTabComponent: React.FunctionComponent<{
               </a>
             </div>
             <div style={{ minWidth: "20%", width: "100%" }}>
-              <EditorReact
-                language={"json"}
-                content={JSON.stringify(currentDocument, undefined, "  ")}
-                isReadOnly={false}
-                ariaLabel={"Stored procedure body"}
-                lineNumbers={"on"}
-                theme={"_theme"}
-                onContentChanged={(newContent: string) => { }}
-              />
+              {shouldShowEditor && (
+                <EditorReact
+                  language={"json"}
+                  content={initialDocumentContent}
+                  isReadOnly={false}
+                  ariaLabel={"Document editor"}
+                  lineNumbers={"on"}
+                  theme={"_theme"}
+                  onContentChanged={(newContent: string) => {}}
+                />
+              )}
             </div>
           </Split>
         </div>
