@@ -149,7 +149,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.IndexingPolicyTab:
       return "Indexing Policy";
     case SettingsV2TabTypes.PartitionKeyTab:
-      return "Partition Keys";
+      return "Partition Keys (preview)";
     case SettingsV2TabTypes.ComputedPropertiesTab:
       return "Computed Properties (preview)";
     default:

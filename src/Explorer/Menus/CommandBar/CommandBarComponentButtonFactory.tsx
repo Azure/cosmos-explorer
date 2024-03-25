@@ -58,10 +58,10 @@ export function createStaticCommandBarButtons(
     }
   };
 
-  const homeBtn = createHomeButton();
-  buttons.push(homeBtn);
-
   if (configContext.platform !== Platform.Fabric) {
+    const homeBtn = createHomeButton();
+    buttons.push(homeBtn);
+
     const newCollectionBtn = createNewCollectionGroup(container);
     buttons.push(newCollectionBtn);
     if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {

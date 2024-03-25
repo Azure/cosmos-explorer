@@ -6,6 +6,7 @@ import {
   Icon,
   IconButton,
   Link,
+  MessageBar,
   Stack,
   Text,
   TooltipHost,
@@ -207,6 +208,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
         </Stack>
         {createNewContainer ? (
           <Stack>
+            <MessageBar>All configurations except for unique keys will be copied from the source container</MessageBar>
             <Stack className="panelGroupSpacing">
               <Stack horizontal>
                 <span className="mandatoryStar">*&nbsp;</span>

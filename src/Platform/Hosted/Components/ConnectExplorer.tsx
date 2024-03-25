@@ -1,10 +1,11 @@
 import { useBoolean } from "@fluentui/react-hooks";
 import { userContext } from "UserContext";
+import { usePortalBackendEndpoint } from "Utils/EndpointUtils";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
-import { HttpHeaders } from "../../../Common/Constants";
+import { BackendApi, HttpHeaders } from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import { GenerateTokenResponse } from "../../../Contracts/DataModels";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
@@ -18,6 +19,23 @@ interface Props {
 }
 
 export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
+  if (!usePortalBackendEndpoint(BackendApi.GenerateToken)) {
+    return await fetchEncryptedToken_ToBeDeprecated(connectionString);
+  }
+
+  const headers = new Headers();
+  headers.append(HttpHeaders.connectionString, connectionString);
+  const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/connectionstring/token/generatetoken";
+  const response = await fetch(url, { headers, method: "POST" });
+  if (!response.ok) {
+    throw response;
+  }
+
+  const encryptedTokenResponse: string = await response.json();
+  return decodeURIComponent(encryptedTokenResponse);
+};
+
+export const fetchEncryptedToken_ToBeDeprecated = async (connectionString: string): Promise<string> => {
   const headers = new Headers();
   headers.append(HttpHeaders.connectionString, connectionString);
   const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
