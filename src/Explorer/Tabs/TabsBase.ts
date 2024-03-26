@@ -158,7 +158,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
         return db + "." + options.title;
       }
     } else {
-      return "";
+      return options.title;
     }
   }
 
