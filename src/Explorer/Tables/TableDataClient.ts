@@ -19,7 +19,7 @@ import Explorer from "../Explorer";
 import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
-import { CassandraProxyAPIs } from "../../Common/Constants";
+import { CassandraProxyAPIs, CassandraProxyEndpoints } from "../../Common/Constants";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -458,7 +458,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   public getTableKeys(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
-    if (!this.useCassandraProxyEndpoint("getTableKeys")) {
+    if (!this.useCassandraProxyEndpoint("getKeys")) {
       return this.getTableKeys_ToBeDeprecated(collection);
     }
 
@@ -732,17 +732,16 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   private useCassandraProxyEndpoint(api: string): boolean {
+    const activeCassandraProxyEndpoints: string[] = [CassandraProxyEndpoints.Development, CassandraProxyEndpoints.Mpac];
     let canAccessCassandraProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
     if (userContext.databaseAccount.properties.ipRules?.length > 0) {
       canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
     }
-
+  
     return (
       canAccessCassandraProxy &&
       configContext.NEW_CASSANDRA_APIS?.includes(api) &&
-      [Constants.CassandraProxyEndpoints.Development, Constants.CassandraProxyEndpoints.Mpac].includes(
-        configContext.CASSANDRA_PROXY_ENDPOINT,
-      )
+      activeCassandraProxyEndpoints.includes(configContext.CASSANDRA_PROXY_ENDPOINT)
     );
   }
 }
