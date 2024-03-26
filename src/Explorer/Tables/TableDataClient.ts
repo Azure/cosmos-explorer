@@ -737,7 +737,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     if (userContext.databaseAccount.properties.ipRules?.length > 0) {
       canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
     }
-  
+
     return (
       canAccessCassandraProxy &&
       configContext.NEW_CASSANDRA_APIS?.includes(api) &&
