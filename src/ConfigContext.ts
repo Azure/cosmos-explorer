@@ -102,20 +102,20 @@ let configContext: Readonly<ConfigContext> = {
   NEW_BACKEND_APIS: [BackendApi.GenerateToken],
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
-    // "resourcelist",
-    // "createDocument",
-    // "readDocument",
-    // "updateDocument",
-    // "deleteDocument",
-    // "createCollectionWithProxy",
+     "resourcelist",
+    "createDocument",
+     "readDocument",
+    "updateDocument",
+     "deleteDocument",
+     "createCollectionWithProxy",
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   NEW_CASSANDRA_APIS: [
-    // "postQuery",
-    // "createOrDelete",
-    // "getKeys",
-    // "getSchema",
+     "postQuery",
+     "createOrDelete",
+     "getKeys",
+     "getSchema",
   ],
   CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   isTerminalEnabled: false,
@@ -248,3 +248,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
