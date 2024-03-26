@@ -408,8 +408,7 @@ export default class SqlX extends SelfServeBaseClass {
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
-      // TODO: Replace mocked value with real API response value later on initilization
-      defaults.set("dedicatedGatewayType", { value: IntegratedCache, disabled: true });
+      defaults.set("dedicatedGatewayType", { value: response.dedicatedGatewayType || IntegratedCache, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: false });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
@@ -451,14 +450,6 @@ export default class SqlX extends SelfServeBaseClass {
   })
   enableDedicatedGateway: boolean;
 
-  @OnChange(onSKUChange)
-  @Values({
-    labelTKey: "SKUs",
-    choices: getSkus,
-    placeholderTKey: "SKUsPlaceHolder",
-  })
-  sku: ChoiceItem;
-
   @OnChange(onDedicatedGatewayTypeChange)
   @Values({
     labelTKey: "Dedicated Gateway Type",
@@ -466,6 +457,14 @@ export default class SqlX extends SelfServeBaseClass {
     placeholderTKey: "DedicatedGatewayTypePlaceHolder",
   })
   dedicatedGatewayType: ChoiceItem;
+
+  @OnChange(onSKUChange)
+  @Values({
+    labelTKey: "SKUs",
+    choices: getSkus,
+    placeholderTKey: "SKUsPlaceHolder",
+  })
+  sku: ChoiceItem;
 
   @OnChange(onNumberOfInstancesChange)
   @PropertyInfo(NumberOfInstancesDropdownInfo)

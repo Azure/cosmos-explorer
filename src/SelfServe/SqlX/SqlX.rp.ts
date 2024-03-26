@@ -24,6 +24,7 @@ export enum ResourceStatus {
 
 export interface DedicatedGatewayResponse {
   sku: string;
+  dedicatedGatewayType: string;
   instances: number;
   status: string;
   endpoint: string;
@@ -42,7 +43,7 @@ export const updateDedicatedGatewayResource = async (
   const body: UpdateDedicatedGatewayRequestParameters = {
     properties: {
       instanceSize: sku,
-      // TODO: pass in DedicatedGatewayType into the properties on Update
+      dedicatedGatewayType: dedicatedGatewayType,
       instanceCount: instances,
       serviceType: "SqlDedicatedGateway",
     },
@@ -114,12 +115,19 @@ export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayRes
     const response = await getDedicatedGatewayResource();
     return {
       sku: response.properties.instanceSize,
+      dedicatedGatewayType: response.properties.dedicatedGatewayType,
       instances: response.properties.instanceCount,
       status: response.properties.status,
       endpoint: response.properties.sqlxEndPoint,
     };
   } catch (e) {
-    return { sku: undefined, instances: undefined, status: undefined, endpoint: undefined };
+    return {
+      sku: undefined,
+      dedicatedGatewayType: undefined,
+      instances: undefined,
+      status: undefined,
+      endpoint: undefined,
+    };
   }
 };
 
