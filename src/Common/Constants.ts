@@ -124,6 +124,34 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
+export enum BackendApi {
+  GenerateToken,
+}
+
+export class PortalBackendEndpoints {
+  public static readonly Development: string = "https://localhost:7235";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-pbe.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-pbe.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-pbe.cosmos.azure.cn";
+}
+
+export class MongoProxyEndpoints {
+  public static readonly Development: string = "https://localhost:7238";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
+}
+
+export class CassandraProxyEndpoints {
+  public static readonly Development: string = "https://localhost:7240";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-cp.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-cp.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-cp.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-cp.cosmos.azure.cn";
+}
+
 //TODO: Remove this when new backend is migrated over
 export class CassandraBackend {
   public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
@@ -444,22 +472,6 @@ export class JunoEndpoints {
   public static readonly Test3 = "https://juno-test3.documents-dev.windows-int.net";
   public static readonly Prod = "https://tools.cosmos.azure.com";
   public static readonly Stage = "https://tools-staging.cosmos.azure.com";
-}
-
-export class MongoProxyEndpoints {
-  public static readonly Development: string = "https://localhost:7238";
-  public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
-  public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
-  public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
-  public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
-}
-
-export class CassandraProxyEndpoints {
-  public static readonly Development: string = "https://localhost:7240";
-  public static readonly Mpac: string = "https://cdb-ms-mpac-cp.cosmos.azure.com";
-  public static readonly Prod: string = "https://cdb-ms-prod-cp.cosmos.azure.com";
-  public static readonly Fairfax: string = "https://cdb-ff-prod-cp.cosmos.azure.us";
-  public static readonly Mooncake: string = "https://cdb-mc-prod-cp.cosmos.azure.cn";
 }
 
 export class PriorityLevel {

@@ -207,7 +207,7 @@ exports[`SettingsComponent renders 1`] = `
         />
       </PivotItem>
       <PivotItem
-        headerText="Partition Keys"
+        headerText="Partition Keys (preview)"
         itemKey="PartitionKeyTab"
         key="PartitionKeyTab"
         style={
