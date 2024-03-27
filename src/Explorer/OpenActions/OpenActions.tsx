@@ -44,11 +44,11 @@ function openCollectionTab(
   //if databases are not yet loaded, wait until loaded
   if (!databases || databases.length === 0) {
     const databaseActionHandler = (databases: ViewModels.Database[]) => {
-      databasesSubscription();
+      databasesUnsubscription();
       openCollectionTab(action, databases, 0);
       return;
     };
-    const databasesSubscription = useDatabases.subscribe(databaseActionHandler, (state) => state.databases);
+    const databasesUnsubscription = useDatabases.subscribe(databaseActionHandler, (state) => state.databases);
   } else {
     for (let i = initialDatabaseIndex; i < databases.length; i++) {
       const database: ViewModels.Database = databases[i];
