@@ -4,6 +4,7 @@ import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { createDocument } from "Common/dataAccess/createDocument";
+import { deleteDocument } from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
@@ -319,7 +320,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   }, []);
 
   // If editor state changes, update the nav
-  useEffect(() => updateNavbarWithTabsButtons(), [editorState, selectedDocumentContent]);
+  useEffect(() => updateNavbarWithTabsButtons(), [editorState, selectedDocumentContent, initialDocumentContent]);
 
   useEffect(() => {
     if (documentsIterator) {
@@ -480,6 +481,76 @@ const DocumentsTabComponent: React.FunctionComponent<{
     // this.initialDocumentContent.valueHasMutated();
     setSelectedDocumentContent(selectedDocumentContentBaseline);
     // setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+  };
+
+  const onDeleteExisitingDocumentClick = async (): void => {
+    // const selectedDocumentId = this.selectedDocumentId();
+    const msg = !isPreferredApiMongoDB
+      ? "Are you sure you want to delete the selected item ?"
+      : "Are you sure you want to delete the selected document ?";
+
+    useDialog
+      .getState()
+      .showOkCancelModalDialog(
+        "Confirm delete",
+        msg,
+        "Delete",
+        async () => await _deleteDocument(selectedDocumentId),
+        "Cancel",
+        undefined,
+      );
+  };
+
+  const __deleteDocument = (documentId: DocumentId): Promise<void> => {
+    return deleteDocument(props.collection, documentId);
+  };
+
+  const _deleteDocument = (selectedDocumentId: DocumentId): Promise<void> => {
+    setIsExecutionError(false);
+    const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: props.tabTitle,
+    });
+    setIsExecuting(true);
+    return __deleteDocument(selectedDocumentId)
+      .then(
+        () => {
+          // documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
+          const index = documentIds.findIndex((documentId) => documentId.rid === selectedDocumentId.rid);
+          if (index !== -1) {
+            const newDocumentIds = [...documentIds];
+            newDocumentIds.splice(index, 1);
+            setDocumentIds(newDocumentIds);
+          }
+
+          setSelectedDocumentContent("");
+          setSelectedDocumentId(null);
+          setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+          TelemetryProcessor.traceSuccess(
+            Action.DeleteDocument,
+            {
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: props.tabTitle,
+            },
+            startKey,
+          );
+        },
+        (error) => {
+          setIsExecutionError(true);
+          console.error(error);
+          TelemetryProcessor.traceFailure(
+            Action.DeleteDocument,
+            {
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: props.tabTitle,
+              error: getErrorMessage(error),
+              errorStack: getErrorStack(error),
+            },
+            startKey,
+          );
+        },
+      )
+      .finally(() => setIsExecuting(false));
   };
 
   const onShowFilterClick = () => {
@@ -830,7 +901,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: DeleteDocumentIcon,
         iconAlt: label,
-        onCommandClick: undefined, // TODO implement: onDeleteExisitingDocumentClick,
+        onCommandClick: onDeleteExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -943,7 +1014,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
     if (
       selectedDocumentContentBaseline === initialDocumentContent &&
-      selectedDocumentContent === initialDocumentContent
+      selectedDocumentContent === initialDocumentContent &&
+      editorState !== ViewModels.DocumentExplorerState.newDocumentValid
     ) {
       setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
       return;
@@ -1010,6 +1082,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   return (
     <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
+      {editorState}
       <div
         className="tab-pane active"
         /* data-bind="
@@ -1086,13 +1159,13 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
                       /*
-          data-bind="
-                    W  attr:{
-                          placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-                      },
-                      css: { placeholderVisible: filterContent().length === 0 },
-                      textInput: filterContent"
-                      */
+        data-bind="
+                  W  attr:{
+                        placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+                    },
+                    css: { placeholderVisible: filterContent().length === 0 },
+                    textInput: filterContent"
+                    */
                     />
 
                     <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
