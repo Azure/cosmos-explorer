@@ -84,16 +84,16 @@ export function createStaticCommandBarButtons(
     addDivider();
     const notebookButtons: CommandButtonComponentProps[] = [];
 
-    const newNotebookButton = createNewNotebookButton(container);
-    newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
-    notebookButtons.push(newNotebookButton);
+    // const newNotebookButton = createNewNotebookButton(container);
+    // newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
+    // notebookButtons.push(newNotebookButton);
 
-    if (container.notebookManager?.gitHubOAuthService) {
-      notebookButtons.push(createManageGitHubAccountButton(container));
-    }
-    if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
-      notebookButtons.push(createOpenTerminalButton(container));
-    }
+   // if (container.notebookManager?.gitHubOAuthService) {
+   //   notebookButtons.push(createManageGitHubAccountButton(container));
+   // }
+   // if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
+   //    notebookButtons.push(createOpenTerminalButton(container));
+   // }
     if (useNotebook.getState().isPhoenixNotebooks && selectedNodeState.isConnectedToContainer()) {
       notebookButtons.push(createNotebookWorkspaceResetButton(container));
     }
@@ -456,19 +456,19 @@ function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentP
   }
 }
 
-function createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
-  const label = "New Notebook";
-  return {
-    id: "newNotebookBtn",
-    iconSrc: NewNotebookIcon,
-    iconAlt: label,
-    onCommandClick: () => container.onNewNotebookClicked(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
+// function createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
+//   const label = "New Notebook";
+//   return {
+//     id: "newNotebookBtn",
+//     iconSrc: NewNotebookIcon,
+//     iconAlt: label,
+//     onCommandClick: () => container.onNewNotebookClicked(),
+//     commandButtonLabel: label,
+//     hasPopup: false,
+//     disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+//     ariaLabel: label,
+//   };
+// }
 
 function createuploadNotebookButton(container: Explorer): CommandButtonComponentProps {
   const label = "Upload to Notebook Server";
@@ -510,18 +510,18 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
   };
 }
 
-function createOpenTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open Terminal";
-  return {
-    iconSrc: CosmosTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
+// function createOpenTerminalButton(container: Explorer): CommandButtonComponentProps {
+//  const label = "Open Terminal";
+//  return {
+//    iconSrc: CosmosTerminalIcon,
+//    iconAlt: label,
+//    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
+//    commandButtonLabel: label,
+//    hasPopup: false,
+//    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+//    ariaLabel: label,
+//  };
+// }
 
 function createOpenTerminalButtonByKind(
   container: Explorer,
