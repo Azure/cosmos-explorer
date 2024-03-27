@@ -266,8 +266,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
               </MenuPopover>
             </Menu>
           ))}
-          {/** Scrollbar alignment for the header: TODO: Check if this really works? */}
-          <div role="presentation" style={{ width: scrollbarWidth }} />
+          {/** Scrollbar alignment for the header: TODO: This does not work */}
+          <div role="columnheader" className="fui-TableHeaderCell" style={{ width: scrollbarWidth, height: 32 }} />
         </TableRow>
       </TableHeader>
       <TableBody>
