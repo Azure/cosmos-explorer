@@ -7,7 +7,7 @@ import {
   QueryIterator,
   Resource,
 } from "@azure/cosmos";
-import { FluentProvider } from "@fluentui/react-components";
+import { FluentProvider, TableRowId } from "@fluentui/react-components";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
@@ -132,7 +132,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<string>(undefined);
 
   const [selectedDocumentId, setSelectedDocumentId] = useState<DocumentId>(undefined);
-  const [multiSelectedDocumentIds, setMultiSelectedDocumentIds] = useState<DocumentId[]>([]);
+  // Table selection
+  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
 
   // Command buttons
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
@@ -331,7 +332,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   // TODO Put whatever the buttons callback use in the dependency array
   useEffect(
     () => updateNavbarWithTabsButtons(),
-    [editorState, selectedDocumentContent, initialDocumentContent, multiSelectedDocumentIds, documentIds],
+    [editorState, selectedDocumentContent, initialDocumentContent, selectedRows, documentIds],
   );
 
   useEffect(() => {
@@ -495,14 +496,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
     // const selectedDocumentId = this.selectedDocumentId();
 
     // TODO: Rework this for localization
-    const isPlural = multiSelectedDocumentIds.length > 1;
+    const isPlural = selectedRows.size > 1;
     const documentName = !isPreferredApiMongoDB
       ? isPlural
-        ? `the selected ${multiSelectedDocumentIds.length} items`
+        ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-        ? `the selected ${multiSelectedDocumentIds.length} documents`
-        : "the selected document";
+      ? `the selected ${selectedRows.size} documents`
+      : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog.getState().showOkCancelModalDialog(
@@ -510,7 +511,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       msg,
       "Delete",
       // async () => await _deleteDocuments(selectedDocumentId),
-      () => deleteDocuments(multiSelectedDocumentIds),
+      () => deleteDocuments(Array.from(selectedRows).map((index) => documentIds[index as number])),
       "Cancel",
       undefined,
     );
@@ -536,7 +537,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
         setSelectedDocumentContent(undefined);
         setSelectedDocumentId(undefined);
-        setMultiSelectedDocumentIds([]);
+        setSelectedRows(new Set());
         setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
       })
       .finally(() => setIsExecuting(false));
@@ -1012,17 +1013,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
   };
 
-  const onDocumentsSelectionChange = useCallback(
-    (selectedItemsIndices: Set<number>) => {
-      if (documentIds.length === 0) {
-        return;
-      }
-
-      setMultiSelectedDocumentIds(Array.from(selectedItemsIndices).map((index) => documentIds[index]));
-    },
-    [documentIds],
-  );
-
   const loadDocument = (documentId: DocumentId) =>
     (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(props.collection, documentId)).then(
       (content) => {
@@ -1142,7 +1132,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                /*data-bind="click: onShowFilterClick"*/
+                  /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -1192,7 +1182,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                    /*
+                      /*
 data-bind="
       W  attr:{
             placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
@@ -1245,7 +1235,7 @@ data-bind="
                       tabIndex={0}
                       onClick={onHideFilterClick}
                       onKeyDown={onCloseButtonKeyDown}
-                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
@@ -1266,7 +1256,8 @@ data-bind="
                 style={{ width: 200 }}
                 items={tableItems}
                 onItemClicked={onDocumentClicked}
-                onSelectedItemsChange={onDocumentsSelectionChange}
+                onSelectedRowsChange={setSelectedRows}
+                selectedRows={selectedRows}
                 size={tableContainerSizePx}
                 columnHeaders={columnHeaders}
                 onRefreshClicked={refreshDocumentsGrid}
@@ -1276,7 +1267,7 @@ data-bind="
               </a>
             </div>
             <div style={{ minWidth: "20%", width: "100%" }}>
-              {selectedDocumentContent && multiSelectedDocumentIds.length === 1 && (
+              {selectedDocumentContent && selectedRows.size === 1 && (
                 <EditorReact
                   language={"json"}
                   content={selectedDocumentContent}
@@ -1287,8 +1278,8 @@ data-bind="
                   onContentChanged={_onEditorContentChange}
                 />
               )}
-              {multiSelectedDocumentIds.length > 1 && (
-                <span style={{ margin: 10 }}>Number of selected documents: {multiSelectedDocumentIds.length}</span>
+              {selectedRows.size > 1 && (
+                <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
               )}
             </div>
           </Split>

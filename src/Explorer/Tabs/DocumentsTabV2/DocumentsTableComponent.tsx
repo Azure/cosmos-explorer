@@ -40,7 +40,8 @@ export type ColumnHeaders = {
 export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
   onItemClicked: (index: number) => void;
-  onSelectedItemsChange: (selectedItemsIndices: Set<number>) => void;
+  onSelectedRowsChange: (selectedItemsIndices: Set<TableRowId>) => void;
+  selectedRows: Set<TableRowId>;
   size: { height: number; width: number };
   columnHeaders: ColumnHeaders;
   onRefreshClicked: () => void;
@@ -60,7 +61,8 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
   onItemClicked,
-  onSelectedItemsChange,
+  onSelectedRowsChange,
+  selectedRows,
   style,
   size,
   columnHeaders,
@@ -95,15 +97,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       },
     }));
   }, []);
-
-  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
-
-  // If selected rows change, call props
-  useEffect(() => {
-    if (onSelectedItemsChange) {
-      onSelectedItemsChange(selectedRows);
-    }
-  }, [selectedRows, onSelectedItemsChange]);
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
   const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
@@ -159,7 +152,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         {columns.map((column) => (
           <TableCell
             key={column.columnId}
-            onClick={(/* e */) => setSelectedRows(new Set<TableRowId>([index]))}
+            onClick={(/* e */) => onSelectedRowsChange(new Set<TableRowId>([index]))}
             onKeyDown={onKeyDown}
             {...columnSizing.getTableCellProps(column.columnId)}
           >
@@ -185,7 +178,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       useTableSelection({
         selectionMode: "multiselect",
         selectedItems: selectedRows,
-        onSelectionChange: (e, data) => setSelectedRows(data.selectedItems),
+        onSelectionChange: (e, data) => onSelectedRowsChange(data.selectedItems),
       }),
     ],
   );
