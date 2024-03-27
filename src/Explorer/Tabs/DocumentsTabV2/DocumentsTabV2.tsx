@@ -1167,13 +1167,13 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
                       /*
-    data-bind="
-              W  attr:{
-                    placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-                },
-                css: { placeholderVisible: filterContent().length === 0 },
-                textInput: filterContent"
-                */
+  data-bind="
+            W  attr:{
+                  placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+              },
+              css: { placeholderVisible: filterContent().length === 0 },
+              textInput: filterContent"
+              */
                     />
 
                     <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
@@ -1243,6 +1243,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 onSelectedItemsChange={onDocumentsSelectionChange}
                 size={tableContainerSizePx}
                 columnHeaders={columnHeaders}
+                onRefreshClicked={refreshDocumentsGrid}
               />
               <a className="loadMore" role="button" onClick={() => loadNextPage(false)}>
                 Load more

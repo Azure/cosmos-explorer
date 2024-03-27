@@ -1,4 +1,5 @@
 import {
+  Button,
   Menu,
   MenuItem,
   MenuList,
@@ -24,6 +25,7 @@ import {
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
+import { ArrowClockwise16Filled } from "@fluentui/react-icons";
 import React, { useEffect, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
@@ -41,6 +43,7 @@ export interface IDocumentsTableComponentProps {
   onSelectedItemsChange: (selectedItemsIndices: Set<number>) => void;
   size: { height: number; width: number };
   columnHeaders: ColumnHeaders;
+  onRefreshClicked: () => void;
   style?: React.CSSProperties;
 }
 
@@ -61,6 +64,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   style,
   size,
   columnHeaders,
+  onRefreshClicked,
 }: IDocumentsTableComponentProps) => {
   const { targetDocument } = useFluent();
   const scrollbarWidth = useScrollbarWidth({ targetDocument });
@@ -107,33 +111,39 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       [
         createTableColumn<DocumentsTableComponentItem>({
           columnId: "id",
-          compare: (a, b) => {
-            return a.id.localeCompare(b.id);
-          },
-          renderHeaderCell: () => {
-            return "id";
-          },
-          renderCell: (item) => {
-            return <TableCellLayout truncate>{item.id}</TableCellLayout>;
-          },
+          compare: (a, b) => a.id.localeCompare(b.id),
+          renderHeaderCell: () => "id",
+          renderCell: (item) => <TableCellLayout truncate>{item.id}</TableCellLayout>,
         }),
       ].concat(
-        columnHeaders.partitionKeyHeaders.map((pkHeader) =>
+        columnHeaders.partitionKeyHeaders.map((pkHeader, index) =>
           createTableColumn<DocumentsTableComponentItem>({
             columnId: pkHeader,
-            compare: (a, b) => {
-              return a[pkHeader].localeCompare(b[pkHeader]);
-            },
-            renderHeaderCell: () => {
-              return `/${pkHeader}`;
-            },
+            compare: (a, b) => a[pkHeader].localeCompare(b[pkHeader]),
+            // Show Refresh button on last column
+            renderHeaderCell: () =>
+              index >= columnHeaders.partitionKeyHeaders.length - 1 ? (
+                <>
+                  <span>{`/${pkHeader}`}</span>
+                  <Button
+                    appearance="transparent"
+                    aria-label="Refresh"
+                    size="small"
+                    icon={<ArrowClockwise16Filled />}
+                    style={{ position: "absolute", right: 0 }}
+                    onClick={onRefreshClicked}
+                  />
+                </>
+              ) : (
+                `/${pkHeader}`
+              ),
             renderCell: (item) => {
               return <TableCellLayout truncate>{item[pkHeader]}</TableCellLayout>;
             },
           }),
         ),
       ),
-    [columnHeaders],
+    [columnHeaders.partitionKeyHeaders, onRefreshClicked],
   );
 
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
@@ -256,7 +266,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
               </MenuPopover>
             </Menu>
           ))}
-          {/** Scrollbar alignment for the header */}
+          {/** Scrollbar alignment for the header: TODO: Check if this really works? */}
           <div role="presentation" style={{ width: scrollbarWidth }} />
         </TableRow>
       </TableHeader>
