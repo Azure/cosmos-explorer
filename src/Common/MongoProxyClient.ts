@@ -67,7 +67,7 @@ export function queryDocuments(
   query: string,
   continuationToken?: string,
 ): Promise<QueryResponse> {
-  if (!useMongoProxyEndpoint("resourcelist")) {
+  if (!useMongoProxyEndpoint("resourcelist") || !useMongoProxyEndpoint("queryDocuments")) {
     return queryDocuments_ToBeDeprecated(databaseId, collection, isResourceList, query, continuationToken);
   }
 
@@ -106,7 +106,7 @@ export function queryDocuments(
     headers[CosmosSDKConstants.HttpHeaders.Continuation] = continuationToken;
   }
 
-  const path = isResourceList ? "/resourcelist" : "";
+  const path = isResourceList ? "/resourcelist" : "/queryDocuments";
 
   return window
     .fetch(`${endpoint}${path}`, {

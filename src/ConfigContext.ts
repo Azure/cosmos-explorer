@@ -103,6 +103,7 @@ let configContext: Readonly<ConfigContext> = {
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
     "resourcelist",
+    "queryDocuments",
     "createDocument",
     "readDocument",
     "updateDocument",
