@@ -1,4 +1,12 @@
-import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import {
+  FeedOptions,
+  Item,
+  ItemDefinition,
+  PartitionKey,
+  PartitionKeyDefinition,
+  QueryIterator,
+  Resource,
+} from "@azure/cosmos";
 import { FluentProvider } from "@fluentui/react-components";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
@@ -80,7 +88,7 @@ export class DocumentsTabV2 extends TabsBase {
 // From TabsBase.renderObjectForEditor()
 const renderObjectForEditor = (
   value: unknown,
-  replacer: (this: any, key: string, value: any) => any,
+  replacer: (this: unknown, key: string, value: unknown) => unknown,
   space: string | number,
 ): string => JSON.stringify(value, replacer, space);
 
@@ -358,7 +366,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setEditorState(ViewModels.DocumentExplorerState.newDocumentValid);
   };
 
-  const onSaveNewDocumentClick = (): Promise<any> => {
+  const onSaveNewDocumentClick = (): Promise<unknown> => {
     setIsExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
       dataExplorerArea: Constants.Areas.Tab,
@@ -369,7 +377,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setIsExecuting(true);
     return createDocument(props.collection, document)
       .then(
-        (savedDocument: any) => {
+        (savedDocument: unknown) => {
           const value: string = renderObjectForEditor(savedDocument || {}, null, 4);
           setSelectedDocumentContentBaseline(value);
           setInitialDocumentContent(value);
@@ -437,7 +445,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setIsExecuting(true);
     return updateDocument(props.collection, selectedDocumentId, documentContent)
       .then(
-        (updatedDocument: any) => {
+        (updatedDocument: Item & { _rid: string }) => {
           const value: string = renderObjectForEditor(updatedDocument || {}, null, 4);
           setSelectedDocumentContentBaseline(value);
           setInitialDocumentContent(value);
@@ -483,7 +491,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     // setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
   };
 
-  const onDeleteExisitingDocumentClick = async (): void => {
+  const onDeleteExisitingDocumentClick = async (): Promise<void> => {
     // const selectedDocumentId = this.selectedDocumentId();
     const msg = !isPreferredApiMongoDB
       ? "Are you sure you want to delete the selected item ?"
@@ -575,7 +583,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setQueryAbortController(_queryAbortController);
     const filter: string = filterContent.trim();
     const query: string = buildQuery(filter);
-    const options: any = {};
+    const options: FeedOptions = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
     if (resourceTokenPartitionKey) {
@@ -676,7 +684,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return true;
   };
 
-  const loadNextPage = (applyFilterButtonClicked?: boolean): Promise<any> => {
+  const loadNextPage = (applyFilterButtonClicked?: boolean): Promise<unknown> => {
     setIsExecuting(true);
     setIsExecutionError(false);
     let automaticallyCancelQueryAfterTimeout: boolean;
@@ -712,11 +720,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
           const currentDocumentsRids = currentDocuments.map((currentDocument) => currentDocument.rid);
           const nextDocumentIds = documentsIdsResponse
             // filter documents already loaded in observable
-            .filter((d: any) => {
+            .filter((d: DataModels.DocumentId) => {
               return currentDocumentsRids.indexOf(d._rid) < 0;
             })
             // map raw response to view model
-            .map((rawDocument: any) => {
+            .map((rawDocument: DataModels.DocumentId & { _partitionKeyValue: string[] }) => {
               const partitionKeyValue = rawDocument._partitionKeyValue;
 
               // TODO: Mock documentsTab. Fix this
@@ -1159,13 +1167,13 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
                       /*
-      data-bind="
-                W  attr:{
-                      placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-                  },
-                  css: { placeholderVisible: filterContent().length === 0 },
-                  textInput: filterContent"
-                  */
+    data-bind="
+              W  attr:{
+                    placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+                },
+                css: { placeholderVisible: filterContent().length === 0 },
+                textInput: filterContent"
+                */
                     />
 
                     <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
