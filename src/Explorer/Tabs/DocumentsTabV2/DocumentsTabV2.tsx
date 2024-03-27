@@ -113,7 +113,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false); // TODO isExecuting is a member of TabsBase. We may need to update this field.
   const [dataContentsGridScrollHeight, setDataContentsGridScrollHeight] = useState<string>(undefined);
-  const [shouldShowEditor, setShouldShowEditor] = useState<boolean>(false);
 
   // Query
   const [documentsIterator, setDocumentsIterator] = useState<{
@@ -133,6 +132,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<string>(undefined);
 
   const [selectedDocumentId, setSelectedDocumentId] = useState<DocumentId>(undefined);
+  const [multiSelectedDocumentIds, setMultiSelectedDocumentIds] = useState<DocumentId[]>([]);
 
   // Command buttons
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
@@ -328,17 +328,17 @@ const DocumentsTabComponent: React.FunctionComponent<{
   }, []);
 
   // If editor state changes, update the nav
-  useEffect(() => updateNavbarWithTabsButtons(), [editorState, selectedDocumentContent, initialDocumentContent]);
+  // TODO Put whatever the buttons callback use in the dependency array
+  useEffect(
+    () => updateNavbarWithTabsButtons(),
+    [editorState, selectedDocumentContent, initialDocumentContent, multiSelectedDocumentIds, documentIds],
+  );
 
   useEffect(() => {
     if (documentsIterator) {
       loadNextPage(documentsIterator.applyFilterButtonPressed);
     }
   }, [documentsIterator]);
-
-  useEffect(() => {
-    setShouldShowEditor(!!selectedDocumentContent);
-  }, [selectedDocumentContent]);
 
   const onNewDocumentClick = useCallback((): void => {
     if (isEditorDirty()) {
@@ -491,74 +491,93 @@ const DocumentsTabComponent: React.FunctionComponent<{
     // setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
   };
 
-  const onDeleteExisitingDocumentClick = async (): Promise<void> => {
+  const onDeleteExisitingDocumentsClick = async (): Promise<void> => {
     // const selectedDocumentId = this.selectedDocumentId();
-    const msg = !isPreferredApiMongoDB
-      ? "Are you sure you want to delete the selected item ?"
-      : "Are you sure you want to delete the selected document ?";
 
-    useDialog
-      .getState()
-      .showOkCancelModalDialog(
-        "Confirm delete",
-        msg,
-        "Delete",
-        async () => await _deleteDocument(selectedDocumentId),
-        "Cancel",
-        undefined,
-      );
+    // TODO: Rework this for localization
+    const isPlural = multiSelectedDocumentIds.length > 1;
+    const documentName = !isPreferredApiMongoDB
+      ? isPlural
+        ? `the selected ${multiSelectedDocumentIds.length} items`
+        : "the selected item"
+      : isPlural
+        ? `the selected ${multiSelectedDocumentIds.length} documents`
+        : "the selected document";
+    const msg = `Are you sure you want to delete ${documentName}?`;
+
+    useDialog.getState().showOkCancelModalDialog(
+      "Confirm delete",
+      msg,
+      "Delete",
+      // async () => await _deleteDocuments(selectedDocumentId),
+      () => deleteDocuments(multiSelectedDocumentIds),
+      "Cancel",
+      undefined,
+    );
   };
 
-  const __deleteDocument = (documentId: DocumentId): Promise<void> => {
-    return deleteDocument(props.collection, documentId);
-  };
-
-  const _deleteDocument = (selectedDocumentId: DocumentId): Promise<void> => {
+  const deleteDocuments = (toDeleteDocumentIds: DocumentId[]): void => {
     setIsExecutionError(false);
+    setIsExecuting(true);
+    const promises = toDeleteDocumentIds.map((documentId) => _deleteDocuments(documentId));
+    Promise.all(promises)
+      .then((deletedDocumentIds: DocumentId[]) => {
+        const newDocumentIds = [...documentIds];
+        deletedDocumentIds.forEach((deletedDocumentId) => {
+          if (deletedDocumentId !== undefined) {
+            // documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
+            const index = toDeleteDocumentIds.findIndex((documentId) => documentId.rid === deletedDocumentId.rid);
+            if (index !== -1) {
+              newDocumentIds.splice(index, 1);
+            }
+          }
+        });
+        setDocumentIds(newDocumentIds);
+
+        setSelectedDocumentContent(undefined);
+        setSelectedDocumentId(undefined);
+        setMultiSelectedDocumentIds([]);
+        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      })
+      .finally(() => setIsExecuting(false));
+  };
+
+  const _deleteDocuments = (documentId: DocumentId): Promise<DocumentId> => {
+    // setIsExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: props.tabTitle,
     });
-    setIsExecuting(true);
-    return __deleteDocument(selectedDocumentId)
-      .then(
-        () => {
-          // documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
-          const index = documentIds.findIndex((documentId) => documentId.rid === selectedDocumentId.rid);
-          if (index !== -1) {
-            const newDocumentIds = [...documentIds];
-            newDocumentIds.splice(index, 1);
-            setDocumentIds(newDocumentIds);
-          }
-
-          setSelectedDocumentContent("");
-          setSelectedDocumentId(null);
-          setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-          TelemetryProcessor.traceSuccess(
-            Action.DeleteDocument,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: props.tabTitle,
-            },
-            startKey,
-          );
-        },
-        (error) => {
-          setIsExecutionError(true);
-          console.error(error);
-          TelemetryProcessor.traceFailure(
-            Action.DeleteDocument,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: props.tabTitle,
-              error: getErrorMessage(error),
-              errorStack: getErrorStack(error),
-            },
-            startKey,
-          );
-        },
-      )
-      .finally(() => setIsExecuting(false));
+    // setIsExecuting(true);
+    return deleteDocument(props.collection, documentId).then(
+      () => {
+        TelemetryProcessor.traceSuccess(
+          Action.DeleteDocument,
+          {
+            dataExplorerArea: Constants.Areas.Tab,
+            tabTitle: props.tabTitle,
+          },
+          startKey,
+        );
+        return documentId;
+      },
+      (error) => {
+        setIsExecutionError(true);
+        console.error(error);
+        TelemetryProcessor.traceFailure(
+          Action.DeleteDocument,
+          {
+            dataExplorerArea: Constants.Areas.Tab,
+            tabTitle: props.tabTitle,
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error),
+          },
+          startKey,
+        );
+        return undefined;
+      },
+    );
+    // .finally(() => setIsExecuting(false));
   };
 
   const onShowFilterClick = () => {
@@ -910,7 +929,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: DeleteDocumentIcon,
         iconAlt: label,
-        onCommandClick: onDeleteExisitingDocumentClick,
+        onCommandClick: onDeleteExisitingDocumentsClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -993,9 +1012,16 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
   };
 
-  const onDocumentsSelectionChange = (selectedItemsIndices: Set<number>) => {
-    // TODO: Update some state?
-  };
+  const onDocumentsSelectionChange = useCallback(
+    (selectedItemsIndices: Set<number>) => {
+      if (documentIds.length === 0) {
+        return;
+      }
+
+      setMultiSelectedDocumentIds(Array.from(selectedItemsIndices).map((index) => documentIds[index]));
+    },
+    [documentIds],
+  );
 
   const loadDocument = (documentId: DocumentId) =>
     (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(props.collection, documentId)).then(
@@ -1116,7 +1142,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                  /*data-bind="click: onShowFilterClick"*/
+                /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -1166,14 +1192,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                      /*
-  data-bind="
-            W  attr:{
-                  placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-              },
-              css: { placeholderVisible: filterContent().length === 0 },
-              textInput: filterContent"
-              */
+                    /*
+data-bind="
+      W  attr:{
+            placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+        },
+        css: { placeholderVisible: filterContent().length === 0 },
+        textInput: filterContent"
+        */
                     />
 
                     <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
@@ -1219,7 +1245,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       tabIndex={0}
                       onClick={onHideFilterClick}
                       onKeyDown={onCloseButtonKeyDown}
-                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
@@ -1250,7 +1276,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
               </a>
             </div>
             <div style={{ minWidth: "20%", width: "100%" }}>
-              {shouldShowEditor && (
+              {selectedDocumentContent && multiSelectedDocumentIds.length === 1 && (
                 <EditorReact
                   language={"json"}
                   content={selectedDocumentContent}
@@ -1260,6 +1286,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   theme={"_theme"}
                   onContentChanged={_onEditorContentChange}
                 />
+              )}
+              {multiSelectedDocumentIds.length > 1 && (
+                <span style={{ margin: 10 }}>Number of selected documents: {multiSelectedDocumentIds.length}</span>
               )}
             </div>
           </Split>
