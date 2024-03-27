@@ -7,13 +7,10 @@ import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
 import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
-import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
-import GitHubIcon from "../../../../images/github.svg";
-import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
@@ -22,7 +19,6 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
@@ -33,7 +29,6 @@ import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
-import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
@@ -88,12 +83,12 @@ export function createStaticCommandBarButtons(
     // newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
     // notebookButtons.push(newNotebookButton);
 
-   // if (container.notebookManager?.gitHubOAuthService) {
-   //   notebookButtons.push(createManageGitHubAccountButton(container));
-   // }
-   // if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
-   //    notebookButtons.push(createOpenTerminalButton(container));
-   // }
+    // if (container.notebookManager?.gitHubOAuthService) {
+    //   notebookButtons.push(createManageGitHubAccountButton(container));
+    // }
+    // if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
+    //    notebookButtons.push(createOpenTerminalButton(container));
+    // }
     if (useNotebook.getState().isPhoenixNotebooks && selectedNodeState.isConnectedToContainer()) {
       notebookButtons.push(createNotebookWorkspaceResetButton(container));
     }
@@ -470,18 +465,18 @@ function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentP
 //   };
 // }
 
-function createuploadNotebookButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Upload to Notebook Server";
-  return {
-    iconSrc: NewNotebookIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openUploadFilePanel(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
+// function createuploadNotebookButton(container: Explorer): CommandButtonComponentProps {
+//   const label = "Upload to Notebook Server";
+//   return {
+//     iconSrc: NewNotebookIcon,
+//     iconAlt: label,
+//     onCommandClick: () => container.openUploadFilePanel(),
+//     commandButtonLabel: label,
+//     hasPopup: false,
+//     disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+//     ariaLabel: label,
+//   };
+// }
 
 function createOpenQueryButton(container: Explorer): CommandButtonComponentProps {
   const label = "Open Query";
@@ -575,31 +570,31 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
   };
 }
 
-function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
-  const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
-  const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
-  const junoClient = new JunoClient();
-  return {
-    iconSrc: GitHubIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      useSidePanel
-        .getState()
-        .openSidePanel(
-          label,
-          <GitHubReposPanel
-            explorer={container}
-            gitHubClientProp={container.notebookManager.gitHubClient}
-            junoClientProp={junoClient}
-          />,
-        );
-    },
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
+// function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
+//   const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
+//   const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
+//   const junoClient = new JunoClient();
+//   return {
+//     iconSrc: GitHubIcon,
+//     iconAlt: label,
+//     onCommandClick: () => {
+//       useSidePanel
+//         .getState()
+//         .openSidePanel(
+//           label,
+//           <GitHubReposPanel
+//             explorer={container}
+//             gitHubClientProp={container.notebookManager.gitHubClient}
+//             junoClientProp={junoClient}
+//           />,
+//         );
+//     },
+//     commandButtonLabel: label,
+//     hasPopup: false,
+//     disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+//     ariaLabel: label,
+//   };
+// }
 
 function createStaticCommandBarButtonsForResourceToken(
   container: Explorer,

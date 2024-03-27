@@ -2,10 +2,8 @@ import * as ko from "knockout";
 import { AuthType } from "../../../AuthType";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { CollectionBase } from "../../../Contracts/ViewModels";
-import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
-import NotebookManager from "../../Notebook/NotebookManager";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -365,62 +363,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
         (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel,
       );
       expect(openVCoreMongoShellButton).toBeDefined();
-    });
-  });
-
-  describe("GitHub buttons", () => {
-    const connectToGitHubBtnLabel = "Connect to GitHub";
-    const manageGitHubSettingsBtnLabel = "Manage GitHub settings";
-    const selectedNodeState = useSelectedNode.getState();
-
-    beforeAll(() => {
-      mockExplorer = {} as Explorer;
-      updateUserContext({
-        databaseAccount: {
-          properties: {
-            capabilities: [{ name: "EnableTable" }],
-          },
-        } as DatabaseAccount,
-      });
-
-      mockExplorer.notebookManager = new NotebookManager();
-      mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);
-    });
-
-    afterEach(() => {
-      jest.resetAllMocks();
-      useNotebook.getState().setIsNotebookEnabled(false);
-    });
-
-    it("Notebooks is enabled and GitHubOAuthService is not logged in - connect to github button should be visible", () => {
-      useNotebook.getState().setIsNotebookEnabled(true);
-
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const connectToGitHubBtn = buttons.find((button) => button.commandButtonLabel === connectToGitHubBtnLabel);
-      expect(connectToGitHubBtn).toBeDefined();
-    });
-
-    it("Notebooks is enabled and GitHubOAuthService is logged in - manage github settings button should be visible", () => {
-      useNotebook.getState().setIsNotebookEnabled(true);
-      mockExplorer.notebookManager.gitHubOAuthService.isLoggedIn = jest.fn().mockReturnValue(true);
-
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-      const manageGitHubSettingsBtn = buttons.find(
-        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel,
-      );
-      expect(manageGitHubSettingsBtn).toBeDefined();
-    });
-
-    it("Notebooks is not enabled - connect to github and manage github settings buttons should be hidden", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
-
-      const connectToGitHubBtn = buttons.find((button) => button.commandButtonLabel === connectToGitHubBtnLabel);
-      expect(connectToGitHubBtn).toBeUndefined();
-
-      const manageGitHubSettingsBtn = buttons.find(
-        (button) => button.commandButtonLabel === manageGitHubSettingsBtnLabel,
-      );
-      expect(manageGitHubSettingsBtn).toBeUndefined();
     });
   });
 
