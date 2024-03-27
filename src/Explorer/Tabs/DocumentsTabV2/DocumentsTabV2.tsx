@@ -1,10 +1,12 @@
-import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { FluentProvider } from "@fluentui/react-components";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { createDocument } from "Common/dataAccess/createDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
+import { updateDocument } from "Common/dataAccess/updateDocument";
 import { Platform, configContext } from "ConfigContext";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -32,6 +34,7 @@ import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as QueryUtils from "../../../Utils/QueryUtils";
+import { extractPartitionKeyValues } from "../../../Utils/QueryUtils";
 import DocumentId from "../../Tree/DocumentId";
 import TabsBase from "../TabsBase";
 import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
@@ -74,8 +77,11 @@ export class DocumentsTabV2 extends TabsBase {
 }
 
 // From TabsBase.renderObjectForEditor()
-const renderObjectForEditor = (value: unknown, replacer: unknown, space: string | number): string =>
-  JSON.stringify(value, replacer, space);
+const renderObjectForEditor = (
+  value: unknown,
+  replacer: (this: any, key: string, value: any) => any,
+  space: string | number,
+): string => JSON.stringify(value, replacer, space);
 
 const DocumentsTabComponent: React.FunctionComponent<{
   isPreferredApiMongoDB: boolean;
@@ -113,16 +119,16 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [isExecutionError, setIsExecutionError] = useState<boolean>(false);
   const [onLoadStartKey, setOnLoadStartKey] = useState<number>(props.onLoadStartKey);
 
+  const [initialDocumentContent, setInitialDocumentContent] = useState<string>(undefined);
   const [selectedDocumentContent, setSelectedDocumentContent] = useState<string>(undefined);
-  const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<unknown>(undefined);
+  const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<string>(undefined);
+
+  const [selectedDocumentId, setSelectedDocumentId] = useState<DocumentId>(undefined);
 
   // Command buttons
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
-
-  // Editor
-  const [initialDocumentContent, setInitialDocumentContent] = useState<string>(undefined);
 
   const getNewDocumentButtonState = () => ({
     enabled: (() => {
@@ -313,7 +319,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   }, []);
 
   // If editor state changes, update the nav
-  useEffect(() => updateNavbarWithTabsButtons(), [editorState]);
+  useEffect(() => updateNavbarWithTabsButtons(), [editorState, selectedDocumentContent]);
 
   useEffect(() => {
     if (documentsIterator) {
@@ -343,11 +349,137 @@ const DocumentsTabComponent: React.FunctionComponent<{
   }, [editorState /* TODO isEditorDirty depends on more than just editorState */]);
 
   const initializeNewDocument = (): void => {
-    this.selectedDocumentId(null);
+    // this.selectedDocumentId(null);
     const defaultDocument: string = renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
-    this.initialDocumentContent(defaultDocument);
-    this.selectedDocumentContent.setBaseline(defaultDocument);
-    this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
+    setInitialDocumentContent(defaultDocument);
+    setSelectedDocumentContent(defaultDocument);
+    setSelectedDocumentContentBaseline(defaultDocument);
+    setEditorState(ViewModels.DocumentExplorerState.newDocumentValid);
+  };
+
+  const onSaveNewDocumentClick = (): Promise<any> => {
+    setIsExecutionError(false);
+    const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: props.tabTitle,
+    });
+    const sanitizedContent = selectedDocumentContent.replace("\n", "");
+    const document = JSON.parse(sanitizedContent);
+    setIsExecuting(true);
+    return createDocument(props.collection, document)
+      .then(
+        (savedDocument: any) => {
+          const value: string = renderObjectForEditor(savedDocument || {}, null, 4);
+          setSelectedDocumentContentBaseline(value);
+          setInitialDocumentContent(value);
+          const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
+            savedDocument,
+            partitionKey as PartitionKeyDefinition,
+          );
+          const id = new DocumentId(this, savedDocument, partitionKeyValueArray);
+          const ids = documentIds;
+          ids.push(id);
+
+          // this.selectedDocumentId(id);
+          setDocumentIds(ids);
+          setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+          TelemetryProcessor.traceSuccess(
+            Action.CreateDocument,
+            {
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: props.tabTitle,
+            },
+            startKey,
+          );
+        },
+        (error) => {
+          setIsExecutionError(true);
+          const errorMessage = getErrorMessage(error);
+          useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
+          TelemetryProcessor.traceFailure(
+            Action.CreateDocument,
+            {
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: props.tabTitle,
+              error: errorMessage,
+              errorStack: getErrorStack(error),
+            },
+            startKey,
+          );
+        },
+      )
+      .finally(() => setIsExecuting(false));
+  };
+
+  const onRevertNewDocumentClick = (): void => {
+    setInitialDocumentContent("");
+    setSelectedDocumentContent("");
+    setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+  };
+
+  const onSaveExistingDocumentClick = (): Promise<void> => {
+    // const selectedDocumentId = this.selectedDocumentId();
+
+    const documentContent = JSON.parse(selectedDocumentContent);
+
+    const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
+      documentContent,
+      partitionKey as PartitionKeyDefinition,
+    );
+    selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
+
+    setIsExecutionError(false);
+    const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: props.tabTitle,
+    });
+    setIsExecuting(true);
+    return updateDocument(props.collection, selectedDocumentId, documentContent)
+      .then(
+        (updatedDocument: any) => {
+          const value: string = renderObjectForEditor(updatedDocument || {}, null, 4);
+          setSelectedDocumentContentBaseline(value);
+          setInitialDocumentContent(value);
+          setSelectedDocumentContent(value);
+          documentIds.forEach((documentId: DocumentId) => {
+            if (documentId.rid === updatedDocument._rid) {
+              documentId.id(updatedDocument.id);
+            }
+          });
+          setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+          TelemetryProcessor.traceSuccess(
+            Action.UpdateDocument,
+            {
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: props.tabTitle,
+            },
+            startKey,
+          );
+        },
+        (error) => {
+          setIsExecutionError(true);
+          const errorMessage = getErrorMessage(error);
+          useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
+          TelemetryProcessor.traceFailure(
+            Action.UpdateDocument,
+            {
+              dataExplorerArea: Constants.Areas.Tab,
+              tabTitle: props.tabTitle,
+              error: errorMessage,
+              errorStack: getErrorStack(error),
+            },
+            startKey,
+          );
+        },
+      )
+      .finally(() => setIsExecuting(false));
+  };
+
+  const onRevertExisitingDocumentClick = (): void => {
+    setSelectedDocumentContentBaseline(initialDocumentContent);
+    // this.initialDocumentContent.valueHasMutated();
+    setSelectedDocumentContent(selectedDocumentContentBaseline);
+    // setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
   };
 
   const onShowFilterClick = () => {
@@ -613,7 +745,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return true;
   })();
 
-  const getTabsButtons = useCallback((): CommandButtonComponentProps[] => {
+  const getTabsButtons = (): CommandButtonComponentProps[] => {
     if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
       // All the following buttons require write access
       return [];
@@ -639,12 +771,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
-        onCommandClick: undefined, // TODO implement: onSaveNewDocumentClick,
+        onCommandClick: onSaveNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
         disabled:
-          getSaveNewDocumentButtonState().enabled || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+          !getSaveNewDocumentButtonState().enabled || useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       });
     }
 
@@ -653,7 +785,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
-        onCommandClick: undefined, // TODO implement: onRevertNewDocumentClick,
+        onCommandClick: onRevertNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -668,7 +800,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
-        onCommandClick: undefined, // TODO implement: onSaveExistingDocumentClick,
+        onCommandClick: onSaveExistingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -683,7 +815,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
-        onCommandClick: undefined, // TODO implement: onRevertExisitingDocumentClick,
+        onCommandClick: onRevertExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -713,7 +845,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
 
     return buttons;
-  }, [editorState]);
+  };
 
   const _isQueryCopilotSampleContainer =
     props.collection?.isSampleCollection &&
@@ -763,6 +895,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
    * @param index
    */
   const onDocumentClicked = (index: number) => {
+    setSelectedDocumentId(documentIds[index]);
+
     if (isEditorDirty()) {
       useDialog
         .getState()
@@ -794,8 +928,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
     if (documentId) {
       const content: string = renderObjectForEditor(documentContent, null, 4);
       setSelectedDocumentContentBaseline(content);
-      setInitialDocumentContent(content); // TODO Remove this?
       setSelectedDocumentContent(content);
+      setInitialDocumentContent(content);
+
       const newState = documentId
         ? ViewModels.DocumentExplorerState.exisitingDocumentNoEdits
         : ViewModels.DocumentExplorerState.newDocumentValid;
@@ -805,6 +940,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   const _onEditorContentChange = (newContent: string): void => {
     setSelectedDocumentContent(newContent);
+
+    if (
+      selectedDocumentContentBaseline === initialDocumentContent &&
+      selectedDocumentContent === initialDocumentContent
+    ) {
+      setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+      return;
+    }
 
     try {
       JSON.parse(newContent);
@@ -824,7 +967,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
 
     setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid);
-  }
+  };
 
   const onInvalidDocumentEdit = (): void => {
     if (
@@ -842,8 +985,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid);
       return;
     }
-  }
-
+  };
 
   const tableContainerRef = useRef(null);
   const [tableContainerSizePx, setTableContainerSizePx] = useState<{ height: number; width: number }>(undefined);
@@ -893,7 +1035,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                /*data-bind="click: onShowFilterClick"*/
+                  /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -943,7 +1085,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                    /*
+                      /*
           data-bind="
                     W  attr:{
                           placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
@@ -996,7 +1138,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       tabIndex={0}
                       onClick={() => onHideFilterClick()}
                       onKeyDown={onCloseButtonKeyDown}
-                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
@@ -1029,7 +1171,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
               {shouldShowEditor && (
                 <EditorReact
                   language={"json"}
-                  content={initialDocumentContent}
+                  content={selectedDocumentContent}
                   isReadOnly={false}
                   ariaLabel={"Document editor"}
                   lineNumbers={"on"}
