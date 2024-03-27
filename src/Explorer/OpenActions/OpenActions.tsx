@@ -57,8 +57,8 @@ function openCollectionTab(
       }
 
       //expand database first if not expanded to load the collections
-      if (!database.isDatabaseExpanded()) {
-        database.expandDatabase();
+      if (!database.isDatabaseExpanded?.()) {
+        database.expandDatabase?.();
       }
 
       const collectionActionHandler = (collections: ViewModels.Collection[]) => {
