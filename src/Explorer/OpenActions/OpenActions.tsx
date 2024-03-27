@@ -1,4 +1,5 @@
 // TODO convert this file to an action registry in order to have actions and their handlers be more tightly coupled.
+import { useDatabases } from "Explorer/useDatabases";
 import React from "react";
 import { ActionContracts } from "../../Contracts/ExplorerContracts";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -40,10 +41,25 @@ function openCollectionTab(
   databases: ViewModels.Database[],
   initialDatabaseIndex = 0,
 ) {
+  //if databases are not yet loaded, wait until loaded
+  if (!databases || databases.length === 0) {
+    const databaseActionHandler = (databases: ViewModels.Database[]) => {
+      databasesSubscription();
+      openCollectionTab(action, databases, 0);
+      return;
+    };
+    const databasesSubscription = useDatabases.subscribe(databaseActionHandler, (state) => state.databases);
+  }
+
   for (let i = initialDatabaseIndex; i < databases.length; i++) {
     const database: ViewModels.Database = databases[i];
     if (!!action.databaseResourceId && database.id() !== action.databaseResourceId) {
       continue;
+    }
+
+    //expand database first if not expanded to load the collections
+    if (!database.isDatabaseExpanded()) {
+      database.expandDatabase();
     }
 
     const collectionActionHandler = (collections: ViewModels.Collection[]) => {
