@@ -372,6 +372,12 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
         ipAddressesFromIPRules.filter((ipAddressFromIPRule) => cassandraProxyOutboundIPs.includes(ipAddressFromIPRule))
           ?.length === cassandraProxyOutboundIPs.length;
 
+      if (ipRulesIncludeCassandraProxy) {
+        updateConfigContext({
+          CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
+        });
+      }
+
       return !ipRulesIncludeCassandraProxy;
     }
   }
