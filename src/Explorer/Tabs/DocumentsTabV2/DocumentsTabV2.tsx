@@ -350,22 +350,27 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
   }, [documentsIterator]);
 
-  const onNewDocumentClick = useCallback((): void => {
+  const confirmDiscardingChange = (onDiscard: () => void, onCancelDiscard?: () => void): void => {
     if (isEditorDirty()) {
       useDialog
         .getState()
         .showOkCancelModalDialog(
           "Unsaved changes",
-          "Changes will be lost. Do you want to continue?",
+          "Your unsaved changes will be lost. Do you want to continue?",
           "OK",
-          () => initializeNewDocument(),
+          onDiscard,
           "Cancel",
-          undefined,
+          onCancelDiscard,
         );
     } else {
-      initializeNewDocument();
+      onDiscard();
     }
-  }, [editorState /* TODO isEditorDirty depends on more than just editorState */]);
+  };
+
+  const onNewDocumentClick = useCallback(
+    (): void => confirmDiscardingChange(() => initializeNewDocument()),
+    [editorState /* TODO isEditorDirty depends on more than just editorState */],
+  );
 
   const initializeNewDocument = (): void => {
     // this.selectedDocumentId(null);
@@ -515,8 +520,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-        ? `the selected ${selectedRows.size} documents`
-        : "the selected document";
+      ? `the selected ${selectedRows.size} documents`
+      : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog.getState().showOkCancelModalDialog(
@@ -992,21 +997,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const onDocumentClicked = (tabRowId: TableRowId) => {
     const index = tabRowId as number;
     setClickedRow(index);
-
-    if (isEditorDirty()) {
-      useDialog
-        .getState()
-        .showOkCancelModalDialog(
-          "Unsaved changes",
-          "Your unsaved changes will be lost. Do you want to continue?",
-          "OK",
-          () => loadDocument(documentIds[index]),
-          "Cancel",
-          undefined,
-        );
-    } else {
-      loadDocument(documentIds[index]);
-    }
+    loadDocument(documentIds[index]);
   };
 
   const loadDocument = (documentId: DocumentId) =>
@@ -1102,24 +1093,29 @@ const DocumentsTabComponent: React.FunctionComponent<{
   };
 
   const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
-    if (selectedRows.size === 0) {
-      setSelectedDocumentContent(undefined);
-      setClickedRow(undefined);
-    }
+    confirmDiscardingChange(() => {
+      if (selectedRows.size === 0) {
+        setSelectedDocumentContent(undefined);
+        setClickedRow(undefined);
+        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      }
 
-    // Find if clickedRow is in selectedRows.If not, clear clickedRow and content
-    if (clickedRow !== undefined && !selectedRows.has(clickedRow)) {
-      setClickedRow(undefined);
-      setSelectedDocumentContent(undefined);
-    }
+      // Find if clickedRow is in selectedRows.If not, clear clickedRow and content
+      if (clickedRow !== undefined && !selectedRows.has(clickedRow)) {
+        setClickedRow(undefined);
+        setSelectedDocumentContent(undefined);
+        setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+      }
 
-    // If only one selection, we consider as a click
-    if (selectedRows.size === 1) {
-      const selectedRow = Array.from(selectedRows)[0];
-      onDocumentClicked(selectedRow);
-    }
+      // If only one selection, we consider as a click
+      if (selectedRows.size === 1) {
+        const selectedRow = Array.from(selectedRows)[0];
+        onDocumentClicked(selectedRow);
+        setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+      }
 
-    setSelectedRows(selectedRows);
+      setSelectedRows(selectedRows);
+    });
   };
 
   return (
@@ -1150,7 +1146,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                /*data-bind="click: onShowFilterClick"*/
+                  /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -1200,14 +1196,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                    /*
+                      /*
 data-bind="
 W  attr:{
-      placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-  },
-  css: { placeholderVisible: filterContent().length === 0 },
-  textInput: filterContent"
-  */
+placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+},
+css: { placeholderVisible: filterContent().length === 0 },
+textInput: filterContent"
+*/
                     />
 
                     <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
@@ -1253,7 +1249,7 @@ W  attr:{
                       tabIndex={0}
                       onClick={onHideFilterClick}
                       onKeyDown={onCloseButtonKeyDown}
-                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
