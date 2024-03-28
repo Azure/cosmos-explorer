@@ -80,7 +80,7 @@ export const isCopilotFeatureRegistered = async (subscriptionId: string): Promis
 };
 
 export const getCopilotEnabled = async (): Promise<boolean> => {
-  const url = `${configContext.BACKEND_ENDPOINT}/api/portalsettings/querycopilot`;
+  const url = `${configContext.PORTAL_BACKEND_ENDPOINT}/api/portalsettings/querycopilot`;
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 
