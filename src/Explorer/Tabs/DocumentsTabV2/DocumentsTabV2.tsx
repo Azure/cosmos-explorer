@@ -112,7 +112,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   ]);
   const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false); // TODO isExecuting is a member of TabsBase. We may need to update this field.
-  const [dataContentsGridScrollHeight, setDataContentsGridScrollHeight] = useState<string>(undefined);
 
   // Query
   const [documentsIterator, setDocumentsIterator] = useState<{
@@ -120,11 +119,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
     applyFilterButtonPressed: boolean;
   }>(undefined);
   const [queryAbortController, setQueryAbortController] = useState<AbortController>(undefined);
-  const [resourceTokenPartitionKey, setResourceTokenPartitionKey] = useState<string>(undefined);
-  const [isQueryCopilotSampleContainer, setIsQueryCopilotSampleContainer] = useState<boolean>(false);
+  const [resourceTokenPartitionKey, setResourceTokenPartitionKey] = useState<string>(undefined); // TODO: Make this a constant is setter getting called
+  const [isQueryCopilotSampleContainer, setIsQueryCopilotSampleContainer] = useState<boolean>(false); // TODO: Make this a constant is setter getting called
   const [cancelQueryTimeoutID, setCancelQueryTimeoutID] = useState<NodeJS.Timeout>(undefined);
 
-  const [isExecutionError, setIsExecutionError] = useState<boolean>(false);
+  const [isExecutionError, setIsExecutionError] = useState<boolean>(false); // TODO: Where is this used?
   const [onLoadStartKey, setOnLoadStartKey] = useState<number>(props.onLoadStartKey);
 
   const [initialDocumentContent, setInitialDocumentContent] = useState<string>(undefined);
@@ -271,6 +270,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     visible: true,
   };
 
+  // TODO: Where is this used?
   const documentContentsContainerId = `documentContentsContainer${props.tabId}`;
   const documentContentsGridId = `documentContentsGrid${props.tabId}`;
 
@@ -520,8 +520,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-      ? `the selected ${selectedRows.size} documents`
-      : "the selected document";
+        ? `the selected ${selectedRows.size} documents`
+        : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog.getState().showOkCancelModalDialog(
@@ -828,6 +828,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return documentsIterator.iterator.fetchNext().then((response) => response.resources);
   };
 
+  // TODO: use this when generating column headers
   const showPartitionKey = (() => {
     if (!props.collection) {
       return false;
@@ -1146,7 +1147,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                  /*data-bind="click: onShowFilterClick"*/
+                /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -1196,7 +1197,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                      /*
+                    /*
 data-bind="
 W  attr:{
 placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
@@ -1249,7 +1250,7 @@ textInput: filterContent"
                       tabIndex={0}
                       onClick={onHideFilterClick}
                       onKeyDown={onCloseButtonKeyDown}
-                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
