@@ -800,12 +800,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
         iconSrc: NewNotebookIcon,
         onClick: () => this.container.onCreateDirectory(item),
       },
-      // TODO: Remove the below code for Notebooks
-      // {
-      //   label: "New Notebook",
-      //   iconSrc: NewNotebookIcon,
-      //   onClick: () => this.container.onNewNotebookClicked(item),
-      // },
       {
         label: "Upload File",
         iconSrc: NewNotebookIcon,
