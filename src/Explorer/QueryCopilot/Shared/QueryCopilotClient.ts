@@ -30,6 +30,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getAuthorizationHeader } from "Utils/AuthorizationUtils";
+import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
@@ -88,15 +89,19 @@ export const getCopilotEnabled = async (): Promise<boolean> => {
 
   try {
     response = await fetchWithTimeout(url, headers);
+    logConsoleInfo("DEBUG: fetched copilot settings successfully");
   } catch (error) {
+    logConsoleInfo(`DEBUG: fetch copilot settings failure: ${error}`);
     return false;
   }
 
   if (!response?.ok) {
+    logConsoleInfo(`DEBUG: fetch copilot settings failure: response not ok : ${response}}`);
     return false;
   }
 
   const copilotPortalConfiguration = (await response?.json()) as CopilotEnabledConfiguration;
+  logConsoleInfo(`DEBUG: fetch copilot settings config: ${copilotPortalConfiguration ?? "null"}`);
   return copilotPortalConfiguration?.isEnabled;
 };
 
