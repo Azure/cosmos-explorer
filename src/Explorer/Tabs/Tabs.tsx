@@ -327,10 +327,9 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
   if ((userContext.apiType === "Mongo" || userContext.apiType === "Cassandra") && ipRules?.length) {
     const legacyPortalBackendIPs: string[] = PortalBackendIPs[configContext.BACKEND_ENDPOINT];
     const ipAddressesFromIPRules: string[] = ipRules.map((ipRule) => ipRule.ipAddressOrRange);
-    const ipRulesIncludeLegacyPortalBackend: boolean =
-      ipAddressesFromIPRules.filter((ipAddressFromIPRule) => legacyPortalBackendIPs.includes(ipAddressFromIPRule))
-        ?.length === legacyPortalBackendIPs.length;
-
+    const ipRulesIncludeLegacyPortalBackend: boolean = legacyPortalBackendIPs.every((legacyPortalBackendIP: string) =>
+      ipAddressesFromIPRules.includes(legacyPortalBackendIP),
+    );
     if (!ipRulesIncludeLegacyPortalBackend) {
       return false;
     }
@@ -344,9 +343,9 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
         ? [...MongoProxyOutboundIPs[MongoProxyEndpoints.Mpac], ...MongoProxyOutboundIPs[MongoProxyEndpoints.Prod]]
         : MongoProxyOutboundIPs[configContext.MONGO_PROXY_ENDPOINT];
 
-      const ipRulesIncludeMongoProxy: boolean =
-        ipAddressesFromIPRules.filter((ipAddressFromIPRule) => mongoProxyOutboundIPs.includes(ipAddressFromIPRule))
-          ?.length === mongoProxyOutboundIPs.length;
+      const ipRulesIncludeMongoProxy: boolean = mongoProxyOutboundIPs.every((mongoProxyOutboundIP: string) =>
+        ipAddressesFromIPRules.includes(mongoProxyOutboundIP),
+      );
 
       if (ipRulesIncludeMongoProxy) {
         updateConfigContext({
@@ -368,9 +367,9 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
           ]
         : CassandraProxyOutboundIPs[configContext.CASSANDRA_PROXY_ENDPOINT];
 
-      const ipRulesIncludeCassandraProxy: boolean =
-        ipAddressesFromIPRules.filter((ipAddressFromIPRule) => cassandraProxyOutboundIPs.includes(ipAddressFromIPRule))
-          ?.length === cassandraProxyOutboundIPs.length;
+      const ipRulesIncludeCassandraProxy: boolean = cassandraProxyOutboundIPs.every(
+        (cassandraProxyOutboundIP: string) => ipAddressesFromIPRules.includes(cassandraProxyOutboundIP),
+      );
 
       if (ipRulesIncludeCassandraProxy) {
         updateConfigContext({
