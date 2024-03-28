@@ -1,14 +1,12 @@
 import {
-  BrandVariants,
   FluentProvider,
-  Theme,
   Tree,
   TreeItemValue,
   TreeOpenChangeData,
   TreeOpenChangeEvent,
-  createLightTheme,
 } from "@fluentui/react-components";
 import { TreeNode2, TreeNode2Component } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
+import { dataExplorerLightTheme } from "Explorer/Theme/ThemeUtil";
 import { useDatabaseTreeNodes } from "Explorer/Tree2/useDatabaseTreeNodes";
 import * as React from "react";
 import shallow from "zustand/shallow";
@@ -21,29 +19,6 @@ export const GitHubReposTitle = "GitHub repos";
 interface ResourceTreeProps {
   container: Explorer;
 }
-
-const cosmosdb: BrandVariants = {
-  10: "#020305",
-  20: "#111723",
-  30: "#16263D",
-  40: "#193253",
-  50: "#1B3F6A",
-  60: "#1B4C82",
-  70: "#18599B",
-  80: "#1267B4",
-  90: "#3174C2",
-  100: "#4F82C8",
-  110: "#6790CF",
-  120: "#7D9ED5",
-  130: "#92ACDC",
-  140: "#A6BAE2",
-  150: "#BAC9E9",
-  160: "#CDD8EF",
-};
-
-const lightTheme: Theme = {
-  ...createLightTheme(cosmosdb),
-};
 
 export const DATA_TREE_LABEL = "DATA";
 
@@ -113,7 +88,7 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
 
   return (
     <>
-      <FluentProvider theme={lightTheme} style={{ overflow: "hidden" }}>
+      <FluentProvider theme={dataExplorerLightTheme} style={{ overflow: "hidden" }}>
         <Tree
           aria-label="CosmosDB resources"
           openItems={openItems}
