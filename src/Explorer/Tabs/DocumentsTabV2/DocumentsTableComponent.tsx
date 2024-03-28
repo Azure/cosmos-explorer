@@ -125,6 +125,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     icon={<ArrowClockwise16Filled />}
                     style={{ position: "absolute", right: 0 }}
                     onClick={onRefreshClicked}
+                    onKeyDown={onRefreshClicked}
                   />
                 </>
               ) : (

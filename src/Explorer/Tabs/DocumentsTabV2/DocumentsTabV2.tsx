@@ -333,7 +333,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
   // TODO Put whatever the buttons callback use in the dependency array: find a better way to maintain
   useEffect(
     () => updateNavbarWithTabsButtons(),
-    [editorState, selectedDocumentContent, initialDocumentContent, selectedRows, documentIds],
+    [
+      editorState,
+      selectedDocumentContent,
+      selectedDocumentContentBaseline,
+      initialDocumentContent,
+      selectedRows,
+      documentIds,
+      clickedRow,
+    ],
   );
 
   useEffect(() => {
@@ -365,6 +373,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setInitialDocumentContent(defaultDocument);
     setSelectedDocumentContent(defaultDocument);
     setSelectedDocumentContentBaseline(defaultDocument);
+    setSelectedRows(new Set());
+    setClickedRow(undefined);
     setEditorState(ViewModels.DocumentExplorerState.newDocumentValid);
   };
 
@@ -698,15 +708,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   //   }
   // });
 
-  const onRefreshButtonKeyDown: KeyboardEventHandler<HTMLSpanElement> = (event) => {
-    if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
-      refreshDocumentsGrid();
-      event.stopPropagation();
-      return false;
-    }
-    return true;
-  };
-
   const loadNextPage = (applyFilterButtonClicked?: boolean): Promise<unknown> => {
     setIsExecuting(true);
     setIsExecutionError(false);
@@ -816,16 +817,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
           }
         }
       });
-  };
-
-  const onLoadMoreKeyInput: KeyboardEventHandler<HTMLAnchorElement> = (event): void => {
-    if (event.key === " " || event.key === "Enter") {
-      const focusElement = document.getElementById(this.documentContentsGridId);
-      this.loadNextPage();
-      focusElement && focusElement.focus();
-      event.stopPropagation();
-      event.preventDefault();
-    }
   };
 
   const _loadNextPageInternal = (): Promise<DataModels.DocumentId[]> => {
@@ -982,10 +973,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
         return true;
 
       case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
-        return (
-          this.selectedDocumentContent.getEditableOriginalValue() !==
-          this.selectedDocumentContent.getEditableCurrentValue()
-        );
+        return true;
+      // return (
+      //   this.selectedDocumentContent.getEditableOriginalValue() !==
+      //   this.selectedDocumentContent.getEditableCurrentValue()
+      // );
 
       default:
         return false;
@@ -1043,7 +1035,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
     if (
       selectedDocumentContentBaseline === initialDocumentContent &&
-      selectedDocumentContent === initialDocumentContent &&
+      newContent === initialDocumentContent &&
       editorState !== ViewModels.DocumentExplorerState.newDocumentValid
     ) {
       setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
@@ -1132,6 +1124,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   return (
     <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
+      {editorState}
       <div
         className="tab-pane active"
         /* data-bind="
@@ -1209,12 +1202,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       onChange={(e) => setFilterContent(e.target.value)}
                     /*
 data-bind="
-    W  attr:{
-          placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-      },
-      css: { placeholderVisible: filterContent().length === 0 },
-      textInput: filterContent"
-      */
+W  attr:{
+      placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
+  },
+  css: { placeholderVisible: filterContent().length === 0 },
+  textInput: filterContent"
+  */
                     />
 
                     <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
@@ -1287,12 +1280,17 @@ data-bind="
                 columnHeaders={columnHeaders}
                 onRefreshClicked={refreshDocumentsGrid}
               />
-              <a className="loadMore" role="button" onClick={() => loadNextPage(false)}>
+              <a
+                className="loadMore"
+                role="button"
+                onClick={() => loadNextPage(false)}
+                onKeyDown={() => loadNextPage(false)}
+              >
                 Load more
               </a>
             </div>
             <div style={{ minWidth: "20%", width: "100%" }}>
-              {selectedDocumentContent && selectedRows.size === 1 && (
+              {selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}
                   content={selectedDocumentContent}
