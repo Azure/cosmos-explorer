@@ -374,11 +374,6 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         onClick: () => container.onCreateDirectory(item, isGithubTree),
       },
       {
-        label: "New Notebook",
-        iconSrc: NewNotebookIcon,
-        onClick: () => container.onNewNotebookClicked(item, isGithubTree),
-      },
-      {
         label: "Upload File",
         iconSrc: NewNotebookIcon,
         onClick: () => container.openUploadFilePanel(item),
@@ -785,9 +780,6 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           <AccordionComponent>
             <AccordionItemComponent title={"DATA"} isExpanded={!gitHubNotebooksContentRoot}>
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-            </AccordionItemComponent>
-            <AccordionItemComponent title={"NOTEBOOKS"}>
-              <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
             </AccordionItemComponent>
           </AccordionComponent>
 

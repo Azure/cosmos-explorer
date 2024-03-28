@@ -801,11 +801,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
         onClick: () => this.container.onCreateDirectory(item),
       },
       {
-        label: "New Notebook",
-        iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onNewNotebookClicked(item),
-      },
-      {
         label: "Upload File",
         iconSrc: NewNotebookIcon,
         onClick: () => this.container.openUploadFilePanel(item),
