@@ -8,6 +8,7 @@
     "DedicatedGatewayPricing": "Learn more about dedicated gateway pricing.",
     "SKUs": "SKUs",
     "SKUsPlaceHolder": "Select SKUs",
+    "DedicatedGatewayTypePlaceHolder": "Select Dedicated Gateway Type",
     "NumberOfInstances": "Number of instances",
     "CosmosD4s": "Cosmos.D4s (General Purpose Cosmos Compute with 4 vCPUs, 16 GB Memory)",
     "CosmosD8s": "Cosmos.D8s (General Purpose Cosmos Compute with 8 vCPUs, 32 GB Memory)",
