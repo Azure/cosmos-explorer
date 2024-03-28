@@ -10,7 +10,7 @@ import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
-// import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
+import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
