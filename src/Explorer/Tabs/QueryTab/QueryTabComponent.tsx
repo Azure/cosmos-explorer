@@ -134,7 +134,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
     this.state = {
       toggleState: ToggleState.Result,
-      sqlQueryEditorContent: props.queryText || "SELECT * FROM c",
+      sqlQueryEditorContent: props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c",
       selectedContent: "",
       queryResults: undefined,
       error: "",
