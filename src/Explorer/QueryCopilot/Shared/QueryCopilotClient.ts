@@ -101,7 +101,7 @@ export const getCopilotEnabled = async (): Promise<boolean> => {
   }
 
   const copilotPortalConfiguration = (await response?.json()) as CopilotEnabledConfiguration;
-  logConsoleInfo(`DEBUG: fetch copilot settings config: ${copilotPortalConfiguration ?? "null"}`);
+  logConsoleInfo(`DEBUG: fetch copilot settings config: ${copilotPortalConfiguration?.isEnabled ?? "null"}`);
   return copilotPortalConfiguration?.isEnabled;
 };
 
