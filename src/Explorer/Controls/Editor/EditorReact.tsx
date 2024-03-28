@@ -1,6 +1,6 @@
 import { Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import { loadMonaco, monaco } from "../../LazyMonaco";
+import { MonacoNamespace, loadMonaco, monaco } from "../../LazyMonaco";
 // import "./EditorReact.less";
 
 interface EditorReactStates {
@@ -21,6 +21,7 @@ export interface EditorReactProps {
   minimap?: monaco.editor.IEditorOptions["minimap"];
   scrollBeyondLastLine?: monaco.editor.IEditorOptions["scrollBeyondLastLine"];
   monacoContainerStyles?: React.CSSProperties;
+  configureEditor?: (monaco: MonacoNamespace, editor: monaco.editor.IStandaloneCodeEditor) => void;
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
@@ -69,7 +70,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     );
   }
 
-  protected configureEditor(editor: monaco.editor.IStandaloneCodeEditor) {
+  protected configureEditor(monaco: MonacoNamespace, editor: monaco.editor.IStandaloneCodeEditor) {
     this.editor = editor;
     const queryEditorModel = this.editor.getModel();
     if (!this.props.isReadOnly && this.props.onContentChanged) {
@@ -87,12 +88,16 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
         },
       );
     }
+
+    if (this.props.configureEditor) {
+      this.props.configureEditor(monaco, this.editor);
+    }
   }
 
   /**
    * Create the monaco editor and attach to DOM
    */
-  private async createEditor(createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
+  private async createEditor(createCallback: (monaco: MonacoNamespace, e: monaco.editor.IStandaloneCodeEditor) => void) {
     const options: monaco.editor.IStandaloneEditorConstructionOptions = {
       language: this.props.language,
       value: this.props.content,
@@ -111,7 +116,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
     this.rootNode.innerHTML = "";
     const monaco = await loadMonaco();
-    createCallback(monaco?.editor?.create(this.rootNode, options));
+    createCallback(monaco, monaco?.editor?.create(this.rootNode, options));
 
     if (this.rootNode.innerHTML) {
       this.setState({

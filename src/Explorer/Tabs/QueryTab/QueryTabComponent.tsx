@@ -3,6 +3,7 @@
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
+import { QueryEditor } from "Explorer/Controls/Editor/QueryEditor";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
@@ -39,7 +40,6 @@ import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
@@ -599,15 +599,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
               <Fragment>
                 <div className="queryEditor" style={{ height: "100%" }}>
-                  <EditorReact
-                    language={"sql"}
+                  <QueryEditor
                     content={this.setEditorContent()}
-                    isReadOnly={false}
-                    wordWrap={"on"}
-                    ariaLabel={"Editing Query"}
-                    lineNumbers={"on"}
                     onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
                     onContentSelected={(selectedContent: string) => this.onSelectedContent(selectedContent)}
+                    onExecuteQuery={() => this.onExecuteQueryClick()}
                   />
                 </div>
               </Fragment>
