@@ -4,9 +4,9 @@ import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { createUserDefinedFunction } from "../../Common/dataAccess/createUserDefinedFunction";
 import { updateUserDefinedFunction } from "../../Common/dataAccess/updateUserDefinedFunction";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -109,6 +109,7 @@ export default class UserDefinedFunctionTabContent extends Component<
         ...this,
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardShortcut: "DISCARD",
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,

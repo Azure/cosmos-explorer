@@ -238,6 +238,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardShortcut: "DISCARD",
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,

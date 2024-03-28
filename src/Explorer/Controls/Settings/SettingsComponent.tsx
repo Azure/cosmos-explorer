@@ -754,6 +754,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardShortcut: "DISCARD",
         onCommandClick: this.onRevertClick,
         commandButtonLabel: label,
         ariaLabel: label,

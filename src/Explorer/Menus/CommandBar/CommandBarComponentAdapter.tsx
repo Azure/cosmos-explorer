@@ -4,9 +4,11 @@
  * and update any knockout observables passed from the parent.
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
+import { keyMap } from "Common/KeyboardShortcuts";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { userContext } from "UserContext";
 import * as React from "react";
+import { GlobalHotKeys } from "react-hotkeys";
 import create, { UseStore } from "zustand";
 import { ConnectionStatusType, PoolIdType } from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/StyleConstants";
@@ -105,8 +107,13 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
           },
         };
 
+  const handlers = CommandBarUtil.createKeyboardHandlers(staticButtons.concat(contextButtons).concat(controlButtons));
+
   return (
     <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
+      {/* Handles keyboard shortcuts for command bar buttons when focus is OUTSIDE monaco. Even though it's placed here in the DOM, it hooks keydown on 'document' */}
+      <GlobalHotKeys keyMap={keyMap} handlers={handlers} allowChanges={true} />
+
       <FluentCommandBar
         ariaLabel="Use left and right arrow keys to navigate between commands"
         items={uiFabricStaticButtons.concat(uiFabricTabsButtons)}

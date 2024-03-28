@@ -354,6 +354,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardShortcut: "NEW_QUERY",
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
@@ -369,6 +370,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardShortcut: "NEW_QUERY",
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection);

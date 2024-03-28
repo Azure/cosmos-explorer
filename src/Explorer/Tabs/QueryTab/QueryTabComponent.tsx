@@ -3,7 +3,8 @@
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
-import { QueryEditor } from "Explorer/Controls/Editor/QueryEditor";
+import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { MonacoNamespace, monaco } from "Explorer/LazyMonaco";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
@@ -468,6 +469,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: CancelQueryIcon,
         iconAlt: label,
+        keyboardShortcut: "CANCEL_QUERY",
         onCommandClick: () => this.queryAbortController.abort(),
         commandButtonLabel: label,
         ariaLabel: label,
@@ -584,6 +586,15 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   private getEditorAndQueryResult(): JSX.Element {
+    const configureEditor = (monaco: MonacoNamespace, editor: monaco.editor.IStandaloneCodeEditor) => {
+      editor.addAction({
+        id: "execute-query",
+        label: "Execute Query",
+        keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.Enter],
+        run: () => this.onExecuteQueryClick(),
+      });
+    }
+
     return (
       <Fragment>
         <div className="tab-pane" id={this.props.tabId} role="tabpanel">
@@ -599,12 +610,17 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
               <Fragment>
                 <div className="queryEditor" style={{ height: "100%" }}>
-                  <QueryEditor
+                  <EditorReact
+                    language={"sql"}
                     content={this.setEditorContent()}
+                    isReadOnly={false}
+                    wordWrap={"on"}
+                    ariaLabel={"Editing Query"}
+                    lineNumbers={"on"}
                     onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
                     onContentSelected={(selectedContent: string) => this.onSelectedContent(selectedContent)}
-                    onExecuteQuery={() => this.onExecuteQueryClick()}
-                  />
+                    configureEditor={configureEditor}
+                  />;
                 </div>
               </Fragment>
               {this.props.isSampleCopilotActive ? (

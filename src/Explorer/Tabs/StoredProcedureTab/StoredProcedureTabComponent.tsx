@@ -347,6 +347,7 @@ export default class StoredProcedureTabComponent extends React.Component<
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardShortcut: "DISCARD",
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,

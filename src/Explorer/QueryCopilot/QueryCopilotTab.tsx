@@ -2,7 +2,7 @@
 import { Stack } from "@fluentui/react";
 import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
-import { QueryEditor } from "Explorer/Controls/Editor/QueryEditor";
+import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
@@ -104,11 +104,16 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
         )}
         <Stack className="tabPaneContentContainer">
           <SplitterLayout percentage={true} vertical={true} primaryIndex={0} primaryMinSize={30} secondaryMinSize={70}>
-            <QueryEditor
-              content={query}
-              onContentChanged={(newQuery: string) => setQuery(newQuery)}
-              onContentSelected={(selectedQuery: string) => setSelectedQuery(selectedQuery)}
-              onExecuteQuery={() => OnExecuteQueryClick(useQueryCopilot as Partial<QueryCopilotState>)}
+            COPILOT
+            <EditorReact
+                language={"sql"}
+                content={query}
+                isReadOnly={false}
+                wordWrap={"on"}
+                ariaLabel={"Editing Query"}
+                lineNumbers={"on"}
+                onContentChanged={(newQuery: string) => setQuery(newQuery)}
+                onContentSelected={(selectedQuery: string) => setSelectedQuery(selectedQuery)}
             />
             <QueryCopilotResults />
           </SplitterLayout>

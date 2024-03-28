@@ -921,6 +921,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardShortcut: "DISCARD",
         onCommandClick: this.onRevertNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -950,6 +951,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardShortcut: "DISCARD",
         onCommandClick: this.onRevertExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,

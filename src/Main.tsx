@@ -18,6 +18,7 @@ import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
+import * as ReactHotkeys from "react-hotkeys";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../images/favicon.ico";
@@ -60,6 +61,28 @@ import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 
 initializeIcons();
+
+const tagsIgnoredByReactHotkeys = ["INPUT", "SELECT"];
+ReactHotkeys.configure({
+  ignoreEventsCondition: (evt) => {
+    // The default react-hotkeys behavior is to ignore events targetting a textarea, but we want the monaco editor's key events to bubble up
+    // So, we configure it to ignore all events targetting a textarea except when the target is a monaco editor's text area
+
+    if (!(evt.target instanceof HTMLElement)) {
+      return true;
+    }
+
+    if (tagsIgnoredByReactHotkeys.includes(evt.target.tagName)) {
+      return true;
+    }
+
+    if (evt.target.tagName === "TEXTAREA" && !evt.target.matches(".monaco-editor textarea")) {
+      return true;
+    }
+
+    return false;
+  }
+})
 
 const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);

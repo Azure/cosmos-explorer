@@ -256,6 +256,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         ...this,
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardShortcut: "DISCARD",
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,

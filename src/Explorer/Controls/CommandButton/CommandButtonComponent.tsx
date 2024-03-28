@@ -1,6 +1,7 @@
 /**
  * React component for Command button component.
  */
+import { KeyboardShortcutName } from "Common/KeyboardShortcuts";
 import * as React from "react";
 import CollapseChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
 import { KeyCodes } from "../../../Common/Constants";
@@ -30,7 +31,7 @@ export interface CommandButtonComponentProps {
   /**
    * Click handler for command button click
    */
-  onCommandClick: (e: React.SyntheticEvent) => void;
+  onCommandClick: (e: React.SyntheticEvent | KeyboardEvent) => void;
 
   /**
    * Label for the button
@@ -107,10 +108,16 @@ export interface CommandButtonComponentProps {
    * Vertical bar to divide buttons
    */
   isDivider?: boolean;
+
   /**
    * Aria-label for the button
    */
   ariaLabel: string;
+
+  /**
+   * A keyboard shortcut that can be used to activate this button.
+   */
+  keyboardShortcut?: KeyboardShortcutName;
 }
 
 export class CommandButtonComponent extends React.Component<CommandButtonComponentProps> {

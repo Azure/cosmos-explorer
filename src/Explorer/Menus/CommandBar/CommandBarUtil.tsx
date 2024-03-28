@@ -6,6 +6,7 @@ import {
   IDropdownOption,
   IDropdownStyles,
 } from "@fluentui/react";
+import { KeyboardShortcutHandlers } from "Common/KeyboardShortcuts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as React from "react";
 import _ from "underscore";
@@ -233,3 +234,16 @@ export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, 
     onRender: () => <ConnectionStatus container={container} poolId={poolId} />,
   };
 };
+
+export const createKeyboardHandlers = (buttons: CommandButtonComponentProps[]): KeyboardShortcutHandlers => {
+  const handlers: KeyboardShortcutHandlers = {};
+  buttons.forEach((button) => {
+    if (button.keyboardShortcut) {
+      handlers[button.keyboardShortcut] = (e) => {
+        button.onCommandClick(e);
+        e.preventDefault();
+      };
+    }
+  });
+  return handlers;
+}
