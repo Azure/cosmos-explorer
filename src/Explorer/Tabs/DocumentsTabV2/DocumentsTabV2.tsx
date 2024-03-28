@@ -131,8 +131,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [selectedDocumentContent, setSelectedDocumentContent] = useState<string>(undefined);
   const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<string>(undefined);
 
-  const [selectedDocumentId, setSelectedDocumentId] = useState<DocumentId>(undefined);
-  // Table selection
+  // Table user clicked on this row
+  const [clickedRow, setClickedRow] = useState<TableRowId>(undefined);
+  // Table multiple selection
   const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
 
   // Command buttons
@@ -436,6 +437,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
       documentContent,
       partitionKey as PartitionKeyDefinition,
     );
+
+    const selectedDocumentId = documentIds[clickedRow as number];
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     setIsExecutionError(false);
@@ -536,7 +539,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
         setDocumentIds(newDocumentIds);
 
         setSelectedDocumentContent(undefined);
-        setSelectedDocumentId(undefined);
+        setClickedRow(undefined);
         setSelectedRows(new Set());
         setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
       })
@@ -992,10 +995,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
   /**
    * replicate logic of selectedDocument.click();
    * Document has been clicked on in table
-   * @param index
+   * @param tabRowId
    */
-  const onDocumentClicked = (index: number) => {
-    setSelectedDocumentId(documentIds[index]);
+  const onDocumentClicked = (tabRowId: TableRowId) => {
+    const index = tabRowId as number;
+    setClickedRow(index);
 
     if (isEditorDirty()) {
       useDialog
@@ -1103,6 +1107,27 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const columnHeaders = {
     idHeader: isPreferredApiMongoDB ? "_id" : "id",
     partitionKeyHeaders: partitionKeyPropertyHeaders || [],
+  };
+
+  const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
+    if (selectedRows.size === 0) {
+      setSelectedDocumentContent(undefined);
+      setClickedRow(undefined);
+    }
+
+    // Find if clickedRow is in selectedRows.If not, clear clickedRow and content
+    if (clickedRow !== undefined && !selectedRows.has(clickedRow)) {
+      setClickedRow(undefined);
+      setSelectedDocumentContent(undefined);
+    }
+
+    // If only one selection, we consider as a click
+    if (selectedRows.size === 1) {
+      const selectedRow = Array.from(selectedRows)[0];
+      onDocumentClicked(selectedRow);
+    }
+
+    setSelectedRows(selectedRows);
   };
 
   return (
@@ -1256,7 +1281,7 @@ data-bind="
                 style={{ width: 200 }}
                 items={tableItems}
                 onItemClicked={onDocumentClicked}
-                onSelectedRowsChange={setSelectedRows}
+                onSelectedRowsChange={onSelectedRowsChange}
                 selectedRows={selectedRows}
                 size={tableContainerSizePx}
                 columnHeaders={columnHeaders}
