@@ -497,6 +497,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
     MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
     CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
+    PORTAL_BACKEND_ENDPOINT: inputs.portalBackendEndpoint,
   });
 
   updateUserContext({
