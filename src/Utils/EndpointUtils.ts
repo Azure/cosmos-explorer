@@ -6,6 +6,7 @@ import {
   PortalBackendEndpoints,
 } from "Common/Constants";
 import { configContext } from "ConfigContext";
+import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -156,6 +157,10 @@ export function useNewPortalBackendEndpoint(backendApi: string): boolean {
     [BackendApi.GenerateToken]: [PortalBackendEndpoints.Development],
     [BackendApi.PortalSettings]: [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac],
   };
+
+  logConsoleInfo(`DEBUG: backendApi=${backendApi}`);
+  logConsoleInfo(`DEBUG: new endpoint=${configContext.PORTAL_BACKEND_ENDPOINT}`);
+  logConsoleInfo(`DEBUG: map=${newBackendApiEnvironmentMap[backendApi] ?? "null"}`);
 
   if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
     return false;
