@@ -35,6 +35,7 @@ export enum MessageTypes {
   CreateWorkspace,
   CreateSparkPool,
   RefreshDatabaseAccount,
+  ActivateTab,
   CloseTab,
   OpenQuickstartBlade,
   OpenPostgreSQLPasswordReset,
