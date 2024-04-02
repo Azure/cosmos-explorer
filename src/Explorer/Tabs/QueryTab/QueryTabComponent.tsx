@@ -496,6 +496,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public onChangeContent(newContent: string): void {
+    // The copilot store's active query takes precedence over the local state,
+    // and we can't update both states in a single operation.
+    // So, we update the copilot store's state first, then update the local state.
     if (this.state.copilotActive) {
       this.props.copilotStore?.setQuery(newContent);
     }
