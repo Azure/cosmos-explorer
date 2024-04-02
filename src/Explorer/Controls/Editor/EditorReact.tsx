@@ -46,7 +46,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     }, 100);
   }
 
-  public componentDidUpdate(previous: EditorReactProps) {
+  public componentDidUpdate() {
     if (!this.editor) {
       // Nothing special to do if the editor doesn't exist yet
       return;
