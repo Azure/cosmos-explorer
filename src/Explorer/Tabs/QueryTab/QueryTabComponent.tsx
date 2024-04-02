@@ -496,13 +496,13 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public onChangeContent(newContent: string): void {
+    if (this.state.copilotActive) {
+      this.props.copilotStore?.setQuery(newContent);
+    }
     this.setState({
       sqlQueryEditorContent: newContent,
       queryCopilotGeneratedQuery: "",
     });
-    if (this.state.copilotActive) {
-      this.props.copilotStore?.setQuery(newContent);
-    }
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
         this.executeQueryButton = {
@@ -544,7 +544,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  public setEditorContent(): string {
+  public getEditorContent(): string {
     if (this.isCopilotTabActive && this.state.queryCopilotGeneratedQuery) {
       return this.state.queryCopilotGeneratedQuery;
     }
@@ -601,7 +601,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 <div className="queryEditor" style={{ height: "100%" }}>
                   <EditorReact
                     language={"sql"}
-                    content={this.setEditorContent()}
+                    content={this.getEditorContent()}
                     isReadOnly={false}
                     wordWrap={"on"}
                     ariaLabel={"Editing Query"}
