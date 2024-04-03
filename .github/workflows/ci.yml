@@ -101,6 +101,12 @@ jobs:
         run: az storage blob upload -c '$web' -f ./preview/config.json --account-name cosmosexplorerpreview --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --account-key="${PREVIEW_STORAGE_KEY}" --overwrite true
         env:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
+      - name: Post a comment with the preview URL
+        if: ${{ github.event_name == 'pull_request' }}
+        run: gh pr comment $PR_NUMBER --body "Build complete. You can now [preview this branch in the portal](https://cosmos-explorer-preview.azurewebsites.net/pull/$PR_NUMBER?feature.someFeatureFlagYouMightNeed=true)"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
   endtoendemulator:
     name: "End To End Emulator Tests"
     # Temporarily disabled. This test needs to be rewritten in playwright
