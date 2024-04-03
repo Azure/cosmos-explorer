@@ -57,6 +57,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     // Compare the new content to the editor's existing content
     if (this.props.content !== existingContent) {
       // If it's different, push an edit to the editor, respecting the undo stack
+      this.editor.pushUndoStop();
       this.editor.executeEdits("", [
         {
           range: this.editor.getModel().getFullModelRange(),
