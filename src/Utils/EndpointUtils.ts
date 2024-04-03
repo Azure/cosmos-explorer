@@ -6,7 +6,6 @@ import {
   PortalBackendEndpoints,
 } from "Common/Constants";
 import { configContext } from "ConfigContext";
-import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -153,22 +152,15 @@ export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
 // TODO: Remove this function once new backend migration is completed for all environments.
 //
 export function useNewPortalBackendEndpoint(backendApi: string): boolean {
+  // This maps backend APIs to the environments supported by the new backend.
   const newBackendApiEnvironmentMap: { [key: string]: string[] } = {
     [BackendApi.GenerateToken]: [PortalBackendEndpoints.Development],
     [BackendApi.PortalSettings]: [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac],
   };
-
-  logConsoleInfo(`DEBUG: backendApi=${backendApi}`);
-  logConsoleInfo(`DEBUG: new endpoint=${configContext.PORTAL_BACKEND_ENDPOINT}`);
-  logConsoleInfo(`DEBUG: map=${newBackendApiEnvironmentMap[backendApi] ?? "null"}`);
 
   if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
     return false;
   }
 
   return newBackendApiEnvironmentMap[backendApi].includes(configContext.PORTAL_BACKEND_ENDPOINT);
-
-  //const activePortalBackendEndpoints: string[] = [PortalBackendEndpoints.Development];
-  //const activeBackendApi: boolean = configContext.NEW_BACKEND_APIS?.includes(backendApi) || false;
-  //return activeBackendApi && activePortalBackendEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT as string);
 }
