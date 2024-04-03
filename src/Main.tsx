@@ -1,5 +1,5 @@
 // Import this first, to ensure that the dev tools hook is copied before React is loaded.
-import './ReactDevTools';
+import "./ReactDevTools";
 
 // CSS Dependencies
 import { initializeIcons, loadTheme } from "@fluentui/react";
