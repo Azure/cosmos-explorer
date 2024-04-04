@@ -99,7 +99,6 @@ let configContext: Readonly<ConfigContext> = {
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
-  NEW_BACKEND_APIS: [BackendApi.GenerateToken],
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
     "resourcelist",

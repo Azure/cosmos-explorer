@@ -124,8 +124,9 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
-export enum BackendApi {
-  GenerateToken,
+export class BackendApi {
+  public static readonly GenerateToken: string = "GenerateToken";
+  public static readonly PortalSettings: string = "PortalSettings";
 }
 
 export class PortalBackendEndpoints {
