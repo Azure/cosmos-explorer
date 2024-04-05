@@ -3,6 +3,7 @@ import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { CassandraProxyAPIs, CassandraProxyEndpoints } from "../../Common/Constants";
 import { handleError } from "../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { createDocument } from "../../Common/dataAccess/createDocument";
@@ -19,7 +20,6 @@ import Explorer from "../Explorer";
 import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
-import { CassandraProxyAPIs, CassandraProxyEndpoints } from "../../Common/Constants";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -444,8 +444,12 @@ export class CassandraAPIDataClient extends TableDataClient {
               deferred.resolve();
             },
             (error) => {
-              handleError(error, "CreateTableCassandra", `Error while creating a table with query ${createTableQuery}`);
-              deferred.reject(error);
+              handleError(
+                error.responseJSON.message,
+                "CreateTableCassandra",
+                `Error while creating a table with query ${createTableQuery}`,
+              );
+              deferred.reject(error.responseJSON.message);
             },
           )
           .finally(clearInProgressMessage);
