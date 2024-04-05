@@ -34,11 +34,14 @@ console.log("Subcription: ", subscriptionId);
 console.log("Account Name: ", accountName);
 
 const initTestExplorer = async (): Promise<void> => {
+  console.log("Init Test Explorer : 0");
   updateUserContext({
     authorizationToken: `bearer ${token}`,
   });
+  console.log("Init Test Explorer : 1");
   const databaseAccount = await get(subscriptionId, resourceGroup, accountName);
   const keys = await listKeys(subscriptionId, resourceGroup, accountName);
+  console.log("Init Test Explorer : 2");
 
   const initTestExplorerContent = {
     inputs: {
@@ -70,6 +73,7 @@ const initTestExplorer = async (): Promise<void> => {
       selfServeType,
     } as DataExplorerInputsFrame,
   };
+  console.log("Init Test Explorer : 3");
 
   const iframe = document.createElement("iframe");
   window.addEventListener(
@@ -95,7 +99,9 @@ const initTestExplorer = async (): Promise<void> => {
   iframe.classList.add("iframe");
   iframe.title = "explorer";
   iframe.src = iframeSrc;
+  console.log("Init Test Explorer : 4");
   document.body.appendChild(iframe);
+  console.log("Init Test Explorer : 5");
 };
 
 initTestExplorer();

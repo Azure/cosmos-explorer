@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateDatabaseNameWithTimestamp, generateUniqueName, getAzureCLICredentialsToken } from "../utils/shared";
@@ -10,6 +11,7 @@ test("Mongo CRUD", async () => {
 
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
+  console.log(token?.length ?? "null");
 
   page.setDefaultTimeout(50000);
 
