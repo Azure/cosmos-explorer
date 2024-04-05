@@ -1,15 +1,19 @@
 import { jest } from "@jest/globals";
 import "expect-playwright";
-import { generateDatabaseNameWithTimestamp, generateUniqueName } from "../utils/shared";
+import { generateDatabaseNameWithTimestamp, generateUniqueName, getAzureCLICredentialsToken } from "../utils/shared";
 import { waitForExplorer } from "../utils/waitForExplorer";
 jest.setTimeout(240000);
 
 test("Mongo CRUD", async () => {
   const databaseId = generateDatabaseNameWithTimestamp();
   const containerId = generateUniqueName("container");
+
+  // We can't retrieve AZ CLI credentials from the browser so we get them here.
+  const token = await getAzureCLICredentialsToken();
+
   page.setDefaultTimeout(50000);
 
-  await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner");
+  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner&token=${token}`);
   const explorer = await waitForExplorer();
 
   // Create new database and collection

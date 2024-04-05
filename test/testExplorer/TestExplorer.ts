@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { AccessToken, AzureCliCredential } from "@azure/identity";
 import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
@@ -12,6 +11,7 @@ const urlSearchParams = new URLSearchParams(window.location.search);
 const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
+const token = urlSearchParams.get("token");
 
 //if (!process.env.AZURE_CLIENT_SECRET) {
 //  throw new Error(
@@ -29,14 +29,11 @@ const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Po
 //  },
 //);
 
-const credentials = new AzureCliCredential();
-
 console.log("Resource Group:", resourceGroup);
 console.log("Subcription: ", subscriptionId);
 console.log("Account Name: ", accountName);
 
 const initTestExplorer = async (): Promise<void> => {
-  const { token } = (await credentials.getToken("https://management.azure.com//.default")) as AccessToken;
   updateUserContext({
     authorizationToken: `bearer ${token}`,
   });
