@@ -138,6 +138,7 @@ jobs:
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
       # NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     strategy:
       fail-fast: false
       matrix:
