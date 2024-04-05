@@ -172,8 +172,12 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(entity);
         },
         (error) => {
-          handleError(error, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
-          deferred.reject(error);
+          handleError(
+            error.responseJSON.message,
+            "AddRowCassandra",
+            `Error while adding new row to table ${collection.id()}`,
+          );
+          deferred.reject(error.responseJSON.message);
         },
       )
       .finally(clearInProgressMessage);
@@ -407,11 +411,11 @@ export class CassandraAPIDataClient extends TableDataClient {
         },
         (error) => {
           handleError(
-            error,
+            error.responseJSON.message,
             "CreateKeyspaceCassandra",
             `Error while creating a keyspace with query ${createKeyspaceQuery}`,
           );
-          deferred.reject(error);
+          deferred.reject(error.responseJSON.message);
         },
       )
       .finally(clearInProgressMessage);
@@ -497,8 +501,12 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data);
         },
         (error: any) => {
-          handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
-          deferred.reject(error);
+          handleError(
+            error.responseJSON.message,
+            "FetchKeysCassandra",
+            `Error fetching keys for table ${collection.id()}`,
+          );
+          deferred.reject(error.responseJSON.message);
         },
       )
       .done(clearInProgressMessage);
@@ -537,8 +545,12 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data);
         },
         (error: any) => {
-          handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
-          deferred.reject(error);
+          handleError(
+            error.responseJSON.message,
+            "FetchKeysCassandra",
+            `Error fetching keys for table ${collection.id()}`,
+          );
+          deferred.reject(error.responseJSON.message);
         },
       )
       .done(clearInProgressMessage);
@@ -582,8 +594,12 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data.columns);
         },
         (error: any) => {
-          handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
-          deferred.reject(error);
+          handleError(
+            error.responseJSON.message,
+            "FetchSchemaCassandra",
+            `Error fetching schema for table ${collection.id()}`,
+          );
+          deferred.reject(error.responseJSON.message);
         },
       )
       .done(clearInProgressMessage);
@@ -622,8 +638,12 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data.columns);
         },
         (error: any) => {
-          handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
-          deferred.reject(error);
+          handleError(
+            error.responseJSON.message,
+            "FetchSchemaCassandra",
+            `Error fetching schema for table ${collection.id()}`,
+          );
+          deferred.reject(error.responseJSON.message);
         },
       )
       .done(clearInProgressMessage);
