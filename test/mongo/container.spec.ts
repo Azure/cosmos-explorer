@@ -11,11 +11,12 @@ test("Mongo CRUD", async () => {
 
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
-  console.log(token?.length ?? "null");
 
   page.setDefaultTimeout(50000);
 
-  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner&token=${token}`);
+  const testUrl = `https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner&token=${token}`;
+
+  await page.goto(testUrl);
   const explorer = await waitForExplorer();
 
   // Create new database and collection
