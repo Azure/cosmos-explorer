@@ -1,5 +1,10 @@
+import { getAzureCLICredentialsToken } from "../utils/shared";
+
 test("Self Serve", async () => {
-  await page.goto("https://localhost:1234/testExplorer.html?iframeSrc=selfServe.html");
+  // We can't retrieve AZ CLI credentials from the browser so we get them here.
+  const token = await getAzureCLICredentialsToken();
+
+  await page.goto(`https://localhost:1234/testExplorer.html?iframeSrc=selfServe.html&token=${token}`);
   const handle = await page.waitForSelector("iframe");
   const frame = await handle.contentFrame();
 

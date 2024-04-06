@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateDatabaseNameWithTimestamp, generateUniqueName, getAzureCLICredentialsToken } from "../utils/shared";
@@ -14,9 +13,7 @@ test("Mongo CRUD", async () => {
 
   page.setDefaultTimeout(50000);
 
-  const testUrl = `https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner&token=${token}`;
-
-  await page.goto(testUrl);
+  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner&token=${token}`);
   const explorer = await waitForExplorer();
 
   // Create new database and collection

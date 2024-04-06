@@ -7,9 +7,13 @@ jest.setTimeout(240000);
 test("Graph CRUD", async () => {
   const databaseId = generateDatabaseNameWithTimestamp();
   const containerId = generateUniqueName("container");
+
+  // We can't retrieve AZ CLI credentials from the browser so we get them here.
+  const token = await getAzureCLICredentialsToken();
+
   page.setDefaultTimeout(50000);
 
-  await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-gremlin-runner");
+  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-gremlin-runner&token=${token}`);
   const explorer = await waitForExplorer();
 
   // Create new database and graph

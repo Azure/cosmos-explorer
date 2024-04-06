@@ -1,4 +1,3 @@
-import { AzureCliCredentials } from "@azure/ms-rest-nodeauth";
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateDatabaseNameWithTimestamp, generateUniqueName } from "../utils/shared";
@@ -9,15 +8,12 @@ jest.setTimeout(240000);
 test("Mongo CRUD", async () => {
   const databaseId = generateDatabaseNameWithTimestamp();
   const containerId = generateUniqueName("container");
-  page.setDefaultTimeout(50000);
 
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
-  const credentials = await AzureCliCredentials.create();
-  const token = await (await credentials.getToken()).accessToken;
+  const token = await getAzureCLICredentialsToken();
 
-  //await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-mongo32-runner");
-  const testUrl = `https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner&token=${token}`;
-  await page.goto(testUrl);
+  page.setDefaultTimeout(50000);
+  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-mongo32-runner&token=${token}`);
 
   const explorer = await waitForExplorer();
 

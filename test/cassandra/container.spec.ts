@@ -7,9 +7,12 @@ jest.setTimeout(120000);
 test("Cassandra keyspace and table CRUD", async () => {
   const keyspaceId = generateUniqueName("keyspace");
   const tableId = generateUniqueName("table");
+  // We can't retrieve AZ CLI credentials from the browser so we get them here.
+  const token = await getAzureCLICredentialsToken();
+
   page.setDefaultTimeout(50000);
 
-  await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-cassandra-runner");
+  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-cassandra-runner&token=${token}`);
   await page.waitForSelector("iframe");
   const explorer = await waitForExplorer();
 
