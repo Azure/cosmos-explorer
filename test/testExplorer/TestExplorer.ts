@@ -5,8 +5,7 @@ import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
 
 const resourceGroup = process.env.RESOURCE_GROUP || "";
-//const subscriptionId = process.env.SUBSCRIPTION_ID || "";
-const subscriptionId = process.env.AZURE_SUBSCRIPTION_ID || "";
+const subscriptionId = process.env.SUBSCRIPTION_ID || "";
 const urlSearchParams = new URLSearchParams(window.location.search);
 const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
