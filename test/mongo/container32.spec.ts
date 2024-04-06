@@ -4,7 +4,6 @@ import { generateDatabaseNameWithTimestamp, generateUniqueName, getAzureCLICrede
 import { waitForExplorer } from "../utils/waitForExplorer";
 jest.setTimeout(240000);
 
-/* eslint-disable no-console */
 test("Mongo CRUD", async () => {
   const databaseId = generateDatabaseNameWithTimestamp();
   const containerId = generateUniqueName("container");
@@ -14,7 +13,6 @@ test("Mongo CRUD", async () => {
   page.setDefaultTimeout(50000);
 
   await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-mongo32-runner&token=${token}`);
-
   const explorer = await waitForExplorer();
 
   // Create new database and collection

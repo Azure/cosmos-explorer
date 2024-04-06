@@ -2,10 +2,6 @@ const msRestNodeAuth = require("@azure/ms-rest-nodeauth");
 const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
 const ms = require("ms");
 
-//const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
-//const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
-//const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
-//const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
 const resourceGroupName = "runners";
 
@@ -21,7 +17,6 @@ function friendlyTime(date) {
 
 async function main() {
   const credentials = await msRestNodeAuth.AzureCliCredentials.create();
-  //const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
   const client = new CosmosDBManagementClient(credentials, subscriptionId);
   const accounts = await client.databaseAccounts.list(resourceGroupName);
   for (const account of accounts) {

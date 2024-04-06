@@ -21,8 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      # NOTEBOOKS_TEST_RUNNER_CLIENT_ID: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_ID }}
-      # NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v2
 

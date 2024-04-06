@@ -12,22 +12,6 @@ const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
 const token = urlSearchParams.get("token");
 
-//if (!process.env.AZURE_CLIENT_SECRET) {
-//  throw new Error(
-//    "process.env.AZURE_CLIENT_SECRET was not set! Set it in your .env file and restart webpack dev server",
-//  );
-//}
-
-// Azure SDK clients accept the credential as a parameter
-//const credentials = new ClientSecretCredential(
-//  process.env.AZURE_TENANT_ID,
-//  process.env.AZURE_CLIENT_ID,
-//  process.env.AZURE_CLIENT_SECRET,
-//  {
-//    authorityHost: "https://localhost:1234",
-//  },
-//);
-
 console.log("Resource Group:", resourceGroup);
 console.log("Subcription: ", subscriptionId);
 console.log("Account Name: ", accountName);

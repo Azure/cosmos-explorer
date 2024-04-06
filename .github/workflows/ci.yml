@@ -137,7 +137,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      # NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     strategy:
       fail-fast: false
@@ -149,7 +148,6 @@ jobs:
           - ./test/mongo/container.spec.ts
           - ./test/mongo/container32.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
-          # - ./test/notebooks/upload.spec.ts // TEMP disabled since notebooks service is off
           - ./test/sql/resourceToken.spec.ts
           - ./test/tables/container.spec.ts
     steps:

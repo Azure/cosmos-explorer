@@ -6,16 +6,10 @@ import "expect-playwright";
 import { generateUniqueName, getAzureCLICredentials } from "../utils/shared";
 jest.setTimeout(120000);
 
-//const clientId = "fd8753b0-0707-4e32-84e9-2532af865fb4";
-//const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
-//const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
-//const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"] ?? "";
 const resourceGroupName = "runners";
 
 test("Resource token", async () => {
-  //const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
-  //const credentials = await AzureCliCredentials.create();
   const credentials = await getAzureCLICredentials();
   const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const account = await armClient.databaseAccounts.get(resourceGroupName, "portal-sql-runner-west-us");
