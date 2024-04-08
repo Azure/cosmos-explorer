@@ -134,7 +134,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
     this.state = {
       toggleState: ToggleState.Result,
-      sqlQueryEditorContent: props.queryText || "SELECT * FROM c",
+      sqlQueryEditorContent: props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c",
       selectedContent: "",
       queryResults: undefined,
       error: "",
@@ -496,13 +496,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public onChangeContent(newContent: string): void {
+    // The copilot store's active query takes precedence over the local state,
+    // and we can't update both states in a single operation.
+    // So, we update the copilot store's state first, then update the local state.
+    if (this.state.copilotActive) {
+      this.props.copilotStore?.setQuery(newContent);
+    }
     this.setState({
       sqlQueryEditorContent: newContent,
       queryCopilotGeneratedQuery: "",
     });
-    if (this.state.copilotActive) {
-      this.props.copilotStore?.setQuery(newContent);
-    }
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
         this.executeQueryButton = {
@@ -544,7 +547,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  public setEditorContent(): string {
+  public getEditorContent(): string {
     if (this.isCopilotTabActive && this.state.queryCopilotGeneratedQuery) {
       return this.state.queryCopilotGeneratedQuery;
     }
@@ -601,7 +604,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 <div className="queryEditor" style={{ height: "100%" }}>
                   <EditorReact
                     language={"sql"}
-                    content={this.setEditorContent()}
+                    content={this.getEditorContent()}
                     isReadOnly={false}
                     wordWrap={"on"}
                     ariaLabel={"Editing Query"}

@@ -40,11 +40,10 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.database = options.database;
     this.rid = options.rid || (this.collection && this.collection.rid) || "";
     this.tabKind = options.tabKind;
-    this.tabTitle = ko.observable<string>(options.title);
+    this.tabTitle = ko.observable<string>(this.getTitle(options));
     this.tabPath =
-      ko.observable(options.tabPath ?? "") ||
-      (this.collection &&
-        ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${this.tabTitle()}`));
+      this.collection &&
+      ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${options.title}`);
     this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
     this.onLoadStartKey = options.onLoadStartKey;
     this.closeTabButton = {
@@ -141,6 +140,26 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   public getContainer(): Explorer {
     return (this.collection && this.collection.container) || (this.database && this.database.container);
+  }
+
+  public getTitle(options: ViewModels.TabOptions): string {
+    const coll = this.collection?.id();
+    const db = this.database?.id();
+    if (coll) {
+      if (coll.length > 8) {
+        return coll.slice(0, 5) + "…" + options.title;
+      } else {
+        return coll + "." + options.title;
+      }
+    } else if (db) {
+      if (db.length > 8) {
+        return db.slice(0, 5) + "…" + options.title;
+      } else {
+        return db + "." + options.title;
+      }
+    } else {
+      return options.title;
+    }
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */

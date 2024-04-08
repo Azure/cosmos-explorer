@@ -1,6 +1,6 @@
 import { useBoolean } from "@fluentui/react-hooks";
 import { userContext } from "UserContext";
-import { usePortalBackendEndpoint } from "Utils/EndpointUtils";
+import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
-  if (!usePortalBackendEndpoint(BackendApi.GenerateToken)) {
+  if (!useNewPortalBackendEndpoint(BackendApi.GenerateToken)) {
     return await fetchEncryptedToken_ToBeDeprecated(connectionString);
   }
 

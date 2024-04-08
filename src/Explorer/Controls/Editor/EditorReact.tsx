@@ -46,9 +46,21 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     }, 100);
   }
 
-  public componentDidUpdate(previous: EditorReactProps) {
-    if (this.props.content !== previous.content) {
-      this.editor?.setValue(this.props.content);
+  public componentDidUpdate() {
+    if (!this.editor) {
+      return;
+    }
+
+    const existingContent = this.editor.getModel().getValue();
+
+    if (this.props.content !== existingContent) {
+      this.editor.pushUndoStop();
+      this.editor.executeEdits("", [
+        {
+          range: this.editor.getModel().getFullModelRange(),
+          text: this.props.content,
+        },
+      ]);
     }
   }
 
@@ -71,9 +83,14 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   protected configureEditor(editor: monaco.editor.IStandaloneCodeEditor) {
     this.editor = editor;
-    const queryEditorModel = this.editor.getModel();
     if (!this.props.isReadOnly && this.props.onContentChanged) {
-      queryEditorModel.onDidChangeContent(() => {
+      // Hooking the model's onDidChangeContent event because of some event ordering issues.
+      // If a single user input causes BOTH the editor content to change AND the cursor selection to change (which is likely),
+      // then there are some inconsistencies as to which event fires first.
+      // But the editor.onDidChangeModelContent event seems to always fire before the cursor selection event.
+      // (This is NOT true for the model's onDidChangeContent event, which sometimes fires after the cursor selection event.)
+      // If the cursor selection event fires first, then the calling component may re-render the component with old content, so we want to ensure the model content changed event always fires first.
+      this.editor.onDidChangeModelContent(() => {
         const queryEditorModel = this.editor.getModel();
         this.props.onContentChanged(queryEditorModel.getValue());
       });

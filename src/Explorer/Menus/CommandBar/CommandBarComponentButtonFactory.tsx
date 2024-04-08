@@ -7,14 +7,10 @@ import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
 import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
-import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
-import GitHubIcon from "../../../../images/github.svg";
-import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
-import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
@@ -22,7 +18,6 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
@@ -33,7 +28,6 @@ import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
-import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
@@ -78,57 +72,6 @@ export function createStaticCommandBarButtons(
       const newDatabaseBtn = createNewDatabase(container);
       newCollectionBtn.children.push(newDatabaseBtn);
     }
-  }
-
-  if (useNotebook.getState().isNotebookEnabled) {
-    addDivider();
-    const notebookButtons: CommandButtonComponentProps[] = [];
-
-    const newNotebookButton = createNewNotebookButton(container);
-    newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
-    notebookButtons.push(newNotebookButton);
-
-    if (container.notebookManager?.gitHubOAuthService) {
-      notebookButtons.push(createManageGitHubAccountButton(container));
-    }
-    if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
-      notebookButtons.push(createOpenTerminalButton(container));
-    }
-    if (useNotebook.getState().isPhoenixNotebooks && selectedNodeState.isConnectedToContainer()) {
-      notebookButtons.push(createNotebookWorkspaceResetButton(container));
-    }
-    if (
-      (userContext.apiType === "Mongo" &&
-        useNotebook.getState().isShellEnabled &&
-        selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
-      userContext.apiType === "Cassandra"
-    ) {
-      notebookButtons.push(createDivider());
-      if (userContext.apiType === "Cassandra") {
-        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Cassandra));
-      } else {
-        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Mongo));
-      }
-    }
-
-    notebookButtons.forEach((btn) => {
-      if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
-        }
-      } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
-        }
-      } else if (btn.commandButtonLabel.indexOf("Open Terminal") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
-        }
-      } else if (!useNotebook.getState().isPhoenixNotebooks) {
-        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
-      }
-      buttons.push(btn);
-    });
   }
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected()) {
@@ -240,7 +183,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     buttons.push(fullScreenButton);
   }
 
-  if (configContext.platform !== Platform.Emulator) {
+  if (configContext.platform === Platform.Portal) {
     const label = "Feedback";
     const feedbackButtonOptions: CommandButtonComponentProps = {
       iconSrc: FeedbackIcon,
@@ -449,40 +392,6 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
   return buttons;
 }
 
-function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentProps, tooltip: string): void {
-  if (!buttonProps.isDivider) {
-    buttonProps.disabled = true;
-    buttonProps.tooltipText = tooltip;
-  }
-}
-
-function createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
-  const label = "New Notebook";
-  return {
-    id: "newNotebookBtn",
-    iconSrc: NewNotebookIcon,
-    iconAlt: label,
-    onCommandClick: () => container.onNewNotebookClicked(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
-
-function createuploadNotebookButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Upload to Notebook Server";
-  return {
-    iconSrc: NewNotebookIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openUploadFilePanel(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
-
 function createOpenQueryButton(container: Explorer): CommandButtonComponentProps {
   const label = "Open Query";
   return {
@@ -507,19 +416,6 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
     ariaLabel: label,
     hasPopup: true,
     disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-  };
-}
-
-function createOpenTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open Terminal";
-  return {
-    iconSrc: CosmosTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
   };
 }
 
@@ -559,45 +455,6 @@ function createOpenTerminalButtonByKind(
     disabled: disableButton,
     ariaLabel: label,
     tooltipText: !disableButton ? "" : tooltip,
-  };
-}
-
-function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Reset Workspace";
-  return {
-    iconSrc: ResetWorkspaceIcon,
-    iconAlt: label,
-    onCommandClick: () => container.resetNotebookWorkspace(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
-
-function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
-  const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
-  const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
-  const junoClient = new JunoClient();
-  return {
-    iconSrc: GitHubIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      useSidePanel
-        .getState()
-        .openSidePanel(
-          label,
-          <GitHubReposPanel
-            explorer={container}
-            gitHubClientProp={container.notebookManager.gitHubClient}
-            junoClientProp={junoClient}
-          />,
-        );
-    },
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
   };
 }
 
