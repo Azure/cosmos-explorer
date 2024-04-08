@@ -1,6 +1,5 @@
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
-//import { AzureCliCredentials } from "@azure/ms-rest-nodeauth";
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateUniqueName, getAzureCLICredentials } from "../utils/shared";
