@@ -7,7 +7,7 @@ jest.setTimeout(120000);
 test("Cassandra keyspace and table CRUD", async () => {
   const keyspaceId = generateUniqueName("keyspace");
   const tableId = generateUniqueName("table");
-  page.setDefaultTimeout(70000);
+  page.setDefaultTimeout(50000);
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-cassandra-runner");
   await page.waitForSelector("iframe");
