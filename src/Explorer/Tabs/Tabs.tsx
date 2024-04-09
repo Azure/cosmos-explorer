@@ -324,7 +324,12 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
 
 const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
   const ipRules: IpRule[] = userContext.databaseAccount?.properties?.ipRules;
-  if ((userContext.apiType === "Mongo" || userContext.apiType === "Cassandra") && ipRules?.length) {
+  if (
+    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Development) ||
+      (userContext.apiType === "Cassandra" &&
+        configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development)) &&
+    ipRules?.length
+  ) {
     const legacyPortalBackendIPs: string[] = PortalBackendIPs[configContext.BACKEND_ENDPOINT];
     const ipAddressesFromIPRules: string[] = ipRules.map((ipRule) => ipRule.ipAddressOrRange);
     const ipRulesIncludeLegacyPortalBackend: boolean = legacyPortalBackendIPs.every((legacyPortalBackendIP: string) =>

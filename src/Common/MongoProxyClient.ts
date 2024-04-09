@@ -690,9 +690,16 @@ export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameter
 }
 
 function useMongoProxyEndpoint(api: string): boolean {
-  const activeMongoProxyEndpoints: string[] = [MongoProxyEndpoints.Development, MongoProxyEndpoints.Mpac];
+  const activeMongoProxyEndpoints: string[] = [
+    MongoProxyEndpoints.Development,
+    MongoProxyEndpoints.Mpac,
+    MongoProxyEndpoints.Prod,
+  ];
   let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-  if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+  if (
+    configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Development &&
+    userContext.databaseAccount.properties.ipRules?.length > 0
+  ) {
     canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
   }
 
