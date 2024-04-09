@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { ClientSecretCredential } from "@azure/identity";
 import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
@@ -11,29 +10,13 @@ const urlSearchParams = new URLSearchParams(window.location.search);
 const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
-
-if (!process.env.AZURE_CLIENT_SECRET) {
-  throw new Error(
-    "process.env.AZURE_CLIENT_SECRET was not set! Set it in your .env file and restart webpack dev server",
-  );
-}
-
-// Azure SDK clients accept the credential as a parameter
-const credentials = new ClientSecretCredential(
-  process.env.AZURE_TENANT_ID,
-  process.env.AZURE_CLIENT_ID,
-  process.env.AZURE_CLIENT_SECRET,
-  {
-    authorityHost: "https://localhost:1234",
-  },
-);
+const token = urlSearchParams.get("token");
 
 console.log("Resource Group:", resourceGroup);
 console.log("Subcription: ", subscriptionId);
 console.log("Account Name: ", accountName);
 
 const initTestExplorer = async (): Promise<void> => {
-  const { token } = await credentials.getToken("https://management.azure.com//.default");
   updateUserContext({
     authorizationToken: `bearer ${token}`,
   });
