@@ -220,6 +220,14 @@ const getInstancesMax = async (): Promise<number> => {
   return 5;
 };
 
+const DedicatedGatewayTypeDropdownInfo: Info = {
+  messageTKey: "DedicatedGatewayTypeText",
+  link: {
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
+    textTKey: "DedicatedGatewayTypeLink",
+  },
+};
+
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: "ResizingDecisionText",
   link: {
@@ -451,8 +459,9 @@ export default class SqlX extends SelfServeBaseClass {
   enableDedicatedGateway: boolean;
 
   @OnChange(onDedicatedGatewayTypeChange)
+  @PropertyInfo(DedicatedGatewayTypeDropdownInfo)
   @Values({
-    labelTKey: "Dedicated Gateway Type",
+    labelTKey: "Dedicated Gateway Features",
     choices: getDedicatedGatewayType,
     placeholderTKey: "DedicatedGatewayTypePlaceHolder",
   })
