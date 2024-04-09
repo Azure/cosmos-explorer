@@ -734,8 +734,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   private useCassandraProxyEndpoint(api: string): boolean {
     const activeCassandraProxyEndpoints: string[] = [
       CassandraProxyEndpoints.Development,
-      CassandraProxyEndpoints.Mpac,
-      //CassandraProxyEndpoints.Prod,
+      CassandraProxyEndpoints.Mpac
     ];
     let canAccessCassandraProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
     if (userContext.databaseAccount.properties.ipRules?.length > 0) {
