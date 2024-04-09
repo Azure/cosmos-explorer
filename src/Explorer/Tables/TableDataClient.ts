@@ -738,7 +738,10 @@ export class CassandraAPIDataClient extends TableDataClient {
       CassandraProxyEndpoints.Prod,
     ];
     let canAccessCassandraProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-    if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+    if (
+      configContext.CASSANDRA_PROXY_ENDPOINT != CassandraProxyEndpoints.Development &&
+      userContext.databaseAccount.properties.ipRules?.length > 0
+    ) {
       canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
     }
 
