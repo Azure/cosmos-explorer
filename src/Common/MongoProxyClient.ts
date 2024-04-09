@@ -697,7 +697,7 @@ function useMongoProxyEndpoint(api: string): boolean {
   ];
   let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
   if (
-    configContext.MONGO_PROXY_ENDPOINT != MongoProxyEndpoints.Development &&
+    configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Development &&
     userContext.databaseAccount.properties.ipRules?.length > 0
   ) {
     canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
