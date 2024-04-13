@@ -54,13 +54,17 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     const existingContent = this.editor.getModel().getValue();
 
     if (this.props.content !== existingContent) {
-      this.editor.pushUndoStop();
-      this.editor.executeEdits("", [
-        {
-          range: this.editor.getModel().getFullModelRange(),
-          text: this.props.content,
-        },
-      ]);
+      if (this.props.isReadOnly) {
+        this.editor.setValue(this.props.content);
+      } else {
+        this.editor.pushUndoStop();
+        this.editor.executeEdits("", [
+          {
+            range: this.editor.getModel().getFullModelRange(),
+            text: this.props.content,
+          },
+        ]);
+      }
     }
   }
 
