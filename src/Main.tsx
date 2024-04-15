@@ -21,6 +21,7 @@ import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
+import { KeyboardShortcutRoot } from "KeyboardShortcuts";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../images/favicon.ico";
@@ -91,7 +92,7 @@ const App: React.FunctionComponent = () => {
   }
 
   return (
-    <div className="flexContainer" aria-hidden="false">
+    <KeyboardShortcutRoot className="flexContainer" aria-hidden="false">
       <div id="divExplorer" className="flexContainer hideOverflows">
         <div id="freeTierTeachingBubble"> </div>
         {/* Main Command Bar - Start */}
@@ -136,7 +137,7 @@ const App: React.FunctionComponent = () => {
       {<SQLQuickstartTutorial />}
       {<MongoQuickstartTutorial />}
       {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
-    </div>
+    </KeyboardShortcutRoot>
   );
 };
 

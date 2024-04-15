@@ -1,3 +1,4 @@
+import { KeyboardAction } from "KeyboardShortcuts";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
@@ -297,6 +298,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
@@ -312,6 +314,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection);
@@ -397,6 +400,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.OPEN_QUERY,
     onCommandClick: () =>
       useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={container} />),
     commandButtonLabel: label,
@@ -411,6 +415,7 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.OPEN_QUERY_FROM_DISK,
     onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane />),
     commandButtonLabel: label,
     ariaLabel: label,

@@ -7,6 +7,7 @@ import {
   IDropdownStyles,
 } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { KeyboardHandlerMap } from "KeyboardShortcuts";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
@@ -233,3 +234,28 @@ export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, 
     onRender: () => <ConnectionStatus container={container} poolId={poolId} />,
   };
 };
+
+export function createKeyboardHandlers(allButtons: CommandButtonComponentProps[]): KeyboardHandlerMap {
+  const handlers: KeyboardHandlerMap = {};
+
+  function createHandlers(buttons: CommandButtonComponentProps[]) {
+    buttons.forEach((button) => {
+      if(button.disabled !== true && button.keyboardAction) {
+        handlers[button.keyboardAction] = (e) => {
+          button.onCommandClick(e);
+
+          // If the handler is bound, it means the button is visible and enabled, so we should prevent the default action
+          return true;
+        }
+      }
+
+      if (button.children && button.children.length > 0) {
+        createHandlers(button.children);
+      }
+    });
+  }
+
+  createHandlers(allButtons);
+
+  return handlers;
+}
