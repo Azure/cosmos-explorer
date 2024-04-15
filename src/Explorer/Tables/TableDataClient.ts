@@ -3,6 +3,7 @@ import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { CassandraProxyAPIs, CassandraProxyEndpoints } from "../../Common/Constants";
 import { handleError } from "../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { createDocument } from "../../Common/dataAccess/createDocument";
@@ -19,7 +20,6 @@ import Explorer from "../Explorer";
 import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
-import { CassandraProxyAPIs } from "../../Common/Constants";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -458,7 +458,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   public getTableKeys(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
-    if (!this.useCassandraProxyEndpoint("getTableKeys")) {
+    if (!this.useCassandraProxyEndpoint("getKeys")) {
       return this.getTableKeys_ToBeDeprecated(collection);
     }
 
@@ -732,17 +732,23 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   private useCassandraProxyEndpoint(api: string): boolean {
+    const activeCassandraProxyEndpoints: string[] = [
+      CassandraProxyEndpoints.Development,
+      CassandraProxyEndpoints.Mpac,
+      CassandraProxyEndpoints.Prod,
+    ];
     let canAccessCassandraProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-    if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+    if (
+      configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development &&
+      userContext.databaseAccount.properties.ipRules?.length > 0
+    ) {
       canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
     }
 
     return (
       canAccessCassandraProxy &&
       configContext.NEW_CASSANDRA_APIS?.includes(api) &&
-      [Constants.CassandraProxyEndpoints.Development, Constants.CassandraProxyEndpoints.Mpac].includes(
-        configContext.CASSANDRA_PROXY_ENDPOINT,
-      )
+      activeCassandraProxyEndpoints.includes(configContext.CASSANDRA_PROXY_ENDPOINT)
     );
   }
 }

@@ -67,7 +67,7 @@ export function queryDocuments(
   query: string,
   continuationToken?: string,
 ): Promise<QueryResponse> {
-  if (!useMongoProxyEndpoint("resourcelist")) {
+  if (!useMongoProxyEndpoint("resourcelist") || !useMongoProxyEndpoint("queryDocuments")) {
     return queryDocuments_ToBeDeprecated(databaseId, collection, isResourceList, query, continuationToken);
   }
 
@@ -106,7 +106,7 @@ export function queryDocuments(
     headers[CosmosSDKConstants.HttpHeaders.Continuation] = continuationToken;
   }
 
-  const path = isResourceList ? "/resourcelist" : "";
+  const path = isResourceList ? "/resourcelist" : "/queryDocuments";
 
   return window
     .fetch(`${endpoint}${path}`, {
@@ -690,9 +690,16 @@ export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameter
 }
 
 function useMongoProxyEndpoint(api: string): boolean {
-  const activeMongoProxyEndpoints: string[] = [MongoProxyEndpoints.Development];
+  const activeMongoProxyEndpoints: string[] = [
+    MongoProxyEndpoints.Development,
+    MongoProxyEndpoints.Mpac,
+    MongoProxyEndpoints.Prod,
+  ];
   let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-  if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+  if (
+    configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Development &&
+    userContext.databaseAccount.properties.ipRules?.length > 0
+  ) {
     canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
   }
 
