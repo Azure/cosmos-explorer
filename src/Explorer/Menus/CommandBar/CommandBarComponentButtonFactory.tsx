@@ -1,3 +1,4 @@
+import { KeyboardShortcutAction } from "KeyboardShortcuts";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
@@ -297,6 +298,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardShortcut: KeyboardShortcutAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
@@ -312,6 +314,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardShortcut: KeyboardShortcutAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection);

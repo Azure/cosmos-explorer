@@ -10,6 +10,7 @@ import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilo
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { KeyboardShortcutAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -393,6 +394,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
+        keyboardShortcut: KeyboardShortcutAction.EXECUTE_ITEM,
         onCommandClick: this.props.isSampleCopilotActive
           ? () => OnExecuteQueryClick(this.props.copilotStore)
           : this.onExecuteQueryClick,
