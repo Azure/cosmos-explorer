@@ -58,6 +58,7 @@ export function createStaticCommandBarButtons(
     buttons.push(homeBtn);
 
     const newCollectionBtn = createNewCollectionGroup(container);
+    newCollectionBtn.keyboardAction = KeyboardAction.NEW_COLLECTION; // Just for the root button, not the child version we create below.
     buttons.push(newCollectionBtn);
     if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
       const addSynapseLink = createOpenSynapseLinkDialogButton(container);
@@ -95,6 +96,7 @@ export function createStaticCommandBarButtons(
       const newStoredProcedureBtn: CommandButtonComponentProps = {
         iconSrc: AddStoredProcedureIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.NEW_SPROC,
         onCommandClick: () => {
           const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
@@ -278,6 +280,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.NEW_DATABASE,
     onCommandClick: async () => {
       const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
       if (throughputCap && throughputCap !== -1) {
@@ -340,6 +343,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newStoredProcedureBtn: CommandButtonComponentProps = {
       iconSrc: AddStoredProcedureIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_SPROC,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
@@ -359,6 +363,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newUserDefinedFunctionBtn: CommandButtonComponentProps = {
       iconSrc: AddUdfIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_UDF,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
@@ -378,6 +383,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newTriggerBtn: CommandButtonComponentProps = {
       iconSrc: AddTriggerIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_TRIGGER,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection);
