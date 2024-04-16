@@ -5,7 +5,7 @@
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
-import { useKeyboardActionHandlers } from "KeyboardShortcuts";
+import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { userContext } from "UserContext";
 import * as React from "react";
 import create, { UseStore } from "zustand";
@@ -41,7 +41,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const buttons = useCommandBar((state) => state.contextButtons);
   const isHidden = useCommandBar((state) => state.isHidden);
   const backgroundColor = StyleConstants.BaseLight;
-  const setKeyboardActionHandlers = useKeyboardActionHandlers((state) => state.setHandlers);
+  const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =
@@ -109,7 +109,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);
   const keyboardHandlers = CommandBarUtil.createKeyboardHandlers(allButtons);
-  setKeyboardActionHandlers(keyboardHandlers);
+  setKeyboardHandlers(keyboardHandlers);
 
   return (
     <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>

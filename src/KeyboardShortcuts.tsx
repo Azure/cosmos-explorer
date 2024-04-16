@@ -13,6 +13,20 @@ export type KeyboardActionHandler = (e: KeyboardEvent) => boolean | void;
 export type KeyboardHandlerMap = Partial<Record<KeyboardAction, KeyboardActionHandler>>;
 
 /**
+ * The groups of keyboard actions that can be managed by the application.
+ * Each group can be updated separately, but, when updated, must be completely replaced.
+ */
+export enum KeyboardActionGroup {
+  TABS = "TABS",
+  COMMAND_BAR = "COMMAND_BAR",
+}
+
+/**
+ * The order in which the groups of keyboard actions should be applied.
+ */
+const groupOrder: KeyboardActionGroup[] = [KeyboardActionGroup.TABS, KeyboardActionGroup.COMMAND_BAR];
+
+/**
  * The possible actions that can be triggered by keyboard shortcuts.
  */
 export enum KeyboardAction {
@@ -30,6 +44,9 @@ export enum KeyboardAction {
   NEW_ITEM = "NEW_ITEM",
   DELETE_ITEM = "DELETE_ITEM",
   TOGGLE_COPILOT = "TOGGLE_COPILOT",
+  SELECT_LEFT_TAB = "SELECT_LEFT_TAB",
+  SELECT_RIGHT_TAB = "SELECT_RIGHT_TAB",
+  CLOSE_TAB = "CLOSE_TAB",
 }
 
 /**
@@ -55,6 +72,9 @@ const bindings: Record<KeyboardAction, string[]> = {
   [KeyboardAction.NEW_ITEM]: ["Alt+N I"],
   [KeyboardAction.DELETE_ITEM]: ["Alt+D"],
   [KeyboardAction.TOGGLE_COPILOT]: ["$mod+P"],
+  [KeyboardAction.SELECT_LEFT_TAB]: ["$mod+Alt+["],
+  [KeyboardAction.SELECT_RIGHT_TAB]: ["$mod+Alt+]"],
+  [KeyboardAction.CLOSE_TAB]: ["$mod+Alt+W"],
 };
 
 interface KeyboardShortcutState {
@@ -64,15 +84,39 @@ interface KeyboardShortcutState {
   allHandlers: KeyboardHandlerMap;
 
   /**
-   * Sets the keyboard shortcut handlers.
+   * A set of all the groups of keyboard shortcuts handlers.
    */
-  setHandlers: (handlers: KeyboardHandlerMap) => void;
+  groups: Partial<Record<KeyboardActionGroup, KeyboardHandlerMap>>;
+
+  /**
+   * Sets the keyboard shortcut handlers for the given group.
+   */
+  setHandlers: (group: KeyboardActionGroup, handlers: KeyboardHandlerMap) => void;
 }
 
-export const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set) => ({
+/**
+ * Defines the calling component as the manager of the keyboard actions for the given group.
+ * @param group The group of keyboard actions to manage.
+ * @returns A function that can be used to set the keyboard action handlers for the given group.
+ */
+export const useKeyboardActionGroup =
+  (group: KeyboardActionGroup) =>
+    (handlers: KeyboardHandlerMap) =>
+      useKeyboardActionHandlers.getState().setHandlers(group, handlers);
+
+const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set, get) => ({
   allHandlers: {},
-  setHandlers: (handlers: Partial<Record<KeyboardAction, KeyboardActionHandler>>) => {
-    set({ allHandlers: handlers });
+  groups: {},
+  setHandlers: (group: KeyboardActionGroup, handlers: KeyboardHandlerMap) => {
+    const state = get();
+    const groups = { ...state.groups, [group]: handlers };
+
+    // Combine all the handlers from all the groups in the correct order.
+    const allHandlers: KeyboardHandlerMap = {};
+    groupOrder.forEach((group) => {
+      Object.assign(allHandlers, groups[group]);
+    });
+    set({ groups, allHandlers });
   },
 }));
 
