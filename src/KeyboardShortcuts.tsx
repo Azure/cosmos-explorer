@@ -51,13 +51,13 @@ interface KeyboardShortcutState {
    * Sets the keyboard shortcut handlers.
    */
   setHandlers: (handlers: KeyboardHandlerMap) => void;
-} 
+}
 
-export const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set, get) => ({
+export const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set) => ({
   allHandlers: {},
   setHandlers: (handlers: Partial<Record<KeyboardAction, KeyboardActionHandler>>) => {
-    set({ allHandlers: handlers })
-  }
+    set({ allHandlers: handlers });
+  },
 }));
 
 function createHandler(action: KeyboardAction): KeyboardActionHandler {
@@ -85,6 +85,5 @@ export function KeyboardShortcutRoot(props: HTMLProps<HTMLDivElement>) {
     tinykeys(ref.current, allHandlers);
   }, [ref]); // We only need to re-render the component when the ref changes.
 
-  return <div ref={ref} {...props}>
-  </div>;
+  return <div ref={ref} {...props}></div>;
 }
