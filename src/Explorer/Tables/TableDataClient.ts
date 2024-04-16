@@ -3,6 +3,7 @@ import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { CassandraProxyAPIs, CassandraProxyEndpoints } from "../../Common/Constants";
 import { handleError } from "../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { createDocument } from "../../Common/dataAccess/createDocument";
@@ -19,7 +20,6 @@ import Explorer from "../Explorer";
 import * as TableConstants from "./Constants";
 import * as Entities from "./Entities";
 import * as TableEntityProcessor from "./TableEntityProcessor";
-import { CassandraProxyAPIs } from "../../Common/Constants";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -172,8 +172,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(entity);
         },
         (error) => {
-          handleError(error, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
-          deferred.reject(error);
+          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          handleError(errorText, "AddRowCassandra", `Error while adding new row to table ${collection.id()}`);
+          deferred.reject(errorText);
         },
       )
       .finally(clearInProgressMessage);
@@ -406,12 +407,13 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve();
         },
         (error) => {
+          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
           handleError(
-            error,
+            errorText,
             "CreateKeyspaceCassandra",
             `Error while creating a keyspace with query ${createKeyspaceQuery}`,
           );
-          deferred.reject(error);
+          deferred.reject(errorText);
         },
       )
       .finally(clearInProgressMessage);
@@ -444,8 +446,13 @@ export class CassandraAPIDataClient extends TableDataClient {
               deferred.resolve();
             },
             (error) => {
-              handleError(error, "CreateTableCassandra", `Error while creating a table with query ${createTableQuery}`);
-              deferred.reject(error);
+              const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+              handleError(
+                errorText,
+                "CreateTableCassandra",
+                `Error while creating a table with query ${createTableQuery}`,
+              );
+              deferred.reject(errorText);
             },
           )
           .finally(clearInProgressMessage);
@@ -458,7 +465,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   public getTableKeys(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
-    if (!this.useCassandraProxyEndpoint("getTableKeys")) {
+    if (!this.useCassandraProxyEndpoint("getKeys")) {
       return this.getTableKeys_ToBeDeprecated(collection);
     }
 
@@ -493,8 +500,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data);
         },
         (error: any) => {
-          handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
-          deferred.reject(error);
+          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          handleError(errorText, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
+          deferred.reject(errorText);
         },
       )
       .done(clearInProgressMessage);
@@ -533,8 +541,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data);
         },
         (error: any) => {
-          handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
-          deferred.reject(error);
+          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          handleError(errorText, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
+          deferred.reject(errorText);
         },
       )
       .done(clearInProgressMessage);
@@ -578,8 +587,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data.columns);
         },
         (error: any) => {
-          handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
-          deferred.reject(error);
+          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          handleError(errorText, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
+          deferred.reject(errorText);
         },
       )
       .done(clearInProgressMessage);
@@ -618,8 +628,9 @@ export class CassandraAPIDataClient extends TableDataClient {
           deferred.resolve(data.columns);
         },
         (error: any) => {
-          handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
-          deferred.reject(error);
+          const errorText = error.responseJSON?.message ?? JSON.stringify(error);
+          handleError(errorText, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
+          deferred.reject(errorText);
         },
       )
       .done(clearInProgressMessage);
@@ -732,17 +743,23 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   private useCassandraProxyEndpoint(api: string): boolean {
+    const activeCassandraProxyEndpoints: string[] = [
+      CassandraProxyEndpoints.Development,
+      CassandraProxyEndpoints.Mpac,
+      CassandraProxyEndpoints.Prod,
+    ];
     let canAccessCassandraProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-    if (userContext.databaseAccount.properties.ipRules?.length > 0) {
+    if (
+      configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development &&
+      userContext.databaseAccount.properties.ipRules?.length > 0
+    ) {
       canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
     }
 
     return (
       canAccessCassandraProxy &&
       configContext.NEW_CASSANDRA_APIS?.includes(api) &&
-      [Constants.CassandraProxyEndpoints.Development, Constants.CassandraProxyEndpoints.Mpac].includes(
-        configContext.CASSANDRA_PROXY_ENDPOINT,
-      )
+      activeCassandraProxyEndpoints.includes(configContext.CASSANDRA_PROXY_ENDPOINT)
     );
   }
 }

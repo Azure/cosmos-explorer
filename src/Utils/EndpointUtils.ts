@@ -1,4 +1,11 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
+import {
+  BackendApi,
+  CassandraProxyEndpoints,
+  JunoEndpoints,
+  MongoProxyEndpoints,
+  PortalBackendEndpoints,
+} from "Common/Constants";
+import { configContext } from "ConfigContext";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -137,3 +144,23 @@ export const allowedJunoOrigins: ReadonlyArray<string> = [
 ];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
+
+//
+// Temporary function to determine if a portal backend API is supported by the
+// new backend in this environment.
+//
+// TODO: Remove this function once new backend migration is completed for all environments.
+//
+export function useNewPortalBackendEndpoint(backendApi: string): boolean {
+  // This maps backend APIs to the environments supported by the new backend.
+  const newBackendApiEnvironmentMap: { [key: string]: string[] } = {
+    [BackendApi.GenerateToken]: [PortalBackendEndpoints.Development],
+    [BackendApi.PortalSettings]: [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac],
+  };
+
+  if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
+    return false;
+  }
+
+  return newBackendApiEnvironmentMap[backendApi].includes(configContext.PORTAL_BACKEND_ENDPOINT);
+}

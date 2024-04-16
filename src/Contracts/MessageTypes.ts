@@ -47,6 +47,7 @@ export enum MessageTypes {
   GetAllResourceTokens, // Data Explorer -> Fabric
   Ready, // Data Explorer -> Fabric
   OpenCESCVAFeedbackBlade,
+  ActivateTab,
 }
 
 export interface AuthorizationToken {

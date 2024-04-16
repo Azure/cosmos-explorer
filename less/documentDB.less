@@ -2296,6 +2296,17 @@ a:link {
   display: none !important;
 }
 
+.monaco-editor .quick-input-list-label {
+  /* Restore some of Monaco's default styles that are clobbered by our global styles */
+  padding: 0;
+  line-height: 22px;
+}
+
+.monaco-editor .quick-input-list .highlight {
+  /* Padding in highlighted text within the quick input list breaks the flow of the text */
+  padding: 0;
+}
+
 td a {
   color: #393939;
 }

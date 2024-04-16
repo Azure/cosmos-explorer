@@ -308,7 +308,7 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
 
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: this.rawDataModel.id + " - Items",
+        tabTitle: "Items",
       });
       this.documentIds([]);
 
@@ -316,7 +316,7 @@ export default class Collection implements ViewModels.Collection {
         partitionKey: this.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
-        title: this.rawDataModel.id + " - Items",
+        title: "Items",
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,

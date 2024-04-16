@@ -51,6 +51,7 @@ interface FabricContext {
   connectionId: string;
   databaseConnectionInfo: FabricDatabaseConnectionInfo | undefined;
   isReadOnly: boolean;
+  isVisible: boolean;
 }
 
 export type AdminFeedbackControlPolicy =
