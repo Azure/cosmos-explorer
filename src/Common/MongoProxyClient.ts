@@ -698,6 +698,8 @@ function useMongoProxyEndpoint(api: string): boolean {
   return (
     canAccessMongoProxy &&
     configContext.NEW_MONGO_APIS?.includes(api) &&
-    [MongoProxyEndpoints.Development, MongoProxyEndpoints.Mpac].includes(configContext.MONGO_PROXY_ENDPOINT)
+    [MongoProxyEndpoints.Local, MongoProxyEndpoints.Mpac, MongoProxyEndpoints.Prod].includes(
+      configContext.MONGO_PROXY_ENDPOINT,
+    )
   );
 }

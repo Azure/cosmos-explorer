@@ -31,11 +31,7 @@ export type Features = {
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
   readonly enableHierarchicalKeys: boolean;
-  readonly enableLegacyMongoShellV1: boolean;
-  readonly enableLegacyMongoShellV1Debug: boolean;
   readonly enableLegacyMongoShellV2: boolean;
-  readonly enableLegacyMongoShellV2Debug: boolean;
-  readonly loadLegacyMongoShellFromBE: boolean;
   readonly enableCopilot: boolean;
   readonly copilotVersion?: string;
   readonly disableCopilotPhoenixGateaway: boolean;
@@ -106,11 +102,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
     enableHierarchicalKeys: "true" === get("enablehierarchicalkeys"),
-    enableLegacyMongoShellV1: "true" === get("enablelegacymongoshellv1"),
-    enableLegacyMongoShellV1Debug: "true" === get("enablelegacymongoshellv1debug"),
     enableLegacyMongoShellV2: "true" === get("enablelegacymongoshellv2"),
-    enableLegacyMongoShellV2Debug: "true" === get("enablelegacymongoshellv2debug"),
-    loadLegacyMongoShellFromBE: "true" === get("loadlegacymongoshellfrombe"),
     enableCopilot: "true" === get("enablecopilot", "true"),
     copilotVersion: get("copilotversion") ?? "v2.0",
     disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
