@@ -38,11 +38,11 @@ describe("getMongoShellUrl", () => {
   });
 
   it("should return /indexv2.html by default", () => {
-    expect(getMongoShellUrl()).toBe(`/indexv2.html?${queryString}`);
+    expect(getMongoShellUrl().toString()).toContain(`/indexv2.html?${queryString}`);
   });
 
   it("should return /index.html when useMongoProxyEndpoint is true", () => {
     const useMongoProxyEndpoint: boolean = true;
-    expect(getMongoShellUrl(useMongoProxyEndpoint)).toBe(`/mongoshell/indexv2.html?${queryString}`);
+    expect(getMongoShellUrl(useMongoProxyEndpoint).toString()).toContain(`/index.html?${queryString}`);
   });
 });

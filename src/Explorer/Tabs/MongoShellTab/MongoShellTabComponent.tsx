@@ -35,7 +35,7 @@ export interface IMongoShellTabAccessor {
 }
 
 export interface IMongoShellTabComponentStates {
-  url: string;
+  url: URL;
 }
 
 export interface IMongoShellTabComponentProps {
