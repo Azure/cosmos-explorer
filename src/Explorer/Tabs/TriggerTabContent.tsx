@@ -1,5 +1,6 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { Dropdown, IDropdownOption, Label, TextField } from "@fluentui/react";
+import { KeyboardAction } from "KeyboardShortcuts";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
@@ -227,6 +228,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         ...this,
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -241,6 +243,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         ...this,
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onUpdateClick,
         commandButtonLabel: label,
         ariaLabel: label,

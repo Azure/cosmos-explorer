@@ -1,6 +1,7 @@
 import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { Platform, configContext } from "ConfigContext";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as ko from "knockout";
@@ -907,6 +908,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -936,6 +938,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveExistingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
