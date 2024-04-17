@@ -3,7 +3,7 @@ import { updateUserContext, userContext } from "../../../UserContext";
 import { getMongoShellUrl } from "./getMongoShellUrl";
 
 const mongoBackendEndpoint = "https://localhost:1234";
-const hostedExplorerURL = "https://localhost:1234";
+const hostedExplorerURL = "https://cosmos.azure.com/";
 
 describe("getMongoShellUrl", () => {
   let queryString = "";

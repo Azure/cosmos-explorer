@@ -693,7 +693,6 @@ export function useMongoProxyEndpoint(api: string): boolean {
   );
 }
 
-
 // TODO: This function throws most of the time except on Forbidden which is a bit strange
 // It causes problems for TypeScript understanding the types
 async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
