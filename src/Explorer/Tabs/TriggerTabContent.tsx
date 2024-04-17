@@ -219,6 +219,14 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     return !!value;
   }
 
+  componentDidUpdate(_prevProps: TriggerTab, prevState: ITriggerTabContentState): void {
+    const { triggerBody, triggerId, triggerType, triggerOperation } = this.state;
+    if (triggerId !== prevState.triggerId || triggerBody !== prevState.triggerBody ||
+        triggerType !== prevState.triggerType || triggerOperation !== prevState.triggerOperation) {
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    }
+  }
+
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     const label = "Save";
@@ -290,7 +298,6 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
   };
 
   render(): JSX.Element {
-    useCommandBar.getState().setContextButtons(this.getTabsButtons());
     const { triggerId, triggerType, triggerOperation, triggerBody, isIdEditable } = this.state;
     return (
       <div className="tab-pane flexContainer trigger-form" role="tabpanel">
