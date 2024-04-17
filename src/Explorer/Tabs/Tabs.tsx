@@ -270,6 +270,7 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
 
 const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
   if (e.key === "Enter" || e.key === "Space") {
+    useTabs.getState().activateReactTab(tabKind);
     e.stopPropagation();
   }
 };
