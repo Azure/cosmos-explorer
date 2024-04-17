@@ -218,7 +218,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             generateSQLQueryResponse.explanation ? generateSQLQueryResponse.explanation : "N/A"
           }\r\n`;
           const currentGeneratedQuery = queryExplanation + generateSQLQueryResponse.sql;
-          const lastQuery = generatedQuery && query ? `${query}\r\n` : "";
+          const lastQuery = query ? `${query}\r\n` : "";
           setQuery(`${lastQuery}${currentGeneratedQuery}`);
           setGeneratedQuery(generateSQLQueryResponse.sql);
           setGeneratedQueryComments(generateSQLQueryResponse.explanation);
