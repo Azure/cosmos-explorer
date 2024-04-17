@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HTMLProps, useEffect, useRef } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { KeyBindingMap, tinykeys } from "tinykeys";
 import create, { UseStore } from "zustand";
 
@@ -79,11 +79,11 @@ const allHandlers: KeyBindingMap = {};
   });
 });
 
-export function KeyboardShortcutRoot(props: HTMLProps<HTMLDivElement>) {
-  const ref = useRef<HTMLDivElement>(null);
+export function KeyboardShortcutRoot({ children }: PropsWithChildren<unknown>) {
   useEffect(() => {
-    tinykeys(ref.current, allHandlers);
-  }, [ref]); // We only need to re-render the component when the ref changes.
+    // We bind to the body because Fluent UI components sometimes shift focus to the body, which is above the root React component.
+    tinykeys(document.body, allHandlers);
+  }, []);
 
-  return <div ref={ref} {...props}></div>;
+  return <>{children}</>
 }

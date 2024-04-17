@@ -92,51 +92,53 @@ const App: React.FunctionComponent = () => {
   }
 
   return (
-    <KeyboardShortcutRoot className="flexContainer" aria-hidden="false">
-      <div id="divExplorer" className="flexContainer hideOverflows">
-        <div id="freeTierTeachingBubble"> </div>
-        {/* Main Command Bar - Start */}
-        <CommandBar container={explorer} />
-        {/* Collections Tree and Tabs - Begin */}
-        <div className="resourceTreeAndTabs">
-          {/* Collections Tree - Start */}
-          {userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo" && (
-            <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
-              <div className="collectionsTreeWithSplitter">
-                {/* Collections Tree Expanded - Start */}
-                <ResourceTreeContainer
-                  container={explorer}
-                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                  isLeftPaneExpanded={isLeftPaneExpanded}
-                />
-                {/* Collections Tree Expanded - End */}
-                {/* Collections Tree Collapsed - Start */}
-                <CollapsedResourceTree
-                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                  isLeftPaneExpanded={isLeftPaneExpanded}
-                />
-                {/* Collections Tree Collapsed - End */}
+    <KeyboardShortcutRoot>
+      <div className="flexContainer" aria-hidden="false">
+        <div id="divExplorer" className="flexContainer hideOverflows">
+          <div id="freeTierTeachingBubble"> </div>
+          {/* Main Command Bar - Start */}
+          <CommandBar container={explorer} />
+          {/* Collections Tree and Tabs - Begin */}
+          <div className="resourceTreeAndTabs">
+            {/* Collections Tree - Start */}
+            {userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo" && (
+              <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
+                <div className="collectionsTreeWithSplitter">
+                  {/* Collections Tree Expanded - Start */}
+                  <ResourceTreeContainer
+                    container={explorer}
+                    toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                    isLeftPaneExpanded={isLeftPaneExpanded}
+                  />
+                  {/* Collections Tree Expanded - End */}
+                  {/* Collections Tree Collapsed - Start */}
+                  <CollapsedResourceTree
+                    toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                    isLeftPaneExpanded={isLeftPaneExpanded}
+                  />
+                  {/* Collections Tree Collapsed - End */}
+                </div>
               </div>
-            </div>
-          )}
-          <Tabs explorer={explorer} />
+            )}
+            <Tabs explorer={explorer} />
+          </div>
+          {/* Collections Tree and Tabs - End */}
+          <div
+            className="dataExplorerErrorConsoleContainer"
+            role="contentinfo"
+            aria-label="Notification console"
+            id="explorerNotificationConsole"
+          >
+            <NotificationConsole />
+          </div>
         </div>
-        {/* Collections Tree and Tabs - End */}
-        <div
-          className="dataExplorerErrorConsoleContainer"
-          role="contentinfo"
-          aria-label="Notification console"
-          id="explorerNotificationConsole"
-        >
-          <NotificationConsole />
-        </div>
+        <SidePanel />
+        <Dialog />
+        {<QuickstartCarousel isOpen={isCarouselOpen} />}
+        {<SQLQuickstartTutorial />}
+        {<MongoQuickstartTutorial />}
+        {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
       </div>
-      <SidePanel />
-      <Dialog />
-      {<QuickstartCarousel isOpen={isCarouselOpen} />}
-      {<SQLQuickstartTutorial />}
-      {<MongoQuickstartTutorial />}
-      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
     </KeyboardShortcutRoot>
   );
 };
