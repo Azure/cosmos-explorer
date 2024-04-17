@@ -221,8 +221,12 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
 
   componentDidUpdate(_prevProps: TriggerTab, prevState: ITriggerTabContentState): void {
     const { triggerBody, triggerId, triggerType, triggerOperation } = this.state;
-    if (triggerId !== prevState.triggerId || triggerBody !== prevState.triggerBody ||
-        triggerType !== prevState.triggerType || triggerOperation !== prevState.triggerOperation) {
+    if (
+      triggerId !== prevState.triggerId ||
+      triggerBody !== prevState.triggerBody ||
+      triggerType !== prevState.triggerType ||
+      triggerOperation !== prevState.triggerOperation
+    ) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
