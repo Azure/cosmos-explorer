@@ -672,24 +672,7 @@ export function getEndpoint(endpoint: string): string {
   return url;
 }
 
-// TODO: This function throws most of the time except on Forbidden which is a bit strange
-// It causes problems for TypeScript understanding the types
-async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
-  const errorMessage = await response.text();
-  // Log the error where the user can see it
-  logConsoleError(`Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`);
-  if (response.status === HttpStatusCodes.Forbidden) {
-    sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
-    return;
-  }
-  throw new Error(errorMessage);
-}
-
-export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameters): string {
-  return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/mongodbDatabases/${params.db}/collections/${params.coll}`;
-}
-
-function useMongoProxyEndpoint(api: string): boolean {
+export function useMongoProxyEndpoint(api: string): boolean {
   const activeMongoProxyEndpoints: string[] = [
     MongoProxyEndpoints.Local,
     MongoProxyEndpoints.Mpac,
@@ -708,4 +691,22 @@ function useMongoProxyEndpoint(api: string): boolean {
     configContext.NEW_MONGO_APIS?.includes(api) &&
     activeMongoProxyEndpoints.includes(configContext.MONGO_PROXY_ENDPOINT)
   );
+}
+
+
+// TODO: This function throws most of the time except on Forbidden which is a bit strange
+// It causes problems for TypeScript understanding the types
+async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
+  const errorMessage = await response.text();
+  // Log the error where the user can see it
+  logConsoleError(`Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`);
+  if (response.status === HttpStatusCodes.Forbidden) {
+    sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
+    return;
+  }
+  throw new Error(errorMessage);
+}
+
+export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameters): string {
+  return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/mongodbDatabases/${params.db}/collections/${params.coll}`;
 }

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import * as Constants from "../../../Common/Constants";
-import { MongoProxyEndpoints } from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -55,11 +54,8 @@ export default class MongoShellTabComponent extends Component<
   constructor(props: IMongoShellTabComponentProps) {
     super(props);
     this._logTraces = new Map();
-    this._useMongoProxyEndpoint = [
-      MongoProxyEndpoints.Local,
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-    ].includes(configContext.MONGO_PROXY_ENDPOINT);
+    this._useMongoProxyEndpoint = userContext.features.enableLegacyMongoShell
+    // this._useMongoProxyEndpoint = useMongoProxyEndpoint("legacyMongoShell");
 
     this.state = {
       url: getMongoShellUrl(this._useMongoProxyEndpoint),

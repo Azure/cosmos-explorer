@@ -31,7 +31,6 @@ export type Features = {
   readonly mongoProxyAPIs?: string;
   readonly enableThroughputCap: boolean;
   readonly enableHierarchicalKeys: boolean;
-  readonly enableLegacyMongoShellV2: boolean;
   readonly enableCopilot: boolean;
   readonly copilotVersion?: string;
   readonly disableCopilotPhoenixGateaway: boolean;
@@ -39,6 +38,7 @@ export type Features = {
   readonly copilotChatFixedMonacoEditorHeight: boolean;
   readonly enablePriorityBasedExecution: boolean;
   readonly disableConnectionStringLogin: boolean;
+  readonly enableLegacyMongoShell: boolean;
 
   // can be set via both flight and feature flag
   autoscaleDefault: boolean;
@@ -102,7 +102,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
     enableHierarchicalKeys: "true" === get("enablehierarchicalkeys"),
-    enableLegacyMongoShellV2: "true" === get("enablelegacymongoshellv2"),
     enableCopilot: "true" === get("enablecopilot", "true"),
     copilotVersion: get("copilotversion") ?? "v2.0",
     disableCopilotPhoenixGateaway: "true" === get("disablecopilotphoenixgateaway"),
@@ -110,6 +109,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     copilotChatFixedMonacoEditorHeight: "true" === get("copilotchatfixedmonacoeditorheight"),
     enablePriorityBasedExecution: "true" === get("enableprioritybasedexecution"),
     disableConnectionStringLogin: "true" === get("disableconnectionstringlogin"),
+    enableLegacyMongoShell: "true" === get("enablelegacymongoshell"),
   };
 }
 

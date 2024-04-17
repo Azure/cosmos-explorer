@@ -109,6 +109,7 @@ let configContext: Readonly<ConfigContext> = {
     "updateDocument",
     "deleteDocument",
     "createCollectionWithProxy",
+    "legacyMongoShell"
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
@@ -244,3 +245,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
