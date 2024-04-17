@@ -85,5 +85,5 @@ export function KeyboardShortcutRoot({ children }: PropsWithChildren<unknown>) {
     tinykeys(document.body, allHandlers);
   }, []);
 
-  return <>{children}</>
+  return <>{children}</>;
 }
