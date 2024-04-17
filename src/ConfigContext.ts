@@ -83,6 +83,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/.*\\.analysis-df\\.net$`,
     `^https:\\/\\/.*\\.analysis-df\\.windows\\.net$`,
     `^https:\\/\\/.*\\.azure-test\\.net$`,
+    `^https:\\/\\/cosmos-explorer-preview\\.azurewebsites\\.net`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -108,6 +109,7 @@ let configContext: Readonly<ConfigContext> = {
     "updateDocument",
     "deleteDocument",
     "createCollectionWithProxy",
+    "legacyMongoShell",
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
