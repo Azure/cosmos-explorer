@@ -240,7 +240,7 @@ export function createKeyboardHandlers(allButtons: CommandButtonComponentProps[]
 
   function createHandlers(buttons: CommandButtonComponentProps[]) {
     buttons.forEach((button) => {
-      if (button.disabled !== true && button.keyboardAction) {
+      if (!button.disabled && button.keyboardAction) {
         handlers[button.keyboardAction] = (e) => {
           button.onCommandClick(e);
 
