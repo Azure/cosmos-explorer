@@ -7,7 +7,9 @@ export function getMongoShellUrl(useMongoProxyEndpoint?: boolean): URL {
   const accountName = account?.name;
   const mongoEndpoint = account?.properties?.mongoEndpoint || account?.properties?.documentEndpoint;
   const queryString = `resourceId=${resourceId}&accountName=${accountName}&mongoEndpoint=${mongoEndpoint}`;
-  const path: string = useMongoProxyEndpoint ? `/index.html?${queryString}` : `/indexv2.html?${queryString}`;
+  const path: string = useMongoProxyEndpoint
+    ? `/mongoshell/index.html?${queryString}`
+    : `/mongoshell/indexv2.html?${queryString}`;
 
   return new URL(path, configContext.hostedExplorerURL);
 }
