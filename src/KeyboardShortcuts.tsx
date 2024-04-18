@@ -94,10 +94,8 @@ interface KeyboardShortcutState {
  * @param group The group of keyboard actions to manage.
  * @returns A function that can be used to set the keyboard action handlers for the given group.
  */
-export const useKeyboardActionGroup =
-  (group: KeyboardActionGroup) =>
-    (handlers: KeyboardHandlerMap) =>
-      useKeyboardActionHandlers.getState().setHandlers(group, handlers);
+export const useKeyboardActionGroup = (group: KeyboardActionGroup) => (handlers: KeyboardHandlerMap) =>
+  useKeyboardActionHandlers.getState().setHandlers(group, handlers);
 
 const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set, get) => ({
   allHandlers: {},
