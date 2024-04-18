@@ -224,7 +224,9 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   // Cell keyboard navigation
   const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });
 
-  const tableProps = {
+  // TODO: Bug in fluent UI typings that requires any here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tableProps: any = {
     "aria-label": "Filtered documents table",
     role: "grid",
     ...columnSizing.getTableProps(),

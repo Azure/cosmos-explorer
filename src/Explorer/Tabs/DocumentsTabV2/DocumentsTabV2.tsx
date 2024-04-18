@@ -39,7 +39,6 @@ import CloseIcon from "../../../../images/close-black.svg";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
-import * as HeadersUtility from "../../../Common/HeadersUtility";
 import * as Logger from "../../../Common/Logger";
 import * as MongoProxyClient from "../../../Common/MongoProxyClient";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -633,12 +632,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
     const filter: string = filterContent.trim();
     const query: string = buildQuery(filter);
     const options: FeedOptions = {};
-    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
+    // TODO: Property 'enableCrossPartitionQuery' does not exist on type 'FeedOptions'.
+    // options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
     if (resourceTokenPartitionKey) {
       options.partitionKey = resourceTokenPartitionKey;
     }
-    options.abortSignal = _queryAbortController.signal;
+    // Fixes compile error error TS2741: Property 'throwIfAborted' is missing in type 'AbortSignal' but required in type 'import("/home/runner/work/cosmos-explorer/cosmos-explorer/node_modules/node-abort-controller/index").AbortSignal'.
+    options.abortSignal = { ..._queryAbortController.signal, throwIfAborted: () => {} };
+
     return isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options)
       : queryDocuments(props.collection.databaseId, props.collection.id(), query, options);
@@ -965,7 +967,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   // Table config here
   const tableItems: DocumentsTableComponentItem[] = documentIds.map((documentId) => {
-    const item: Record<string, string> = {
+    const item: Record<string, string> & { id: string } = {
       id: documentId.id(),
     };
 
@@ -1012,7 +1014,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     loadDocument(documentIds[index]);
   };
 
-  const loadDocument = (documentId: DocumentId) =>
+  let loadDocument = (documentId: DocumentId) =>
     (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(props.collection, documentId)).then(
       (content) => {
         initDocumentEditor(documentId, content);
@@ -1133,6 +1135,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
   // ********* Override here for mongo (from MongoDocumentsTab) **********
   console.log("isPreferredApiMongoDB", props.isPreferredApiMongoDB);
   if (props.isPreferredApiMongoDB) {
+    loadDocument = (documentId: DocumentId) =>
+      MongoProxyClient.readDocument(
+        props.collection.databaseId,
+        props.collection as ViewModels.Collection,
+        documentId,
+      ).then((content) => {
+        initDocumentEditor(documentId, content);
+      });
+
     renderObjectForEditor = (value: unknown): string => MongoUtility.tojson(value, null, false);
 
     const _hasShardKeySpecified = (document: unknown): boolean => {
@@ -1176,7 +1187,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
     });
 
     __deleteDocument = (documentId: DocumentId): Promise<void> =>
-      MongoProxyClient.deleteDocument(props.collection.databaseId, props.collection, documentId);
+      MongoProxyClient.deleteDocument(
+        props.collection.databaseId,
+        props.collection as ViewModels.Collection,
+        documentId,
+      );
 
     onSaveNewDocumentClick = (): Promise<unknown> => {
       const documentContent = JSON.parse(selectedDocumentContent);
@@ -1214,7 +1229,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       setIsExecuting(true);
       return MongoProxyClient.createDocument(
         props.collection.databaseId,
-        props.collection,
+        props.collection as ViewModels.Collection,
         partitionKeyProperties?.[0],
         documentContent,
       )
@@ -1277,7 +1292,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       const selectedDocumentId = documentIds[clickedRow as number];
       return MongoProxyClient.updateDocument(
         props.collection.databaseId,
-        props.collection,
+        props.collection as ViewModels.Collection,
         selectedDocumentId,
         documentContent,
       )
@@ -1338,7 +1353,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
       return MongoProxyClient.queryDocuments(
         props.collection.databaseId,
-        props.collection,
+        props.collection as ViewModels.Collection,
         true,
         query,
         continuationToken,
@@ -1352,7 +1367,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
               .filter((d: { _rid: string }) => {
                 return currentDocumentsRids.indexOf(d._rid) < 0;
               })
-              .map((rawDocument: { _partitionKeyValue: string }) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              .map((rawDocument: any) => {
                 const partitionKeyValue = rawDocument._partitionKeyValue;
                 return new DocumentId(this, rawDocument, [partitionKeyValue]);
               });
