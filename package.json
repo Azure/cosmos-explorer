@@ -101,6 +101,7 @@
     "styled-components": "5.0.1",
     "swr": "0.4.0",
     "terser-webpack-plugin": "5.3.9",
+    "tinykeys": "2.1.0",
     "underscore": "1.9.1",
     "utility-types": "3.10.0",
     "zustand": "3.5.0"

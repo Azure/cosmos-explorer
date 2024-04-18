@@ -6,6 +6,7 @@ import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
@@ -297,6 +298,9 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
+  // React tabs have no context buttons.
+  useCommandBar.getState().setContextButtons([]);
+
   // eslint-disable-next-line no-console
   switch (activeReactTab) {
     case ReactTabKind.Connect:
