@@ -52,7 +52,7 @@ const bindings: Record<KeyboardAction, string[]> = {
   [KeyboardAction.NEW_TRIGGER]: ["Alt+N T"],
   [KeyboardAction.NEW_DATABASE]: ["Alt+N D"],
   [KeyboardAction.NEW_COLLECTION]: ["Alt+N C"],
-  [KeyboardAction.NEW_ITEM]: ["Ctrl+I", "Alt+N I"],
+  [KeyboardAction.NEW_ITEM]: ["Alt+N I"],
   [KeyboardAction.DELETE_ITEM]: ["Alt+D"],
   [KeyboardAction.TOGGLE_COPILOT]: ["$mod+P"],
 };
