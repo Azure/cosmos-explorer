@@ -29,7 +29,6 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import GraphTab from "../Tabs/GraphTab";
-import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
 import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
 import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
@@ -494,13 +493,13 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const mongoDocumentsTabs: MongoDocumentsTab[] = useTabs
+    const mongoDocumentsTabs: DocumentsTabV2[] = useTabs
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.Documents,
         (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id(),
-      ) as MongoDocumentsTab[];
-    let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
+      ) as DocumentsTabV2[];
+    let mongoDocumentsTab: DocumentsTabV2 = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
     if (mongoDocumentsTab) {
       useTabs.getState().activateTab(mongoDocumentsTab);
@@ -514,7 +513,7 @@ export default class Collection implements ViewModels.Collection {
       });
       this.documentIds([]);
 
-      mongoDocumentsTab = new MongoDocumentsTab({
+      mongoDocumentsTab = new DocumentsTabV2({
         partitionKey: this.partitionKey,
         documentIds: this.documentIds,
         tabKind: ViewModels.CollectionTabKind.Documents,

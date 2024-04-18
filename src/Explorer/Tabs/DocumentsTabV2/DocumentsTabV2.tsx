@@ -11,6 +11,7 @@ import { FluentProvider, TableRowId } from "@fluentui/react-components";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import MongoUtility from "Common/MongoUtility";
 import { createDocument } from "Common/dataAccess/createDocument";
 import { deleteDocument } from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
@@ -30,7 +31,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
-import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { KeyboardEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import { format } from "react-string-format";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
 import NewDocumentIcon from "../../../../images/NewDocument.svg";
@@ -39,12 +40,15 @@ import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
+import * as Logger from "../../../Common/Logger";
+import * as MongoProxyClient from "../../../Common/MongoProxyClient";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { extractPartitionKeyValues } from "../../../Utils/QueryUtils";
 import DocumentId from "../../Tree/DocumentId";
+import ObjectId from "../../Tree/ObjectId";
 import TabsBase from "../TabsBase";
 import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
 
@@ -68,7 +72,7 @@ export class DocumentsTabV2 extends TabsBase {
 
     return (
       <DocumentsTabComponent
-        isPreferredApiMongoDB={undefined}
+        isPreferredApiMongoDB={userContext.apiType === "Mongo"}
         documentIds={this.documentIds}
         tabId={this.tabId}
         collection={this.collection}
@@ -86,7 +90,7 @@ export class DocumentsTabV2 extends TabsBase {
 }
 
 // From TabsBase.renderObjectForEditor()
-const renderObjectForEditor = (
+let renderObjectForEditor = (
   value: unknown,
   replacer: (this: unknown, key: string, value: unknown) => unknown,
   space: string | number,
@@ -105,11 +109,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
   const [appliedFilter, setAppliedFilter] = useState<string>("");
   const [filterContent, setFilterContent] = useState<string>("");
-  const [lastFilterContents, setLastFilterContents] = useState<string[]>([
-    'WHERE c.id = "foo"',
-    "ORDER BY c._ts DESC",
-    'WHERE c.id = "foo" ORDER BY c._ts DESC',
-  ]);
+  // const [lastFilterContents, setLastFilterContents] = useState<string[]>([
+  //   'WHERE c.id = "foo"',
+  //   "ORDER BY c._ts DESC",
+  //   'WHERE c.id = "foo" ORDER BY c._ts DESC',
+  // ]);
   const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false); // TODO isExecuting is a member of TabsBase. We may need to update this field.
 
@@ -139,6 +143,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
+
+  // For Mongo only
+  const [continuationToken, setContinuationToken] = useState<string>(undefined);
+
+  let lastFilterContents = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 
   const getNewDocumentButtonState = () => ({
     enabled: (() => {
@@ -277,14 +286,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const partitionKey: DataModels.PartitionKey =
     props.partitionKey || (props.collection && props.collection.partitionKey);
   const partitionKeyPropertyHeaders: string[] = props.collection?.partitionKeyPropertyHeaders || partitionKey?.paths;
-  const partitionKeyProperties = partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
+  let partitionKeyProperties = partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
     partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
   );
 
-  const isPreferredApiMongoDB = useMemo(
-    () => userContext.apiType === "Mongo" || props.isPreferredApiMongoDB,
-    [props.isPreferredApiMongoDB],
-  );
+  // const isPreferredApiMongoDB = useMemo(
+  //   () => userContext.apiType === "Mongo" || props.isPreferredApiMongoDB,
+  //   [props.isPreferredApiMongoDB],
+  // );
 
   const updateNavbarWithTabsButtons = (): void => {
     // if (this.isActive()) {
@@ -383,7 +392,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setEditorState(ViewModels.DocumentExplorerState.newDocumentValid);
   };
 
-  const onSaveNewDocumentClick = (): Promise<unknown> => {
+  let onSaveNewDocumentClick = (): Promise<unknown> => {
     setIsExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
       dataExplorerArea: Constants.Areas.Tab,
@@ -443,7 +452,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
   };
 
-  const onSaveExistingDocumentClick = (): Promise<void> => {
+  let onSaveExistingDocumentClick = (): Promise<void> => {
     // const selectedDocumentId = this.selectedDocumentId();
 
     const documentContent = JSON.parse(selectedDocumentContent);
@@ -515,7 +524,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
     // TODO: Rework this for localization
     const isPlural = selectedRows.size > 1;
-    const documentName = !isPreferredApiMongoDB
+    const documentName = !props.isPreferredApiMongoDB
       ? isPlural
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
@@ -561,6 +570,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
       .finally(() => setIsExecuting(false));
   };
 
+  let __deleteDocument = (documentId: DocumentId): Promise<void> => deleteDocument(props.collection, documentId);
+
   const _deleteDocuments = (documentId: DocumentId): Promise<DocumentId> => {
     // setIsExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
@@ -568,7 +579,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       tabTitle: props.tabTitle,
     });
     // setIsExecuting(true);
-    return deleteDocument(props.collection, documentId).then(
+    return __deleteDocument(documentId).then(
       () => {
         TelemetryProcessor.traceSuccess(
           Action.DeleteDocument,
@@ -610,9 +621,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
   };
 
   const queryTimeoutEnabled = (): boolean =>
-    !isPreferredApiMongoDB && LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled);
+    !props.isPreferredApiMongoDB && LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled);
 
-  const buildQuery = (filter: string): string => {
+  let buildQuery = (filter: string): string => {
     return QueryUtils.buildDocumentsQuery(filter, partitionKeyProperties, partitionKey);
   };
 
@@ -713,7 +724,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   //   }
   // });
 
-  const loadNextPage = (applyFilterButtonClicked?: boolean): Promise<unknown> => {
+  let loadNextPage = (applyFilterButtonClicked?: boolean): Promise<unknown> => {
     setIsExecuting(true);
     setIsExecutionError(false);
     let automaticallyCancelQueryAfterTimeout: boolean;
@@ -852,7 +863,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
 
     const buttons: CommandButtonComponentProps[] = [];
-    const label = !isPreferredApiMongoDB ? "New Item" : "New Document";
+    const label = !props.isPreferredApiMongoDB ? "New Item" : "New Document";
     if (getNewDocumentButtonState().visible) {
       buttons.push({
         iconSrc: NewDocumentIcon,
@@ -940,7 +951,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       });
     }
 
-    if (!isPreferredApiMongoDB) {
+    if (!props.isPreferredApiMongoDB) {
       buttons.push(DocumentsTab._createUploadButton(props.collection.container));
     }
 
@@ -1089,7 +1100,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   }, []);
 
   const columnHeaders = {
-    idHeader: isPreferredApiMongoDB ? "_id" : "id",
+    idHeader: props.isPreferredApiMongoDB ? "_id" : "id",
     partitionKeyHeaders: partitionKeyPropertyHeaders || [],
   };
 
@@ -1119,6 +1130,287 @@ const DocumentsTabComponent: React.FunctionComponent<{
     });
   };
 
+  // ********* Override here for mongo (from MongoDocumentsTab) **********
+  console.log("isPreferredApiMongoDB", props.isPreferredApiMongoDB);
+  if (props.isPreferredApiMongoDB) {
+    renderObjectForEditor = (value: unknown): string => MongoUtility.tojson(value, null, false);
+
+    const _hasShardKeySpecified = (document: unknown): boolean => {
+      return Boolean(extractPartitionKeyValues(document, _getPartitionKeyDefinition() as PartitionKeyDefinition));
+    };
+
+    const _getPartitionKeyDefinition = (): DataModels.PartitionKey => {
+      let partitionKey: DataModels.PartitionKey = props.partitionKey;
+
+      if (
+        props.partitionKey &&
+        props.partitionKey.paths &&
+        props.partitionKey.paths.length &&
+        props.partitionKey.paths.length > 0 &&
+        props.partitionKey.paths[0].indexOf("$v") > -1
+      ) {
+        // Convert BsonSchema2 to /path format
+        partitionKey = {
+          kind: partitionKey.kind,
+          paths: ["/" + partitionKeyProperties?.[0].replace(/\./g, "/")],
+          version: partitionKey.version,
+        };
+      }
+
+      return partitionKey;
+    };
+
+    lastFilterContents = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
+    partitionKeyProperties = partitionKeyProperties?.map((partitionKeyProperty, i) => {
+      if (partitionKeyProperty && ~partitionKeyProperty.indexOf(`"`)) {
+        partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
+      }
+
+      if (partitionKeyProperty && partitionKeyProperty.indexOf("$v") > -1) {
+        // From $v.shard.$v.key.$v > shard.key
+        partitionKeyProperty = partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
+        partitionKeyPropertyHeaders[i] = "/" + partitionKeyProperty;
+      }
+
+      return partitionKeyProperty;
+    });
+
+    __deleteDocument = (documentId: DocumentId): Promise<void> =>
+      MongoProxyClient.deleteDocument(props.collection.databaseId, props.collection, documentId);
+
+    onSaveNewDocumentClick = (): Promise<unknown> => {
+      const documentContent = JSON.parse(selectedDocumentContent);
+      // this.displayedError("");
+      const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
+        dataExplorerArea: Constants.Areas.Tab,
+        tabTitle: props.tabTitle,
+      });
+
+      const partitionKeyProperty = partitionKeyProperties?.[0];
+      if (partitionKeyProperty !== "_id" && !_hasShardKeySpecified(documentContent)) {
+        const message = `The document is lacking the shard property: ${partitionKeyProperty}`;
+        // TODO: Display error message here
+
+        // this.displayedError(message);
+        // const that = this;
+        // setTimeout(() => {
+        //   that.displayedError("");
+        // }, Constants.ClientDefaults.errorNotificationTimeoutMs);
+        // this.isExecutionError(true);
+        TelemetryProcessor.traceFailure(
+          Action.CreateDocument,
+          {
+            dataExplorerArea: Constants.Areas.Tab,
+            tabTitle: props.tabTitle,
+            error: message,
+          },
+          startKey,
+        );
+        Logger.logError("Failed to save new document: Document shard key not defined", "MongoDocumentsTab");
+        throw new Error("Document without shard key");
+      }
+
+      setIsExecutionError(false);
+      setIsExecuting(true);
+      return MongoProxyClient.createDocument(
+        props.collection.databaseId,
+        props.collection,
+        partitionKeyProperties?.[0],
+        documentContent,
+      )
+        .then(
+          (savedDocument: { _self: unknown }) => {
+            const partitionKeyArray: PartitionKey[] = extractPartitionKeyValues(
+              savedDocument,
+              _getPartitionKeyDefinition() as PartitionKeyDefinition,
+            );
+
+            const id = new ObjectId(this, savedDocument, partitionKeyArray);
+            const ids = documentIds;
+            ids.push(id);
+            delete savedDocument._self;
+
+            const value: string = renderObjectForEditor(savedDocument || {}, null, 4);
+            setSelectedDocumentContentBaseline(value);
+
+            // this.selectedDocumentId(id);
+            setDocumentIds(ids);
+            setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+            TelemetryProcessor.traceSuccess(
+              Action.CreateDocument,
+              {
+                dataExplorerArea: Constants.Areas.Tab,
+                tabTitle: props.tabTitle,
+              },
+              startKey,
+            );
+          },
+          (error) => {
+            setIsExecutionError(true);
+            const errorMessage = getErrorMessage(error);
+            useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
+            TelemetryProcessor.traceFailure(
+              Action.CreateDocument,
+              {
+                dataExplorerArea: Constants.Areas.Tab,
+                tabTitle: props.tabTitle,
+                error: errorMessage,
+                errorStack: getErrorStack(error),
+              },
+              startKey,
+            );
+          },
+        )
+        .finally(() => setIsExecuting(false));
+    };
+
+    onSaveExistingDocumentClick = (): Promise<void> => {
+      // const selectedDocumentId = this.selectedDocumentId();
+      const documentContent = selectedDocumentContent;
+      setIsExecutionError(false);
+      setIsExecuting(true);
+      const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
+        dataExplorerArea: Constants.Areas.Tab,
+        tabTitle: props.tabTitle,
+      });
+
+      const selectedDocumentId = documentIds[clickedRow as number];
+      return MongoProxyClient.updateDocument(
+        props.collection.databaseId,
+        props.collection,
+        selectedDocumentId,
+        documentContent,
+      )
+        .then(
+          (updatedDocument: { _rid: string }) => {
+            const value: string = renderObjectForEditor(updatedDocument || {}, null, 4);
+            setSelectedDocumentContentBaseline(value);
+
+            documentIds.forEach((documentId: DocumentId) => {
+              if (documentId.rid === updatedDocument._rid) {
+                const partitionKeyArray: PartitionKey[] = extractPartitionKeyValues(
+                  updatedDocument,
+                  _getPartitionKeyDefinition() as PartitionKeyDefinition,
+                );
+
+                const id = new ObjectId(this, updatedDocument, partitionKeyArray);
+                documentId.id(id.id());
+              }
+            });
+            setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+            TelemetryProcessor.traceSuccess(
+              Action.UpdateDocument,
+              {
+                dataExplorerArea: Constants.Areas.Tab,
+                tabTitle: props.tabTitle,
+              },
+              startKey,
+            );
+          },
+          (error) => {
+            setIsExecutionError(true);
+            const errorMessage = getErrorMessage(error);
+            useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
+            TelemetryProcessor.traceFailure(
+              Action.UpdateDocument,
+              {
+                dataExplorerArea: Constants.Areas.Tab,
+                tabTitle: props.tabTitle,
+                error: errorMessage,
+                errorStack: getErrorStack(error),
+              },
+              startKey,
+            );
+          },
+        )
+        .finally(() => setIsExecuting(false));
+    };
+
+    buildQuery = (filter: string): string => {
+      return filter || "{}";
+    };
+
+    loadNextPage = (): Promise<unknown> => {
+      setIsExecuting(true);
+      setIsExecutionError(false);
+      const filter: string = filterContent.trim();
+      const query: string = buildQuery(filter);
+
+      return MongoProxyClient.queryDocuments(
+        props.collection.databaseId,
+        props.collection,
+        true,
+        query,
+        continuationToken,
+      )
+        .then(
+          ({ continuationToken: newContinuationToken, documents }) => {
+            setContinuationToken(newContinuationToken);
+            let currentDocuments = documentIds;
+            const currentDocumentsRids = currentDocuments.map((currentDocument) => currentDocument.rid);
+            const nextDocumentIds = documents
+              .filter((d: { _rid: string }) => {
+                return currentDocumentsRids.indexOf(d._rid) < 0;
+              })
+              .map((rawDocument: { _partitionKeyValue: string }) => {
+                const partitionKeyValue = rawDocument._partitionKeyValue;
+                return new DocumentId(this, rawDocument, [partitionKeyValue]);
+              });
+
+            const merged = currentDocuments.concat(nextDocumentIds);
+
+            setDocumentIds(merged);
+            // currentDocuments = this.documentIds();/
+            currentDocuments = merged;
+
+            if (filterContent.length > 0 && currentDocuments.length > 0) {
+              currentDocuments[0].click();
+            } else {
+              setSelectedDocumentContent("");
+              // this.selectedDocumentId(null);
+              setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+            }
+            if (props.onLoadStartKey !== null && props.onLoadStartKey !== undefined) {
+              TelemetryProcessor.traceSuccess(
+                Action.Tab,
+                {
+                  databaseName: props.collection.databaseId,
+                  collectionName: props.collection.id(),
+
+                  dataExplorerArea: Constants.Areas.Tab,
+                  tabTitle: props.tabTitle,
+                },
+                props.onLoadStartKey,
+              );
+              // TODO: Set on Load start key to null to stop telemetry traces
+              // this.onLoadStartKey = null;
+            }
+          },
+          (error: any) => {
+            if (onLoadStartKey !== null && onLoadStartKey !== undefined) {
+              TelemetryProcessor.traceFailure(
+                Action.Tab,
+                {
+                  databaseName: props.collection.databaseId,
+                  collectionName: props.collection.id(),
+
+                  dataExplorerArea: Constants.Areas.Tab,
+                  tabTitle: props.tabTitle,
+                  error: getErrorMessage(error),
+                  errorStack: getErrorStack(error),
+                },
+                props.onLoadStartKey,
+              );
+              // TODO: Set on Load start key to null to stop telemetry traces
+              // this.onLoadStartKey = null;
+            }
+          },
+        )
+        .finally(() => setIsExecuting(false));
+    };
+  }
+  // ***************** Mongo ***************************
+
   return (
     <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
       <div
@@ -1137,7 +1429,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
         {isFilterCreated && (
           <div className="filterdivs" /*data-bind="visible: isFilterCreated "*/>
             {/* <!-- Read-only Filter - Start --> */}
-            {!isFilterExpanded && !isPreferredApiMongoDB && (
+            {!isFilterExpanded && !props.isPreferredApiMongoDB && (
               <div
                 className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && !isPreferredApiMongoDB"*/
               >
@@ -1152,7 +1444,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 </button>
               </div>
             )}
-            {!isFilterExpanded && isPreferredApiMongoDB && (
+            {!isFilterExpanded && props.isPreferredApiMongoDB && (
               <div className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && isPreferredApiMongoDB"*/>
                 {appliedFilter.length > 0 && (
                   <span className="selectQuery" /*data-bind="visible: appliedFilter().length > 0"*/>Filter :</span>
@@ -1178,7 +1470,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
               <div className="filterDocExpanded" /*data-bind="visible: isFilterExpanded"*/>
                 <div>
                   <div className="editFilterContainer">
-                    {!isPreferredApiMongoDB && (
+                    {!props.isPreferredApiMongoDB && (
                       <span className="filterspan" /*data-bind="visible: !isPreferredApiMongoDB"*/>
                         {" "}
                         SELECT * FROM c{" "}
@@ -1190,7 +1482,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       className={`querydropdown ${filterContent.length === 0 ? "placeholderVisible" : ""}`}
                       title="Type a query predicate or choose one from the list."
                       placeholder={
-                        isPreferredApiMongoDB
+                        props.isPreferredApiMongoDB
                           ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
                           : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
                       }
@@ -1228,7 +1520,7 @@ textInput: filterContent"
                       </button>
                     </span>
                     <span className="filterbuttonpad">
-                      {!isPreferredApiMongoDB && isExecuting && (
+                      {!props.isPreferredApiMongoDB && isExecuting && (
                         <button
                           className="filterbtnstyle queryButton"
                           /* data-bind="
