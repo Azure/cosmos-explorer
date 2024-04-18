@@ -22,11 +22,6 @@ export enum KeyboardActionGroup {
 }
 
 /**
- * The order in which the groups of keyboard actions should be applied.
- */
-const groupOrder: KeyboardActionGroup[] = [KeyboardActionGroup.TABS, KeyboardActionGroup.COMMAND_BAR];
-
-/**
  * The possible actions that can be triggered by keyboard shortcuts.
  */
 export enum KeyboardAction {
@@ -113,8 +108,18 @@ const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set, 
 
     // Combine all the handlers from all the groups in the correct order.
     const allHandlers: KeyboardHandlerMap = {};
-    groupOrder.forEach((group) => {
-      Object.assign(allHandlers, groups[group]);
+    eachKey(groups).forEach((group) => {
+      const groupHandlers = groups[group];
+      if (groupHandlers) {
+        eachKey(groupHandlers).forEach((action) => {
+          // Check for duplicate handlers in development mode.
+          // We don't want to raise an error here in production, but having duplicate handlers is a mistake.
+          if (process.env.NODE_ENV === "development" && allHandlers[action]) {
+            throw new Error(`Duplicate handler for Keyboard Action "${action}".`);
+          }
+          allHandlers[action] = groupHandlers[action];
+        });
+      }
     });
     set({ groups, allHandlers });
   },
@@ -132,7 +137,7 @@ function createHandler(action: KeyboardAction): KeyboardActionHandler {
 }
 
 const allHandlers: KeyBindingMap = {};
-(Object.keys(bindings) as KeyboardAction[]).forEach((action) => {
+eachKey(bindings).forEach((action) => {
   const shortcuts = bindings[action];
   shortcuts.forEach((shortcut) => {
     allHandlers[shortcut] = createHandler(action);
@@ -146,4 +151,9 @@ export function KeyboardShortcutRoot({ children }: PropsWithChildren<unknown>) {
   }, []);
 
   return <>{children}</>;
+}
+
+/** A _typed_ version of `Object.keys` that preserves the original key type */
+function eachKey<K extends string | number | symbol, V>(record: Partial<Record<K, V>>): K[] {
+  return Object.keys(record) as K[];
 }
