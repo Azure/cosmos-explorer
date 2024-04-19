@@ -894,6 +894,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: NewDocumentIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.NEW_ITEM,
         onCommandClick: this.onNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -923,6 +924,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onRevertNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -953,6 +955,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onRevertExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -968,6 +971,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DeleteDocumentIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.DELETE_ITEM,
         onCommandClick: this.onDeleteExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,

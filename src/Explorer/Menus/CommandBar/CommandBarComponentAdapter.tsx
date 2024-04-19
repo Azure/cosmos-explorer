@@ -41,7 +41,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const buttons = useCommandBar((state) => state.contextButtons);
   const isHidden = useCommandBar((state) => state.isHidden);
   const backgroundColor = StyleConstants.BaseLight;
-  const setKeyboardShortcutHandlers = useKeyboardActionHandlers((state) => state.setHandlers);
+  const setKeyboardActionHandlers = useKeyboardActionHandlers((state) => state.setHandlers);
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =
@@ -109,7 +109,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
 
   const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);
   const keyboardHandlers = CommandBarUtil.createKeyboardHandlers(allButtons);
-  setKeyboardShortcutHandlers(keyboardHandlers);
+  setKeyboardActionHandlers(keyboardHandlers);
 
   return (
     <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
