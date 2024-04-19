@@ -14,6 +14,7 @@ import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
+import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
 import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
@@ -42,6 +43,16 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
     showMongoAndCassandraProxiesNetworkSettingsWarningState,
     setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
   ] = useState<boolean>(showMongoAndCassandraProxiesNetworkSettingsWarning());
+
+  const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.TABS);
+  useEffect(() => {
+    setKeyboardHandlers({
+      [KeyboardAction.SELECT_LEFT_TAB]: () => useTabs.getState().selectLeftTab(),
+      [KeyboardAction.SELECT_RIGHT_TAB]: () => useTabs.getState().selectRightTab(),
+      [KeyboardAction.CLOSE_TAB]: () => useTabs.getState().closeActiveTab(),
+    });
+  }, [setKeyboardHandlers]);
+
   return (
     <div className="tabsManagerContainer">
       {networkSettingsWarning && (
