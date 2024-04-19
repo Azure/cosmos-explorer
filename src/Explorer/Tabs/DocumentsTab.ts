@@ -463,7 +463,22 @@ export default class DocumentsTab extends TabsBase {
 
   private initializeNewDocument = (): void => {
     this.selectedDocumentId(null);
-    const defaultDocument: string = this.renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
+    const newDocument: any = {
+      id: "replace_with_new_document_id"
+    };
+    this.partitionKeyProperties.forEach((partitionKeyProperty) => {
+      let target = newDocument;
+      const keySegments = partitionKeyProperty.split(".");
+      const finalSegment = keySegments.pop();
+
+      // Initialize nested objects as needed
+      keySegments.forEach((segment) => {
+        target = target[segment] = target[segment] || {};
+      });
+
+      target[finalSegment] = "replace_with_new_partition_key_value";
+    });
+    const defaultDocument: string = this.renderObjectForEditor(newDocument, null, 4);
     this.initialDocumentContent(defaultDocument);
     this.selectedDocumentContent.setBaseline(defaultDocument);
     this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
