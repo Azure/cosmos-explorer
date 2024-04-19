@@ -1133,7 +1133,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   };
 
   // ********* Override here for mongo (from MongoDocumentsTab) **********
-  console.log("isPreferredApiMongoDB", props.isPreferredApiMongoDB);
   if (props.isPreferredApiMongoDB) {
     loadDocument = (documentId: DocumentId) =>
       MongoProxyClient.readDocument(
