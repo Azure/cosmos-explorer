@@ -453,6 +453,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
           );
         },
       )
+      .then(() => setSelectedRows(new Set([documentIds.length - 1])))
       .finally(() => setIsExecuting(false));
   };
 
@@ -1284,6 +1285,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
             );
           },
         )
+        .then(() => setSelectedRows(new Set([documentIds.length - 1])))
         .finally(() => setIsExecuting(false));
     };
 
