@@ -46,7 +46,6 @@ import { DocumentsTableComponent, DocumentsTableComponentItem } from "./Document
 
 export class DocumentsTabV2 extends TabsBase {
   public partitionKey: DataModels.PartitionKey;
-
   private documentIds: DocumentId[];
   private title: string;
 
@@ -55,6 +54,7 @@ export class DocumentsTabV2 extends TabsBase {
 
     this.documentIds = options.documentIds();
     this.title = options.title;
+    this.partitionKey = options.partitionKey;
   }
 
   public render(): JSX.Element {
@@ -1038,6 +1038,13 @@ const DocumentsTabComponent: React.FunctionComponent<{
       editorState !== ViewModels.DocumentExplorerState.newDocumentValid
     ) {
       setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+      return;
+    }
+
+    // Mongo uses BSON format for _id, trying to parse it as JSON blocks normal flow in an edit
+    // Bypass validation for mongo
+    if (props.isPreferredApiMongoDB) {
+      onValidDocumentEdit();
       return;
     }
 
