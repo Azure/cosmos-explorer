@@ -3,7 +3,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import { useDialog } from "../Controls/Dialog";
 
 /**
- * Replaces DocumentsTab so we can switch container
+ * Replaces DocumentsTab so we can plug any object
  */
 export interface IDocumentIdContainer {
   partitionKeyProperties?: string[];
