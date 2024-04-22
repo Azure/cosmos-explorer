@@ -54,7 +54,7 @@ const bindings: Record<KeyboardAction, string[]> = {
   // See https://www.npmjs.com/package/tinykeys#commonly-used-keys-and-codes for more information on the expected values for keyboard shortcuts.
 
   [KeyboardAction.NEW_QUERY]: ["$mod+J", "Alt+N Q"],
-  [KeyboardAction.EXECUTE_ITEM]: ["Shift+Enter"],
+  [KeyboardAction.EXECUTE_ITEM]: ["Shift+Enter", "F5"],
   [KeyboardAction.CANCEL_OR_DISCARD]: ["Escape"],
   [KeyboardAction.SAVE_ITEM]: ["$mod+S"],
   [KeyboardAction.OPEN_QUERY]: ["$mod+O"],
