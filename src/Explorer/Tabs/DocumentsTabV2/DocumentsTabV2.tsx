@@ -282,6 +282,24 @@ const DocumentsTabComponent: React.FunctionComponent<{
     partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
   );
 
+  // new DocumentId() requires a DocumentTab which we mock with only the required properties
+  const newDocumentId = (
+    rawDocument: DataModels.DocumentId,
+    partitionKeyProperties: string[],
+    partitionKeyValue: string[],
+  ) =>
+    new DocumentId(
+      {
+        partitionKey,
+        partitionKeyProperties,
+        // Fake unused mocks
+        isEditorDirty: () => false,
+        selectDocument: () => Promise.reject(),
+      },
+      rawDocument,
+      partitionKeyValue,
+    );
+
   // const isPreferredApiMongoDB = useMemo(
   //   () => userContext.apiType === "Mongo" || props.isPreferredApiMongoDB,
   //   [props.isPreferredApiMongoDB],
@@ -395,7 +413,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setIsExecuting(true);
     return createDocument(props.collection, document)
       .then(
-        (savedDocument: unknown) => {
+        (savedDocument: DataModels.DocumentId) => {
           const value: string = renderObjectForEditor(savedDocument || {}, null, 4);
           setSelectedDocumentContentBaseline(value);
           setInitialDocumentContent(value);
@@ -403,7 +421,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
             savedDocument,
             partitionKey as PartitionKeyDefinition,
           );
-          const id = new DocumentId(this, savedDocument, partitionKeyValueArray);
+          const id = newDocumentId(savedDocument, partitionKeyProperties, partitionKeyValueArray as string[]);
           const ids = documentIds;
           ids.push(id);
 
@@ -770,15 +788,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 partitionKeyPropertyHeader.replace(/[/]+/g, ".").substring(1).replace(/[']+/g, ""),
               );
 
-              return new DocumentId(
-                {
-                  partitionKey,
-                  partitionKeyPropertyHeaders,
-                  partitionKeyProperties,
-                } as DocumentsTab,
-                rawDocument,
-                partitionKeyValue,
-              );
+              return newDocumentId(rawDocument, partitionKeyProperties, partitionKeyValue);
             });
 
           const merged = currentDocuments.concat(nextDocumentIds);
@@ -1370,7 +1380,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               .map((rawDocument: any) => {
                 const partitionKeyValue = rawDocument._partitionKeyValue;
-                return new DocumentId(this, rawDocument, [partitionKeyValue]);
+                return newDocumentId(rawDocument, partitionKeyProperties, [partitionKeyValue]);
+                // return new DocumentId(this, rawDocument, [partitionKeyValue]);
               });
 
             const merged = currentDocuments.concat(nextDocumentIds);

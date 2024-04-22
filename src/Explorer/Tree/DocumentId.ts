@@ -1,10 +1,18 @@
 import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
 import { useDialog } from "../Controls/Dialog";
-import DocumentsTab from "../Tabs/DocumentsTab";
 
+/**
+ * Replaces DocumentsTab so we can switch container
+ */
+export interface IDocumentIdContainer {
+  partitionKeyProperties?: string[];
+  partitionKey: DataModels.PartitionKey;
+  isEditorDirty: () => boolean;
+  selectDocument: (documentId: DocumentId) => Promise<void>;
+}
 export default class DocumentId {
-  public container: DocumentsTab;
+  public container: IDocumentIdContainer;
   public rid: string;
   public self: string;
   public ts: string;
@@ -15,7 +23,7 @@ export default class DocumentId {
   public stringPartitionKeyValues: string[];
   public isDirty: ko.Observable<boolean>;
 
-  constructor(container: DocumentsTab, data: any, partitionKeyValue: any[]) {
+  constructor(container: IDocumentIdContainer, data: any, partitionKeyValue: any[]) {
     this.container = container;
     this.self = data._self;
     this.rid = data._rid;
