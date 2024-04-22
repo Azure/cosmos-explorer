@@ -1134,8 +1134,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
       // If only one selection, we consider as a click
       if (selectedRows.size === 1) {
-        const selectedRow = Array.from(selectedRows)[0];
-        onDocumentClicked(selectedRow);
         setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
       }
 
