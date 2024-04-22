@@ -119,7 +119,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     applyFilterButtonPressed: boolean;
   }>(undefined);
   const [queryAbortController, setQueryAbortController] = useState<AbortController>(undefined);
-  const [isQueryCopilotSampleContainer, setIsQueryCopilotSampleContainer] = useState<boolean>(false); // TODO: Make this a constant is setter getting called
   const [cancelQueryTimeoutID, setCancelQueryTimeoutID] = useState<NodeJS.Timeout>(undefined);
 
   const [isExecutionError, setIsExecutionError] = useState<boolean>(false); // TODO: Where is this used?
@@ -138,6 +137,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
+
+  const isQueryCopilotSampleContainer =
+    props.collection?.isSampleCollection &&
+    props.collection?.databaseId === QueryCopilotSampleDatabaseId &&
+    props.collection?.id() === QueryCopilotSampleContainerId;
 
   // For Mongo only
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
