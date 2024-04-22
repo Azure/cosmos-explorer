@@ -74,6 +74,7 @@ export class DocumentsTabV2 extends TabsBase {
         onLoadStartKey={this.onLoadStartKey}
         tabTitle={this.title}
         resourceTokenPartitionKey={this.resourceTokenPartitionKey}
+        onExecutionError={(isExecutionError: boolean) => this.isExecutionError(isExecutionError)}
       />
     );
   }
@@ -100,6 +101,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   onLoadStartKey: number;
   tabTitle: string;
   resourceTokenPartitionKey?: string;
+  onExecutionError: (isExecutionError: boolean) => void;
 }> = (props) => {
   const [isFilterCreated, setIsFilterCreated] = useState<boolean>(true);
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
@@ -121,7 +123,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [queryAbortController, setQueryAbortController] = useState<AbortController>(undefined);
   const [cancelQueryTimeoutID, setCancelQueryTimeoutID] = useState<NodeJS.Timeout>(undefined);
 
-  const [isExecutionError, setIsExecutionError] = useState<boolean>(false); // TODO: Where is this used?
   const [onLoadStartKey, setOnLoadStartKey] = useState<number>(props.onLoadStartKey);
 
   const [initialDocumentContent, setInitialDocumentContent] = useState<string>(undefined);
@@ -406,7 +407,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   };
 
   let onSaveNewDocumentClick = (): Promise<unknown> => {
-    setIsExecutionError(false);
+    props.onExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: props.tabTitle,
@@ -441,7 +442,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
           );
         },
         (error) => {
-          setIsExecutionError(true);
+          props.onExecutionError(true);
           const errorMessage = getErrorMessage(error);
           useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
           TelemetryProcessor.traceFailure(
@@ -479,7 +480,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     const selectedDocumentId = documentIds[clickedRow as number];
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
-    setIsExecutionError(false);
+    props.onExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: props.tabTitle,
@@ -508,7 +509,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
           );
         },
         (error) => {
-          setIsExecutionError(true);
+          props.onExecutionError(true);
           const errorMessage = getErrorMessage(error);
           useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
           TelemetryProcessor.traceFailure(
@@ -559,7 +560,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   };
 
   const deleteDocuments = (toDeleteDocumentIds: DocumentId[]): void => {
-    setIsExecutionError(false);
+    props.onExecutionError(false);
     setIsExecuting(true);
     const promises = toDeleteDocumentIds.map((documentId) => _deleteDocuments(documentId));
     Promise.all(promises)
@@ -587,12 +588,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
   let __deleteDocument = (documentId: DocumentId): Promise<void> => deleteDocument(props.collection, documentId);
 
   const _deleteDocuments = (documentId: DocumentId): Promise<DocumentId> => {
-    // setIsExecutionError(false);
+    props.onExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: props.tabTitle,
     });
-    // setIsExecuting(true);
+    setIsExecuting(true);
     return __deleteDocument(documentId).then(
       () => {
         TelemetryProcessor.traceSuccess(
@@ -606,7 +607,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
         return documentId;
       },
       (error) => {
-        setIsExecutionError(true);
+        props.onExecutionError(true);
         console.error(error);
         TelemetryProcessor.traceFailure(
           Action.DeleteDocument,
@@ -620,8 +621,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
         );
         return undefined;
       },
-    );
-    // .finally(() => setIsExecuting(false));
+    )
+      .finally(() => setIsExecuting(false));
   };
 
   const onShowFilterClick = () => {
@@ -744,7 +745,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   let loadNextPage = (applyFilterButtonClicked?: boolean): Promise<unknown> => {
     setIsExecuting(true);
-    setIsExecutionError(false);
+    props.onExecutionError(false);
     let automaticallyCancelQueryAfterTimeout: boolean;
     if (applyFilterButtonClicked && queryTimeoutEnabled()) {
       const queryTimeout: number = LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout);
@@ -813,7 +814,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
           }
         },
         (error) => {
-          setIsExecutionError(true);
+          props.onExecutionError(true);
           const errorMessage = getErrorMessage(error);
           logConsoleError(errorMessage);
           if (onLoadStartKey !== null && onLoadStartKey !== undefined) {
@@ -1237,7 +1238,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
         throw new Error("Document without shard key");
       }
 
-      setIsExecutionError(false);
+      props.onExecutionError(false);
       setIsExecuting(true);
       return MongoProxyClient.createDocument(
         props.collection.databaseId,
@@ -1273,7 +1274,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
             );
           },
           (error) => {
-            setIsExecutionError(true);
+            props.onExecutionError(true);
             const errorMessage = getErrorMessage(error);
             useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
             TelemetryProcessor.traceFailure(
@@ -1295,7 +1296,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     onSaveExistingDocumentClick = (): Promise<void> => {
       // const selectedDocumentId = this.selectedDocumentId();
       const documentContent = selectedDocumentContent;
-      setIsExecutionError(false);
+      props.onExecutionError(false);
       setIsExecuting(true);
       const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
         dataExplorerArea: Constants.Areas.Tab,
@@ -1336,7 +1337,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
             );
           },
           (error) => {
-            setIsExecutionError(true);
+            props.onExecutionError(true);
             const errorMessage = getErrorMessage(error);
             useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
             TelemetryProcessor.traceFailure(
@@ -1360,7 +1361,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
     loadNextPage = (): Promise<unknown> => {
       setIsExecuting(true);
-      setIsExecutionError(false);
+      props.onExecutionError(false);
       const filter: string = filterContent.trim();
       const query: string = buildQuery(filter);
 
