@@ -1,5 +1,6 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { Dropdown, IDropdownOption, Label, TextField } from "@fluentui/react";
+import { KeyboardAction } from "KeyboardShortcuts";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
@@ -218,6 +219,18 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     return !!value;
   }
 
+  componentDidUpdate(_prevProps: TriggerTab, prevState: ITriggerTabContentState): void {
+    const { triggerBody, triggerId, triggerType, triggerOperation } = this.state;
+    if (
+      triggerId !== prevState.triggerId ||
+      triggerBody !== prevState.triggerBody ||
+      triggerType !== prevState.triggerType ||
+      triggerOperation !== prevState.triggerOperation
+    ) {
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    }
+  }
+
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     const label = "Save";
@@ -227,6 +240,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         ...this,
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -241,6 +255,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         ...this,
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onUpdateClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -256,6 +271,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         ...this,
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -287,7 +303,6 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
   };
 
   render(): JSX.Element {
-    useCommandBar.getState().setContextButtons(this.getTabsButtons());
     const { triggerId, triggerType, triggerOperation, triggerBody, isIdEditable } = this.state;
     return (
       <div className="tab-pane flexContainer trigger-form" role="tabpanel">

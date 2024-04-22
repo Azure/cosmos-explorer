@@ -10,6 +10,7 @@ import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilo
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -393,6 +394,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.EXECUTE_ITEM,
         onCommandClick: this.props.isSampleCopilotActive
           ? () => OnExecuteQueryClick(this.props.copilotStore)
           : this.onExecuteQueryClick,
@@ -408,6 +410,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: SaveQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveQueryClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -437,7 +440,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         hasPopup: false,
       };
 
-      const launchCopilotButton = {
+      const launchCopilotButton: CommandButtonComponentProps = {
         iconSrc: LaunchCopilot,
         iconAlt: mainButtonLabel,
         onCommandClick: this.launchQueryCopilotChat,
@@ -450,9 +453,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
 
     if (this.props.copilotEnabled) {
-      const toggleCopilotButton = {
+      const toggleCopilotButton: CommandButtonComponentProps = {
         iconSrc: QueryCommandIcon,
         iconAlt: "Copilot",
+        keyboardAction: KeyboardAction.TOGGLE_COPILOT,
         onCommandClick: () => {
           this._toggleCopilot(!this.state.copilotActive);
         },
@@ -468,6 +472,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: CancelQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: () => this.queryAbortController.abort(),
         commandButtonLabel: label,
         ariaLabel: label,

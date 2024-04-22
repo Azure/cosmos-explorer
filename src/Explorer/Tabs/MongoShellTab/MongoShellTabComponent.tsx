@@ -9,7 +9,6 @@ import { isInvalidParentFrameOrigin, isReadyMessage } from "../../../Utils/Messa
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import TabsBase from "../TabsBase";
-import { getMongoShellOrigin } from "./getMongoShellOrigin";
 import { getMongoShellUrl } from "./getMongoShellUrl";
 
 //eslint-disable-next-line
@@ -35,7 +34,7 @@ export interface IMongoShellTabAccessor {
 }
 
 export interface IMongoShellTabComponentStates {
-  url: string;
+  url: URL;
 }
 
 export interface IMongoShellTabComponentProps {
@@ -50,13 +49,16 @@ export default class MongoShellTabComponent extends Component<
   IMongoShellTabComponentStates
 > {
   private _logTraces: Map<string, number>;
+  private _useMongoProxyEndpoint: boolean;
 
   constructor(props: IMongoShellTabComponentProps) {
     super(props);
     this._logTraces = new Map();
+    this._useMongoProxyEndpoint = userContext.features.enableLegacyMongoShell;
+    // this._useMongoProxyEndpoint = useMongoProxyEndpoint("legacyMongoShell");
 
     this.state = {
-      url: getMongoShellUrl(),
+      url: getMongoShellUrl(this._useMongoProxyEndpoint),
     };
 
     props.onMongoShellTabAccessor({
@@ -119,9 +121,10 @@ export default class MongoShellTabComponent extends Component<
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();
-    const apiEndpoint = configContext.BACKEND_ENDPOINT;
+    const apiEndpoint = this._useMongoProxyEndpoint
+      ? configContext.MONGO_PROXY_ENDPOINT
+      : configContext.BACKEND_ENDPOINT;
     const encryptedAuthToken: string = userContext.accessToken;
-    const targetOrigin = getMongoShellOrigin();
 
     shellIframe.contentWindow.postMessage(
       {
@@ -137,7 +140,7 @@ export default class MongoShellTabComponent extends Component<
           apiEndpoint: apiEndpoint,
         },
       },
-      targetOrigin,
+      window.origin,
     );
   }
 
@@ -218,7 +221,7 @@ export default class MongoShellTabComponent extends Component<
         name="explorer"
         className="iframe"
         style={{ width: "100%", height: "100%", border: 0, padding: 0, margin: 0, overflow: "hidden" }}
-        src={this.state.url}
+        src={this.state.url.toString()}
         id={this.props.tabsBaseInstance.tabId}
         onLoad={(event) => this.setContentFocus(event)}
         title="Mongo Shell"

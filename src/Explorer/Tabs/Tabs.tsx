@@ -6,6 +6,7 @@ import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
@@ -13,6 +14,7 @@ import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
+import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
 import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
@@ -41,6 +43,16 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
     showMongoAndCassandraProxiesNetworkSettingsWarningState,
     setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
   ] = useState<boolean>(showMongoAndCassandraProxiesNetworkSettingsWarning());
+
+  const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.TABS);
+  useEffect(() => {
+    setKeyboardHandlers({
+      [KeyboardAction.SELECT_LEFT_TAB]: () => useTabs.getState().selectLeftTab(),
+      [KeyboardAction.SELECT_RIGHT_TAB]: () => useTabs.getState().selectRightTab(),
+      [KeyboardAction.CLOSE_TAB]: () => useTabs.getState().closeActiveTab(),
+    });
+  }, [setKeyboardHandlers]);
+
   return (
     <div className="tabsManagerContainer">
       {networkSettingsWarning && (
@@ -297,6 +309,9 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
+  // React tabs have no context buttons.
+  useCommandBar.getState().setContextButtons([]);
+
   // eslint-disable-next-line no-console
   switch (activeReactTab) {
     case ReactTabKind.Connect:
@@ -325,7 +340,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
 const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
   const ipRules: IpRule[] = userContext.databaseAccount?.properties?.ipRules;
   if (
-    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Development) ||
+    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local) ||
       (userContext.apiType === "Cassandra" &&
         configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development)) &&
     ipRules?.length

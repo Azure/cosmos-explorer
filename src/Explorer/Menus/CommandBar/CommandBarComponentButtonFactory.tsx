@@ -1,3 +1,4 @@
+import { KeyboardAction } from "KeyboardShortcuts";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
@@ -57,6 +58,7 @@ export function createStaticCommandBarButtons(
     buttons.push(homeBtn);
 
     const newCollectionBtn = createNewCollectionGroup(container);
+    newCollectionBtn.keyboardAction = KeyboardAction.NEW_COLLECTION; // Just for the root button, not the child version we create below.
     buttons.push(newCollectionBtn);
     if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
       const addSynapseLink = createOpenSynapseLinkDialogButton(container);
@@ -94,6 +96,7 @@ export function createStaticCommandBarButtons(
       const newStoredProcedureBtn: CommandButtonComponentProps = {
         iconSrc: AddStoredProcedureIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.NEW_SPROC,
         onCommandClick: () => {
           const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
@@ -277,6 +280,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.NEW_DATABASE,
     onCommandClick: async () => {
       const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
       if (throughputCap && throughputCap !== -1) {
@@ -297,6 +301,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
@@ -312,6 +317,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection);
@@ -337,6 +343,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newStoredProcedureBtn: CommandButtonComponentProps = {
       iconSrc: AddStoredProcedureIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_SPROC,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
@@ -356,6 +363,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newUserDefinedFunctionBtn: CommandButtonComponentProps = {
       iconSrc: AddUdfIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_UDF,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
@@ -375,6 +383,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newTriggerBtn: CommandButtonComponentProps = {
       iconSrc: AddTriggerIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_TRIGGER,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection);
@@ -397,6 +406,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.OPEN_QUERY,
     onCommandClick: () =>
       useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={container} />),
     commandButtonLabel: label,
@@ -411,6 +421,7 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.OPEN_QUERY_FROM_DISK,
     onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane />),
     commandButtonLabel: label,
     ariaLabel: label,
