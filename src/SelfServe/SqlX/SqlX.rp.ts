@@ -13,7 +13,7 @@ import {
   UpdateDedicatedGatewayRequestParameters,
 } from "./SqlxTypes";
 
-const apiVersion = "2021-04-01-preview";
+const apiVersion = "2024-02-15-preview";
 
 export enum ResourceStatus {
   Running = "Running",
