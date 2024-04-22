@@ -1,12 +1,4 @@
-import {
-  FeedOptions,
-  Item,
-  ItemDefinition,
-  PartitionKey,
-  PartitionKeyDefinition,
-  QueryIterator,
-  Resource,
-} from "@azure/cosmos";
+import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { FluentProvider, TableRowId } from "@fluentui/react-components";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
@@ -39,6 +31,7 @@ import CloseIcon from "../../../../images/close-black.svg";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
+import * as HeadersUtility from "../../../Common/HeadersUtility";
 import * as Logger from "../../../Common/Logger";
 import * as MongoProxyClient from "../../../Common/MongoProxyClient";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -631,15 +624,16 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setQueryAbortController(_queryAbortController);
     const filter: string = filterContent.trim();
     const query: string = buildQuery(filter);
-    const options: FeedOptions = {};
+    // estlint-disable-next-line @typescript-eslint/no-explicit-any
+    const options: any = {};
     // TODO: Property 'enableCrossPartitionQuery' does not exist on type 'FeedOptions'.
-    // options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
+    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
     if (resourceTokenPartitionKey) {
       options.partitionKey = resourceTokenPartitionKey;
     }
     // Fixes compile error error TS2741: Property 'throwIfAborted' is missing in type 'AbortSignal' but required in type 'import("/home/runner/work/cosmos-explorer/cosmos-explorer/node_modules/node-abort-controller/index").AbortSignal'.
-    options.abortSignal = { ..._queryAbortController.signal, throwIfAborted: () => {} };
+    options.abortSignal = _queryAbortController.signal;
 
     return isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options)
@@ -971,7 +965,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       id: documentId.id(),
     };
 
-    if (partitionKeyPropertyHeaders && documentId.partitionKeyProperties) {
+    if (partitionKeyPropertyHeaders && documentId.stringPartitionKeyValues) {
       for (let i = 0; i < partitionKeyPropertyHeaders.length; i++) {
         item[partitionKeyPropertyHeaders[i]] = documentId.stringPartitionKeyValues[i];
       }
