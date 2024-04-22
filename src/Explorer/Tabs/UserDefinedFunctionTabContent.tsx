@@ -112,6 +112,7 @@ export default class UserDefinedFunctionTabContent extends Component<
         ...this,
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,
