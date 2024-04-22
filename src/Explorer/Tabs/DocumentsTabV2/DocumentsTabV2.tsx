@@ -48,6 +48,7 @@ export class DocumentsTabV2 extends TabsBase {
   public partitionKey: DataModels.PartitionKey;
   private documentIds: DocumentId[];
   private title: string;
+  private resourceTokenPartitionKey: string;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
@@ -55,6 +56,7 @@ export class DocumentsTabV2 extends TabsBase {
     this.documentIds = options.documentIds();
     this.title = options.title;
     this.partitionKey = options.partitionKey;
+    this.resourceTokenPartitionKey = options.resourceTokenPartitionKey;
   }
 
   public render(): JSX.Element {
@@ -71,6 +73,7 @@ export class DocumentsTabV2 extends TabsBase {
         partitionKey={this.partitionKey}
         onLoadStartKey={this.onLoadStartKey}
         tabTitle={this.title}
+        resourceTokenPartitionKey={this.resourceTokenPartitionKey}
       />
     );
   }
@@ -96,6 +99,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   partitionKey: DataModels.PartitionKey;
   onLoadStartKey: number;
   tabTitle: string;
+  resourceTokenPartitionKey?: string;
 }> = (props) => {
   const [isFilterCreated, setIsFilterCreated] = useState<boolean>(true);
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
@@ -115,7 +119,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     applyFilterButtonPressed: boolean;
   }>(undefined);
   const [queryAbortController, setQueryAbortController] = useState<AbortController>(undefined);
-  const [resourceTokenPartitionKey, setResourceTokenPartitionKey] = useState<string>(undefined); // TODO: Make this a constant is setter getting called
   const [isQueryCopilotSampleContainer, setIsQueryCopilotSampleContainer] = useState<boolean>(false); // TODO: Make this a constant is setter getting called
   const [cancelQueryTimeoutID, setCancelQueryTimeoutID] = useState<NodeJS.Timeout>(undefined);
 
@@ -540,8 +543,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-      ? `the selected ${selectedRows.size} documents`
-      : "the selected document";
+        ? `the selected ${selectedRows.size} documents`
+        : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog.getState().showOkCancelModalDialog(
@@ -648,8 +651,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
     // TODO: Property 'enableCrossPartitionQuery' does not exist on type 'FeedOptions'.
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
-    if (resourceTokenPartitionKey) {
-      options.partitionKey = resourceTokenPartitionKey;
+    if (props.resourceTokenPartitionKey) {
+      options.partitionKey = props.resourceTokenPartitionKey;
     }
     // Fixes compile error error TS2741: Property 'throwIfAborted' is missing in type 'AbortSignal' but required in type 'import("/home/runner/work/cosmos-explorer/cosmos-explorer/node_modules/node-abort-controller/index").AbortSignal'.
     options.abortSignal = _queryAbortController.signal;
@@ -1465,7 +1468,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 <button
                   className="filterbtnstyle queryButton"
                   onClick={onShowFilterClick}
-                  /*data-bind="click: onShowFilterClick"*/
+                /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
                 </button>
@@ -1515,7 +1518,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                      /*
+                    /*
 data-bind="
 W  attr:{
 placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
@@ -1568,7 +1571,7 @@ textInput: filterContent"
                       tabIndex={0}
                       onClick={onHideFilterClick}
                       onKeyDown={onCloseButtonKeyDown}
-                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
+                    /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     >
                       <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
                     </span>
