@@ -22,6 +22,7 @@ import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
 import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
+import DownloadQueryIcon from "../../../../images/DownloadQuery.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
@@ -225,6 +226,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
   };
 
+  public onDownloadQueryClick = (): void => {
+    const text = this.getCurrentEditorQuery();
+    const queryFile = new File([text], `SavedQuery.sql`, { type: "text/plain" });
+
+    // It appears the most consistent to download a file from a blob is to create an anchor element and simulate clicking it
+    const blobUrl = URL.createObjectURL(queryFile);
+    const anchor = document.createElement("a");
+    anchor.href = blobUrl;
+    anchor.download = queryFile.name;
+    document.body.appendChild(anchor); // Must put the anchor in the document.
+    anchor.click();
+    document.body.removeChild(anchor); // Clean up the anchor.
+  };
+
   public onSaveQueryClick = (): void => {
     useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this.props.collection.container} />);
   };
@@ -418,6 +433,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         disabled: !this.saveQueryButton.enabled,
       });
     }
+
+    buttons.push({
+      iconSrc: DownloadQueryIcon,
+      iconAlt: "Download Query",
+      keyboardAction: KeyboardAction.DOWNLOAD_ITEM,
+      onCommandClick: this.onDownloadQueryClick,
+      commandButtonLabel: "Download Query",
+      ariaLabel: "Download Query",
+      hasPopup: false,
+    })
 
     if (this.launchCopilotButton.visible && this.isCopilotTabActive) {
       const mainButtonLabel = "Launch Copilot";
