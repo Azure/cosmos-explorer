@@ -67,8 +67,8 @@ const bindings: Record<KeyboardAction, string[]> = {
   [KeyboardAction.NEW_ITEM]: ["Alt+N I"],
   [KeyboardAction.DELETE_ITEM]: ["Alt+D"],
   [KeyboardAction.TOGGLE_COPILOT]: ["$mod+P"],
-  [KeyboardAction.SELECT_LEFT_TAB]: ["$mod+Alt+["],
-  [KeyboardAction.SELECT_RIGHT_TAB]: ["$mod+Alt+]"],
+  [KeyboardAction.SELECT_LEFT_TAB]: ["$mod+Alt+[", "$mod+Shift+F6"],
+  [KeyboardAction.SELECT_RIGHT_TAB]: ["$mod+Alt+]", "$mod+F6"],
   [KeyboardAction.CLOSE_TAB]: ["$mod+Alt+W"],
 };
 
