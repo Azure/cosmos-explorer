@@ -1,5 +1,4 @@
 import {
-  Button,
   Menu,
   MenuItem,
   MenuList,
@@ -19,13 +18,10 @@ import {
   TableSelectionCell,
   createTableColumn,
   useArrowNavigationGroup,
-  useFluent,
-  useScrollbarWidth,
   useTableColumnSizing_unstable,
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
-import { ArrowClockwise16Filled } from "@fluentui/react-icons";
 import React, { useEffect, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
@@ -44,7 +40,6 @@ export interface IDocumentsTableComponentProps {
   selectedRows: Set<TableRowId>;
   size: { height: number; width: number };
   columnHeaders: ColumnHeaders;
-  onRefreshClicked: () => void;
   style?: React.CSSProperties;
 }
 
@@ -66,11 +61,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   style,
   size,
   columnHeaders,
-  onRefreshClicked,
 }: IDocumentsTableComponentProps) => {
-  const { targetDocument } = useFluent();
-  const scrollbarWidth = useScrollbarWidth({ targetDocument });
-
   const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
 
   const initialSizingOptions: TableColumnSizingOptions = {
@@ -113,39 +104,21 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           ),
         }),
       ].concat(
-        columnHeaders.partitionKeyHeaders.map((pkHeader, index) =>
+        columnHeaders.partitionKeyHeaders.map((pkHeader) =>
           createTableColumn<DocumentsTableComponentItem>({
             columnId: pkHeader,
             compare: (a, b) => a[pkHeader].localeCompare(b[pkHeader]),
             // Show Refresh button on last column
-            renderHeaderCell: () =>
-              index >= columnHeaders.partitionKeyHeaders.length - 1 ? (
-                <>
-                  <span title={pkHeader}>{pkHeader}</span>
-                  <Button
-                    appearance="transparent"
-                    aria-label="Refresh"
-                    size="small"
-                    icon={<ArrowClockwise16Filled />}
-                    style={{ position: "absolute", right: 0 }}
-                    onClick={onRefreshClicked}
-                    onKeyDown={onRefreshClicked}
-                  />
-                </>
-              ) : (
-                <span title={pkHeader}>{pkHeader}</span>
-              ),
-            renderCell: (item) => {
-              return (
-                <TableCellLayout truncate title={item[pkHeader]}>
-                  {item[pkHeader]}
-                </TableCellLayout>
-              );
-            },
+            renderHeaderCell: () => <span title={pkHeader}>{pkHeader}</span>,
+            renderCell: (item) => (
+              <TableCellLayout truncate title={item[pkHeader]}>
+                {item[pkHeader]}
+              </TableCellLayout>
+            ),
           }),
         ),
       ),
-    [columnHeaders.partitionKeyHeaders, onRefreshClicked],
+    [columnHeaders],
   );
 
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
@@ -270,8 +243,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
               </MenuPopover>
             </Menu>
           ))}
-          {/** Scrollbar alignment for the header: TODO: This does not work */}
-          <div role="columnheader" className="fui-TableHeaderCell" style={{ width: scrollbarWidth, height: 32 }} />
         </TableRow>
       </TableHeader>
       <TableBody>
