@@ -464,7 +464,7 @@ export default class DocumentsTab extends TabsBase {
   private initializeNewDocument = (): void => {
     this.selectedDocumentId(null);
     const newDocument: any = {
-      id: "replace_with_new_document_id"
+      id: "replace_with_new_document_id",
     };
     this.partitionKeyProperties.forEach((partitionKeyProperty) => {
       let target = newDocument;
