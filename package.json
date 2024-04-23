@@ -55,7 +55,7 @@
     "copy-webpack-plugin": "11.0.0",
     "crossroads": "0.12.2",
     "css-element-queries": "1.1.1",
-    "d3": "6.1.1",
+    "d3": "7.8.5",
     "datatables.net-colreorder-dt": "1.7.0",
     "datatables.net-dt": "1.13.8",
     "date-fns": "1.29.0",
@@ -186,14 +186,14 @@
     "sinon": "3.2.1",
     "style-loader": "0.23.0",
     "ts-loader": "9.2.4",
-    "typedoc": "0.21.5",
+    "typedoc": "0.22.15",
     "typescript": "4.3.5",
     "url-loader": "4.1.1",
     "wait-on": "4.0.2",
     "webpack": "5.88.2",
     "webpack-bundle-analyzer": "4.9.1",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "4.15.1"
+    "webpack-dev-server": "4.15.2"
   },
   "scripts": {
     "postinstall": "patch-package",
