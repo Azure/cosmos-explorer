@@ -22,7 +22,7 @@ import {
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
 export type DocumentsTableComponentItem = {
@@ -121,6 +121,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     [columnHeaders],
   );
 
+  const onIdClicked = useCallback((index: number) => onSelectedRowsChange(new Set([index])), [onSelectedRowsChange]);
+
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
     const { item, selected, appearance, onClick, onKeyDown } = data[index];
     return (
@@ -135,8 +137,9 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           <TableCell
             key={column.columnId}
             onClick={(/* e */) => onSelectedRowsChange(new Set<TableRowId>([index]))}
-            onKeyDown={onKeyDown}
+            onKeyDown={() => onIdClicked(index)}
             {...columnSizing.getTableCellProps(column.columnId)}
+            tabIndex={column.columnId === "id" ? 0 : -1}
           >
             {column.renderCell(item)}
           </TableCell>
