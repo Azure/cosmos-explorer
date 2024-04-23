@@ -163,6 +163,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       useTableSelection({
         selectionMode: "multiselect",
         selectedItems: selectedRows,
+        // eslint-disable-next-line react/prop-types
         onSelectionChange: (e, data) => onSelectedRowsChange(data.selectedItems),
       }),
     ],
