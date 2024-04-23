@@ -864,6 +864,26 @@ const DocumentsTabComponent: React.FunctionComponent<{
       });
   };
 
+  const onRefreshKeyInput: KeyboardEventHandler<HTMLButtonElement> = (event) => {
+    if (event.key === " " || event.key === "Enter") {
+      const focusElement = event.target as HTMLElement;
+      refreshDocumentsGrid(false);
+      focusElement && focusElement.focus();
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  };
+
+  const onLoadMoreKeyInput: KeyboardEventHandler<HTMLAnchorElement> = (event) => {
+    if (event.key === " " || event.key === "Enter") {
+      const focusElement = event.target as HTMLElement;
+      loadNextPage();
+      focusElement && focusElement.focus();
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  };
+
   const _loadNextPageInternal = (): Promise<DataModels.DocumentId[]> => {
     return documentsIterator.iterator.fetchNext().then((response) => response.resources);
   };
@@ -1466,12 +1486,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                            setTemplateReady: true,
-                            attr:{
-                                id: tabId
-                            },
-                            visible: isActive"
-                            */
+                              setTemplateReady: true,
+                              attr:{
+                                  id: tabId
+                              },
+                              visible: isActive"
+                              */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1560,9 +1580,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                        click: refreshDocumentsGrid.bind($data, true),
-                                                        enable: applyFilterButton.enabled"
-                                              */
+                                                          click: refreshDocumentsGrid.bind($data, true),
+                                                          enable: applyFilterButton.enabled"
+                                                */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1574,9 +1594,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         <button
                           className="filterbtnstyle queryButton"
                           /* data-bind="
-                                                          visible: !isPreferredApiMongoDB && isExecuting,
-                                                          click: onAbortQueryClick"
-                                                */
+                                                            visible: !isPreferredApiMongoDB && isExecuting,
+                                                            click: onAbortQueryClick"
+                                                  */
                           aria-label="Cancel Query"
                           tabIndex={0}
                         >
@@ -1623,7 +1643,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   color: StyleConstants.AccentMedium,
                 }}
                 onClick={() => refreshDocumentsGrid(false)}
-                onKeyDown={() => refreshDocumentsGrid(false)}
+                onKeyDown={onRefreshKeyInput}
               />
               <div
                 style={
@@ -1645,8 +1665,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   <a
                     className="loadMore"
                     role="button"
+                    tabIndex={0}
                     onClick={() => loadNextPage(false)}
-                    onKeyDown={() => loadNextPage(false)}
+                    onKeyDown={onLoadMoreKeyInput}
                   >
                     Load more
                   </a>
