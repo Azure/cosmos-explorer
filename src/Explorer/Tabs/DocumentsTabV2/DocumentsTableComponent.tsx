@@ -106,7 +106,11 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           columnId: "id",
           compare: (a, b) => a.id.localeCompare(b.id),
           renderHeaderCell: () => columnHeaders.idHeader,
-          renderCell: (item) => <TableCellLayout truncate>{item.id}</TableCellLayout>,
+          renderCell: (item) => (
+            <TableCellLayout truncate title={item.id}>
+              {item.id}
+            </TableCellLayout>
+          ),
         }),
       ].concat(
         columnHeaders.partitionKeyHeaders.map((pkHeader, index) =>
@@ -117,7 +121,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             renderHeaderCell: () =>
               index >= columnHeaders.partitionKeyHeaders.length - 1 ? (
                 <>
-                  <span>{pkHeader}</span>
+                  <span title={pkHeader}>{pkHeader}</span>
                   <Button
                     appearance="transparent"
                     aria-label="Refresh"
@@ -129,10 +133,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                   />
                 </>
               ) : (
-                pkHeader
+                <span title={pkHeader}>{pkHeader}</span>
               ),
             renderCell: (item) => {
-              return <TableCellLayout truncate>{item[pkHeader]}</TableCellLayout>;
+              return (
+                <TableCellLayout truncate title={item[pkHeader]}>
+                  {item[pkHeader]}
+                </TableCellLayout>
+              );
             },
           }),
         ),
