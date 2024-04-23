@@ -67,7 +67,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const initialSizingOptions: TableColumnSizingOptions = {
     id: {
       idealWidth: 280,
-      // minWidth: 273,
+      minWidth: 50,
     },
   };
   columnHeaders.partitionKeyHeaders.forEach((pkHeader) => {

@@ -1459,12 +1459,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                      setTemplateReady: true,
-                      attr:{
-                          id: tabId
-                      },
-                      visible: isActive"
-                      */
+                        setTemplateReady: true,
+                        attr:{
+                            id: tabId
+                        },
+                        visible: isActive"
+                        */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1553,9 +1553,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                  click: refreshDocumentsGrid.bind($data, true),
-                                                  enable: applyFilterButton.enabled"
-                                        */
+                                                    click: refreshDocumentsGrid.bind($data, true),
+                                                    enable: applyFilterButton.enabled"
+                                          */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1567,9 +1567,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         <button
                           className="filterbtnstyle queryButton"
                           /* data-bind="
-                                                    visible: !isPreferredApiMongoDB && isExecuting,
-                                                    click: onAbortQueryClick"
-                                          */
+                                                      visible: !isPreferredApiMongoDB && isExecuting,
+                                                      click: onAbortQueryClick"
+                                            */
                           aria-label="Cancel Query"
                           tabIndex={0}
                         >
@@ -1600,7 +1600,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Split>
-            <div style={{ minWidth: 200, width: "35%", overflow: "hidden" }} ref={tableContainerRef}>
+            <div style={{ minWidth: 120, width: "35%", overflow: "hidden" }} ref={tableContainerRef}>
               <Button
                 appearance="transparent"
                 aria-label="Refresh"
