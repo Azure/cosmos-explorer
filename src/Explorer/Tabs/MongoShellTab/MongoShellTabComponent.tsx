@@ -1,3 +1,4 @@
+import { useMongoProxyEndpoint } from "Common/MongoProxyClient";
 import React, { Component } from "react";
 import * as Constants from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
@@ -54,8 +55,7 @@ export default class MongoShellTabComponent extends Component<
   constructor(props: IMongoShellTabComponentProps) {
     super(props);
     this._logTraces = new Map();
-    this._useMongoProxyEndpoint = userContext.features.enableLegacyMongoShell;
-    // this._useMongoProxyEndpoint = useMongoProxyEndpoint("legacyMongoShell");
+    this._useMongoProxyEndpoint = useMongoProxyEndpoint("legacyMongoShell");
 
     this.state = {
       url: getMongoShellUrl(this._useMongoProxyEndpoint),
