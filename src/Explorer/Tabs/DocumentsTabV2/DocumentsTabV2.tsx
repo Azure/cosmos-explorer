@@ -1486,12 +1486,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                              setTemplateReady: true,
-                              attr:{
-                                  id: tabId
-                              },
-                              visible: isActive"
-                              */
+                                setTemplateReady: true,
+                                attr:{
+                                    id: tabId
+                                },
+                                visible: isActive"
+                                */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1580,9 +1580,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                          click: refreshDocumentsGrid.bind($data, true),
-                                                          enable: applyFilterButton.enabled"
-                                                */
+                                                            click: refreshDocumentsGrid.bind($data, true),
+                                                            enable: applyFilterButton.enabled"
+                                                  */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1594,10 +1594,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         <button
                           className="filterbtnstyle queryButton"
                           /* data-bind="
-                                                            visible: !isPreferredApiMongoDB && isExecuting,
-                                                            click: onAbortQueryClick"
-                                                  */
+                                                              visible: !isPreferredApiMongoDB && isExecuting,
+                                                              click: onAbortQueryClick"
+                                                    */
                           aria-label="Cancel Query"
+                          onClick={() => queryAbortController.abort()}
                           tabIndex={0}
                         >
                           Cancel Query
