@@ -20,6 +20,7 @@ import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/
 import DocumentsTab from "Explorer/Tabs/DocumentsTab";
 import { dataExplorerLightTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -896,6 +897,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: NewDocumentIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.NEW_ITEM,
         onCommandClick: onNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -910,6 +912,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: onSaveNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -924,6 +927,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: onRevertNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -939,6 +943,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: onSaveExistingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -954,6 +959,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: onRevertExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -969,6 +975,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       buttons.push({
         iconSrc: DeleteDocumentIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.DELETE_ITEM,
         onCommandClick: onDeleteExisitingDocumentsClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -1459,12 +1466,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                        setTemplateReady: true,
-                        attr:{
-                            id: tabId
-                        },
-                        visible: isActive"
-                        */
+                            setTemplateReady: true,
+                            attr:{
+                                id: tabId
+                            },
+                            visible: isActive"
+                            */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1553,9 +1560,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                    click: refreshDocumentsGrid.bind($data, true),
-                                                    enable: applyFilterButton.enabled"
-                                          */
+                                                        click: refreshDocumentsGrid.bind($data, true),
+                                                        enable: applyFilterButton.enabled"
+                                              */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1567,9 +1574,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         <button
                           className="filterbtnstyle queryButton"
                           /* data-bind="
-                                                      visible: !isPreferredApiMongoDB && isExecuting,
-                                                      click: onAbortQueryClick"
-                                            */
+                                                          visible: !isPreferredApiMongoDB && isExecuting,
+                                                          click: onAbortQueryClick"
+                                                */
                           aria-label="Cancel Query"
                           tabIndex={0}
                         >
