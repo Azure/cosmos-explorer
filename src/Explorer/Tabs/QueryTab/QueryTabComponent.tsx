@@ -442,7 +442,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       commandButtonLabel: "Download Query",
       ariaLabel: "Download Query",
       hasPopup: false,
-    })
+    });
 
     if (this.launchCopilotButton.visible && this.isCopilotTabActive) {
       const mainButtonLabel = "Launch Copilot";
