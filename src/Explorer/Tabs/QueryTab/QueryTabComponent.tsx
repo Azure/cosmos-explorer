@@ -228,7 +228,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onDownloadQueryClick = (): void => {
     const text = this.getCurrentEditorQuery();
-    const queryFile = new File([text], `SavedQuery.sql`, { type: "text/plain" });
+    const queryFile = new File([text], `SavedQuery.txt`, { type: "text/plain" });
 
     // It appears the most consistent to download a file from a blob is to create an anchor element and simulate clicking it
     const blobUrl = URL.createObjectURL(queryFile);
@@ -420,29 +420,32 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
-    if (this.saveQueryButton.visible && configContext.platform !== Platform.Fabric) {
-      const label = "Save Query";
+    if (this.saveQueryButton.visible) {
+      if (configContext.platform !== Platform.Fabric) {
+        const label = "Save Query";
+        buttons.push({
+          iconSrc: SaveQueryIcon,
+          iconAlt: label,
+          keyboardAction: KeyboardAction.SAVE_ITEM,
+          onCommandClick: this.onSaveQueryClick,
+          commandButtonLabel: label,
+          ariaLabel: label,
+          hasPopup: false,
+          disabled: !this.saveQueryButton.enabled,
+        });
+      }
+
       buttons.push({
-        iconSrc: SaveQueryIcon,
-        iconAlt: label,
-        keyboardAction: KeyboardAction.SAVE_ITEM,
-        onCommandClick: this.onSaveQueryClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
+        iconSrc: DownloadQueryIcon,
+        iconAlt: "Download Query",
+        keyboardAction: KeyboardAction.DOWNLOAD_ITEM,
+        onCommandClick: this.onDownloadQueryClick,
+        commandButtonLabel: "Download Query",
+        ariaLabel: "Download Query",
         hasPopup: false,
         disabled: !this.saveQueryButton.enabled,
       });
     }
-
-    buttons.push({
-      iconSrc: DownloadQueryIcon,
-      iconAlt: "Download Query",
-      keyboardAction: KeyboardAction.DOWNLOAD_ITEM,
-      onCommandClick: this.onDownloadQueryClick,
-      commandButtonLabel: "Download Query",
-      ariaLabel: "Download Query",
-      hasPopup: false,
-    });
 
     if (this.launchCopilotButton.visible && this.isCopilotTabActive) {
       const mainButtonLabel = "Launch Copilot";
@@ -549,6 +552,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         };
       }
     }
+
+    this.saveQueryButton.enabled = newContent.length > 0;
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
