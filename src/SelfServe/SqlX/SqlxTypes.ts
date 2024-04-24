@@ -36,16 +36,43 @@ export type FetchPricesResponse = {
   Count: number;
 };
 
-export type PriceMapAndCurrencyCode = {
-  priceMap: Map<string, Map<string, number>>;
-  currencyCode: string;
+export type PriceItem = {
+  prices: Array<PriceType>;
+  id: string;
+  pricingCurrency: string;
 };
 
-export type PriceItem = {
-  retailPrice: number;
-  skuName: string;
-  currencyCode: string;
+export type PriceType = {
+  type: string;
+  unitPrice: number;
+}
+
+export type PriceMapAndCurrencyCode = {
+  priceMap: Map<string, Map<string, number>>;
+  pricingCurrency: string;
 };
+
+export type GetOfferingIdsResponse = {
+  Items: Array<OfferingIdItem>;
+  NextPageLink: string | undefined;
+  Count: number;
+};
+
+export type OfferingIdItem = {
+  skuName: string;
+  offeringProperties: OfferingProperties;
+};
+
+export type OfferingProperties = {
+  offeringId: string;
+}
+
+export type OfferingIdRequest = {
+  ids: Array<string>;
+  location: string,
+}
+
+export type OfferingIdMap = Map<string, Map<string, string>>;
 
 export type RegionsResponse = {
   properties: RegionsProperties;

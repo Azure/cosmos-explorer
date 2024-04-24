@@ -1,11 +1,14 @@
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
-import { armRequestWithoutPolling } from "../../Utils/arm/request";
+import { armRequestWithoutPolling, getOfferingIdsRequest } from "../../Utils/arm/request";
 import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
 import {
   FetchPricesResponse,
+  GetOfferingIdsResponse,
+  OfferingIdMap,
+  OfferingIdRequest,
   PriceMapAndCurrencyCode,
   RegionItem,
   RegionsResponse,
@@ -170,7 +173,7 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
   return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
 };
 
-export const getPriceMapAndCurrencyCode = async (regions: Array<RegionItem>): Promise<PriceMapAndCurrencyCode> => {
+export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<PriceMapAndCurrencyCode> => {
   const telemetryData = {
     feature: "Calculate approximate cost",
     function: "getPriceMapAndCurrencyCode",
@@ -181,39 +184,85 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<RegionItem>): Pr
 
   try {
     const priceMap = new Map<string, Map<string, number>>();
-    let currencyCode;
-    for (const regionItem of regions) {
+    let pricingCurrency;
+    for (const region of map.keys()) {
       const regionPriceMap = new Map<string, number>();
+      const requestBody: OfferingIdRequest = {
+        location: region,
+        ids: Array.from(map.get(region).values()),
+      };
 
       const response = await armRequestWithoutPolling<FetchPricesResponse>({
         host: configContext.ARM_ENDPOINT,
         path: getFetchPricesPathForRegion(userContext.subscriptionId),
         method: "POST",
-        apiVersion: "2020-01-01-preview",
+        apiVersion: "2023-04-01-preview",
+        body: requestBody,
+      });
+
+      for (const item of response.result.Items) {
+        if (pricingCurrency === undefined) {
+          pricingCurrency = item.pricingCurrency;
+        } else if (item.pricingCurrency !== pricingCurrency) {
+          throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
+        }
+
+        const offeringId = item.id;        
+        const skuName = map.get(region).get(offeringId);
+        const unitPrice = item.prices.find(x => x.type == "Consumption").unitPrice;
+        regionPriceMap.set(skuName, unitPrice);
+      }
+      priceMap.set(region, regionPriceMap);
+    }
+
+    selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);
+    return { priceMap: priceMap, pricingCurrency: pricingCurrency };
+  } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
+    return { priceMap: undefined, pricingCurrency: undefined };
+  }
+};
+
+export const getOfferingIds = async (regions: Array<RegionItem>): Promise<OfferingIdMap> => {
+  const telemetryData = {
+    feature: "Get Offering Ids to calculate approximate cost",
+    function: "getOfferingIds",
+    description: "fetch offering ids API call",
+    selfServeClassName: SqlX.name,
+  };
+  const getOfferingIdsCodeTimestamp = selfServeTraceStart(telemetryData);
+
+  try {
+    const offeringIdMap = new Map<string, Map<string, string>>();
+    let currencyCode;
+    for (const regionItem of regions) {
+      const regionOfferingIdMap = new Map<string, string>();
+
+      const response = await getOfferingIdsRequest<GetOfferingIdsResponse>({
+        host: configContext.CATALOG_ENDPOINT,
+        path: `/skus`,
+        method: "GET",
+        apiVersion: "2023-05-01-preview",
         queryParams: {
           filter:
-            "armRegionName eq '" +
-            regionItem.locationName.split(" ").join("").toLowerCase() +
-            "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
+            "locations eq '" +
+            regionItem.locationName +
+            "' and serviceFamily eq 'Databases' and service eq 'Azure Cosmos DB'",
         },
       });
 
       for (const item of response.result.Items) {
-        if (currencyCode === undefined) {
-          currencyCode = item.currencyCode;
-        } else if (item.currencyCode !== currencyCode) {
-          throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
-        }
-        regionPriceMap.set(item.skuName, item.retailPrice);
+        regionOfferingIdMap.set(item.skuName, item.offeringProperties.offeringId);
       }
-      priceMap.set(regionItem.locationName, regionPriceMap);
+      offeringIdMap.set(regionItem.locationName, regionOfferingIdMap);
     }
 
-    selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: priceMap, currencyCode: currencyCode };
+    selfServeTraceSuccess(telemetryData, getOfferingIdsCodeTimestamp);
+    return offeringIdMap;
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
-    selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: undefined, currencyCode: undefined };
+    selfServeTraceFailure(failureTelemetry, getOfferingIdsCodeTimestamp);
+    return undefined;
   }
 };

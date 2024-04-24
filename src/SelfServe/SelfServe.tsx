@@ -97,6 +97,9 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
   }
 
   const inputs = event.data.data.inputs as SelfServeFrameInputs;
+  // Test
+  console.log("catalogAPIKey" + inputs.catalogAPIKey);
+  // End Test 
   if (!inputs) {
     return;
   }
@@ -110,13 +113,15 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
     !inputs.databaseAccount ||
     !inputs.authorizationToken ||
     !inputs.csmEndpoint ||
-    !selfServeType
+    !selfServeType ||
+    !inputs.catalogAPIKey
   ) {
     return;
   }
 
   updateConfigContext({
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+    CATALOG_API_KEY: inputs.catalogAPIKey,
   });
 
   updateUserContext({
