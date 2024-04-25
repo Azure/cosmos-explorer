@@ -1,4 +1,5 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
+import { hasDatabaseSharedThroughput } from "Explorer/Controls/Settings/SettingsUtils";
 import { SampleDataTree } from "Explorer/Tree/SampleDataTree";
 import { getItemName } from "Utils/APITypeUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -548,9 +549,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         id = database.isDatabaseShared() ? "sampleSettings" : "sampleScaleSettings";
       }
 
+      console.log("RUNNING HERE", database.id(), database.offer(), collection.id(), collection.offer());
+
       children.push({
         id,
-        label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
+        label: hasDatabaseSharedThroughput(collection) || isServerlessAccount() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
         isSelected: () =>
           useSelectedNode
@@ -598,6 +601,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
       onClick: () => {
         // Rewritten version of expandCollapseCollection
+        console.log("CLICKED onClick");
         useSelectedNode.getState().setSelectedNode(collection);
         useCommandBar.getState().setContextButtons([]);
         refreshActiveTab(
@@ -605,12 +609,17 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
         );
       },
-      onExpanded: () => {
+      onExpanded: async () => {
+        console.log("CLICKED onExpanded");
+        await collection.expandCollection();
         if (showScriptNodes) {
           collection.loadStoredProcedures();
           collection.loadUserDefinedFunctions();
           collection.loadTriggers();
         }
+      },
+      onCollapsed: () => {
+        collection.collapseCollection();
       },
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
       onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),

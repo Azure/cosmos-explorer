@@ -264,12 +264,16 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public expandCollection(): void {
+  public async expandCollection(): Promise<void> {
     if (this.isCollectionExpanded()) {
       return;
     }
 
+    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    throughputCap && throughputCap !== -1 ? await useDatabases.getState().loadAllOffers() : await this.loadOffer();
+    console.log("LOADED OFFERS", this.offer());
     this.isCollectionExpanded(true);
+
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "Collection node",
 
@@ -576,8 +580,8 @@ export default class Collection implements ViewModels.Collection {
 
   public onSettingsClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
-    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
-    throughputCap && throughputCap !== -1 ? await useDatabases.getState().loadAllOffers() : await this.loadOffer();
+    // const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    // throughputCap && throughputCap !== -1 ? await useDatabases.getState().loadAllOffers() : await this.loadOffer();
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",

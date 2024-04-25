@@ -109,6 +109,8 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
       : JSON.stringify(queryResults.documents, undefined, 4)
     : "";
 
+  console.log("QUERY RESULT: ", queryResultsString);
+
   const onErrorDetailsClick = (): boolean => {
     useNotificationConsole.getState().expandConsole();
 

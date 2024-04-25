@@ -66,6 +66,7 @@ export interface MongoNotificationMessage {
 
 export const hasDatabaseSharedThroughput = (collection: ViewModels.Collection): boolean => {
   const database: ViewModels.Database = collection.getDatabase();
+  console.log(database?.isDatabaseShared(), collection.offer());
   return database?.isDatabaseShared() && !collection.offer();
 };
 

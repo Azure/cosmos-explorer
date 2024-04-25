@@ -98,7 +98,11 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     // Only call when expand has actually changed
     if (this.state.isExpanded !== prevState.isExpanded) {
       if (this.state.isExpanded) {
-        this.props.node.onExpanded && setTimeout(this.props.node.onExpanded, TreeNodeComponent.callbackDelayMS);
+        console.log("IN HERE");
+        this.props.node.onExpanded &&
+          setTimeout(async () => {
+            await this.props.node.onExpanded();
+          }, TreeNodeComponent.callbackDelayMS);
       } else {
         this.props.node.onCollapsed && setTimeout(this.props.node.onCollapsed, TreeNodeComponent.callbackDelayMS);
       }
