@@ -1,7 +1,7 @@
 import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { Platform, configContext } from "ConfigContext";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import { KeyboardAction } from "KeyboardShortcuts";
+import { KeyboardAction, KeyboardActionGroup, KeyboardHandlerSetter, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as ko from "knockout";
@@ -86,9 +86,11 @@ export default class DocumentsTab extends TabsBase {
   private _isQueryCopilotSampleContainer: boolean;
   private queryAbortController: AbortController;
   private cancelQueryTimeoutID: NodeJS.Timeout;
+  private setKeyboardActions: KeyboardHandlerSetter;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
+    this.setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
     this.isPreferredApiMongoDB = userContext.apiType === "Mongo" || options.isPreferredApiMongoDB;
 
     this.idHeader = this.isPreferredApiMongoDB ? "_id" : "id";
@@ -665,8 +667,32 @@ export default class DocumentsTab extends TabsBase {
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 
+  public onFilterKeyDown(model: unknown, e: KeyboardEvent): boolean {
+    if (e.key === "Enter") {
+      this.refreshDocumentsGrid(true);
+
+      // Suppress the default behavior of the key
+      return false;
+    } else if (e.key === "Escape") {
+      this.onHideFilterClick();
+
+      // Suppress the default behavior of the key
+      return false;
+    } else {
+      // Allow the default behavior of the key
+      return true;
+    }
+  }
+
   public async onActivate(): Promise<void> {
     super.onActivate();
+
+    this.setKeyboardActions({
+      [KeyboardAction.SEARCH]: () => {
+        this.onShowFilterClick();
+        return true;
+      },
+    });
 
     if (!this._documentsIterator) {
       try {
