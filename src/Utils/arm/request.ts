@@ -181,15 +181,10 @@ export async function getOfferingIdsRequest<T>({
     throw new Error("No catalog API key provided");
   }
 
-  // TODO: delete after test
-  // console.log("config CATALOG_API_KEY: " + configContext.CATALOG_API_KEY);
-  // End Test
-
   const response = await window.fetch(url.href, {
     method,
     headers: {
-      // [HttpHeaders.xAPIKey]: configContext.CATALOG_API_KEY,
-      [HttpHeaders.xAPIKey]: "",
+      [HttpHeaders.xAPIKey]: configContext.CATALOG_API_KEY,
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });

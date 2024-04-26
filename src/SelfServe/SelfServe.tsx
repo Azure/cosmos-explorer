@@ -97,9 +97,6 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
   }
 
   const inputs = event.data.data.inputs as SelfServeFrameInputs;
-  // Test
-  console.log("catalogAPIKey" + inputs.catalogAPIKey);
-  // End Test 
   if (!inputs) {
     return;
   }

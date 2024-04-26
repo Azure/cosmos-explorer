@@ -30,21 +30,23 @@ export type UpdateDedicatedGatewayRequestProperties = {
   serviceType: string;
 };
 
-export type FetchPricesResponse = {
-  Items: Array<PriceItem>;
-  NextPageLink: string | undefined;
-  Count: number;
-};
+export type FetchPricesResponse = Array<PriceItem>;
 
 export type PriceItem = {
   prices: Array<PriceType>;
   id: string;
   pricingCurrency: string;
+  error: PriceError;
 };
 
 export type PriceType = {
   type: string;
   unitPrice: number;
+}
+
+export type PriceError = {
+  type: string;
+  description: string;
 }
 
 export type PriceMapAndCurrencyCode = {
@@ -53,14 +55,13 @@ export type PriceMapAndCurrencyCode = {
 };
 
 export type GetOfferingIdsResponse = {
-  Items: Array<OfferingIdItem>;
-  NextPageLink: string | undefined;
-  Count: number;
+  items: Array<OfferingIdItem>;
+  nextPageLink: string | undefined;
 };
 
 export type OfferingIdItem = {
   skuName: string;
-  offeringProperties: OfferingProperties;
+  offeringProperties: Array<OfferingProperties>;
 };
 
 export type OfferingProperties = {

@@ -1,5 +1,6 @@
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
+import { get } from "../../Utils/arm/generatedClients/cosmos/locations";
 import { armRequestWithoutPolling, getOfferingIdsRequest } from "../../Utils/arm/request";
 import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import { RefreshResult } from "../SelfServeTypes";
@@ -169,6 +170,16 @@ export const getRegions = async (): Promise<Array<RegionItem>> => {
   }
 };
 
+export const getRegionShortName = async (regionDisplayName: string) : Promise<string> => {
+  const locationsList = await get(userContext.subscriptionId, regionDisplayName);
+
+  if ('id' in locationsList) {
+      const locationId = locationsList.id;
+      return locationId.substring(locationId.lastIndexOf('/') + 1);
+  }
+  return undefined;
+}
+
 const getFetchPricesPathForRegion = (subscriptionId: string): string => {
   return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
 };
@@ -187,9 +198,10 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
     let pricingCurrency;
     for (const region of map.keys()) {
       const regionPriceMap = new Map<string, number>();
+      const regionShortName = await getRegionShortName(region);
       const requestBody: OfferingIdRequest = {
-        location: region,
-        ids: Array.from(map.get(region).values()),
+        location: regionShortName,
+        ids: Array.from(map.get(region).keys()),
       };
 
       const response = await armRequestWithoutPolling<FetchPricesResponse>({
@@ -200,16 +212,20 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
         body: requestBody,
       });
 
-      for (const item of response.result.Items) {
+      for (const item of response.result) {
         if (pricingCurrency === undefined) {
           pricingCurrency = item.pricingCurrency;
         } else if (item.pricingCurrency !== pricingCurrency) {
           throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
         }
 
+        if (item.error) {
+          throw Error(`Get price error ${item.error.type} for ${item.id}: ${item.error.description}`);
+        }
+
         const offeringId = item.id;        
         const skuName = map.get(region).get(offeringId);
-        const unitPrice = item.prices.find(x => x.type == "Consumption").unitPrice;
+        const unitPrice = item.prices.find(x => x.type == "Consumption")?.unitPrice;
         regionPriceMap.set(skuName, unitPrice);
       }
       priceMap.set(region, regionPriceMap);
@@ -224,6 +240,10 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
   }
 };
 
+const getOfferingIdPathForRegion = (): string => {
+  return `/skus?serviceFamily=Databases&service=Azure Cosmos DB`;
+};
+
 export const getOfferingIds = async (regions: Array<RegionItem>): Promise<OfferingIdMap> => {
   const telemetryData = {
     feature: "Get Offering Ids to calculate approximate cost",
@@ -235,25 +255,27 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
 
   try {
     const offeringIdMap = new Map<string, Map<string, string>>();
-    let currencyCode;
     for (const regionItem of regions) {
       const regionOfferingIdMap = new Map<string, string>();
+      const regionShortName = await getRegionShortName(regionItem.locationName);
 
       const response = await getOfferingIdsRequest<GetOfferingIdsResponse>({
         host: configContext.CATALOG_ENDPOINT,
-        path: `/skus`,
+        path: getOfferingIdPathForRegion(),
         method: "GET",
         apiVersion: "2023-05-01-preview",
         queryParams: {
           filter:
-            "locations eq '" +
-            regionItem.locationName +
-            "' and serviceFamily eq 'Databases' and service eq 'Azure Cosmos DB'",
+            "armRegionName eq '" +
+            regionShortName +
+            "'",
         },
       });
 
-      for (const item of response.result.Items) {
-        regionOfferingIdMap.set(item.skuName, item.offeringProperties.offeringId);
+      for (const item of response.result.items) {
+        if (item.offeringProperties?.length > 0) {
+          regionOfferingIdMap.set(item.offeringProperties[0].offeringId, item.skuName);
+        }
       }
       offeringIdMap.set(regionItem.locationName, regionOfferingIdMap);
     }

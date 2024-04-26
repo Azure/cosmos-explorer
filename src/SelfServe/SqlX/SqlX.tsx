@@ -24,6 +24,7 @@ import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
+  getOfferingIds,
   getPriceMapAndCurrencyCode,
   getRegions,
   refreshDedicatedGatewayProvisioning,
@@ -370,9 +371,10 @@ export default class SqlX extends SelfServeBaseClass {
     });
 
     regions = await getRegions();
-    const priceMapAndCurrencyCode = await getPriceMapAndCurrencyCode(regions);
+    const offeringIdMap = await getOfferingIds(regions);
+    const priceMapAndCurrencyCode = await getPriceMapAndCurrencyCode(offeringIdMap);
     priceMap = priceMapAndCurrencyCode.priceMap;
-    currencyCode = priceMapAndCurrencyCode.currencyCode;
+    currencyCode = priceMapAndCurrencyCode.pricingCurrency;
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
