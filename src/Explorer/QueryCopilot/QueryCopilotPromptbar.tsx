@@ -385,7 +385,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 hasSmallHeadline={true}
                 headline="Write a prompt"
               >
-                Write a prompt here and Copilot will generate the query for you. You can also choose from our{" "}
+                Write a prompt here and Query Advisor will generate the query for you. You can also choose from our{" "}
                 <Link
                   onClick={() => {
                     setShowSamplePrompts(true);
