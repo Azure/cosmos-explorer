@@ -1,7 +1,9 @@
 import { BrandVariants, Theme, createLightTheme } from "@fluentui/react-components";
+import { Platform } from "ConfigContext";
+import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
 
 // These are the theme colors for Fluent UI 9 React components
-const cosmosdb: BrandVariants = {
+const appThemePortalBrandRamp: BrandVariants = {
   10: "#020305",
   20: "#111723",
   30: "#16263D",
@@ -20,6 +22,10 @@ const cosmosdb: BrandVariants = {
   160: "#CDD8EF",
 };
 
-export const dataExplorerLightTheme: Theme = {
-  ...createLightTheme(cosmosdb),
-};
+export function getPlatformTheme (platform: Platform) : Theme {
+  if (platform === Platform.Fabric) {
+    return createLightTheme(appThemeFabricTealBrandRamp);
+  } else {
+    return createLightTheme(appThemePortalBrandRamp);
+  }
+}

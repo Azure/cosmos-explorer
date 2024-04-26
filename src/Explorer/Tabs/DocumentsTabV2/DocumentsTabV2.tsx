@@ -18,7 +18,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import DocumentsTab from "Explorer/Tabs/DocumentsTab";
-import { dataExplorerLightTheme } from "Explorer/Theme/ThemeUtil";
+import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
@@ -1480,9 +1480,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
     };
   }
   // ***************** Mongo ***************************
-
+  
   return (
-    <FluentProvider theme={dataExplorerLightTheme} style={{ height: "100%" }}>
+    <FluentProvider theme={getPlatformTheme(configContext.platform)} style={{ height: "100%" }}>
       <div
         className="tab-pane active"
         /* data-bind="
