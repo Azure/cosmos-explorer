@@ -1,12 +1,13 @@
 import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
+import { KeyboardAction } from "KeyboardShortcuts";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { createUserDefinedFunction } from "../../Common/dataAccess/createUserDefinedFunction";
 import { updateUserDefinedFunction } from "../../Common/dataAccess/updateUserDefinedFunction";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -80,6 +81,7 @@ export default class UserDefinedFunctionTabContent extends Component<
         setState: this.setState,
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -94,6 +96,7 @@ export default class UserDefinedFunctionTabContent extends Component<
         ...this,
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onUpdateClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -109,6 +112,7 @@ export default class UserDefinedFunctionTabContent extends Component<
         ...this,
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,

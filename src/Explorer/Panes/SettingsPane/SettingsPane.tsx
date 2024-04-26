@@ -630,7 +630,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 Enable sample database
                 <InfoTooltip>
                   This is a sample database and collection with synthetic product data you can use to explore using
-                  NoSQL queries and Copilot. This will appear as another database in the Data Explorer UI, and is
+                  NoSQL queries and Query Advisor. This will appear as another database in the Data Explorer UI, and is
                   created by, and maintained by Microsoft at no cost to you.
                 </InfoTooltip>
               </div>
@@ -640,7 +640,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   label: { padding: 0 },
                 }}
                 className="padding"
-                ariaLabel="Enable sample db for Copilot"
+                ariaLabel="Enable sample db for Query Advisor"
                 checked={copilotSampleDBEnabled}
                 onChange={handleSampleDatabaseChange}
               />

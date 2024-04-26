@@ -67,7 +67,7 @@ export function queryDocuments(
   query: string,
   continuationToken?: string,
 ): Promise<QueryResponse> {
-  if (!useMongoProxyEndpoint("resourcelist")) {
+  if (!useMongoProxyEndpoint("resourcelist") || !useMongoProxyEndpoint("queryDocuments")) {
     return queryDocuments_ToBeDeprecated(databaseId, collection, isResourceList, query, continuationToken);
   }
 
@@ -106,7 +106,7 @@ export function queryDocuments(
     headers[CosmosSDKConstants.HttpHeaders.Continuation] = continuationToken;
   }
 
-  const path = isResourceList ? "/resourcelist" : "";
+  const path = isResourceList ? "/resourcelist" : "/queryDocuments";
 
   return window
     .fetch(`${endpoint}${path}`, {
@@ -672,6 +672,27 @@ export function getEndpoint(endpoint: string): string {
   return url;
 }
 
+export function useMongoProxyEndpoint(api: string): boolean {
+  const activeMongoProxyEndpoints: string[] = [
+    MongoProxyEndpoints.Local,
+    MongoProxyEndpoints.Mpac,
+    MongoProxyEndpoints.Prod,
+  ];
+  let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
+  if (
+    configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local &&
+    userContext.databaseAccount.properties.ipRules?.length > 0
+  ) {
+    canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
+  }
+
+  return (
+    canAccessMongoProxy &&
+    configContext.NEW_MONGO_APIS?.includes(api) &&
+    activeMongoProxyEndpoints.includes(configContext.MONGO_PROXY_ENDPOINT)
+  );
+}
+
 // TODO: This function throws most of the time except on Forbidden which is a bit strange
 // It causes problems for TypeScript understanding the types
 async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
@@ -687,18 +708,4 @@ async function errorHandling(response: Response, action: string, params: unknown
 
 export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameters): string {
   return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/mongodbDatabases/${params.db}/collections/${params.coll}`;
-}
-
-function useMongoProxyEndpoint(api: string): boolean {
-  const activeMongoProxyEndpoints: string[] = [MongoProxyEndpoints.Development];
-  let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-  if (userContext.databaseAccount.properties.ipRules?.length > 0) {
-    canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
-  }
-
-  return (
-    canAccessMongoProxy &&
-    configContext.NEW_MONGO_APIS?.includes(api) &&
-    activeMongoProxyEndpoints.includes(configContext.MONGO_PROXY_ENDPOINT)
-  );
 }

@@ -57,12 +57,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
 
     const toggleCopilotButton = {
       iconSrc: QueryCommandIcon,
-      iconAlt: "Copilot",
+      iconAlt: "Query Advisor",
       onCommandClick: () => {
         toggleCopilot(true);
       },
-      commandButtonLabel: "Copilot",
-      ariaLabel: "Copilot",
+      commandButtonLabel: "Query Advisor",
+      ariaLabel: "Query Advisor",
       hasPopup: false,
       disabled: copilotActive,
     };

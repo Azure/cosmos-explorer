@@ -387,6 +387,7 @@ export interface DataExplorerInputsFrame {
   dnsSuffix?: string;
   serverId?: string;
   extensionEndpoint?: string;
+  portalBackendEndpoint?: string;
   mongoProxyEndpoint?: string;
   cassandraProxyEndpoint?: string;
   subscriptionType?: SubscriptionType;
