@@ -5,8 +5,9 @@ import {
   TreeOpenChangeData,
   TreeOpenChangeEvent,
 } from "@fluentui/react-components";
+import { configContext } from "ConfigContext";
 import { TreeNode2, TreeNode2Component } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
-import { dataExplorerLightTheme } from "Explorer/Theme/ThemeUtil";
+import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useDatabaseTreeNodes } from "Explorer/Tree2/useDatabaseTreeNodes";
 import * as React from "react";
 import shallow from "zustand/shallow";
@@ -88,7 +89,7 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
 
   return (
     <>
-      <FluentProvider theme={dataExplorerLightTheme} style={{ overflow: "hidden" }}>
+      <FluentProvider theme={getPlatformTheme(configContext.platform)} style={{ overflow: "hidden" }}>
         <Tree
           aria-label="CosmosDB resources"
           openItems={openItems}
