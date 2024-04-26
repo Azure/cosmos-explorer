@@ -483,13 +483,13 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     if (this.props.copilotEnabled) {
       const toggleCopilotButton: CommandButtonComponentProps = {
         iconSrc: QueryCommandIcon,
-        iconAlt: "Copilot",
+        iconAlt: "Query Advisor",
         keyboardAction: KeyboardAction.TOGGLE_COPILOT,
         onCommandClick: () => {
           this._toggleCopilot(!this.state.copilotActive);
         },
-        commandButtonLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
-        ariaLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
+        commandButtonLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
+        ariaLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
         hasPopup: false,
       };
       buttons.push(toggleCopilotButton);

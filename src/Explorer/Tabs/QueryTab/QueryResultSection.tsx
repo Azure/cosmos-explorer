@@ -381,10 +381,8 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
               <img className="paneErrorIcon" src={InfoColor} alt="Error" />
             </span>
             <span className="warningErrorDetailsLinkContainer">
-              We have detected you may be using a subquery. Non-correlated subqueries are not currently supported.
-              <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery">
-                Please see Cosmos sub query documentation for further information
-              </a>
+              We detected you may be using a subquery. To learn more about subqueries effectively,{" "}
+              <a href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery">visit the documentation</a>
             </span>
           </div>
         </div>

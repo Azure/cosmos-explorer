@@ -151,9 +151,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             {useQueryCopilot.getState().copilotEnabled && (
               <SplashScreenButton
                 imgSrc={CopilotIcon}
-                title={"Query faster with Copilot"}
+                title={"Query faster with Query Advisor"}
                 description={
-                  "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
+                  "Query Advisor is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
                 }
                 onClick={() => {
                   const copilotVersion = userContext.features.copilotVersion;
