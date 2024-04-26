@@ -1,6 +1,7 @@
 import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { Platform, configContext } from "ConfigContext";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as ko from "knockout";
@@ -462,7 +463,22 @@ export default class DocumentsTab extends TabsBase {
 
   private initializeNewDocument = (): void => {
     this.selectedDocumentId(null);
-    const defaultDocument: string = this.renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
+    const newDocument: any = {
+      id: "replace_with_new_document_id",
+    };
+    this.partitionKeyProperties.forEach((partitionKeyProperty) => {
+      let target = newDocument;
+      const keySegments = partitionKeyProperty.split(".");
+      const finalSegment = keySegments.pop();
+
+      // Initialize nested objects as needed
+      keySegments.forEach((segment) => {
+        target = target[segment] = target[segment] || {};
+      });
+
+      target[finalSegment] = "replace_with_new_partition_key_value";
+    });
+    const defaultDocument: string = this.renderObjectForEditor(newDocument, null, 4);
     this.initialDocumentContent(defaultDocument);
     this.selectedDocumentContent.setBaseline(defaultDocument);
     this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
@@ -893,6 +909,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: NewDocumentIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.NEW_ITEM,
         onCommandClick: this.onNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -907,6 +924,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -921,6 +939,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onRevertNewDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -936,6 +955,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveExistingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -950,6 +970,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onRevertExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -965,6 +986,7 @@ export default class DocumentsTab extends TabsBase {
       buttons.push({
         iconSrc: DeleteDocumentIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.DELETE_ITEM,
         onCommandClick: this.onDeleteExisitingDocumentClick,
         commandButtonLabel: label,
         ariaLabel: label,

@@ -1,3 +1,6 @@
+// Import this first, to ensure that the dev tools hook is copied before React is loaded.
+import "./ReactDevTools";
+
 // CSS Dependencies
 import { initializeIcons, loadTheme } from "@fluentui/react";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
@@ -18,6 +21,7 @@ import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
+import { KeyboardShortcutRoot } from "KeyboardShortcuts";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../images/favicon.ico";
@@ -88,52 +92,54 @@ const App: React.FunctionComponent = () => {
   }
 
   return (
-    <div className="flexContainer" aria-hidden="false">
-      <div id="divExplorer" className="flexContainer hideOverflows">
-        <div id="freeTierTeachingBubble"> </div>
-        {/* Main Command Bar - Start */}
-        <CommandBar container={explorer} />
-        {/* Collections Tree and Tabs - Begin */}
-        <div className="resourceTreeAndTabs">
-          {/* Collections Tree - Start */}
-          {userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo" && (
-            <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
-              <div className="collectionsTreeWithSplitter">
-                {/* Collections Tree Expanded - Start */}
-                <ResourceTreeContainer
-                  container={explorer}
-                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                  isLeftPaneExpanded={isLeftPaneExpanded}
-                />
-                {/* Collections Tree Expanded - End */}
-                {/* Collections Tree Collapsed - Start */}
-                <CollapsedResourceTree
-                  toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                  isLeftPaneExpanded={isLeftPaneExpanded}
-                />
-                {/* Collections Tree Collapsed - End */}
+    <KeyboardShortcutRoot>
+      <div className="flexContainer" aria-hidden="false">
+        <div id="divExplorer" className="flexContainer hideOverflows">
+          <div id="freeTierTeachingBubble"> </div>
+          {/* Main Command Bar - Start */}
+          <CommandBar container={explorer} />
+          {/* Collections Tree and Tabs - Begin */}
+          <div className="resourceTreeAndTabs">
+            {/* Collections Tree - Start */}
+            {userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo" && (
+              <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
+                <div className="collectionsTreeWithSplitter">
+                  {/* Collections Tree Expanded - Start */}
+                  <ResourceTreeContainer
+                    container={explorer}
+                    toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                    isLeftPaneExpanded={isLeftPaneExpanded}
+                  />
+                  {/* Collections Tree Expanded - End */}
+                  {/* Collections Tree Collapsed - Start */}
+                  <CollapsedResourceTree
+                    toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                    isLeftPaneExpanded={isLeftPaneExpanded}
+                  />
+                  {/* Collections Tree Collapsed - End */}
+                </div>
               </div>
-            </div>
-          )}
-          <Tabs explorer={explorer} />
+            )}
+            <Tabs explorer={explorer} />
+          </div>
+          {/* Collections Tree and Tabs - End */}
+          <div
+            className="dataExplorerErrorConsoleContainer"
+            role="contentinfo"
+            aria-label="Notification console"
+            id="explorerNotificationConsole"
+          >
+            <NotificationConsole />
+          </div>
         </div>
-        {/* Collections Tree and Tabs - End */}
-        <div
-          className="dataExplorerErrorConsoleContainer"
-          role="contentinfo"
-          aria-label="Notification console"
-          id="explorerNotificationConsole"
-        >
-          <NotificationConsole />
-        </div>
+        <SidePanel />
+        <Dialog />
+        {<QuickstartCarousel isOpen={isCarouselOpen} />}
+        {<SQLQuickstartTutorial />}
+        {<MongoQuickstartTutorial />}
+        {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
       </div>
-      <SidePanel />
-      <Dialog />
-      {<QuickstartCarousel isOpen={isCarouselOpen} />}
-      {<SQLQuickstartTutorial />}
-      {<MongoQuickstartTutorial />}
-      {<QueryCopilotCarousel isOpen={isCopilotCarouselOpen} explorer={explorer} />}
-    </div>
+    </KeyboardShortcutRoot>
   );
 };
 

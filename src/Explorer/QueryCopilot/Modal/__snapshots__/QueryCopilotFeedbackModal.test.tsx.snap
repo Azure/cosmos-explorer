@@ -3,6 +3,14 @@
 exports[`Query Copilot Feedback Modal snapshot test shoud render and match snapshot 1`] = `
 <Modal
   isOpen={true}
+  styles={
+    Object {
+      "main": Object {
+        "borderRadius": 8,
+        "maxWidth": 600,
+      },
+    }
+  }
 >
   <form
     onSubmit={[Function]}
@@ -67,9 +75,16 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
       <StyledTextFieldBase
         defaultValue="test query"
         label="Query generated"
+        multiline={true}
         readOnly={true}
+        rows={3}
         styles={
           Object {
+            "fieldGroup": Object {
+              "backgroundColor": "#F3F2F1",
+              "borderColor": "#D1D1D1",
+              "borderRadius": 4,
+            },
             "root": Object {
               "marginBottom": 14,
             },
@@ -125,6 +140,14 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
 exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`] = `
 <Modal
   isOpen={false}
+  styles={
+    Object {
+      "main": Object {
+        "borderRadius": 8,
+        "maxWidth": 600,
+      },
+    }
+  }
 >
   <form
     onSubmit={[Function]}
@@ -189,9 +212,16 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
       <StyledTextFieldBase
         defaultValue="test query"
         label="Query generated"
+        multiline={true}
         readOnly={true}
+        rows={3}
         styles={
           Object {
+            "fieldGroup": Object {
+              "backgroundColor": "#F3F2F1",
+              "borderColor": "#D1D1D1",
+              "borderRadius": 4,
+            },
             "root": Object {
               "marginBottom": 14,
             },
@@ -247,6 +277,14 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
 exports[`Query Copilot Feedback Modal snapshot test should close on cancel click 1`] = `
 <Modal
   isOpen={false}
+  styles={
+    Object {
+      "main": Object {
+        "borderRadius": 8,
+        "maxWidth": 600,
+      },
+    }
+  }
 >
   <form
     onSubmit={[Function]}
@@ -311,9 +349,16 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
       <StyledTextFieldBase
         defaultValue="test query"
         label="Query generated"
+        multiline={true}
         readOnly={true}
+        rows={3}
         styles={
           Object {
+            "fieldGroup": Object {
+              "backgroundColor": "#F3F2F1",
+              "borderColor": "#D1D1D1",
+              "borderRadius": 4,
+            },
             "root": Object {
               "marginBottom": 14,
             },
@@ -369,6 +414,14 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
 exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = `
 <Modal
   isOpen={false}
+  styles={
+    Object {
+      "main": Object {
+        "borderRadius": 8,
+        "maxWidth": 600,
+      },
+    }
+  }
 >
   <form
     onSubmit={[Function]}
@@ -433,9 +486,16 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
       <StyledTextFieldBase
         defaultValue="test query"
         label="Query generated"
+        multiline={true}
         readOnly={true}
+        rows={3}
         styles={
           Object {
+            "fieldGroup": Object {
+              "backgroundColor": "#F3F2F1",
+              "borderColor": "#D1D1D1",
+              "borderRadius": 4,
+            },
             "root": Object {
               "marginBottom": 14,
             },
@@ -491,6 +551,14 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
 exports[`Query Copilot Feedback Modal snapshot test should not render dont show again button 1`] = `
 <Modal
   isOpen={false}
+  styles={
+    Object {
+      "main": Object {
+        "borderRadius": 8,
+        "maxWidth": 600,
+      },
+    }
+  }
 >
   <form
     onSubmit={[Function]}
@@ -555,9 +623,16 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
       <StyledTextFieldBase
         defaultValue="test query"
         label="Query generated"
+        multiline={true}
         readOnly={true}
+        rows={3}
         styles={
           Object {
+            "fieldGroup": Object {
+              "backgroundColor": "#F3F2F1",
+              "borderColor": "#D1D1D1",
+              "borderRadius": 4,
+            },
             "root": Object {
               "marginBottom": 14,
             },
@@ -613,6 +688,14 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
 exports[`Query Copilot Feedback Modal snapshot test should render dont show again button and check it 1`] = `
 <Modal
   isOpen={true}
+  styles={
+    Object {
+      "main": Object {
+        "borderRadius": 8,
+        "maxWidth": 600,
+      },
+    }
+  }
 >
   <form
     onSubmit={[Function]}
@@ -677,9 +760,16 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
       <StyledTextFieldBase
         defaultValue="test query"
         label="Query generated"
+        multiline={true}
         readOnly={true}
+        rows={3}
         styles={
           Object {
+            "fieldGroup": Object {
+              "backgroundColor": "#F3F2F1",
+              "borderColor": "#D1D1D1",
+              "borderRadius": 4,
+            },
             "root": Object {
               "marginBottom": 14,
             },
@@ -750,6 +840,14 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
 exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`] = `
 <Modal
   isOpen={false}
+  styles={
+    Object {
+      "main": Object {
+        "borderRadius": 8,
+        "maxWidth": 600,
+      },
+    }
+  }
 >
   <form
     onSubmit={[Function]}
@@ -814,9 +912,16 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
       <StyledTextFieldBase
         defaultValue="test query"
         label="Query generated"
+        multiline={true}
         readOnly={true}
+        rows={3}
         styles={
           Object {
+            "fieldGroup": Object {
+              "backgroundColor": "#F3F2F1",
+              "borderColor": "#D1D1D1",
+              "borderRadius": 4,
+            },
             "root": Object {
               "marginBottom": 14,
             },

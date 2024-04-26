@@ -1,4 +1,11 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
+import {
+  BackendApi,
+  CassandraProxyEndpoints,
+  JunoEndpoints,
+  MongoProxyEndpoints,
+  PortalBackendEndpoints,
+} from "Common/Constants";
+import { configContext } from "ConfigContext";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -75,7 +82,7 @@ export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
 };
 
 export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
-  MongoProxyEndpoints.Development,
+  MongoProxyEndpoints.Local,
   MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
   MongoProxyEndpoints.Fairfax,
@@ -96,6 +103,14 @@ export const allowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Prod,
   CassandraProxyEndpoints.Fairfax,
   CassandraProxyEndpoints.Mooncake,
+];
+
+export const allowedCassandraProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
+  "https://main.documentdb.ext.azure.com",
+  "https://main.documentdb.ext.azure.cn",
+  "https://main.documentdb.ext.azure.us",
+  "https://main.cosmos.ext.azure",
+  "https://localhost:12901",
 ];
 
 export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
@@ -129,3 +144,31 @@ export const allowedJunoOrigins: ReadonlyArray<string> = [
 ];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
+
+//
+// Temporary function to determine if a portal backend API is supported by the
+// new backend in this environment.
+//
+// TODO: Remove this function once new backend migration is completed for all environments.
+//
+export function useNewPortalBackendEndpoint(backendApi: string): boolean {
+  // This maps backend APIs to the environments supported by the new backend.
+  const newBackendApiEnvironmentMap: { [key: string]: string[] } = {
+    [BackendApi.GenerateToken]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+    [BackendApi.PortalSettings]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+  };
+
+  if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
+    return false;
+  }
+
+  return newBackendApiEnvironmentMap[backendApi].includes(configContext.PORTAL_BACKEND_ENDPOINT);
+}

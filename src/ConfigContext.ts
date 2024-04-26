@@ -1,4 +1,10 @@
-import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints } from "Common/Constants";
+import {
+  BackendApi,
+  CassandraProxyEndpoints,
+  JunoEndpoints,
+  MongoProxyEndpoints,
+  PortalBackendEndpoints,
+} from "Common/Constants";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
@@ -39,11 +45,15 @@ export interface ConfigContext {
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   BACKEND_ENDPOINT?: string;
+  PORTAL_BACKEND_ENDPOINT?: string;
+  NEW_BACKEND_APIS?: BackendApi[];
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT?: string;
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   NEW_MONGO_APIS?: string[];
   CASSANDRA_PROXY_ENDPOINT?: string;
+  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: boolean;
+  NEW_CASSANDRA_APIS?: string[];
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -73,6 +83,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/.*\\.analysis-df\\.net$`,
     `^https:\\/\\/.*\\.analysis-df\\.windows\\.net$`,
     `^https:\\/\\/.*\\.azure-test\\.net$`,
+    `^https:\\/\\/cosmos-explorer-preview\\.azurewebsites\\.net`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -88,17 +99,22 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+  PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
-    // "resourcelist",
-    // "createDocument",
-    // "readDocument",
-    // "updateDocument",
-    // "deleteDocument",
-    // "createCollectionWithProxy",
+    "resourcelist",
+    "queryDocuments",
+    "createDocument",
+    "readDocument",
+    "updateDocument",
+    "deleteDocument",
+    "createCollectionWithProxy",
+    "legacyMongoShell",
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
+  NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
+  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
 };

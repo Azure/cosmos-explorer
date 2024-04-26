@@ -2,7 +2,6 @@ import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -90,6 +89,7 @@ async function configureFabric(): Promise<Explorer> {
   // These are the versions of Fabric that Data Explorer supports.
   const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
 
+  let firstContainerOpened = false;
   let explorer: Explorer;
   return new Promise<Explorer>((resolve) => {
     window.addEventListener(
@@ -121,7 +121,10 @@ async function configureFabric(): Promise<Explorer> {
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
             await explorer.refreshAllDatabases();
-            openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
+              firstContainerOpened = true;
+              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            }
             break;
           }
           case "newContainer":
@@ -132,8 +135,16 @@ async function configureFabric(): Promise<Explorer> {
             handleCachedDataMessage(data);
             break;
           }
-          case "setToolbarStatus": {
-            useCommandBar.getState().setIsHidden(data.message.visible === false);
+          case "explorerVisible": {
+            userContext.fabricContext.isVisible = data.message.visible;
+            if (
+              userContext.fabricContext.isVisible &&
+              !firstContainerOpened &&
+              userContext?.fabricContext?.databaseConnectionInfo?.databaseId !== undefined
+            ) {
+              firstContainerOpened = true;
+              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            }
             break;
           }
           default:
@@ -327,12 +338,13 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function createExplorerFabric(params: { connectionId: string }): Explorer {
+function createExplorerFabric(params: { connectionId: string; isVisible: boolean }): Explorer {
   updateUserContext({
     fabricContext: {
       connectionId: params.connectionId,
       databaseConnectionInfo: undefined,
       isReadOnly: true,
+      isVisible: params.isVisible ?? true,
     },
     authType: AuthType.ConnectionString,
     databaseAccount: {
@@ -485,6 +497,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
     MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
     CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
+    PORTAL_BACKEND_ENDPOINT: inputs.portalBackendEndpoint,
   });
 
   updateUserContext({

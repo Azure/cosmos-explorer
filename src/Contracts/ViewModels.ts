@@ -135,6 +135,7 @@ export interface Collection extends CollectionBase {
   changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
+  computedProperties: ko.Observable<DataModels.ComputedProperties>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];
@@ -386,6 +387,7 @@ export interface DataExplorerInputsFrame {
   dnsSuffix?: string;
   serverId?: string;
   extensionEndpoint?: string;
+  portalBackendEndpoint?: string;
   mongoProxyEndpoint?: string;
   cassandraProxyEndpoint?: string;
   subscriptionType?: SubscriptionType;

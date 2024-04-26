@@ -1,5 +1,6 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
+import { KeyboardAction } from "KeyboardShortcuts";
 import React from "react";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -321,6 +322,7 @@ export default class StoredProcedureTabComponent extends React.Component<
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onSaveClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -334,6 +336,7 @@ export default class StoredProcedureTabComponent extends React.Component<
       buttons.push({
         iconSrc: SaveIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.SAVE_ITEM,
         onCommandClick: this.onUpdateClick,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -347,6 +350,7 @@ export default class StoredProcedureTabComponent extends React.Component<
       buttons.push({
         iconSrc: DiscardIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: this.onDiscard,
         commandButtonLabel: label,
         ariaLabel: label,
@@ -360,6 +364,7 @@ export default class StoredProcedureTabComponent extends React.Component<
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.EXECUTE_ITEM,
         onCommandClick: () => {
           this.collection.container.openExecuteSprocParamsPanel(this.node);
         },
