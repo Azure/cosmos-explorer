@@ -168,7 +168,6 @@ export async function getOfferingIdsRequest<T>({
   method,
   body: requestBody,
   queryParams,
-  contentType,
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
