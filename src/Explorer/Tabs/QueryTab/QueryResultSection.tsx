@@ -382,7 +382,13 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
             </span>
             <span className="warningErrorDetailsLinkContainer">
               We detected you may be using a subquery. To learn more about subqueries effectively,{" "}
-              <a href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery">visit the documentation</a>
+              <a
+                href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery"
+                target="_blank"
+                rel="noreferrer"
+              >
+                visit the documentation
+              </a>
             </span>
           </div>
         </div>
