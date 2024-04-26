@@ -35,7 +35,7 @@ export interface IMongoShellTabAccessor {
 }
 
 export interface IMongoShellTabComponentStates {
-  url: URL;
+  url: string;
 }
 
 export interface IMongoShellTabComponentProps {
@@ -221,7 +221,7 @@ export default class MongoShellTabComponent extends Component<
         name="explorer"
         className="iframe"
         style={{ width: "100%", height: "100%", border: 0, padding: 0, margin: 0, overflow: "hidden" }}
-        src={this.state.url.toString()}
+        src={this.state.url}
         id={this.props.tabsBaseInstance.tabId}
         onLoad={(event) => this.setContentFocus(event)}
         title="Mongo Shell"
