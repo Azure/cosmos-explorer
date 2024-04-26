@@ -42,12 +42,12 @@ export type PriceItem = {
 export type PriceType = {
   type: string;
   unitPrice: number;
-}
+};
 
 export type PriceError = {
   type: string;
   description: string;
-}
+};
 
 export type PriceMapAndCurrencyCode = {
   priceMap: Map<string, Map<string, number>>;
@@ -66,12 +66,12 @@ export type OfferingIdItem = {
 
 export type OfferingProperties = {
   offeringId: string;
-}
+};
 
 export type OfferingIdRequest = {
   ids: Array<string>;
-  location: string,
-}
+  location: string;
+};
 
 export type OfferingIdMap = Map<string, Map<string, string>>;
 

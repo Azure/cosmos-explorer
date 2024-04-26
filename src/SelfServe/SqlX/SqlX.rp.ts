@@ -170,15 +170,15 @@ export const getRegions = async (): Promise<Array<RegionItem>> => {
   }
 };
 
-export const getRegionShortName = async (regionDisplayName: string) : Promise<string> => {
+export const getRegionShortName = async (regionDisplayName: string): Promise<string> => {
   const locationsList = await get(userContext.subscriptionId, regionDisplayName);
 
-  if ('id' in locationsList) {
-      const locationId = locationsList.id;
-      return locationId.substring(locationId.lastIndexOf('/') + 1);
+  if ("id" in locationsList) {
+    const locationId = locationsList.id;
+    return locationId.substring(locationId.lastIndexOf("/") + 1);
   }
   return undefined;
-}
+};
 
 const getFetchPricesPathForRegion = (subscriptionId: string): string => {
   return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
@@ -223,9 +223,9 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
           throw Error(`Get price error ${item.error.type} for ${item.id}: ${item.error.description}`);
         }
 
-        const offeringId = item.id;        
+        const offeringId = item.id;
         const skuName = map.get(region).get(offeringId);
-        const unitPrice = item.prices.find(x => x.type == "Consumption")?.unitPrice;
+        const unitPrice = item.prices.find((x) => x.type == "Consumption")?.unitPrice;
         regionPriceMap.set(skuName, unitPrice);
       }
       priceMap.set(region, regionPriceMap);
@@ -265,10 +265,7 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
         method: "GET",
         apiVersion: "2023-05-01-preview",
         queryParams: {
-          filter:
-            "armRegionName eq '" +
-            regionShortName +
-            "'",
+          filter: "armRegionName eq '" + regionShortName + "'",
         },
       });
 
