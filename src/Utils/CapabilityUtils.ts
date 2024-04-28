@@ -9,4 +9,10 @@ export const isCapabilityEnabled = (capabilityName: string): boolean => {
   return false;
 };
 
-export const isServerlessAccount = (): boolean => isCapabilityEnabled(Constants.CapabilityNames.EnableServerless);
+export const isServerlessAccount = (): boolean => {
+  const { databaseAccount } = userContext;
+  return (
+    databaseAccount?.properties?.capacityMode === Constants.CapacityMode.serverless ||
+    isCapabilityEnabled(Constants.CapabilityNames.EnableServerless)
+  );
+};

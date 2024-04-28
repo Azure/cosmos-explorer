@@ -35,6 +35,7 @@ export interface DatabaseAccountExtendedProperties {
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
   capacity?: { totalThroughputLimit: number };
+  capacityMode?: string;
   locations?: DatabaseAccountResponseLocation[];
   postgresqlEndpoint?: string;
   publicNetworkAccess?: string;

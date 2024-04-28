@@ -90,6 +90,11 @@ export class CapabilityNames {
   public static readonly EnableServerless: string = "EnableServerless";
 }
 
+export class CapacityMode {
+  public static provisioned: string = "Provisioned";
+  public static serverless: string = "Serverless";
+}
+
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
