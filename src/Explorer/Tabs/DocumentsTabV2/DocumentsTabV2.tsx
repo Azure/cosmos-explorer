@@ -7,7 +7,7 @@ import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
 import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
-import { deleteDocument } from "Common/dataAccess/deleteDocument";
+import { deleteDocuments as deleteNoSqlDocuments } from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
@@ -734,37 +734,41 @@ const DocumentsTabComponent: React.FunctionComponent<{
     // setEditorState,
   ]);
 
-  let __deleteDocument = useCallback(
-    (documentId: DocumentId): Promise<void> => deleteDocument(_collection, documentId),
-    [_collection],
-  );
-
-  const _deleteDocuments = useCallback(
-    (documentId: DocumentId): Promise<DocumentId> => {
+  /**
+   * Implementation using bulk delete
+   */
+  let _deleteDocuments = useCallback(
+    async (toDeleteDocumentIds: DocumentId[]): Promise<string[]> => {
       onExecutionErrorChange(false);
-      const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
+      const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocuments, {
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle,
       });
       setIsExecuting(true);
-      return __deleteDocument(documentId)
+      return deleteNoSqlDocuments(
+        _collection,
+        toDeleteDocumentIds.map((id) => ({
+          id: id.id(),
+          partitionKey: id.partitionKeyValue,
+        })),
+      )
         .then(
-          () => {
+          (deletedIds) => {
             TelemetryProcessor.traceSuccess(
-              Action.DeleteDocument,
+              Action.DeleteDocuments,
               {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle,
               },
               startKey,
             );
-            return documentId;
+            return deletedIds;
           },
           (error) => {
             onExecutionErrorChange(true);
             console.error(error);
             TelemetryProcessor.traceFailure(
-              Action.DeleteDocument,
+              Action.DeleteDocuments,
               {
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle,
@@ -778,21 +782,20 @@ const DocumentsTabComponent: React.FunctionComponent<{
         )
         .finally(() => setIsExecuting(false));
     },
-    [__deleteDocument, onExecutionErrorChange, tabTitle],
+    [_collection, onExecutionErrorChange, tabTitle],
   );
 
   const deleteDocuments = useCallback(
     (toDeleteDocumentIds: DocumentId[]): void => {
       onExecutionErrorChange(false);
       setIsExecuting(true);
-      const promises = toDeleteDocumentIds.map((documentId) => _deleteDocuments(documentId));
-      Promise.all(promises)
-        .then((deletedDocumentIds: DocumentId[]) => {
+      _deleteDocuments(toDeleteDocumentIds)
+        .then((deletedIds: string[]) => {
           const newDocumentIds = [...documentIds];
-          deletedDocumentIds.forEach((deletedDocumentId) => {
-            if (deletedDocumentId !== undefined) {
+          deletedIds.forEach((deletedId) => {
+            if (deletedId !== undefined) {
               // documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
-              const index = toDeleteDocumentIds.findIndex((documentId) => documentId.rid === deletedDocumentId.rid);
+              const index = toDeleteDocumentIds.findIndex((documentId) => documentId.rid === deletedId);
               if (index !== -1) {
                 newDocumentIds.splice(index, 1);
               }
@@ -1335,8 +1338,59 @@ const DocumentsTabComponent: React.FunctionComponent<{
       return partitionKeyProperty;
     });
 
-    __deleteDocument = (documentId: DocumentId): Promise<void> =>
+    /**
+     * Mongo implementation
+     * TODO: update proxy to use mongo driver deleteMany
+     */
+    _deleteDocuments = (toDeleteDocumentIds: DocumentId[]): Promise<string[]> => {
+      const promises = toDeleteDocumentIds.map((documentId) => _deleteDocument(documentId));
+      return Promise.all(promises);
+    };
+
+    const __deleteDocument = (documentId: DocumentId): Promise<void> =>
       MongoProxyClient.deleteDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId);
+
+    const _deleteDocument = useCallback(
+      (documentId: DocumentId): Promise<string> => {
+        onExecutionErrorChange(false);
+        const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle,
+        });
+        setIsExecuting(true);
+        return __deleteDocument(documentId)
+          .then(
+            () => {
+              TelemetryProcessor.traceSuccess(
+                Action.DeleteDocument,
+                {
+                  dataExplorerArea: Constants.Areas.Tab,
+                  tabTitle,
+                },
+                startKey,
+              );
+              return documentId.rid;
+            },
+            (error) => {
+              onExecutionErrorChange(true);
+              console.error(error);
+              TelemetryProcessor.traceFailure(
+                Action.DeleteDocument,
+                {
+                  dataExplorerArea: Constants.Areas.Tab,
+                  tabTitle,
+                  error: getErrorMessage(error),
+                  errorStack: getErrorStack(error),
+                },
+                startKey,
+              );
+              return undefined;
+            },
+          )
+          .finally(() => setIsExecuting(false));
+      },
+      [__deleteDocument, onExecutionErrorChange, tabTitle],
+    );
 
     onSaveNewDocumentClick = useCallback((): Promise<unknown> => {
       const documentContent = JSON.parse(selectedDocumentContent);
@@ -1615,12 +1669,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                                                            setTemplateReady: true,
-                                                            attr:{
-                                                                id: tabId
-                                                            },
-                                                            visible: isActive"
-                                                            */
+                                                                    setTemplateReady: true,
+                                                                    attr:{
+                                                                        id: tabId
+                                                                    },
+                                                                    visible: isActive"
+                                                                    */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1709,9 +1763,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                                                        click: refreshDocumentsGrid.bind($data, true),
-                                                                                        enable: applyFilterButton.enabled"
-                                                                              */
+                                                                                                click: refreshDocumentsGrid.bind($data, true),
+                                                                                                enable: applyFilterButton.enabled"
+                                                                                      */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1723,9 +1777,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         <button
                           className="filterbtnstyle queryButton"
                           /* data-bind="
-                                                                                          visible: !isPreferredApiMongoDB && isExecuting,
-                                                                                          click: onAbortQueryClick"
-                                                                                */
+                                                                                                  visible: !isPreferredApiMongoDB && isExecuting,
+                                                                                                  click: onAbortQueryClick"
+                                                                                        */
                           aria-label="Cancel Query"
                           onClick={() => queryAbortController.abort()}
                           tabIndex={0}
