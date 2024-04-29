@@ -209,22 +209,22 @@ export const appThemeFabric: Theme = createTheme({
 });
 
 export const appThemeFabricTealBrandRamp: BrandVariants = {
-  10: '#001919',
-  20: '#012826',
-  30: '#01322E',
-  40: '#033f38',
-  50: '#054d43',
-  60: '#0a5c50',
-  70: '#0c695a',
-  80: '#117865',
-  90: '#1f937e',
-  100: '#2aaC94',
-  110: '#3abb9f',
-  120: '#52c7aa',
-  130: '#78d3b9',
-  140: '#9ee0cb',
-  150: '#c0ecdd',
-  160: '#e3f7ef',
+  10: "#001919",
+  20: "#012826",
+  30: "#01322E",
+  40: "#033f38",
+  50: "#054d43",
+  60: "#0a5c50",
+  70: "#0c695a",
+  80: "#117865",
+  90: "#1f937e",
+  100: "#2aaC94",
+  110: "#3abb9f",
+  120: "#52c7aa",
+  130: "#78d3b9",
+  140: "#9ee0cb",
+  150: "#c0ecdd",
+  160: "#e3f7ef",
 };
 
 export const appThemeFabricV9 = createLightTheme(appThemeFabricTealBrandRamp);

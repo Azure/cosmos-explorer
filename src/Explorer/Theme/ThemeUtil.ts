@@ -22,7 +22,7 @@ const appThemePortalBrandRamp: BrandVariants = {
   160: "#CDD8EF",
 };
 
-export function getPlatformTheme (platform: Platform) : Theme {
+export function getPlatformTheme(platform: Platform): Theme {
   if (platform === Platform.Fabric) {
     return createLightTheme(appThemeFabricTealBrandRamp);
   } else {
