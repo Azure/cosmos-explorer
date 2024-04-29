@@ -261,6 +261,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         <TextField
           multiline
           rows={5}
+          ariaLabel={entityAttributeProperty}
           value={entityAttributeValue}
           onChange={(event, newInput?: string) => {
             entityChange(newInput, selectedRow, "value");
