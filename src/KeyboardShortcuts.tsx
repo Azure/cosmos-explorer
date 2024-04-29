@@ -53,6 +53,7 @@ export enum KeyboardAction {
   SELECT_RIGHT_TAB = "SELECT_RIGHT_TAB",
   CLOSE_TAB = "CLOSE_TAB",
   SEARCH = "SEARCH",
+  CLEAR_SEARCH = "CLEAR_SEARCH",
 }
 
 /**
@@ -83,6 +84,7 @@ const bindings: Record<KeyboardAction, string[]> = {
   [KeyboardAction.SELECT_RIGHT_TAB]: ["$mod+Alt+]", "$mod+F6"],
   [KeyboardAction.CLOSE_TAB]: ["$mod+Alt+W"],
   [KeyboardAction.SEARCH]: ["$mod+Shift+F"],
+  [KeyboardAction.CLEAR_SEARCH]: ["$mod+Shift+C"],
 };
 
 interface KeyboardShortcutState {

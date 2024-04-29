@@ -692,6 +692,11 @@ export default class DocumentsTab extends TabsBase {
         this.onShowFilterClick();
         return true;
       },
+      [KeyboardAction.CLEAR_SEARCH]: () => {
+        this.filterContent("");
+        this.refreshDocumentsGrid(true);
+        return true;
+      },
     });
 
     if (!this._documentsIterator) {
