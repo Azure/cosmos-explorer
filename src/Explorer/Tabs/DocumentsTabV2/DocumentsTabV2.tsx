@@ -1600,7 +1600,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
           // collapse filter
           setAppliedFilter(filterContent);
-          setIsFilterExpanded(false);
+          setIsFilterExpanded(applyFilterButtonPressed);
           document.getElementById("errorStatusIcon")?.focus();
         } catch (error) {
           console.error();
