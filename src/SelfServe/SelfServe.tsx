@@ -110,8 +110,7 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
     !inputs.databaseAccount ||
     !inputs.authorizationToken ||
     !inputs.csmEndpoint ||
-    !selfServeType ||
-    !inputs.catalogAPIKey
+    !selfServeType
   ) {
     return;
   }
