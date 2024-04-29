@@ -184,12 +184,18 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                     className="rightPaneTrashIcon rightPaneBtns"
                     tabIndex={0}
                     role="button"
+                    aria-label={`Delete ${data.key}`}
                     onClick={(event: React.MouseEvent<HTMLDivElement>) => removeNewVertexProperty(event, index)}
                     onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) =>
                       removeNewVertexPropertyKeyPress(event, index)
                     }
                   >
-                    <img className="refreshcol rightPaneTrashIconImg" src={DeleteIcon} alt="Remove property" />
+                    <img
+                      aria-label="hidden"
+                      className="refreshcol rightPaneTrashIconImg"
+                      src={DeleteIcon}
+                      alt="Remove property"
+                    />
                   </div>
                 </div>
               </div>

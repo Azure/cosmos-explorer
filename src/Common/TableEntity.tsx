@@ -142,7 +142,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
               <Image
                 {...imageProps}
                 src={EditIcon}
-                alt="editEntity"
+                alt={`Edit ${entityProperty} entity`}
                 onClick={onEditEntity}
                 tabIndex={0}
                 onKeyPress={handleKeyPress}
@@ -156,7 +156,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
             <Image
               {...imageProps}
               src={DeleteIcon}
-              alt="delete entity"
+              alt={`Delete ${entityProperty} entity`}
               id="deleteEntity"
               onClick={onDeleteEntity}
               tabIndex={0}
