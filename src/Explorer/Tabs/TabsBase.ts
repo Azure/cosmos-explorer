@@ -1,3 +1,4 @@
+import { KeyboardActionGroup, clearKeyboardActionGroup } from "KeyboardShortcuts";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as ThemeUtility from "../../Common/ThemeUtility";
@@ -107,6 +108,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onActivate(): void {
+    clearKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
     this.updateSelectedNode();
     this.collection?.selectedSubnodeKind(this.tabKind);
     this.database?.selectedSubnodeKind(this.tabKind);

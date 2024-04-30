@@ -17,8 +17,17 @@ export type KeyboardHandlerMap = Partial<Record<KeyboardAction, KeyboardActionHa
  * Each group can be updated separately, but, when updated, must be completely replaced.
  */
 export enum KeyboardActionGroup {
+  /** Keyboard actions related to tab navigation. */
   TABS = "TABS",
+
+  /** Keyboard actions managed by the global command bar. */
   COMMAND_BAR = "COMMAND_BAR",
+
+  /**
+   * Keyboard actions specific to the active tab.
+   * This group is automatically cleared when the active tab changes.
+   */
+  ACTIVE_TAB = "ACTIVE_TAB",
 }
 
 /**
@@ -43,6 +52,8 @@ export enum KeyboardAction {
   SELECT_LEFT_TAB = "SELECT_LEFT_TAB",
   SELECT_RIGHT_TAB = "SELECT_RIGHT_TAB",
   CLOSE_TAB = "CLOSE_TAB",
+  SEARCH = "SEARCH",
+  CLEAR_SEARCH = "CLEAR_SEARCH",
 }
 
 /**
@@ -72,6 +83,8 @@ const bindings: Record<KeyboardAction, string[]> = {
   [KeyboardAction.SELECT_LEFT_TAB]: ["$mod+Alt+[", "$mod+Shift+F6"],
   [KeyboardAction.SELECT_RIGHT_TAB]: ["$mod+Alt+]", "$mod+F6"],
   [KeyboardAction.CLOSE_TAB]: ["$mod+Alt+W"],
+  [KeyboardAction.SEARCH]: ["$mod+Shift+F"],
+  [KeyboardAction.CLEAR_SEARCH]: ["$mod+Shift+C"],
 };
 
 interface KeyboardShortcutState {
@@ -91,13 +104,24 @@ interface KeyboardShortcutState {
   setHandlers: (group: KeyboardActionGroup, handlers: KeyboardHandlerMap) => void;
 }
 
+export type KeyboardHandlerSetter = (handlers: KeyboardHandlerMap) => void;
+
 /**
  * Defines the calling component as the manager of the keyboard actions for the given group.
  * @param group The group of keyboard actions to manage.
  * @returns A function that can be used to set the keyboard action handlers for the given group.
  */
-export const useKeyboardActionGroup = (group: KeyboardActionGroup) => (handlers: KeyboardHandlerMap) =>
-  useKeyboardActionHandlers.getState().setHandlers(group, handlers);
+export const useKeyboardActionGroup: (group: KeyboardActionGroup) => KeyboardHandlerSetter =
+  (group: KeyboardActionGroup) => (handlers: KeyboardHandlerMap) =>
+    useKeyboardActionHandlers.getState().setHandlers(group, handlers);
+
+/**
+ * Clears the keyboard action handlers for the given group.
+ * @param group The group of keyboard actions to clear.
+ */
+export const clearKeyboardActionGroup = (group: KeyboardActionGroup) => {
+  useKeyboardActionHandlers.getState().setHandlers(group, {});
+};
 
 const useKeyboardActionHandlers: UseStore<KeyboardShortcutState> = create((set, get) => ({
   allHandlers: {},

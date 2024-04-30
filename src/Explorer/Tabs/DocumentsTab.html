@@ -80,7 +80,8 @@
                                     placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
                                 },
                                 css: { placeholderVisible: filterContent().length === 0 },
-                                textInput: filterContent"
+                                textInput: filterContent,
+                                event: { keydown: onFilterKeyDown }"
           />
 
           <datalist
