@@ -1,7 +1,7 @@
 import { ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { Platform, configContext } from "ConfigContext";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import { KeyboardAction } from "KeyboardShortcuts";
+import { KeyboardAction, KeyboardActionGroup, KeyboardHandlerSetter, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import * as ko from "knockout";
@@ -86,9 +86,11 @@ export default class DocumentsTab extends TabsBase {
   private _isQueryCopilotSampleContainer: boolean;
   private queryAbortController: AbortController;
   private cancelQueryTimeoutID: NodeJS.Timeout;
+  private setKeyboardActions: KeyboardHandlerSetter;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
+    this.setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
     this.isPreferredApiMongoDB = userContext.apiType === "Mongo" || options.isPreferredApiMongoDB;
 
     this.idHeader = this.isPreferredApiMongoDB ? "_id" : "id";
@@ -463,7 +465,22 @@ export default class DocumentsTab extends TabsBase {
 
   private initializeNewDocument = (): void => {
     this.selectedDocumentId(null);
-    const defaultDocument: string = this.renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
+    const newDocument: any = {
+      id: "replace_with_new_document_id",
+    };
+    this.partitionKeyProperties.forEach((partitionKeyProperty) => {
+      let target = newDocument;
+      const keySegments = partitionKeyProperty.split(".");
+      const finalSegment = keySegments.pop();
+
+      // Initialize nested objects as needed
+      keySegments.forEach((segment) => {
+        target = target[segment] = target[segment] || {};
+      });
+
+      target[finalSegment] = "replace_with_new_partition_key_value";
+    });
+    const defaultDocument: string = this.renderObjectForEditor(newDocument, null, 4);
     this.initialDocumentContent(defaultDocument);
     this.selectedDocumentContent.setBaseline(defaultDocument);
     this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
@@ -650,8 +667,37 @@ export default class DocumentsTab extends TabsBase {
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 
+  public onFilterKeyDown(model: unknown, e: KeyboardEvent): boolean {
+    if (e.key === "Enter") {
+      this.refreshDocumentsGrid(true);
+
+      // Suppress the default behavior of the key
+      return false;
+    } else if (e.key === "Escape") {
+      this.onHideFilterClick();
+
+      // Suppress the default behavior of the key
+      return false;
+    } else {
+      // Allow the default behavior of the key
+      return true;
+    }
+  }
+
   public async onActivate(): Promise<void> {
     super.onActivate();
+
+    this.setKeyboardActions({
+      [KeyboardAction.SEARCH]: () => {
+        this.onShowFilterClick();
+        return true;
+      },
+      [KeyboardAction.CLEAR_SEARCH]: () => {
+        this.filterContent("");
+        this.refreshDocumentsGrid(true);
+        return true;
+      },
+    });
 
     if (!this._documentsIterator) {
       try {

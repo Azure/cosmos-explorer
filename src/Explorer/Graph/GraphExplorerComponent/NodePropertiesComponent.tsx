@@ -349,7 +349,7 @@ export class NodePropertiesComponent extends React.Component<
           onActivated={this.setIsDeleteConfirm.bind(this, true)}
           aria-label="Delete this vertex"
         >
-          <img src={DeleteIcon} alt="Delete" />
+          <img src={DeleteIcon} alt="Delete" role="button" />
         </AccessibleElement>
       );
     } else {
@@ -406,7 +406,7 @@ export class NodePropertiesComponent extends React.Component<
               aria-label="Edit properties"
               onActivated={expandClickHandler}
             >
-              <img src={EditIcon} alt="Edit" />
+              <img src={EditIcon} alt="Edit" role="button" />
             </AccessibleElement>
           )}
 

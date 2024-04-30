@@ -245,7 +245,6 @@ export function downloadItem(
     },
     "Cancel",
     undefined,
-    container.getDownloadModalConent(name),
   );
 }
 export async function downloadNotebookItem(
@@ -278,7 +277,6 @@ export async function downloadNotebookItem(
       metadata.untrusted = true;
     }
 
-    await container.importAndOpenContent(data.name, JSON.stringify(notebook));
     logConsoleInfo(`Successfully downloaded ${data.name} to ${useNotebook.getState().notebookFolderName}`);
 
     const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);

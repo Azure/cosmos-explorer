@@ -7,8 +7,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
   errorMessage="Could not create directory "
   explorer={
     Explorer {
-      "_isInitializingNotebooks": false,
-      "_resetNotebookWorkspace": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isTabsContentExpanded": [Function],
       "onRefreshDatabasesKeyPress": [Function],
@@ -25,10 +23,8 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "queriesClient": QueriesClient {
         "container": [Circular],
       },
-      "refreshNotebookList": [Function],
       "resourceTree": ResourceTreeAdapter {
         "container": [Circular],
-        "copyNotebook": [Function],
         "parameters": [Function],
       },
     }

@@ -29,8 +29,6 @@ exports[`SettingsComponent renders 1`] = `
               "computedProperties": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -47,10 +45,8 @@ exports[`SettingsComponent renders 1`] = `
                 "queriesClient": QueriesClient {
                   "container": [Circular],
                 },
-                "refreshNotebookList": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
-                  "copyNotebook": [Function],
                   "parameters": [Function],
                 },
               },
@@ -107,8 +103,6 @@ exports[`SettingsComponent renders 1`] = `
               "computedProperties": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -125,10 +119,8 @@ exports[`SettingsComponent renders 1`] = `
                 "queriesClient": QueriesClient {
                   "container": [Circular],
                 },
-                "refreshNotebookList": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
-                  "copyNotebook": [Function],
                   "parameters": [Function],
                 },
               },
@@ -224,8 +216,6 @@ exports[`SettingsComponent renders 1`] = `
               "computedProperties": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -242,10 +232,8 @@ exports[`SettingsComponent renders 1`] = `
                 "queriesClient": QueriesClient {
                   "container": [Circular],
                 },
-                "refreshNotebookList": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
-                  "copyNotebook": [Function],
                   "parameters": [Function],
                 },
               },
@@ -271,8 +259,6 @@ exports[`SettingsComponent renders 1`] = `
           }
           explorer={
             Explorer {
-              "_isInitializingNotebooks": false,
-              "_resetNotebookWorkspace": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isTabsContentExpanded": [Function],
               "onRefreshDatabasesKeyPress": [Function],
@@ -289,10 +275,8 @@ exports[`SettingsComponent renders 1`] = `
               "queriesClient": QueriesClient {
                 "container": [Circular],
               },
-              "refreshNotebookList": [Function],
               "resourceTree": ResourceTreeAdapter {
                 "container": [Circular],
-                "copyNotebook": [Function],
                 "parameters": [Function],
               },
             }

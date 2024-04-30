@@ -154,8 +154,16 @@ export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
 export function useNewPortalBackendEndpoint(backendApi: string): boolean {
   // This maps backend APIs to the environments supported by the new backend.
   const newBackendApiEnvironmentMap: { [key: string]: string[] } = {
-    [BackendApi.GenerateToken]: [PortalBackendEndpoints.Development],
-    [BackendApi.PortalSettings]: [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac],
+    [BackendApi.GenerateToken]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+    [BackendApi.PortalSettings]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
   };
 
   if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
