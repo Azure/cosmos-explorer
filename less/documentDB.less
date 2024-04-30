@@ -2557,10 +2557,12 @@ a:link {
 }
 
 .filterdivs {
-  padding-top: 15px;
-  height: 45px;
-  margin-bottom: 8px;
+  margin: 10px 0px;
   white-space: nowrap;
+  input {
+    line-height: 14px; // To correct vertical position of the down arrow of the input
+    outline: none; // Remove the dotted border on focus, because fluent has its own focus style (underlined)
+  }
 }
 
 .editFilterContainer {

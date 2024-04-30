@@ -1,6 +1,6 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, FluentProvider, TableRowId } from "@fluentui/react-components";
-import { ArrowClockwise16Filled } from "@fluentui/react-icons";
+import { Button, FluentProvider, Input, TableRowId } from "@fluentui/react-components";
+import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
@@ -28,9 +28,9 @@ import { userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
+import { CSSProperties } from "styled-components";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
 import NewDocumentIcon from "../../../../images/NewDocument.svg";
-import CloseIcon from "../../../../images/close-black.svg";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
@@ -87,6 +87,10 @@ export class DocumentsTabV2 extends TabsBase {
     this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 }
+
+const filterButtonStyle: CSSProperties = {
+  marginLeft: 8,
+};
 
 // From TabsBase.renderObjectForEditor()
 let renderObjectForEditor = (
@@ -1093,7 +1097,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
   }, [
     documentsIterator,
-    // loadNextPage
+    // loadNextPage: disabled as it will trigger a circular dependency and infinite loop
   ]);
 
   const onRefreshKeyInput: KeyboardEventHandler<HTMLButtonElement> = (event) => {
@@ -1669,12 +1673,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                                                                    setTemplateReady: true,
-                                                                    attr:{
-                                                                        id: tabId
-                                                                    },
-                                                                    visible: isActive"
-                                                                    */
+                                                                                setTemplateReady: true,
+                                                                                attr:{
+                                                                                    id: tabId
+                                                                                },
+                                                                                visible: isActive"
+                                                                                */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1688,13 +1692,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
               >
                 <span className="selectQuery">SELECT * FROM c</span>
                 <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
-                <button
-                  className="filterbtnstyle queryButton"
+                <Button
+                  appearance="primary"
                   onClick={onShowFilterClick}
+                  style={filterButtonStyle}
                   /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
-                </button>
+                </Button>
               </div>
             )}
             {!isFilterExpanded && isPreferredApiMongoDB && (
@@ -1708,12 +1713,13 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   </span>
                 )}
                 <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
-                <button
-                  className="filterbtnstyle queryButton"
+                <Button
+                  style={filterButtonStyle}
+                  appearance="primary"
                   onClick={onShowFilterClick} /*data-bind="click: onShowFilterClick"*/
                 >
                   Edit Filter
-                </button>
+                </Button>
               </div>
             )}
             {/* <!-- Read-only Filter - End --> */}
@@ -1729,10 +1735,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         SELECT * FROM c{" "}
                       </span>
                     )}
-                    <input
+                    <Input
                       type="text"
                       list="filtersList"
-                      className={`querydropdown ${filterContent.length === 0 ? "placeholderVisible" : ""}`}
+                      className={`${filterContent.length === 0 ? "placeholderVisible" : ""}`}
+                      style={{ width: "100%" }}
                       title="Type a query predicate or choose one from the list."
                       placeholder={
                         isPreferredApiMongoDB
@@ -1758,47 +1765,47 @@ const DocumentsTabComponent: React.FunctionComponent<{
                     </datalist>
 
                     <span className="filterbuttonpad">
-                      <button
-                        className="filterbtnstyle queryButton"
+                      <Button
+                        appearance="primary"
+                        style={filterButtonStyle}
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                                                                click: refreshDocumentsGrid.bind($data, true),
-                                                                                                enable: applyFilterButton.enabled"
-                                                                                      */
+                                                                                                            click: refreshDocumentsGrid.bind($data, true),
+                                                                                                            enable: applyFilterButton.enabled"
+                                                                                                  */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
                         Apply Filter
-                      </button>
+                      </Button>
                     </span>
                     <span className="filterbuttonpad">
                       {!isPreferredApiMongoDB && isExecuting && (
-                        <button
-                          className="filterbtnstyle queryButton"
+                        <Button
+                          style={filterButtonStyle}
+                          appearance="primary"
                           /* data-bind="
-                                                                                                  visible: !isPreferredApiMongoDB && isExecuting,
-                                                                                                  click: onAbortQueryClick"
-                                                                                        */
+                                                                                                              visible: !isPreferredApiMongoDB && isExecuting,
+                                                                                                              click: onAbortQueryClick"
+                                                                                                    */
                           aria-label="Cancel Query"
                           onClick={() => queryAbortController.abort()}
                           tabIndex={0}
                         >
                           Cancel Query
-                        </button>
+                        </Button>
                       )}
                     </span>
-                    <span
-                      className="filterclose"
-                      role="button"
+                    <Button
                       aria-label="close filter"
                       tabIndex={0}
                       onClick={onHideFilterClick}
                       onKeyDown={onCloseButtonKeyDown}
+                      appearance="transparent"
+                      icon={<Dismiss16Filled />}
                       /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
-                    >
-                      <img src={CloseIcon} style={{ height: 14, width: 14 }} alt="Hide filter" />
-                    </span>
+                    />
                   </div>
                 </div>
               </div>
