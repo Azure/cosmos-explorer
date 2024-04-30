@@ -375,6 +375,37 @@ const _loadNextPageInternal = (
   return iterator.fetchNext().then((response) => response.resources);
 };
 
+// Export for testing purposes
+export const showPartitionKey = (collection: ViewModels.CollectionBase, isPreferredApiMongoDB: boolean) => {
+  if (!collection) {
+    return false;
+  }
+
+  if (!collection.partitionKey) {
+    return false;
+  }
+
+  if (collection.partitionKey.systemKey && isPreferredApiMongoDB) {
+    return false;
+  }
+
+  return true;
+};
+
+// Export for testing purposes
+export const buildQuery = (
+  isMongo: boolean,
+  filter: string,
+  partitionKeyProperties?: string[],
+  partitionKey?: DataModels.PartitionKey,
+): string => {
+  if (isMongo) {
+    return filter || "{}";
+  }
+
+  return QueryUtils.buildDocumentsQuery(filter, partitionKeyProperties, partitionKey);
+};
+
 const DocumentsTabComponent: React.FunctionComponent<{
   isPreferredApiMongoDB: boolean;
   documentIds: DocumentId[]; // TODO: this contains ko observables. We need to convert them to React state.
@@ -882,18 +913,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
     [isPreferredApiMongoDB],
   );
 
-  let buildQuery = useCallback(
-    (filter: string): string => {
-      return QueryUtils.buildDocumentsQuery(filter, partitionKeyProperties, partitionKey);
-    },
-    [partitionKeyProperties, partitionKey],
-  );
-
   const createIterator = useCallback((): QueryIterator<ItemDefinition & Resource> => {
     const _queryAbortController = new AbortController();
     setQueryAbortController(_queryAbortController);
     const filter: string = filterContent.trim();
-    const query: string = buildQuery(filter);
+    const query: string = buildQuery(isPreferredApiMongoDB, filter, partitionKeyProperties, partitionKey);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const options: any = {};
     // TODO: Property 'enableCrossPartitionQuery' does not exist on type 'FeedOptions'.
@@ -908,7 +932,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options)
       : queryDocuments(_collection.databaseId, _collection.id(), query, options);
-  }, [filterContent, buildQuery, resourceTokenPartitionKey, isQueryCopilotSampleContainer, _collection]);
+  }, [isPreferredApiMongoDB, filterContent, resourceTokenPartitionKey, isQueryCopilotSampleContainer, _collection]);
 
   /**
    * Query first page of documents
@@ -1115,23 +1139,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
   };
 
-  // TODO: use this when generating column headers
-  const showPartitionKey = (() => {
-    if (!_collection) {
-      return false;
-    }
-
-    if (!_collection.partitionKey) {
-      return false;
-    }
-
-    if (_collection.partitionKey.systemKey && isPreferredApiMongoDB) {
-      return false;
-    }
-
-    return true;
-  })();
-
   const _isQueryCopilotSampleContainer =
     _collection?.isSampleCollection &&
     _collection?.databaseId === QueryCopilotSampleDatabaseId &&
@@ -1259,7 +1266,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   const columnHeaders = {
     idHeader: isPreferredApiMongoDB ? "_id" : "id",
-    partitionKeyHeaders: (showPartitionKey && partitionKeyPropertyHeaders) || [],
+    partitionKeyHeaders: (showPartitionKey(_collection, isPreferredApiMongoDB) && partitionKeyPropertyHeaders) || [],
   };
 
   const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
@@ -1549,15 +1556,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
         .finally(() => setIsExecuting(false));
     };
 
-    buildQuery = (filter: string): string => {
-      return filter || "{}";
-    };
-
     loadNextPage = (): Promise<unknown> => {
       setIsExecuting(true);
       onExecutionErrorChange(false);
       const filter: string = filterContent.trim();
-      const query: string = buildQuery(filter);
+      const query: string = buildQuery(isPreferredApiMongoDB, filter);
 
       return MongoProxyClient.queryDocuments(
         _collection.databaseId,
@@ -1668,12 +1671,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                                                                                  setTemplateReady: true,
-                                                                                  attr:{
-                                                                                      id: tabId
-                                                                                  },
-                                                                                  visible: isActive"
-                                                                                  */
+                                                                                            setTemplateReady: true,
+                                                                                            attr:{
+                                                                                                id: tabId
+                                                                                            },
+                                                                                            visible: isActive"
+                                                                                            */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1766,9 +1769,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                                                                              click: refreshDocumentsGrid.bind($data, true),
-                                                                                                              enable: applyFilterButton.enabled"
-                                                                                                    */
+                                                                                                                        click: refreshDocumentsGrid.bind($data, true),
+                                                                                                                        enable: applyFilterButton.enabled"
+                                                                                                              */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1781,9 +1784,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                           style={filterButtonStyle}
                           appearance="primary"
                           /* data-bind="
-                                                                                                                visible: !isPreferredApiMongoDB && isExecuting,
-                                                                                                                click: onAbortQueryClick"
-                                                                                                      */
+                                                                                                                          visible: !isPreferredApiMongoDB && isExecuting,
+                                                                                                                          click: onAbortQueryClick"
+                                                                                                                */
                           aria-label="Cancel Query"
                           onClick={() => queryAbortController.abort()}
                           tabIndex={0}
