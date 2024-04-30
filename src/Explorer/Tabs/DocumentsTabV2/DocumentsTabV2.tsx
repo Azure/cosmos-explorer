@@ -875,11 +875,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const onShowFilterClick = () => {
     setIsFilterCreated(true);
     setIsFilterExpanded(true);
-
-    // TODO convert this
-    $(".filterDocExpanded").addClass("active");
-    $("#content").addClass("active");
-    $(".querydropdown").focus();
   };
 
   const queryTimeoutEnabled = useCallback(
@@ -1673,12 +1668,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                                                                                setTemplateReady: true,
-                                                                                attr:{
-                                                                                    id: tabId
-                                                                                },
-                                                                                visible: isActive"
-                                                                                */
+                                                                                  setTemplateReady: true,
+                                                                                  attr:{
+                                                                                      id: tabId
+                                                                                  },
+                                                                                  visible: isActive"
+                                                                                  */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1771,9 +1766,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                                                                            click: refreshDocumentsGrid.bind($data, true),
-                                                                                                            enable: applyFilterButton.enabled"
-                                                                                                  */
+                                                                                                              click: refreshDocumentsGrid.bind($data, true),
+                                                                                                              enable: applyFilterButton.enabled"
+                                                                                                    */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1786,9 +1781,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                           style={filterButtonStyle}
                           appearance="primary"
                           /* data-bind="
-                                                                                                              visible: !isPreferredApiMongoDB && isExecuting,
-                                                                                                              click: onAbortQueryClick"
-                                                                                                    */
+                                                                                                                visible: !isPreferredApiMongoDB && isExecuting,
+                                                                                                                click: onAbortQueryClick"
+                                                                                                      */
                           aria-label="Cancel Query"
                           onClick={() => queryAbortController.abort()}
                           tabIndex={0}
