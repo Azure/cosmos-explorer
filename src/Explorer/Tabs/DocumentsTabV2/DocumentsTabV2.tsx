@@ -491,10 +491,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   useEffect(() => {
     if (isFilterFocused) {
-      console.log("focus filter input");
       filterInput.current?.focus();
-    } else {
-      console.log("blur filter input");
     }
   }, [isFilterFocused]);
 
@@ -937,7 +934,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     setIsFilterCreated(true);
     setIsFilterExpanded(true);
     setIsFilterFocused(true);
-    console.log("onShowFilterClick");
   };
 
   const queryTimeoutEnabled = useCallback(
