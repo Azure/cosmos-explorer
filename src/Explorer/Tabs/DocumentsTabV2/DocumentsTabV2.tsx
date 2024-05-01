@@ -20,7 +20,7 @@ import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdap
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import { KeyboardAction } from "KeyboardShortcuts";
+import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
@@ -485,6 +485,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
   // For Mongo only
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
 
+  const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
+
   let lastFilterContents = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 
   const applyFilterButton = {
@@ -531,6 +533,18 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   // This is executed in onActivate() in the original code.
   useEffect(() => {
+    setKeyboardActions({
+      [KeyboardAction.SEARCH]: () => {
+        onShowFilterClick();
+        return true;
+      },
+      [KeyboardAction.CLEAR_SEARCH]: () => {
+        setFilterContent("");
+        refreshDocumentsGrid(true);
+        return true;
+      },
+    });
+
     if (!documentsIterator) {
       try {
         refreshDocumentsGrid();
@@ -618,7 +632,24 @@ const DocumentsTabComponent: React.FunctionComponent<{
   );
 
   const initializeNewDocument = (): void => {
-    const defaultDocument: string = renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newDocument: any = {
+      id: "replace_with_new_document_id",
+    };
+    partitionKeyProperties.forEach((partitionKeyProperty) => {
+      let target = newDocument;
+      const keySegments = partitionKeyProperty.split(".");
+      const finalSegment = keySegments.pop();
+
+      // Initialize nested objects as needed
+      keySegments.forEach((segment) => {
+        target = target[segment] = target[segment] || {};
+      });
+
+      target[finalSegment] = "replace_with_new_partition_key_value";
+    });
+    const defaultDocument: string = renderObjectForEditor(newDocument, null, 4);
+
     setInitialDocumentContent(defaultDocument);
     setSelectedDocumentContent(defaultDocument);
     setSelectedDocumentContentBaseline(defaultDocument);
@@ -1085,6 +1116,23 @@ const DocumentsTabComponent: React.FunctionComponent<{
       focusElement && focusElement.focus();
       event.stopPropagation();
       event.preventDefault();
+    }
+  };
+
+  const onFilterKeyDown = (model: unknown, e: KeyboardEvent): boolean => {
+    if (e.key === "Enter") {
+      refreshDocumentsGrid(true);
+
+      // Suppress the default behavior of the key
+      return false;
+    } else if (e.key === "Escape") {
+      onHideFilterClick();
+
+      // Suppress the default behavior of the key
+      return false;
+    } else {
+      // Allow the default behavior of the key
+      return true;
     }
   };
 
