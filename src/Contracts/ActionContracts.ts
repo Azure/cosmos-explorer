@@ -68,6 +68,10 @@ export interface OpenPane extends DataExplorerAction {
   paneKind: PaneKind | string;
 }
 
+export interface OpenSampleNotebook extends DataExplorerAction {
+  path: string;
+}
+
 /**
  * The types of actions that the DataExplorer supports performing upon opening.
  */
@@ -76,4 +80,5 @@ export enum ActionType {
   OpenCollectionTab,
   OpenPane,
   TransmitCachedData,
+  OpenSampleNotebook,
 }

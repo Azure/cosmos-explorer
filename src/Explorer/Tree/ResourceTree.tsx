@@ -1,23 +1,42 @@
+import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import { SampleDataTree } from "Explorer/Tree/SampleDataTree";
 import { getItemName } from "Utils/APITypeUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as React from "react";
 import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
+import GalleryIcon from "../../../images/GalleryIcon.svg";
+import DeleteIcon from "../../../images/delete.svg";
+import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
+import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import FileIcon from "../../../images/notebook/file-cosmos.svg";
+import PublishIcon from "../../../images/notebook/publish_content.svg";
+import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
+import { Areas, ConnectionStatusType, Notebook } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
-import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
+import { useDialog } from "../Controls/Dialog";
+import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
+import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
 import { useNotebook } from "../Notebook/useNotebook";
+import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
@@ -26,21 +45,391 @@ import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
 
+export const MyNotebooksTitle = "My Notebooks";
+export const GitHubReposTitle = "GitHub repos";
+
 interface ResourceTreeProps {
   container: Explorer;
 }
 
 export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: ResourceTreeProps): JSX.Element => {
   const databases = useDatabases((state) => state.databases);
-  const { isNotebookEnabled } = useNotebook(
+  const {
+    isNotebookEnabled,
+    myNotebooksContentRoot,
+    galleryContentRoot,
+    gitHubNotebooksContentRoot,
+    updateNotebookItem,
+  } = useNotebook(
     (state) => ({
       isNotebookEnabled: state.isNotebookEnabled,
+      myNotebooksContentRoot: state.myNotebooksContentRoot,
+      galleryContentRoot: state.galleryContentRoot,
+      gitHubNotebooksContentRoot: state.gitHubNotebooksContentRoot,
+      updateNotebookItem: state.updateNotebookItem,
     }),
     shallow,
   );
-  const { refreshActiveTab } = useTabs();
+  const { activeTab, refreshActiveTab } = useTabs();
   const showScriptNodes =
     configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin");
+  const pseudoDirPath = "PsuedoDir";
+
+  const buildGalleryCallout = (): JSX.Element => {
+    if (
+      LocalStorageUtility.hasItem(StorageKey.GalleryCalloutDismissed) &&
+      LocalStorageUtility.getEntryBoolean(StorageKey.GalleryCalloutDismissed)
+    ) {
+      return undefined;
+    }
+
+    const calloutProps: ICalloutProps = {
+      calloutMaxWidth: 350,
+      ariaLabel: "New gallery",
+      role: "alertdialog",
+      gapSpace: 0,
+      target: ".galleryHeader",
+      directionalHint: DirectionalHint.leftTopEdge,
+      onDismiss: () => {
+        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
+      },
+      setInitialFocus: true,
+    };
+
+    const openGalleryProps: ILinkProps = {
+      onClick: () => {
+        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
+        container.openGallery();
+      },
+    };
+
+    return (
+      <Callout {...calloutProps}>
+        <Stack tokens={{ childrenGap: 10, padding: 20 }}>
+          <Text variant="xLarge" block>
+            New gallery
+          </Text>
+          <Text block>
+            Sample notebooks are now combined in gallery. View and try out samples provided by Microsoft and other
+            contributors.
+          </Text>
+          <Link {...openGalleryProps}>Open gallery</Link>
+        </Stack>
+      </Callout>
+    );
+  };
+
+  const buildNotebooksTree = (): TreeNode => {
+    const notebooksTree: TreeNode = {
+      label: undefined,
+      isExpanded: true,
+      children: [],
+    };
+
+    if (!useNotebook.getState().isPhoenixNotebooks) {
+      notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
+    } else {
+      if (galleryContentRoot) {
+        notebooksTree.children.push(buildGalleryNotebooksTree());
+      }
+
+      if (
+        myNotebooksContentRoot &&
+        useNotebook.getState().isPhoenixNotebooks &&
+        useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected
+      ) {
+        notebooksTree.children.push(buildMyNotebooksTree());
+      }
+      if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
+        // collapse all other notebook nodes
+        notebooksTree.children.forEach((node) => (node.isExpanded = false));
+        notebooksTree.children.push(buildGitHubNotebooksTree(true));
+      }
+    }
+    return notebooksTree;
+  };
+
+  const buildNotebooksTemporarilyDownTree = (): TreeNode => {
+    return {
+      label: Notebook.temporarilyDownMsg,
+      className: "clickDisabled",
+    };
+  };
+
+  const buildGalleryNotebooksTree = (): TreeNode => {
+    return {
+      label: "Gallery",
+      iconSrc: GalleryIcon,
+      className: "notebookHeader galleryHeader",
+      onClick: () => container.openGallery(),
+      isSelected: () => activeTab?.tabKind === ViewModels.CollectionTabKind.Gallery,
+    };
+  };
+
+  const buildMyNotebooksTree = (): TreeNode => {
+    const myNotebooksTree: TreeNode = buildNotebookDirectoryNode(
+      myNotebooksContentRoot,
+      (item: NotebookContentItem) => {
+        container.openNotebook(item);
+      },
+    );
+
+    myNotebooksTree.isExpanded = true;
+    myNotebooksTree.isAlphaSorted = true;
+    // Remove "Delete" menu item from context menu
+    myNotebooksTree.contextMenu = myNotebooksTree.contextMenu.filter((menuItem) => menuItem.label !== "Delete");
+    return myNotebooksTree;
+  };
+
+  const buildGitHubNotebooksTree = (isConnected: boolean): TreeNode => {
+    const gitHubNotebooksTree: TreeNode = buildNotebookDirectoryNode(
+      gitHubNotebooksContentRoot,
+      (item: NotebookContentItem) => {
+        container.openNotebook(item);
+      },
+      true,
+    );
+    const manageGitContextMenu: TreeNodeMenuItem[] = [
+      {
+        label: "Manage GitHub settings",
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Manage GitHub settings",
+              <GitHubReposPanel
+                explorer={container}
+                gitHubClientProp={container.notebookManager.gitHubClient}
+                junoClientProp={container.notebookManager.junoClient}
+              />,
+            ),
+      },
+      {
+        label: "Disconnect from GitHub",
+        onClick: () => {
+          TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
+            dataExplorerArea: Areas.Notebook,
+          });
+          container.notebookManager?.gitHubOAuthService.logout();
+        },
+      },
+    ];
+    gitHubNotebooksTree.contextMenu = manageGitContextMenu;
+    gitHubNotebooksTree.isExpanded = true;
+    gitHubNotebooksTree.isAlphaSorted = true;
+
+    return gitHubNotebooksTree;
+  };
+
+  const buildChildNodes = (
+    item: NotebookContentItem,
+    onFileClick: (item: NotebookContentItem) => void,
+    isGithubTree?: boolean,
+  ): TreeNode[] => {
+    if (!item || !item.children) {
+      return [];
+    } else {
+      return item.children.map((item) => {
+        const result =
+          item.type === NotebookContentItemType.Directory
+            ? buildNotebookDirectoryNode(item, onFileClick, isGithubTree)
+            : buildNotebookFileNode(item, onFileClick, isGithubTree);
+        result.timestamp = item.timestamp;
+        return result;
+      });
+    }
+  };
+
+  const buildNotebookFileNode = (
+    item: NotebookContentItem,
+    onFileClick: (item: NotebookContentItem) => void,
+    isGithubTree?: boolean,
+  ): TreeNode => {
+    return {
+      label: item.name,
+      iconSrc: NotebookUtil.isNotebookFile(item.path) ? NotebookIcon : FileIcon,
+      className: "notebookHeader",
+      onClick: () => onFileClick(item),
+      isSelected: () => {
+        return (
+          activeTab &&
+          activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
+          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
+                     NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
+                   */
+          (activeTab as any).notebookPath() === item.path
+        );
+      },
+      contextMenu: createFileContextMenu(container, item, isGithubTree),
+      data: item,
+    };
+  };
+
+  const createFileContextMenu = (
+    container: Explorer,
+    item: NotebookContentItem,
+    isGithubTree?: boolean,
+  ): TreeNodeMenuItem[] => {
+    let items: TreeNodeMenuItem[] = [
+      {
+        label: "Rename",
+        iconSrc: NotebookIcon,
+        onClick: () => container.renameNotebook(item, isGithubTree),
+      },
+      {
+        label: "Delete",
+        iconSrc: DeleteIcon,
+        onClick: () => {
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}"`,
+              "Delete",
+              () => container.deleteNotebookFile(item, isGithubTree),
+              "Cancel",
+              undefined,
+            );
+        },
+      },
+      {
+        label: "Copy to ...",
+        iconSrc: CopyIcon,
+        onClick: () => copyNotebook(container, item),
+      },
+      {
+        label: "Download",
+        iconSrc: NotebookIcon,
+        onClick: () => container.downloadFile(item),
+      },
+    ];
+
+    if (item.type === NotebookContentItemType.Notebook && userContext.features.publicGallery) {
+      items.push({
+        label: "Publish to gallery",
+        iconSrc: PublishIcon,
+        onClick: async () => {
+          TelemetryProcessor.trace(Action.NotebooksGalleryClickPublishToGallery, ActionModifiers.Mark, {
+            source: Source.ResourceTreeMenu,
+          });
+
+          const content = await container.readFile(item);
+          if (content) {
+            await container.publishNotebook(item.name, content);
+          }
+        },
+      });
+    }
+
+    // "Copy to ..." isn't needed if github locations are not available
+    if (!container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
+      items = items.filter((item) => item.label !== "Copy to ...");
+    }
+
+    return items;
+  };
+
+  const copyNotebook = async (container: Explorer, item: NotebookContentItem) => {
+    const content = await container.readFile(item);
+    if (content) {
+      container.copyNotebook(item.name, content);
+    }
+  };
+
+  const createDirectoryContextMenu = (
+    container: Explorer,
+    item: NotebookContentItem,
+    isGithubTree?: boolean,
+  ): TreeNodeMenuItem[] => {
+    let items: TreeNodeMenuItem[] = [
+      {
+        label: "Refresh",
+        iconSrc: RefreshIcon,
+        onClick: () => loadSubitems(item, isGithubTree),
+      },
+      {
+        label: "Delete",
+        iconSrc: DeleteIcon,
+        onClick: () => {
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}?"`,
+              "Delete",
+              () => container.deleteNotebookFile(item, isGithubTree),
+              "Cancel",
+              undefined,
+            );
+        },
+      },
+      {
+        label: "Rename",
+        iconSrc: NotebookIcon,
+        onClick: () => container.renameNotebook(item, isGithubTree),
+      },
+      {
+        label: "New Directory",
+        iconSrc: NewNotebookIcon,
+        onClick: () => container.onCreateDirectory(item, isGithubTree),
+      },
+      {
+        label: "Upload File",
+        iconSrc: NewNotebookIcon,
+        onClick: () => container.openUploadFilePanel(item),
+      },
+    ];
+
+    //disallow renaming of temporary notebook workspace
+    if (item?.path === useNotebook.getState().notebookBasePath) {
+      items = items.filter((item) => item.label !== "Rename");
+    }
+
+    // For GitHub paths remove "Delete", "Rename", "New Directory", "Upload File"
+    if (GitHubUtils.fromContentUri(item.path)) {
+      items = items.filter(
+        (item) =>
+          item.label !== "Delete" &&
+          item.label !== "Rename" &&
+          item.label !== "New Directory" &&
+          item.label !== "Upload File",
+      );
+    }
+
+    return items;
+  };
+
+  const buildNotebookDirectoryNode = (
+    item: NotebookContentItem,
+    onFileClick: (item: NotebookContentItem) => void,
+    isGithubTree?: boolean,
+  ): TreeNode => {
+    return {
+      label: item.name,
+      iconSrc: undefined,
+      className: "notebookHeader",
+      isAlphaSorted: true,
+      isLeavesParentsSeparate: true,
+      onClick: () => {
+        if (!item.children) {
+          loadSubitems(item, isGithubTree);
+        }
+      },
+      isSelected: () => {
+        return (
+          activeTab &&
+          activeTab.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
+          /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
+                     NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
+                   */
+          (activeTab as any).notebookPath() === item.path
+        );
+      },
+      contextMenu: item.path !== pseudoDirPath ? createDirectoryContextMenu(container, item, isGithubTree) : undefined,
+      data: item,
+      children: buildChildNodes(item, onFileClick, isGithubTree),
+    };
+  };
 
   const buildDataTree = (): TreeNode => {
     const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
@@ -368,6 +757,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     return traverse(schema);
   };
 
+  const loadSubitems = async (item: NotebookContentItem, isGithubTree?: boolean): Promise<void> => {
+    const updatedItem = await container.notebookManager?.notebookContentClient?.updateItemChildren(item);
+    updateNotebookItem(updatedItem, isGithubTree);
+  };
+
   const dataRootNode = buildDataTree();
   const isSampleDataEnabled =
     useQueryCopilot().copilotEnabled &&
@@ -381,16 +775,46 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       {!isNotebookEnabled && !isSampleDataEnabled && (
         <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
       )}
+      {isNotebookEnabled && !isSampleDataEnabled && (
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent title={"DATA"} isExpanded={!gitHubNotebooksContentRoot}>
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+          </AccordionComponent>
+
+          {/* {buildGalleryCallout()} */}
+        </>
+      )}
       {!isNotebookEnabled && isSampleDataEnabled && (
         <>
           <AccordionComponent>
-            <AccordionItemComponent title={"MY DATA"} isExpanded={true}>
+            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
             </AccordionItemComponent>
             <AccordionItemComponent title={"SAMPLE DATA"} containerStyles={{ display: "table" }}>
               <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
             </AccordionItemComponent>
           </AccordionComponent>
+
+          {/* {buildGalleryCallout()} */}
+        </>
+      )}
+      {isNotebookEnabled && isSampleDataEnabled && (
+        <>
+          <AccordionComponent>
+            <AccordionItemComponent title={"MY DATA"} isExpanded={!gitHubNotebooksContentRoot}>
+              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"SAMPLE DATA"} containerStyles={{ display: "table" }}>
+              <SampleDataTree sampleDataResourceTokenCollection={sampleDataResourceTokenCollection} />
+            </AccordionItemComponent>
+            <AccordionItemComponent title={"NOTEBOOKS"}>
+              <TreeComponent className="notebookResourceTree" rootNode={buildNotebooksTree()} />
+            </AccordionItemComponent>
+          </AccordionComponent>
+
+          {/* {buildGalleryCallout()} */}
         </>
       )}
     </>
