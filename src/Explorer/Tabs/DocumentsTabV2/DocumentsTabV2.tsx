@@ -1132,20 +1132,17 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
   };
 
-  const onFilterKeyDown = (model: unknown, e: KeyboardEvent): boolean => {
+  const onFilterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
       refreshDocumentsGrid(true);
 
       // Suppress the default behavior of the key
-      return false;
+      e.preventDefault();
     } else if (e.key === "Escape") {
       onHideFilterClick();
 
       // Suppress the default behavior of the key
-      return false;
-    } else {
-      // Allow the default behavior of the key
-      return true;
+      e.preventDefault();
     }
   };
 
@@ -1657,7 +1654,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
         // collapse filter
         setAppliedFilter(filterContent);
-        setIsFilterExpanded(applyFilterButtonPressed);
+        setIsFilterExpanded(!applyFilterButtonPressed);
         document.getElementById("errorStatusIcon")?.focus();
       } catch (error) {
         console.error();
@@ -1709,6 +1706,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
                           : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
                       }
                       value={filterContent}
+                      autoFocus={true}
+                      onKeyDown={onFilterKeyDown}
                       onChange={(e) => setFilterContent(e.target.value)}
                       onBlur={() => setIsFilterFocused(false)}
                     />
