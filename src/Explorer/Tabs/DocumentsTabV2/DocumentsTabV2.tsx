@@ -64,10 +64,6 @@ export class DocumentsTabV2 extends TabsBase {
   }
 
   public render(): JSX.Element {
-    if (!this.isActive) {
-      return <></>;
-    }
-
     return (
       <DocumentsTabComponent
         isPreferredApiMongoDB={userContext.apiType === "Mongo"}
@@ -79,6 +75,7 @@ export class DocumentsTabV2 extends TabsBase {
         resourceTokenPartitionKey={this.resourceTokenPartitionKey}
         onExecutionErrorChange={(isExecutionError: boolean) => this.isExecutionError(isExecutionError)}
         onIsExecutingChange={(isExecuting: boolean) => this.isExecuting(isExecuting)}
+        isTabActive={this.isActive()}
       />
     );
   }
@@ -370,10 +367,10 @@ const getTabsButtons = ({
   return buttons;
 };
 
-const updateNavbarWithTabsButtons = (dependencies: ButtonsDependencies): void => {
-  // if (this.isActive()) {
-  useCommandBar.getState().setContextButtons(getTabsButtons(dependencies));
-  // }
+const updateNavbarWithTabsButtons = (isTabActive: boolean, dependencies: ButtonsDependencies): void => {
+  if (isTabActive) {
+    useCommandBar.getState().setContextButtons(getTabsButtons(dependencies));
+  }
 };
 
 const getNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
@@ -436,6 +433,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   resourceTokenPartitionKey?: string;
   onExecutionErrorChange: (isExecutionError: boolean) => void;
   onIsExecutingChange: (isExecuting: boolean) => void;
+  isTabActive: boolean;
 }> = ({
   isPreferredApiMongoDB,
   documentIds: _documentIds,
@@ -446,6 +444,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   resourceTokenPartitionKey,
   onExecutionErrorChange,
   onIsExecutingChange,
+  isTabActive,
 }) => {
   const [isFilterCreated, setIsFilterCreated] = useState<boolean>(true);
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
@@ -569,7 +568,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       }
     }
 
-    updateNavbarWithTabsButtons({
+    updateNavbarWithTabsButtons(isTabActive, {
       _collection,
       selectedRows,
       editorState,
@@ -897,7 +896,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   // TODO Put whatever the buttons callback use in the dependency array: find a better way to maintain
   useEffect(
     () =>
-      updateNavbarWithTabsButtons({
+      updateNavbarWithTabsButtons(isTabActive, {
         _collection,
         selectedRows,
         editorState,
@@ -920,6 +919,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       onSaveExistingDocumentClick,
       onRevertExistingDocumentClick,
       onDeleteExistingDocumentsClick,
+      isTabActive,
     ],
   );
 
@@ -1691,12 +1691,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                                                                                              setTemplateReady: true,
-                                                                                              attr:{
-                                                                                                  id: tabId
-                                                                                              },
-                                                                                              visible: isActive"
-                                                                                              */
+                                                                                                    setTemplateReady: true,
+                                                                                                    attr:{
+                                                                                                        id: tabId
+                                                                                                    },
+                                                                                                    visible: isActive"
+                                                                                                    */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1789,9 +1789,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                                                                                          click: refreshDocumentsGrid.bind($data, true),
-                                                                                                                          enable: applyFilterButton.enabled"
-                                                                                                                */
+                                                                                                                                click: refreshDocumentsGrid.bind($data, true),
+                                                                                                                                enable: applyFilterButton.enabled"
+                                                                                                                      */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1804,9 +1804,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                           style={filterButtonStyle}
                           appearance="primary"
                           /* data-bind="
-                                                                                                                            visible: !isPreferredApiMongoDB && isExecuting,
-                                                                                                                            click: onAbortQueryClick"
-                                                                                                                  */
+                                                                                                                                  visible: !isPreferredApiMongoDB && isExecuting,
+                                                                                                                                  click: onAbortQueryClick"
+                                                                                                                        */
                           aria-label="Cancel Query"
                           onClick={() => queryAbortController.abort()}
                           tabIndex={0}
