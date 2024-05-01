@@ -22,6 +22,8 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       databaseId="CopilotSampleDb"
       explorer={
         Explorer {
+          "_isInitializingNotebooks": false,
+          "_resetNotebookWorkspace": [Function],
           "isFixedCollectionWithSharedThroughputSupported": [Function],
           "isTabsContentExpanded": [Function],
           "onRefreshDatabasesKeyPress": [Function],
@@ -38,8 +40,10 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
           "queriesClient": QueriesClient {
             "container": [Circular],
           },
+          "refreshNotebookList": [Function],
           "resourceTree": ResourceTreeAdapter {
             "container": [Circular],
+            "copyNotebook": [Function],
             "parameters": [Function],
           },
         }
