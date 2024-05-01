@@ -392,7 +392,7 @@ const _loadNextPageInternal = (
   return iterator.fetchNext().then((response) => response.resources);
 };
 
-// Export for testing purposes
+// Export to expose to unit tests
 export const showPartitionKey = (collection: ViewModels.CollectionBase, isPreferredApiMongoDB: boolean) => {
   if (!collection) {
     return false;
@@ -409,7 +409,7 @@ export const showPartitionKey = (collection: ViewModels.CollectionBase, isPrefer
   return true;
 };
 
-// Export for testing purposes
+// Export to expose to unit tests
 export const buildQuery = (
   isMongo: boolean,
   filter: string,
@@ -450,13 +450,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
   const [appliedFilter, setAppliedFilter] = useState<string>("");
   const [filterContent, setFilterContent] = useState<string>("");
-  // const [lastFilterContents, setLastFilterContents] = useState<string[]>([
-  //   'WHERE c.id = "foo"',
-  //   "ORDER BY c._ts DESC",
-  //   'WHERE c.id = "foo" ORDER BY c._ts DESC',
-  // ]);
   const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
-  const [isExecuting, setIsExecuting] = useState<boolean>(false); // TODO isExecuting is a member of TabsBase. We may need to update this field.
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   // Query
   const [documentsIterator, setDocumentsIterator] = useState<{
@@ -530,24 +525,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
     [partitionKey],
   );
 
-  // const isPreferredApiMongoDB = useMemo(
-  //   () => userContext.apiType === "Mongo" || isPreferredApiMongoDB,
-  //   [isPreferredApiMongoDB],
-  // );
-
   useEffect(() => {
     setDocumentIds(_documentIds);
   }, [_documentIds]);
 
-  // TODO: this is executed in onActivate() in the original code.
+  // This is executed in onActivate() in the original code.
   useEffect(() => {
     if (!documentsIterator) {
       try {
         refreshDocumentsGrid();
-        // // Select first document and load content
-        // if (documentIds.length > 0) {
-        //   documentIds[0].click();
-        // }
       } catch (error) {
         if (onLoadStartKey !== null && onLoadStartKey !== undefined) {
           TelemetryProcessor.traceFailure(
@@ -595,10 +581,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
       case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
         return true;
-      // return (
-      //   this.selectedDocumentContent.getEditableOriginalValue() !==
-      //   this.selectedDocumentContent.getEditableCurrentValue()
-      // );
 
       default:
         return false;
@@ -625,7 +607,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
     [isEditorDirty],
   );
 
-  // Update tab if isExecuting has changed
+  // Update parent (tab) if isExecuting has changed
   useEffect(() => {
     onIsExecutingChange(isExecuting);
   }, [onIsExecutingChange, isExecuting]);
@@ -636,7 +618,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   );
 
   const initializeNewDocument = (): void => {
-    // this.selectedDocumentId(null);
     const defaultDocument: string = renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
     setInitialDocumentContent(defaultDocument);
     setSelectedDocumentContent(defaultDocument);
@@ -669,7 +650,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
           const ids = documentIds;
           ids.push(id);
 
-          // this.selectedDocumentId(id);
           setDocumentIds(ids);
           setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
           TelemetryProcessor.traceSuccess(
@@ -717,8 +697,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   }, [setInitialDocumentContent, setSelectedDocumentContent, setEditorState]);
 
   let onSaveExistingDocumentClick = useCallback((): Promise<void> => {
-    // const selectedDocumentId = this.selectedDocumentId();
-
     const documentContent = JSON.parse(selectedDocumentContent);
 
     const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
@@ -778,15 +756,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   const onRevertExistingDocumentClick = useCallback((): void => {
     setSelectedDocumentContentBaseline(initialDocumentContent);
-    // this.initialDocumentContent.valueHasMutated();
     setSelectedDocumentContent(selectedDocumentContentBaseline);
-    // setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
-  }, [
-    initialDocumentContent,
-    selectedDocumentContentBaseline,
-    setSelectedDocumentContent,
-    // setEditorState,
-  ]);
+  }, [initialDocumentContent, selectedDocumentContentBaseline, setSelectedDocumentContent]);
 
   /**
    * Implementation using bulk delete
@@ -848,7 +819,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
           const newDocumentIds = [...documentIds];
           deletedIds.forEach((deletedId) => {
             if (deletedId !== undefined) {
-              // documentIds.remove((documentId: DocumentId) => documentId.rid === selectedDocumentId.rid);
               const index = toDeleteDocumentIds.findIndex((documentId) => documentId.rid === deletedId);
               if (index !== -1) {
                 newDocumentIds.splice(index, 1);
@@ -868,8 +838,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
   );
 
   const onDeleteExistingDocumentsClick = useCallback(async (): Promise<void> => {
-    // const selectedDocumentId = this.selectedDocumentId();
-
     // TODO: Rework this for localization
     const isPlural = selectedRows.size > 1;
     const documentName = !isPreferredApiMongoDB
@@ -881,19 +849,19 @@ const DocumentsTabComponent: React.FunctionComponent<{
       : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
-    useDialog.getState().showOkCancelModalDialog(
-      "Confirm delete",
-      msg,
-      "Delete",
-      // async () => await _deleteDocuments(selectedDocumentId),
-      () => deleteDocuments(Array.from(selectedRows).map((index) => documentIds[index as number])),
-      "Cancel",
-      undefined,
-    );
+    useDialog
+      .getState()
+      .showOkCancelModalDialog(
+        "Confirm delete",
+        msg,
+        "Delete",
+        () => deleteDocuments(Array.from(selectedRows).map((index) => documentIds[index as number])),
+        "Cancel",
+        undefined,
+      );
   }, [deleteDocuments, documentIds, isPreferredApiMongoDB, selectedRows]);
 
   // If editor state changes, update the nav
-  // TODO Put whatever the buttons callback use in the dependency array: find a better way to maintain
   useEffect(
     () =>
       updateNavbarWithTabsButtons(isTabActive, {
@@ -952,35 +920,18 @@ const DocumentsTabComponent: React.FunctionComponent<{
     return isQueryCopilotSampleContainer
       ? querySampleDocuments(query, options)
       : queryDocuments(_collection.databaseId, _collection.id(), query, options);
-  }, [isPreferredApiMongoDB, filterContent, resourceTokenPartitionKey, isQueryCopilotSampleContainer, _collection]);
-
-  /**
-   * Query first page of documents
-   * Select and query first document and display content
-   */
-  // const autoPopulateContent = async (applyFilterButtonPressed?: boolean) => {
-  //   // reset iterator
-  //   setDocumentsIterator({
-  //     iterator: createIterator(),
-  //     applyFilterButtonPressed,
-  //   });
-  //   // load documents
-  //   await loadNextPage(applyFilterButtonPressed);
-
-  //   // // Select first document and load content
-  //   // if (documentIds.length > 0) {
-  //   //   documentIds[0].click();
-  //   // }
-  // };
+  }, [
+    filterContent,
+    isPreferredApiMongoDB,
+    partitionKeyProperties,
+    partitionKey,
+    resourceTokenPartitionKey,
+    isQueryCopilotSampleContainer,
+    _collection,
+  ]);
 
   const onHideFilterClick = (): void => {
     setIsFilterExpanded(false);
-
-    // this.isFilterExpanded(false);
-
-    // $(".filterDocExpanded").removeClass("active");
-    // $("#content").removeClass("active");
-    // $(".queryButton").focus();
   };
 
   const onCloseButtonKeyDown: KeyboardEventHandler<HTMLSpanElement> = (event) => {
@@ -991,26 +942,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
     return true;
   };
-
-  // const accessibleDocumentList = new AccessibleVerticalList(documentIds);
-  // accessibleDocumentList.setOnSelect(
-  //   (selectedDocument: DocumentId) => selectedDocument && selectedDocument.click(),
-  // );
-  // this.selectedDocumentId.subscribe((newSelectedDocumentId: DocumentId) =>
-  //   accessibleDocumentList.updateCurrentItem(newSelectedDocumentId),
-  // );
-  // this.documentIds.subscribe((newDocuments: DocumentId[]) => {
-  //   accessibleDocumentList.updateItemList(newDocuments);
-  //   if (newDocuments.length > 0) {
-  //     this.dataContentsGridScrollHeight(
-  //       newDocuments.length * DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px",
-  //     );
-  //   } else {
-  //     this.dataContentsGridScrollHeight(
-  //       DocumentsGridMetrics.IndividualRowHeight + DocumentsGridMetrics.BufferHeight + "px",
-  //     );
-  //   }
-  // });
 
   let loadNextPage = useCallback(
     (iterator: QueryIterator<ItemDefinition & Resource>, applyFilterButtonClicked?: boolean): Promise<unknown> => {
@@ -1056,7 +987,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
               .map((rawDocument: DataModels.DocumentId & { _partitionKeyValue: string[] }) => {
                 const partitionKeyValue = rawDocument._partitionKeyValue;
 
-                // TODO: Mock documentsTab. Fix this
                 const partitionKey = _partitionKey || (_collection && _collection.partitionKey);
                 const partitionKeyPropertyHeaders = _collection?.partitionKeyPropertyHeaders || partitionKey?.paths;
                 const partitionKeyProperties = partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader) =>
@@ -1076,7 +1006,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   collectionName: _collection.id(),
 
                   dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle, //tabTitle(),
+                  tabTitle,
                 },
                 onLoadStartKey,
               );
@@ -1095,7 +1025,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   collectionName: _collection.id(),
 
                   dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle, // tabTitle(),
+                  tabTitle,
                   error: errorMessage,
                   errorStack: getErrorStack(error),
                 },
@@ -1135,8 +1065,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       loadNextPage(documentsIterator.iterator, documentsIterator.applyFilterButtonPressed);
     }
   }, [
-    documentsIterator,
-    // loadNextPage: disabled as it will trigger a circular dependency and infinite loop
+    documentsIterator, // loadNextPage: disabled as it will trigger a circular dependency and infinite loop
   ]);
 
   const onRefreshKeyInput: KeyboardEventHandler<HTMLButtonElement> = (event) => {
@@ -1473,7 +1402,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
             const value: string = renderObjectForEditor(savedDocument || {}, null, 4);
             setSelectedDocumentContentBaseline(value);
 
-            // this.selectedDocumentId(id);
             setDocumentIds(ids);
             setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
             TelemetryProcessor.traceSuccess(
@@ -1515,7 +1443,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
     ]);
 
     onSaveExistingDocumentClick = (): Promise<void> => {
-      // const selectedDocumentId = this.selectedDocumentId();
       const documentContent = selectedDocumentContent;
       onExecutionErrorChange(false);
       setIsExecuting(true);
@@ -1608,14 +1535,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
             const merged = currentDocuments.concat(nextDocumentIds);
 
             setDocumentIds(merged);
-            // currentDocuments = this.documentIds();/
             currentDocuments = merged;
 
             if (filterContent.length > 0 && currentDocuments.length > 0) {
               currentDocuments[0].click();
             } else {
               setSelectedDocumentContent("");
-              // this.selectedDocumentId(null);
               setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
             }
             if (_onLoadStartKey !== null && _onLoadStartKey !== undefined) {
@@ -1630,8 +1555,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 },
                 _onLoadStartKey,
               );
-              // TODO: Set on Load start key to null to stop telemetry traces
-              setOnLoadStartKey(null);
+              setOnLoadStartKey(undefined);
             }
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1650,7 +1574,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 },
                 _onLoadStartKey,
               );
-              // TODO: Set on Load start key to null to stop telemetry traces
               setOnLoadStartKey(undefined);
             }
           },
@@ -1665,10 +1588,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       // clear documents grid
       setDocumentIds([]);
       try {
-        // reset iterator
-        // setDocumentsIterator(createIterator());
-        // load documents
-        // await autoPopulateContent(applyFilterButtonPressed);
+        // reset iterator which will autoload documents (in useEffect)
         setDocumentsIterator({
           iterator: createIterator(),
           applyFilterButtonPressed,
@@ -1688,71 +1608,33 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
   return (
     <FluentProvider theme={getPlatformTheme(configContext.platform)} style={{ height: "100%" }}>
-      <div
-        className="tab-pane active"
-        /* data-bind="
-                                                                                                    setTemplateReady: true,
-                                                                                                    attr:{
-                                                                                                        id: tabId
-                                                                                                    },
-                                                                                                    visible: isActive"
-                                                                                                    */
-        role="tabpanel"
-        style={{ display: "flex" }}
-      >
-        {/* <!-- Filter - Start --> */}
+      <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
         {isFilterCreated && (
-          <div className="filterdivs" /*data-bind="visible: isFilterCreated "*/>
-            {/* <!-- Read-only Filter - Start --> */}
+          <div className="filterdivs">
             {!isFilterExpanded && !isPreferredApiMongoDB && (
-              <div
-                className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && !isPreferredApiMongoDB"*/
-              >
+              <div className="filterDocCollapsed">
                 <span className="selectQuery">SELECT * FROM c</span>
-                <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
-                <Button
-                  appearance="primary"
-                  onClick={onShowFilterClick}
-                  style={filterButtonStyle}
-                  /*data-bind="click: onShowFilterClick"*/
-                >
+                <span className="appliedQuery">{appliedFilter}</span>
+                <Button appearance="primary" onClick={onShowFilterClick} style={filterButtonStyle}>
                   Edit Filter
                 </Button>
               </div>
             )}
             {!isFilterExpanded && isPreferredApiMongoDB && (
-              <div className="filterDocCollapsed" /*data-bind="visible: !isFilterExpanded() && isPreferredApiMongoDB"*/>
-                {appliedFilter.length > 0 && (
-                  <span className="selectQuery" /*data-bind="visible: appliedFilter().length > 0"*/>Filter :</span>
-                )}
-                {!(appliedFilter.length > 0) && (
-                  <span className="noFilterApplied" /*data-bind="visible: !appliedFilter().length > 0"*/>
-                    No filter applied
-                  </span>
-                )}
-                <span className="appliedQuery" /*data-bind="text: appliedFilter"*/>{appliedFilter}</span>
-                <Button
-                  style={filterButtonStyle}
-                  appearance="primary"
-                  onClick={onShowFilterClick} /*data-bind="click: onShowFilterClick"*/
-                >
+              <div className="filterDocCollapsed">
+                {appliedFilter.length > 0 && <span className="selectQuery">Filter :</span>}
+                {!(appliedFilter.length > 0) && <span className="noFilterApplied">No filter applied</span>}
+                <span className="appliedQuery">{appliedFilter}</span>
+                <Button style={filterButtonStyle} appearance="primary" onClick={onShowFilterClick}>
                   Edit Filter
                 </Button>
               </div>
             )}
-            {/* <!-- Read-only Filter - End --> */}
-
-            {/* <!-- Editable Filter - start --> */}
             {isFilterExpanded && (
-              <div className="filterDocExpanded" /*data-bind="visible: isFilterExpanded"*/>
+              <div className="filterDocExpanded">
                 <div>
                   <div className="editFilterContainer">
-                    {!isPreferredApiMongoDB && (
-                      <span className="filterspan" /*data-bind="visible: !isPreferredApiMongoDB"*/>
-                        {" "}
-                        SELECT * FROM c{" "}
-                      </span>
-                    )}
+                    {!isPreferredApiMongoDB && <span className="filterspan"> SELECT * FROM c </span>}
                     <Input
                       type="text"
                       list="filtersList"
@@ -1766,19 +1648,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
-                      /*
-  data-bind="
-  W  attr:{
-  placeholder:isPreferredApiMongoDB?'Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents.':'Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.'
-  },
-  css: { placeholderVisible: filterContent().length === 0 },
-  textInput: filterContent"
-  */
                     />
 
-                    <datalist id="filtersList" /*data-bind="foreach: lastFilterContents"*/>
+                    <datalist id="filtersList">
                       {lastFilterContents.map((filter) => (
-                        <option key={filter} value={filter} /*data-bind="value: $data"*/ />
+                        <option key={filter} value={filter} />
                       ))}
                     </datalist>
 
@@ -1788,10 +1662,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         style={filterButtonStyle}
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
-                        /* data-bind="
-                                                                                                                                click: refreshDocumentsGrid.bind($data, true),
-                                                                                                                                enable: applyFilterButton.enabled"
-                                                                                                                      */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1803,10 +1673,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         <Button
                           style={filterButtonStyle}
                           appearance="primary"
-                          /* data-bind="
-                                                                                                                                  visible: !isPreferredApiMongoDB && isExecuting,
-                                                                                                                                  click: onAbortQueryClick"
-                                                                                                                        */
                           aria-label="Cancel Query"
                           onClick={() => queryAbortController.abort()}
                           tabIndex={0}
@@ -1822,17 +1688,13 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       onKeyDown={onCloseButtonKeyDown}
                       appearance="transparent"
                       icon={<Dismiss16Filled />}
-                      /*data-bind="click: onHideFilterClick, event: { keydown: onCloseButtonKeyDown }"*/
                     />
                   </div>
                 </div>
               </div>
             )}
-            {/* <!-- Editable Filter - End --> */}
           </div>
         )}
-        {/* <!-- Filter - End --> */}
-
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Split>
