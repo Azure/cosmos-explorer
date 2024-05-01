@@ -56,7 +56,6 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
-import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
@@ -1010,41 +1009,6 @@ export default class Explorer {
     );
   }
 
-  /**
-   * This creates a new notebook file, then opens the notebook
-   */
-  public async onNewNotebookClicked(parent?: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to create new notebook, but notebook is not enabled";
-      handleError(error, "Explorer/onNewNotebookClicked");
-      throw new Error(error);
-    }
-    if (useNotebook.getState().isPhoenixNotebooks) {
-      if (isGithubTree) {
-        await this.allocateContainer(PoolIdType.DefaultPoolId);
-        parent = parent || this.resourceTree.myNotebooksContentRoot;
-        this.createNewNoteBook(parent, isGithubTree);
-      } else {
-        useDialog.getState().showOkCancelModalDialog(
-          Notebook.newNotebookModalTitle,
-          undefined,
-          "Create",
-          async () => {
-            await this.allocateContainer(PoolIdType.DefaultPoolId);
-            parent = parent || this.resourceTree.myNotebooksContentRoot;
-            this.createNewNoteBook(parent, isGithubTree);
-          },
-          "Cancel",
-          undefined,
-          this.getNewNoteWarningText(),
-        );
-      }
-    } else {
-      parent = parent || this.resourceTree.myNotebooksContentRoot;
-      this.createNewNoteBook(parent, isGithubTree);
-    }
-  }
-
   private getNewNoteWarningText(): JSX.Element {
     return (
       <>
@@ -1058,42 +1022,6 @@ export default class Explorer {
         </p>
       </>
     );
-  }
-
-  private createNewNoteBook(parent?: NotebookContentItem, isGithubTree?: boolean): void {
-    const clearInProgressMessage = logConsoleProgress(`Creating new notebook in ${parent.path}`);
-    const startKey: number = TelemetryProcessor.traceStart(Action.CreateNewNotebook, {
-      dataExplorerArea: Constants.Areas.Notebook,
-    });
-
-    this.notebookManager?.notebookContentClient
-      .createNewNotebookFile(parent, isGithubTree)
-      .then((newFile: NotebookContentItem) => {
-        logConsoleInfo(`Successfully created: ${newFile.name}`);
-        TelemetryProcessor.traceSuccess(
-          Action.CreateNewNotebook,
-          {
-            dataExplorerArea: Constants.Areas.Notebook,
-          },
-          startKey,
-        );
-        return this.openNotebook(newFile);
-      })
-      .then(() => this.resourceTree.triggerRender())
-      .catch((error) => {
-        const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
-        logConsoleError(errorMessage);
-        TelemetryProcessor.traceFailure(
-          Action.CreateNewNotebook,
-          {
-            dataExplorerArea: Constants.Areas.Notebook,
-            error: errorMessage,
-            errorStack: getErrorStack(error),
-          },
-          startKey,
-        );
-      })
-      .finally(clearInProgressMessage);
   }
 
   // TODO: Delete this function when ResourceTreeAdapter is removed.
@@ -1285,36 +1213,6 @@ export default class Explorer {
     useSidePanel
       .getState()
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
-  }
-
-  public openUploadFilePanel(parent?: NotebookContentItem): void {
-    if (useNotebook.getState().isPhoenixNotebooks) {
-      useDialog.getState().showOkCancelModalDialog(
-        Notebook.newNotebookUploadModalTitle,
-        undefined,
-        "Upload",
-        async () => {
-          await this.allocateContainer(PoolIdType.DefaultPoolId);
-          parent = parent || this.resourceTree.myNotebooksContentRoot;
-          this.uploadFilePanel(parent);
-        },
-        "Cancel",
-        undefined,
-        this.getNewNoteWarningText(),
-      );
-    } else {
-      parent = parent || this.resourceTree.myNotebooksContentRoot;
-      this.uploadFilePanel(parent);
-    }
-  }
-
-  private uploadFilePanel(parent?: NotebookContentItem): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Upload file to notebook server",
-        <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />,
-      );
   }
 
   public getDownloadModalConent(fileName: string): JSX.Element {

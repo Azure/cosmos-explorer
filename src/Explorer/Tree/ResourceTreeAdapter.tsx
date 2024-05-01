@@ -800,11 +800,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
         iconSrc: NewNotebookIcon,
         onClick: () => this.container.onCreateDirectory(item),
       },
-      {
-        label: "Upload File",
-        iconSrc: NewNotebookIcon,
-        onClick: () => this.container.openUploadFilePanel(item),
-      },
     ];
 
     //disallow renaming of temporary notebook workspace

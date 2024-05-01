@@ -373,11 +373,6 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         iconSrc: NewNotebookIcon,
         onClick: () => container.onCreateDirectory(item, isGithubTree),
       },
-      {
-        label: "Upload File",
-        iconSrc: NewNotebookIcon,
-        onClick: () => container.openUploadFilePanel(item),
-      },
     ];
 
     //disallow renaming of temporary notebook workspace
