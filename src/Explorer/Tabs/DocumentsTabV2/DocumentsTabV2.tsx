@@ -448,10 +448,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
 }) => {
   const [isFilterCreated, setIsFilterCreated] = useState<boolean>(true);
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
+  const [isFilterFocused, setIsFilterFocused] = useState<boolean>(false);
   const [appliedFilter, setAppliedFilter] = useState<string>("");
   const [filterContent, setFilterContent] = useState<string>("");
   const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const filterInput = useRef<HTMLInputElement>(null);
 
   // Query
   const [documentsIterator, setDocumentsIterator] = useState<{
@@ -486,6 +488,15 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
+
+  useEffect(() => {
+    if (isFilterFocused) {
+      console.log("focus filter input");
+      filterInput.current?.focus();
+    } else {
+      console.log("blur filter input");
+    }
+  }, [isFilterFocused]);
 
   let lastFilterContents = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 
@@ -925,6 +936,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const onShowFilterClick = () => {
     setIsFilterCreated(true);
     setIsFilterExpanded(true);
+    setIsFilterFocused(true);
+    console.log("onShowFilterClick");
   };
 
   const queryTimeoutEnabled = useCallback(
@@ -1684,6 +1697,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   <div className="editFilterContainer">
                     {!isPreferredApiMongoDB && <span className="filterspan"> SELECT * FROM c </span>}
                     <Input
+                      ref={filterInput}
                       type="text"
                       list="filtersList"
                       className={`${filterContent.length === 0 ? "placeholderVisible" : ""}`}
@@ -1696,6 +1710,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                       }
                       value={filterContent}
                       onChange={(e) => setFilterContent(e.target.value)}
+                      onBlur={() => setIsFilterFocused(false)}
                     />
 
                     <datalist id="filtersList">
