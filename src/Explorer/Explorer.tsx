@@ -38,7 +38,6 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
@@ -509,104 +508,6 @@ export default class Explorer {
         .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
   }
 
-  public resetNotebookWorkspace(): void {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookClient) {
-      handleError(
-        "Attempt to reset notebook workspace, but notebook is not enabled",
-        "Explorer/resetNotebookWorkspace",
-      );
-      return;
-    }
-    const dialogContent = useNotebook.getState().isPhoenixNotebooks
-      ? "Notebooks saved in the temporary workspace will be deleted. Do you want to proceed?"
-      : "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?";
-
-    const resetConfirmationDialogProps: DialogProps = {
-      isModal: true,
-      title: "Reset Workspace",
-      subText: dialogContent,
-      primaryButtonText: "OK",
-      secondaryButtonText: "Cancel",
-      onPrimaryButtonClick: this._resetNotebookWorkspace,
-      onSecondaryButtonClick: () => useDialog.getState().closeDialog(),
-    };
-    useDialog.getState().openDialog(resetConfirmationDialogProps);
-  }
-
-  private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
-    if (!databaseAccount) {
-      return false;
-    }
-    try {
-      const { value: workspaces } = await listByDatabaseAccount(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
-      );
-      return workspaces && workspaces.length > 0 && workspaces.some((workspace) => workspace.name === "default");
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
-      return false;
-    }
-  }
-
-  private _resetNotebookWorkspace = async () => {
-    useDialog.getState().closeDialog();
-    const clearInProgressMessage = logConsoleProgress("Resetting notebook workspace");
-    let connectionStatus: ContainerConnectionInfo;
-    try {
-      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-      if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
-        const error = "No server endpoint detected";
-        Logger.logError(error, "NotebookContainerClient/resetWorkspace");
-        logConsoleError(error);
-        return;
-      }
-      TelemetryProcessor.traceStart(Action.PhoenixResetWorkspace, {
-        dataExplorerArea: Areas.Notebook,
-      });
-      if (useNotebook.getState().isPhoenixNotebooks) {
-        useTabs.getState().closeAllNotebookTabs(true);
-        connectionStatus = {
-          status: ConnectionStatusType.Connecting,
-        };
-        useNotebook.getState().setConnectionInfo(connectionStatus);
-      }
-      const connectionInfo = await this.notebookManager?.notebookClient.resetWorkspace();
-      if (connectionInfo?.status !== HttpStatusCodes.OK) {
-        throw new Error(`Reset Workspace: Received status code- ${connectionInfo?.status}`);
-      }
-      if (!connectionInfo?.data?.phoenixServiceUrl) {
-        throw new Error(`Reset Workspace: PhoenixServiceUrl is invalid!`);
-      }
-      if (useNotebook.getState().isPhoenixNotebooks) {
-        await this.setNotebookInfo(true, connectionInfo, connectionStatus);
-        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-      }
-      logConsoleInfo("Successfully reset notebook workspace");
-      TelemetryProcessor.traceSuccess(Action.PhoenixResetWorkspace, {
-        dataExplorerArea: Areas.Notebook,
-      });
-    } catch (error) {
-      logConsoleError(`Failed to reset notebook workspace: ${error}`);
-      TelemetryProcessor.traceFailure(Action.PhoenixResetWorkspace, {
-        dataExplorerArea: Areas.Notebook,
-        error: getErrorMessage(error),
-        errorStack: getErrorStack(error),
-      });
-      if (useNotebook.getState().isPhoenixNotebooks) {
-        connectionStatus = {
-          status: ConnectionStatusType.Failed,
-        };
-        useNotebook.getState().resetContainerConnection(connectionStatus);
-        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-      }
-      throw error;
-    } finally {
-      clearInProgressMessage();
-    }
-  };
-
   private getDeltaDatabases(
     updatedDatabaseList: DataModels.Database[],
     databases: ViewModels.Database[],
@@ -1009,21 +910,6 @@ export default class Explorer {
     );
   }
 
-  private getNewNoteWarningText(): JSX.Element {
-    return (
-      <>
-        <p>{Notebook.newNotebookModalContent1}</p>
-        <br />
-        <p>
-          {Notebook.newNotebookModalContent2}
-          <Link href={Notebook.cosmosNotebookHomePageUrl} target="_blank">
-            {Notebook.learnMore}
-          </Link>
-        </p>
-      </>
-    );
-  }
-
   // TODO: Delete this function when ResourceTreeAdapter is removed.
   public async refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
@@ -1058,10 +944,6 @@ export default class Explorer {
     let title: string;
 
     switch (kind) {
-      case ViewModels.TerminalKind.Default:
-        title = "Terminal";
-        break;
-
       case ViewModels.TerminalKind.Mongo:
         title = "Mongo Shell";
         break;
