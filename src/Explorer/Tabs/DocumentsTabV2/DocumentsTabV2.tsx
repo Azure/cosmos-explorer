@@ -15,9 +15,9 @@ import { Platform, configContext } from "ConfigContext";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import DocumentsTab from "Explorer/Tabs/DocumentsTab";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
@@ -31,6 +31,7 @@ import { format } from "react-string-format";
 import { CSSProperties } from "styled-components";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
 import NewDocumentIcon from "../../../../images/NewDocument.svg";
+import UploadIcon from "../../../../images/Upload_16x16.svg";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
@@ -228,6 +229,25 @@ type ButtonsDependencies = {
   onDeleteExistingDocumentsClick: UiKeyboardEvent;
 };
 
+const createUploadButton = (container: Explorer): CommandButtonComponentProps => {
+  const label = "Upload Item";
+  return {
+    id: "uploadItemBtn",
+    iconSrc: UploadIcon,
+    iconAlt: label,
+    onCommandClick: () => {
+      const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+      selectedCollection && container.openUploadItemsPanePane();
+    },
+    commandButtonLabel: label,
+    ariaLabel: label,
+    hasPopup: true,
+    disabled:
+      useSelectedNode.getState().isDatabaseNodeOrNoneSelected() ||
+      useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+  };
+};
+
 const getTabsButtons = ({
   _collection,
   selectedRows,
@@ -344,7 +364,7 @@ const getTabsButtons = ({
   }
 
   if (!isPreferredApiMongoDB) {
-    buttons.push(DocumentsTab._createUploadButton(_collection.container));
+    buttons.push(createUploadButton(_collection.container));
   }
 
   return buttons;
@@ -1671,12 +1691,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
       <div
         className="tab-pane active"
         /* data-bind="
-                                                                                            setTemplateReady: true,
-                                                                                            attr:{
-                                                                                                id: tabId
-                                                                                            },
-                                                                                            visible: isActive"
-                                                                                            */
+                                                                                              setTemplateReady: true,
+                                                                                              attr:{
+                                                                                                  id: tabId
+                                                                                              },
+                                                                                              visible: isActive"
+                                                                                              */
         role="tabpanel"
         style={{ display: "flex" }}
       >
@@ -1769,9 +1789,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                         onClick={() => refreshDocumentsGrid(true)}
                         disabled={!applyFilterButton.enabled}
                         /* data-bind="
-                                                                                                                        click: refreshDocumentsGrid.bind($data, true),
-                                                                                                                        enable: applyFilterButton.enabled"
-                                                                                                              */
+                                                                                                                          click: refreshDocumentsGrid.bind($data, true),
+                                                                                                                          enable: applyFilterButton.enabled"
+                                                                                                                */
                         aria-label="Apply filter"
                         tabIndex={0}
                       >
@@ -1784,9 +1804,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
                           style={filterButtonStyle}
                           appearance="primary"
                           /* data-bind="
-                                                                                                                          visible: !isPreferredApiMongoDB && isExecuting,
-                                                                                                                          click: onAbortQueryClick"
-                                                                                                                */
+                                                                                                                            visible: !isPreferredApiMongoDB && isExecuting,
+                                                                                                                            click: onAbortQueryClick"
+                                                                                                                  */
                           aria-label="Cancel Query"
                           onClick={() => queryAbortController.abort()}
                           tabIndex={0}

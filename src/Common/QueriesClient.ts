@@ -3,8 +3,7 @@ import * as _ from "underscore";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "../Explorer/Explorer";
-import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
-import DocumentId from "../Explorer/Tree/DocumentId";
+import DocumentId, { IDocumentIdContainer } from "../Explorer/Tree/DocumentId";
 import { useDatabases } from "../Explorer/useDatabases";
 import { userContext } from "../UserContext";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
@@ -162,10 +161,10 @@ export class QueriesClient {
       {
         partitionKey: QueriesClient.PartitionKey,
         partitionKeyProperties: ["id"],
-      } as DocumentsTab,
+      } as IDocumentIdContainer,
       query,
       [query.queryName],
-    ); // TODO: Remove DocumentId's dependency on DocumentsTab
+    );
     const options: any = { partitionKey: query.resourceId };
     return deleteDocument(queriesCollection, documentId)
       .then(
