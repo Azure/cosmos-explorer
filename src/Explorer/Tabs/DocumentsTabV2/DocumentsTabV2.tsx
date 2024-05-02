@@ -448,10 +448,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
 }) => {
   const [isFilterCreated, setIsFilterCreated] = useState<boolean>(true);
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
+  const [isFilterFocused, setIsFilterFocused] = useState<boolean>(false);
   const [appliedFilter, setAppliedFilter] = useState<string>("");
   const [filterContent, setFilterContent] = useState<string>("");
   const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const filterInput = useRef<HTMLInputElement>(null);
 
   // Query
   const [documentsIterator, setDocumentsIterator] = useState<{
@@ -486,6 +488,12 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
+
+  useEffect(() => {
+    if (isFilterFocused) {
+      filterInput.current?.focus();
+    }
+  }, [isFilterFocused]);
 
   let lastFilterContents = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 
@@ -925,6 +933,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
   const onShowFilterClick = () => {
     setIsFilterCreated(true);
     setIsFilterExpanded(true);
+    setIsFilterFocused(true);
   };
 
   const queryTimeoutEnabled = useCallback(
@@ -1119,20 +1128,17 @@ const DocumentsTabComponent: React.FunctionComponent<{
     }
   };
 
-  const onFilterKeyDown = (model: unknown, e: KeyboardEvent): boolean => {
+  const onFilterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
       refreshDocumentsGrid(true);
 
       // Suppress the default behavior of the key
-      return false;
+      e.preventDefault();
     } else if (e.key === "Escape") {
       onHideFilterClick();
 
       // Suppress the default behavior of the key
-      return false;
-    } else {
-      // Allow the default behavior of the key
-      return true;
+      e.preventDefault();
     }
   };
 
@@ -1644,7 +1650,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
         // collapse filter
         setAppliedFilter(filterContent);
-        setIsFilterExpanded(applyFilterButtonPressed);
+        setIsFilterExpanded(!applyFilterButtonPressed);
         document.getElementById("errorStatusIcon")?.focus();
       } catch (error) {
         console.error();
@@ -1684,6 +1690,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   <div className="editFilterContainer">
                     {!isPreferredApiMongoDB && <span className="filterspan"> SELECT * FROM c </span>}
                     <Input
+                      ref={filterInput}
                       type="text"
                       list="filtersList"
                       className={`${filterContent.length === 0 ? "placeholderVisible" : ""}`}
@@ -1695,7 +1702,10 @@ const DocumentsTabComponent: React.FunctionComponent<{
                           : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
                       }
                       value={filterContent}
+                      autoFocus={true}
+                      onKeyDown={onFilterKeyDown}
                       onChange={(e) => setFilterContent(e.target.value)}
+                      onBlur={() => setIsFilterFocused(false)}
                     />
 
                     <datalist id="filtersList">
