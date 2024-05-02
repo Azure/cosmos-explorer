@@ -1,9 +1,7 @@
-import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import { getItemName } from "Utils/APITypeUtils";
 import * as ko from "knockout";
 import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
-import GalleryIcon from "../../../images/GalleryIcon.svg";
 import DeleteIcon from "../../../images/delete.svg";
 import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
@@ -13,21 +11,17 @@ import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { Areas } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
-import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
-import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
-import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
 import { useDialog } from "../Controls/Dialog";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
@@ -36,7 +30,6 @@ import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import { useNotebook } from "../Notebook/useNotebook";
-import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
@@ -102,26 +95,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   public renderComponent(): JSX.Element {
     const dataRootNode = this.buildDataTree();
-    const notebooksRootNode = this.buildNotebooksTrees();
-
-    if (useNotebook.getState().isNotebookEnabled) {
-      return (
-        <>
-          <AccordionComponent>
-            <AccordionItemComponent title={ResourceTreeAdapter.DataTitle} isExpanded={!this.gitHubNotebooksContentRoot}>
-              <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
-            </AccordionItemComponent>
-            <AccordionItemComponent title={ResourceTreeAdapter.NotebooksTitle}>
-              <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
-            </AccordionItemComponent>
-          </AccordionComponent>
-
-          {/* {this.galleryContentRoot && this.buildGalleryCallout()} */}
-        </>
-      );
-    } else {
-      return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
-    }
+    return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
   }
 
   public async initialize(): Promise<void[]> {
@@ -504,156 +478,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
     return traverse(schema);
   }
 
-  private buildNotebooksTrees(): TreeNode {
-    let notebooksTree: TreeNode = {
-      label: undefined,
-      isExpanded: true,
-      children: [],
-    };
-
-    if (this.galleryContentRoot) {
-      notebooksTree.children.push(this.buildGalleryNotebooksTree());
-    }
-
-    if (this.myNotebooksContentRoot) {
-      notebooksTree.children.push(this.buildMyNotebooksTree());
-    }
-
-    if (this.gitHubNotebooksContentRoot) {
-      // collapse all other notebook nodes
-      notebooksTree.children.forEach((node) => (node.isExpanded = false));
-      notebooksTree.children.push(this.buildGitHubNotebooksTree());
-    }
-
-    return notebooksTree;
-  }
-
-  private buildGalleryCallout(): JSX.Element {
-    if (
-      LocalStorageUtility.hasItem(StorageKey.GalleryCalloutDismissed) &&
-      LocalStorageUtility.getEntryBoolean(StorageKey.GalleryCalloutDismissed)
-    ) {
-      return undefined;
-    }
-
-    const calloutProps: ICalloutProps = {
-      calloutMaxWidth: 350,
-      ariaLabel: "New gallery",
-      role: "alertdialog",
-      gapSpace: 0,
-      target: ".galleryHeader",
-      directionalHint: DirectionalHint.leftTopEdge,
-      onDismiss: () => {
-        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
-        this.triggerRender();
-      },
-      setInitialFocus: true,
-    };
-
-    const openGalleryProps: ILinkProps = {
-      onClick: () => {
-        LocalStorageUtility.setEntryBoolean(StorageKey.GalleryCalloutDismissed, true);
-        this.container.openGallery();
-        this.triggerRender();
-      },
-    };
-
-    return (
-      <Callout {...calloutProps}>
-        <Stack tokens={{ childrenGap: 10, padding: 20 }}>
-          <Text variant="xLarge" block>
-            New gallery
-          </Text>
-          <Text block>
-            Sample notebooks are now combined in gallery. View and try out samples provided by Microsoft and other
-            contributors.
-          </Text>
-          <Link {...openGalleryProps}>Open gallery</Link>
-        </Stack>
-      </Callout>
-    );
-  }
-
-  private buildGalleryNotebooksTree(): TreeNode {
-    return {
-      label: "Gallery",
-      iconSrc: GalleryIcon,
-      className: "notebookHeader galleryHeader",
-      onClick: () => this.container.openGallery(),
-      isSelected: () => {
-        const activeTab = useTabs.getState().activeTab;
-        return activeTab && activeTab.tabKind === ViewModels.CollectionTabKind.Gallery;
-      },
-    };
-  }
-
-  private buildMyNotebooksTree(): TreeNode {
-    const myNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
-      this.myNotebooksContentRoot,
-      (item: NotebookContentItem) => {
-        this.container.openNotebook(item).then((hasOpened) => {
-          if (hasOpened) {
-            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
-          }
-        });
-      },
-      true,
-      true,
-    );
-
-    myNotebooksTree.isExpanded = true;
-    myNotebooksTree.isAlphaSorted = true;
-    // Remove "Delete" menu item from context menu
-    myNotebooksTree.contextMenu = myNotebooksTree.contextMenu.filter((menuItem) => menuItem.label !== "Delete");
-    return myNotebooksTree;
-  }
-
-  private buildGitHubNotebooksTree(): TreeNode {
-    const gitHubNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
-      this.gitHubNotebooksContentRoot,
-      (item: NotebookContentItem) => {
-        this.container.openNotebook(item).then((hasOpened) => {
-          if (hasOpened) {
-            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
-          }
-        });
-      },
-      true,
-      true,
-    );
-
-    gitHubNotebooksTree.contextMenu = [
-      {
-        label: "Manage GitHub settings",
-        onClick: () =>
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Manage GitHub settings",
-              <GitHubReposPanel
-                explorer={this.container}
-                gitHubClientProp={this.container.notebookManager.gitHubClient}
-                junoClientProp={this.container.notebookManager.junoClient}
-              />,
-            ),
-      },
-      {
-        label: "Disconnect from GitHub",
-        onClick: () => {
-          TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
-            dataExplorerArea: Areas.Notebook,
-          });
-          this.container.notebookManager?.gitHubOAuthService.logout();
-        },
-      },
-    ];
-
-    gitHubNotebooksTree.isExpanded = true;
-    gitHubNotebooksTree.isAlphaSorted = true;
-
-    return gitHubNotebooksTree;
-  }
-
   private buildChildNodes(
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
@@ -799,11 +623,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "New Directory",
         iconSrc: NewNotebookIcon,
         onClick: () => this.container.onCreateDirectory(item),
-      },
-      {
-        label: "Upload File",
-        iconSrc: NewNotebookIcon,
-        onClick: () => this.container.openUploadFilePanel(item),
       },
     ];
 

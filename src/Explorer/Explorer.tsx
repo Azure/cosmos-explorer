@@ -38,7 +38,6 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { listByDatabaseAccount } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
@@ -56,7 +55,6 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
-import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
@@ -510,104 +508,6 @@ export default class Explorer {
         .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
   }
 
-  public resetNotebookWorkspace(): void {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookClient) {
-      handleError(
-        "Attempt to reset notebook workspace, but notebook is not enabled",
-        "Explorer/resetNotebookWorkspace",
-      );
-      return;
-    }
-    const dialogContent = useNotebook.getState().isPhoenixNotebooks
-      ? "Notebooks saved in the temporary workspace will be deleted. Do you want to proceed?"
-      : "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?";
-
-    const resetConfirmationDialogProps: DialogProps = {
-      isModal: true,
-      title: "Reset Workspace",
-      subText: dialogContent,
-      primaryButtonText: "OK",
-      secondaryButtonText: "Cancel",
-      onPrimaryButtonClick: this._resetNotebookWorkspace,
-      onSecondaryButtonClick: () => useDialog.getState().closeDialog(),
-    };
-    useDialog.getState().openDialog(resetConfirmationDialogProps);
-  }
-
-  private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
-    if (!databaseAccount) {
-      return false;
-    }
-    try {
-      const { value: workspaces } = await listByDatabaseAccount(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
-      );
-      return workspaces && workspaces.length > 0 && workspaces.some((workspace) => workspace.name === "default");
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
-      return false;
-    }
-  }
-
-  private _resetNotebookWorkspace = async () => {
-    useDialog.getState().closeDialog();
-    const clearInProgressMessage = logConsoleProgress("Resetting notebook workspace");
-    let connectionStatus: ContainerConnectionInfo;
-    try {
-      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-      if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
-        const error = "No server endpoint detected";
-        Logger.logError(error, "NotebookContainerClient/resetWorkspace");
-        logConsoleError(error);
-        return;
-      }
-      TelemetryProcessor.traceStart(Action.PhoenixResetWorkspace, {
-        dataExplorerArea: Areas.Notebook,
-      });
-      if (useNotebook.getState().isPhoenixNotebooks) {
-        useTabs.getState().closeAllNotebookTabs(true);
-        connectionStatus = {
-          status: ConnectionStatusType.Connecting,
-        };
-        useNotebook.getState().setConnectionInfo(connectionStatus);
-      }
-      const connectionInfo = await this.notebookManager?.notebookClient.resetWorkspace();
-      if (connectionInfo?.status !== HttpStatusCodes.OK) {
-        throw new Error(`Reset Workspace: Received status code- ${connectionInfo?.status}`);
-      }
-      if (!connectionInfo?.data?.phoenixServiceUrl) {
-        throw new Error(`Reset Workspace: PhoenixServiceUrl is invalid!`);
-      }
-      if (useNotebook.getState().isPhoenixNotebooks) {
-        await this.setNotebookInfo(true, connectionInfo, connectionStatus);
-        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-      }
-      logConsoleInfo("Successfully reset notebook workspace");
-      TelemetryProcessor.traceSuccess(Action.PhoenixResetWorkspace, {
-        dataExplorerArea: Areas.Notebook,
-      });
-    } catch (error) {
-      logConsoleError(`Failed to reset notebook workspace: ${error}`);
-      TelemetryProcessor.traceFailure(Action.PhoenixResetWorkspace, {
-        dataExplorerArea: Areas.Notebook,
-        error: getErrorMessage(error),
-        errorStack: getErrorStack(error),
-      });
-      if (useNotebook.getState().isPhoenixNotebooks) {
-        connectionStatus = {
-          status: ConnectionStatusType.Failed,
-        };
-        useNotebook.getState().resetContainerConnection(connectionStatus);
-        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-      }
-      throw error;
-    } finally {
-      clearInProgressMessage();
-    }
-  };
-
   private getDeltaDatabases(
     updatedDatabaseList: DataModels.Database[],
     databases: ViewModels.Database[],
@@ -1010,92 +910,6 @@ export default class Explorer {
     );
   }
 
-  /**
-   * This creates a new notebook file, then opens the notebook
-   */
-  public async onNewNotebookClicked(parent?: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
-    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
-      const error = "Attempt to create new notebook, but notebook is not enabled";
-      handleError(error, "Explorer/onNewNotebookClicked");
-      throw new Error(error);
-    }
-    if (useNotebook.getState().isPhoenixNotebooks) {
-      if (isGithubTree) {
-        await this.allocateContainer(PoolIdType.DefaultPoolId);
-        parent = parent || this.resourceTree.myNotebooksContentRoot;
-        this.createNewNoteBook(parent, isGithubTree);
-      } else {
-        useDialog.getState().showOkCancelModalDialog(
-          Notebook.newNotebookModalTitle,
-          undefined,
-          "Create",
-          async () => {
-            await this.allocateContainer(PoolIdType.DefaultPoolId);
-            parent = parent || this.resourceTree.myNotebooksContentRoot;
-            this.createNewNoteBook(parent, isGithubTree);
-          },
-          "Cancel",
-          undefined,
-          this.getNewNoteWarningText(),
-        );
-      }
-    } else {
-      parent = parent || this.resourceTree.myNotebooksContentRoot;
-      this.createNewNoteBook(parent, isGithubTree);
-    }
-  }
-
-  private getNewNoteWarningText(): JSX.Element {
-    return (
-      <>
-        <p>{Notebook.newNotebookModalContent1}</p>
-        <br />
-        <p>
-          {Notebook.newNotebookModalContent2}
-          <Link href={Notebook.cosmosNotebookHomePageUrl} target="_blank">
-            {Notebook.learnMore}
-          </Link>
-        </p>
-      </>
-    );
-  }
-
-  private createNewNoteBook(parent?: NotebookContentItem, isGithubTree?: boolean): void {
-    const clearInProgressMessage = logConsoleProgress(`Creating new notebook in ${parent.path}`);
-    const startKey: number = TelemetryProcessor.traceStart(Action.CreateNewNotebook, {
-      dataExplorerArea: Constants.Areas.Notebook,
-    });
-
-    this.notebookManager?.notebookContentClient
-      .createNewNotebookFile(parent, isGithubTree)
-      .then((newFile: NotebookContentItem) => {
-        logConsoleInfo(`Successfully created: ${newFile.name}`);
-        TelemetryProcessor.traceSuccess(
-          Action.CreateNewNotebook,
-          {
-            dataExplorerArea: Constants.Areas.Notebook,
-          },
-          startKey,
-        );
-        return this.openNotebook(newFile);
-      })
-      .then(() => this.resourceTree.triggerRender())
-      .catch((error) => {
-        const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
-        logConsoleError(errorMessage);
-        TelemetryProcessor.traceFailure(
-          Action.CreateNewNotebook,
-          {
-            dataExplorerArea: Constants.Areas.Notebook,
-            error: errorMessage,
-            errorStack: getErrorStack(error),
-          },
-          startKey,
-        );
-      })
-      .finally(clearInProgressMessage);
-  }
-
   // TODO: Delete this function when ResourceTreeAdapter is removed.
   public async refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
@@ -1130,10 +944,6 @@ export default class Explorer {
     let title: string;
 
     switch (kind) {
-      case ViewModels.TerminalKind.Default:
-        title = "Terminal";
-        break;
-
       case ViewModels.TerminalKind.Mongo:
         title = "Mongo Shell";
         break;
@@ -1285,36 +1095,6 @@ export default class Explorer {
     useSidePanel
       .getState()
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
-  }
-
-  public openUploadFilePanel(parent?: NotebookContentItem): void {
-    if (useNotebook.getState().isPhoenixNotebooks) {
-      useDialog.getState().showOkCancelModalDialog(
-        Notebook.newNotebookUploadModalTitle,
-        undefined,
-        "Upload",
-        async () => {
-          await this.allocateContainer(PoolIdType.DefaultPoolId);
-          parent = parent || this.resourceTree.myNotebooksContentRoot;
-          this.uploadFilePanel(parent);
-        },
-        "Cancel",
-        undefined,
-        this.getNewNoteWarningText(),
-      );
-    } else {
-      parent = parent || this.resourceTree.myNotebooksContentRoot;
-      this.uploadFilePanel(parent);
-    }
-  }
-
-  private uploadFilePanel(parent?: NotebookContentItem): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Upload file to notebook server",
-        <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />,
-      );
   }
 
   public getDownloadModalConent(fileName: string): JSX.Element {

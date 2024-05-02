@@ -30,7 +30,6 @@ exports[`SettingsComponent renders 1`] = `
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -108,7 +107,6 @@ exports[`SettingsComponent renders 1`] = `
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -225,7 +223,6 @@ exports[`SettingsComponent renders 1`] = `
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -272,7 +269,6 @@ exports[`SettingsComponent renders 1`] = `
           explorer={
             Explorer {
               "_isInitializingNotebooks": false,
-              "_resetNotebookWorkspace": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isTabsContentExpanded": [Function],
               "onRefreshDatabasesKeyPress": [Function],
