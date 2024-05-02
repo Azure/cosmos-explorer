@@ -12,13 +12,15 @@ import * as Logger from "../../Common/Logger";
 import { GitHubClient } from "../../GitHub/GitHubClient";
 import { GitHubContentProvider } from "../../GitHub/GitHubContentProvider";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
-import { useSidePanel } from "../../hooks/useSidePanel";
 import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
+import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
@@ -38,6 +40,7 @@ export interface NotebookManagerOptions {
   container: Explorer;
   resourceTree: ResourceTreeAdapter;
   refreshCommandBarButtons: () => void;
+  refreshNotebookList: () => void;
 }
 
 export default class NotebookManager {
@@ -78,6 +81,10 @@ export default class NotebookManager {
       contents.JupyterContentProvider,
     );
 
+    this.notebookClient = new NotebookContainerClient(() =>
+      this.params.container.initNotebooks(userContext?.databaseAccount),
+    );
+
     this.notebookContentClient = new NotebookContentClient(this.notebookContentProvider);
 
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
@@ -99,9 +106,11 @@ export default class NotebookManager {
       }
 
       this.params.refreshCommandBarButtons();
+      this.params.refreshNotebookList();
     });
 
     this.junoClient.subscribeToPinnedRepos((pinnedRepos) => {
+      this.params.resourceTree.initializeGitHubRepos(pinnedRepos);
       this.params.resourceTree.triggerRender();
       useNotebook.getState().initializeGitHubRepos(pinnedRepos);
     });
@@ -137,6 +146,22 @@ export default class NotebookManager {
         />,
         "440px",
         onClosePanel,
+      );
+  }
+
+  public openCopyNotebookPane(name: string, content: string): void {
+    const { container } = this.params;
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Copy Notebook",
+        <CopyNotebookPane
+          container={container}
+          junoClient={this.junoClient}
+          gitHubOAuthService={this.gitHubOAuthService}
+          name={name}
+          content={content}
+        />,
       );
   }
 

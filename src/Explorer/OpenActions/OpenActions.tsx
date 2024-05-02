@@ -195,5 +195,17 @@ export function handleOpenAction(
     return true;
   }
 
+  if (
+    action.actionType === ActionContracts.ActionType.OpenSampleNotebook ||
+    action.actionType === ActionContracts.ActionType[ActionContracts.ActionType.OpenSampleNotebook]
+  ) {
+    openFile(action as ActionContracts.OpenSampleNotebook, explorer);
+    return true;
+  }
+
   return false;
+}
+
+function openFile(action: ActionContracts.OpenSampleNotebook, explorer: Explorer) {
+  explorer.handleOpenFileAction(decodeURIComponent(action.path));
 }

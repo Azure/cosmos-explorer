@@ -25,9 +25,11 @@ import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
+import NotebookColorIcon from "../../../images/Notebooks.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as Constants from "../../Common/Constants";
 import { userContext } from "../../UserContext";
@@ -408,6 +410,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         },
       };
       heroes.push(launchQuickstartBtn);
+    } else if (useNotebook.getState().isPhoenixNotebooks) {
+      const newNotebookBtn = {
+        iconSrc: NotebookColorIcon,
+        title: "New notebook",
+        description: "Visualize your data stored in Azure Cosmos DB",
+        onClick: () => this.container.onNewNotebookClicked(),
+      };
+      heroes.push(newNotebookBtn);
     }
 
     heroes.push(this.getShellCard());
@@ -483,12 +493,28 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     };
   }
 
+  private decorateOpenNotebookActivity({ name, path }: MostRecentActivity.OpenNotebookItem) {
+    return {
+      info: path,
+      iconSrc: NotebookIcon,
+      title: name,
+      description: "Notebook",
+      onClick: () => {
+        const notebookItem = this.container.createNotebookContentItemFile(name, path);
+        notebookItem && this.container.openNotebook(notebookItem);
+      },
+    };
+  }
+
   private createRecentItems(): SplashScreenItem[] {
     return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((activity) => {
       switch (activity.type) {
         default: {
-          throw new Error(`Unknown activity: ${activity}`);
+          const unknownActivity: never = activity;
+          throw new Error(`Unknown activity: ${unknownActivity}`);
         }
+        case MostRecentActivity.Type.OpenNotebook:
+          return this.decorateOpenNotebookActivity(activity);
 
         case MostRecentActivity.Type.OpenCollection:
           return this.decorateOpenCollectionActivity(activity);
