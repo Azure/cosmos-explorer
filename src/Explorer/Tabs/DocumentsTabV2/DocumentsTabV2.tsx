@@ -1804,7 +1804,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
               </div>
             </div>
             <div style={{ minWidth: "20%", width: "100%" }}>
-              {selectedDocumentContent && selectedRows.size <= 1 && (
+              {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}
                   content={selectedDocumentContent}
