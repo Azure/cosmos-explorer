@@ -1392,7 +1392,6 @@ const DocumentsTabComponent: React.FunctionComponent<{
 
     onSaveNewDocumentClick = useCallback((): Promise<unknown> => {
       const documentContent = JSON.parse(selectedDocumentContent);
-      // this.displayedError("");
       const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle,
@@ -1401,14 +1400,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
       const partitionKeyProperty = partitionKeyProperties?.[0];
       if (partitionKeyProperty !== "_id" && !_hasShardKeySpecified(documentContent)) {
         const message = `The document is lacking the shard property: ${partitionKeyProperty}`;
-        // TODO: Display error message here
-
-        // this.displayedError(message);
-        // const that = this;
-        // setTimeout(() => {
-        //   that.displayedError("");
-        // }, Constants.ClientDefaults.errorNotificationTimeoutMs);
-        // this.isExecutionError(true);
+        useDialog.getState().showOkModalDialog("Create document failed", message);
+        onExecutionErrorChange(true);
         TelemetryProcessor.traceFailure(
           Action.CreateDocument,
           {
