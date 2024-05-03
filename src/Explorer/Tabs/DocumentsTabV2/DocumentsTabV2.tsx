@@ -859,15 +859,8 @@ const DocumentsTabComponent: React.FunctionComponent<{
       setIsExecuting(true);
       _deleteDocuments(toDeleteDocumentIds)
         .then((deletedIds: string[]) => {
-          const newDocumentIds = [...documentIds];
-          deletedIds.forEach((deletedId) => {
-            if (deletedId !== undefined) {
-              const index = toDeleteDocumentIds.findIndex((documentId) => documentId.rid === deletedId);
-              if (index !== -1) {
-                newDocumentIds.splice(index, 1);
-              }
-            }
-          });
+          // This could be optimized by using Set.has instead of array.includes
+          const newDocumentIds = [...documentIds.filter((documentId) => !deletedIds.includes(documentId.id()))];
           setDocumentIds(newDocumentIds);
 
           setSelectedDocumentContent(undefined);
