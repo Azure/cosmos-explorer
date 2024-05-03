@@ -813,7 +813,11 @@ const DocumentsTabComponent: React.FunctionComponent<{
         _collection,
         toDeleteDocumentIds.map((id) => ({
           id: id.id(),
-          partitionKey: id.partitionKeyValue,
+          // bulk delete: if not partition key is specified, do not pass empty array, but undefined
+          partitionKey:
+            id.partitionKeyValue && Array.isArray(id.partitionKeyValue) && id.partitionKeyValue.length === 0
+              ? undefined
+              : id.partitionKeyValue,
         })),
       )
         .then(
