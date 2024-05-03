@@ -25,7 +25,6 @@ import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
-import NotebookColorIcon from "../../../images/Notebooks.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
@@ -410,14 +409,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         },
       };
       heroes.push(launchQuickstartBtn);
-    } else if (useNotebook.getState().isPhoenixNotebooks) {
-      const newNotebookBtn = {
-        iconSrc: NotebookColorIcon,
-        title: "New notebook",
-        description: "Visualize your data stored in Azure Cosmos DB",
-        onClick: () => this.container.onNewNotebookClicked(),
-      };
-      heroes.push(newNotebookBtn);
     }
 
     heroes.push(this.getShellCard());
