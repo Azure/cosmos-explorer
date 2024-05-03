@@ -1343,7 +1343,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
       return Promise.all(promises);
     };
 
-    const __deleteDocument = async (documentId: DocumentId): Promise<void> => {
+    const __deleteDocument = async (documentId: DocumentId): Promise<DocumentId> => {
       await MongoProxyClient.deleteDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId);
       return documentId;
     };
