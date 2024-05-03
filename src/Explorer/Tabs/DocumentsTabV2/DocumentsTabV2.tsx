@@ -1358,7 +1358,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
         setIsExecuting(true);
         return __deleteDocument(documentId)
           .then(
-            () => {
+            (deletedDocumentId) => {
               TelemetryProcessor.traceSuccess(
                 Action.DeleteDocument,
                 {
@@ -1367,7 +1367,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                 },
                 startKey,
               );
-              return documentId.rid;
+              return deletedDocumentId;
             },
             (error) => {
               onExecutionErrorChange(true);
