@@ -1338,7 +1338,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
      * Mongo implementation
      * TODO: update proxy to use mongo driver deleteMany
      */
-    _deleteDocuments = (toDeleteDocumentIds: DocumentId[]): Promise<Document[]> => {
+    _deleteDocuments = (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
       const promises = toDeleteDocumentIds.map((documentId) => _deleteDocument(documentId));
       return Promise.all(promises);
     };
