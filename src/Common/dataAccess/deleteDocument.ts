@@ -1,4 +1,4 @@
-import { BulkOperationType, OperationInput, PartitionKey } from "@azure/cosmos";
+import { BulkOperationType, OperationInput } from "@azure/cosmos";
 import { CollectionBase } from "../../Contracts/ViewModels";
 import DocumentId from "../../Explorer/Tree/DocumentId";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -32,26 +32,26 @@ export const deleteDocument = async (collection: CollectionBase, documentId: Doc
  * @param documentId
  * @returns array of ids that were successfully deleted
  */
-export const deleteDocuments = async (
-  collection: CollectionBase,
-  documentIds: {
-    id: string;
-    partitionKey?: PartitionKey;
-  }[],
-): Promise<string[]> => {
+export const deleteDocuments = async (collection: CollectionBase, documentIds: DocumentId[]): Promise<DocumentId[]> => {
   const clearMessage = logConsoleProgress(`Deleting ${documentIds.length} ${getEntityName(true)}`);
   try {
     const v2Container = await client().database(collection.databaseId).container(collection.id());
-
     const operations: OperationInput[] = documentIds.map((documentId) => ({
-      ...documentId,
+      id: documentId.id(),
+      // bulk delete: if not partition key is specified, do not pass empty array, but undefined
+      partitionKey:
+        documentId.partitionKeyValue &&
+        Array.isArray(documentId.partitionKeyValue) &&
+        documentId.partitionKeyValue.length === 0
+          ? undefined
+          : documentId.partitionKeyValue,
       operationType: BulkOperationType.Delete,
     }));
     const bulkResult = await v2Container.items.bulk(operations);
-    const result: string[] = [];
+    const result: DocumentId[] = [];
     documentIds.forEach((documentId, index) => {
       if (bulkResult[index].statusCode === 204) {
-        result.push(documentId.id);
+        result.push(documentId);
       }
     });
     logConsoleInfo(`Successfully deleted ${getEntityName(true)}: ${result.length} out of ${documentIds.length}`);

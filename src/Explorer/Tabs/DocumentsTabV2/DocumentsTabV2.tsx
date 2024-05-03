@@ -802,24 +802,14 @@ const DocumentsTabComponent: React.FunctionComponent<{
    * Implementation using bulk delete
    */
   let _deleteDocuments = useCallback(
-    async (toDeleteDocumentIds: DocumentId[]): Promise<string[]> => {
+    async (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
       onExecutionErrorChange(false);
       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocuments, {
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle,
       });
       setIsExecuting(true);
-      return deleteNoSqlDocuments(
-        _collection,
-        toDeleteDocumentIds.map((id) => ({
-          id: id.id(),
-          // bulk delete: if not partition key is specified, do not pass empty array, but undefined
-          partitionKey:
-            id.partitionKeyValue && Array.isArray(id.partitionKeyValue) && id.partitionKeyValue.length === 0
-              ? undefined
-              : id.partitionKeyValue,
-        })),
-      )
+      return deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
         .then(
           (deletedIds) => {
             TelemetryProcessor.traceSuccess(
@@ -858,9 +848,9 @@ const DocumentsTabComponent: React.FunctionComponent<{
       onExecutionErrorChange(false);
       setIsExecuting(true);
       _deleteDocuments(toDeleteDocumentIds)
-        .then((deletedIds: string[]) => {
-          // This could be optimized by using Set.has instead of array.includes
-          const newDocumentIds = [...documentIds.filter((documentId) => !deletedIds.includes(documentId.id()))];
+        .then((deletedIds: DocumentId[]) => {
+          const deletedRids = new Set(deletedIds.map((documentId) => documentId.rid));
+          const newDocumentIds = [...documentIds.filter((documentId) => !deletedRids.has(documentId.rid))];
           setDocumentIds(newDocumentIds);
 
           setSelectedDocumentContent(undefined);
@@ -1348,16 +1338,18 @@ const DocumentsTabComponent: React.FunctionComponent<{
      * Mongo implementation
      * TODO: update proxy to use mongo driver deleteMany
      */
-    _deleteDocuments = (toDeleteDocumentIds: DocumentId[]): Promise<string[]> => {
+    _deleteDocuments = (toDeleteDocumentIds: DocumentId[]): Promise<Document[]> => {
       const promises = toDeleteDocumentIds.map((documentId) => _deleteDocument(documentId));
       return Promise.all(promises);
     };
 
-    const __deleteDocument = (documentId: DocumentId): Promise<void> =>
-      MongoProxyClient.deleteDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId);
+    const __deleteDocument = async (documentId: DocumentId): Promise<void> => {
+      await MongoProxyClient.deleteDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId);
+      return documentId;
+    };
 
     const _deleteDocument = useCallback(
-      (documentId: DocumentId): Promise<string> => {
+      (documentId: DocumentId): Promise<DocumentId> => {
         onExecutionErrorChange(false);
         const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
           dataExplorerArea: Constants.Areas.Tab,
