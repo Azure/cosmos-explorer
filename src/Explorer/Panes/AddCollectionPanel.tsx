@@ -382,6 +382,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             )}
             {!this.state.createNewDatabase && (
               <Dropdown
+                ariaLabel="Choose an existing database"
                 styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
                 style={{ width: 300, fontSize: 12 }}
                 placeholder="Choose an existing database"
