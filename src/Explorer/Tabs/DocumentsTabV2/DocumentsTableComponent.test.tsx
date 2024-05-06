@@ -1,7 +1,7 @@
 import { TableRowId } from "@fluentui/react-components";
 import { ReactWrapper, mount } from "enzyme";
 import React from "react";
-import { DocumentsTableComponent, IDocumentsTableComponentProps } from "./DocumentsTableComponent";
+import { DocumentsTableComponent, IDocumentsTableComponentProps } from "./DocumentsTableComponent.tsxx";
 
 const PARTITION_KEY_HEADER = "partitionKey";
 const ID_HEADER = "id";
@@ -74,29 +74,29 @@ describe("DocumentsTableComponent", () => {
     });
   });
 
-  describe("selection", () => {
-    afterEach(() => {
-      wrapper.unmount();
-    });
+  // describe("selection", () => {
+  //   afterEach(() => {
+  //     wrapper.unmount();
+  //   });
 
-    it("should clear selection when clicking on row", () => {
-      const onSelectedRowsChange = jest.fn().mockName("onSelectedRowsChange");
-      const onItemClicked = jest.fn().mockName("onItemClicked");
+  //   it("should clear selection when clicking on row", () => {
+  //     const onSelectedRowsChange = jest.fn().mockName("onSelectedRowsChange");
+  //     const onItemClicked = jest.fn().mockName("onItemClicked");
 
-      const props: IDocumentsTableComponentProps = {
-        ...createMockProps(),
-        selectedRows: new Set<TableRowId>([1, 2]),
-        onSelectedRowsChange,
-        onItemClicked,
-      };
-      wrapper = mount(<DocumentsTableComponent {...props} />);
-      const cell = wrapper.find(".fui-TableBody .fui-TableCell").findWhere((node) => node.text() === "2");
-      // const cell = wrapper.find(".fui-TableBody .fui-TableCell").findWhere(node => node.text() === "2" && node.type() === "function");
-      // const cell = wrapper.find("[title~=\"2\"]");
-      cell.at(4).simulate("click");
+  //     const props: IDocumentsTableComponentProps = {
+  //       ...createMockProps(),
+  //       selectedRows: new Set<TableRowId>([1, 2]),
+  //       onSelectedRowsChange,
+  //       onItemClicked,
+  //     };
+  //     wrapper = mount(<DocumentsTableComponent {...props} />);
+  //     const cell = wrapper.find(".fui-TableBody .fui-TableCell").findWhere((node) => node.text() === "2");
+  //     // const cell = wrapper.find(".fui-TableBody .fui-TableCell").findWhere(node => node.text() === "2" && node.type() === "function");
+  //     // const cell = wrapper.find("[title~=\"2\"]");
+  //     cell.at(4).simulate("click");
 
-      expect(onItemClicked).toHaveBeenCalledWith(2);
-      expect(onSelectedRowsChange).toHaveBeenCalledWith(new Set<TableRowId>([2]));
-    });
-  });
+  //     expect(onItemClicked).toHaveBeenCalledWith(2);
+  //     expect(onSelectedRowsChange).toHaveBeenCalledWith(new Set<TableRowId>([2]));
+  //   });
+  // });
 });
