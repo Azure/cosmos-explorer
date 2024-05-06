@@ -423,7 +423,8 @@ export const buildQuery = (
   return QueryUtils.buildDocumentsQuery(filter, partitionKeyProperties, partitionKey);
 };
 
-const DocumentsTabComponent: React.FunctionComponent<{
+// Export to expose to unit tests
+export interface IDocumentsTabComponentProps {
   isPreferredApiMongoDB: boolean;
   documentIds: DocumentId[]; // TODO: this contains ko observables. We need to convert them to React state.
   collection: ViewModels.CollectionBase;
@@ -434,7 +435,10 @@ const DocumentsTabComponent: React.FunctionComponent<{
   onExecutionErrorChange: (isExecutionError: boolean) => void;
   onIsExecutingChange: (isExecuting: boolean) => void;
   isTabActive: boolean;
-}> = ({
+}
+
+// Export to expose to unit tests
+export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
   isPreferredApiMongoDB,
   documentIds: _documentIds,
   collection: _collection,
@@ -1672,6 +1676,7 @@ const DocumentsTabComponent: React.FunctionComponent<{
                   <div className="editFilterContainer">
                     {!isPreferredApiMongoDB && <span className="filterspan"> SELECT * FROM c </span>}
                     <Input
+                      id="filterInput"
                       ref={filterInput}
                       type="text"
                       list="filtersList"
