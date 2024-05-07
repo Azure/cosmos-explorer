@@ -97,7 +97,8 @@ let renderObjectForEditor = (
   space: string | number,
 ): string => JSON.stringify(value, replacer, space);
 
-const getSaveNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
+// Export to expose to unit tests
+export const getSaveNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
   enabled: (() => {
     switch (editorState) {
       case ViewModels.DocumentExplorerState.newDocumentValid:
@@ -118,7 +119,8 @@ const getSaveNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerS
   })(),
 });
 
-const getDiscardNewDocumentChangesButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
+// Export to expose to unit tests
+export const getDiscardNewDocumentChangesButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
   enabled: (() => {
     switch (editorState) {
       case ViewModels.DocumentExplorerState.newDocumentValid:
@@ -140,7 +142,8 @@ const getDiscardNewDocumentChangesButtonState = (editorState: ViewModels.Documen
   })(),
 });
 
-const getSaveExistingDocumentButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
+// Export to expose to unit tests
+export const getSaveExistingDocumentButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
   enabled: (() => {
     switch (editorState) {
       case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
@@ -162,7 +165,8 @@ const getSaveExistingDocumentButtonState = (editorState: ViewModels.DocumentExpl
   })(),
 });
 
-const getDiscardExistingDocumentChangesButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
+// Export to expose to unit tests
+export const getDiscardExistingDocumentChangesButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
   enabled: (() => {
     switch (editorState) {
       case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
@@ -185,7 +189,8 @@ const getDiscardExistingDocumentChangesButtonState = (editorState: ViewModels.Do
   })(),
 });
 
-const getDeleteExistingDocumentButtonState = (
+// Export to expose to unit tests
+export const getDeleteExistingDocumentButtonState = (
   editorState: ViewModels.DocumentExplorerState,
   selectedRows: Set<TableRowId>,
 ) => ({
@@ -213,7 +218,9 @@ const getDeleteExistingDocumentButtonState = (
 });
 
 type UiKeyboardEvent = (e: KeyboardEvent | React.SyntheticEvent<Element, Event>) => void;
-type ButtonsDependencies = {
+
+// Export to expose to unit tests
+export type ButtonsDependencies = {
   _collection: ViewModels.CollectionBase;
   selectedRows: Set<TableRowId>;
   editorState: ViewModels.DocumentExplorerState;
@@ -245,7 +252,8 @@ const createUploadButton = (container: Explorer): CommandButtonComponentProps =>
   };
 };
 
-const getTabsButtons = ({
+// Export to expose in unit tests
+export const getTabsButtons = ({
   _collection,
   selectedRows,
   editorState,
