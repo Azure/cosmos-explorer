@@ -2,6 +2,7 @@ import React, { CSSProperties, FunctionComponent, ReactNode } from "react";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
+import { labelToLoadingItemName } from "Explorer/Tables/Constants";
 
 export interface RightPaneFormProps {
   formError: string;
@@ -27,6 +28,7 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit();
+    document.getElementById("screenReaderStatus").innerHTML = labelToLoadingItemName[submitButtonText] || "Loading";
   };
 
   return (
@@ -42,6 +44,7 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
           />
         )}
       </form>
+      <span role="status" className="screenReaderOnly" id="screenReaderStatus"></span>
       {isExecuting && <PanelLoadingScreen />}
     </>
   );

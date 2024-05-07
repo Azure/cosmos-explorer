@@ -225,3 +225,8 @@ export const InputType = {
   DateTime: "datetime-local",
   Number: "number",
 };
+
+export const labelToLoadingItemName: Record<string, string> = {
+  "Add Row": "Adding row to table",
+  "Add Entity": "Adding entity to table",
+};
