@@ -1,7 +1,16 @@
+import { TableRowId } from "@fluentui/react-components";
+import { Platform, updateConfigContext } from "ConfigContext";
 import {
+  ButtonsDependencies,
   DocumentsTabComponent,
   IDocumentsTabComponentProps,
   buildQuery,
+  getDeleteExistingDocumentButtonState,
+  getDiscardExistingDocumentChangesButtonState,
+  getDiscardNewDocumentChangesButtonState,
+  getSaveExistingDocumentButtonState,
+  getSaveNewDocumentButtonState,
+  getTabsButtons,
   showPartitionKey,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { ShallowWrapper, shallow } from "enzyme";
@@ -94,6 +103,187 @@ describe("Documents tab", () => {
     it("should be true for non-system partitionKey", () => {
       expect(showPartitionKey(collectionWithNonSystemPartitionKey, false)).toBe(true);
     });
+  });
+
+  describe("when getting command bar button state", () => {
+    describe("should set Save New Document state", () => {
+      const testCases = new Set<{ state: ViewModels.DocumentExplorerState; enabled: boolean; visible: boolean }>();
+      testCases.add({ state: ViewModels.DocumentExplorerState.noDocumentSelected, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: true, visible: true });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: true });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        enabled: false,
+        visible: false,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        enabled: false,
+        visible: false,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        enabled: false,
+        visible: false,
+      });
+
+      testCases.forEach((testCase) => {
+        const state = getSaveNewDocumentButtonState(testCase.state);
+        it(`enable for ${testCase.state}`, () => {
+          expect(state.enabled).toBe(testCase.enabled);
+        });
+        it(`visible for ${testCase.state}`, () => {
+          expect(state.visible).toBe(testCase.visible);
+        });
+      });
+    });
+
+    describe("should set Discard New Document state", () => {
+      const testCases = new Set<{ state: ViewModels.DocumentExplorerState; enabled: boolean; visible: boolean }>();
+      testCases.add({ state: ViewModels.DocumentExplorerState.noDocumentSelected, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: true, visible: true });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: true, visible: true });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        enabled: false,
+        visible: false,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        enabled: false,
+        visible: false,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        enabled: false,
+        visible: false,
+      });
+
+      testCases.forEach((testCase) => {
+        const state = getDiscardNewDocumentChangesButtonState(testCase.state);
+        it(`enable for ${testCase.state}`, () => {
+          expect(state.enabled).toBe(testCase.enabled);
+        });
+        it(`visible for ${testCase.state}`, () => {
+          expect(state.visible).toBe(testCase.visible);
+        });
+      });
+    });
+
+    describe("should set Save Existing Document state", () => {
+      const testCases = new Set<{ state: ViewModels.DocumentExplorerState; enabled: boolean; visible: boolean }>();
+      testCases.add({ state: ViewModels.DocumentExplorerState.noDocumentSelected, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: false });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        enabled: false,
+        visible: true,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        enabled: true,
+        visible: true,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        enabled: false,
+        visible: true,
+      });
+
+      testCases.forEach((testCase) => {
+        const state = getSaveExistingDocumentButtonState(testCase.state);
+        it(`enable for ${testCase.state}`, () => {
+          expect(state.enabled).toBe(testCase.enabled);
+        });
+        it(`visible for ${testCase.state}`, () => {
+          expect(state.visible).toBe(testCase.visible);
+        });
+      });
+    });
+
+    describe("should set Discard Existing Document state", () => {
+      const testCases = new Set<{ state: ViewModels.DocumentExplorerState; enabled: boolean; visible: boolean }>();
+      testCases.add({ state: ViewModels.DocumentExplorerState.noDocumentSelected, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: false });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        enabled: false,
+        visible: true,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        enabled: true,
+        visible: true,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        enabled: true,
+        visible: true,
+      });
+
+      testCases.forEach((testCase) => {
+        const state = getDiscardExistingDocumentChangesButtonState(testCase.state);
+        it(`enable for ${testCase.state}`, () => {
+          expect(state.enabled).toBe(testCase.enabled);
+        });
+        it(`visible for ${testCase.state}`, () => {
+          expect(state.visible).toBe(testCase.visible);
+        });
+      });
+    });
+
+    describe("should set Delete Existing Document state", () => {
+      const testCases = new Set<{ state: ViewModels.DocumentExplorerState; enabled: boolean; visible: boolean }>();
+      testCases.add({ state: ViewModels.DocumentExplorerState.noDocumentSelected, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: false });
+      testCases.add({ state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits, enabled: true, visible: true });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        enabled: true,
+        visible: true,
+      });
+      testCases.add({
+        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        enabled: true,
+        visible: true,
+      });
+
+      testCases.forEach((testCase) => {
+        const state = getDeleteExistingDocumentButtonState(testCase.state, new Set<TableRowId>());
+        it(`enable for ${testCase.state} (no selected rows)`, () => {
+          expect(state.enabled).toBe(testCase.enabled);
+        });
+        it(`visible for ${testCase.state} (no selected rows)`, () => {
+          expect(state.visible).toBe(false);
+        });
+
+        // state = getDeleteExistingDocumentButtonState(testCase.state, new Set<TableRowId>([2, 1]));
+        // it(`enable for ${testCase.state} (2 selected rows)`, () => {
+        //   expect(state.enabled).toBe(testCase.enabled);
+        // });
+        // it(`visible for ${testCase.state} (2 selected rows)`, () => {
+        //   expect(state.visible).toBe(testCase.visible);
+        // });
+      });
+    });
+  });
+
+  it("Do not get tabs button for Fabric readonly", () => {
+    updateConfigContext({ platform: Platform.Fabric });
+    updateUserContext({
+      fabricContext: {
+        connectionId: "test",
+        databaseConnectionInfo: undefined,
+        isReadOnly: true,
+        isVisible: true,
+      },
+    });
+
+    const buttons = getTabsButtons({} as ButtonsDependencies);
+    expect(buttons.length).toBe(0);
   });
 
   describe("when rendered", () => {
