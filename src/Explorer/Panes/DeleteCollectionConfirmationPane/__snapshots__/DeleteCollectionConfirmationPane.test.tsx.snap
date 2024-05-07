@@ -2140,6 +2140,11 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
         </div>
       </PanelFooterComponent>
     </form>
+    <span
+      className="screenReaderOnly"
+      id="screenReaderStatus"
+      role="status"
+    />
   </RightPaneForm>
 </DeleteCollectionConfirmationPane>
 `;

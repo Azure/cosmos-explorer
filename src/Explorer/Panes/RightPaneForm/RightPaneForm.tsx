@@ -28,7 +28,10 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit();
-    document.getElementById("screenReaderStatus").innerHTML = labelToLoadingItemName[submitButtonText] || "Loading";
+    const screenReaderStatusElement = document.getElementById("screenReaderStatus");
+    if (screenReaderStatusElement) {
+      screenReaderStatusElement.innerHTML = labelToLoadingItemName[submitButtonText] || "Loading";
+    }
   };
 
   return (

@@ -3019,6 +3019,11 @@ exports[`Table query select Panel should render Default properly 1`] = `
         </div>
       </PanelFooterComponent>
     </form>
+    <span
+      className="screenReaderOnly"
+      id="screenReaderStatus"
+      role="status"
+    />
   </RightPaneForm>
 </TableQuerySelectPanel>
 `;
