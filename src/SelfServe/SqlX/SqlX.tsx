@@ -374,7 +374,7 @@ export default class SqlX extends SelfServeBaseClass {
     const offeringIdMap = await getOfferingIds(regions);
     const priceMapAndCurrencyCode = await getPriceMapAndCurrencyCode(offeringIdMap);
     priceMap = priceMapAndCurrencyCode.priceMap;
-    currencyCode = priceMapAndCurrencyCode.pricingCurrency;
+    currencyCode = priceMapAndCurrencyCode.billingCurrency;
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
