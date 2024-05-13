@@ -125,7 +125,7 @@
     "@types/datatables.net": "1.10.28",
     "@types/datatables.net-colreorder": "1.4.5",
     "@types/dom-to-image": "2.6.2",
-    "@types/enzyme": "3.10.18",
+    "@types/enzyme": "3.10.12",
     "@types/enzyme-adapter-react-16": "1.0.9",
     "@types/hasher": "0.0.31",
     "@types/jest": "26.0.20",

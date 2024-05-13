@@ -357,9 +357,7 @@ describe("Documents tab", () => {
     beforeEach(() => {
       const props: IDocumentsTabComponentProps = createMockProps();
 
-      // Enzyme doesn't seem to support hooks, so we need to cast the component to any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      wrapper = shallow((<DocumentsTabComponent {...props} />) as any);
+      wrapper = shallow(<DocumentsTabComponent {...props} />);
     });
 
     afterEach(() => {
@@ -421,9 +419,7 @@ describe("Documents tab", () => {
 
       const props: IDocumentsTabComponentProps = createMockProps();
 
-      // Enzyme doesn't seem to support hooks, so we need to cast the component to any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      wrapper = mount((<DocumentsTabComponent {...props} />) as any);
+      wrapper = mount(<DocumentsTabComponent {...props} />);
       wrapper = await waitForComponentToPaint(wrapper);
     });
 
