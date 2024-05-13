@@ -236,7 +236,7 @@ export type ButtonsDependencies = {
 const createUploadButton = (container: Explorer): CommandButtonComponentProps => {
   const label = "Upload Item";
   return {
-    id: "uploadItemBtn",
+    id: UPLOAD_BUTTON_ID,
     iconSrc: UploadIcon,
     iconAlt: label,
     onCommandClick: () => {
@@ -254,6 +254,11 @@ const createUploadButton = (container: Explorer): CommandButtonComponentProps =>
 
 // Export to expose to unit tests
 export const NEW_DOCUMENT_BUTTON_ID = "mongoNewDocumentBtn";
+export const SAVE_BUTTON_ID = "saveBtn";
+export const UPDATE_BUTTON_ID = "updateBtn";
+export const DISCARD_BUTTON_ID = "discardBtn";
+export const DELETE_BUTTON_ID = "deleteBtn";
+export const UPLOAD_BUTTON_ID = "uploadItemBtn";
 
 // Export to expose in unit tests
 export const getTabsButtons = ({
@@ -304,6 +309,7 @@ export const getTabsButtons = ({
       disabled:
         !getSaveNewDocumentButtonState(editorState).enabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      id: SAVE_BUTTON_ID,
     });
   }
 
@@ -320,6 +326,7 @@ export const getTabsButtons = ({
       disabled:
         !getDiscardNewDocumentChangesButtonState(editorState).enabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      id: DISCARD_BUTTON_ID,
     });
   }
 
@@ -336,6 +343,7 @@ export const getTabsButtons = ({
       disabled:
         !getSaveExistingDocumentButtonState(editorState).enabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      id: UPDATE_BUTTON_ID,
     });
   }
 
@@ -352,6 +360,7 @@ export const getTabsButtons = ({
       disabled:
         !getDiscardExistingDocumentChangesButtonState(editorState).enabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      id: DISCARD_BUTTON_ID,
     });
   }
 
@@ -368,6 +377,7 @@ export const getTabsButtons = ({
       disabled:
         !getDeleteExistingDocumentButtonState(editorState, selectedRows).enabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      id: DELETE_BUTTON_ID,
     });
   }
 

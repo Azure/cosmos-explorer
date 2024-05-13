@@ -1,13 +1,19 @@
 import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
 import { TableRowId } from "@fluentui/react-components";
+import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import {
   ButtonsDependencies,
+  DELETE_BUTTON_ID,
+  DISCARD_BUTTON_ID,
   DocumentsTabComponent,
   IDocumentsTabComponentProps,
   NEW_DOCUMENT_BUTTON_ID,
+  SAVE_BUTTON_ID,
+  UPDATE_BUTTON_ID,
+  UPLOAD_BUTTON_ID,
   buildQuery,
   getDeleteExistingDocumentButtonState,
   getDiscardExistingDocumentChangesButtonState,
@@ -21,7 +27,7 @@ import { ReactWrapper, ShallowWrapper, mount, shallow } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import { DatabaseAccount } from "../../../Contracts/DataModels";
+import { DatabaseAccount, DocumentId } from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
@@ -47,12 +53,13 @@ jest.mock("Common/dataAccess/queryDocuments", () => ({
   })),
 }));
 
+const PROPERTY_VALUE = "__SOME_PROPERTY_VALUE__";
 jest.mock("Common/dataAccess/readDocument", () => ({
   readDocument: jest.fn(() =>
     Promise.resolve({
       container: undefined,
       id: "id",
-      url: "url",
+      property: PROPERTY_VALUE,
     }),
   ),
 }));
@@ -61,7 +68,21 @@ jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
   EditorReact: (props: EditorReactProps) => <>{props.content}</>,
 }));
 
-async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P>, amount = 0) {
+jest.mock("Explorer/Controls/Dialog", () => ({
+  useDialog: {
+    getState: jest.fn(() => ({
+      showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
+    })),
+  },
+}));
+
+jest.mock("Common/dataAccess/deleteDocument", () => ({
+  deleteDocuments: jest.fn((collection: ViewModels.CollectionBase, documentIds: DocumentId[]) =>
+    Promise.resolve(documentIds),
+  ),
+}));
+
+async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P> | ShallowWrapper<P>, amount = 0) {
   let newWrapper;
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, amount));
@@ -354,9 +375,8 @@ describe("Documents tab", () => {
 
     let wrapper: ShallowWrapper;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       const props: IDocumentsTabComponentProps = createMockProps();
-
       wrapper = shallow(<DocumentsTabComponent {...props} />);
     });
 
@@ -427,13 +447,51 @@ describe("Documents tab", () => {
       wrapper.unmount();
     });
 
-    it("clicking on New Document should show editor with new document", async () => {
-      useCommandBar
-        .getState()
-        .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
-        .onCommandClick(undefined);
-      wrapper = await waitForComponentToPaint(wrapper);
+    it("renders by default the first document", async () => {
+      expect(wrapper.findWhere((node) => node.text().includes(PROPERTY_VALUE)).exists()).toBeTruthy();
+    });
+
+    it("default buttons", async () => {
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === UPDATE_BUTTON_ID)).toBeDefined();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === DISCARD_BUTTON_ID)).toBeDefined();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === DELETE_BUTTON_ID)).toBeDefined();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === UPLOAD_BUTTON_ID)).toBeDefined();
+    });
+
+    it("clicking on New Document should show editor with new document", () => {
+      act(() => {
+        useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
+          .onCommandClick(undefined);
+      });
       expect(wrapper.findWhere((node) => node.text().includes("replace_with_new_document_id")).exists()).toBeTruthy();
+    });
+
+    it("clicking on New Document should show Save and Discard buttons", () => {
+      act(() => {
+        useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
+          .onCommandClick(undefined);
+      });
+
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeDefined();
+      expect(useCommandBar.getState().contextButtons.find((button) => button.id === DISCARD_BUTTON_ID)).toBeDefined();
+    });
+
+    it("clicking Delete Document asks for confirmation", () => {
+      const mockDeleteDocuments = deleteDocuments as jest.Mock;
+      mockDeleteDocuments.mockClear();
+
+      act(() => {
+        useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
+          .onCommandClick(undefined);
+      });
+
+      expect(mockDeleteDocuments).toHaveBeenCalled();
     });
   });
 });
