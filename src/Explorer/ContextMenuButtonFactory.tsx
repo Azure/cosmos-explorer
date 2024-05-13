@@ -132,13 +132,16 @@ export const createCollectionContextMenuButton = (
   if (configContext.platform !== Platform.Fabric) {
     items.push({
       iconSrc: DeleteCollectionIcon,
-      onClick: () => {
+      onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {
         useSelectedNode.getState().setSelectedNode(selectedCollection);
         useSidePanel
           .getState()
           .openSidePanel(
             "Delete " + getCollectionName(),
-            <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />,
+            <DeleteCollectionConfirmationPane
+              lastFocusedElement={lastFocusedElement}
+              refreshDatabases={() => container.refreshAllDatabases()}
+            />,
           );
       },
       label: `Delete ${getCollectionName()}`,

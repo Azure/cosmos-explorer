@@ -12,17 +12,19 @@ import { getCollectionName } from "Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "Utils/NotificationConsoleUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTabs } from "hooks/useTabs";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface DeleteCollectionConfirmationPaneProps {
   refreshDatabases: () => Promise<void>;
+  lastFocusedElement: React.MutableRefObject<HTMLElement>;
 }
 
 export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectionConfirmationPaneProps> = ({
   refreshDatabases,
+  lastFocusedElement,
 }: DeleteCollectionConfirmationPaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
@@ -35,6 +37,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
 
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
+  const lastItemElement = lastFocusedElement.current;
 
   const onSubmit = async (): Promise<void> => {
     const collection = useSelectedNode.getState().findSelectedCollection();
@@ -111,6 +114,13 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   };
   const confirmContainer = `Confirm by typing the ${collectionName.toLowerCase()} id`;
   const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${collectionName}?`;
+  useEffect(() => {
+    return () => {
+      if (lastItemElement) {
+        lastItemElement.focus();
+      }
+    };
+  }, [lastItemElement]);
   return (
     <RightPaneForm {...props}>
       <div className="panelFormWrapper">
