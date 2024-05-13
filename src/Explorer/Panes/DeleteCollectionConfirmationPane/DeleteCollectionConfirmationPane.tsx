@@ -37,7 +37,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
 
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
-  const lastItemElement = lastFocusedElement.current;
+  const lastItemElement = lastFocusedElement?.current;
 
   const onSubmit = async (): Promise<void> => {
     const collection = useSelectedNode.getState().findSelectedCollection();
