@@ -252,6 +252,9 @@ const createUploadButton = (container: Explorer): CommandButtonComponentProps =>
   };
 };
 
+// Export to expose to unit tests
+export const NEW_DOCUMENT_BUTTON_ID = "mongoNewDocumentBtn";
+
 // Export to expose in unit tests
 export const getTabsButtons = ({
   _collection,
@@ -284,7 +287,7 @@ export const getTabsButtons = ({
       disabled:
         !getNewDocumentButtonState(editorState).enabled ||
         useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-      id: "mongoNewDocumentBtn",
+      id: NEW_DOCUMENT_BUTTON_ID,
     });
   }
 
@@ -457,7 +460,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   onExecutionErrorChange,
   onIsExecutingChange,
   isTabActive,
-}) => {
+}): JSX.Element => {
   const [isFilterCreated, setIsFilterCreated] = useState<boolean>(true);
   const [isFilterExpanded, setIsFilterExpanded] = useState<boolean>(false);
   const [isFilterFocused, setIsFilterFocused] = useState<boolean>(false);
@@ -1645,9 +1648,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         // collapse filter
         setAppliedFilter(filterContent);
         setIsFilterExpanded(false);
-        document.getElementById("errorStatusIcon")?.focus();
       } catch (error) {
-        console.error();
+        console.error(error);
         useDialog.getState().showOkModalDialog("Refresh documents grid failed", getErrorMessage(error));
       }
     },

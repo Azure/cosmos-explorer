@@ -1,9 +1,13 @@
+import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
 import { TableRowId } from "@fluentui/react-components";
 import { Platform, updateConfigContext } from "ConfigContext";
+import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import {
   ButtonsDependencies,
   DocumentsTabComponent,
   IDocumentsTabComponentProps,
+  NEW_DOCUMENT_BUTTON_ID,
   buildQuery,
   getDeleteExistingDocumentButtonState,
   getDiscardExistingDocumentChangesButtonState,
@@ -13,13 +17,58 @@ import {
   getTabsButtons,
   showPartitionKey,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
-import { ShallowWrapper, shallow } from "enzyme";
+import { ReactWrapper, ShallowWrapper, mount, shallow } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
+import { act } from "react-dom/test-utils";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+
+jest.requireActual("Explorer/Controls/Editor/EditorReact");
+
+jest.mock("Common/dataAccess/queryDocuments", () => ({
+  queryDocuments: jest.fn(() => ({
+    // Omit headers, because we can't mock a private field and we don't need to test it
+    fetchNext: (): Promise<Omit<FeedResponse<ItemDefinition & Resource>, "headers">> =>
+      Promise.resolve({
+        resources: [{ id: "id", _rid: "rid", _self: "self", _etag: "etag", _ts: 123 }],
+        hasMoreResults: false,
+        diagnostics: undefined,
+
+        continuation: undefined,
+        continuationToken: undefined,
+        queryMetrics: "queryMetrics",
+        requestCharge: 1,
+        activityId: "activityId",
+        indexMetrics: "indexMetrics",
+      }),
+  })),
+}));
+
+jest.mock("Common/dataAccess/readDocument", () => ({
+  readDocument: jest.fn(() =>
+    Promise.resolve({
+      container: undefined,
+      id: "id",
+      url: "url",
+    }),
+  ),
+}));
+
+jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
+  EditorReact: (props: EditorReactProps) => <>{props.content}</>,
+}));
+
+async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P>, amount = 0) {
+  let newWrapper;
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, amount));
+    newWrapper = wrapper.update();
+  });
+  return newWrapper;
+}
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {
@@ -300,14 +349,17 @@ describe("Documents tab", () => {
       onIsExecutingChange: (isExecuting: boolean): void => {
         isExecuting;
       },
-      isTabActive: false,
+      isTabActive: true,
     });
 
     let wrapper: ShallowWrapper;
 
     beforeEach(() => {
       const props: IDocumentsTabComponentProps = createMockProps();
-      wrapper = shallow(<DocumentsTabComponent {...props} />);
+
+      // Enzyme doesn't seem to support hooks, so we need to cast the component to any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      wrapper = shallow((<DocumentsTabComponent {...props} />) as any);
     });
 
     afterEach(() => {
@@ -332,6 +384,60 @@ describe("Documents tab", () => {
         .at(0)
         .simulate("click");
       expect(wrapper.find("#filterInput").exists()).toBeTruthy();
+    });
+  });
+
+  describe("Command bar buttons", () => {
+    const createMockProps = (): IDocumentsTabComponentProps => ({
+      isPreferredApiMongoDB: false,
+      documentIds: [],
+      collection: {
+        id: ko.observable<string>("foo"),
+        container: new Explorer(),
+        partitionKey: {
+          kind: "MultiHash",
+          paths: ["/pkey1", "/pkey2", "/pkey3"],
+          version: 2,
+        },
+        partitionKeyProperties: ["pkey1", "pkey2", "pkey3"],
+        partitionKeyPropertyHeaders: ["/pkey1", "/pkey2", "/pkey3"],
+      } as ViewModels.CollectionBase,
+      partitionKey: undefined,
+      onLoadStartKey: 0,
+      tabTitle: "",
+      onExecutionErrorChange: (isExecutionError: boolean): void => {
+        isExecutionError;
+      },
+      onIsExecutingChange: (isExecuting: boolean): void => {
+        isExecuting;
+      },
+      isTabActive: true,
+    });
+
+    let wrapper: ReactWrapper;
+
+    beforeEach(async () => {
+      updateConfigContext({ platform: Platform.Hosted });
+
+      const props: IDocumentsTabComponentProps = createMockProps();
+
+      // Enzyme doesn't seem to support hooks, so we need to cast the component to any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      wrapper = mount((<DocumentsTabComponent {...props} />) as any);
+      wrapper = await waitForComponentToPaint(wrapper);
+    });
+
+    afterEach(() => {
+      wrapper.unmount();
+    });
+
+    it("clicking on New Document should show editor with new document", async () => {
+      useCommandBar
+        .getState()
+        .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
+        .onCommandClick(undefined);
+      wrapper = await waitForComponentToPaint(wrapper);
+      expect(wrapper.findWhere((node) => node.text().includes("replace_with_new_document_id")).exists()).toBeTruthy();
     });
   });
 });
