@@ -32,8 +32,6 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 
-jest.requireActual("Explorer/Controls/Editor/EditorReact");
-
 jest.mock("Common/dataAccess/queryDocuments", () => ({
   queryDocuments: jest.fn(() => ({
     // Omit headers, because we can't mock a private field and we don't need to test it
@@ -91,7 +89,7 @@ async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P> | S
   return newWrapper;
 }
 
-describe("Documents tab", () => {
+describe("Documents tab (noSql API)", () => {
   describe("buildQuery", () => {
     it("should generate the right select query for SQL API", () => {
       expect(buildQuery(false, "")).toContain("select");
