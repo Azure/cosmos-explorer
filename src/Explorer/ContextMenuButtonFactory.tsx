@@ -19,7 +19,7 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { Platform, configContext } from "./../ConfigContext";
-import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
+import { LegacyTreeNodeMenuItem } from "./Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "./Explorer";
 import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
@@ -40,8 +40,8 @@ export interface DatabaseContextMenuButtonParams {
 /**
  * New resource tree (in ReactJS)
  */
-export const createDatabaseContextMenu = (container: Explorer, databaseId: string): TreeNodeMenuItem[] => {
-  const items: TreeNodeMenuItem[] = [
+export const createDatabaseContextMenu = (container: Explorer, databaseId: string): LegacyTreeNodeMenuItem[] => {
+  const items: LegacyTreeNodeMenuItem[] = [
     {
       iconSrc: AddCollectionIcon,
       onClick: () => container.onNewCollectionClicked({ databaseId }),
@@ -69,8 +69,8 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
 export const createCollectionContextMenuButton = (
   container: Explorer,
   selectedCollection: ViewModels.Collection,
-): TreeNodeMenuItem[] => {
-  const items: TreeNodeMenuItem[] = [];
+): LegacyTreeNodeMenuItem[] => {
+  const items: LegacyTreeNodeMenuItem[] = [];
   if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
     items.push({
       iconSrc: AddSqlQueryIcon,
@@ -149,8 +149,8 @@ export const createCollectionContextMenuButton = (
   return items;
 };
 
-export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] => {
-  const items: TreeNodeMenuItem[] = [];
+export const createSampleCollectionContextMenuButton = (): LegacyTreeNodeMenuItem[] => {
+  const items: LegacyTreeNodeMenuItem[] = [];
   if (userContext.apiType === "SQL") {
     const copilotVersion = userContext.features.copilotVersion;
     if (copilotVersion === "v1.0") {
@@ -178,7 +178,7 @@ export const createSampleCollectionContextMenuButton = (): TreeNodeMenuItem[] =>
 export const createStoreProcedureContextMenuItems = (
   container: Explorer,
   storedProcedure: StoredProcedure,
-): TreeNodeMenuItem[] => {
+): LegacyTreeNodeMenuItem[] => {
   if (userContext.apiType === "Cassandra") {
     return [];
   }
@@ -192,7 +192,7 @@ export const createStoreProcedureContextMenuItems = (
   ];
 };
 
-export const createTriggerContextMenuItems = (container: Explorer, trigger: Trigger): TreeNodeMenuItem[] => {
+export const createTriggerContextMenuItems = (container: Explorer, trigger: Trigger): LegacyTreeNodeMenuItem[] => {
   if (userContext.apiType === "Cassandra") {
     return [];
   }
@@ -209,7 +209,7 @@ export const createTriggerContextMenuItems = (container: Explorer, trigger: Trig
 export const createUserDefinedFunctionContextMenuItems = (
   container: Explorer,
   userDefinedFunction: UserDefinedFunction,
-): TreeNodeMenuItem[] => {
+): LegacyTreeNodeMenuItem[] => {
   if (userContext.apiType === "Cassandra") {
     return [];
   }

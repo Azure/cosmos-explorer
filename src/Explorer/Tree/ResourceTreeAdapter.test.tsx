@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { TreeComponent, TreeComponentProps, TreeNode } from "../Controls/TreeComponent/TreeComponent";
+import { LegacyTreeComponent, LegacyTreeComponentProps, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import Collection from "./Collection";
 import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
@@ -225,12 +225,12 @@ describe("Resource tree for schema", () => {
   const resourceTree = new ResourceTreeAdapter(mockContainer);
 
   it("should render", () => {
-    const rootNode: TreeNode = resourceTree.buildSchemaNode(createMockCollection());
-    const props: TreeComponentProps = {
+    const rootNode: LegacyTreeNode = resourceTree.buildSchemaNode(createMockCollection());
+    const props: LegacyTreeComponentProps = {
       rootNode,
       className: "dataResourceTree",
     };
-    const wrapper = shallow(<TreeComponent {...props} />);
+    const wrapper = shallow(<LegacyTreeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

@@ -9,7 +9,7 @@ import {
   createLightTheme,
 } from "@fluentui/react-components";
 import { AuthType } from "AuthType";
-import { TreeNode2, TreeNode2Component } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
+import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { createDatabaseTreeNodes, createResourceTokenTreeNodes, createSampleDataTreeNodes } from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { userContext } from "UserContext";
@@ -90,13 +90,13 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     userContext.sampleDataConnectionInfo &&
     userContext.apiType === "SQL";
 
-  const sampleDataNodes = useMemo<TreeNode2[]>(() => {
+  const sampleDataNodes = useMemo<TreeNode[]>(() => {
     return isSampleDataEnabled && sampleDataResourceTokenCollection
       ? createSampleDataTreeNodes(sampleDataResourceTokenCollection)
       : [];
   }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
 
-  const rootNodes: TreeNode2[] = useMemo(() => {
+  const rootNodes: TreeNode[] = useMemo(() => {
     if (sampleDataNodes.length > 0) {
       return [
         {
@@ -129,7 +129,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
   useEffect(() => {
     // Compute open items based on node.isExpanded
-    const updateOpenItems = (node: TreeNode2, parentNodeId: string): void => {
+    const updateOpenItems = (node: TreeNode, parentNodeId: string): void => {
       // This will look for ANY expanded node, event if its parent node isn't expanded
       // and add it to the openItems list
       const globalId = parentNodeId === undefined ? node.label : `${parentNodeId}/${node.label}`;
@@ -170,7 +170,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           style={{ height: "100%", minWidth: "290px" }}
         >
           {rootNodes.map((node) => (
-            <TreeNode2Component key={node.label} className="dataResourceTree" node={node} treeNodeId={node.label} />
+            <TreeNodeComponent key={node.label} className="dataResourceTree" node={node} treeNodeId={node.label} />
           ))}
         </Tree>
       </FluentProvider>

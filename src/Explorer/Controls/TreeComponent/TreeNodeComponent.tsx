@@ -16,7 +16,7 @@ import { MoreHorizontal20Regular } from "@fluentui/react-icons";
 import { tokens } from "@fluentui/react-theme";
 import * as React from "react";
 
-export interface TreeNode2MenuItem {
+export interface TreeNodeMenuItem {
   label: string;
   onClick: () => void;
   iconSrc?: string;
@@ -24,11 +24,11 @@ export interface TreeNode2MenuItem {
   styleClass?: string;
 }
 
-export interface TreeNode2 {
+export interface TreeNode {
   label: string;
   id?: string;
-  children?: TreeNode2[];
-  contextMenu?: TreeNode2MenuItem[];
+  children?: TreeNode[];
+  contextMenu?: TreeNodeMenuItem[];
   iconSrc?: string;
   isExpanded?: boolean;
   className?: string;
@@ -45,32 +45,32 @@ export interface TreeNode2 {
   onContextMenuOpen?: () => void;
 }
 
-export interface TreeNode2ComponentProps {
-  node: TreeNode2;
+export interface TreeNodeComponentProps {
+  node: TreeNode;
   className?: string;
   treeNodeId: string;
 }
 
 const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 20, height: 20 }} />;
 
-export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
+export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   node,
   treeNodeId,
-}: TreeNode2ComponentProps): JSX.Element => {
+}: TreeNodeComponentProps): JSX.Element => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const getSortedChildren = (treeNode: TreeNode2): TreeNode2[] => {
+  const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
     if (!treeNode || !treeNode.children) {
       return undefined;
     }
 
-    const compareFct = (a: TreeNode2, b: TreeNode2) => a.label.localeCompare(b.label);
+    const compareFct = (a: TreeNode, b: TreeNode) => a.label.localeCompare(b.label);
 
     let unsortedChildren;
     if (treeNode.isLeavesParentsSeparate) {
       // Separate parents and leave
-      const parents: TreeNode2[] = treeNode.children.filter((node) => node.children);
-      const leaves: TreeNode2[] = treeNode.children.filter((node) => !node.children);
+      const parents: TreeNode[] = treeNode.children.filter((node) => node.children);
+      const leaves: TreeNode[] = treeNode.children.filter((node) => !node.children);
 
       if (treeNode.isAlphaSorted) {
         parents.sort(compareFct);
@@ -134,8 +134,8 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
         <Tree style={{ overflow: node.isScrollable ? "auto" : undefined }}>
-          {getSortedChildren(node).map((childNode: TreeNode2) => (
-            <TreeNode2Component
+          {getSortedChildren(node).map((childNode: TreeNode) => (
+            <TreeNodeComponent
               key={childNode.label}
               node={childNode}
               treeNodeId={`${treeNodeId}/${childNode.label}`}

@@ -23,7 +23,7 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { useDialog } from "../Controls/Dialog";
-import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
+import { LegacyTreeComponent, LegacyTreeNode, LegacyTreeNodeMenuItem } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
@@ -95,7 +95,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   public renderComponent(): JSX.Element {
     const dataRootNode = this.buildDataTree();
-    return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
+    return <LegacyTreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
   }
 
   public async initialize(): Promise<void[]> {
@@ -157,9 +157,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
   }
 
-  private buildDataTree(): TreeNode {
-    const databaseTreeNodes: TreeNode[] = useDatabases.getState().databases.map((database: ViewModels.Database) => {
-      const databaseNode: TreeNode = {
+  private buildDataTree(): LegacyTreeNode {
+    const databaseTreeNodes: LegacyTreeNode[] = useDatabases.getState().databases.map((database: ViewModels.Database) => {
+      const databaseNode: LegacyTreeNode = {
         label: database.id(),
         iconSrc: CosmosDBIcon,
         isExpanded: false,
@@ -229,8 +229,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
     );
   }
 
-  private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): TreeNode {
-    const children: TreeNode[] = [];
+  private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): LegacyTreeNode {
+    const children: LegacyTreeNode[] = [];
     children.push({
       label: getItemName(),
       onClick: () => {
@@ -274,7 +274,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     }
 
-    const schemaNode: TreeNode = this.buildSchemaNode(collection);
+    const schemaNode: LegacyTreeNode = this.buildSchemaNode(collection);
     if (schemaNode) {
       children.push(schemaNode);
     }
@@ -332,7 +332,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private buildStoredProcedureNode(collection: ViewModels.Collection): TreeNode {
+  private buildStoredProcedureNode(collection: ViewModels.Collection): LegacyTreeNode {
     return {
       label: "Stored Procedures",
       children: collection.storedProcedures().map((sp: StoredProcedure) => ({
@@ -358,7 +358,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): TreeNode {
+  private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): LegacyTreeNode {
     return {
       label: "User Defined Functions",
       children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
@@ -387,7 +387,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private buildTriggerNode(collection: ViewModels.Collection): TreeNode {
+  private buildTriggerNode(collection: ViewModels.Collection): LegacyTreeNode {
     return {
       label: "Triggers",
       children: collection.triggers().map((trigger: Trigger) => ({
@@ -411,7 +411,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  public buildSchemaNode(collection: ViewModels.Collection): TreeNode {
+  public buildSchemaNode(collection: ViewModels.Collection): LegacyTreeNode {
     if (collection.analyticalStorageTtl() == undefined) {
       return undefined;
     }
@@ -430,7 +430,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private getSchemaNodes(fields: DataModels.IDataField[]): TreeNode[] {
+  private getSchemaNodes(fields: DataModels.IDataField[]): LegacyTreeNode[] {
     const schema: any = {};
 
     //unflatten
@@ -461,8 +461,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     });
 
-    const traverse = (obj: any): TreeNode[] => {
-      const children: TreeNode[] = [];
+    const traverse = (obj: any): LegacyTreeNode[] => {
+      const children: LegacyTreeNode[] = [];
 
       if (obj !== null && !Array.isArray(obj) && typeof obj === "object") {
         Object.entries(obj).forEach(([key, value]) => {
@@ -483,7 +483,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     onFileClick: (item: NotebookContentItem) => void,
     createDirectoryContextMenu: boolean,
     createFileContextMenu: boolean,
-  ): TreeNode[] {
+  ): LegacyTreeNode[] {
     if (!item || !item.children) {
       return [];
     } else {
@@ -502,7 +502,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
     createFileContextMenu: boolean,
-  ): TreeNode {
+  ): LegacyTreeNode {
     return {
       label: item.name,
       iconSrc: NotebookUtil.isNotebookFile(item.path) ? NotebookIcon : FileIcon,
@@ -524,8 +524,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private createFileContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
-    let items: TreeNodeMenuItem[] = [
+  private createFileContextMenu(item: NotebookContentItem): LegacyTreeNodeMenuItem[] {
+    let items: LegacyTreeNodeMenuItem[] = [
       {
         label: "Rename",
         iconSrc: NotebookIcon,
@@ -591,8 +591,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
   };
 
-  private createDirectoryContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
-    let items: TreeNodeMenuItem[] = [
+  private createDirectoryContextMenu(item: NotebookContentItem): LegacyTreeNodeMenuItem[] {
+    let items: LegacyTreeNodeMenuItem[] = [
       {
         label: "Refresh",
         iconSrc: RefreshIcon,
@@ -650,7 +650,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     onFileClick: (item: NotebookContentItem) => void,
     createDirectoryContextMenu: boolean,
     createFileContextMenu: boolean,
-  ): TreeNode {
+  ): LegacyTreeNode {
     return {
       label: item.name,
       iconSrc: undefined,

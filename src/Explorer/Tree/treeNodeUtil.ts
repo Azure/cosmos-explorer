@@ -1,4 +1,4 @@
-import { TreeNode2 } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
+import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
@@ -21,8 +21,8 @@ import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
-export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode2[] => {
-  const updatedSampleTree: TreeNode2 = {
+export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
+  const updatedSampleTree: TreeNode = {
     label: sampleDataResourceTokenCollection.databaseId,
     isExpanded: false,
     iconSrc: CosmosDBIcon,
@@ -72,7 +72,7 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
   return [updatedSampleTree];
 }
 
-export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode2[] => {
+export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode[] => {
   if (!collection) {
     return [{
       label: "",
@@ -81,7 +81,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
     }];
   }
 
-  const children: TreeNode2[] = [];
+  const children: TreeNode[] = [];
   children.push({
     label: "Items",
     onClick: () => {
@@ -95,7 +95,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
         .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Documents]),
   });
 
-  const collectionNode: TreeNode2 = {
+  const collectionNode: TreeNode = {
     label: collection.id(),
     iconSrc: CollectionIcon,
     isExpanded: true,
@@ -117,9 +117,9 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
   return [collectionNode];
 }
 
-export const createDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boolean, databases: ViewModels.Database[], refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void): TreeNode2[] => {
-  const databaseTreeNodes: TreeNode2[] = databases.map((database: ViewModels.Database) => {
-    const databaseNode: TreeNode2 = {
+export const createDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boolean, databases: ViewModels.Database[], refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void): TreeNode[] => {
+  const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
+    const databaseNode: TreeNode = {
       label: database.id(),
       iconSrc: CosmosDBIcon,
       className: "tree-node-database",
@@ -168,7 +168,7 @@ export const createDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: 
       );
 
     if (database.collectionsContinuationToken) {
-      const loadMoreNode: TreeNode2 = {
+      const loadMoreNode: TreeNode = {
         label: "load more",
         className: "loadMoreHeader",
         onClick: async () => {
@@ -199,8 +199,8 @@ export const buildCollectionNode = (
   isNotebookEnabled: boolean,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-): TreeNode2 => {
-  let children: TreeNode2[];
+): TreeNode => {
+  let children: TreeNode[];
 
   // Flat Tree for Fabric
   if (configContext.platform !== Platform.Fabric) {
@@ -246,9 +246,9 @@ const buildCollectionNodeChildren = (
   isNotebookEnabled: boolean,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-): TreeNode2[] => {
+): TreeNode[] => {
   const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
-  const children: TreeNode2[] = [];
+  const children: TreeNode[] = [];
   children.push({
     label: getItemName(),
     id: collection.isSampleCollection ? "sampleItems" : "",
@@ -302,7 +302,7 @@ const buildCollectionNodeChildren = (
     });
   }
 
-  const schemaNode: TreeNode2 = buildSchemaNode(collection, container, refreshActiveTab);
+  const schemaNode: TreeNode = buildSchemaNode(collection, container, refreshActiveTab);
   if (schemaNode) {
     children.push(schemaNode);
   }
@@ -340,7 +340,7 @@ const buildStoredProcedureNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void,
-): TreeNode2 => {
+): TreeNode => {
   return {
     label: "Stored Procedures",
     children: collection.storedProcedures().map((sp: StoredProcedure) => ({
@@ -369,7 +369,7 @@ const buildUserDefinedFunctionsNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void,
-): TreeNode2 => {
+): TreeNode => {
   return {
     label: "User Defined Functions",
     children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
@@ -400,7 +400,7 @@ const buildTriggerNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void,
-): TreeNode2 => {
+): TreeNode => {
   return {
     label: "Triggers",
     children: collection.triggers().map((trigger: Trigger) => ({
@@ -428,7 +428,7 @@ const buildSchemaNode = (
   collection: ViewModels.Collection,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-): TreeNode2 => {
+): TreeNode => {
   if (collection.analyticalStorageTtl() === undefined) {
     return undefined;
   }
@@ -447,7 +447,7 @@ const buildSchemaNode = (
   };
 };
 
-const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode2[] => {
+const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode[] => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const schema: any = {};
 
@@ -481,8 +481,8 @@ const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode2[] => {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const traverse = (obj: any): TreeNode2[] => {
-    const children: TreeNode2[] = [];
+  const traverse = (obj: any): TreeNode[] => {
+    const children: TreeNode[] = [];
 
     if (obj !== undefined && !Array.isArray(obj) && typeof obj === "object") {
       Object.entries(obj).forEach(([key, value]) => {
