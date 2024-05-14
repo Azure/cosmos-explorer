@@ -10,17 +10,16 @@ import {
 } from "@fluentui/react-components";
 import { AuthType } from "AuthType";
 import { TreeNode2, TreeNode2Component } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
-import { createDatabaseTreeNodes, createResourceTokenTreeNodes } from "Explorer/Tree2/treeNodeUtil";
+import { createDatabaseTreeNodes, createResourceTokenTreeNodes, createSampleDataTreeNodes } from "Explorer/Tree2/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { userContext } from "UserContext";
+import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
 import * as React from "react";
+import { useEffect, useMemo } from "react";
 import shallow from "zustand/shallow";
 import Explorer from "../Explorer";
 import { useNotebook } from "../Notebook/useNotebook";
-
-export const MyNotebooksTitle = "My Notebooks";
-export const GitHubReposTitle = "GitHub repos";
 
 interface ResourceTreeProps {
   container: Explorer;
@@ -50,11 +49,15 @@ const lightTheme: Theme = {
 };
 
 export const DATA_TREE_LABEL = "DATA";
+export const MY_DATA_TREE_LABEL = "MY DATA";
+export const SAMPLE_DATA_TREE_LABEL = "SAMPLE DATA";
 
 /**
  * Top-level tree that has no label, but contains all subtrees
  */
 export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: ResourceTreeProps): JSX.Element => {
+  const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
+
   const {
     isNotebookEnabled,
   } = useNotebook(
@@ -64,21 +67,64 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
     shallow,
   );
   const refreshActiveTab = useTabs(state => state.refreshActiveTab)
-  const { databases, resourceTokenCollection } = useDatabases(state => ({ databases: state.databases, resourceTokenCollection: state.resourceTokenCollection }))
+  const { databases, resourceTokenCollection, sampleDataResourceTokenCollection } = useDatabases(state => ({
+    databases: state.databases,
+    resourceTokenCollection: state.resourceTokenCollection,
+    sampleDataResourceTokenCollection: state.sampleDataResourceTokenCollection
+  }));
+  const { isCopilotEnabled, isCopilotSampleDBEnabled } = useQueryCopilot(state => ({
+    isCopilotEnabled: state.copilotEnabled,
+    isCopilotSampleDBEnabled: state.copilotSampleDBEnabled
+  }));
+
   const databaseTreeNodes = userContext.authType === AuthType.ResourceToken
     ? createResourceTokenTreeNodes(resourceTokenCollection)
     : createDatabaseTreeNodes(container, isNotebookEnabled, databases, refreshActiveTab);
-  const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
 
-  const dataNodeTree: TreeNode2 = {
-    id: "data",
-    label: DATA_TREE_LABEL,
-    className: "accordionItemHeader",
-    children: databaseTreeNodes,
-    isScrollable: true,
-  };
+  const isSampleDataEnabled = 
+    isCopilotEnabled &&
+    isCopilotSampleDBEnabled &&
+    userContext.sampleDataConnectionInfo &&
+    userContext.apiType === "SQL";
 
-  React.useEffect(() => {
+  const sampleDataNodes = useMemo<TreeNode2[]>(() => {
+    return isSampleDataEnabled && sampleDataResourceTokenCollection
+      ? createSampleDataTreeNodes(sampleDataResourceTokenCollection)
+      : [];
+  }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
+
+  const rootNodes: TreeNode2[] = useMemo(() => {
+    if (sampleDataNodes.length > 0) {
+      return [
+        {
+          id: "data",
+          label: MY_DATA_TREE_LABEL,
+          className: "accordionItemHeader",
+          children: databaseTreeNodes,
+          isScrollable: true,
+        },
+        {
+          id: "sampleData",
+          label: SAMPLE_DATA_TREE_LABEL,
+          className: "accordionItemHeader",
+          children: sampleDataNodes
+        }
+      ];
+    }
+    else {
+      return [
+        {
+          id: "data",
+          label: DATA_TREE_LABEL,
+          className: "accordionItemHeader",
+          children: databaseTreeNodes,
+          isScrollable: true,
+        }
+      ];
+    }
+  }, [databaseTreeNodes, sampleDataNodes]);
+
+  useEffect(() => {
     // Compute open items based on node.isExpanded
     const updateOpenItems = (node: TreeNode2, parentNodeId: string): void => {
       // This will look for ANY expanded node, event if its parent node isn't expanded
@@ -105,8 +151,8 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
       }
     };
 
-    updateOpenItems(dataNodeTree, undefined);
-  }, [databaseTreeNodes]);
+    rootNodes.forEach(n => updateOpenItems(n, undefined));
+  }, [rootNodes, openItems, setOpenItems]);
 
   const handleOpenChange = (event: TreeOpenChangeEvent, data: TreeOpenChangeData) => setOpenItems(data.openItems);
 
@@ -120,7 +166,7 @@ export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: Resour
           size="medium"
           style={{ height: "100%", minWidth: "290px" }}
         >
-          {[dataNodeTree].map((node) => (
+          {rootNodes.map((node) => (
             <TreeNode2Component key={node.label} className="dataResourceTree" node={node} treeNodeId={node.label} />
           ))}
         </Tree>

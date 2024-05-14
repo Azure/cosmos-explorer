@@ -21,6 +21,57 @@ import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
+export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode2[] => {
+  const updatedSampleTree: TreeNode2 = {
+    label: sampleDataResourceTokenCollection.databaseId,
+    isExpanded: false,
+    iconSrc: CosmosDBIcon,
+    className: "databaseHeader",
+    children: [
+      {
+        label: sampleDataResourceTokenCollection.id(),
+        iconSrc: CollectionIcon,
+        isExpanded: false,
+        className: "collectionHeader",
+        contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
+        onClick: () => {
+          useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
+          useCommandBar.getState().setContextButtons([]);
+          useTabs
+            .getState()
+            .refreshActiveTab(
+              (tab: TabsBase) =>
+                tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
+                tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId,
+            );
+        },
+        isSelected: () =>
+          useSelectedNode
+            .getState()
+            .isDataNodeSelected(sampleDataResourceTokenCollection.databaseId, sampleDataResourceTokenCollection.id()),
+        onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection),
+        children: [
+          {
+            label: "Items",
+            onClick: () => sampleDataResourceTokenCollection.onDocumentDBDocumentsClick(),
+            contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
+            isSelected: () =>
+              useSelectedNode
+                .getState()
+                .isDataNodeSelected(
+                  sampleDataResourceTokenCollection.databaseId,
+                  sampleDataResourceTokenCollection.id(),
+                  [ViewModels.CollectionTabKind.Documents],
+                ),
+          },
+        ],
+      },
+    ],
+  };
+
+  return [updatedSampleTree];
+}
+
 export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode2[] => {
   if (!collection) {
     return [{
