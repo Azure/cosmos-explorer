@@ -924,10 +924,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       }
                     />
                     <Text variant="small">
-                      <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> To ensure compatibility with
-                      older SDKs, the created container will use a legacy partitioning scheme that supports partition
-                      key values of size only up to 101 bytes. If this is enabled, you will not be able to use
-                      hierarchical partition keys.{" "}
+                      <Icon iconName="InfoSolid" className="removeIcon" /> To ensure compatibility with older SDKs, the
+                      created container will use a legacy partitioning scheme that supports partition key values of size
+                      only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.{" "}
                       <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
                         Learn more
                       </Link>
