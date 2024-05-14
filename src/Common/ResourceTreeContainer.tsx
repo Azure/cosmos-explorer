@@ -2,7 +2,7 @@ import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from "r
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import refreshImg from "../../images/refresh-cosmos.svg";
 import Explorer from "../Explorer/Explorer";
-import { ResourceTree2 } from "../Explorer/Tree2/ResourceTree";
+import { ResourceTree } from "../Explorer/Tree/ResourceTree";
 import { userContext } from "../UserContext";
 import { getApiShortDisplayName } from "../Utils/APITypeUtils";
 import { NormalizedEventKey } from "./Constants";
@@ -73,7 +73,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
         {userContext.features.enableKoResourceTree ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
         ) : (
-          <ResourceTree2 container={container} />
+          <ResourceTree container={container} />
         )}
       </div>
       {/*  Collections Window - End */}
