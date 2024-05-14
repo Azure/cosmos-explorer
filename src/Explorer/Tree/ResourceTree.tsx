@@ -10,7 +10,11 @@ import {
 } from "@fluentui/react-components";
 import { AuthType } from "AuthType";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
-import { createDatabaseTreeNodes, createResourceTokenTreeNodes, createSampleDataTreeNodes } from "Explorer/Tree/treeNodeUtil";
+import {
+  createDatabaseTreeNodes,
+  createResourceTokenTreeNodes,
+  createSampleDataTreeNodes,
+} from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -61,30 +65,32 @@ export const SAMPLE_DATA_TREE_LABEL = "SAMPLE DATA";
 export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: ResourceTreeProps): JSX.Element => {
   const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
 
-  const {
-    isNotebookEnabled,
-  } = useNotebook(
+  const { isNotebookEnabled } = useNotebook(
     (state) => ({
       isNotebookEnabled: state.isNotebookEnabled,
     }),
     shallow,
   );
-  const refreshActiveTab = useTabs(state => state.refreshActiveTab)
-  const { databases, resourceTokenCollection, sampleDataResourceTokenCollection } = useDatabases(state => ({
+
+  // We intentionally avoid using a state selector here because we want to re-render the tree if the active tab changes.
+  const { refreshActiveTab } = useTabs();
+
+  const { databases, resourceTokenCollection, sampleDataResourceTokenCollection } = useDatabases((state) => ({
     databases: state.databases,
     resourceTokenCollection: state.resourceTokenCollection,
-    sampleDataResourceTokenCollection: state.sampleDataResourceTokenCollection
+    sampleDataResourceTokenCollection: state.sampleDataResourceTokenCollection,
   }));
-  const { isCopilotEnabled, isCopilotSampleDBEnabled } = useQueryCopilot(state => ({
+  const { isCopilotEnabled, isCopilotSampleDBEnabled } = useQueryCopilot((state) => ({
     isCopilotEnabled: state.copilotEnabled,
-    isCopilotSampleDBEnabled: state.copilotSampleDBEnabled
+    isCopilotSampleDBEnabled: state.copilotSampleDBEnabled,
   }));
 
-  const databaseTreeNodes = userContext.authType === AuthType.ResourceToken
-    ? createResourceTokenTreeNodes(resourceTokenCollection)
-    : createDatabaseTreeNodes(container, isNotebookEnabled, databases, refreshActiveTab);
+  const databaseTreeNodes =
+    userContext.authType === AuthType.ResourceToken
+      ? createResourceTokenTreeNodes(resourceTokenCollection)
+      : createDatabaseTreeNodes(container, isNotebookEnabled, databases, refreshActiveTab);
 
-  const isSampleDataEnabled = 
+  const isSampleDataEnabled =
     isCopilotEnabled &&
     isCopilotSampleDBEnabled &&
     userContext.sampleDataConnectionInfo &&
@@ -110,11 +116,10 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           id: "sampleData",
           label: SAMPLE_DATA_TREE_LABEL,
           className: "accordionItemHeader",
-          children: sampleDataNodes
-        }
+          children: sampleDataNodes,
+        },
       ];
-    }
-    else {
+    } else {
       return [
         {
           id: "data",
@@ -122,7 +127,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           className: "accordionItemHeader",
           children: databaseTreeNodes,
           isScrollable: true,
-        }
+        },
       ];
     }
   }, [databaseTreeNodes, sampleDataNodes]);
@@ -154,7 +159,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       }
     };
 
-    rootNodes.forEach(n => updateOpenItems(n, undefined));
+    rootNodes.forEach((n) => updateOpenItems(n, undefined));
   }, [rootNodes, openItems, setOpenItems]);
 
   const handleOpenChange = (event: TreeOpenChangeEvent, data: TreeOpenChangeData) => setOpenItems(data.openItems);

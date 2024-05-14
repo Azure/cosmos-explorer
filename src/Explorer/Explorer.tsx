@@ -1150,7 +1150,7 @@ export default class Explorer {
     if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
       return;
     }
-    const copilotEnabledPromise = Promise.resolve(true);  //getCopilotEnabled();
+    const copilotEnabledPromise = Promise.resolve(true); //getCopilotEnabled();
     const copilotUserDBEnabledPromise = isCopilotFeatureRegistered(userContext.subscriptionId);
     const [copilotEnabled, copilotUserDBEnabled] = await Promise.all([
       copilotEnabledPromise,

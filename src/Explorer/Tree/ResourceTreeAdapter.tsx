@@ -23,7 +23,11 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { useDialog } from "../Controls/Dialog";
-import { LegacyTreeComponent, LegacyTreeNode, LegacyTreeNodeMenuItem } from "../Controls/TreeComponent/LegacyTreeComponent";
+import {
+  LegacyTreeComponent,
+  LegacyTreeNode,
+  LegacyTreeNodeMenuItem,
+} from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
@@ -158,59 +162,61 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private buildDataTree(): LegacyTreeNode {
-    const databaseTreeNodes: LegacyTreeNode[] = useDatabases.getState().databases.map((database: ViewModels.Database) => {
-      const databaseNode: LegacyTreeNode = {
-        label: database.id(),
-        iconSrc: CosmosDBIcon,
-        isExpanded: false,
-        className: "databaseHeader",
-        children: [],
-        isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
-        onClick: async (isExpanded) => {
-          // Rewritten version of expandCollapseDatabase():
-          if (isExpanded) {
-            database.collapseDatabase();
-          } else {
-            if (databaseNode.children?.length === 0) {
-              databaseNode.isLoading = true;
+    const databaseTreeNodes: LegacyTreeNode[] = useDatabases
+      .getState()
+      .databases.map((database: ViewModels.Database) => {
+        const databaseNode: LegacyTreeNode = {
+          label: database.id(),
+          iconSrc: CosmosDBIcon,
+          isExpanded: false,
+          className: "databaseHeader",
+          children: [],
+          isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
+          contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
+          onClick: async (isExpanded) => {
+            // Rewritten version of expandCollapseDatabase():
+            if (isExpanded) {
+              database.collapseDatabase();
+            } else {
+              if (databaseNode.children?.length === 0) {
+                databaseNode.isLoading = true;
+              }
+              await database.expandDatabase();
             }
-            await database.expandDatabase();
-          }
-          databaseNode.isLoading = false;
-          useSelectedNode.getState().setSelectedNode(database);
-          useCommandBar.getState().setContextButtons([]);
-          useTabs.getState().refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
-        },
-        onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
-      };
+            databaseNode.isLoading = false;
+            useSelectedNode.getState().setSelectedNode(database);
+            useCommandBar.getState().setContextButtons([]);
+            useTabs.getState().refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
+          },
+          onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
+        };
 
-      if (database.isDatabaseShared()) {
-        databaseNode.children.push({
-          label: "Scale",
-          isSelected: () =>
-            useSelectedNode
-              .getState()
-              .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettings]),
-          onClick: database.onSettingsClick.bind(database),
+        if (database.isDatabaseShared()) {
+          databaseNode.children.push({
+            label: "Scale",
+            isSelected: () =>
+              useSelectedNode
+                .getState()
+                .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettings]),
+            onClick: database.onSettingsClick.bind(database),
+          });
+        }
+
+        // Find collections
+        database
+          .collections()
+          .forEach((collection: ViewModels.Collection) =>
+            databaseNode.children.push(this.buildCollectionNode(database, collection)),
+          );
+
+        database.collections.subscribe((collections: ViewModels.Collection[]) => {
+          collections.forEach((collection: ViewModels.Collection) =>
+            databaseNode.children.push(this.buildCollectionNode(database, collection)),
+          );
         });
-      }
 
-      // Find collections
-      database
-        .collections()
-        .forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(this.buildCollectionNode(database, collection)),
-        );
-
-      database.collections.subscribe((collections: ViewModels.Collection[]) => {
-        collections.forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(this.buildCollectionNode(database, collection)),
-        );
+        return databaseNode;
       });
-
-      return databaseNode;
-    });
 
     return {
       label: undefined,

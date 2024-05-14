@@ -2,7 +2,11 @@ import { shallow } from "enzyme";
 import React from "react";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { LegacyTreeComponent, LegacyTreeComponentProps, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
+import {
+  LegacyTreeComponent,
+  LegacyTreeComponentProps,
+  LegacyTreeNode,
+} from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import Collection from "./Collection";
 import { ResourceTreeAdapter } from "./ResourceTreeAdapter";

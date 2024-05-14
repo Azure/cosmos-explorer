@@ -77,7 +77,10 @@ interface LegacyTreeNodeComponentState {
   isExpanded: boolean;
   isMenuShowing: boolean;
 }
-export class LegacyTreeNodeComponent extends React.Component<LegacyTreeNodeComponentProps, LegacyTreeNodeComponentState> {
+export class LegacyTreeNodeComponent extends React.Component<
+  LegacyTreeNodeComponentProps,
+  LegacyTreeNodeComponentState
+> {
   private static readonly paddingPerGenerationPx = 16;
   private static readonly iconOffset = 22;
   private static readonly transitionDurationMS = 200;
@@ -195,7 +198,10 @@ export class LegacyTreeNodeComponent extends React.Component<LegacyTreeNodeCompo
           <img className="loadingIcon" src={LoadingIndicator_3Squares} hidden={!this.props.node.isLoading} />
         </div>
         {node.children && (
-          <AnimateHeight duration={LegacyTreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
+          <AnimateHeight
+            duration={LegacyTreeNodeComponent.transitionDurationMS}
+            height={this.state.isExpanded ? "auto" : 0}
+          >
             <div className="nodeChildren" data-test={node.label} role="group">
               {LegacyTreeNodeComponent.getSortedChildren(node).map((childNode: LegacyTreeNode) => (
                 <LegacyTreeNodeComponent
@@ -221,7 +227,9 @@ export class LegacyTreeNodeComponent extends React.Component<LegacyTreeNodeCompo
       node.children &&
       node.children.reduce(
         (previous: boolean, child: LegacyTreeNode) =>
-          previous || (child.isSelected && child.isSelected()) || LegacyTreeNodeComponent.isAnyDescendantSelected(child),
+          previous ||
+          (child.isSelected && child.isSelected()) ||
+          LegacyTreeNodeComponent.isAnyDescendantSelected(child),
         false,
       )
     );

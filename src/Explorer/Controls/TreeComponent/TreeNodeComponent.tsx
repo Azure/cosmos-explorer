@@ -51,6 +51,18 @@ export interface TreeNodeComponentProps {
   treeNodeId: string;
 }
 
+/** Function that returns true if any descendant (at any depth) of this node is selected. */
+function isAnyDescendantSelected(node: TreeNode): boolean {
+  return (
+    node.children &&
+    node.children.reduce(
+      (previous: boolean, child: TreeNode) =>
+        previous || (child.isSelected && child.isSelected()) || isAnyDescendantSelected(child),
+      false,
+    )
+  );
+}
+
 const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 20, height: 20 }} />;
 
 export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
@@ -96,6 +108,11 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     }
   };
 
+  // We show a node as selected if it is selected AND no descendant is selected.
+  // We want to show only the deepest selected node as selected.
+  const isCurrentNodeSelected = node.isSelected && node.isSelected();
+  const shouldShowAsSelected = isCurrentNodeSelected && !isAnyDescendantSelected(node);
+
   return (
     <TreeItem
       value={treeNodeId}
@@ -126,7 +143,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         expandIcon={isLoading ? <Spinner size="extra-tiny" /> : undefined}
         iconBefore={node.iconSrc && getTreeIcon(node.iconSrc)}
         style={{
-          backgroundColor: node.isSelected && node.isSelected() ? tokens.colorNeutralBackground1Selected : undefined,
+          backgroundColor: shouldShowAsSelected ? tokens.colorNeutralBackground1Selected : undefined,
         }}
         onClick={() => node.onClick?.()}
       >
@@ -135,11 +152,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       {!node.isLoading && node.children?.length > 0 && (
         <Tree style={{ overflow: node.isScrollable ? "auto" : undefined }}>
           {getSortedChildren(node).map((childNode: TreeNode) => (
-            <TreeNodeComponent
-              key={childNode.label}
-              node={childNode}
-              treeNodeId={`${treeNodeId}/${childNode.label}`}
-            />
+            <TreeNodeComponent key={childNode.label} node={childNode} treeNodeId={`${treeNodeId}/${childNode.label}`} />
           ))}
         </Tree>
       )}

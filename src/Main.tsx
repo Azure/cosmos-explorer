@@ -91,12 +91,6 @@ const App: React.FunctionComponent = () => {
     return <LoadingExplorer />;
   }
 
-  console.log("Explorer loaded", {
-    authType: userContext.authType,
-    apiType: userContext.apiType,
-    platform: config?.platform,
-  })
-
   return (
     <KeyboardShortcutRoot>
       <div className="flexContainer" aria-hidden="false">

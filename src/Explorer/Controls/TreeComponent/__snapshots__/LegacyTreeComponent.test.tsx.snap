@@ -5,7 +5,7 @@ exports[`TreeComponent renders a simple tree 1`] = `
   className="treeComponent tree"
   role="tree"
 >
-  <TreeNodeComponent
+  <LegacyTreeNodeComponent
     generation={0}
     node={
       Object {
@@ -102,7 +102,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="Bchild1-3-undefined"
         node={
@@ -120,7 +120,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
         }
         paddingLeft={32}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="2child2-3-undefined"
         node={
@@ -254,7 +254,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="2child2-13-undefined"
         node={
@@ -264,7 +264,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
         }
         paddingLeft={214}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="Bchild1-13-undefined"
         node={
@@ -470,7 +470,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="bchild-13-undefined"
         node={
@@ -488,7 +488,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
         }
         paddingLeft={192}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="dchild-13-undefined"
         node={
@@ -506,7 +506,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
         }
         paddingLeft={192}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="aChild-13-undefined"
         node={
@@ -516,7 +516,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
         }
         paddingLeft={214}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="cchild-13-undefined"
         node={
@@ -600,7 +600,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="Bchild1-3-undefined"
         node={
@@ -618,7 +618,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
         }
         paddingLeft={32}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="2child2-3-undefined"
         node={

@@ -70,15 +70,17 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
   };
 
   return [updatedSampleTree];
-}
+};
 
 export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode[] => {
   if (!collection) {
-    return [{
-      label: "",
-      isExpanded: true,
-      children: [],
-    }];
+    return [
+      {
+        label: "",
+        isExpanded: true,
+        children: [],
+      },
+    ];
   }
 
   const children: TreeNode[] = [];
@@ -115,9 +117,14 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
   };
 
   return [collectionNode];
-}
+};
 
-export const createDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boolean, databases: ViewModels.Database[], refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void): TreeNode[] => {
+export const createDatabaseTreeNodes = (
+  container: Explorer,
+  isNotebookEnabled: boolean,
+  databases: ViewModels.Database[],
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
+): TreeNode[] => {
   const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
     const databaseNode: TreeNode = {
       label: database.id(),
@@ -349,7 +356,11 @@ const buildStoredProcedureNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.StoredProcedures], sp.rid),
+          .isDataNodeSelected(
+            collection.databaseId,
+            collection.id(),
+            [ViewModels.CollectionTabKind.StoredProcedures]
+          ),
       contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(container, sp),
     })),
     onExpanded: async () => {
@@ -378,9 +389,11 @@ const buildUserDefinedFunctionsNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [
-            ViewModels.CollectionTabKind.UserDefinedFunctions,
-          ], udf.rid),
+          .isDataNodeSelected(
+            collection.databaseId,
+            collection.id(),
+            [ViewModels.CollectionTabKind.UserDefinedFunctions]
+          ),
       contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(container, udf),
     })),
     onExpanded: async () => {
@@ -409,7 +422,11 @@ const buildTriggerNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Triggers], trigger.rid),
+          .isDataNodeSelected(
+            collection.databaseId,
+            collection.id(),
+            [ViewModels.CollectionTabKind.Triggers]
+          ),
       contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(container, trigger),
     })),
     onExpanded: async () => {
