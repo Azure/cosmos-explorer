@@ -1,4 +1,3 @@
-import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import refreshImg from "../../images/refresh-cosmos.svg";
@@ -8,7 +7,6 @@ import { ResourceTokenTree } from "../Explorer/Tree/ResourceTokenTree";
 import { ResourceTree2 } from "../Explorer/Tree2/ResourceTree";
 import { userContext } from "../UserContext";
 import { getApiShortDisplayName } from "../Utils/APITypeUtils";
-import { Platform, configContext } from "./../ConfigContext";
 import { NormalizedEventKey } from "./Constants";
 
 export interface ResourceTreeContainerProps {
@@ -78,10 +76,8 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
           <ResourceTokenTree />
         ) : userContext.features.enableKoResourceTree ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
-        ) : configContext.platform === Platform.Fabric ? (
-          <ResourceTree2 container={container} />
         ) : (
-          <ResourceTree container={container} />
+          <ResourceTree2 container={container} />
         )}
       </div>
       {/*  Collections Window - End */}

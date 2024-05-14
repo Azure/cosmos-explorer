@@ -128,8 +128,9 @@ export const TreeNode2Component: React.FC<TreeNode2ComponentProps> = ({
         style={{
           backgroundColor: node.isSelected && node.isSelected() ? tokens.colorNeutralBackground1Selected : undefined,
         }}
+        onClick={() => node.onClick?.()}
       >
-        <span onClick={() => node.onClick?.()}>{node.label}</span>
+        {node.label}
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
         <Tree style={{ overflow: node.isScrollable ? "auto" : undefined }}>
