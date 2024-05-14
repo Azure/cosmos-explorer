@@ -8,8 +8,12 @@ import {
   TreeOpenChangeEvent,
   createLightTheme,
 } from "@fluentui/react-components";
+import { AuthType } from "AuthType";
 import { TreeNode2, TreeNode2Component } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
-import { useDatabaseTreeNodes } from "Explorer/Tree2/useDatabaseTreeNodes";
+import { createDatabaseTreeNodes, createResourceTokenTreeNodes } from "Explorer/Tree2/treeNodeUtil";
+import { useDatabases } from "Explorer/useDatabases";
+import { userContext } from "UserContext";
+import { useTabs } from "hooks/useTabs";
 import * as React from "react";
 import shallow from "zustand/shallow";
 import Explorer from "../Explorer";
@@ -53,22 +57,17 @@ export const DATA_TREE_LABEL = "DATA";
 export const ResourceTree2: React.FC<ResourceTreeProps> = ({ container }: ResourceTreeProps): JSX.Element => {
   const {
     isNotebookEnabled,
-    // myNotebooksContentRoot,
-    // galleryContentRoot,
-    // gitHubNotebooksContentRoot,
-    // updateNotebookItem,
   } = useNotebook(
     (state) => ({
       isNotebookEnabled: state.isNotebookEnabled,
-      myNotebooksContentRoot: state.myNotebooksContentRoot,
-      galleryContentRoot: state.galleryContentRoot,
-      gitHubNotebooksContentRoot: state.gitHubNotebooksContentRoot,
-      updateNotebookItem: state.updateNotebookItem,
     }),
     shallow,
   );
-  // const { activeTab } = useTabs();
-  const databaseTreeNodes = useDatabaseTreeNodes(container, isNotebookEnabled);
+  const refreshActiveTab = useTabs(state => state.refreshActiveTab)
+  const { databases, resourceTokenCollection } = useDatabases(state => ({ databases: state.databases, resourceTokenCollection: state.resourceTokenCollection }))
+  const databaseTreeNodes = userContext.authType === AuthType.ResourceToken
+    ? createResourceTokenTreeNodes(resourceTokenCollection)
+    : createDatabaseTreeNodes(container, isNotebookEnabled, databases, refreshActiveTab);
   const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
 
   const dataNodeTree: TreeNode2 = {

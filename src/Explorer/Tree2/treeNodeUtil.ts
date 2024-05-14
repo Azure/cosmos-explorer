@@ -6,8 +6,11 @@ import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
 import { useDatabases } from "Explorer/useDatabases";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
+import { useTabs } from "hooks/useTabs";
+import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
+import { Platform, configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
@@ -17,7 +20,127 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
-import { Platform, configContext } from "./../../ConfigContext";
+
+export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode2[] => {
+  if (!collection) {
+    return [{
+      label: "",
+      isExpanded: true,
+      children: [],
+    }];
+  }
+
+  const children: TreeNode2[] = [];
+  children.push({
+    label: "Items",
+    onClick: () => {
+      collection.onDocumentDBDocumentsClick();
+      // push to most recent
+      mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
+    },
+    isSelected: () =>
+      useSelectedNode
+        .getState()
+        .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Documents]),
+  });
+
+  const collectionNode: TreeNode2 = {
+    label: collection.id(),
+    iconSrc: CollectionIcon,
+    isExpanded: true,
+    children,
+    className: "tree-node-collection",
+    onClick: () => {
+      // Rewritten version of expandCollapseCollection
+      useSelectedNode.getState().setSelectedNode(collection);
+      useCommandBar.getState().setContextButtons([]);
+      useTabs
+        .getState()
+        .refreshActiveTab(
+          (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
+        );
+    },
+    isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
+  };
+
+  return [collectionNode];
+}
+
+export const createDatabaseTreeNodes = (container: Explorer, isNotebookEnabled: boolean, databases: ViewModels.Database[], refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void): TreeNode2[] => {
+  const databaseTreeNodes: TreeNode2[] = databases.map((database: ViewModels.Database) => {
+    const databaseNode: TreeNode2 = {
+      label: database.id(),
+      iconSrc: CosmosDBIcon,
+      className: "tree-node-database",
+      children: [],
+      isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
+      contextMenu: undefined, // TODO Disable this for now as the actions don't work. ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
+      onExpanded: async () => {
+        useSelectedNode.getState().setSelectedNode(database);
+        if (!databaseNode.children || databaseNode.children?.length === 0) {
+          databaseNode.isLoading = true;
+        }
+        await database.expandDatabase();
+        databaseNode.isLoading = false;
+        useCommandBar.getState().setContextButtons([]);
+        refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
+        useDatabases.getState().updateDatabase(database);
+      },
+      onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
+      isExpanded: database.isDatabaseExpanded(),
+      onCollapsed: () => {
+        database.collapseDatabase();
+        // useCommandBar.getState().setContextButtons([]);
+        useDatabases.getState().updateDatabase(database);
+      },
+    };
+
+    if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
+      databaseNode.children.push({
+        id: database.isSampleDB ? "sampleScaleSettings" : "",
+        label: "Scale",
+        isSelected: () =>
+          useSelectedNode
+            .getState()
+            .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettingsV2]),
+        onClick: database.onSettingsClick.bind(database),
+      });
+    }
+
+    // Find collections
+    database
+      .collections()
+      .forEach((collection: ViewModels.Collection) =>
+        databaseNode.children.push(
+          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+        ),
+      );
+
+    if (database.collectionsContinuationToken) {
+      const loadMoreNode: TreeNode2 = {
+        label: "load more",
+        className: "loadMoreHeader",
+        onClick: async () => {
+          await database.loadCollections();
+          useDatabases.getState().updateDatabase(database);
+        },
+      };
+      databaseNode.children.push(loadMoreNode);
+    }
+
+    database.collections.subscribe((collections: ViewModels.Collection[]) => {
+      collections.forEach((collection: ViewModels.Collection) =>
+        databaseNode.children.push(
+          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+        ),
+      );
+    });
+
+    return databaseNode;
+  });
+
+  return databaseTreeNodes;
+};
 
 export const buildCollectionNode = (
   database: ViewModels.Database,
@@ -37,7 +160,7 @@ export const buildCollectionNode = (
     label: collection.id(),
     iconSrc: CollectionIcon,
     children: children,
-    className: "collectionHeader",
+    className: "tree-node-collection",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);
@@ -175,7 +298,7 @@ const buildStoredProcedureNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.StoredProcedures]),
+          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.StoredProcedures], sp.rid),
       contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(container, sp),
     })),
     onExpanded: async () => {
@@ -206,7 +329,7 @@ const buildUserDefinedFunctionsNode = (
           .getState()
           .isDataNodeSelected(collection.databaseId, collection.id(), [
             ViewModels.CollectionTabKind.UserDefinedFunctions,
-          ]),
+          ], udf.rid),
       contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(container, udf),
     })),
     onExpanded: async () => {
@@ -235,7 +358,7 @@ const buildTriggerNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Triggers]),
+          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Triggers], trigger.rid),
       contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(container, trigger),
     })),
     onExpanded: async () => {
