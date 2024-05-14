@@ -21,6 +21,9 @@ import shallow from "zustand/shallow";
 import Explorer from "../Explorer";
 import { useNotebook } from "../Notebook/useNotebook";
 
+export const MyNotebooksTitle = "My Notebooks";
+export const GitHubReposTitle = "GitHub repos";
+
 interface ResourceTreeProps {
   container: Explorer;
 }
