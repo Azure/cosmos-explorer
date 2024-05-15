@@ -1668,7 +1668,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   return (
     <FluentProvider theme={getPlatformTheme(configContext.platform)} style={{ height: "100%" }}>
-      <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
+      <div className="tab-pane active documentsTab" role="tabpanel" style={{ display: "flex" }}>
         {isFilterCreated && (
           <div className="filterdivs">
             {!isFilterExpanded && !isPreferredApiMongoDB && (
@@ -1763,14 +1763,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Split>
-            <div style={{ minWidth: 120, width: "35%", overflow: "hidden" }} ref={tableContainerRef}>
+            <div
+              style={{ minWidth: 120, width: "35%", overflow: "hidden", position: "relative" }}
+              ref={tableContainerRef}
+            >
               <Button
                 appearance="transparent"
                 aria-label="Refresh"
                 size="small"
                 icon={<ArrowClockwise16Filled />}
                 style={{
-                  position: "relative",
+                  position: "absolute",
                   top: 6,
                   right: 0,
                   float: "right",

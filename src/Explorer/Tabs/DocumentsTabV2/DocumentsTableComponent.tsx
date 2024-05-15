@@ -136,6 +136,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         {columns.map((column) => (
           <TableCell
             key={column.columnId}
+            className="documentsTableCell"
             onClick={(/* e */) => onSelectedRowsChange(new Set<TableRowId>([index]))}
             onKeyDown={() => onIdClicked(index)}
             {...columnSizing.getTableCellProps(column.columnId)}
@@ -222,9 +223,9 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   };
 
   return (
-    <Table noNativeElements {...tableProps}>
-      <TableHeader>
-        <TableRow>
+    <Table className="documentsTable" noNativeElements {...tableProps}>
+      <TableHeader className="documentsTableHeader">
+        <TableRow style={{ width: size ? size.width - 15 : "100%" }}>
           <TableSelectionCell
             checked={allRowsSelected ? true : someRowsSelected ? "mixed" : false}
             onClick={toggleAllRows}
@@ -234,7 +235,11 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           {columns.map((column /* index */) => (
             <Menu openOnContext key={column.columnId}>
               <MenuTrigger>
-                <TableHeaderCell key={column.columnId} {...columnSizing.getTableHeaderCellProps(column.columnId)}>
+                <TableHeaderCell
+                  className="documentsTableCell"
+                  key={column.columnId}
+                  {...columnSizing.getTableHeaderCellProps(column.columnId)}
+                >
                   {column.renderHeaderCell()}
                 </TableHeaderCell>
               </MenuTrigger>
@@ -256,6 +261,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           itemSize={30}
           width={size ? size.width : 0}
           itemData={rows}
+          style={{ overflowY: "scroll" }}
         >
           {RenderRow}
         </List>
