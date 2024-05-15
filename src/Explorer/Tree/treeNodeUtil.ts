@@ -125,6 +125,7 @@ export const createDatabaseTreeNodes = (
   databases: ViewModels.Database[],
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode[] => {
+  console.log("creating database tree nodes");
   const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
     const databaseNode: TreeNode = {
       label: database.id(),

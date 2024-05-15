@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+            ],
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": false,
+        "isSelected": [Function],
+        "label": "testCollection",
+        "onClick": [Function],
+        "onContextMenuOpen": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "iconSrc": Object {},
+    "isExpanded": false,
+    "label": "testDatabase",
+  },
+]
+`;
