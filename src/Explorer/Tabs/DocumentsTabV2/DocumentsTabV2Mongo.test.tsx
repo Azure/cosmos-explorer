@@ -100,19 +100,19 @@ describe("Documents tab (Mongo API)", () => {
         selectedSubnodeKind: undefined,
         children: undefined,
         isCollectionExpanded: undefined,
-        onDocumentDBDocumentsClick: function (): void {
+        onDocumentDBDocumentsClick: (): void => {
           throw new Error("Function not implemented.");
         },
-        onNewQueryClick: function (source: any, event?: MouseEvent, queryText?: string): void {
+        onNewQueryClick: (): void => {
           throw new Error("Function not implemented.");
         },
-        expandCollection: function (): void {
+        expandCollection: (): void => {
           throw new Error("Function not implemented.");
         },
-        collapseCollection: function (): void {
+        collapseCollection: (): void => {
           throw new Error("Function not implemented.");
         },
-        getDatabase: function (): ViewModels.Database {
+        getDatabase: (): ViewModels.Database => {
           throw new Error("Function not implemented.");
         },
         nodeKind: "nodeKind",
