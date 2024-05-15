@@ -116,7 +116,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   return (
     <TreeItem
       value={treeNodeId}
-      itemType={node.children !== undefined ? "branch" : "leaf"}
+      itemType={node.children?.length > 0 ? "branch" : "leaf"}
       style={{ height: "100%" }}
       onOpenChange={onOpenChange}
     >
