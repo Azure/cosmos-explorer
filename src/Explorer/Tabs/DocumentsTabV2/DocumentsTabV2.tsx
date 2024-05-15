@@ -860,7 +860,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               },
               startKey,
             );
-            return undefined;
+            throw error;
           },
         )
         .finally(() => setIsExecuting(false));
@@ -873,16 +873,25 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       onExecutionErrorChange(false);
       setIsExecuting(true);
       _deleteDocuments(toDeleteDocumentIds)
-        .then((deletedIds: DocumentId[]) => {
-          const deletedRids = new Set(deletedIds.map((documentId) => documentId.rid));
-          const newDocumentIds = [...documentIds.filter((documentId) => !deletedRids.has(documentId.rid))];
-          setDocumentIds(newDocumentIds);
+        .then(
+          (deletedIds: DocumentId[]) => {
+            const deletedRids = new Set(deletedIds.map((documentId) => documentId.rid));
+            const newDocumentIds = [...documentIds.filter((documentId) => !deletedRids.has(documentId.rid))];
+            setDocumentIds(newDocumentIds);
 
-          setSelectedDocumentContent(undefined);
-          setClickedRow(undefined);
-          setSelectedRows(new Set());
-          setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-        })
+            setSelectedDocumentContent(undefined);
+            setClickedRow(undefined);
+            setSelectedRows(new Set());
+            setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+            useDialog
+              .getState()
+              .showOkModalDialog("Delete documents", `${deletedIds.length} document(s) successfully deleted.`);
+          },
+          (error: Error) =>
+            useDialog
+              .getState()
+              .showOkModalDialog("Delete documents", `Document(s) deleted failed (${JSON.stringify(error)})`),
+        )
         .finally(() => setIsExecuting(false));
     },
     [onExecutionErrorChange, _deleteDocuments, documentIds],

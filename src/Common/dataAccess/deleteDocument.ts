@@ -33,6 +33,7 @@ export const deleteDocument = async (collection: CollectionBase, documentId: Doc
  * @returns array of ids that were successfully deleted
  */
 export const deleteDocuments = async (collection: CollectionBase, documentIds: DocumentId[]): Promise<DocumentId[]> => {
+  const nbDocuments = documentIds.length;
   const clearMessage = logConsoleProgress(`Deleting ${documentIds.length} ${getEntityName(true)}`);
   try {
     const v2Container = await client().database(collection.databaseId).container(collection.id());
@@ -69,8 +70,8 @@ export const deleteDocuments = async (collection: CollectionBase, documentIds: D
 
     const allResult = await Promise.all(promiseArray);
     const flatAllResult = Array.prototype.concat.apply([], allResult);
-    logConsoleInfo(`Successfully deleted ${getEntityName(true)}: ${flatAllResult.length} out of ${documentIds.length}`);
-    // TODO: handle case result.length != documentIds.length
+    logConsoleInfo(`Successfully deleted ${getEntityName(true)}: ${flatAllResult.length} out of ${nbDocuments}`);
+    // TODO: handle case result.length != nbDocuments
     return flatAllResult;
   } catch (error) {
     handleError(error, "DeleteDocuments", `Error while deleting ${documentIds.length} ${getEntityName(true)}`);
