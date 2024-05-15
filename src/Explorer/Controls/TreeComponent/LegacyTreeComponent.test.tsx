@@ -50,7 +50,7 @@ const buildChildren2 = (): LegacyTreeNode[] => {
   return [child1, child2, child3, child4];
 };
 
-describe("TreeComponent", () => {
+describe("LegacyTreeComponent", () => {
   it("renders a simple tree", () => {
     const root = {
       label: "root",
@@ -67,7 +67,7 @@ describe("TreeComponent", () => {
   });
 });
 
-describe("TreeNodeComponent", () => {
+describe("LegacyTreeNodeComponent", () => {
   it("renders a simple node (sorted children, expanded)", () => {
     const node: LegacyTreeNode = {
       label: "label",
