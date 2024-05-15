@@ -3,6 +3,10 @@ import {
   ComputedPropertiesComponent,
   ComputedPropertiesComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ComputedPropertiesComponent";
+import {
+  ContainerVectorPolicyComponent,
+  ContainerVectorPolicyComponentProps,
+} from "Explorer/Controls/Settings/SettingsSubComponents/ContainerVectorPolicyComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
@@ -144,6 +148,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
+  private shouldShowContainerVectorPolicyEditor: boolean;
   private totalThroughputUsed: number;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
@@ -158,6 +163,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
+      this.shouldShowContainerVectorPolicyEditor = userContext.apiType === "SQL";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
@@ -1143,6 +1149,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       explorer: this.props.settingsTab.getContainer(),
     };
 
+    const containerVectorPolicyProps: ContainerVectorPolicyComponentProps = {
+      vectorEmbeddingPolicy: this.collection.rawDataModel?.vectorEmbeddingPolicy,
+    };
+
     const tabs: SettingsV2TabInfo[] = [];
     if (!hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
@@ -1155,6 +1165,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tab: SettingsV2TabTypes.SubSettingsTab,
       content: <SubSettingsComponent {...subSettingsComponentProps} />,
     });
+
+    if (this.shouldShowContainerVectorPolicyEditor) {
+      tabs.push({
+        tab: SettingsV2TabTypes.ContainerVectorPolicyTab,
+        content: <ContainerVectorPolicyComponent {...containerVectorPolicyProps} />,
+      });
+    }
 
     if (this.shouldShowIndexingPolicyEditor) {
       tabs.push({

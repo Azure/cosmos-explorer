@@ -157,6 +157,7 @@ export interface Collection extends Resource {
   changeFeedPolicy?: ChangeFeedPolicy;
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
+  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
   schema?: ISchema;
   requestSchema?: () => void;
   computedProperties?: ComputedProperties;
@@ -194,8 +195,9 @@ export interface IndexingPolicy {
   indexingMode: "consistent" | "lazy" | "none";
   includedPaths: any;
   excludedPaths: any;
-  compositeIndexes?: any;
-  spatialIndexes?: any;
+  compositeIndexes?: any[];
+  spatialIndexes?: any[];
+  vectorIndexes?: any[];
 }
 
 export interface ComputedProperty {
@@ -333,6 +335,18 @@ export interface CreateCollectionParams {
   partitionKey?: PartitionKey;
   uniqueKeyPolicy?: UniqueKeyPolicy;
   createMongoWildcardIndex?: boolean;
+  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+}
+
+export interface VectorEmbeddingPolicy {
+  vectorEmbeddings: VectorEmbedding[];
+}
+
+export interface VectorEmbedding {
+  path?: string;
+  dataType?: string;
+  dimensions?: number;
+  distanceFunction?: string;
 }
 
 export interface ReadDatabaseOfferParams {
