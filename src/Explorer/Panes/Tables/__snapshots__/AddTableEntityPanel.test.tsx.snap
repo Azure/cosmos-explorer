@@ -2130,6 +2130,11 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
         </div>
       </PanelFooterComponent>
     </form>
+    <span
+      className="screenReaderOnly"
+      id="screenReaderStatus"
+      role="status"
+    />
   </RightPaneForm>
 </AddTableEntityPanel>
 `;

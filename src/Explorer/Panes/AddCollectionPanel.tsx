@@ -382,6 +382,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             )}
             {!this.state.createNewDatabase && (
               <Dropdown
+                ariaLabel="Choose an existing database"
                 styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
                 style={{ width: 300, fontSize: 12 }}
                 placeholder="Choose an existing database"
@@ -924,10 +925,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       }
                     />
                     <Text variant="small">
-                      <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> To ensure compatibility with
-                      older SDKs, the created container will use a legacy partitioning scheme that supports partition
-                      key values of size only up to 101 bytes. If this is enabled, you will not be able to use
-                      hierarchical partition keys.{" "}
+                      <Icon iconName="InfoSolid" className="removeIcon" /> To ensure compatibility with older SDKs, the
+                      created container will use a legacy partitioning scheme that supports partition key values of size
+                      only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.{" "}
                       <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
                         Learn more
                       </Link>
