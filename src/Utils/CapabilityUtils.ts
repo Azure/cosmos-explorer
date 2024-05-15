@@ -12,7 +12,7 @@ export const isCapabilityEnabled = (capabilityName: string): boolean => {
 export const isServerlessAccount = (): boolean => {
   const { databaseAccount } = userContext;
   return (
-    databaseAccount?.properties?.capacityMode === Constants.CapacityMode.serverless ||
+    databaseAccount?.properties?.capacityMode === Constants.CapacityMode.Serverless ||
     isCapabilityEnabled(Constants.CapabilityNames.EnableServerless)
   );
 };

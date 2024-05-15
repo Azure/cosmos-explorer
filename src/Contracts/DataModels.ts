@@ -1,4 +1,4 @@
-import { ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
+import { CapacityMode, ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
 
 export interface ArmEntity {
   id: string;
@@ -35,7 +35,7 @@ export interface DatabaseAccountExtendedProperties {
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
   capacity?: { totalThroughputLimit: number };
-  capacityMode?: string;
+  capacityMode?: CapacityMode;
   locations?: DatabaseAccountResponseLocation[];
   postgresqlEndpoint?: string;
   publicNetworkAccess?: string;
