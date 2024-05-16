@@ -21,6 +21,12 @@ import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
+export const shouldShowScriptNodes = (): boolean => {
+  return (
+    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+  );
+}
+
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
     label: sampleDataResourceTokenCollection.databaseId,
@@ -102,7 +108,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
     iconSrc: CollectionIcon,
     isExpanded: true,
     children,
-    className: "tree-node-collection",
+    className: "collectionHeader",
     onClick: () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
@@ -125,15 +131,50 @@ export const createDatabaseTreeNodes = (
   databases: ViewModels.Database[],
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode[] => {
-  console.log("creating database tree nodes");
   const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
+    const buildDatabaseChildNodes = (databaseNode: TreeNode) => {
+      databaseNode.children = [];
+      if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
+        databaseNode.children.push({
+          id: database.isSampleDB ? "sampleScaleSettings" : "",
+          label: "Scale",
+          isSelected: () =>
+            useSelectedNode
+              .getState()
+              .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettingsV2]),
+          onClick: database.onSettingsClick.bind(database),
+        });
+      }
+
+      // Find collections
+      database
+        .collections()
+        .forEach((collection: ViewModels.Collection) =>
+          databaseNode.children.push(
+            buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+          ),
+        );
+
+      if (database.collectionsContinuationToken) {
+        const loadMoreNode: TreeNode = {
+          label: "load more",
+          className: "loadMoreHeader",
+          onClick: async () => {
+            await database.loadCollections();
+            useDatabases.getState().updateDatabase(database);
+          },
+        };
+        databaseNode.children.push(loadMoreNode);
+      }
+    }
+
     const databaseNode: TreeNode = {
       label: database.id(),
       iconSrc: CosmosDBIcon,
-      className: "tree-node-database",
+      className: "databaseHeader",
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
-      contextMenu: undefined, // TODO Disable this for now as the actions don't work. ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
+      contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
       onExpanded: async () => {
         useSelectedNode.getState().setSelectedNode(database);
         if (!databaseNode.children || databaseNode.children?.length === 0) {
@@ -154,45 +195,10 @@ export const createDatabaseTreeNodes = (
       },
     };
 
-    if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
-      databaseNode.children.push({
-        id: database.isSampleDB ? "sampleScaleSettings" : "",
-        label: "Scale",
-        isSelected: () =>
-          useSelectedNode
-            .getState()
-            .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettingsV2]),
-        onClick: database.onSettingsClick.bind(database),
-      });
-    }
+    buildDatabaseChildNodes(databaseNode);
 
-    // Find collections
-    database
-      .collections()
-      .forEach((collection: ViewModels.Collection) =>
-        databaseNode.children.push(
-          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
-        ),
-      );
-
-    if (database.collectionsContinuationToken) {
-      const loadMoreNode: TreeNode = {
-        label: "load more",
-        className: "loadMoreHeader",
-        onClick: async () => {
-          await database.loadCollections();
-          useDatabases.getState().updateDatabase(database);
-        },
-      };
-      databaseNode.children.push(loadMoreNode);
-    }
-
-    database.collections.subscribe((collections: ViewModels.Collection[]) => {
-      collections.forEach((collection: ViewModels.Collection) =>
-        databaseNode.children.push(
-          buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
-        ),
-      );
+    database.collections.subscribe(() => {
+      buildDatabaseChildNodes(databaseNode);
     });
 
     return databaseNode;
@@ -209,17 +215,16 @@ export const buildCollectionNode = (
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode => {
   let children: TreeNode[];
-
   // Flat Tree for Fabric
   if (configContext.platform !== Platform.Fabric) {
     children = buildCollectionNodeChildren(database, collection, isNotebookEnabled, container, refreshActiveTab);
   }
 
-  return {
+  const collectionNode: TreeNode = {
     label: collection.id(),
     iconSrc: CollectionIcon,
     children: children,
-    className: "tree-node-collection",
+    className: "collectionHeader",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);
@@ -236,6 +241,15 @@ export const buildCollectionNode = (
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
       );
       useDatabases.getState().updateDatabase(database);
+
+      // If we're showing script nodes, start loading them.
+      if (shouldShowScriptNodes()) {
+        await collection.loadStoredProcedures();
+        await collection.loadUserDefinedFunctions();
+        await collection.loadTriggers();
+      }
+
+      useDatabases.getState().updateDatabase(database);
     },
     isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
     onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
@@ -246,6 +260,8 @@ export const buildCollectionNode = (
     },
     isExpanded: collection.isCollectionExpanded(),
   };
+
+  return collectionNode;
 };
 
 const buildCollectionNodeChildren = (
@@ -255,7 +271,6 @@ const buildCollectionNodeChildren = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
 ): TreeNode[] => {
-  const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   const children: TreeNode[] = [];
   children.push({
     label: getItemName(),
@@ -317,7 +332,7 @@ const buildCollectionNodeChildren = (
 
   const onUpdateDatabase = () => useDatabases.getState().updateDatabase(database);
 
-  if (showScriptNodes) {
+  if (shouldShowScriptNodes()) {
     children.push(buildStoredProcedureNode(collection, container, refreshActiveTab, onUpdateDatabase));
     children.push(buildUserDefinedFunctionsNode(collection, container, refreshActiveTab, onUpdateDatabase));
     children.push(buildTriggerNode(collection, container, refreshActiveTab, onUpdateDatabase));

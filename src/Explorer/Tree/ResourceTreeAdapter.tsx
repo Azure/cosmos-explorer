@@ -1,3 +1,5 @@
+import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import { shouldShowScriptNodes } from "Explorer/Tree/treeNodeUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import * as ko from "knockout";
 import * as React from "react";
@@ -26,7 +28,6 @@ import { useDialog } from "../Controls/Dialog";
 import {
   LegacyTreeComponent,
   LegacyTreeNode,
-  TreeNodeMenuItem,
 } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
@@ -37,7 +38,6 @@ import { useNotebook } from "../Notebook/useNotebook";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
-import { Platform, configContext } from "./../../ConfigContext";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
@@ -225,16 +225,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  /**
-   * This is a rewrite of Collection.ts : showScriptsMenu, showStoredProcedures, showTriggers, showUserDefinedFunctions
-   * @param container
-   */
-  private static showScriptNodes(container: Explorer): boolean {
-    return (
-      configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
-    );
-  }
-
   private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): LegacyTreeNode {
     const children: LegacyTreeNode[] = [];
     children.push({
@@ -285,7 +275,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       children.push(schemaNode);
     }
 
-    if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+    if (shouldShowScriptNodes()) {
       children.push(this.buildStoredProcedureNode(collection));
       children.push(this.buildUserDefinedFunctionsNode(collection));
       children.push(this.buildTriggerNode(collection));
@@ -327,7 +317,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           );
       },
       onExpanded: () => {
-        if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+        if (shouldShowScriptNodes()) {
           collection.loadStoredProcedures();
           collection.loadUserDefinedFunctions();
           collection.loadTriggers();
