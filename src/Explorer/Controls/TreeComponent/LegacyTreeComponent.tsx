@@ -12,6 +12,7 @@ import {
   IContextualMenuItemProps,
   IContextualMenuProps,
 } from "@fluentui/react";
+import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
@@ -22,19 +23,11 @@ import { StyleConstants } from "../../../Common/StyleConstants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-export interface LegacyTreeNodeMenuItem {
-  label: string;
-  onClick: () => void;
-  iconSrc?: string;
-  isDisabled?: boolean;
-  styleClass?: string;
-}
-
 export interface LegacyTreeNode {
   label: string;
   id?: string;
   children?: LegacyTreeNode[];
-  contextMenu?: LegacyTreeNodeMenuItem[];
+  contextMenu?: TreeNodeMenuItem[];
   iconSrc?: string;
   isExpanded?: boolean;
   className?: string;
@@ -149,7 +142,7 @@ export class LegacyTreeNodeComponent extends React.Component<
   }
 
   private renderNode(node: LegacyTreeNode, generation: number): JSX.Element {
-    let paddingLeft = generation * LegacyTreeNodeComponent.paddingPerGenerationPx;
+    const paddingLeft = generation * LegacyTreeNodeComponent.paddingPerGenerationPx;
     let additionalOffsetPx = 15;
 
     if (node.children) {
@@ -285,7 +278,7 @@ export class LegacyTreeNodeComponent extends React.Component<
                 </span>
               </div>
             ),
-            items: node.contextMenu.map((menuItem: LegacyTreeNodeMenuItem) => ({
+            items: node.contextMenu.map((menuItem: TreeNodeMenuItem) => ({
               key: menuItem.label,
               text: menuItem.label,
               disabled: menuItem.isDisabled,

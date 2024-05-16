@@ -26,7 +26,7 @@ import { useDialog } from "../Controls/Dialog";
 import {
   LegacyTreeComponent,
   LegacyTreeNode,
-  LegacyTreeNodeMenuItem,
+  TreeNodeMenuItem,
 } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
@@ -530,8 +530,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private createFileContextMenu(item: NotebookContentItem): LegacyTreeNodeMenuItem[] {
-    let items: LegacyTreeNodeMenuItem[] = [
+  private createFileContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
+    let items: TreeNodeMenuItem[] = [
       {
         label: "Rename",
         iconSrc: NotebookIcon,
@@ -597,8 +597,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
   };
 
-  private createDirectoryContextMenu(item: NotebookContentItem): LegacyTreeNodeMenuItem[] {
-    let items: LegacyTreeNodeMenuItem[] = [
+  private createDirectoryContextMenu(item: NotebookContentItem): TreeNodeMenuItem[] {
+    let items: TreeNodeMenuItem[] = [
       {
         label: "Refresh",
         iconSrc: RefreshIcon,
