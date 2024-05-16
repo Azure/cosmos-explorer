@@ -12,7 +12,7 @@ test("Mongo CRUD", async () => {
   const token = await getAzureCLICredentialsToken();
   page.setDefaultTimeout(50000);
 
-  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner&token=${token}`);
+  await page.goto(`https://localhost:1234/testExplorer.html?accountName=languye-mongo&token=${token}`);
   const explorer = await waitForExplorer();
 
   // Create new database and collection
@@ -40,7 +40,9 @@ test("Mongo CRUD", async () => {
   await explorer.fill('text=* Confirm by typing the collection id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');
   await explorer.click(`[data-test="${databaseId}"] [aria-label="More options"]`);
+  await page.screenshot({ path: "beforeDeleteDatabase.png" });
   await explorer.click('button[role="menuitem"]:has-text("Delete Database")');
+  await page.screenshot({ path: "afterDeleteDatabase.png" });
   await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
   await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', databaseId);
   await explorer.click("#sidePanelOkButton");
