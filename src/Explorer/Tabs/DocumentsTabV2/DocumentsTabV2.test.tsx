@@ -383,8 +383,8 @@ describe("Documents tab (noSql API)", () => {
       wrapper.unmount();
     });
 
-    it("should render the Edit Filter button", () => {
-      expect(wrapper.findWhere((node) => node.text() === "Edit Filter").exists()).toBeTruthy();
+    it("should render the page", () => {
+      expect(wrapper).toMatchSnapshot();
     });
 
     it("clicking on Edit filter should render the Apply Filter button", () => {

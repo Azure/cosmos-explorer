@@ -1,5 +1,5 @@
 import { TableRowId } from "@fluentui/react-components";
-import { ReactWrapper, mount } from "enzyme";
+import { mount } from "enzyme";
 import React from "react";
 import { DocumentsTableComponent, IDocumentsTableComponentProps } from "./DocumentsTableComponent";
 
@@ -26,47 +26,9 @@ describe("DocumentsTableComponent", () => {
     },
   });
 
-  describe("when rendered", () => {
-    let wrapper: ReactWrapper;
-    beforeEach(() => {
-      const props: IDocumentsTableComponentProps = createMockProps();
-      wrapper = mount(<DocumentsTableComponent {...props} />);
-    });
-
-    afterEach(() => {
-      wrapper.unmount();
-    });
-
-    it("should show id and partition key(s) in header", () => {
-      expect(
-        wrapper
-          .find(".fui-TableHeader")
-          .findWhere((node) => node.text() === ID_HEADER)
-          .exists(),
-      ).toBeTruthy();
-      expect(
-        wrapper
-          .find(".fui-TableHeader")
-          .findWhere((node) => node.text() === PARTITION_KEY_HEADER)
-          .exists(),
-      ).toBeTruthy();
-    });
-
-    it("should show documents", () => {
-      const rows = wrapper.find(".fui-TableBody .fui-TableRow");
-      expect(rows.length).toBe(3);
-      expect(
-        rows
-          .at(1)
-          .findWhere((node) => node.text() === "2")
-          .exists(),
-      ).toBeTruthy();
-      expect(
-        rows
-          .at(1)
-          .findWhere((node) => node.text() === "pk2")
-          .exists(),
-      ).toBeTruthy();
-    });
+  it("should render documents and partition keys in header", () => {
+    const props: IDocumentsTableComponentProps = createMockProps();
+    const wrapper = mount(<DocumentsTableComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
   });
 });
