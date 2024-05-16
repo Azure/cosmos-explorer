@@ -147,7 +147,7 @@ describe("Documents tab (Mongo API)", () => {
     });
 
     it("renders by default the first document", async () => {
-      // expect(wrapper.findWhere((node) => node.text().includes(PROPERTY_VALUE)).exists()).toBeTruthy();
+      expect(wrapper.findWhere((node) => node.text().includes(PROPERTY_VALUE)).exists()).toBeTruthy();
     });
 
     it("default buttons", async () => {
