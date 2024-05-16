@@ -68,7 +68,7 @@ export const deleteDocuments = async (collection: CollectionBase, documentIds: D
     // TODO: handle case result.length != nbDocuments
     return flatAllResult;
   } catch (error) {
-    handleError(error, "DeleteDocuments", `Error while deleting ${documentIds.length} ${getEntityName(true)}`);
+    handleError(error, "DeleteDocuments", `Error while deleting ${documentIds.length} ${getEntityName(documentIds.length > 1)}`);
     throw error;
   } finally {
     clearMessage();
