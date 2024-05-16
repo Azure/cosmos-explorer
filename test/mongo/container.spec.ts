@@ -40,9 +40,7 @@ test("Mongo CRUD", async () => {
   await explorer.fill('text=* Confirm by typing the collection id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');
   await explorer.click(`[data-test="${databaseId}"] [aria-label="More options"]`);
-  await page.screenshot({ path: "beforeDeleteDatabase.png" });
   await explorer.click('button[role="menuitem"]:has-text("Delete Database")');
-  await page.screenshot({ path: "afterDeleteDatabase.png" });
   await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
   await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', databaseId);
   await explorer.click("#sidePanelOkButton");
