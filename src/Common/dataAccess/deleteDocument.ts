@@ -57,13 +57,7 @@ export const deleteDocuments = async (collection: CollectionBase, documentIds: D
       }));
 
       const promise = v2Container.items.bulk(operations).then((bulkResult) => {
-        const result: DocumentId[] = [];
-        documentIdsChunk.forEach((documentId, index) => {
-          if (bulkResult[index].statusCode === 204) {
-            result.push(documentId);
-          }
-        });
-        return result;
+        return documentIdsChunk.filter((_, index) => bulkResult[index].statusCode === 204);
       });
       promiseArray.push(promise);
     }
