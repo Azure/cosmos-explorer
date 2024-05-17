@@ -96,6 +96,11 @@ export enum CapacityMode {
   Serverless = "Serverless",
 }
 
+export enum CapacityMode {
+  Provisioned = "Provisioned",
+  Serverless = "Serverless",
+}
+
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
