@@ -151,7 +151,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.PartitionKeyTab:
       return "Partition Keys (preview)";
     case SettingsV2TabTypes.ComputedPropertiesTab:
-      return "Computed Properties (preview)";
+      return "Computed Properties";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
