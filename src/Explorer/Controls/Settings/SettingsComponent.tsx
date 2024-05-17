@@ -149,7 +149,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
-  private shouldShowContainerVectorPolicyEditor: boolean;
+  private isVectorSearchEnabled: boolean;
   private totalThroughputUsed: number;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
@@ -164,7 +164,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
-      this.shouldShowContainerVectorPolicyEditor = isVectorSearchEnabled();
+      this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
@@ -1104,6 +1104,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       indexTransformationProgress: this.state.indexTransformationProgress,
       refreshIndexTransformationProgress: this.refreshIndexTransformationProgress,
       onIndexingPolicyDirtyChange: this.onIndexingPolicyDirtyChange,
+      isVectorSearchEnabled: this.isVectorSearchEnabled,
     };
 
     const mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps = {
@@ -1167,7 +1168,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       content: <SubSettingsComponent {...subSettingsComponentProps} />,
     });
 
-    if (this.shouldShowContainerVectorPolicyEditor) {
+    if (this.isVectorSearchEnabled) {
       tabs.push({
         tab: SettingsV2TabTypes.ContainerVectorPolicyTab,
         content: <ContainerVectorPolicyComponent {...containerVectorPolicyProps} />,

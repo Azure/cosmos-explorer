@@ -1,5 +1,4 @@
 import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
-import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
@@ -17,6 +16,7 @@ export interface IndexingPolicyComponentProps {
   logIndexingPolicySuccessMessage: () => void;
   indexTransformationProgress: number;
   refreshIndexTransformationProgress: () => Promise<void>;
+  isVectorSearchEnabled?: boolean;
   onIndexingPolicyDirtyChange: (isIndexingPolicyDirty: boolean) => void;
 }
 
@@ -120,7 +120,7 @@ export class IndexingPolicyComponent extends React.Component<
           indexTransformationProgress={this.props.indexTransformationProgress}
           refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
         />
-        {isVectorSearchEnabled() && (
+        {this.props.isVectorSearchEnabled && (
           <MessageBar messageBarType={MessageBarType.severeWarning}>
             Container vector policies and vector indexes are not modifiable after container creation
           </MessageBar>
