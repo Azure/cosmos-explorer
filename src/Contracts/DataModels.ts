@@ -1,4 +1,4 @@
-import { ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
+import { CapacityMode, ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
 
 export interface ArmEntity {
   id: string;
@@ -35,6 +35,7 @@ export interface DatabaseAccountExtendedProperties {
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
   capacity?: { totalThroughputLimit: number };
+  capacityMode?: CapacityMode;
   locations?: DatabaseAccountResponseLocation[];
   postgresqlEndpoint?: string;
   publicNetworkAccess?: string;
@@ -197,7 +198,12 @@ export interface IndexingPolicy {
   excludedPaths: any;
   compositeIndexes?: any[];
   spatialIndexes?: any[];
-  vectorIndexes?: any[];
+  vectorIndexes?: VectorIndex[];
+}
+
+export interface VectorIndex {
+  path: string;
+  type: "flat" | "diskANN" | "quantizedFlat";
 }
 
 export interface ComputedProperty {
@@ -343,10 +349,10 @@ export interface VectorEmbeddingPolicy {
 }
 
 export interface VectorEmbedding {
-  path?: string;
-  dataType?: string;
-  dimensions?: number;
-  distanceFunction?: string;
+  dataType: "float16" | "float32" | "uint8" | "int8";
+  dimensions: number;
+  distanceFunction: "euclidean" | "cosine" | "dotproduct";
+  path: string;
 }
 
 export interface ReadDatabaseOfferParams {

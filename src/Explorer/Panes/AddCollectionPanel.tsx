@@ -30,7 +30,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
-import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils";
+import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
@@ -1312,11 +1312,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowVectorSearchParameters() {
-    return (
-      userContext.apiType === "SQL" &&
-      isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLVectorSearch) &&
-      this.shouldShowCollectionThroughputInput()
-    );
+    return isVectorSearchEnabled() && this.shouldShowCollectionThroughputInput();
   }
 
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {

@@ -8,6 +8,7 @@ import {
   ContainerVectorPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerVectorPolicyComponent";
 import { useDatabases } from "Explorer/useDatabases";
+import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -163,7 +164,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
-      this.shouldShowContainerVectorPolicyEditor = userContext.apiType === "SQL";
+      this.shouldShowContainerVectorPolicyEditor = isVectorSearchEnabled();
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
