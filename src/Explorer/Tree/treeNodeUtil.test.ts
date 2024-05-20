@@ -9,7 +9,11 @@ import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
 import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
-import { createDatabaseTreeNodes, createResourceTokenTreeNodes, createSampleDataTreeNodes } from "Explorer/Tree/treeNodeUtil";
+import {
+  createDatabaseTreeNodes,
+  createResourceTokenTreeNodes,
+  createSampleDataTreeNodes,
+} from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { updateUserContext } from "UserContext";
@@ -78,19 +82,18 @@ jest.mock("Common/DatabaseAccountUtility", () => {
   return {
     isPublicInternetAccessAllowed: () => true,
   };
-})
+});
 
 // Defining this value outside the mock, AND prefixing the name with 'mock' is required by Jest's mocking logic.
-let nextTabIndex = 0;
+let nextTabIndex = 1;
 class MockTab extends TabsBase {
-  constructor(tabOptions: Pick<ViewModels.TabOptions, 'tabKind'> & Partial<ViewModels.TabOptions>) {
-    const tabIndex = nextTabIndex++;
-    const options = {
-      title: `Mock Tab ${tabIndex}`,
-      tabPath: `mockTabs/tab${tabIndex}`,
+  constructor(tabOptions: Pick<ViewModels.TabOptions, "tabKind"> & Partial<ViewModels.TabOptions>) {
+    super({
+      title: `Mock Tab ${nextTabIndex}`,
+      tabPath: `mockTabs/tab${nextTabIndex}`,
       ...tabOptions,
-    } as ViewModels.TabOptions;
-    super(options);
+    } as ViewModels.TabOptions);
+    nextTabIndex++;
   }
 
   onActivate = jest.fn();
@@ -124,7 +127,7 @@ const baseCollection = {
   ),
   changeFeedPolicy: ko.observable<DataModels.ChangeFeedPolicy>({} as DataModels.ChangeFeedPolicy),
   geospatialConfig: ko.observable<DataModels.GeospatialConfig>({} as DataModels.GeospatialConfig),
-  getDatabase: () => { },
+  getDatabase: () => {},
   partitionKey: {
     paths: [],
     kind: "hash",
@@ -134,7 +137,7 @@ const baseCollection = {
   userDefinedFunctions: ko.observableArray([]),
   triggers: ko.observableArray([]),
   partitionKeyProperties: ["testPartitionKey"],
-  readSettings: () => { },
+  readSettings: () => {},
   isCollectionExpanded: ko.observable(true),
   onSettingsClick: jest.fn(),
   onDocumentDBDocumentsClick: jest.fn(),
@@ -157,7 +160,10 @@ const baseDatabase = {
 } as unknown as ViewModels.Database;
 
 /** Configures app state so that useSelectedNode.getState().isDataNodeSelected() returns true for the provided arguments. */
-function selectDataNode(node: ViewModels.Database | ViewModels.CollectionBase, subnodeKind?: ViewModels.CollectionTabKind) {
+function selectDataNode(
+  node: ViewModels.Database | ViewModels.CollectionBase,
+  subnodeKind?: ViewModels.CollectionTabKind,
+) {
   useSelectedNode.getState().setSelectedNode(node);
 
   if (subnodeKind !== undefined) {
@@ -238,7 +244,7 @@ describe("createDatabaseTreeNodes", () => {
     standardDb = {
       ...baseDatabase,
       id: ko.observable("standardDb"),
-      container: explorer
+      container: explorer,
     } as ViewModels.Database;
     sharedDb = {
       ...baseDatabase,
@@ -303,8 +309,8 @@ describe("createDatabaseTreeNodes", () => {
             path: "orderId",
             dataType: { name: "string" },
             hasNulls: false,
-          }
-        ]
+          },
+        ],
       } as unknown,
     } as ViewModels.Collection;
 
@@ -316,8 +322,8 @@ describe("createDatabaseTreeNodes", () => {
           mode: "Custom",
           conflictResolutionPath: "path",
           conflictResolutionProcedure: "proc",
-        }
-      }
+        },
+      },
     } as ViewModels.Collection;
 
     standardDb.collections = ko.observableArray([standardCollection, conflictsCollection]);
@@ -343,7 +349,7 @@ describe("createDatabaseTreeNodes", () => {
         databaseAccount: {
           properties: {
             capabilities: [],
-          }
+          },
         } as never,
       });
       nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab);
@@ -351,23 +357,31 @@ describe("createDatabaseTreeNodes", () => {
 
     it("creates expected tree", () => {
       expect(nodes).toMatchSnapshot();
-    })
+    });
   });
 
   it.each<[string, Platform, boolean, Partial<DataModels.DatabaseAccountExtendedProperties>]>([
     ["the SQL API, on Fabric", Platform.Fabric, false, { capabilities: [], enableMultipleWriteLocations: true }],
     ["the SQL API, on Portal", Platform.Portal, false, { capabilities: [], enableMultipleWriteLocations: true }],
-    ["the Cassandra API, serverless, on Hosted", Platform.Hosted, false, {
-      capabilities: [
-        { name: CapabilityNames.EnableCassandra, description: "" },
-        { name: CapabilityNames.EnableServerless, description: "" }
-      ],
-    }],
-    ["the Mongo API, with Notebooks and Phoenix features, on Emulator", Platform.Emulator, true, {
-      capabilities: [
-        { name: CapabilityNames.EnableMongo, description: "" },
-      ]
-    }],
+    [
+      "the Cassandra API, serverless, on Hosted",
+      Platform.Hosted,
+      false,
+      {
+        capabilities: [
+          { name: CapabilityNames.EnableCassandra, description: "" },
+          { name: CapabilityNames.EnableServerless, description: "" },
+        ],
+      },
+    ],
+    [
+      "the Mongo API, with Notebooks and Phoenix features, on Emulator",
+      Platform.Emulator,
+      true,
+      {
+        capabilities: [{ name: CapabilityNames.EnableMongo, description: "" }],
+      },
+    ],
   ])("generates the correct tree structure for %s", (_, platform, isNotebookEnabled, dbAccountProperties) => {
     useNotebook.setState({ isPhoenixFeatures: isNotebookEnabled });
     updateConfigContext({ platform });
@@ -376,13 +390,17 @@ describe("createDatabaseTreeNodes", () => {
         properties: {
           enableMultipleWriteLocations: true,
           ...dbAccountProperties,
-        }
+        },
       } as unknown as DataModels.DatabaseAccount,
     });
-    const nodes = createDatabaseTreeNodes(explorer, isNotebookEnabled, useDatabases.getState().databases, refreshActiveTab);
+    const nodes = createDatabaseTreeNodes(
+      explorer,
+      isNotebookEnabled,
+      useDatabases.getState().databases,
+      refreshActiveTab,
+    );
     expect(nodes).toMatchSnapshot();
   });
-
 
   // The above tests focused on the tree structure. The below tests focus on some core behaviors of the nodes.
   // They are not exhaustive, because exhaustive tests here require a lot of mocking and can become very brittle.
@@ -399,7 +417,11 @@ describe("createDatabaseTreeNodes", () => {
       id: ko.observable("addedCollection"),
     });
 
-    expect(giganticDbNode.children.map((node) => node.label)).toStrictEqual(["schemaCollection", "addedCollection", "load more"]);
+    expect(giganticDbNode.children.map((node) => node.label)).toStrictEqual([
+      "schemaCollection",
+      "addedCollection",
+      "load more",
+    ]);
   });
 
   describe("the database node", () => {
@@ -414,14 +436,14 @@ describe("createDatabaseTreeNodes", () => {
         databaseAccount: {
           properties: {
             capabilities: [],
-          }
+          },
         } as unknown as DataModels.DatabaseAccount,
       });
       nodes = createDatabaseTreeNodes(explorer, false, useDatabases.getState().databases, refreshActiveTab);
       standardDbNode = nodes.find((node) => node.label === standardDb.id());
       sharedDbNode = nodes.find((node) => node.label === sharedDb.id());
       giganticDbNode = nodes.find((node) => node.label === giganticDb.id());
-    })
+    });
 
     it("loads child nodes when expanded", async () => {
       // Temporarily clear the child nodes to trigger the loading behavior
@@ -461,7 +483,7 @@ describe("createDatabaseTreeNodes", () => {
     });
 
     describe("the Scale subnode", () => {
-      let scaleNode: TreeNode
+      let scaleNode: TreeNode;
       beforeEach(() => {
         scaleNode = sharedDbNode.children.find((node) => node.label === "Scale");
       });
@@ -503,8 +525,19 @@ describe("createDatabaseTreeNodes", () => {
       });
 
       it.each([
-        ["for SQL API", () => updateUserContext({ databaseAccount: { properties: {} } as unknown as DataModels.DatabaseAccount })],
-        ["for Gremlin API", () => updateUserContext({ databaseAccount: { properties: { capabilities: [{ name: CapabilityNames.EnableGremlin, description: "" }] } } as unknown as DataModels.DatabaseAccount })],
+        [
+          "for SQL API",
+          () => updateUserContext({ databaseAccount: { properties: {} } as unknown as DataModels.DatabaseAccount }),
+        ],
+        [
+          "for Gremlin API",
+          () =>
+            updateUserContext({
+              databaseAccount: {
+                properties: { capabilities: [{ name: CapabilityNames.EnableGremlin, description: "" }] },
+              } as unknown as DataModels.DatabaseAccount,
+            }),
+        ],
       ])("loads sprocs/udfs/triggers when expanded, %s", async () => {
         standardCollection.loadStoredProcedures = jest.fn(() => Promise.resolve());
         standardCollection.loadUserDefinedFunctions = jest.fn(() => Promise.resolve());
@@ -519,9 +552,33 @@ describe("createDatabaseTreeNodes", () => {
 
       it.each([
         ["in Fabric", () => updateConfigContext({ platform: Platform.Fabric })],
-        ["for Cassandra API", () => updateUserContext({ databaseAccount: { properties: { capabilities: [{ name: CapabilityNames.EnableCassandra, description: "" }] } } as unknown as DataModels.DatabaseAccount })],
-        ["for Mongo API", () => updateUserContext({ databaseAccount: { properties: { capabilities: [{ name: CapabilityNames.EnableMongo, description: "" }] } } as unknown as DataModels.DatabaseAccount })],
-        ["for Tables API", () => updateUserContext({ databaseAccount: { properties: { capabilities: [{ name: CapabilityNames.EnableTable, description: "" }] } } as unknown as DataModels.DatabaseAccount })],
+        [
+          "for Cassandra API",
+          () =>
+            updateUserContext({
+              databaseAccount: {
+                properties: { capabilities: [{ name: CapabilityNames.EnableCassandra, description: "" }] },
+              } as unknown as DataModels.DatabaseAccount,
+            }),
+        ],
+        [
+          "for Mongo API",
+          () =>
+            updateUserContext({
+              databaseAccount: {
+                properties: { capabilities: [{ name: CapabilityNames.EnableMongo, description: "" }] },
+              } as unknown as DataModels.DatabaseAccount,
+            }),
+        ],
+        [
+          "for Tables API",
+          () =>
+            updateUserContext({
+              databaseAccount: {
+                properties: { capabilities: [{ name: CapabilityNames.EnableTable, description: "" }] },
+              } as unknown as DataModels.DatabaseAccount,
+            }),
+        ],
       ])("does not load sprocs/udfs/triggers when expanded, %s", async (_, setup) => {
         setup();
 
@@ -540,6 +597,6 @@ describe("createDatabaseTreeNodes", () => {
         expect(standardCollection.loadUserDefinedFunctions).not.toHaveBeenCalled();
         expect(standardCollection.loadTriggers).not.toHaveBeenCalled();
       });
-    })
+    });
   });
-})
+});

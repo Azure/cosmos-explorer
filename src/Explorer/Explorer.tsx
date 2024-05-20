@@ -3,7 +3,7 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
@@ -1150,7 +1150,7 @@ export default class Explorer {
     if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
       return;
     }
-    const copilotEnabledPromise = Promise.resolve(true); //getCopilotEnabled();
+    const copilotEnabledPromise = getCopilotEnabled();
     const copilotUserDBEnabledPromise = isCopilotFeatureRegistered(userContext.subscriptionId);
     const [copilotEnabled, copilotUserDBEnabled] = await Promise.all([
       copilotEnabledPromise,

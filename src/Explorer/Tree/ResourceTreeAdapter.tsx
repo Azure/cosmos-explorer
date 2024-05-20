@@ -25,10 +25,7 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { useDialog } from "../Controls/Dialog";
-import {
-  LegacyTreeComponent,
-  LegacyTreeNode,
-} from "../Controls/TreeComponent/LegacyTreeComponent";
+import { LegacyTreeComponent, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";

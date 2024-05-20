@@ -25,7 +25,7 @@ export const shouldShowScriptNodes = (): boolean => {
   return (
     configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
   );
-}
+};
 
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
@@ -166,7 +166,7 @@ export const createDatabaseTreeNodes = (
         };
         databaseNode.children.push(loadMoreNode);
       }
-    }
+    };
 
     const databaseNode: TreeNode = {
       label: database.id(),
@@ -372,11 +372,7 @@ const buildStoredProcedureNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(
-            collection.databaseId,
-            collection.id(),
-            [ViewModels.CollectionTabKind.StoredProcedures]
-          ),
+          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.StoredProcedures]),
       contextMenu: ResourceTreeContextMenuButtonFactory.createStoreProcedureContextMenuItems(container, sp),
     })),
     onExpanded: async () => {
@@ -405,11 +401,9 @@ const buildUserDefinedFunctionsNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(
-            collection.databaseId,
-            collection.id(),
-            [ViewModels.CollectionTabKind.UserDefinedFunctions]
-          ),
+          .isDataNodeSelected(collection.databaseId, collection.id(), [
+            ViewModels.CollectionTabKind.UserDefinedFunctions,
+          ]),
       contextMenu: ResourceTreeContextMenuButtonFactory.createUserDefinedFunctionContextMenuItems(container, udf),
     })),
     onExpanded: async () => {
@@ -438,11 +432,7 @@ const buildTriggerNode = (
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(
-            collection.databaseId,
-            collection.id(),
-            [ViewModels.CollectionTabKind.Triggers]
-          ),
+          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Triggers]),
       contextMenu: ResourceTreeContextMenuButtonFactory.createTriggerContextMenuItems(container, trigger),
     })),
     onExpanded: async () => {

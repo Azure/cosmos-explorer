@@ -128,7 +128,7 @@ src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.test.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
-src/Explorer/Controls/TreeComponent/TreeComponent.tsx
+src/Explorer/Controls/TreeComponent/LegacyTreeComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
