@@ -1235,6 +1235,9 @@ export interface SqlDatabaseResource {
 export interface SqlContainerResource {
   /* Name of the Cosmos DB SQL container */
   id: string;
+
+  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+
   /* The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container */
   indexingPolicy?: IndexingPolicy;
 
@@ -1267,6 +1270,17 @@ export interface SqlContainerResource {
   computedProperties?: ComputedProperty[];
 }
 
+export interface VectorEmbeddingPolicy {
+  vectorEmbeddings: VectorEmbedding[];
+}
+
+export interface VectorEmbedding {
+  path?: string;
+  dataType?: string;
+  dimensions?: number;
+  distanceFunction?: string;
+}
+
 /* Cosmos DB indexing policy */
 export interface IndexingPolicy {
   /* Indicates if the indexing policy is automatic */
@@ -1285,6 +1299,13 @@ export interface IndexingPolicy {
 
   /* List of spatial specifics */
   spatialIndexes?: SpatialSpec[];
+
+  vectorIndexes?: VectorIndex[];
+}
+
+export interface VectorIndex {
+  path?: string;
+  type?: string;
 }
 
 /* undocumented */
