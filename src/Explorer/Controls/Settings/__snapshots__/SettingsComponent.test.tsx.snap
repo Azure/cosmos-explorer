@@ -196,6 +196,7 @@ exports[`SettingsComponent renders 1`] = `
               "indexingMode": "consistent",
             }
           }
+          isVectorSearchEnabled={false}
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}

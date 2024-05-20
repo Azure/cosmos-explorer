@@ -3,6 +3,7 @@
 exports[`AddCollectionPanel should render Default properly 1`] = `
 <form
   className="panelFormWrapper"
+  id="panelContainer"
   onSubmit={[Function]}
 >
   <div
@@ -433,7 +434,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
     >
       <Stack
         className="panelGroupSpacing"
-        id="collapsibleSectionContent"
+        id="collapsibleAdvancedSectionContent"
       >
         <Stack
           className="panelGroupSpacing"
