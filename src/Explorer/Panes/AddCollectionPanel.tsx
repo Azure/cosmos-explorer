@@ -1473,8 +1473,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       vectorEmbeddingPolicy = JSON.parse(this.state.vectorEmbeddingPolicy);
     }
 
-    // const vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = JSON.parse(this.state.vectorEmbeddingPolicy);
-
     const telemetryData = {
       database: {
         id: databaseId,
