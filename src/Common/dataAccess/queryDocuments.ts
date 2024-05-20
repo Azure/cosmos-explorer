@@ -27,6 +27,6 @@ export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
     (storedItemPerPageSetting !== undefined && storedItemPerPageSetting) ||
     Queries.itemsPerPage;
   options.maxDegreeOfParallelism = LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism);
-  options.disableNonStreamingOrderByQuery = isVectorSearchEnabled() ? false : true;
+  options.disableNonStreamingOrderByQuery = isVectorSearchEnabled();
   return options;
 };
