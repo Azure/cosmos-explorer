@@ -3,6 +3,8 @@ import {
   Menu,
   MenuItem,
   MenuList,
+  MenuOpenChangeData,
+  MenuOpenEvent,
   MenuPopover,
   MenuTrigger,
   Spinner,
@@ -15,6 +17,7 @@ import {
 import { MoreHorizontal20Regular } from "@fluentui/react-icons";
 import { tokens } from "@fluentui/react-theme";
 import * as React from "react";
+import { useCallback } from "react";
 
 export interface TreeNodeMenuItem {
   label: string;
@@ -97,45 +100,73 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     return unsortedChildren;
   };
 
-  const onOpenChange = (_: TreeOpenChangeEvent, data: TreeOpenChangeData) => {
-    if (!node.isExpanded && data.open && node.onExpanded) {
-      // Catch the transition non-expanded to expanded
-      setIsLoading(true);
-      node.onExpanded?.().then(() => setIsLoading(false));
-    } else if (node.isExpanded && !data.open && node.onCollapsed) {
-      // Catch the transition expanded to non-expanded
-      node.onCollapsed?.();
-    }
-  };
+  const isBranch = node.children?.length > 0;
+
+  const onOpenChange = useCallback(
+    (_: TreeOpenChangeEvent, data: TreeOpenChangeData) => {
+      if (data.type === "Click" && !isBranch && node.onClick) {
+        node.onClick();
+      }
+      if (!node.isExpanded && data.open && node.onExpanded) {
+        // Catch the transition non-expanded to expanded
+        setIsLoading(true);
+        node.onExpanded?.().then(() => setIsLoading(false));
+      } else if (node.isExpanded && !data.open && node.onCollapsed) {
+        // Catch the transition expanded to non-expanded
+        node.onCollapsed?.();
+      }
+    },
+    [isBranch, node, setIsLoading],
+  );
+
+  const onMenuOpenChange = useCallback(
+    (e: MenuOpenEvent, data: MenuOpenChangeData) => {
+      if (data.open) {
+        node.onContextMenuOpen?.();
+      }
+    },
+    [node],
+  );
 
   // We show a node as selected if it is selected AND no descendant is selected.
   // We want to show only the deepest selected node as selected.
   const isCurrentNodeSelected = node.isSelected && node.isSelected();
   const shouldShowAsSelected = isCurrentNodeSelected && !isAnyDescendantSelected(node);
 
+  const contextMenuItems = (node.contextMenu ?? []).map((menuItem) => (
+    <MenuItem
+      data-test={`TreeNode/ContextMenuItem:${menuItem.label}`}
+      disabled={menuItem.isDisabled}
+      key={menuItem.label}
+      onClick={menuItem.onClick}
+    >
+      {menuItem.label}
+    </MenuItem>
+  ));
+
   return (
     <TreeItem
       value={treeNodeId}
-      itemType={node.children?.length > 0 ? "branch" : "leaf"}
+      itemType={isBranch ? "branch" : "leaf"}
       style={{ height: "100%" }}
       onOpenChange={onOpenChange}
     >
       <TreeItemLayout
         className={node.className}
+        data-test={`TreeNode:${treeNodeId}`}
         actions={
-          node.contextMenu && (
-            <Menu>
+          contextMenuItems.length > 0 && (
+            <Menu onOpenChange={onMenuOpenChange}>
               <MenuTrigger disableButtonEnhancement>
-                <Button aria-label="More options" appearance="subtle" icon={<MoreHorizontal20Regular />} />
+                <Button
+                  aria-label="More options"
+                  data-test="TreeNode/ContextMenuTrigger"
+                  appearance="subtle"
+                  icon={<MoreHorizontal20Regular />}
+                />
               </MenuTrigger>
-              <MenuPopover>
-                <MenuList>
-                  {node.contextMenu.map((menuItem) => (
-                    <MenuItem disabled={menuItem.isDisabled} key={menuItem.label} onClick={menuItem.onClick}>
-                      {menuItem.label}
-                    </MenuItem>
-                  ))}
-                </MenuList>
+              <MenuPopover data-test={`TreeNode/ContextMenu:${treeNodeId}`}>
+                <MenuList>{contextMenuItems}</MenuList>
               </MenuPopover>
             </Menu>
           )
@@ -145,7 +176,6 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         style={{
           backgroundColor: shouldShowAsSelected ? tokens.colorNeutralBackground1Selected : undefined,
         }}
-        onClick={() => node.onClick?.()}
       >
         {node.label}
       </TreeItemLayout>

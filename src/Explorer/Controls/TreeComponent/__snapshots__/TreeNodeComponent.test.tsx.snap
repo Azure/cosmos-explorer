@@ -12,7 +12,9 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -25,7 +27,6 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": undefined,
@@ -88,7 +89,17 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
           "iconSrc": "child3ExpandingIcon",
           "id": "child3Expanding",
           "label": "child3ExpandingLabel",
-          "onClick": [MockFunction child3ExpandingClick],
+          "onClick": [MockFunction child3ExpandingClick] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          },
           "onExpanded": [Function],
         },
       ],
@@ -164,6 +175,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
             "layoutRef": Object {
               "current": <div
                 class="fui-TreeItemLayout rcu2h5o rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                data-test="TreeNode:root"
               >
                 <div
                   aria-hidden="true"
@@ -222,6 +234,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               >
                 <div
                   class="fui-TreeItemLayout rcu2h5o rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                  data-test="TreeNode:root"
                 >
                   <div
                     aria-hidden="true"
@@ -275,6 +288,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   >
                     <div
                       class="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                      data-test="TreeNode:root/child1Label"
                     >
                       <div
                         aria-hidden="true"
@@ -325,6 +339,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   >
                     <div
                       class="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                      data-test="TreeNode:root/child2LoadingLabel"
                     >
                       <div
                         aria-hidden="true"
@@ -374,6 +389,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   >
                     <div
                       class="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
+                      data-test="TreeNode:root/child3ExpandingLabel"
                     >
                       <div
                         aria-hidden="true"
@@ -424,7 +440,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
         }
       >
         <TreeItemLayout
+          actions={false}
           className="rootClass"
+          data-test="TreeNode:root"
           iconBefore={
             <img
               alt=""
@@ -437,7 +455,6 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               }
             />
           }
-          onClick={[Function]}
           style={
             Object {
               "backgroundColor": undefined,
@@ -446,7 +463,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
         >
           <div
             className="fui-TreeItemLayout rcu2h5o rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
-            onClick={[Function]}
+            data-test="TreeNode:root"
             style={
               Object {
                 "backgroundColor": undefined,
@@ -681,6 +698,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "layoutRef": Object {
                               "current": <div
                                 class="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                data-test="TreeNode:root/child1Label"
                               >
                                 <div
                                   aria-hidden="true"
@@ -739,6 +757,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               >
                                 <div
                                   class="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                  data-test="TreeNode:root/child1Label"
                                 >
                                   <div
                                     aria-hidden="true"
@@ -783,7 +802,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         }
                       >
                         <TreeItemLayout
+                          actions={false}
                           className="child1Class"
+                          data-test="TreeNode:root/child1Label"
                           iconBefore={
                             <img
                               alt=""
@@ -796,7 +817,6 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               }
                             />
                           }
-                          onClick={[Function]}
                           style={
                             Object {
                               "backgroundColor": undefined,
@@ -805,7 +825,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         >
                           <div
                             className="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
-                            onClick={[Function]}
+                            data-test="TreeNode:root/child1Label"
                             style={
                               Object {
                                 "backgroundColor": undefined,
@@ -973,6 +993,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "layoutRef": Object {
                               "current": <div
                                 class="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                data-test="TreeNode:root/child2LoadingLabel"
                               >
                                 <div
                                   aria-hidden="true"
@@ -1031,6 +1052,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               >
                                 <div
                                   class="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                  data-test="TreeNode:root/child2LoadingLabel"
                                 >
                                   <div
                                     aria-hidden="true"
@@ -1075,7 +1097,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         }
                       >
                         <TreeItemLayout
+                          actions={false}
                           className="child2LoadingClass"
+                          data-test="TreeNode:root/child2LoadingLabel"
                           iconBefore={
                             <img
                               alt=""
@@ -1088,7 +1112,6 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               }
                             />
                           }
-                          onClick={[Function]}
                           style={
                             Object {
                               "backgroundColor": undefined,
@@ -1097,7 +1120,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         >
                           <div
                             className="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
-                            onClick={[Function]}
+                            data-test="TreeNode:root/child2LoadingLabel"
                             style={
                               Object {
                                 "backgroundColor": undefined,
@@ -1172,7 +1195,17 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       "iconSrc": "child3ExpandingIcon",
                       "id": "child3Expanding",
                       "label": "child3ExpandingLabel",
-                      "onClick": [MockFunction child3ExpandingClick],
+                      "onClick": [MockFunction child3ExpandingClick] {
+                        "calls": Array [
+                          Array [],
+                        ],
+                        "results": Array [
+                          Object {
+                            "type": "return",
+                            "value": undefined,
+                          },
+                        ],
+                      },
                       "onExpanded": [Function],
                     }
                   }
@@ -1243,6 +1276,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "layoutRef": Object {
                               "current": <div
                                 class="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
+                                data-test="TreeNode:root/child3ExpandingLabel"
                               >
                                 <div
                                   aria-hidden="true"
@@ -1304,6 +1338,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               >
                                 <div
                                   class="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
+                                  data-test="TreeNode:root/child3ExpandingLabel"
                                 >
                                   <div
                                     aria-hidden="true"
@@ -1352,7 +1387,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         }
                       >
                         <TreeItemLayout
+                          actions={false}
                           className="child3ExpandingClass"
+                          data-test="TreeNode:root/child3ExpandingLabel"
                           iconBefore={
                             <img
                               alt=""
@@ -1365,7 +1402,6 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               }
                             />
                           }
-                          onClick={[Function]}
                           style={
                             Object {
                               "backgroundColor": undefined,
@@ -1374,7 +1410,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         >
                           <div
                             className="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
-                            onClick={[Function]}
+                            data-test="TreeNode:root/child3ExpandingLabel"
                             style={
                               Object {
                                 "backgroundColor": undefined,
@@ -1429,7 +1465,9 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -1442,7 +1480,6 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": undefined,
@@ -1466,7 +1503,9 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     expandIcon={
       <Spinner
         size="extra-tiny"
@@ -1484,7 +1523,6 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": undefined,
@@ -1509,24 +1547,31 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
 >
   <TreeItemLayout
     actions={
-      <Menu>
+      <Menu
+        onOpenChange={[Function]}
+      >
         <MenuTrigger
           disableButtonEnhancement={true}
         >
           <Button
             appearance="subtle"
             aria-label="More options"
+            data-test="TreeNode/ContextMenuTrigger"
             icon={<MoreHorizontal20Regular />}
           />
         </MenuTrigger>
-        <MenuPopover>
+        <MenuPopover
+          data-test="TreeNode/ContextMenu:root"
+        >
           <MenuList>
             <MenuItem
+              data-test="TreeNode/ContextMenuItem:enabledItem"
               onClick={[MockFunction enabledItemClick]}
             >
               enabledItem
             </MenuItem>
             <MenuItem
+              data-test="TreeNode/ContextMenuItem:disabledItem"
               disabled={true}
               onClick={[MockFunction disabledItemClick]}
             >
@@ -1537,6 +1582,7 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
       </Menu>
     }
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -1549,7 +1595,6 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": undefined,
@@ -1573,7 +1618,9 @@ exports[`TreeNodeComponent renders a single node 1`] = `
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -1586,7 +1633,6 @@ exports[`TreeNodeComponent renders a single node 1`] = `
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": undefined,
@@ -1610,7 +1656,9 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -1623,7 +1671,6 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": undefined,
@@ -1647,7 +1694,9 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -1660,7 +1709,6 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": "var(--colorNeutralBackground1Selected)",
@@ -1734,7 +1782,9 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -1747,7 +1797,6 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": undefined,
@@ -1822,7 +1871,9 @@ exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
   value="root"
 >
   <TreeItemLayout
+    actions={false}
     className="rootClass"
+    data-test="TreeNode:root"
     iconBefore={
       <img
         alt=""
@@ -1835,7 +1886,6 @@ exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
         }
       />
     }
-    onClick={[Function]}
     style={
       Object {
         "backgroundColor": "var(--colorNeutralBackground1Selected)",

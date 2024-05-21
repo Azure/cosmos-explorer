@@ -2,7 +2,8 @@ import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
 import { jest } from "@jest/globals";
 import "expect-playwright";
-import { generateUniqueName, getAzureCLICredentials } from "../utils/shared";
+import { generateUniqueName, getAzureCLICredentials, getTreeNodeSelector } from "../utils/shared";
+import { waitForExplorer } from "../utils/waitForExplorer";
 jest.setTimeout(120000);
 
 const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"] ?? "";
@@ -16,7 +17,7 @@ test("Resource token", async () => {
   const dbId = generateUniqueName("db");
   const collectionId = generateUniqueName("col");
   const client = new CosmosClient({
-    endpoint: account.documentEndpoint,
+    endpoint: account.documentEndpoint!,
     key: keys.primaryMasterKey,
   });
   const { database } = await client.databases.createIfNotExists({ id: dbId });
@@ -32,11 +33,10 @@ test("Resource token", async () => {
   await page.goto("https://localhost:1234/hostedExplorer.html");
   await page.waitForSelector("div > p.switchConnectTypeText");
   await page.click("div > p.switchConnectTypeText");
-  await page.type("input[class='inputToken']", resourceTokenConnectionString);
+  await page.fill("input[class='inputToken']", resourceTokenConnectionString);
   await page.click("input[value='Connect']");
-  await page.waitForSelector("iframe");
-  const explorer = await page.frame({
-    name: "explorer",
-  });
-  await explorer.textContent(`css=.dataResourceTree >> "${collectionId}"`);
+  const explorer = await waitForExplorer();
+
+  const collectionNodeLabel = await explorer.textContent(getTreeNodeSelector(`DATA/${collectionId}`));
+  expect(collectionNodeLabel).toBe(collectionId);
 });

@@ -22,7 +22,12 @@ describe("TreeNodeComponent", () => {
     const node = generateTestNode("root");
     const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
-    component.find(TreeItemLayout).props().onClick(null!);
+
+    // The "click" handler is actually attached to onOpenChange, with a type of "Click".
+    component
+      .find(TreeItem)
+      .props()
+      .onOpenChange(null!, { open: true, value: "borp", target: null!, event: null!, type: "Click" });
     expect(node.onClick).toHaveBeenCalled();
   });
 
@@ -55,7 +60,7 @@ describe("TreeNodeComponent", () => {
       component
         .find(TreeItem)
         .props()
-        .onOpenChange(null!, { open: true, value: "borp", target: null!, event: null!, type: "Click" });
+        .onOpenChange(null!, { open: true, value: "borp", target: null!, event: null!, type: "ExpandIconClick" });
     });
 
     expect(component).toMatchSnapshot("loading");

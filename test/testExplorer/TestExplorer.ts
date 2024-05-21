@@ -4,9 +4,9 @@ import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
 
-const resourceGroup = process.env.RESOURCE_GROUP || "";
-const subscriptionId = process.env.SUBSCRIPTION_ID || "";
 const urlSearchParams = new URLSearchParams(window.location.search);
+const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
+const subscriptionId = urlSearchParams.get("subscriptionId") || process.env.SUBSCRIPTION_ID || "";
 const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
