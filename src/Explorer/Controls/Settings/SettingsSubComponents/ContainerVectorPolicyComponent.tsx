@@ -15,7 +15,7 @@ export const ContainerVectorPolicyComponent: React.FC<ContainerVectorPolicyCompo
     <Stack {...titleAndInputStackProps} styles={{ root: { position: "relative" } }}>
       <EditorReact
         language={"json"}
-        content={JSON.stringify(vectorEmbeddingPolicy, null, 4)}
+        content={JSON.stringify(vectorEmbeddingPolicy || {}, null, 4)}
         isReadOnly={true}
         wordWrap={"on"}
         ariaLabel={"Container vector policy"}
