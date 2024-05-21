@@ -590,9 +590,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </TooltipHost>
               </Stack>
 
-              <Text variant="small" aria-label="pkDescription">
-                {this.getPartitionKeySubtext()}
-              </Text>
+              <Text variant="small">{this.getPartitionKeySubtext()}</Text>
 
               <input
                 type="text"
