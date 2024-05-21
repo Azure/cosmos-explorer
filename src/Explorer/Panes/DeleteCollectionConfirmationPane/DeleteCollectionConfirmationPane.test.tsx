@@ -52,7 +52,9 @@ describe("Delete Collection Confirmation Pane", () => {
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
-      const wrapper = shallow(<DeleteCollectionConfirmationPane refreshDatabases={() => undefined} />);
+      const wrapper = shallow(
+        <DeleteCollectionConfirmationPane refreshDatabases={() => undefined} lastFocusedElement={undefined} />,
+      );
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
 
       const database = { id: ko.observable("testDB") } as Database;
@@ -109,7 +111,9 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should call delete collection", () => {
-      const wrapper = mount(<DeleteCollectionConfirmationPane refreshDatabases={() => undefined} />);
+      const wrapper = mount(
+        <DeleteCollectionConfirmationPane refreshDatabases={() => undefined} lastFocusedElement={undefined} />,
+      );
       expect(wrapper).toMatchSnapshot();
 
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
@@ -126,7 +130,9 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should record feedback", async () => {
-      const wrapper = mount(<DeleteCollectionConfirmationPane refreshDatabases={() => undefined} />);
+      const wrapper = mount(
+        <DeleteCollectionConfirmationPane refreshDatabases={() => undefined} lastFocusedElement={undefined} />,
+      );
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
       wrapper
         .find("#confirmCollectionId")

@@ -24,7 +24,7 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 
 export interface TreeNodeMenuItem {
   label: string;
-  onClick: () => void;
+  onClick: (value?: React.RefObject<any>) => void;
   iconSrc?: string;
   isDisabled?: boolean;
   styleClass?: string;
@@ -242,8 +242,9 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     };
 
     return (
-      <div ref={this.contextMenuRef} onContextMenu={this.onRightClick} onKeyPress={this.onMoreButtonKeyPress}>
+      <div onContextMenu={this.onRightClick} onKeyPress={this.onMoreButtonKeyPress}>
         <IconButton
+          elementRef={this.contextMenuRef}
           name="More"
           title="More"
           className="treeMenuEllipsis"
@@ -283,7 +284,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
               disabled: menuItem.isDisabled,
               className: menuItem.styleClass,
               onClick: () => {
-                menuItem.onClick();
+                menuItem.onClick(this.contextMenuRef);
                 TelemetryProcessor.trace(Action.ClickResourceTreeNodeContextMenuItem, ActionModifiers.Mark, {
                   label: menuItem.label,
                 });
