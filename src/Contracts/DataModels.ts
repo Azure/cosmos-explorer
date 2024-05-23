@@ -1,4 +1,4 @@
-import { ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
+import { CapacityMode, ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
 
 export interface ArmEntity {
   id: string;
@@ -35,6 +35,7 @@ export interface DatabaseAccountExtendedProperties {
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
   capacity?: { totalThroughputLimit: number };
+  capacityMode?: CapacityMode;
   locations?: DatabaseAccountResponseLocation[];
   postgresqlEndpoint?: string;
   publicNetworkAccess?: string;
@@ -157,8 +158,10 @@ export interface Collection extends Resource {
   changeFeedPolicy?: ChangeFeedPolicy;
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
+  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
   schema?: ISchema;
   requestSchema?: () => void;
+  computedProperties?: ComputedProperties;
 }
 
 export interface CollectionsWithPagination {
@@ -193,9 +196,22 @@ export interface IndexingPolicy {
   indexingMode: "consistent" | "lazy" | "none";
   includedPaths: any;
   excludedPaths: any;
-  compositeIndexes?: any;
-  spatialIndexes?: any;
+  compositeIndexes?: any[];
+  spatialIndexes?: any[];
+  vectorIndexes?: VectorIndex[];
 }
+
+export interface VectorIndex {
+  path: string;
+  type: "flat" | "diskANN" | "quantizedFlat";
+}
+
+export interface ComputedProperty {
+  name: string;
+  query: string;
+}
+
+export type ComputedProperties = ComputedProperty[];
 
 export interface PartitionKey {
   paths: string[];
@@ -325,6 +341,18 @@ export interface CreateCollectionParams {
   partitionKey?: PartitionKey;
   uniqueKeyPolicy?: UniqueKeyPolicy;
   createMongoWildcardIndex?: boolean;
+  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+}
+
+export interface VectorEmbeddingPolicy {
+  vectorEmbeddings: VectorEmbedding[];
+}
+
+export interface VectorEmbedding {
+  dataType: "float16" | "float32" | "uint8" | "int8";
+  dimensions: number;
+  distanceFunction: "euclidean" | "cosine" | "dotproduct";
+  path: string;
 }
 
 export interface ReadDatabaseOfferParams {

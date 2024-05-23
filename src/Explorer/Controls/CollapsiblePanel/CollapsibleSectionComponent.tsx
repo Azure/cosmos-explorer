@@ -26,8 +26,8 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
     this.setState({ isExpanded: !this.state.isExpanded });
   };
 
-  public componentDidUpdate(): void {
-    if (this.state.isExpanded && this.props.onExpand) {
+  public componentDidUpdate(_prevProps: CollapsibleSectionProps, prevState: CollapsibleSectionState): void {
+    if (!prevState.isExpanded && this.state.isExpanded && this.props.onExpand) {
       this.props.onExpand();
     }
   }
@@ -43,7 +43,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
     return (
       <>
         <Stack
-          className="collapsibleSection"
+          className={"collapsibleSection"}
           horizontal
           verticalAlign="center"
           tokens={accordionStackTokens}

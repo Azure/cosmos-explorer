@@ -1,7 +1,7 @@
 import { configContext } from "ConfigContext";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
-import { PortalBackendIPs } from "Utils/EndpointValidation";
+import { PortalBackendIPs } from "Utils/EndpointUtils";
 
 export const getNetworkSettingsWarningMessage = async (
   setStateFunc: (warningMessage: string) => void,

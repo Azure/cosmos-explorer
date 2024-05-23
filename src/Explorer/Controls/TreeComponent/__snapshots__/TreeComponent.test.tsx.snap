@@ -172,7 +172,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
       onKeyPress={[Function]}
     >
       <CustomizedIconButton
-        ariaLabel="More"
+        ariaLabel="More options"
         className="treeMenuEllipsis"
         menuIconProps={
           Object {
@@ -397,7 +397,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
       onKeyPress={[Function]}
     >
       <CustomizedIconButton
-        ariaLabel="More"
+        ariaLabel="More options"
         className="treeMenuEllipsis"
         menuIconProps={
           Object {

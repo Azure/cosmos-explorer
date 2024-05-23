@@ -1,6 +1,7 @@
 import { FeedOptions } from "@azure/cosmos";
 import {
   Areas,
+  BackendApi,
   ConnectionStatusType,
   ContainerStatusType,
   HttpStatusCodes,
@@ -30,6 +31,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getAuthorizationHeader } from "Utils/AuthorizationUtils";
+import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
@@ -80,7 +82,11 @@ export const isCopilotFeatureRegistered = async (subscriptionId: string): Promis
 };
 
 export const getCopilotEnabled = async (): Promise<boolean> => {
-  const url = `${configContext.BACKEND_ENDPOINT}/api/portalsettings/querycopilot`;
+  const backendEndpoint: string = useNewPortalBackendEndpoint(BackendApi.PortalSettings)
+    ? configContext.PORTAL_BACKEND_ENDPOINT
+    : configContext.BACKEND_ENDPOINT;
+
+  const url = `${backendEndpoint}/api/portalsettings/querycopilot`;
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 

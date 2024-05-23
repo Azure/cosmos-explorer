@@ -8,7 +8,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
   explorer={
     Explorer {
       "_isInitializingNotebooks": false,
-      "_resetNotebookWorkspace": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isTabsContentExpanded": [Function],
       "onRefreshDatabasesKeyPress": [Function],
@@ -2450,6 +2449,11 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         </div>
       </PanelFooterComponent>
     </form>
+    <span
+      className="screenReaderOnly"
+      id="screenReaderStatus"
+      role="status"
+    />
   </RightPaneForm>
 </StringInputPane>
 `;

@@ -18,7 +18,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
         Object {
           "container": Explorer {
             "_isInitializingNotebooks": false,
-            "_resetNotebookWorkspace": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isTabsContentExpanded": [Function],
             "onRefreshDatabasesKeyPress": [Function],

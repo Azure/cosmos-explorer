@@ -3,13 +3,13 @@ import {
   DetailsListLayoutMode,
   IColumn,
   Icon,
+  IconButton,
   Link,
   Pivot,
   PivotItem,
   SelectionMode,
   Stack,
   Text,
-  IconButton,
   TooltipHost,
 } from "@fluentui/react";
 import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
@@ -18,15 +18,15 @@ import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import { userContext } from "UserContext";
+import copy from "clipboard-copy";
 import { useNotificationConsole } from "hooks/useNotificationConsole";
 import React from "react";
+import CopilotCopy from "../../../../images/CopilotCopy.svg";
 import DownloadQueryMetrics from "../../../../images/DownloadQuery.svg";
 import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
 import RunQuery from "../../../../images/RunQuery.png";
 import InfoColor from "../../../../images/info_color.svg";
 import { QueryResults } from "../../../Contracts/ViewModels";
-import copy from "clipboard-copy";
-import CopilotCopy from "../../../../images/CopilotCopy.svg";
 
 interface QueryResultProps {
   isMongoDB: boolean;
@@ -62,9 +62,12 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   const columns: IColumn[] = [
     {
       key: "column1",
-      name: "",
+      name: "Description",
+      iconName: "Info",
+      isIconOnly: true,
       minWidth: 10,
       maxWidth: 12,
+      iconClassName: "iconheadercell",
       data: String,
       fieldName: "",
       onRender: (item: IDocument) => {
@@ -378,9 +381,13 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
               <img className="paneErrorIcon" src={InfoColor} alt="Error" />
             </span>
             <span className="warningErrorDetailsLinkContainer">
-              We have detected you may be using a subquery. Non-correlated subqueries are not currently supported.
-              <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery">
-                Please see Cosmos sub query documentation for further information
+              We detected you may be using a subquery. To learn more about subqueries effectively,{" "}
+              <a
+                href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery"
+                target="_blank"
+                rel="noreferrer"
+              >
+                visit the documentation
               </a>
             </span>
           </div>

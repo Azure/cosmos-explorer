@@ -53,6 +53,7 @@ export type FabricMessageV2 =
       id: string;
       message: {
         connectionId: string;
+        isVisible: boolean;
       };
     }
   | {
@@ -72,7 +73,7 @@ export type FabricMessageV2 =
       };
     }
   | {
-      type: "setToolbarStatus";
+      type: "explorerVisible";
       message: {
         visible: boolean;
       };

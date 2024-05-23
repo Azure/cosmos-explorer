@@ -1,7 +1,6 @@
 import * as Cosmos from "@azure/cosmos";
-import { sendCachedDataMessage } from "Common/MessageHandler";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
-import { AuthorizationToken, FabricMessageTypes } from "Contracts/FabricMessageTypes";
+import { AuthorizationToken } from "Contracts/FabricMessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { AuthType } from "../AuthType";
@@ -51,15 +50,23 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       case Cosmos.ResourceType.offer:
       case Cosmos.ResourceType.user:
       case Cosmos.ResourceType.permission:
-        // User master tokens
-        const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(
-          FabricMessageTypes.GetAuthorizationToken,
-          [requestInfo],
-          userContext.fabricContext.connectionId,
-        );
-        console.log("Response from Fabric: ", authorizationToken);
-        headers[HttpHeaders.msDate] = authorizationToken.XDate;
-        return decodeURIComponent(authorizationToken.PrimaryReadWriteToken);
+        // For now, these operations aren't used, so fetching the authorization token is commented out.
+        // This provider must return a real token to pass validation by the client, so we return the cached resource token
+        // (which is a valid token, but won't work for these operations).
+        const resourceTokens2 = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
+        return getAuthorizationTokenUsingResourceTokens(resourceTokens2, requestInfo.path, requestInfo.resourceId);
+
+      /* ************** TODO: Uncomment this code if we need to support these operations **************
+      // User master tokens
+      const authorizationToken = await sendCachedDataMessage<AuthorizationToken>(
+        FabricMessageTypes.GetAuthorizationToken,
+        [requestInfo],
+        userContext.fabricContext.connectionId,
+      );
+      console.log("Response from Fabric: ", authorizationToken);
+      headers[HttpHeaders.msDate] = authorizationToken.XDate;
+      return decodeURIComponent(authorizationToken.PrimaryReadWriteToken);
+       ***********************************************************************************************/
     }
   }
 

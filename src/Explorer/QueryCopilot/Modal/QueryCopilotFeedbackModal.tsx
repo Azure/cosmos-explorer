@@ -49,7 +49,7 @@ export const QueryCopilotFeedbackModal = ({
   };
 
   return (
-    <Modal isOpen={showFeedbackModal}>
+    <Modal isOpen={showFeedbackModal} styles={{ main: { borderRadius: 8, maxWidth: 600 } }}>
       <form onSubmit={handleSubmit}>
         <Stack style={{ padding: 24 }}>
           <Stack horizontal horizontalAlign="space-between">
@@ -68,9 +68,14 @@ export const QueryCopilotFeedbackModal = ({
             rows={3}
           />
           <TextField
-            styles={{ root: { marginBottom: 14 } }}
+            styles={{
+              root: { marginBottom: 14 },
+              fieldGroup: { backgroundColor: "#F3F2F1", borderRadius: 4, borderColor: "#D1D1D1" },
+            }}
             label="Query generated"
             defaultValue={generatedQuery}
+            multiline
+            rows={3}
             readOnly
           />
           <Text style={{ fontSize: 12, marginBottom: 14 }}>

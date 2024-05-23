@@ -1,6 +1,6 @@
-import ko from "knockout";
-import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointValidation";
+import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointUtils";
 import { GetGithubClientId } from "Utils/GitHubUtils";
+import ko from "knockout";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";

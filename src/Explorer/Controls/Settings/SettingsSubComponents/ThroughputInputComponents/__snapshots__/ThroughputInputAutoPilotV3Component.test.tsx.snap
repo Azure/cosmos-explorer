@@ -917,7 +917,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             >
               $
                
-              0.012
+              0.0080
               /hr
             </Text>
             <Text
@@ -929,7 +929,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             >
               $
                
-              0.29
+              0.19
               /day
             </Text>
             <Text
@@ -941,7 +941,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             >
               $
                
-              8.76
+              5.84
               /mo
             </Text>
           </Stack>
@@ -1354,7 +1354,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             >
               $
                
-              0.012
+              0.0080
               /hr
             </Text>
             <Text
@@ -1366,7 +1366,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             >
               $
                
-              0.29
+              0.19
               /day
             </Text>
             <Text
@@ -1378,7 +1378,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             >
               $
                
-              8.76
+              5.84
               /mo
             </Text>
           </Stack>

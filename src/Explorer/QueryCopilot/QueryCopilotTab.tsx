@@ -10,7 +10,7 @@ import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotCl
 import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
 import { userContext } from "UserContext";
-import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import { ReactTabKind, TabsState, useTabs } from "hooks/useTabs";
 import React, { useState } from "react";
@@ -37,7 +37,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
     const executeQueryBtn = {
       iconSrc: ExecuteQueryIcon,
       iconAlt: executeQueryBtnLabel,
-      onCommandClick: () => OnExecuteQueryClick(useQueryCopilot),
+      onCommandClick: () => OnExecuteQueryClick(useQueryCopilot as Partial<QueryCopilotState>),
       commandButtonLabel: executeQueryBtnLabel,
       ariaLabel: executeQueryBtnLabel,
       hasPopup: false,
@@ -57,12 +57,12 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
 
     const toggleCopilotButton = {
       iconSrc: QueryCommandIcon,
-      iconAlt: "Copilot",
+      iconAlt: "Query Advisor",
       onCommandClick: () => {
         toggleCopilot(true);
       },
-      commandButtonLabel: "Copilot",
-      ariaLabel: "Copilot",
+      commandButtonLabel: "Query Advisor",
+      ariaLabel: "Query Advisor",
       hasPopup: false,
       disabled: copilotActive,
     };

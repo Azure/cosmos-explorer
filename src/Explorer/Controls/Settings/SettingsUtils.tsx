@@ -4,7 +4,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 
 const zeroValue = 0;
-export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;
+export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy | DataModels.ComputedProperties;
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
@@ -45,6 +45,9 @@ export enum SettingsV2TabTypes {
   ConflictResolutionTab,
   SubSettingsTab,
   IndexingPolicyTab,
+  PartitionKeyTab,
+  ComputedPropertiesTab,
+  ContainerVectorPolicyTab,
 }
 
 export interface IsComponentDirtyResult {
@@ -146,6 +149,12 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
       return "Settings";
     case SettingsV2TabTypes.IndexingPolicyTab:
       return "Indexing Policy";
+    case SettingsV2TabTypes.PartitionKeyTab:
+      return "Partition Keys (preview)";
+    case SettingsV2TabTypes.ComputedPropertiesTab:
+      return "Computed Properties";
+    case SettingsV2TabTypes.ContainerVectorPolicyTab:
+      return "Container Vector Policy (preview)";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }
@@ -199,3 +208,49 @@ export const getMongoIndexTypeText = (index: MongoIndexTypes): string => {
 export const isIndexTransforming = (indexTransformationProgress: number): boolean =>
   // index transformation progress can be 0
   indexTransformationProgress !== undefined && indexTransformationProgress !== 100;
+
+export const getPartitionKeyName = (apiType: string, isLowerCase?: boolean): string => {
+  const partitionKeyName = apiType === "Mongo" ? "Shard key" : "Partition key";
+  return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
+};
+
+export const getPartitionKeyTooltipText = (apiType: string): string => {
+  if (apiType === "Mongo") {
+    return "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It’s critical to choose a field that will evenly distribute your data.";
+  }
+  let tooltipText = `The ${getPartitionKeyName(
+    apiType,
+    true,
+  )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
+  if (apiType === "SQL") {
+    tooltipText += " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.";
+  }
+  return tooltipText;
+};
+
+export const getPartitionKeySubtext = (partitionKeyDefault: boolean, apiType: string): string => {
+  if (partitionKeyDefault && (apiType === "SQL" || apiType === "Mongo")) {
+    const subtext = "For small workloads, the item ID is a suitable choice for the partition key.";
+    return subtext;
+  }
+  return "";
+};
+
+export const getPartitionKeyPlaceHolder = (apiType: string, index?: number): string => {
+  switch (apiType) {
+    case "Mongo":
+      return "e.g., categoryId";
+    case "Gremlin":
+      return "e.g., /address";
+    case "SQL":
+      return `${
+        index === undefined
+          ? "Required - first partition key e.g., /TenantId"
+          : index === 0
+          ? "second partition key e.g., /UserId"
+          : "third partition key e.g., /SessionId"
+      }`;
+    default:
+      return "e.g., /address/zipCode";
+  }
+};

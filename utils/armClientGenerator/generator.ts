@@ -16,13 +16,13 @@ Results of this file should be checked into the repo.
 */
 
 // CHANGE THESE VALUES TO GENERATE NEW CLIENTS
-const version = "2023-09-15-preview";
+const version = "2024-02-15-preview";
 /* The following are legal options for resourceName but you generally will only use cosmos-db:
 "cosmos-db" | "managedCassandra" | "mongorbac" | "notebook" | "privateEndpointConnection" | "privateLinkResources" |
-"rbac" | "restorable" | "services"
+"rbac" | "restorable" | "services" | "dataTransferService"
 */
 const githubResourceName = "cosmos-db";
-const deResourceName = "cosmos";
+const deResourceName = "cosmos-db";
 const schemaURL = `https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/${version}/${githubResourceName}.json`;
 const outputDir = path.join(__dirname, `../../src/Utils/arm/generatedClients/${deResourceName}`);
 
@@ -117,9 +117,9 @@ const propertyToType = (property: Property, prop: string, required: boolean) => 
     if (property.allOf) {
       outputTypes.push(`
       /* ${property.description || "undocumented"} */
-      ${property.readOnly ? "readonly " : ""}${prop}${
-        required ? "" : "?"
-      }: ${property.allOf.map((allof: { $ref: string }) => refToType(allof.$ref)).join(" & ")}`);
+      ${property.readOnly ? "readonly " : ""}${prop}${required ? "" : "?"}: ${property.allOf
+        .map((allof: { $ref: string }) => refToType(allof.$ref))
+        .join(" & ")}`);
     } else if (property.$ref) {
       const type = refToType(property.$ref);
       outputTypes.push(`
@@ -142,8 +142,8 @@ const propertyToType = (property: Property, prop: string, required: boolean) => 
       outputTypes.push(`
           /* ${property.description || "undocumented"} */
           ${property.readOnly ? "readonly " : ""}${prop}${required ? "" : "?"}: ${property.enum
-        .map((v: string) => `"${v}"`)
-        .join(" | ")}
+            .map((v: string) => `"${v}"`)
+            .join(" | ")}
           `);
     } else {
       if (property.type === undefined) {
@@ -153,8 +153,8 @@ const propertyToType = (property: Property, prop: string, required: boolean) => 
       outputTypes.push(`
           /* ${property.description || "undocumented"} */
           ${property.readOnly ? "readonly " : ""}${prop}${required ? "" : "?"}: ${
-        propertyMap[property.type] ? propertyMap[property.type] : property.type
-      }`);
+            propertyMap[property.type] ? propertyMap[property.type] : property.type
+          }`);
     }
   }
 };
@@ -247,7 +247,7 @@ async function main() {
         const operation = schema.paths[path][method];
         const [, methodName] = operation.operationId.split("_");
         const bodyParameter = operation.parameters.find(
-          (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true
+          (parameter: { in: string; required: boolean }) => parameter.in === "body" && parameter.required === true,
         );
         outputClient.push(`
           /* ${operation.description || "undocumented"} */
@@ -259,8 +259,8 @@ async function main() {
           ) : Promise<${responseType(operation, "Types")}> {
             const path = \`${path.replace(/{/g, "${")}\`
             return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "${method.toLocaleUpperCase()}", apiVersion, ${
-          bodyParameter ? "body" : ""
-        } })
+              bodyParameter ? "body" : ""
+            } })
           }
           `);
       }

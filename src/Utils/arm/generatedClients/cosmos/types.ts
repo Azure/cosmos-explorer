@@ -3,7 +3,7 @@
   Run "npm run generateARMClients" to regenerate
   Edting this file directly should be done with extreme caution as not to diverge from ARM REST specs
 
-  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2023-09-15-preview/cosmos-db.json
+  Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/preview/2024-02-15-preview/cosmos-db.json
 */
 
 /* The List operation response, that contains the client encryption keys and their properties. */
@@ -566,12 +566,14 @@ export interface DatabaseAccountGetProperties {
   minimalTlsVersion?: MinimalTlsVersion;
 
   /* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
-  customerManagedKeyStatus?: CustomerManagedKeyStatus;
-
+  customerManagedKeyStatus?: string;
   /* Flag to indicate enabling/disabling of Priority Based Execution Preview feature on the account */
   enablePriorityBasedExecution?: boolean;
   /* Enum to indicate default Priority Level of request for Priority Based Execution. */
   defaultPriorityLevel?: DefaultPriorityLevel;
+
+  /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
+  enablePerRegionPerPartitionAutoscale?: boolean;
 }
 
 /* Properties to create and update Azure Cosmos DB database accounts. */
@@ -663,12 +665,14 @@ export interface DatabaseAccountCreateUpdateProperties {
   minimalTlsVersion?: MinimalTlsVersion;
 
   /* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
-  customerManagedKeyStatus?: CustomerManagedKeyStatus;
-
+  customerManagedKeyStatus?: string;
   /* Flag to indicate enabling/disabling of Priority Based Execution Preview feature on the account */
   enablePriorityBasedExecution?: boolean;
   /* Enum to indicate default Priority Level of request for Priority Based Execution. */
   defaultPriorityLevel?: DefaultPriorityLevel;
+
+  /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
+  enablePerRegionPerPartitionAutoscale?: boolean;
 }
 
 /* Parameters to create and update Cosmos DB database accounts. */
@@ -763,12 +767,14 @@ export interface DatabaseAccountUpdateProperties {
   minimalTlsVersion?: MinimalTlsVersion;
 
   /* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
-  customerManagedKeyStatus?: CustomerManagedKeyStatus;
-
+  customerManagedKeyStatus?: string;
   /* Flag to indicate enabling/disabling of Priority Based Execution Preview feature on the account */
   enablePriorityBasedExecution?: boolean;
   /* Enum to indicate default Priority Level of request for Priority Based Execution. */
   defaultPriorityLevel?: DefaultPriorityLevel;
+
+  /* Flag to indicate enabling/disabling of Per-Region Per-partition autoscale Preview feature on the account */
+  enablePerRegionPerPartitionAutoscale?: boolean;
 }
 
 /* Parameters for patching Azure Cosmos DB database account properties. */
@@ -1229,6 +1235,9 @@ export interface SqlDatabaseResource {
 export interface SqlContainerResource {
   /* Name of the Cosmos DB SQL container */
   id: string;
+
+  vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+
   /* The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container */
   indexingPolicy?: IndexingPolicy;
 
@@ -1256,6 +1265,20 @@ export interface SqlContainerResource {
 
   /* The configuration for defining Materialized Views. This must be specified only for creating a Materialized View container. */
   materializedViewDefinition?: MaterializedViewDefinition;
+
+  /* List of computed properties */
+  computedProperties?: ComputedProperty[];
+}
+
+export interface VectorEmbeddingPolicy {
+  vectorEmbeddings: VectorEmbedding[];
+}
+
+export interface VectorEmbedding {
+  path?: string;
+  dataType?: string;
+  dimensions?: number;
+  distanceFunction?: string;
 }
 
 /* Cosmos DB indexing policy */
@@ -1276,6 +1299,13 @@ export interface IndexingPolicy {
 
   /* List of spatial specifics */
   spatialIndexes?: SpatialSpec[];
+
+  vectorIndexes?: VectorIndex[];
+}
+
+export interface VectorIndex {
+  path?: string;
+  type?: string;
 }
 
 /* undocumented */
@@ -1324,6 +1354,14 @@ export interface SpatialSpec {
 
 /* Indicates the spatial type of index. */
 export type SpatialType = "Point" | "LineString" | "Polygon" | "MultiPolygon";
+
+/* The definition of a computed property */
+export interface ComputedProperty {
+  /* The name of a computed property, for example - "cp_lowerName" */
+  name?: string;
+  /* The query that evaluates the value for computed property, for example - "SELECT VALUE LOWER(c.name) FROM c" */
+  query?: string;
+}
 
 /* The configuration of the partition key to be used for partitioning data into multiple partitions */
 export interface ContainerPartitionKey {
@@ -1929,6 +1967,8 @@ export interface RestoreParametersBase {
   restoreSource?: string;
   /* Time to which the account has to be restored (ISO-8601 format). */
   restoreTimestampInUtc?: string;
+  /* Specifies whether the restored account will have Time-To-Live disabled upon the successful restore. */
+  restoreWithTtlDisabled?: boolean;
 }
 
 /* Parameters to indicate the information about the restore. */
@@ -2071,20 +2111,6 @@ export type ContinuousTier = "Continuous7Days" | "Continuous30Days";
 
 /* Indicates the minimum allowed Tls version. The default is Tls 1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. */
 export type MinimalTlsVersion = "Tls" | "Tls11" | "Tls12";
-
-/* Indicates the status of the Customer Managed Key feature on the account. In case there are errors, the property provides troubleshooting guidance. */
-export type CustomerManagedKeyStatus =
-  | "Access to your account is currently revoked because the Azure Cosmos DB service is unable to obtain the AAD authentication token for the account's default identity; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error (4000)."
-  | "Access to your account is currently revoked because the Azure Cosmos DB account's key vault key URI does not follow the expected format; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property (4006)."
-  | "Access to your account is currently revoked because the current default identity no longer has permission to the associated Key Vault key; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key (4002)."
-  | "Access to your account is currently revoked because the Azure Key Vault DNS name specified by the account's keyvaultkeyuri property could not be resolved; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns (4009)."
-  | "Access to your account is currently revoked because the correspondent key is not found on the specified Key Vault; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found (4003)."
-  | "Access to your account is currently revoked because the Azure Cosmos DB service is unable to wrap or unwrap the key; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error (4005)."
-  | "Access to your account is currently revoked because the Azure Cosmos DB account has an undefined default identity; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity (4015)."
-  | "Access to your account is currently revoked because the access rules are blocking outbound requests to the Azure Key Vault service; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016)."
-  | "Access to your account is currently revoked because the correspondent Azure Key Vault was not found; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found (4017)."
-  | "Access to your account is currently revoked; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide"
-  | "Access to the configured customer managed key confirmed.";
 
 /* Enum to indicate default priorityLevel of requests */
 export type DefaultPriorityLevel = "High" | "Low";

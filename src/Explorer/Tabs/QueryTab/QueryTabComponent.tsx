@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-import { FeedOptions } from "@azure/cosmos";
+import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
@@ -9,8 +10,9 @@ import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilo
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
@@ -20,6 +22,7 @@ import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
 import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
+import DownloadQueryIcon from "../../../../images/DownloadQuery.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
@@ -133,7 +136,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
     this.state = {
       toggleState: ToggleState.Result,
-      sqlQueryEditorContent: props.queryText || "SELECT * FROM c",
+      sqlQueryEditorContent: props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c",
       selectedContent: "",
       queryResults: undefined,
       error: "",
@@ -223,6 +226,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
   };
 
+  public onDownloadQueryClick = (): void => {
+    const text = this.getCurrentEditorQuery();
+    const queryFile = new File([text], `SavedQuery.txt`, { type: "text/plain" });
+
+    // It appears the most consistent to download a file from a blob is to create an anchor element and simulate clicking it
+    const blobUrl = URL.createObjectURL(queryFile);
+    const anchor = document.createElement("a");
+    anchor.href = blobUrl;
+    anchor.download = queryFile.name;
+    document.body.appendChild(anchor); // Must put the anchor in the document.
+    anchor.click();
+    document.body.removeChild(anchor); // Clean up the anchor.
+  };
+
   public onSaveQueryClick = (): void => {
     useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this.props.collection.container} />);
   };
@@ -303,8 +320,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isExecutionError: false,
     });
 
+    let queryOperationOptions: QueryOperationOptions;
+    if (userContext.apiType === "SQL" && ruThresholdEnabled()) {
+      const ruThreshold: number = getRUThreshold();
+      queryOperationOptions = {
+        ruCapPerOperation: ruThreshold,
+      } as QueryOperationOptions;
+    }
     const queryDocuments = async (firstItemIndex: number) =>
-      await queryDocumentsPage(this.props.collection && this.props.collection.id(), this._iterator, firstItemIndex);
+      await queryDocumentsPage(
+        this.props.collection && this.props.collection.id(),
+        this._iterator,
+        firstItemIndex,
+        queryOperationOptions,
+      );
     this.props.tabsBaseInstance.isExecuting(true);
     this.setState({
       isExecuting: true,
@@ -380,6 +409,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.EXECUTE_ITEM,
         onCommandClick: this.props.isSampleCopilotActive
           ? () => OnExecuteQueryClick(this.props.copilotStore)
           : this.onExecuteQueryClick,
@@ -391,13 +421,27 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
 
     if (this.saveQueryButton.visible) {
-      const label = "Save Query";
+      if (configContext.platform !== Platform.Fabric) {
+        const label = "Save Query";
+        buttons.push({
+          iconSrc: SaveQueryIcon,
+          iconAlt: label,
+          keyboardAction: KeyboardAction.SAVE_ITEM,
+          onCommandClick: this.onSaveQueryClick,
+          commandButtonLabel: label,
+          ariaLabel: label,
+          hasPopup: false,
+          disabled: !this.saveQueryButton.enabled,
+        });
+      }
+
       buttons.push({
-        iconSrc: SaveQueryIcon,
-        iconAlt: label,
-        onCommandClick: this.onSaveQueryClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
+        iconSrc: DownloadQueryIcon,
+        iconAlt: "Download Query",
+        keyboardAction: KeyboardAction.DOWNLOAD_ITEM,
+        onCommandClick: this.onDownloadQueryClick,
+        commandButtonLabel: "Download Query",
+        ariaLabel: "Download Query",
         hasPopup: false,
         disabled: !this.saveQueryButton.enabled,
       });
@@ -424,7 +468,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         hasPopup: false,
       };
 
-      const launchCopilotButton = {
+      const launchCopilotButton: CommandButtonComponentProps = {
         iconSrc: LaunchCopilot,
         iconAlt: mainButtonLabel,
         onCommandClick: this.launchQueryCopilotChat,
@@ -437,14 +481,15 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
 
     if (this.props.copilotEnabled) {
-      const toggleCopilotButton = {
+      const toggleCopilotButton: CommandButtonComponentProps = {
         iconSrc: QueryCommandIcon,
-        iconAlt: "Copilot",
+        iconAlt: "Query Advisor",
+        keyboardAction: KeyboardAction.TOGGLE_COPILOT,
         onCommandClick: () => {
           this._toggleCopilot(!this.state.copilotActive);
         },
-        commandButtonLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
-        ariaLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
+        commandButtonLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
+        ariaLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
         hasPopup: false,
       };
       buttons.push(toggleCopilotButton);
@@ -455,6 +500,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: CancelQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: () => this.queryAbortController.abort(),
         commandButtonLabel: label,
         ariaLabel: label,
@@ -483,13 +529,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public onChangeContent(newContent: string): void {
+    // The copilot store's active query takes precedence over the local state,
+    // and we can't update both states in a single operation.
+    // So, we update the copilot store's state first, then update the local state.
+    if (this.state.copilotActive) {
+      this.props.copilotStore?.setQuery(newContent);
+    }
     this.setState({
       sqlQueryEditorContent: newContent,
       queryCopilotGeneratedQuery: "",
     });
-    if (this.state.copilotActive) {
-      this.props.copilotStore?.setQuery(newContent);
-    }
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
         this.executeQueryButton = {
@@ -503,6 +552,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         };
       }
     }
+
+    this.saveQueryButton.enabled = newContent.length > 0;
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
@@ -531,7 +582,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  public setEditorContent(): string {
+  public getEditorContent(): string {
     if (this.isCopilotTabActive && this.state.queryCopilotGeneratedQuery) {
       return this.state.queryCopilotGeneratedQuery;
     }
@@ -588,7 +639,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 <div className="queryEditor" style={{ height: "100%" }}>
                   <EditorReact
                     language={"sql"}
-                    content={this.setEditorContent()}
+                    content={this.getEditorContent()}
                     isReadOnly={false}
                     wordWrap={"on"}
                     ariaLabel={"Editing Query"}

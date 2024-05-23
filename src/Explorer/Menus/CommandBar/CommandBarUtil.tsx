@@ -7,6 +7,7 @@ import {
   IDropdownStyles,
 } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { KeyboardHandlerMap } from "KeyboardShortcuts";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
@@ -37,7 +38,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
     if (isDisabled) {
       return StyleConstants.GrayScale;
     }
-    return configContext.platform == Platform.Fabric ? StyleConstants.NoColor : undefined;
+    return configContext.platform == Platform.Fabric ? StyleConstants.FabricToolbarIconColor : undefined;
   };
 
   return btns
@@ -96,7 +97,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             },
             width: 16,
           },
-          label: { fontSize: StyleConstants.mediumFontSize },
+          label: {
+            fontSize:
+              configContext.platform == Platform.Fabric
+                ? StyleConstants.DefaultFontSize
+                : StyleConstants.mediumFontSize,
+          },
           rootHovered: { backgroundColor: hoverColor },
           rootPressed: { backgroundColor: hoverColor },
           splitButtonMenuButtonExpanded: {
@@ -133,7 +139,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               // TODO Figure out how to do it the proper way with subComponentStyles.
               // TODO Remove all this crazy styling once we adopt Ui-Fabric Azure themes
               selectors: {
-                ".ms-ContextualMenu-itemText": { fontSize: StyleConstants.mediumFontSize },
+                ".ms-ContextualMenu-itemText": {
+                  fontSize:
+                    configContext.platform == Platform.Fabric
+                      ? StyleConstants.DefaultFontSize
+                      : StyleConstants.mediumFontSize,
+                },
                 ".ms-ContextualMenu-link:hover": { backgroundColor: hoverColor },
                 ".ms-ContextualMenu-icon": { width: 16, height: 16 },
               },
@@ -223,3 +234,28 @@ export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, 
     onRender: () => <ConnectionStatus container={container} poolId={poolId} />,
   };
 };
+
+export function createKeyboardHandlers(allButtons: CommandButtonComponentProps[]): KeyboardHandlerMap {
+  const handlers: KeyboardHandlerMap = {};
+
+  function createHandlers(buttons: CommandButtonComponentProps[]) {
+    buttons.forEach((button) => {
+      if (!button.disabled && button.keyboardAction) {
+        handlers[button.keyboardAction] = (e) => {
+          button.onCommandClick(e);
+
+          // If the handler is bound, it means the button is visible and enabled, so we should prevent the default action
+          return true;
+        };
+      }
+
+      if (button.children && button.children.length > 0) {
+        createHandlers(button.children);
+      }
+    });
+  }
+
+  createHandlers(allButtons);
+
+  return handlers;
+}
