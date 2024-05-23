@@ -21,8 +21,8 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -204,7 +204,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   <img
                     alt=""
                     src="rootIcon"
-                    style="width: 20px; height: 20px;"
+                    style="width: 16px; height: 16px;"
                   />
                 </div>
                 <div
@@ -263,7 +263,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     <img
                       alt=""
                       src="rootIcon"
-                      style="width: 20px; height: 20px;"
+                      style="width: 16px; height: 16px;"
                     />
                   </div>
                   <div
@@ -317,7 +317,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         <img
                           alt=""
                           src="child1Icon"
-                          style="width: 20px; height: 20px;"
+                          style="width: 16px; height: 16px;"
                         />
                       </div>
                       <div
@@ -368,7 +368,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         <img
                           alt=""
                           src="child2LoadingIcon"
-                          style="width: 20px; height: 20px;"
+                          style="width: 16px; height: 16px;"
                         />
                       </div>
                       <div
@@ -422,7 +422,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         <img
                           alt=""
                           src="child3ExpandingIcon"
-                          style="width: 20px; height: 20px;"
+                          style="width: 16px; height: 16px;"
                         />
                       </div>
                       <div
@@ -449,8 +449,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               src="rootIcon"
               style={
                 Object {
-                  "height": 20,
-                  "width": 20,
+                  "height": 16,
+                  "width": 16,
                 }
               }
             />
@@ -513,8 +513,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 src="rootIcon"
                 style={
                   Object {
-                    "height": 20,
-                    "width": 20,
+                    "height": 16,
+                    "width": 16,
                   }
                 }
               />
@@ -727,7 +727,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                   <img
                                     alt=""
                                     src="child1Icon"
-                                    style="width: 20px; height: 20px;"
+                                    style="width: 16px; height: 16px;"
                                   />
                                 </div>
                                 <div
@@ -786,7 +786,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     <img
                                       alt=""
                                       src="child1Icon"
-                                      style="width: 20px; height: 20px;"
+                                      style="width: 16px; height: 16px;"
                                     />
                                   </div>
                                   <div
@@ -811,8 +811,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               src="child1Icon"
                               style={
                                 Object {
-                                  "height": 20,
-                                  "width": 20,
+                                  "height": 16,
+                                  "width": 16,
                                 }
                               }
                             />
@@ -875,8 +875,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 src="child1Icon"
                                 style={
                                   Object {
-                                    "height": 20,
-                                    "width": 20,
+                                    "height": 16,
+                                    "width": 16,
                                   }
                                 }
                               />
@@ -1022,7 +1022,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                   <img
                                     alt=""
                                     src="child2LoadingIcon"
-                                    style="width: 20px; height: 20px;"
+                                    style="width: 16px; height: 16px;"
                                   />
                                 </div>
                                 <div
@@ -1081,7 +1081,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     <img
                                       alt=""
                                       src="child2LoadingIcon"
-                                      style="width: 20px; height: 20px;"
+                                      style="width: 16px; height: 16px;"
                                     />
                                   </div>
                                   <div
@@ -1106,8 +1106,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               src="child2LoadingIcon"
                               style={
                                 Object {
-                                  "height": 20,
-                                  "width": 20,
+                                  "height": 16,
+                                  "width": 16,
                                 }
                               }
                             />
@@ -1170,8 +1170,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 src="child2LoadingIcon"
                                 style={
                                   Object {
-                                    "height": 20,
-                                    "width": 20,
+                                    "height": 16,
+                                    "width": 16,
                                   }
                                 }
                               />
@@ -1309,7 +1309,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                   <img
                                     alt=""
                                     src="child3ExpandingIcon"
-                                    style="width: 20px; height: 20px;"
+                                    style="width: 16px; height: 16px;"
                                   />
                                 </div>
                                 <div
@@ -1371,7 +1371,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     <img
                                       alt=""
                                       src="child3ExpandingIcon"
-                                      style="width: 20px; height: 20px;"
+                                      style="width: 16px; height: 16px;"
                                     />
                                   </div>
                                   <div
@@ -1396,8 +1396,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               src="child3ExpandingIcon"
                               style={
                                 Object {
-                                  "height": 20,
-                                  "width": 20,
+                                  "height": 16,
+                                  "width": 16,
                                 }
                               }
                             />
@@ -1426,8 +1426,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 src="child3ExpandingIcon"
                                 style={
                                   Object {
-                                    "height": 20,
-                                    "width": 20,
+                                    "height": 16,
+                                    "width": 16,
                                   }
                                 }
                               />
@@ -1474,8 +1474,8 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -1517,8 +1517,8 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -1589,8 +1589,8 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -1627,8 +1627,8 @@ exports[`TreeNodeComponent renders a single node 1`] = `
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -1665,8 +1665,8 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
         src="the-icon.svg"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -1703,8 +1703,8 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -1791,8 +1791,8 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />
@@ -1880,8 +1880,8 @@ exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
         src="rootIcon"
         style={
           Object {
-            "height": 20,
-            "width": 20,
+            "height": 16,
+            "width": 16,
           }
         }
       />

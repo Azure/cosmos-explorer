@@ -66,7 +66,7 @@ function isAnyDescendantSelected(node: TreeNode): boolean {
   );
 }
 
-const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 20, height: 20 }} />;
+const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 16, height: 16 }} />;
 
 export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   node,

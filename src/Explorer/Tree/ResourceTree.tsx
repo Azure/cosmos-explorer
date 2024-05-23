@@ -171,7 +171,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           aria-label="CosmosDB resources"
           openItems={openItems}
           onOpenChange={handleOpenChange}
-          size="medium"
+          size="small"
           style={{ height: "100%", minWidth: "290px" }}
         >
           {rootNodes.map((node) => (
