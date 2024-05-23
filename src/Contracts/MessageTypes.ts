@@ -37,4 +37,6 @@ export enum MessageTypes {
   DisplayNPSSurvey,
   OpenVCoreMongoNetworkingBlade,
   OpenVCoreMongoConnectionStringsBlade,
+  OpenCESCVAFeedbackBlade,
+  ActivateTab,
 }
