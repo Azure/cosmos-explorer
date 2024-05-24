@@ -37,6 +37,9 @@ export enum MessageTypes {
   DisplayNPSSurvey,
   OpenVCoreMongoNetworkingBlade,
   OpenVCoreMongoConnectionStringsBlade,
+  GetAuthorizationToken, // unused. Can be removed if the portal uses the same list of enums.
+  GetAllResourceTokens, // unused. Can be removed if the portal uses the same list of enums.
+  Ready, // unused. Can be removed if the portal uses the same list of enums.
   OpenCESCVAFeedbackBlade,
   ActivateTab,
 }
