@@ -189,34 +189,6 @@ export const getDiscardExistingDocumentChangesButtonState = (editorState: ViewMo
   })(),
 });
 
-// Export to expose to unit tests
-export const getDeleteExistingDocumentButtonState = (
-  editorState: ViewModels.DocumentExplorerState,
-  selectedRows: Set<TableRowId>,
-) => ({
-  enabled: (() => {
-    switch (editorState) {
-      case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
-        return true;
-      default:
-        return false;
-    }
-  })(),
-
-  visible: (() => {
-    switch (editorState) {
-      case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
-        return selectedRows.size > 0;
-      default:
-        return false;
-    }
-  })(),
-});
-
 type UiKeyboardEvent = (e: KeyboardEvent | React.SyntheticEvent<Element, Event>) => void;
 
 // Export to expose to unit tests
@@ -364,7 +336,7 @@ export const getTabsButtons = ({
     });
   }
 
-  if (getDeleteExistingDocumentButtonState(editorState, selectedRows).visible) {
+  if (selectedRows.size > 0) {
     const label = "Delete";
     buttons.push({
       iconSrc: DeleteDocumentIcon,
@@ -374,9 +346,7 @@ export const getTabsButtons = ({
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: false,
-      disabled:
-        !getDeleteExistingDocumentButtonState(editorState, selectedRows).enabled ||
-        useSelectedNode.getState().isQueryCopilotCollectionSelected(),
+      disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
       id: DELETE_BUTTON_ID,
     });
   }

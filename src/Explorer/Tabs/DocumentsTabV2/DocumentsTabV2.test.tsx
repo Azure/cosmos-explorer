@@ -1,5 +1,4 @@
 import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
-import { TableRowId } from "@fluentui/react-components";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
@@ -15,7 +14,6 @@ import {
   UPDATE_BUTTON_ID,
   UPLOAD_BUTTON_ID,
   buildQuery,
-  getDeleteExistingDocumentButtonState,
   getDiscardExistingDocumentChangesButtonState,
   getDiscardNewDocumentChangesButtonState,
   getSaveExistingDocumentButtonState,
@@ -318,24 +316,6 @@ describe("Documents tab (noSql API)", () => {
         state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
         enabled: true,
         visible: true,
-      });
-
-      testCases.forEach((testCase) => {
-        const state = getDeleteExistingDocumentButtonState(testCase.state, new Set<TableRowId>());
-        it(`enable for ${testCase.state} (no selected rows)`, () => {
-          expect(state.enabled).toBe(testCase.enabled);
-        });
-        it(`visible for ${testCase.state} (no selected rows)`, () => {
-          expect(state.visible).toBe(false);
-        });
-
-        // state = getDeleteExistingDocumentButtonState(testCase.state, new Set<TableRowId>([2, 1]));
-        // it(`enable for ${testCase.state} (2 selected rows)`, () => {
-        //   expect(state.enabled).toBe(testCase.enabled);
-        // });
-        // it(`visible for ${testCase.state} (2 selected rows)`, () => {
-        //   expect(state.visible).toBe(testCase.visible);
-        // });
       });
     });
   });
