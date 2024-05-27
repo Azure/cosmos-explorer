@@ -47,6 +47,7 @@ export enum SettingsV2TabTypes {
   IndexingPolicyTab,
   PartitionKeyTab,
   ComputedPropertiesTab,
+  ContainerVectorPolicyTab,
 }
 
 export interface IsComponentDirtyResult {
@@ -151,7 +152,9 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.PartitionKeyTab:
       return "Partition Keys (preview)";
     case SettingsV2TabTypes.ComputedPropertiesTab:
-      return "Computed Properties (preview)";
+      return "Computed Properties";
+    case SettingsV2TabTypes.ContainerVectorPolicyTab:
+      return "Container Vector Policy (preview)";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }

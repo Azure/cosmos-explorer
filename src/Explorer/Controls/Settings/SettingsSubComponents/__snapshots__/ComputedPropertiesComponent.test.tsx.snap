@@ -29,7 +29,7 @@ exports[`ComputedPropertiesComponent renders 1`] = `
       about how to define computed properties and how to use them.
   </Text>
   <div
-    className="settingsV2IndexingPolicyEditor"
+    className="settingsV2Editor"
     tabIndex={0}
   />
 </Stack>

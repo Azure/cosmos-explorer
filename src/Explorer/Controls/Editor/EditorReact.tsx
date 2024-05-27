@@ -20,7 +20,10 @@ export interface EditorReactProps {
   lineDecorationsWidth?: monaco.editor.IEditorOptions["lineDecorationsWidth"];
   minimap?: monaco.editor.IEditorOptions["minimap"];
   scrollBeyondLastLine?: monaco.editor.IEditorOptions["scrollBeyondLastLine"];
+  fontSize?: monaco.editor.IEditorOptions["fontSize"];
   monacoContainerStyles?: React.CSSProperties;
+  className?: string;
+  spinnerClassName?: string;
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
@@ -75,9 +78,11 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
   public render(): JSX.Element {
     return (
       <React.Fragment>
-        {!this.state.showEditor && <Spinner size={SpinnerSize.large} className="spinner" />}
+        {!this.state.showEditor && (
+          <Spinner size={SpinnerSize.large} className={this.props.spinnerClassName || "spinner"} />
+        )}
         <div
-          className="jsonEditor"
+          className={this.props.className || "jsonEditor"}
           style={this.props.monacoContainerStyles}
           ref={(elt: HTMLElement) => this.setRef(elt)}
         />
@@ -119,7 +124,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       value: this.props.content,
       readOnly: this.props.isReadOnly,
       ariaLabel: this.props.ariaLabel,
-      fontSize: 12,
+      fontSize: this.props.fontSize || 12,
       automaticLayout: true,
       theme: this.props.theme,
       wordWrap: this.props.wordWrap || "off",

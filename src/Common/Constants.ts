@@ -88,6 +88,12 @@ export class CapabilityNames {
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
+  public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
+}
+
+export enum CapacityMode {
+  Provisioned = "Provisioned",
+  Serverless = "Serverless",
 }
 
 // flight names returned from the portal are always lowercase

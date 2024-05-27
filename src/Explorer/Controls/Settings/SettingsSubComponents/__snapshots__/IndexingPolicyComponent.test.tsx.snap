@@ -12,7 +12,7 @@ exports[`IndexingPolicyComponent renders 1`] = `
     refreshIndexTransformationProgress={[Function]}
   />
   <div
-    className="settingsV2IndexingPolicyEditor"
+    className="settingsV2Editor"
     tabIndex={0}
   />
 </Stack>
