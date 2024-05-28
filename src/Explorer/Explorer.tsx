@@ -139,9 +139,18 @@ export default class Explorer {
     document.addEventListener(
       "contextmenu",
       (e) => {
-        e.preventDefault();
+        console.log("contextmenu", {phase: e.eventPhase, event: e, defaultPrevented: e.defaultPrevented});
+        //e.preventDefault();
       },
-      false,
+      true, // We want to see the event twice. Once when going down the tree and once when bubbling up.
+    );
+    document.addEventListener(
+      "contextmenu",
+      (e) => {
+        console.log("contextmenu", {phase: e.eventPhase, event: e, defaultPrevented: e.defaultPrevented});
+        //e.preventDefault();
+      },
+      false, // We want to see the event twice. Once when going down the tree and once when bubbling up.
     );
 
     $(() => {
