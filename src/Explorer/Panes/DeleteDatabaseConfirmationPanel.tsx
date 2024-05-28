@@ -9,6 +9,7 @@ import { DefaultExperienceUtility } from "Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
+import { getDatabaseName } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTabs } from "hooks/useTabs";
@@ -37,11 +38,11 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
       setFormError(
-        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`,
+        `Input ${getDatabaseName()} name "${databaseInput}" does not match the selected ${getDatabaseName()} "${selectedDatabase.id()}"`,
       );
-      logConsoleError(`Error while deleting collection ${selectedDatabase && selectedDatabase.id()}`);
+      logConsoleError(`Error while deleting ${getDatabaseName()} ${selectedDatabase && selectedDatabase.id()}`);
       logConsoleError(
-        `Input database name "${databaseInput}" does not match the selected database "${selectedDatabase.id()}"`,
+        `Input ${getDatabaseName()} name "${databaseInput}" does not match the selected ${getDatabaseName()} "${selectedDatabase.id()}"`,
       );
       return;
     }
@@ -123,17 +124,18 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     message:
       "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
   };
-  const confirmDatabase = "Confirm by typing the database id";
-  const reasonInfo = "Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?";
+  const confirmDatabase = `Confirm by typing the ${getDatabaseName()} id`;
+  const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${getDatabaseName()}?`;
   return (
     <RightPaneForm {...props}>
       {!formError && <PanelInfoErrorComponent {...errorProps} />}
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
           <span className="mandatoryStar">* </span>
-          <Text variant="small">Confirm by typing the database id</Text>
+          <Text variant="small">Confirm by typing the ${getDatabaseName()} id</Text>
           <TextField
             id="confirmDatabaseId"
+            data-test="Input:confirmDatabaseId"
             autoFocus
             styles={{ fieldGroup: { width: 300 } }}
             onChange={(event, newInput?: string) => {
@@ -149,7 +151,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
               Help us improve Azure Cosmos DB!
             </Text>
             <Text variant="small" block>
-              What is the reason why you are deleting this database?
+              What is the reason why you are deleting this {getDatabaseName()}?
             </Text>
             <TextField
               id="deleteDatabaseFeedbackInput"

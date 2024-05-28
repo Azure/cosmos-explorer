@@ -70,7 +70,6 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         },
         key: `${btn.commandButtonLabel}${index}`,
         text: label,
-        "data-test": label,
         title: btn.tooltipText,
         name: label,
         disabled: btn.disabled,

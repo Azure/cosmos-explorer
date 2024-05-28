@@ -65,6 +65,10 @@ const initTestExplorer = async (): Promise<void> => {
       // This simulates the same action that happens in the portal
       console.dir(event.data);
       if (event.data?.kind === "ready") {
+        if (!iframe.contentWindow || !iframe.contentDocument) {
+          throw new Error("iframe is not loaded");
+        }
+
         iframe.contentWindow.postMessage(
           {
             signature: "pcIframe",
@@ -78,6 +82,7 @@ const initTestExplorer = async (): Promise<void> => {
   );
   iframe.id = "explorerMenu";
   iframe.name = "explorer";
+  iframe.setAttribute("data-test", "DataExplorerFrame");
   iframe.classList.add("iframe");
   iframe.title = "explorer";
   iframe.src = iframeSrc;
