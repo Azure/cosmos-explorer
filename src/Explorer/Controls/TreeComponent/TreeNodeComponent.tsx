@@ -144,7 +144,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     </MenuItem>
   ));
 
-  const treeItem = 
+  const treeItem = (
     <TreeItem
       value={treeNodeId}
       itemType={isBranch ? "branch" : "leaf"}
@@ -187,6 +187,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         </Tree>
       )}
     </TreeItem>
+  );
 
   if (contextMenuItems.length === 0) {
     return treeItem;
@@ -194,12 +195,12 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   // For accessibility, it's highly recommended that any 'actions' also be available in the context menu.
   // See https://react.fluentui.dev/?path=/docs/components-tree--default#actions
-  return <Menu positioning="below-end" openOnContext onOpenChange={onMenuOpenChange}>
-    <MenuTrigger disableButtonEnhancement>
-      {treeItem}
-    </MenuTrigger>
-    <MenuPopover>
-      <MenuList>{contextMenuItems}</MenuList>
-    </MenuPopover>
-  </Menu>
+  return (
+    <Menu positioning="below-end" openOnContext onOpenChange={onMenuOpenChange}>
+      <MenuTrigger disableButtonEnhancement>{treeItem}</MenuTrigger>
+      <MenuPopover>
+        <MenuList>{contextMenuItems}</MenuList>
+      </MenuPopover>
+    </Menu>
+  );
 };

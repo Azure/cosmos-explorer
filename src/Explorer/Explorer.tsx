@@ -136,23 +136,6 @@ export default class Explorer {
 
     this.isTabsContentExpanded = ko.observable(false);
 
-    document.addEventListener(
-      "contextmenu",
-      (e) => {
-        console.log("contextmenu", {phase: e.eventPhase, event: e, defaultPrevented: e.defaultPrevented});
-        //e.preventDefault();
-      },
-      true, // We want to see the event twice. Once when going down the tree and once when bubbling up.
-    );
-    document.addEventListener(
-      "contextmenu",
-      (e) => {
-        console.log("contextmenu", {phase: e.eventPhase, event: e, defaultPrevented: e.defaultPrevented});
-        //e.preventDefault();
-      },
-      false, // We want to see the event twice. Once when going down the tree and once when bubbling up.
-    );
-
     $(() => {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });

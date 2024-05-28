@@ -1535,75 +1535,104 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
 `;
 
 exports[`TreeNodeComponent renders a node with a menu 1`] = `
-<TreeItem
-  itemType="leaf"
+<Menu
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
-  value="root"
+  openOnContext={true}
+  positioning="below-end"
 >
-  <TreeItemLayout
-    actions={
-      <Menu
-        onOpenChange={[Function]}
-      >
-        <MenuTrigger
-          disableButtonEnhancement={true}
-        >
-          <Button
-            appearance="subtle"
-            aria-label="More options"
-            data-test="TreeNode/ContextMenuTrigger"
-            icon={<MoreHorizontal20Regular />}
+  <MenuTrigger
+    disableButtonEnhancement={true}
+  >
+    <TreeItem
+      itemType="leaf"
+      onOpenChange={[Function]}
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+      value="root"
+    >
+      <TreeItemLayout
+        actions={
+          <Menu
+            onOpenChange={[Function]}
+          >
+            <MenuTrigger
+              disableButtonEnhancement={true}
+            >
+              <Button
+                appearance="subtle"
+                aria-label="More options"
+                data-test="TreeNode/ContextMenuTrigger"
+                icon={<MoreHorizontal20Regular />}
+              />
+            </MenuTrigger>
+            <MenuPopover
+              data-test="TreeNode/ContextMenu:root"
+            >
+              <MenuList>
+                <MenuItem
+                  data-test="TreeNode/ContextMenuItem:enabledItem"
+                  onClick={[MockFunction enabledItemClick]}
+                >
+                  enabledItem
+                </MenuItem>
+                <MenuItem
+                  data-test="TreeNode/ContextMenuItem:disabledItem"
+                  disabled={true}
+                  onClick={[MockFunction disabledItemClick]}
+                >
+                  disabledItem
+                </MenuItem>
+              </MenuList>
+            </MenuPopover>
+          </Menu>
+        }
+        className="rootClass"
+        data-test="TreeNode:root"
+        iconBefore={
+          <img
+            alt=""
+            src="rootIcon"
+            style={
+              Object {
+                "height": 16,
+                "width": 16,
+              }
+            }
           />
-        </MenuTrigger>
-        <MenuPopover
-          data-test="TreeNode/ContextMenu:root"
-        >
-          <MenuList>
-            <MenuItem
-              data-test="TreeNode/ContextMenuItem:enabledItem"
-              onClick={[MockFunction enabledItemClick]}
-            >
-              enabledItem
-            </MenuItem>
-            <MenuItem
-              data-test="TreeNode/ContextMenuItem:disabledItem"
-              disabled={true}
-              onClick={[MockFunction disabledItemClick]}
-            >
-              disabledItem
-            </MenuItem>
-          </MenuList>
-        </MenuPopover>
-      </Menu>
-    }
-    className="rootClass"
-    data-test="TreeNode:root"
-    iconBefore={
-      <img
-        alt=""
-        src="rootIcon"
+        }
         style={
           Object {
-            "height": 16,
-            "width": 16,
+            "backgroundColor": undefined,
           }
         }
-      />
-    }
-    style={
-      Object {
-        "backgroundColor": undefined,
-      }
-    }
-  >
-    rootLabel
-  </TreeItemLayout>
-</TreeItem>
+      >
+        rootLabel
+      </TreeItemLayout>
+    </TreeItem>
+  </MenuTrigger>
+  <MenuPopover>
+    <MenuList>
+      <MenuItem
+        data-test="TreeNode/ContextMenuItem:enabledItem"
+        key="enabledItem"
+        onClick={[MockFunction enabledItemClick]}
+      >
+        enabledItem
+      </MenuItem>
+      <MenuItem
+        data-test="TreeNode/ContextMenuItem:disabledItem"
+        disabled={true}
+        key="disabledItem"
+        onClick={[MockFunction disabledItemClick]}
+      >
+        disabledItem
+      </MenuItem>
+    </MenuList>
+  </MenuPopover>
+</Menu>
 `;
 
 exports[`TreeNodeComponent renders a single node 1`] = `
