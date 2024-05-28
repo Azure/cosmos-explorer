@@ -41,21 +41,32 @@ export const defaultAccounts: Record<TestAccount, string> = {
 const resourceGroup = process.env.DE_TEST_RESOURCE_GROUP ?? "runners";
 const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 
+function tryGetStandardName(accountType: TestAccount) {
+  if (process.env.DE_TEST_ACCOUNT_PREFIX) {
+    const actualPrefix = process.env.DE_TEST_ACCOUNT_PREFIX.endsWith("-") ? process.env.DE_TEST_ACCOUNT_PREFIX : `${process.env.DE_TEST_ACCOUNT_PREFIX}-`;
+    return `${actualPrefix}${accountType.toLocaleLowerCase()}`;
+  }
+}
+
 export async function getTestExplorerUrl(accountType: TestAccount) {
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
   const accountName =
-    process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ?? defaultAccounts[accountType];
+    process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
+    tryGetStandardName(accountType) ??
+    defaultAccounts[accountType];
   return `https://localhost:1234/testExplorer.html?accountName=${accountName}&resourceGroup=${resourceGroup}&subscriptionId=${subscriptionId}&token=${token}`;
 }
 
 /** Helper class that provides locator methods for TreeNode elements, on top of a Locator */
 class TreeNode {
-  constructor(public element: Locator, public frame: Frame) {
+  constructor(public element: Locator, public frame: Frame, public id: string) {
   }
 
   async openContextMenu(): Promise<void> {
-    await this.element.getByTestId("Tree/TreeNode/ContextMenuButton").click();
+    const header = this.element.getByTestId(`Tree/TreeNode/Header:${this.id}`)
+    await header.hover();
+    await header.getByTestId("Tree/TreeNode/ContextMenuButton").click();
   }
 
   contextMenuItem(name: string): Locator {
@@ -77,7 +88,7 @@ export class DataExplorer {
   }
 
   treeNode(id: string): TreeNode {
-    return new TreeNode(this.frame.getByTestId(`Tree/TreeNode:${id}`), this.frame);
+    return new TreeNode(this.frame.getByTestId(`Tree/TreeNode:${id}`), this.frame, id);
   }
 
   async whilePanelOpen(title: string, action: (panel: Locator, okButton: Locator) => Promise<void>): Promise<void> {
@@ -89,7 +100,7 @@ export class DataExplorer {
   }
 
   static async open(page: Page, testAccount: TestAccount): Promise<DataExplorer> {
-    page.setDefaultTimeout(50000);
+    page.setDefaultTimeout(2 * 60 * 1000); // Set the timeout to 2 minutes
     const url = await getTestExplorerUrl(testAccount);
     await page.goto(url);
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();

@@ -175,9 +175,9 @@ export class LegacyTreeNodeComponent extends React.Component<
       >
         <div
           className={`treeNodeHeader ${this.state.isMenuShowing ? "showingMenu" : ""}`}
+          data-test={`Tree/TreeNode/Header:${node.label}`}
           style={headerStyle}
           tabIndex={node.children ? -1 : 0}
-          data-test={node.label}
         >
           {this.renderCollapseExpandIcon(node)}
           {node.iconSrc && <img className="nodeIcon" src={node.iconSrc} alt="" />}

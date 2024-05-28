@@ -132,7 +132,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
           <span className="mandatoryStar">* </span>
-          <Text variant="small">Confirm by typing the ${getDatabaseName()} id</Text>
+          <Text variant="small">Confirm by typing the {getDatabaseName()} id</Text>
           <TextField
             id="confirmDatabaseId"
             data-test="Input:confirmDatabaseId"

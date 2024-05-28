@@ -23,6 +23,11 @@ const initTestExplorer = async (): Promise<void> => {
   const databaseAccount = await get(subscriptionId, resourceGroup, accountName);
   const keys = await listKeys(subscriptionId, resourceGroup, accountName);
 
+  // Disable the quickstart carousel.
+  if (databaseAccount?.id) {
+    localStorage.setItem(databaseAccount.id, "true");
+  }
+
   const initTestExplorerContent = {
     inputs: {
       databaseAccount: databaseAccount,

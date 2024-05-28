@@ -120,7 +120,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
             <Text variant="small">Confirm by typing the {collectionName.toLowerCase()} id</Text>
             <TextField
               id="confirmCollectionId"
-              data-test="Input:confirmCollectionId"
               autoFocus
               value={inputCollectionName}
               styles={{ fieldGroup: { width: 300 } }}

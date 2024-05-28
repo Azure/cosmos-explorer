@@ -10,29 +10,33 @@ test("Cassandra keyspace and table CRUD", async ({ page }) => {
   const explorer = await DataExplorer.open(page, TestAccount.Cassandra);
 
   await explorer.commandBarButton("New Table").click();
-  await explorer.whilePanelOpen("New Table", async (panel, okButton) => {
-    await panel.getByLabel("Keyspace id").click();
-    await panel.getByLabel("Keyspace id").fill(keyspaceId);
-    await panel.getByLabel("addCollection-table Id Create table").click();
-    await panel.getByLabel("addCollection-table Id Create table").fill(tableId);
+  await explorer.whilePanelOpen("Add Table", async (panel, okButton) => {
+    await panel.getByPlaceholder('Type a new keyspace id').click();
+    await panel.getByPlaceholder('Type a new keyspace id').fill(keyspaceId);
+    await panel.getByPlaceholder('Enter table Id').click();
+    await panel.getByPlaceholder('Enter table Id').fill(tableId);
+    await panel.getByLabel('Table max RU/s').click();
+    await panel.getByLabel('Table max RU/s').fill("1000");
     await okButton.click();
   });
+
+  const keyspaceNode = explorer.treeNode(keyspaceId);
+  await keyspaceNode.element.click();
 
   const tableNode = explorer.treeNode(tableId);
   await tableNode.element.click();
   await tableNode.openContextMenu();
   await tableNode.contextMenuItem("Delete Table").click();
   await explorer.whilePanelOpen("Delete Table", async (panel, okButton) => {
-    await panel.getByTestId("Input:confirmCollectionId").fill(tableId);
+    await panel.getByRole("textbox", { name: "Confirm by typing the table id" }).fill(tableId);
     await okButton.click();
   });
   await expect(tableNode.element).not.toBeAttached();
 
-  const keyspaceNode = explorer.treeNode(keyspaceId);
   await keyspaceNode.openContextMenu();
   await keyspaceNode.contextMenuItem("Delete Keyspace").click();
   await explorer.whilePanelOpen("Delete Keyspace", async (panel, okButton) => {
-    await panel.getByTestId("Input:confirmDatabaseId").fill(keyspaceId);
+    await panel.getByRole("textbox", { name: "Confirm by typing the Keyspace id" }).fill(keyspaceId);
     await okButton.click();
   });
 
