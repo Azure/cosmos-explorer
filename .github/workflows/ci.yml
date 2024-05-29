@@ -104,79 +104,6 @@ jobs:
         run: az storage blob upload -c '$web' -f ./preview/config.json --account-name cosmosexplorerpreview --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --account-key="${PREVIEW_STORAGE_KEY}" --overwrite true
         env:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
-  endtoendemulator:
-    name: "End To End Emulator Tests"
-    # Temporarily disabled. This test needs to be rewritten in playwright
-    if: false
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - uses: southpolesteve/cosmos-emulator-github-action@v1
-      - name: End to End Tests
-        run: |
-          npm ci
-          npm start &
-          npm run wait-for-server
-          npx jest -c ./jest.config.e2e.js --detectOpenHandles test/sql/container.spec.ts
-        shell: bash
-        env:
-          DATA_EXPLORER_ENDPOINT: "https://localhost:1234/explorer.html?platform=Emulator"
-          PLATFORM: "Emulator"
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: screenshots
-          path: failed-*
-  endtoend:
-    name: "E2E"
-    runs-on: ubuntu-latest
-    env:
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    strategy:
-      fail-fast: false
-      matrix:
-        test-file:
-          - ./test/cassandra/container.spec.ts
-          - ./test/graph/container.spec.ts
-          - ./test/sql/container.spec.ts
-          - ./test/mongo/container.spec.ts
-          - ./test/mongo/container32.spec.ts
-          - ./test/selfServe/selfServeExample.spec.ts
-          - ./test/sql/resourceToken.spec.ts
-          - ./test/tables/container.spec.ts
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: "Az CLI login"
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-      - run: npm ci
-      - run: npm start &
-      - run: npm run wait-for-server
-      - name: ${{ matrix['test-file'] }}
-        run: |
-          # Run tests up to three times
-          for i in $(seq 1 3); do npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }} && s=0 && break || s=$? && sleep 1; done; (exit $s)
-        shell: bash
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: screenshots
-          path: screenshots/
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
@@ -226,3 +153,72 @@ jobs:
         name: packages
         with:
           path: "*.nupkg"
+
+  playwright-tests:
+    name: "Run Playwright Tests"
+    runs-on: ubuntu-latest
+    env:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8]
+        shardTotal: [8]
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npm start &
+      - run: npm run wait-for-server
+      - name: Run test shard ${{ matrix['shardIndex'] }} of ${{ matrix['shardTotal']}}
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      - name: Upload blob report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+            name: blob-report-${{ matrix.shardIndex }}
+            path: blob-report
+            retention-days: 1
+
+  merge-playwright-reports:
+    name: "Merge Playwright Reports"
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download blob reports from GitHub Actions Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: all-blob-reports
+        pattern: blob-report-*
+        merge-multiple: true
+
+    - name: Merge into HTML Report
+      run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report--attempt-${{ github.run_attempt }}
+        path: playwright-report
+        retention-days: 14
