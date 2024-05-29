@@ -1,6 +1,13 @@
 /**
  * Messaging types used with Data Explorer <-> Portal communication,
  * Hosted <-> Explorer communication
+ *
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * WARNING: !!!!!!! YOU CAN ONLY ADD NEW TYPES TO THE END OF THIS ENUM !!!!!!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *
+ * Enum are integers, so inserting or deleting a type will break the communication.
+ *
  */
 export enum MessageTypes {
   TelemetryInfo,
