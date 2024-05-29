@@ -41,3 +41,9 @@ Object.defineProperty(window, "localStorage", {
 require("jquery-ui-dist/jquery-ui");
 (<any>global).TextEncoder = TextEncoder;
 (<any>global).TextDecoder = TextDecoder;
+
+(<any>global).ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
