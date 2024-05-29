@@ -137,7 +137,13 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
     this.rootNode.innerHTML = "";
     const monaco = await loadMonaco();
-    createCallback(monaco?.editor?.create(this.rootNode, options));
+    try {
+      createCallback(monaco?.editor?.create(this.rootNode, options));
+    } catch (error) {
+      // This could happen if the parent node suddenly disappears during create()
+      console.error("Unable to create EditorReact", error);
+      return;
+    }
 
     if (this.rootNode.innerHTML) {
       this.setState({

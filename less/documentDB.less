@@ -2264,33 +2264,33 @@ a:link {
   width: 82px;
 }
 
-.tabdocuments .scrollable {
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-left: 5px;
-  padding-right: 5px;
-  width: 100%;
-}
+// .tabdocuments .scrollable {
+//   height: 100%;
+//   overflow-y: auto;
+//   overflow-x: hidden;
+//   padding-left: 5px;
+//   padding-right: 5px;
+//   width: 100%;
+// }
 
-.tabdocuments > .tabdocumentsGridElement {
-  width: 50%;
-}
+// .tabdocuments > .tabdocumentsGridElement {
+//   width: 50%;
+// }
 
-.tabdocuments > .evenlySpacedHeader {
-  width: 30%;
-}
+// .tabdocuments > .evenlySpacedHeader {
+//   width: 30%;
+// }
 
-.tabdocuments.scrollable:focus,
-.tabdocuments.scrollable:active {
-  outline: 1px dotted;
-}
+// .tabdocuments.scrollable:focus,
+// .tabdocuments.scrollable:active {
+//   outline: 1px dotted;
+// }
 
-.tabdocuments .scrollable table td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+// .tabdocuments .scrollable table td {
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
 
 .mongoDocumentEditor .monaco-editor.vs .redsquiggly {
   display: none !important;
@@ -2316,10 +2316,9 @@ td a:hover {
 }
 
 .loadMore {
+  display: block;
   width: 100%;
-  padding-left: 30%;
-  padding-top: 2px;
-  cursor: pointer;
+  text-align: center;
 }
 
 .loadMore > a:focus {
@@ -2558,10 +2557,12 @@ a:link {
 }
 
 .filterdivs {
-  padding-top: 15px;
-  height: 45px;
-  margin-bottom: 8px;
+  margin: 10px 0px;
   white-space: nowrap;
+  input {
+    line-height: 14px; // To correct vertical position of the down arrow of the input
+    outline: none; // Remove the dotted border on focus, because fluent has its own focus style (underlined)
+  }
 }
 
 .editFilterContainer {
@@ -2576,6 +2577,18 @@ a:link {
 .filterclose {
   padding: @SmallSpace 10px;
   cursor: pointer;
+}
+
+.documentsTab {
+  .documentsTable {
+    .documentsTableCell {
+      border-left: 1px solid @BaseMedium;
+      height: 100%;
+    }
+    .documentsTableHeader {
+      border-bottom: 1px solid @BaseMedium;
+    }
+  }
 }
 
 .querydropdown {
