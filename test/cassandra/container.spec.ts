@@ -1,30 +1,29 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
-import { generateUniqueName } from "../../test_old/utils/shared";
-import { DataExplorer, TestAccount } from '../fx';
+import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
 
 test("Cassandra keyspace and table CRUD", async ({ page }) => {
-  const keyspaceId = generateUniqueName("keyspace");
+  const keyspaceId = generateDatabaseNameWithTimestamp();
   const tableId = generateUniqueName("table");
 
   const explorer = await DataExplorer.open(page, TestAccount.Cassandra);
 
   await explorer.commandBarButton("New Table").click();
   await explorer.whilePanelOpen("Add Table", async (panel, okButton) => {
-    await panel.getByPlaceholder('Type a new keyspace id').click();
-    await panel.getByPlaceholder('Type a new keyspace id').fill(keyspaceId);
-    await panel.getByPlaceholder('Enter table Id').click();
-    await panel.getByPlaceholder('Enter table Id').fill(tableId);
-    await panel.getByLabel('Table max RU/s').click();
-    await panel.getByLabel('Table max RU/s').fill("1000");
+    await panel.getByPlaceholder("Type a new keyspace id").fill(keyspaceId);
+    await panel.getByPlaceholder("Enter table Id").fill(tableId);
+    await panel.getByLabel("Table max RU/s").fill("1000");
     await okButton.click();
   });
 
-  const keyspaceNode = explorer.treeNode(keyspaceId);
+  const keyspaceNode = explorer.treeNode(`DATA/${keyspaceId}`);
+  await expect(keyspaceNode.element).toBeAttached();
+
   await keyspaceNode.element.click();
 
-  const tableNode = explorer.treeNode(tableId);
-  await tableNode.element.click();
+  const tableNode = explorer.treeNode(`DATA/${keyspaceId}/${tableId}`);
+  await expect(tableNode.element).toBeAttached();
+
   await tableNode.openContextMenu();
   await tableNode.contextMenuItem("Delete Table").click();
   await explorer.whilePanelOpen("Delete Table", async (panel, okButton) => {

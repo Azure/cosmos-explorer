@@ -1,4 +1,4 @@
-// Deploys a Cassandra CosmosDB Account suitable for running the tests in the 'cassandra' suite.
+// Deploys a Mongo CosmosDB Account suitable for running the tests in the 'mongo' suite.
 
 targetScope = 'resourceGroup'
 
@@ -7,14 +7,14 @@ param ownerName string
 param location string
 param totalThroughputLimit int = 4000
 
-resource testAccountCassandra 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {
+resource testAccountMongo 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {
   name: accountName
   location: location
   tags: {
-    'DataExplorer:TestAccountType': 'Cassandra'
+    'DataExplorer:TestAccountType': 'Mongo'
     Owner: ownerName
   }
-  kind: 'GlobalDocumentDB'
+  kind: 'MongoDB'
   properties: {
     databaseAccountOfferType: 'Standard'
     locations: [
@@ -23,9 +23,12 @@ resource testAccountCassandra 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-
         failoverPriority: 0
       }
     ]
+    apiProperties: {
+      serverVersion: '6.0'
+    }
     capabilities: [
       {
-        name: 'EnableCassandra'
+        name: 'EnableMongo'
       }
     ]
     capacity: {

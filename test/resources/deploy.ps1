@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory=$false)][string]$Subscription,
     [Parameter(Mandatory=$false)][string]$Location,
     [Parameter(Mandatory=$false)][string]$ResourcePrefix,
-    [Parameter(Mandatory=$false)][string[]]$ResourceSets
+    [Parameter(Mandatory=$false)][string[]]$ResourceSets,
+    [Parameter(Mandatory=$false)][string]$OwnerName
 )
 
 if (-not (Get-Command bicep -ErrorAction SilentlyContinue)) {
@@ -12,6 +13,34 @@ if (-not (Get-Command bicep -ErrorAction SilentlyContinue)) {
 
 if (-not (Get-AzContext)) {
     throw "Please login to your Azure account using Connect-AzAccount before running this script."
+}
+
+$AccountId = (Get-AzContext).Account.Id
+$MicrosoftAlias = $null
+if($AccountId.EndsWith("microsoft.com")) {
+    $MicrosoftAlias = $AccountId.Split("@")[0]
+} else {
+    Write-Warning "This script is designed with Microsoft employees in mind. However, you're welcome to use it as well! Please note that some features may not work as expected."
+    $continue = Read-Host "Do you want to continue? (y/n)"
+    if ($continue -ne "y") {
+        throw "Deployment cancelled."
+    }
+}
+
+if(-not $ResourcePrefix) {
+    if(-not $MicrosoftAlias) {
+        throw "If you're not a Microsoft employee, you must specify a resource prefix using '-ResourcePrefix'. This can be any value, it's used as the prefix for the names of Azure resources to avoid conflicts."
+    } else {
+        $ResourcePrefix = $MicrosoftAlias + "-e2e-"
+    }
+}
+
+if(-not $OwnerName) {
+    if(-not $MicrosoftAlias) {
+        throw "If you're not a Microsoft employee, you must specify an owner name using '-OwnerName'. This can be any value, it's used to apply the 'Owner' tag to Azure resources for easier identification."
+    } else {
+        $OwnerName = $MicrosoftAlias
+    }
 }
 
 if (-not $Subscription) {
@@ -54,10 +83,6 @@ if (-not $ResourceSets) {
     $ResourceSets = @(Get-ChildItem -Path $PSScriptRoot -Filter "*.bicep" | Select-Object -ExpandProperty BaseName)
 }
 
-if (-not $ResourcePrefix) {
-    $ResourcePrefix = $env:USERNAME + "-e2e-"
-}
-
 Write-Host "Deploying test resource sets: $ResourceSets"
 Write-Host "  in $($AzLocation.DisplayName)"
 Write-Host "  to resource group $ResourceGroup"
@@ -77,6 +102,6 @@ $ResourceSets | ForEach-Object {
     $accountName = $ResourcePrefix + $_
 
     Write-Host "Deploying resource set $_ with account name $accountName ..."
-    New-AzResourceGroupDeployment -ResourceGroupName $AzResourceGroup.ResourceGroupName -TemplateFile $bicepFile -accountName $accountName -location $AzLocation.Location
+    New-AzResourceGroupDeployment -ResourceGroupName $AzResourceGroup.ResourceGroupName -TemplateFile $bicepFile -accountName $accountName -location $AzLocation.Location -ownerName $OwnerName
     Write-Host "Deployed!"
 }

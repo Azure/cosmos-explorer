@@ -1,4 +1,4 @@
-// Deploys a Cassandra CosmosDB Account suitable for running the tests in the 'cassandra' suite.
+// Deploys a Gremlin CosmosDB Account suitable for running the tests in the 'gremlin' suite.
 
 targetScope = 'resourceGroup'
 
@@ -7,11 +7,11 @@ param ownerName string
 param location string
 param totalThroughputLimit int = 4000
 
-resource testAccountCassandra 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {
+resource testAccountGremlin 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {
   name: accountName
   location: location
   tags: {
-    'DataExplorer:TestAccountType': 'Cassandra'
+    'DataExplorer:TestAccountType': 'Gremlin'
     Owner: ownerName
   }
   kind: 'GlobalDocumentDB'
@@ -25,7 +25,7 @@ resource testAccountCassandra 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-
     ]
     capabilities: [
       {
-        name: 'EnableCassandra'
+        name: 'EnableGremlin'
       }
     ]
     capacity: {

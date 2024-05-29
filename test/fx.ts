@@ -7,7 +7,8 @@ export function generateUniqueName(baseName = "", length = 4): string {
 }
 
 export function generateDatabaseNameWithTimestamp(baseName = "db", length = 1): string {
-  return `${baseName}${crypto.randomBytes(length).toString("hex")}-${Date.now()}`;
+  // We use '_' as the separator because it's supported across all the API types.
+  return `${baseName}${crypto.randomBytes(length).toString("hex")}_${Date.now()}`;
 }
 
 export async function getAzureCLICredentials(): Promise<AzureCliCredentials> {
@@ -38,8 +39,8 @@ export const defaultAccounts: Record<TestAccount, string> = {
   [TestAccount.SQL]: "portal-sql-runner-west-us",
 };
 
-const resourceGroup = process.env.DE_TEST_RESOURCE_GROUP ?? "runners";
-const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
+export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "runners";
+export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 
 function tryGetStandardName(accountType: TestAccount) {
   if (process.env.DE_TEST_ACCOUNT_PREFIX) {
@@ -48,14 +49,21 @@ function tryGetStandardName(accountType: TestAccount) {
   }
 }
 
-export async function getTestExplorerUrl(accountType: TestAccount) {
-  // We can't retrieve AZ CLI credentials from the browser so we get them here.
-  const token = await getAzureCLICredentialsToken();
-  const accountName =
-    process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
+export function getAccountName(accountType: TestAccount) {
+  return process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
     tryGetStandardName(accountType) ??
     defaultAccounts[accountType];
-  return `https://localhost:1234/testExplorer.html?accountName=${accountName}&resourceGroup=${resourceGroup}&subscriptionId=${subscriptionId}&token=${token}`;
+}
+
+export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: string): Promise<string> {
+  // We can't retrieve AZ CLI credentials from the browser so we get them here.
+  const token = await getAzureCLICredentialsToken();
+  const accountName = getAccountName(accountType);
+  const baseUrl = `https://localhost:1234/testExplorer.html?accountName=${accountName}&resourceGroup=${resourceGroupName}&subscriptionId=${subscriptionId}&token=${token}`;
+  if (iframeSrc) {
+    return `${baseUrl}&iframeSrc=${iframeSrc}`;
+  }
+  return baseUrl;
 }
 
 /** Helper class that provides locator methods for TreeNode elements, on top of a Locator */
@@ -64,13 +72,11 @@ class TreeNode {
   }
 
   async openContextMenu(): Promise<void> {
-    const header = this.element.getByTestId(`Tree/TreeNode/Header:${this.id}`)
-    await header.hover();
-    await header.getByTestId("Tree/TreeNode/ContextMenuButton").click();
+    await this.element.click({ button: "right" });
   }
 
   contextMenuItem(name: string): Locator {
-    return this.frame.getByTestId(`Tree/TreeNode/ContextMenuItem:${name}`);
+    return this.frame.getByTestId(`TreeNode/ContextMenuItem:${name}`);
   }
 }
 
@@ -88,7 +94,7 @@ export class DataExplorer {
   }
 
   treeNode(id: string): TreeNode {
-    return new TreeNode(this.frame.getByTestId(`Tree/TreeNode:${id}`), this.frame, id);
+    return new TreeNode(this.frame.getByTestId(`TreeNode:${id}`), this.frame, id);
   }
 
   async whilePanelOpen(title: string, action: (panel: Locator, okButton: Locator) => Promise<void>): Promise<void> {
@@ -99,10 +105,8 @@ export class DataExplorer {
     await panel.waitFor({ state: "detached" });
   }
 
-  static async open(page: Page, testAccount: TestAccount): Promise<DataExplorer> {
+  static async waitForExplorer(page: Page) {
     page.setDefaultTimeout(2 * 60 * 1000); // Set the timeout to 2 minutes
-    const url = await getTestExplorerUrl(testAccount);
-    await page.goto(url);
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
     if (iframeElement === null) {
       throw new Error("Explorer iframe not found");
@@ -117,5 +121,11 @@ export class DataExplorer {
     await explorerFrame?.getByTestId("DataExplorerRoot").waitFor();
 
     return new DataExplorer(explorerFrame);
+  }
+
+  static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<DataExplorer> {
+    const url = await getTestExplorerUrl(testAccount, iframeSrc);
+    await page.goto(url);
+    return DataExplorer.waitForExplorer(page);
   }
 }
