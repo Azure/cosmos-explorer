@@ -4,6 +4,9 @@ param(
     [Parameter(Mandatory=$false)][string]$ResourcePrefix
 )
 
+Import-Module "Az.Accounts" -Scope Local
+Import-Module "Az.Resources" -Scope Local
+
 if (-not $Subscription) {
     # Show the user the currently-selected subscription and ask if that's what they want to use
     $currentSubscription = Get-AzContext | Select-Object -ExpandProperty Subscription
@@ -15,7 +18,7 @@ if (-not $Subscription) {
     $Subscription = $currentSubscription.Id
 }
 
-$AzSubscription = (Get-AzSubscription -SubscriptionId $Subscription -ErrorAction SilentlyContinue | Select -First 1) ?? (Get-AzSubscription -SubscriptionName $Subscription -ErrorAction SilentlyContinue | Select -First 1)
+$AzSubscription = (Get-AzSubscription -SubscriptionId $Subscription -ErrorAction SilentlyContinue | Select-Object -First 1) ?? (Get-AzSubscription -SubscriptionName $Subscription -ErrorAction SilentlyContinue | Select-Object -First 1)
 if (-not $AzSubscription) {
     throw "The subscription '$Subscription' could not be found."
 }
@@ -23,7 +26,13 @@ if (-not $AzSubscription) {
 Set-AzContext $AzSubscription.Id
 
 if (-not $ResourceGroup) {
-    $ResourceGroup = Read-Host "Specify the name of the resource group to find the resources in."
+    # Check for the default resource group name
+    $DefaultResourceGroupName = $env:USERNAME + "-e2e-testing"
+    if (Get-AzResourceGroup -Name $DefaultResourceGroupName -ErrorAction SilentlyContinue) {
+        $ResourceGroup = $DefaultResourceGroupName
+    } else {
+        $ResourceGroup = Read-Host "Specify the name of the resource group to find the resources in."
+    }
 }
 
 $AzResourceGroup = Get-AzResourceGroup -Name $ResourceGroup -ErrorAction SilentlyContinue
@@ -33,11 +42,14 @@ if (-not $AzResourceGroup) {
 
 if (-not $ResourcePrefix) {
     $defaultResourcePrefix = $env:USERNAME + "-e2e-"
-    $useDefault = Read-Host "Do your resources use the default resource prefix? ($defaultResourcePrefix) (y/n)"
-    if ($useDefault -eq "n") {
-        $ResourcePrefix = Read-Host "Specify the resource prefix used in the resource names."
-    } else {
+    
+    # Check for one of the default resources
+    $defaultResource = Get-AzResource -ResourceGroupName $AzResourceGroup.ResourceGroupName -ResourceName "$($defaultResourcePrefix)cassandra" -ResourceType "Microsoft.DocumentDB/databaseAccounts" -ErrorAction SilentlyContinue
+    if ($defaultResource) {
+        Write-Host "Found a resource with the default resource prefix ($defaultResourcePrefix). Configuring that prefix for E2E testing."
         $ResourcePrefix = $defaultResourcePrefix
+    } else {
+        $ResourcePrefix = Read-Host "Specify the resource prefix used in the resource names."
     }
 }
 
