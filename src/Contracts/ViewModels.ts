@@ -324,9 +324,9 @@ export enum DocumentExplorerState {
   noDocumentSelected,
   newDocumentValid,
   newDocumentInvalid,
-  exisitingDocumentNoEdits,
-  exisitingDocumentDirtyValid,
-  exisitingDocumentDirtyInvalid,
+  existingDocumentNoEdits,
+  existingDocumentDirtyValid,
+  existingDocumentDirtyInvalid,
 }
 
 export enum IndexingPolicyEditorState {
@@ -339,9 +339,9 @@ export enum IndexingPolicyEditorState {
 export enum ScriptEditorState {
   newInvalid,
   newValid,
-  exisitingNoEdits,
-  exisitingDirtyValid,
-  exisitingDirtyInvalid,
+  existingNoEdits,
+  existingDirtyValid,
+  existingDirtyInvalid,
 }
 
 export enum CollectionTabKind {

@@ -404,7 +404,7 @@ export default class StoredProcedureTabComponent extends React.Component<
           this.node = this.collection.createStoredProcedureNode(createdResource);
           this.props.scriptTabBaseInstance.node = this.node;
           useTabs.getState().updateTab(this.props.scriptTabBaseInstance);
-          this.props.scriptTabBaseInstance.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
+          this.props.scriptTabBaseInstance.editorState(ViewModels.ScriptEditorState.existingNoEdits);
 
           this.setState({
             executeButton: {
