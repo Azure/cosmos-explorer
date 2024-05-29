@@ -1,0 +1,1927 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TreeNodeComponent does not render children if the node is loading 1`] = `
+<TreeItem
+  itemType="branch"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent fully renders a tree 1`] = `
+<TreeNodeComponent
+  node={
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "className": "grandchild1Class",
+              "iconSrc": "grandchild1Icon.svg",
+              "id": "grandchild1",
+              "isSelected": [Function],
+              "label": "grandchild1Label",
+              "onClick": [MockFunction grandchild1Click],
+            },
+            Object {
+              "className": "grandchild2Class",
+              "iconSrc": "grandchild2Icon",
+              "id": "grandchild2",
+              "label": "grandchild2Label",
+              "onClick": [MockFunction grandchild2Click],
+            },
+          ],
+          "className": "child1Class",
+          "iconSrc": "child1Icon",
+          "id": "child1",
+          "label": "child1Label",
+          "onClick": [MockFunction child1Click],
+        },
+        Object {
+          "children": Array [
+            Object {
+              "className": "grandchild3NotRenderedClass",
+              "iconSrc": "grandchild3NotRenderedIcon",
+              "id": "grandchild3NotRendered",
+              "label": "grandchild3NotRenderedLabel",
+              "onClick": [MockFunction grandchild3NotRenderedClick],
+            },
+          ],
+          "className": "child2LoadingClass",
+          "iconSrc": "child2LoadingIcon",
+          "id": "child2Loading",
+          "isLoading": true,
+          "label": "child2LoadingLabel",
+          "onClick": [MockFunction child2LoadingClick],
+        },
+        Object {
+          "className": "child3ExpandingClass",
+          "iconSrc": "child3ExpandingIcon",
+          "id": "child3Expanding",
+          "label": "child3ExpandingLabel",
+          "onClick": [MockFunction child3ExpandingClick] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          },
+          "onExpanded": [Function],
+        },
+      ],
+      "className": "rootClass",
+      "iconSrc": "rootIcon",
+      "id": "root",
+      "isSelected": [Function],
+      "label": "rootLabel",
+      "onClick": [MockFunction rootClick],
+    }
+  }
+  treeNodeId="root"
+>
+  <TreeItem
+    itemType="branch"
+    onOpenChange={[Function]}
+    style={
+      Object {
+        "height": "100%",
+      }
+    }
+    value="root"
+  >
+    <div
+      aria-expanded={false}
+      aria-level={0}
+      aria-selected="false"
+      className="fui-TreeItem r1hiwysc"
+      data-fui-tree-item-value="root"
+      onChange={[Function]}
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="treeitem"
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+      tabIndex={-1}
+    >
+      <ContextSelector.Provider
+        value={
+          Object {
+            "actionsRef": Object {
+              "current": null,
+            },
+            "checked": false,
+            "expandIconRef": Object {
+              "current": <div
+                aria-hidden="true"
+                class="fui-TreeItemLayout__expandIcon rogdio4"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                  fill="currentColor"
+                  height="12"
+                  style="transform: rotate(0deg);"
+                  viewBox="0 0 12 12"
+                  width="12"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>,
+            },
+            "isActionsVisible": false,
+            "isAsideVisible": false,
+            "itemType": "branch",
+            "layoutRef": Object {
+              "current": <div
+                class="fui-TreeItemLayout rcu2h5o rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                data-test="TreeNode:root"
+              >
+                <div
+                  aria-hidden="true"
+                  class="fui-TreeItemLayout__expandIcon rogdio4"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="12"
+                    style="transform: rotate(0deg);"
+                    viewBox="0 0 12 12"
+                    width="12"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <div
+                  aria-hidden="true"
+                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                >
+                  <img
+                    alt=""
+                    src="rootIcon"
+                    style="width: 16px; height: 16px;"
+                  />
+                </div>
+                <div
+                  class="fui-TreeItemLayout__main rfjd92f"
+                >
+                  rootLabel
+                </div>
+              </div>,
+            },
+            "open": false,
+            "selectionRef": Object {
+              "current": null,
+            },
+            "subtreeRef": Object {
+              "current": null,
+            },
+            "treeItemRef": Object {
+              "current": <div
+                aria-expanded="false"
+                aria-level="0"
+                aria-selected="false"
+                class="fui-TreeItem r1hiwysc"
+                data-fui-tree-item-value="root"
+                role="treeitem"
+                style="height: 100%;"
+                tabindex="-1"
+              >
+                <div
+                  class="fui-TreeItemLayout rcu2h5o rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                  data-test="TreeNode:root"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="fui-TreeItemLayout__expandIcon rogdio4"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                      fill="currentColor"
+                      height="12"
+                      style="transform: rotate(0deg);"
+                      viewBox="0 0 12 12"
+                      width="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                  >
+                    <img
+                      alt=""
+                      src="rootIcon"
+                      style="width: 16px; height: 16px;"
+                    />
+                  </div>
+                  <div
+                    class="fui-TreeItemLayout__main rfjd92f"
+                  >
+                    rootLabel
+                  </div>
+                </div>
+                <div
+                  class="fui-Tree rnv2ez3"
+                  role="tree"
+                >
+                  <div
+                    aria-expanded="false"
+                    aria-level="1"
+                    aria-selected="false"
+                    class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                    data-fui-tree-item-value="root/child1Label"
+                    role="treeitem"
+                    style="height: 100%;"
+                    tabindex="0"
+                  >
+                    <div
+                      class="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                      data-test="TreeNode:root/child1Label"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__expandIcon rogdio4"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                          fill="currentColor"
+                          height="12"
+                          style="transform: rotate(0deg);"
+                          viewBox="0 0 12 12"
+                          width="12"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                      >
+                        <img
+                          alt=""
+                          src="child1Icon"
+                          style="width: 16px; height: 16px;"
+                        />
+                      </div>
+                      <div
+                        class="fui-TreeItemLayout__main rfjd92f"
+                      >
+                        child1Label
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    aria-expanded="false"
+                    aria-level="1"
+                    aria-selected="false"
+                    class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                    data-fui-tree-item-value="root/child2LoadingLabel"
+                    role="treeitem"
+                    style="height: 100%;"
+                    tabindex="-1"
+                  >
+                    <div
+                      class="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                      data-test="TreeNode:root/child2LoadingLabel"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__expandIcon rogdio4"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                          fill="currentColor"
+                          height="12"
+                          style="transform: rotate(0deg);"
+                          viewBox="0 0 12 12"
+                          width="12"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                      >
+                        <img
+                          alt=""
+                          src="child2LoadingIcon"
+                          style="width: 16px; height: 16px;"
+                        />
+                      </div>
+                      <div
+                        class="fui-TreeItemLayout__main rfjd92f"
+                      >
+                        child2LoadingLabel
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    aria-level="1"
+                    aria-selected="false"
+                    class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                    data-fui-tree-item-value="root/child3ExpandingLabel"
+                    role="treeitem"
+                    style="height: 100%;"
+                    tabindex="-1"
+                  >
+                    <div
+                      class="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
+                      data-test="TreeNode:root/child3ExpandingLabel"
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__expandIcon rogdio4"
+                      >
+                        <div
+                          class="fui-Spinner ___p104zz0_oywd6f0 f22iagw f122n59 f4d9j23 fez10in f4px1ci fn67r4l f1063pyq"
+                          role="progressbar"
+                        >
+                          <span
+                            class="fui-Spinner__spinner ___rymi200_1dtscmh f1or16p5 f1grzc83 f19shzzi f5tbecn fn4mtlg f1y80fxs f1r2crtq f1wsi8sr f1bkm2qd f1urqz7h f1da2vov f11rfva0 f1exc66 f1x2gjcb f1vjiaua fv1u54w f1oebb0s f11ditju f1m9nikz fq8a5sv f1b4lwqj f1najlst fjxod4 fu3xdw0 f1ttdh6v f1eseayc folzdkc fhlfkde f13qeqtg flglbw1"
+                          >
+                            <svg
+                              class="fui-Spinner__Progressbar"
+                            >
+                              <circle
+                                class="fui-Spinner__Track"
+                              />
+                              <circle
+                                class="fui-Spinner__Tail"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                      >
+                        <img
+                          alt=""
+                          src="child3ExpandingIcon"
+                          style="width: 16px; height: 16px;"
+                        />
+                      </div>
+                      <div
+                        class="fui-TreeItemLayout__main rfjd92f"
+                      >
+                        child3ExpandingLabel
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>,
+            },
+            "value": "root",
+          }
+        }
+      >
+        <TreeItemLayout
+          actions={false}
+          className="rootClass"
+          data-test="TreeNode:root"
+          iconBefore={
+            <img
+              alt=""
+              src="rootIcon"
+              style={
+                Object {
+                  "height": 16,
+                  "width": 16,
+                }
+              }
+            />
+          }
+          style={
+            Object {
+              "backgroundColor": undefined,
+            }
+          }
+        >
+          <div
+            className="fui-TreeItemLayout rcu2h5o rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+            data-test="TreeNode:root"
+            style={
+              Object {
+                "backgroundColor": undefined,
+              }
+            }
+          >
+            <div
+              aria-hidden={true}
+              className="fui-TreeItemLayout__expandIcon rogdio4"
+            >
+              <TreeItemChevron>
+                <ChevronRight12Regular
+                  style={
+                    Object {
+                      "transform": "rotate(0deg)",
+                    }
+                  }
+                >
+                  <svg
+                    aria-hidden={true}
+                    className="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    fill="currentColor"
+                    height="12"
+                    style={
+                      Object {
+                        "transform": "rotate(0deg)",
+                      }
+                    }
+                    viewBox="0 0 12 12"
+                    width="12"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </ChevronRight12Regular>
+              </TreeItemChevron>
+            </div>
+            <div
+              aria-hidden={true}
+              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+            >
+              <img
+                alt=""
+                src="rootIcon"
+                style={
+                  Object {
+                    "height": 16,
+                    "width": 16,
+                  }
+                }
+              />
+            </div>
+            <div
+              className="fui-TreeItemLayout__main rfjd92f"
+            >
+              rootLabel
+            </div>
+          </div>
+        </TreeItemLayout>
+        <Tree
+          style={
+            Object {
+              "overflow": undefined,
+            }
+          }
+        >
+          <TreeProvider
+            value={
+              Object {
+                "appearance": "subtle",
+                "checkedItems": Object {
+                  "clear": [Function],
+                  "dangerouslyGetInternalMap_unstable": [Function],
+                  "delete": [Function],
+                  "get": [Function],
+                  "has": [Function],
+                  "set": [Function],
+                  "size": 0,
+                  Symbol(Symbol.iterator): [Function],
+                },
+                "contextType": "root",
+                "level": 1,
+                "openItems": Object {
+                  "add": [Function],
+                  "clear": [Function],
+                  "dangerouslyGetInternalSet_unstable": [Function],
+                  "delete": [Function],
+                  "has": [Function],
+                  "size": 0,
+                  Symbol(Symbol.iterator): [Function],
+                },
+                "requestTreeResponse": [Function],
+                "selectionMode": "none",
+                "size": "medium",
+                "treeType": "nested",
+              }
+            }
+          >
+            <ContextSelector.Provider
+              value={
+                Object {
+                  "appearance": "subtle",
+                  "checkedItems": Object {
+                    "clear": [Function],
+                    "dangerouslyGetInternalMap_unstable": [Function],
+                    "delete": [Function],
+                    "get": [Function],
+                    "has": [Function],
+                    "set": [Function],
+                    "size": 0,
+                    Symbol(Symbol.iterator): [Function],
+                  },
+                  "contextType": "root",
+                  "level": 1,
+                  "openItems": Object {
+                    "add": [Function],
+                    "clear": [Function],
+                    "dangerouslyGetInternalSet_unstable": [Function],
+                    "delete": [Function],
+                    "has": [Function],
+                    "size": 0,
+                    Symbol(Symbol.iterator): [Function],
+                  },
+                  "requestTreeResponse": [Function],
+                  "selectionMode": "none",
+                  "size": "medium",
+                  "treeType": "nested",
+                }
+              }
+            >
+              <div
+                className="fui-Tree rnv2ez3"
+                role="tree"
+                style={
+                  Object {
+                    "overflow": undefined,
+                  }
+                }
+              >
+                <TreeNodeComponent
+                  key="child1Label"
+                  node={
+                    Object {
+                      "children": Array [
+                        Object {
+                          "className": "grandchild1Class",
+                          "iconSrc": "grandchild1Icon.svg",
+                          "id": "grandchild1",
+                          "isSelected": [Function],
+                          "label": "grandchild1Label",
+                          "onClick": [MockFunction grandchild1Click],
+                        },
+                        Object {
+                          "className": "grandchild2Class",
+                          "iconSrc": "grandchild2Icon",
+                          "id": "grandchild2",
+                          "label": "grandchild2Label",
+                          "onClick": [MockFunction grandchild2Click],
+                        },
+                      ],
+                      "className": "child1Class",
+                      "iconSrc": "child1Icon",
+                      "id": "child1",
+                      "label": "child1Label",
+                      "onClick": [MockFunction child1Click],
+                    }
+                  }
+                  treeNodeId="root/child1Label"
+                >
+                  <TreeItem
+                    itemType="branch"
+                    onOpenChange={[Function]}
+                    style={
+                      Object {
+                        "height": "100%",
+                      }
+                    }
+                    value="root/child1Label"
+                  >
+                    <div
+                      aria-expanded={false}
+                      aria-level={1}
+                      aria-selected="false"
+                      className="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                      data-fui-tree-item-value="root/child1Label"
+                      onChange={[Function]}
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="treeitem"
+                      style={
+                        Object {
+                          "height": "100%",
+                        }
+                      }
+                      tabIndex={-1}
+                    >
+                      <ContextSelector.Provider
+                        value={
+                          Object {
+                            "actionsRef": Object {
+                              "current": null,
+                            },
+                            "checked": false,
+                            "expandIconRef": Object {
+                              "current": <div
+                                aria-hidden="true"
+                                class="fui-TreeItemLayout__expandIcon rogdio4"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                  fill="currentColor"
+                                  height="12"
+                                  style="transform: rotate(0deg);"
+                                  viewBox="0 0 12 12"
+                                  width="12"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                    fill="currentColor"
+                                  />
+                                </svg>
+                              </div>,
+                            },
+                            "isActionsVisible": false,
+                            "isAsideVisible": false,
+                            "itemType": "branch",
+                            "layoutRef": Object {
+                              "current": <div
+                                class="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                data-test="TreeNode:root/child1Label"
+                              >
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__expandIcon rogdio4"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                    fill="currentColor"
+                                    height="12"
+                                    style="transform: rotate(0deg);"
+                                    viewBox="0 0 12 12"
+                                    width="12"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                      fill="currentColor"
+                                    />
+                                  </svg>
+                                </div>
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                >
+                                  <img
+                                    alt=""
+                                    src="child1Icon"
+                                    style="width: 16px; height: 16px;"
+                                  />
+                                </div>
+                                <div
+                                  class="fui-TreeItemLayout__main rfjd92f"
+                                >
+                                  child1Label
+                                </div>
+                              </div>,
+                            },
+                            "open": false,
+                            "selectionRef": Object {
+                              "current": null,
+                            },
+                            "subtreeRef": Object {
+                              "current": null,
+                            },
+                            "treeItemRef": Object {
+                              "current": <div
+                                aria-expanded="false"
+                                aria-level="1"
+                                aria-selected="false"
+                                class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                                data-fui-tree-item-value="root/child1Label"
+                                role="treeitem"
+                                style="height: 100%;"
+                                tabindex="0"
+                              >
+                                <div
+                                  class="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                  data-test="TreeNode:root/child1Label"
+                                >
+                                  <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__expandIcon rogdio4"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                      fill="currentColor"
+                                      height="12"
+                                      style="transform: rotate(0deg);"
+                                      viewBox="0 0 12 12"
+                                      width="12"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                        fill="currentColor"
+                                      />
+                                    </svg>
+                                  </div>
+                                  <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                  >
+                                    <img
+                                      alt=""
+                                      src="child1Icon"
+                                      style="width: 16px; height: 16px;"
+                                    />
+                                  </div>
+                                  <div
+                                    class="fui-TreeItemLayout__main rfjd92f"
+                                  >
+                                    child1Label
+                                  </div>
+                                </div>
+                              </div>,
+                            },
+                            "value": "root/child1Label",
+                          }
+                        }
+                      >
+                        <TreeItemLayout
+                          actions={false}
+                          className="child1Class"
+                          data-test="TreeNode:root/child1Label"
+                          iconBefore={
+                            <img
+                              alt=""
+                              src="child1Icon"
+                              style={
+                                Object {
+                                  "height": 16,
+                                  "width": 16,
+                                }
+                              }
+                            />
+                          }
+                          style={
+                            Object {
+                              "backgroundColor": undefined,
+                            }
+                          }
+                        >
+                          <div
+                            className="fui-TreeItemLayout rcu2h5o child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                            data-test="TreeNode:root/child1Label"
+                            style={
+                              Object {
+                                "backgroundColor": undefined,
+                              }
+                            }
+                          >
+                            <div
+                              aria-hidden={true}
+                              className="fui-TreeItemLayout__expandIcon rogdio4"
+                            >
+                              <TreeItemChevron>
+                                <ChevronRight12Regular
+                                  style={
+                                    Object {
+                                      "transform": "rotate(0deg)",
+                                    }
+                                  }
+                                >
+                                  <svg
+                                    aria-hidden={true}
+                                    className="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                    fill="currentColor"
+                                    height="12"
+                                    style={
+                                      Object {
+                                        "transform": "rotate(0deg)",
+                                      }
+                                    }
+                                    viewBox="0 0 12 12"
+                                    width="12"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                      fill="currentColor"
+                                    />
+                                  </svg>
+                                </ChevronRight12Regular>
+                              </TreeItemChevron>
+                            </div>
+                            <div
+                              aria-hidden={true}
+                              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                            >
+                              <img
+                                alt=""
+                                src="child1Icon"
+                                style={
+                                  Object {
+                                    "height": 16,
+                                    "width": 16,
+                                  }
+                                }
+                              />
+                            </div>
+                            <div
+                              className="fui-TreeItemLayout__main rfjd92f"
+                            >
+                              child1Label
+                            </div>
+                          </div>
+                        </TreeItemLayout>
+                        <Tree
+                          style={
+                            Object {
+                              "overflow": undefined,
+                            }
+                          }
+                        >
+                          <TreeProvider
+                            value={
+                              Object {
+                                "contextType": "subtree",
+                                "level": 2,
+                              }
+                            }
+                          />
+                        </Tree>
+                      </ContextSelector.Provider>
+                    </div>
+                  </TreeItem>
+                </TreeNodeComponent>
+                <TreeNodeComponent
+                  key="child2LoadingLabel"
+                  node={
+                    Object {
+                      "children": Array [
+                        Object {
+                          "className": "grandchild3NotRenderedClass",
+                          "iconSrc": "grandchild3NotRenderedIcon",
+                          "id": "grandchild3NotRendered",
+                          "label": "grandchild3NotRenderedLabel",
+                          "onClick": [MockFunction grandchild3NotRenderedClick],
+                        },
+                      ],
+                      "className": "child2LoadingClass",
+                      "iconSrc": "child2LoadingIcon",
+                      "id": "child2Loading",
+                      "isLoading": true,
+                      "label": "child2LoadingLabel",
+                      "onClick": [MockFunction child2LoadingClick],
+                    }
+                  }
+                  treeNodeId="root/child2LoadingLabel"
+                >
+                  <TreeItem
+                    itemType="branch"
+                    onOpenChange={[Function]}
+                    style={
+                      Object {
+                        "height": "100%",
+                      }
+                    }
+                    value="root/child2LoadingLabel"
+                  >
+                    <div
+                      aria-expanded={false}
+                      aria-level={1}
+                      aria-selected="false"
+                      className="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                      data-fui-tree-item-value="root/child2LoadingLabel"
+                      onChange={[Function]}
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="treeitem"
+                      style={
+                        Object {
+                          "height": "100%",
+                        }
+                      }
+                      tabIndex={-1}
+                    >
+                      <ContextSelector.Provider
+                        value={
+                          Object {
+                            "actionsRef": Object {
+                              "current": null,
+                            },
+                            "checked": false,
+                            "expandIconRef": Object {
+                              "current": <div
+                                aria-hidden="true"
+                                class="fui-TreeItemLayout__expandIcon rogdio4"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                  fill="currentColor"
+                                  height="12"
+                                  style="transform: rotate(0deg);"
+                                  viewBox="0 0 12 12"
+                                  width="12"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                    fill="currentColor"
+                                  />
+                                </svg>
+                              </div>,
+                            },
+                            "isActionsVisible": false,
+                            "isAsideVisible": false,
+                            "itemType": "branch",
+                            "layoutRef": Object {
+                              "current": <div
+                                class="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                data-test="TreeNode:root/child2LoadingLabel"
+                              >
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__expandIcon rogdio4"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                    fill="currentColor"
+                                    height="12"
+                                    style="transform: rotate(0deg);"
+                                    viewBox="0 0 12 12"
+                                    width="12"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                      fill="currentColor"
+                                    />
+                                  </svg>
+                                </div>
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                >
+                                  <img
+                                    alt=""
+                                    src="child2LoadingIcon"
+                                    style="width: 16px; height: 16px;"
+                                  />
+                                </div>
+                                <div
+                                  class="fui-TreeItemLayout__main rfjd92f"
+                                >
+                                  child2LoadingLabel
+                                </div>
+                              </div>,
+                            },
+                            "open": false,
+                            "selectionRef": Object {
+                              "current": null,
+                            },
+                            "subtreeRef": Object {
+                              "current": null,
+                            },
+                            "treeItemRef": Object {
+                              "current": <div
+                                aria-expanded="false"
+                                aria-level="1"
+                                aria-selected="false"
+                                class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                                data-fui-tree-item-value="root/child2LoadingLabel"
+                                role="treeitem"
+                                style="height: 100%;"
+                                tabindex="-1"
+                              >
+                                <div
+                                  class="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                                  data-test="TreeNode:root/child2LoadingLabel"
+                                >
+                                  <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__expandIcon rogdio4"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                      fill="currentColor"
+                                      height="12"
+                                      style="transform: rotate(0deg);"
+                                      viewBox="0 0 12 12"
+                                      width="12"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                        fill="currentColor"
+                                      />
+                                    </svg>
+                                  </div>
+                                  <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                  >
+                                    <img
+                                      alt=""
+                                      src="child2LoadingIcon"
+                                      style="width: 16px; height: 16px;"
+                                    />
+                                  </div>
+                                  <div
+                                    class="fui-TreeItemLayout__main rfjd92f"
+                                  >
+                                    child2LoadingLabel
+                                  </div>
+                                </div>
+                              </div>,
+                            },
+                            "value": "root/child2LoadingLabel",
+                          }
+                        }
+                      >
+                        <TreeItemLayout
+                          actions={false}
+                          className="child2LoadingClass"
+                          data-test="TreeNode:root/child2LoadingLabel"
+                          iconBefore={
+                            <img
+                              alt=""
+                              src="child2LoadingIcon"
+                              style={
+                                Object {
+                                  "height": 16,
+                                  "width": 16,
+                                }
+                              }
+                            />
+                          }
+                          style={
+                            Object {
+                              "backgroundColor": undefined,
+                            }
+                          }
+                        >
+                          <div
+                            className="fui-TreeItemLayout rcu2h5o child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
+                            data-test="TreeNode:root/child2LoadingLabel"
+                            style={
+                              Object {
+                                "backgroundColor": undefined,
+                              }
+                            }
+                          >
+                            <div
+                              aria-hidden={true}
+                              className="fui-TreeItemLayout__expandIcon rogdio4"
+                            >
+                              <TreeItemChevron>
+                                <ChevronRight12Regular
+                                  style={
+                                    Object {
+                                      "transform": "rotate(0deg)",
+                                    }
+                                  }
+                                >
+                                  <svg
+                                    aria-hidden={true}
+                                    className="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                    fill="currentColor"
+                                    height="12"
+                                    style={
+                                      Object {
+                                        "transform": "rotate(0deg)",
+                                      }
+                                    }
+                                    viewBox="0 0 12 12"
+                                    width="12"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M4.65 2.15a.5.5 0 0 0 0 .7L7.79 6 4.65 9.15a.5.5 0 1 0 .7.7l3.5-3.5a.5.5 0 0 0 0-.7l-3.5-3.5a.5.5 0 0 0-.7 0Z"
+                                      fill="currentColor"
+                                    />
+                                  </svg>
+                                </ChevronRight12Regular>
+                              </TreeItemChevron>
+                            </div>
+                            <div
+                              aria-hidden={true}
+                              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                            >
+                              <img
+                                alt=""
+                                src="child2LoadingIcon"
+                                style={
+                                  Object {
+                                    "height": 16,
+                                    "width": 16,
+                                  }
+                                }
+                              />
+                            </div>
+                            <div
+                              className="fui-TreeItemLayout__main rfjd92f"
+                            >
+                              child2LoadingLabel
+                            </div>
+                          </div>
+                        </TreeItemLayout>
+                      </ContextSelector.Provider>
+                    </div>
+                  </TreeItem>
+                </TreeNodeComponent>
+                <TreeNodeComponent
+                  key="child3ExpandingLabel"
+                  node={
+                    Object {
+                      "className": "child3ExpandingClass",
+                      "iconSrc": "child3ExpandingIcon",
+                      "id": "child3Expanding",
+                      "label": "child3ExpandingLabel",
+                      "onClick": [MockFunction child3ExpandingClick] {
+                        "calls": Array [
+                          Array [],
+                        ],
+                        "results": Array [
+                          Object {
+                            "type": "return",
+                            "value": undefined,
+                          },
+                        ],
+                      },
+                      "onExpanded": [Function],
+                    }
+                  }
+                  treeNodeId="root/child3ExpandingLabel"
+                >
+                  <TreeItem
+                    itemType="leaf"
+                    onOpenChange={[Function]}
+                    style={
+                      Object {
+                        "height": "100%",
+                      }
+                    }
+                    value="root/child3ExpandingLabel"
+                  >
+                    <div
+                      aria-level={1}
+                      aria-selected="false"
+                      className="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                      data-fui-tree-item-value="root/child3ExpandingLabel"
+                      onChange={[Function]}
+                      onClick={[Function]}
+                      onKeyDown={[Function]}
+                      role="treeitem"
+                      style={
+                        Object {
+                          "height": "100%",
+                        }
+                      }
+                      tabIndex={-1}
+                    >
+                      <ContextSelector.Provider
+                        value={
+                          Object {
+                            "actionsRef": Object {
+                              "current": null,
+                            },
+                            "checked": false,
+                            "expandIconRef": Object {
+                              "current": <div
+                                aria-hidden="true"
+                                class="fui-TreeItemLayout__expandIcon rogdio4"
+                              >
+                                <div
+                                  class="fui-Spinner ___p104zz0_oywd6f0 f22iagw f122n59 f4d9j23 fez10in f4px1ci fn67r4l f1063pyq"
+                                  role="progressbar"
+                                >
+                                  <span
+                                    class="fui-Spinner__spinner ___rymi200_1dtscmh f1or16p5 f1grzc83 f19shzzi f5tbecn fn4mtlg f1y80fxs f1r2crtq f1wsi8sr f1bkm2qd f1urqz7h f1da2vov f11rfva0 f1exc66 f1x2gjcb f1vjiaua fv1u54w f1oebb0s f11ditju f1m9nikz fq8a5sv f1b4lwqj f1najlst fjxod4 fu3xdw0 f1ttdh6v f1eseayc folzdkc fhlfkde f13qeqtg flglbw1"
+                                  >
+                                    <svg
+                                      class="fui-Spinner__Progressbar"
+                                    >
+                                      <circle
+                                        class="fui-Spinner__Track"
+                                      />
+                                      <circle
+                                        class="fui-Spinner__Tail"
+                                      />
+                                    </svg>
+                                  </span>
+                                </div>
+                              </div>,
+                            },
+                            "isActionsVisible": false,
+                            "isAsideVisible": false,
+                            "itemType": "leaf",
+                            "layoutRef": Object {
+                              "current": <div
+                                class="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
+                                data-test="TreeNode:root/child3ExpandingLabel"
+                              >
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__expandIcon rogdio4"
+                                >
+                                  <div
+                                    class="fui-Spinner ___p104zz0_oywd6f0 f22iagw f122n59 f4d9j23 fez10in f4px1ci fn67r4l f1063pyq"
+                                    role="progressbar"
+                                  >
+                                    <span
+                                      class="fui-Spinner__spinner ___rymi200_1dtscmh f1or16p5 f1grzc83 f19shzzi f5tbecn fn4mtlg f1y80fxs f1r2crtq f1wsi8sr f1bkm2qd f1urqz7h f1da2vov f11rfva0 f1exc66 f1x2gjcb f1vjiaua fv1u54w f1oebb0s f11ditju f1m9nikz fq8a5sv f1b4lwqj f1najlst fjxod4 fu3xdw0 f1ttdh6v f1eseayc folzdkc fhlfkde f13qeqtg flglbw1"
+                                    >
+                                      <svg
+                                        class="fui-Spinner__Progressbar"
+                                      >
+                                        <circle
+                                          class="fui-Spinner__Track"
+                                        />
+                                        <circle
+                                          class="fui-Spinner__Tail"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </div>
+                                </div>
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                >
+                                  <img
+                                    alt=""
+                                    src="child3ExpandingIcon"
+                                    style="width: 16px; height: 16px;"
+                                  />
+                                </div>
+                                <div
+                                  class="fui-TreeItemLayout__main rfjd92f"
+                                >
+                                  child3ExpandingLabel
+                                </div>
+                              </div>,
+                            },
+                            "open": false,
+                            "selectionRef": Object {
+                              "current": null,
+                            },
+                            "subtreeRef": Object {
+                              "current": null,
+                            },
+                            "treeItemRef": Object {
+                              "current": <div
+                                aria-level="1"
+                                aria-selected="false"
+                                class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
+                                data-fui-tree-item-value="root/child3ExpandingLabel"
+                                role="treeitem"
+                                style="height: 100%;"
+                                tabindex="-1"
+                              >
+                                <div
+                                  class="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
+                                  data-test="TreeNode:root/child3ExpandingLabel"
+                                >
+                                  <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__expandIcon rogdio4"
+                                  >
+                                    <div
+                                      class="fui-Spinner ___p104zz0_oywd6f0 f22iagw f122n59 f4d9j23 fez10in f4px1ci fn67r4l f1063pyq"
+                                      role="progressbar"
+                                    >
+                                      <span
+                                        class="fui-Spinner__spinner ___rymi200_1dtscmh f1or16p5 f1grzc83 f19shzzi f5tbecn fn4mtlg f1y80fxs f1r2crtq f1wsi8sr f1bkm2qd f1urqz7h f1da2vov f11rfva0 f1exc66 f1x2gjcb f1vjiaua fv1u54w f1oebb0s f11ditju f1m9nikz fq8a5sv f1b4lwqj f1najlst fjxod4 fu3xdw0 f1ttdh6v f1eseayc folzdkc fhlfkde f13qeqtg flglbw1"
+                                      >
+                                        <svg
+                                          class="fui-Spinner__Progressbar"
+                                        >
+                                          <circle
+                                            class="fui-Spinner__Track"
+                                          />
+                                          <circle
+                                            class="fui-Spinner__Tail"
+                                          />
+                                        </svg>
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                  >
+                                    <img
+                                      alt=""
+                                      src="child3ExpandingIcon"
+                                      style="width: 16px; height: 16px;"
+                                    />
+                                  </div>
+                                  <div
+                                    class="fui-TreeItemLayout__main rfjd92f"
+                                  >
+                                    child3ExpandingLabel
+                                  </div>
+                                </div>
+                              </div>,
+                            },
+                            "value": "root/child3ExpandingLabel",
+                          }
+                        }
+                      >
+                        <TreeItemLayout
+                          actions={false}
+                          className="child3ExpandingClass"
+                          data-test="TreeNode:root/child3ExpandingLabel"
+                          iconBefore={
+                            <img
+                              alt=""
+                              src="child3ExpandingIcon"
+                              style={
+                                Object {
+                                  "height": 16,
+                                  "width": 16,
+                                }
+                              }
+                            />
+                          }
+                          style={
+                            Object {
+                              "backgroundColor": undefined,
+                            }
+                          }
+                        >
+                          <div
+                            className="fui-TreeItemLayout rcu2h5o child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
+                            data-test="TreeNode:root/child3ExpandingLabel"
+                            style={
+                              Object {
+                                "backgroundColor": undefined,
+                              }
+                            }
+                          >
+                            <div
+                              aria-hidden={true}
+                              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                            >
+                              <img
+                                alt=""
+                                src="child3ExpandingIcon"
+                                style={
+                                  Object {
+                                    "height": 16,
+                                    "width": 16,
+                                  }
+                                }
+                              />
+                            </div>
+                            <div
+                              className="fui-TreeItemLayout__main rfjd92f"
+                            >
+                              child3ExpandingLabel
+                            </div>
+                          </div>
+                        </TreeItemLayout>
+                      </ContextSelector.Provider>
+                    </div>
+                  </TreeItem>
+                </TreeNodeComponent>
+              </div>
+            </ContextSelector.Provider>
+          </TreeProvider>
+        </Tree>
+      </ContextSelector.Provider>
+    </div>
+  </TreeItem>
+</TreeNodeComponent>
+`;
+
+exports[`TreeNodeComponent renders a loading spinner if the node is loading: loaded 1`] = `
+<TreeItem
+  itemType="leaf"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent renders a loading spinner if the node is loading: loading 1`] = `
+<TreeItem
+  itemType="leaf"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    expandIcon={
+      <Spinner
+        size="extra-tiny"
+      />
+    }
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent renders a node with a menu 1`] = `
+<Menu
+  onOpenChange={[Function]}
+  openOnContext={true}
+  positioning="below-end"
+>
+  <MenuTrigger
+    disableButtonEnhancement={true}
+  >
+    <TreeItem
+      itemType="leaf"
+      onOpenChange={[Function]}
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+      value="root"
+    >
+      <TreeItemLayout
+        actions={
+          <Menu
+            onOpenChange={[Function]}
+          >
+            <MenuTrigger
+              disableButtonEnhancement={true}
+            >
+              <Button
+                appearance="subtle"
+                aria-label="More options"
+                data-test="TreeNode/ContextMenuTrigger"
+                icon={<MoreHorizontal20Regular />}
+              />
+            </MenuTrigger>
+            <MenuPopover
+              data-test="TreeNode/ContextMenu:root"
+            >
+              <MenuList>
+                <MenuItem
+                  data-test="TreeNode/ContextMenuItem:enabledItem"
+                  onClick={[MockFunction enabledItemClick]}
+                >
+                  enabledItem
+                </MenuItem>
+                <MenuItem
+                  data-test="TreeNode/ContextMenuItem:disabledItem"
+                  disabled={true}
+                  onClick={[MockFunction disabledItemClick]}
+                >
+                  disabledItem
+                </MenuItem>
+              </MenuList>
+            </MenuPopover>
+          </Menu>
+        }
+        className="rootClass"
+        data-test="TreeNode:root"
+        iconBefore={
+          <img
+            alt=""
+            src="rootIcon"
+            style={
+              Object {
+                "height": 16,
+                "width": 16,
+              }
+            }
+          />
+        }
+        style={
+          Object {
+            "backgroundColor": undefined,
+          }
+        }
+      >
+        rootLabel
+      </TreeItemLayout>
+    </TreeItem>
+  </MenuTrigger>
+  <MenuPopover>
+    <MenuList>
+      <MenuItem
+        data-test="TreeNode/ContextMenuItem:enabledItem"
+        key="enabledItem"
+        onClick={[MockFunction enabledItemClick]}
+      >
+        enabledItem
+      </MenuItem>
+      <MenuItem
+        data-test="TreeNode/ContextMenuItem:disabledItem"
+        disabled={true}
+        key="disabledItem"
+        onClick={[MockFunction disabledItemClick]}
+      >
+        disabledItem
+      </MenuItem>
+    </MenuList>
+  </MenuPopover>
+</Menu>
+`;
+
+exports[`TreeNodeComponent renders a single node 1`] = `
+<TreeItem
+  itemType="leaf"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
+<TreeItem
+  itemType="leaf"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="the-icon.svg"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent renders selected parent node as selected if no descendant nodes are selected 1`] = `
+<TreeItem
+  itemType="branch"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": "var(--colorNeutralBackground1Selected)",
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+  <Tree
+    style={
+      Object {
+        "overflow": undefined,
+      }
+    }
+  >
+    <TreeNodeComponent
+      key="child1Label"
+      node={
+        Object {
+          "children": Array [
+            Object {
+              "className": "grandchild1Class",
+              "iconSrc": "grandchild1Icon",
+              "id": "grandchild1",
+              "label": "grandchild1Label",
+              "onClick": [MockFunction grandchild1Click],
+            },
+            Object {
+              "className": "grandchild2Class",
+              "iconSrc": "grandchild2Icon",
+              "id": "grandchild2",
+              "label": "grandchild2Label",
+              "onClick": [MockFunction grandchild2Click],
+            },
+          ],
+          "className": "child1Class",
+          "iconSrc": "child1Icon",
+          "id": "child1",
+          "label": "child1Label",
+          "onClick": [MockFunction child1Click],
+        }
+      }
+      treeNodeId="root/child1Label"
+    />
+    <TreeNodeComponent
+      key="child2Label"
+      node={
+        Object {
+          "className": "child2Class",
+          "iconSrc": "child2Icon",
+          "id": "child2",
+          "label": "child2Label",
+          "onClick": [MockFunction child2Click],
+        }
+      }
+      treeNodeId="root/child2Label"
+    />
+  </Tree>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent renders selected parent node as unselected if any descendant node is selected 1`] = `
+<TreeItem
+  itemType="branch"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+  <Tree
+    style={
+      Object {
+        "overflow": undefined,
+      }
+    }
+  >
+    <TreeNodeComponent
+      key="child1Label"
+      node={
+        Object {
+          "children": Array [
+            Object {
+              "className": "grandchild1Class",
+              "iconSrc": "grandchild1Icon",
+              "id": "grandchild1",
+              "isSelected": [Function],
+              "label": "grandchild1Label",
+              "onClick": [MockFunction grandchild1Click],
+            },
+            Object {
+              "className": "grandchild2Class",
+              "iconSrc": "grandchild2Icon",
+              "id": "grandchild2",
+              "label": "grandchild2Label",
+              "onClick": [MockFunction grandchild2Click],
+            },
+          ],
+          "className": "child1Class",
+          "iconSrc": "child1Icon",
+          "id": "child1",
+          "label": "child1Label",
+          "onClick": [MockFunction child1Click],
+        }
+      }
+      treeNodeId="root/child1Label"
+    />
+    <TreeNodeComponent
+      key="child2Label"
+      node={
+        Object {
+          "className": "child2Class",
+          "iconSrc": "child2Icon",
+          "id": "child2",
+          "label": "child2Label",
+          "onClick": [MockFunction child2Click],
+        }
+      }
+      treeNodeId="root/child2Label"
+    />
+  </Tree>
+</TreeItem>
+`;
+
+exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
+<TreeItem
+  itemType="leaf"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": "var(--colorNeutralBackground1Selected)",
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;

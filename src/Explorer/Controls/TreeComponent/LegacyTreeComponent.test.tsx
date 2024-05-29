@@ -1,48 +1,48 @@
-import React from "react";
 import { shallow } from "enzyme";
-import { TreeComponent, TreeNode, TreeNodeComponent } from "./TreeComponent";
+import React from "react";
+import { LegacyTreeComponent, LegacyTreeNode, LegacyTreeNodeComponent } from "./LegacyTreeComponent";
 
-const buildChildren = (): TreeNode[] => {
-  const grandChild11: TreeNode = {
+const buildChildren = (): LegacyTreeNode[] => {
+  const grandChild11: LegacyTreeNode = {
     label: "ZgrandChild11",
   };
-  const grandChild12: TreeNode = {
+  const grandChild12: LegacyTreeNode = {
     label: "AgrandChild12",
   };
-  const child1: TreeNode = {
+  const child1: LegacyTreeNode = {
     label: "Bchild1",
     children: [grandChild11, grandChild12],
   };
 
-  const child2: TreeNode = {
+  const child2: LegacyTreeNode = {
     label: "2child2",
   };
 
   return [child1, child2];
 };
 
-const buildChildren2 = (): TreeNode[] => {
-  const grandChild11: TreeNode = {
+const buildChildren2 = (): LegacyTreeNode[] => {
+  const grandChild11: LegacyTreeNode = {
     label: "ZgrandChild11",
   };
-  const grandChild12: TreeNode = {
+  const grandChild12: LegacyTreeNode = {
     label: "AgrandChild12",
   };
 
-  const child1: TreeNode = {
+  const child1: LegacyTreeNode = {
     label: "aChild",
   };
 
-  const child2: TreeNode = {
+  const child2: LegacyTreeNode = {
     label: "bchild",
     children: [grandChild11, grandChild12],
   };
 
-  const child3: TreeNode = {
+  const child3: LegacyTreeNode = {
     label: "cchild",
   };
 
-  const child4: TreeNode = {
+  const child4: LegacyTreeNode = {
     label: "dchild",
     children: [grandChild11, grandChild12],
   };
@@ -50,7 +50,7 @@ const buildChildren2 = (): TreeNode[] => {
   return [child1, child2, child3, child4];
 };
 
-describe("TreeComponent", () => {
+describe("LegacyTreeComponent", () => {
   it("renders a simple tree", () => {
     const root = {
       label: "root",
@@ -62,14 +62,14 @@ describe("TreeComponent", () => {
       className: "tree",
     };
 
-    const wrapper = shallow(<TreeComponent {...props} />);
+    const wrapper = shallow(<LegacyTreeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });
 
-describe("TreeNodeComponent", () => {
+describe("LegacyTreeNodeComponent", () => {
   it("renders a simple node (sorted children, expanded)", () => {
-    const node: TreeNode = {
+    const node: LegacyTreeNode = {
       label: "label",
       id: "id",
       children: buildChildren(),
@@ -98,12 +98,12 @@ describe("TreeNodeComponent", () => {
       generation: 12,
       paddingLeft: 23,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<LegacyTreeNodeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it("renders unsorted children by default", () => {
-    const node: TreeNode = {
+    const node: LegacyTreeNode = {
       label: "label",
       children: buildChildren(),
       isExpanded: true,
@@ -113,12 +113,12 @@ describe("TreeNodeComponent", () => {
       generation: 2,
       paddingLeft: 9,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<LegacyTreeNodeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it("does not render children by default", () => {
-    const node: TreeNode = {
+    const node: LegacyTreeNode = {
       label: "label",
       children: buildChildren(),
       isAlphaSorted: false,
@@ -128,12 +128,12 @@ describe("TreeNodeComponent", () => {
       generation: 2,
       paddingLeft: 9,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<LegacyTreeNodeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it("renders sorted children, expanded, leaves and parents separated", () => {
-    const node: TreeNode = {
+    const node: LegacyTreeNode = {
       label: "label",
       id: "id",
       children: buildChildren2(),
@@ -156,12 +156,12 @@ describe("TreeNodeComponent", () => {
       generation: 12,
       paddingLeft: 23,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<LegacyTreeNodeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it("renders loading icon", () => {
-    const node: TreeNode = {
+    const node: LegacyTreeNode = {
       label: "label",
       children: [],
       isExpanded: true,
@@ -172,7 +172,7 @@ describe("TreeNodeComponent", () => {
       generation: 2,
       paddingLeft: 9,
     };
-    const wrapper = shallow(<TreeNodeComponent {...props} />);
+    const wrapper = shallow(<LegacyTreeNodeComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

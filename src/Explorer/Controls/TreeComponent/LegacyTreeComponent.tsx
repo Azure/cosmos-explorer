@@ -12,6 +12,7 @@ import {
   IContextualMenuItemProps,
   IContextualMenuProps,
 } from "@fluentui/react";
+import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
@@ -22,18 +23,10 @@ import { StyleConstants } from "../../../Common/StyleConstants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-export interface TreeNodeMenuItem {
-  label: string;
-  onClick: () => void;
-  iconSrc?: string;
-  isDisabled?: boolean;
-  styleClass?: string;
-}
-
-export interface TreeNode {
+export interface LegacyTreeNode {
   label: string;
   id?: string;
-  children?: TreeNode[];
+  children?: LegacyTreeNode[];
   contextMenu?: TreeNodeMenuItem[];
   iconSrc?: string;
   isExpanded?: boolean;
@@ -50,34 +43,37 @@ export interface TreeNode {
   onContextMenuOpen?: () => void;
 }
 
-export interface TreeComponentProps {
-  rootNode: TreeNode;
+export interface LegacyTreeComponentProps {
+  rootNode: LegacyTreeNode;
   style?: any;
   className?: string;
 }
 
-export class TreeComponent extends React.Component<TreeComponentProps> {
+export class LegacyTreeComponent extends React.Component<LegacyTreeComponentProps> {
   public render(): JSX.Element {
     return (
       <div style={this.props.style} className={`treeComponent ${this.props.className}`} role="tree">
-        <TreeNodeComponent paddingLeft={0} node={this.props.rootNode} generation={0} />
+        <LegacyTreeNodeComponent paddingLeft={0} node={this.props.rootNode} generation={0} />
       </div>
     );
   }
 }
 
 /* Tree node is a react component */
-interface TreeNodeComponentProps {
-  node: TreeNode;
+interface LegacyTreeNodeComponentProps {
+  node: LegacyTreeNode;
   generation: number;
   paddingLeft: number;
 }
 
-interface TreeNodeComponentState {
+interface LegacyTreeNodeComponentState {
   isExpanded: boolean;
   isMenuShowing: boolean;
 }
-export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, TreeNodeComponentState> {
+export class LegacyTreeNodeComponent extends React.Component<
+  LegacyTreeNodeComponentProps,
+  LegacyTreeNodeComponentState
+> {
   private static readonly paddingPerGenerationPx = 16;
   private static readonly iconOffset = 22;
   private static readonly transitionDurationMS = 200;
@@ -85,7 +81,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   private contextMenuRef = React.createRef<HTMLDivElement>();
   private isExpanded: boolean;
 
-  constructor(props: TreeNodeComponentProps) {
+  constructor(props: LegacyTreeNodeComponentProps) {
     super(props);
     this.isExpanded = props.node.isExpanded;
     this.state = {
@@ -94,13 +90,13 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     };
   }
 
-  componentDidUpdate(prevProps: TreeNodeComponentProps, prevState: TreeNodeComponentState) {
+  componentDidUpdate(prevProps: LegacyTreeNodeComponentProps, prevState: LegacyTreeNodeComponentState) {
     // Only call when expand has actually changed
     if (this.state.isExpanded !== prevState.isExpanded) {
       if (this.state.isExpanded) {
-        this.props.node.onExpanded && setTimeout(this.props.node.onExpanded, TreeNodeComponent.callbackDelayMS);
+        this.props.node.onExpanded && setTimeout(this.props.node.onExpanded, LegacyTreeNodeComponent.callbackDelayMS);
       } else {
-        this.props.node.onCollapsed && setTimeout(this.props.node.onCollapsed, TreeNodeComponent.callbackDelayMS);
+        this.props.node.onCollapsed && setTimeout(this.props.node.onCollapsed, LegacyTreeNodeComponent.callbackDelayMS);
       }
     }
     if (this.props.node.isExpanded !== this.isExpanded) {
@@ -115,18 +111,18 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     return this.renderNode(this.props.node, this.props.generation);
   }
 
-  private static getSortedChildren(treeNode: TreeNode): TreeNode[] {
+  private static getSortedChildren(treeNode: LegacyTreeNode): LegacyTreeNode[] {
     if (!treeNode || !treeNode.children) {
       return undefined;
     }
 
-    const compareFct = (a: TreeNode, b: TreeNode) => a.label.localeCompare(b.label);
+    const compareFct = (a: LegacyTreeNode, b: LegacyTreeNode) => a.label.localeCompare(b.label);
 
     let unsortedChildren;
     if (treeNode.isLeavesParentsSeparate) {
       // Separate parents and leave
-      const parents: TreeNode[] = treeNode.children.filter((node) => node.children);
-      const leaves: TreeNode[] = treeNode.children.filter((node) => !node.children);
+      const parents: LegacyTreeNode[] = treeNode.children.filter((node) => node.children);
+      const leaves: LegacyTreeNode[] = treeNode.children.filter((node) => !node.children);
 
       if (treeNode.isAlphaSorted) {
         parents.sort(compareFct);
@@ -141,18 +137,18 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     return unsortedChildren;
   }
 
-  private static isNodeHeaderBlank(node: TreeNode): boolean {
+  private static isNodeHeaderBlank(node: LegacyTreeNode): boolean {
     return (node.label === undefined || node.label === null) && !node.contextMenu;
   }
 
-  private renderNode(node: TreeNode, generation: number): JSX.Element {
-    let paddingLeft = generation * TreeNodeComponent.paddingPerGenerationPx;
+  private renderNode(node: LegacyTreeNode, generation: number): JSX.Element {
+    const paddingLeft = generation * LegacyTreeNodeComponent.paddingPerGenerationPx;
     let additionalOffsetPx = 15;
 
     if (node.children) {
-      const childrenWithSubChildren = node.children.filter((child: TreeNode) => !!child.children);
+      const childrenWithSubChildren = node.children.filter((child: LegacyTreeNode) => !!child.children);
       if (childrenWithSubChildren.length > 0) {
-        additionalOffsetPx = TreeNodeComponent.iconOffset;
+        additionalOffsetPx = LegacyTreeNodeComponent.iconOffset;
       }
     }
 
@@ -160,10 +156,10 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     const showSelected =
       this.props.node.isSelected &&
       this.props.node.isSelected() &&
-      !TreeNodeComponent.isAnyDescendantSelected(this.props.node);
+      !LegacyTreeNodeComponent.isAnyDescendantSelected(this.props.node);
 
     const headerStyle: React.CSSProperties = { paddingLeft: this.props.paddingLeft };
-    if (TreeNodeComponent.isNodeHeaderBlank(node)) {
+    if (LegacyTreeNodeComponent.isNodeHeaderBlank(node)) {
       headerStyle.height = 0;
       headerStyle.padding = 0;
     }
@@ -195,10 +191,13 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
           <img className="loadingIcon" src={LoadingIndicator_3Squares} hidden={!this.props.node.isLoading} />
         </div>
         {node.children && (
-          <AnimateHeight duration={TreeNodeComponent.transitionDurationMS} height={this.state.isExpanded ? "auto" : 0}>
+          <AnimateHeight
+            duration={LegacyTreeNodeComponent.transitionDurationMS}
+            height={this.state.isExpanded ? "auto" : 0}
+          >
             <div className="nodeChildren" data-test={node.label} role="group">
-              {TreeNodeComponent.getSortedChildren(node).map((childNode: TreeNode) => (
-                <TreeNodeComponent
+              {LegacyTreeNodeComponent.getSortedChildren(node).map((childNode: LegacyTreeNode) => (
+                <LegacyTreeNodeComponent
                   key={`${childNode.label}-${generation + 1}-${childNode.timestamp}`}
                   node={childNode}
                   generation={generation + 1}
@@ -216,12 +215,14 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
    * Recursive: is the node or any descendant selected
    * @param node
    */
-  private static isAnyDescendantSelected(node: TreeNode): boolean {
+  private static isAnyDescendantSelected(node: LegacyTreeNode): boolean {
     return (
       node.children &&
       node.children.reduce(
-        (previous: boolean, child: TreeNode) =>
-          previous || (child.isSelected && child.isSelected()) || TreeNodeComponent.isAnyDescendantSelected(child),
+        (previous: boolean, child: LegacyTreeNode) =>
+          previous ||
+          (child.isSelected && child.isSelected()) ||
+          LegacyTreeNodeComponent.isAnyDescendantSelected(child),
         false,
       )
     );
@@ -232,10 +233,10 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
   }
 
   private onRightClick = (): void => {
-    this.contextMenuRef.current.firstChild.dispatchEvent(TreeNodeComponent.createClickEvent());
+    this.contextMenuRef.current.firstChild.dispatchEvent(LegacyTreeNodeComponent.createClickEvent());
   };
 
-  private renderContextMenuButton(node: TreeNode): JSX.Element {
+  private renderContextMenuButton(node: LegacyTreeNode): JSX.Element {
     const menuItemLabel = "More";
     const buttonStyles: Partial<IButtonStyles> = {
       rootFocused: { outline: `1px dashed ${StyleConstants.FocusColor}` },
@@ -265,7 +266,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
               <div
                 data-test={`treeComponentMenuItemContainer`}
                 className="treeComponentMenuItemContainer"
-                onContextMenu={(e) => e.target.dispatchEvent(TreeNodeComponent.createClickEvent())}
+                onContextMenu={(e) => e.target.dispatchEvent(LegacyTreeNodeComponent.createClickEvent())}
               >
                 {props.item.onRenderIcon()}
                 <span
@@ -297,7 +298,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     );
   }
 
-  private renderCollapseExpandIcon(node: TreeNode): JSX.Element {
+  private renderCollapseExpandIcon(node: LegacyTreeNode): JSX.Element {
     if (!node.children || !node.label) {
       return <></>;
     }
@@ -314,12 +315,12 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     );
   }
 
-  private onNodeClick = (event: React.MouseEvent<HTMLDivElement>, node: TreeNode): void => {
+  private onNodeClick = (event: React.MouseEvent<HTMLDivElement>, node: LegacyTreeNode): void => {
     event.stopPropagation();
     if (node.children) {
       const isExpanded = !this.state.isExpanded;
       // Prevent collapsing if node header is blank
-      if (!(TreeNodeComponent.isNodeHeaderBlank(node) && !isExpanded)) {
+      if (!(LegacyTreeNodeComponent.isNodeHeaderBlank(node) && !isExpanded)) {
         this.setState({ isExpanded });
       }
     }
@@ -327,14 +328,14 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     this.props.node.onClick && this.props.node.onClick(this.state.isExpanded);
   };
 
-  private onNodeKeyPress = (event: React.KeyboardEvent<HTMLDivElement>, node: TreeNode): void => {
+  private onNodeKeyPress = (event: React.KeyboardEvent<HTMLDivElement>, node: LegacyTreeNode): void => {
     if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
       event.stopPropagation();
       this.props.node.onClick && this.props.node.onClick(this.state.isExpanded);
     }
   };
 
-  private onCollapseExpandIconKeyPress = (event: React.KeyboardEvent<HTMLDivElement>, node: TreeNode): void => {
+  private onCollapseExpandIconKeyPress = (event: React.KeyboardEvent<HTMLDivElement>, node: LegacyTreeNode): void => {
     if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
       event.stopPropagation();
       if (node.children) {

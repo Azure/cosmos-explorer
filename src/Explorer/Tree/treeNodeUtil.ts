@@ -1,4 +1,4 @@
-import { TreeNode2 } from "Explorer/Controls/TreeComponent2/TreeNode2Component";
+import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
@@ -6,8 +6,11 @@ import UserDefinedFunction from "Explorer/Tree/UserDefinedFunction";
 import { useDatabases } from "Explorer/useDatabases";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
+import { useTabs } from "hooks/useTabs";
+import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
+import { Platform, configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
@@ -17,7 +20,192 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
-import { Platform, configContext } from "./../../ConfigContext";
+
+export const shouldShowScriptNodes = (): boolean => {
+  return (
+    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+  );
+};
+
+export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
+  const updatedSampleTree: TreeNode = {
+    label: sampleDataResourceTokenCollection.databaseId,
+    isExpanded: false,
+    iconSrc: CosmosDBIcon,
+    className: "databaseHeader",
+    children: [
+      {
+        label: sampleDataResourceTokenCollection.id(),
+        iconSrc: CollectionIcon,
+        isExpanded: false,
+        className: "collectionHeader",
+        contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
+        onClick: () => {
+          useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
+          useCommandBar.getState().setContextButtons([]);
+          useTabs
+            .getState()
+            .refreshActiveTab(
+              (tab: TabsBase) =>
+                tab.collection?.id() === sampleDataResourceTokenCollection.id() &&
+                tab.collection.databaseId === sampleDataResourceTokenCollection.databaseId,
+            );
+        },
+        isSelected: () =>
+          useSelectedNode
+            .getState()
+            .isDataNodeSelected(sampleDataResourceTokenCollection.databaseId, sampleDataResourceTokenCollection.id()),
+        onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection),
+        children: [
+          {
+            label: "Items",
+            onClick: () => sampleDataResourceTokenCollection.onDocumentDBDocumentsClick(),
+            contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
+            isSelected: () =>
+              useSelectedNode
+                .getState()
+                .isDataNodeSelected(
+                  sampleDataResourceTokenCollection.databaseId,
+                  sampleDataResourceTokenCollection.id(),
+                  [ViewModels.CollectionTabKind.Documents],
+                ),
+          },
+        ],
+      },
+    ],
+  };
+
+  return [updatedSampleTree];
+};
+
+export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBase): TreeNode[] => {
+  if (!collection) {
+    return [
+      {
+        label: "",
+        isExpanded: true,
+        children: [],
+      },
+    ];
+  }
+
+  const children: TreeNode[] = [];
+  children.push({
+    label: "Items",
+    onClick: () => {
+      collection.onDocumentDBDocumentsClick();
+      // push to most recent
+      mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
+    },
+    isSelected: () =>
+      useSelectedNode
+        .getState()
+        .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Documents]),
+  });
+
+  const collectionNode: TreeNode = {
+    label: collection.id(),
+    iconSrc: CollectionIcon,
+    isExpanded: true,
+    children,
+    className: "collectionHeader",
+    onClick: () => {
+      // Rewritten version of expandCollapseCollection
+      useSelectedNode.getState().setSelectedNode(collection);
+      useCommandBar.getState().setContextButtons([]);
+      useTabs
+        .getState()
+        .refreshActiveTab(
+          (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
+        );
+    },
+    isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
+  };
+
+  return [collectionNode];
+};
+
+export const createDatabaseTreeNodes = (
+  container: Explorer,
+  isNotebookEnabled: boolean,
+  databases: ViewModels.Database[],
+  refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
+): TreeNode[] => {
+  const databaseTreeNodes: TreeNode[] = databases.map((database: ViewModels.Database) => {
+    const buildDatabaseChildNodes = (databaseNode: TreeNode) => {
+      databaseNode.children = [];
+      if (database.isDatabaseShared() && configContext.platform !== Platform.Fabric) {
+        databaseNode.children.push({
+          id: database.isSampleDB ? "sampleScaleSettings" : "",
+          label: "Scale",
+          isSelected: () =>
+            useSelectedNode
+              .getState()
+              .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettingsV2]),
+          onClick: database.onSettingsClick.bind(database),
+        });
+      }
+
+      // Find collections
+      database
+        .collections()
+        .forEach((collection: ViewModels.Collection) =>
+          databaseNode.children.push(
+            buildCollectionNode(database, collection, isNotebookEnabled, container, refreshActiveTab),
+          ),
+        );
+
+      if (database.collectionsContinuationToken) {
+        const loadMoreNode: TreeNode = {
+          label: "load more",
+          className: "loadMoreHeader",
+          onClick: async () => {
+            await database.loadCollections();
+            useDatabases.getState().updateDatabase(database);
+          },
+        };
+        databaseNode.children.push(loadMoreNode);
+      }
+    };
+
+    const databaseNode: TreeNode = {
+      label: database.id(),
+      iconSrc: CosmosDBIcon,
+      className: "databaseHeader",
+      children: [],
+      isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
+      contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
+      onExpanded: async () => {
+        useSelectedNode.getState().setSelectedNode(database);
+        if (!databaseNode.children || databaseNode.children?.length === 0) {
+          databaseNode.isLoading = true;
+        }
+        await database.expandDatabase();
+        databaseNode.isLoading = false;
+        useCommandBar.getState().setContextButtons([]);
+        refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
+        useDatabases.getState().updateDatabase(database);
+      },
+      onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
+      isExpanded: database.isDatabaseExpanded(),
+      onCollapsed: () => {
+        database.collapseDatabase();
+        // useCommandBar.getState().setContextButtons([]);
+        useDatabases.getState().updateDatabase(database);
+      },
+    };
+
+    buildDatabaseChildNodes(databaseNode);
+
+    database.collections.subscribe(() => {
+      buildDatabaseChildNodes(databaseNode);
+    });
+
+    return databaseNode;
+  });
+
+  return databaseTreeNodes;
+};
 
 export const buildCollectionNode = (
   database: ViewModels.Database,
@@ -25,15 +213,14 @@ export const buildCollectionNode = (
   isNotebookEnabled: boolean,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-): TreeNode2 => {
-  let children: TreeNode2[];
-
+): TreeNode => {
+  let children: TreeNode[];
   // Flat Tree for Fabric
   if (configContext.platform !== Platform.Fabric) {
     children = buildCollectionNodeChildren(database, collection, isNotebookEnabled, container, refreshActiveTab);
   }
 
-  return {
+  const collectionNode: TreeNode = {
     label: collection.id(),
     iconSrc: CollectionIcon,
     children: children,
@@ -54,6 +241,15 @@ export const buildCollectionNode = (
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
       );
       useDatabases.getState().updateDatabase(database);
+
+      // If we're showing script nodes, start loading them.
+      if (shouldShowScriptNodes()) {
+        await collection.loadStoredProcedures();
+        await collection.loadUserDefinedFunctions();
+        await collection.loadTriggers();
+      }
+
+      useDatabases.getState().updateDatabase(database);
     },
     isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
     onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(collection),
@@ -64,6 +260,8 @@ export const buildCollectionNode = (
     },
     isExpanded: collection.isCollectionExpanded(),
   };
+
+  return collectionNode;
 };
 
 const buildCollectionNodeChildren = (
@@ -72,9 +270,8 @@ const buildCollectionNodeChildren = (
   isNotebookEnabled: boolean,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-): TreeNode2[] => {
-  const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
-  const children: TreeNode2[] = [];
+): TreeNode[] => {
+  const children: TreeNode[] = [];
   children.push({
     label: getItemName(),
     id: collection.isSampleCollection ? "sampleItems" : "",
@@ -128,14 +325,14 @@ const buildCollectionNodeChildren = (
     });
   }
 
-  const schemaNode: TreeNode2 = buildSchemaNode(collection, container, refreshActiveTab);
+  const schemaNode: TreeNode = buildSchemaNode(collection, container, refreshActiveTab);
   if (schemaNode) {
     children.push(schemaNode);
   }
 
   const onUpdateDatabase = () => useDatabases.getState().updateDatabase(database);
 
-  if (showScriptNodes) {
+  if (shouldShowScriptNodes()) {
     children.push(buildStoredProcedureNode(collection, container, refreshActiveTab, onUpdateDatabase));
     children.push(buildUserDefinedFunctionsNode(collection, container, refreshActiveTab, onUpdateDatabase));
     children.push(buildTriggerNode(collection, container, refreshActiveTab, onUpdateDatabase));
@@ -166,7 +363,7 @@ const buildStoredProcedureNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void,
-): TreeNode2 => {
+): TreeNode => {
   return {
     label: "Stored Procedures",
     children: collection.storedProcedures().map((sp: StoredProcedure) => ({
@@ -195,7 +392,7 @@ const buildUserDefinedFunctionsNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void,
-): TreeNode2 => {
+): TreeNode => {
   return {
     label: "User Defined Functions",
     children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
@@ -226,7 +423,7 @@ const buildTriggerNode = (
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
   onUpdateDatabase: () => void,
-): TreeNode2 => {
+): TreeNode => {
   return {
     label: "Triggers",
     children: collection.triggers().map((trigger: Trigger) => ({
@@ -254,7 +451,7 @@ const buildSchemaNode = (
   collection: ViewModels.Collection,
   container: Explorer,
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void,
-): TreeNode2 => {
+): TreeNode => {
   if (collection.analyticalStorageTtl() === undefined) {
     return undefined;
   }
@@ -273,7 +470,7 @@ const buildSchemaNode = (
   };
 };
 
-const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode2[] => {
+const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode[] => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const schema: any = {};
 
@@ -307,8 +504,8 @@ const getSchemaNodes = (fields: DataModels.IDataField[]): TreeNode2[] => {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const traverse = (obj: any): TreeNode2[] => {
-    const children: TreeNode2[] = [];
+  const traverse = (obj: any): TreeNode[] => {
+    const children: TreeNode[] = [];
 
     if (obj !== undefined && !Array.isArray(obj) && typeof obj === "object") {
       Object.entries(obj).forEach(([key, value]) => {
