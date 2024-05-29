@@ -1,6 +1,6 @@
 import { sendCachedDataMessage } from "Common/MessageHandler";
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { FabricDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
-import { MessageTypes } from "Contracts/MessageTypes";
 import { updateUserContext, userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 
@@ -19,7 +19,7 @@ const requestDatabaseResourceTokens = async (): Promise<void> => {
   lastRequestTimestamp = Date.now();
   try {
     const fabricDatabaseConnectionInfo = await sendCachedDataMessage<FabricDatabaseConnectionInfo>(
-      MessageTypes.GetAllResourceTokens,
+      FabricMessageTypes.GetAllResourceTokens,
       [],
       userContext.fabricContext.connectionId,
     );

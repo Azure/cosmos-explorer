@@ -1,3 +1,4 @@
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import Q from "q";
 import * as _ from "underscore";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -36,7 +37,7 @@ export function handleCachedDataMessage(message: any): void {
  * @returns
  */
 export function sendCachedDataMessage<TResponseDataModel>(
-  messageType: MessageTypes,
+  messageType: MessageTypes | FabricMessageTypes,
   params: Object[],
   scope?: string,
   timeoutInMs?: number,
