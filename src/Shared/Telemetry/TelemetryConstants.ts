@@ -138,6 +138,7 @@ export enum Action {
   QueryGenerationFromCopilotPrompt,
   QueryEdited,
   ExecuteQueryGeneratedFromQueryCopilot,
+  DeleteDocuments,
 }
 
 export const ActionModifiers = {

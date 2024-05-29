@@ -1,9 +1,9 @@
 import { userContext } from "../UserContext";
 
-export const getEntityName = (): string => {
+export const getEntityName = (multiple?: boolean): string => {
   if (userContext.apiType === "Mongo") {
-    return "document";
+    return multiple ? "documents" : "document";
   }
 
-  return "item";
+  return multiple ? "items" : "item";
 };

@@ -1312,7 +1312,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowVectorSearchParameters() {
-    return isVectorSearchEnabled() && this.shouldShowCollectionThroughputInput();
+    return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
   }
 
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {
