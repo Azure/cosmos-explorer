@@ -22,6 +22,8 @@ import {
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
+import { NormalizedEventKey } from "Common/Constants";
+import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
@@ -121,7 +123,31 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     [columnHeaders],
   );
 
-  const onIdClicked = useCallback((index: number) => onSelectedRowsChange(new Set([index])), [onSelectedRowsChange]);
+  const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(undefined);
+  const onTableCellClicked = useCallback(
+    (e: React.MouseEvent, index: number) => {
+      const result = selectionHelper(selectedRows as Set<number>, index, e.shiftKey, e.ctrlKey, selectionStartIndex);
+      onSelectedRowsChange(result.selection);
+      if (result.selectionStartIndex !== undefined) {
+        setSelectionStartIndex(result.selectionStartIndex);
+      }
+    },
+    [selectionStartIndex, onSelectedRowsChange, selectedRows],
+  );
+
+  /**
+   * Callback for when:
+   * - a key has been pressed on the cell
+   * - a key is down and the cell is clicked by the mouse
+   */
+  const onIdClicked = useCallback(
+    (e: KeyboardEvent, index: number) => {
+      if (e.key === NormalizedEventKey.Enter || e.key === NormalizedEventKey.Space) {
+        onSelectedRowsChange(new Set<TableRowId>([index]));
+      }
+    },
+    [onSelectedRowsChange],
+  );
 
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
     const { item, selected, appearance, onClick, onKeyDown } = data[index];
@@ -137,8 +163,10 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           <TableCell
             key={column.columnId}
             className="documentsTableCell"
-            onClick={(/* e */) => onSelectedRowsChange(new Set<TableRowId>([index]))}
-            onKeyDown={() => onIdClicked(index)}
+            // When clicking on a cell with shift/ctrl key, onKeyDown is called instead of onClick.
+            onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index)}
+            // onKeyDown={(e) => onIdClicked(e, index)}
+            onKeyPress={(e) => onIdClicked(e, index)}
             {...columnSizing.getTableCellProps(column.columnId)}
             tabIndex={column.columnId === "id" ? 0 : -1}
           >
@@ -203,9 +231,10 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       if (newActiveItemIndex !== activeItemIndex) {
         onItemClicked(newActiveItemIndex);
         setActiveItemIndex(newActiveItemIndex);
+        setSelectionStartIndex(newActiveItemIndex);
       }
     }
-  }, [selectedRows, items]);
+  }, [selectedRows, items, activeItemIndex, onItemClicked]);
 
   // Cell keyboard navigation
   const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });
