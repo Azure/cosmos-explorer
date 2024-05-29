@@ -102,13 +102,13 @@ let configContext: Readonly<ConfigContext> = {
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
-    // "resourcelist",
-    // "queryDocuments",
-    // "createDocument",
-    // "readDocument",
-    // "updateDocument",
-    // "deleteDocument",
-    // "createCollectionWithProxy",
+    "resourcelist",
+    "queryDocuments",
+    "createDocument",
+    "readDocument",
+    "updateDocument",
+    "deleteDocument",
+    "createCollectionWithProxy",
     "legacyMongoShell",
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
@@ -245,3 +245,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
