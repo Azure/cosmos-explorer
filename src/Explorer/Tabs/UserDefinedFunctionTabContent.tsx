@@ -161,7 +161,7 @@ export default class UserDefinedFunctionTabContent extends Component<
           },
           startKey,
         );
-        this.props.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
+        this.props.editorState(ViewModels.ScriptEditorState.existingNoEdits);
       }
     } catch (createError) {
       this.props.isExecutionError(true);
