@@ -1,9 +1,12 @@
 /**
  * Utility class to help with selection.
- * This emulates File Explorer:
- * shift-ctrl: deselect index if selected, but do not select if not selected
- * ctrl: toggle selection of index
+ * This emulates File Explorer selection behavior.
+ * ctrl: toggle selection of index.
  * shift: select all rows between selectionStartIndex and index
+ * shift + ctrl: select or deselect all rows between selectionStartIndex and index depending on whether selectionStartIndex is selected
+ * No modifier only selects the clicked row
+ * ctrl: updates selection start index
+ * shift: do not update selection start index
  *
  * @param currentSelection current selection
  * @param clickedIndex index of clicked row
