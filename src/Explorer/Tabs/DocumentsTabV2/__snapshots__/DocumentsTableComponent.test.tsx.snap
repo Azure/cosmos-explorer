@@ -521,6 +521,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "position": "absolute",
                         "right": undefined,
                         "top": 0,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -538,6 +539,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           "position": "absolute",
                           "right": undefined,
                           "top": 0,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -747,6 +749,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "position": "absolute",
                         "right": undefined,
                         "top": 30,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -764,6 +767,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           "position": "absolute",
                           "right": undefined,
                           "top": 30,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -973,6 +977,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "position": "absolute",
                         "right": undefined,
                         "top": 60,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -990,6 +995,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           "position": "absolute",
                           "right": undefined,
                           "top": 60,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }

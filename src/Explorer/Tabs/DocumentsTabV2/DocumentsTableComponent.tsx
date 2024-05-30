@@ -154,7 +154,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     return (
       <TableRow
         aria-rowindex={index + 2}
-        style={{ ...style, cursor: "pointer" }}
+        style={{ ...style, cursor: "pointer", userSelect: "none" }}
         key={item.id}
         aria-selected={selected}
         appearance={appearance}
@@ -174,7 +174,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             className="documentsTableCell"
             // When clicking on a cell with shift/ctrl key, onKeyDown is called instead of onClick.
             onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index)}
-            // onKeyDown={(e) => onIdClicked(e, index)}
             onKeyPress={(e: React.KeyboardEvent<Element>) => onIdClicked(e, index)}
             {...columnSizing.getTableCellProps(column.columnId)}
             tabIndex={column.columnId === "id" ? 0 : -1}

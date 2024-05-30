@@ -25,9 +25,6 @@ export const selectionHelper = (
   selection: Set<number>;
   selectionStartIndex: number;
 } => {
-  // Clear selection if no modifier keys are pressed
-  document.getSelection().removeAllRanges();
-
   if (isShiftKey) {
     // Shift is about selecting range of rows
     if (isCtrlKey) {
