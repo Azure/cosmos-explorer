@@ -152,11 +152,20 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
     const { item, selected, appearance, onClick, onKeyDown } = data[index];
     return (
-      <TableRow aria-rowindex={index + 2} style={style} key={item.id} aria-selected={selected} appearance={appearance}>
+      <TableRow
+        aria-rowindex={index + 2}
+        style={{ ...style, cursor: "pointer" }}
+        key={item.id}
+        aria-selected={selected}
+        appearance={appearance}
+      >
         <TableSelectionCell
           checked={selected}
           checkboxIndicator={{ "aria-label": "Select row" }}
-          onClick={onClick}
+          onClick={(e: React.MouseEvent) => {
+            setSelectionStartIndex(index);
+            onClick(e);
+          }}
           onKeyDown={onKeyDown}
         />
         {columns.map((column) => (
