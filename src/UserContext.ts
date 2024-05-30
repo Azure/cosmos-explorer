@@ -69,7 +69,7 @@ export type AdminFeedbackPolicySettings = {
   [key in AdminFeedbackControlPolicy]: boolean;
 };
 
-interface UserContext {
+export interface UserContext {
   readonly fabricContext?: FabricContext;
   readonly authType?: AuthType;
   readonly masterKey?: string;

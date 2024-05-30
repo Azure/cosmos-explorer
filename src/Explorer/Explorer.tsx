@@ -136,14 +136,6 @@ export default class Explorer {
 
     this.isTabsContentExpanded = ko.observable(false);
 
-    document.addEventListener(
-      "contextmenu",
-      (e) => {
-        e.preventDefault();
-      },
-      false,
-    );
-
     $(() => {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });

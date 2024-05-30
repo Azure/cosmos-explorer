@@ -6,16 +6,16 @@ import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
 import { DocumentsGridMetrics, KeyCodes } from "../../Common/Constants";
-import { createDocument } from "../../Common/dataAccess/createDocument";
-import { deleteConflict } from "../../Common/dataAccess/deleteConflict";
-import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
-import { queryConflicts } from "../../Common/dataAccess/queryConflicts";
-import { updateDocument } from "../../Common/dataAccess/updateDocument";
 import editable from "../../Common/EditableUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
+import { createDocument } from "../../Common/dataAccess/createDocument";
+import { deleteConflict } from "../../Common/dataAccess/deleteConflict";
+import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
+import { queryConflicts } from "../../Common/dataAccess/queryConflicts";
+import { updateDocument } from "../../Common/dataAccess/updateDocument";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
@@ -117,15 +117,15 @@ export default class ConflictsTab extends TabsBase {
     this.isEditorDirty = ko.computed<boolean>(() => {
       switch (this.editorState()) {
         case ViewModels.DocumentExplorerState.noDocumentSelected:
-        case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+        case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
           return false;
 
         case ViewModels.DocumentExplorerState.newDocumentValid:
         case ViewModels.DocumentExplorerState.newDocumentInvalid:
-        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+        case ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid:
           return true;
 
-        case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+        case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
           return (
             this.selectedConflictCurrent.getEditableOriginalValue() !==
             this.selectedConflictCurrent.getEditableCurrentValue()
@@ -139,8 +139,8 @@ export default class ConflictsTab extends TabsBase {
     this.acceptChangesButton = {
       enabled: ko.computed<boolean>(() => {
         switch (this.editorState()) {
-          case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
-          case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+          case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
+          case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
             return true;
         }
 
@@ -155,8 +155,8 @@ export default class ConflictsTab extends TabsBase {
     this.discardButton = {
       enabled: ko.computed<boolean>(() => {
         switch (this.editorState()) {
-          case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
-          case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+          case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
+          case ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid:
             return true;
         }
 
@@ -171,8 +171,8 @@ export default class ConflictsTab extends TabsBase {
     this.deleteButton = {
       enabled: ko.computed<boolean>(() => {
         switch (this.editorState()) {
-          case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
-          case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+          case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
+          case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
             return true;
         }
 
@@ -247,7 +247,7 @@ export default class ConflictsTab extends TabsBase {
       return Q();
     }
 
-    this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+    this.editorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
 
     return Q();
   }
@@ -407,22 +407,22 @@ export default class ConflictsTab extends TabsBase {
 
   public onDiscardClick = (): Q.Promise<any> => {
     this.selectedConflictContent(this.selectedConflictContent.getEditableOriginalValue());
-    this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+    this.editorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
 
     return Q();
   };
 
   public onValidDocumentEdit(): Q.Promise<any> {
-    this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid);
+    this.editorState(ViewModels.DocumentExplorerState.existingDocumentDirtyValid);
     return Q();
   }
 
   public onInvalidDocumentEdit(): Q.Promise<any> {
     if (
-      this.editorState() === ViewModels.DocumentExplorerState.exisitingDocumentNoEdits ||
-      this.editorState() === ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid
+      this.editorState() === ViewModels.DocumentExplorerState.existingDocumentNoEdits ||
+      this.editorState() === ViewModels.DocumentExplorerState.existingDocumentDirtyValid
     ) {
-      this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid);
+      this.editorState(ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid);
       return Q();
     }
 
@@ -555,7 +555,7 @@ export default class ConflictsTab extends TabsBase {
       let parsedConflictContent: any = JSON.parse(documentToInsert);
       const renderedConflictContent: string = this.renderObjectForEditor(parsedConflictContent, null, 4);
       this.selectedConflictContent.setBaseline(renderedConflictContent);
-      this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+      this.editorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
     }
 
     return Q();
@@ -576,7 +576,7 @@ export default class ConflictsTab extends TabsBase {
 
       const renderedConflictContent: string = this.renderObjectForEditor(parsedConflictContent, null, 4);
       this.selectedConflictContent.setBaseline(renderedConflictContent);
-      this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+      this.editorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
     }
 
     return Q();
@@ -588,7 +588,7 @@ export default class ConflictsTab extends TabsBase {
       parsedDocumentToDelete = ConflictsTab.removeSystemProperties(parsedDocumentToDelete);
       const renderedDocumentToDelete: string = this.renderObjectForEditor(parsedDocumentToDelete, null, 4);
       this.selectedConflictContent.setBaseline(renderedDocumentToDelete);
-      this.editorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+      this.editorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
     }
 
     return Q();

@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TreeComponent renders a simple tree 1`] = `
+exports[`LegacyTreeComponent renders a simple tree 1`] = `
 <div
   className="treeComponent tree"
   role="tree"
 >
-  <TreeNodeComponent
+  <LegacyTreeNodeComponent
     generation={0}
     node={
       Object {
@@ -33,7 +33,7 @@ exports[`TreeComponent renders a simple tree 1`] = `
 </div>
 `;
 
-exports[`TreeNodeComponent does not render children by default 1`] = `
+exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
 <div
   className=" main2 nodeItem "
   onClick={[Function]}
@@ -102,7 +102,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="Bchild1-3-undefined"
         node={
@@ -120,7 +120,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
         }
         paddingLeft={32}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="2child2-3-undefined"
         node={
@@ -135,7 +135,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
 </div>
 `;
 
-exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`] = `
+exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expanded) 1`] = `
 <div
   className="nodeClassname main12 nodeItem "
   id="id"
@@ -254,7 +254,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="2child2-13-undefined"
         node={
@@ -264,7 +264,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
         }
         paddingLeft={214}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="Bchild1-13-undefined"
         node={
@@ -287,7 +287,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
 </div>
 `;
 
-exports[`TreeNodeComponent renders loading icon 1`] = `
+exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
 <div
   className=" main2 nodeItem "
   onClick={[Function]}
@@ -360,7 +360,7 @@ exports[`TreeNodeComponent renders loading icon 1`] = `
 </div>
 `;
 
-exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents separated 1`] = `
+exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and parents separated 1`] = `
 <div
   className="nodeClassname main12 nodeItem "
   id="id"
@@ -470,7 +470,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="bchild-13-undefined"
         node={
@@ -488,7 +488,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
         }
         paddingLeft={192}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="dchild-13-undefined"
         node={
@@ -506,7 +506,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
         }
         paddingLeft={192}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="aChild-13-undefined"
         node={
@@ -516,7 +516,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
         }
         paddingLeft={214}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={13}
         key="cchild-13-undefined"
         node={
@@ -531,7 +531,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
 </div>
 `;
 
-exports[`TreeNodeComponent renders unsorted children by default 1`] = `
+exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
 <div
   className=" main2 nodeItem "
   onClick={[Function]}
@@ -600,7 +600,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
       data-test="label"
       role="group"
     >
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="Bchild1-3-undefined"
         node={
@@ -618,7 +618,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
         }
         paddingLeft={32}
       />
-      <TreeNodeComponent
+      <LegacyTreeNodeComponent
         generation={3}
         key="2child2-3-undefined"
         node={

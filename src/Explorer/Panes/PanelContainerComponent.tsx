@@ -53,6 +53,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 
     return (
       <Panel
+        data-test={`Panel:${this.props.headerText}`}
         headerText={this.props.headerText}
         isOpen={this.props.isOpen}
         onDismiss={this.onDissmiss}

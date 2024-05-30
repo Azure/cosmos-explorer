@@ -146,7 +146,7 @@ export const getDiscardNewDocumentChangesButtonState = (editorState: ViewModels.
 export const getSaveExistingDocumentButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
   enabled: (() => {
     switch (editorState) {
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
         return true;
       default:
         return false;
@@ -155,9 +155,9 @@ export const getSaveExistingDocumentButtonState = (editorState: ViewModels.Docum
 
   visible: (() => {
     switch (editorState) {
-      case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+      case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
         return true;
       default:
         return false;
@@ -169,8 +169,8 @@ export const getSaveExistingDocumentButtonState = (editorState: ViewModels.Docum
 export const getDiscardExistingDocumentChangesButtonState = (editorState: ViewModels.DocumentExplorerState) => ({
   enabled: (() => {
     switch (editorState) {
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
         return true;
       default:
         return false;
@@ -179,9 +179,9 @@ export const getDiscardExistingDocumentChangesButtonState = (editorState: ViewMo
 
   visible: (() => {
     switch (editorState) {
-      case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+      case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
         return true;
       default:
         return false;
@@ -368,7 +368,7 @@ const getNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerState
   enabled: (() => {
     switch (editorState) {
       case ViewModels.DocumentExplorerState.noDocumentSelected:
-      case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+      case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
         return true;
       default:
         return false;
@@ -588,15 +588,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const isEditorDirty = useCallback((): boolean => {
     switch (editorState) {
       case ViewModels.DocumentExplorerState.noDocumentSelected:
-      case ViewModels.DocumentExplorerState.exisitingDocumentNoEdits:
+      case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
         return false;
 
       case ViewModels.DocumentExplorerState.newDocumentValid:
       case ViewModels.DocumentExplorerState.newDocumentInvalid:
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid:
         return true;
 
-      case ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid:
+      case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
         return true;
 
       default:
@@ -685,7 +685,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           ids.push(id);
 
           setDocumentIds(ids);
-          setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+          setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
           TelemetryProcessor.traceSuccess(
             Action.CreateDocument,
             {
@@ -759,7 +759,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               documentId.id(updatedDocument.id);
             }
           });
-          setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+          setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
           TelemetryProcessor.traceSuccess(
             Action.UpdateDocument,
             {
@@ -1179,7 +1179,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       setInitialDocumentContent(content);
 
       const newState = documentId
-        ? ViewModels.DocumentExplorerState.exisitingDocumentNoEdits
+        ? ViewModels.DocumentExplorerState.existingDocumentNoEdits
         : ViewModels.DocumentExplorerState.newDocumentValid;
       setEditorState(newState);
     }
@@ -1193,7 +1193,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       newContent === initialDocumentContent &&
       editorState !== ViewModels.DocumentExplorerState.newDocumentValid
     ) {
-      setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+      setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
       return;
     }
 
@@ -1221,7 +1221,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return;
     }
 
-    setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid);
+    setEditorState(ViewModels.DocumentExplorerState.existingDocumentDirtyValid);
   };
 
   const onInvalidDocumentEdit = (): void => {
@@ -1234,10 +1234,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
 
     if (
-      editorState === ViewModels.DocumentExplorerState.exisitingDocumentNoEdits ||
-      editorState === ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid
+      editorState === ViewModels.DocumentExplorerState.existingDocumentNoEdits ||
+      editorState === ViewModels.DocumentExplorerState.existingDocumentDirtyValid
     ) {
-      setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid);
+      setEditorState(ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid);
       return;
     }
   };
@@ -1280,7 +1280,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
       // If only one selection, we consider as a click
       if (selectedRows.size === 1) {
-        setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+        setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
       }
 
       setSelectedRows(selectedRows);
@@ -1443,7 +1443,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             setSelectedDocumentContentBaseline(value);
 
             setDocumentIds(ids);
-            setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+            setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
             TelemetryProcessor.traceSuccess(
               Action.CreateDocument,
               {
@@ -1514,7 +1514,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 documentId.id(id.id());
               }
             });
-            setEditorState(ViewModels.DocumentExplorerState.exisitingDocumentNoEdits);
+            setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
             TelemetryProcessor.traceSuccess(
               Action.UpdateDocument,
               {

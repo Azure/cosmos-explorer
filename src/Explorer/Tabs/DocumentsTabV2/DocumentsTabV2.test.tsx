@@ -179,17 +179,17 @@ describe("Documents tab (noSql API)", () => {
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: true, visible: true });
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: true });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        state: ViewModels.DocumentExplorerState.existingDocumentNoEdits,
         enabled: false,
         visible: false,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyValid,
         enabled: false,
         visible: false,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid,
         enabled: false,
         visible: false,
       });
@@ -211,17 +211,17 @@ describe("Documents tab (noSql API)", () => {
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: true, visible: true });
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: true, visible: true });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        state: ViewModels.DocumentExplorerState.existingDocumentNoEdits,
         enabled: false,
         visible: false,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyValid,
         enabled: false,
         visible: false,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid,
         enabled: false,
         visible: false,
       });
@@ -243,17 +243,17 @@ describe("Documents tab (noSql API)", () => {
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: false, visible: false });
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: false });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        state: ViewModels.DocumentExplorerState.existingDocumentNoEdits,
         enabled: false,
         visible: true,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyValid,
         enabled: true,
         visible: true,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid,
         enabled: false,
         visible: true,
       });
@@ -275,17 +275,17 @@ describe("Documents tab (noSql API)", () => {
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: false, visible: false });
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: false });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits,
+        state: ViewModels.DocumentExplorerState.existingDocumentNoEdits,
         enabled: false,
         visible: true,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyValid,
         enabled: true,
         visible: true,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid,
         enabled: true,
         visible: true,
       });
@@ -306,14 +306,14 @@ describe("Documents tab (noSql API)", () => {
       testCases.add({ state: ViewModels.DocumentExplorerState.noDocumentSelected, enabled: false, visible: false });
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentValid, enabled: false, visible: false });
       testCases.add({ state: ViewModels.DocumentExplorerState.newDocumentInvalid, enabled: false, visible: false });
-      testCases.add({ state: ViewModels.DocumentExplorerState.exisitingDocumentNoEdits, enabled: true, visible: true });
+      testCases.add({ state: ViewModels.DocumentExplorerState.existingDocumentNoEdits, enabled: true, visible: true });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyValid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyValid,
         enabled: true,
         visible: true,
       });
       testCases.add({
-        state: ViewModels.DocumentExplorerState.exisitingDocumentDirtyInvalid,
+        state: ViewModels.DocumentExplorerState.existingDocumentDirtyInvalid,
         enabled: true,
         visible: true,
       });
