@@ -141,7 +141,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
    * - a key is down and the cell is clicked by the mouse
    */
   const onIdClicked = useCallback(
-    (e: KeyboardEvent, index: number) => {
+    (e: React.KeyboardEvent<Element>, index: number) => {
       if (e.key === NormalizedEventKey.Enter || e.key === NormalizedEventKey.Space) {
         onSelectedRowsChange(new Set<TableRowId>([index]));
       }
@@ -175,7 +175,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             // When clicking on a cell with shift/ctrl key, onKeyDown is called instead of onClick.
             onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index)}
             // onKeyDown={(e) => onIdClicked(e, index)}
-            onKeyPress={(e) => onIdClicked(e, index)}
+            onKeyPress={(e: React.KeyboardEvent<Element>) => onIdClicked(e, index)}
             {...columnSizing.getTableCellProps(column.columnId)}
             tabIndex={column.columnId === "id" ? 0 : -1}
           >
