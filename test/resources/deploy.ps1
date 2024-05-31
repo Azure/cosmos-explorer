@@ -3,8 +3,20 @@ param(
     [Parameter(Mandatory=$false)][string]$Subscription,
     [Parameter(Mandatory=$false)][string]$Location,
     [Parameter(Mandatory=$false)][string]$ResourcePrefix,
+    [ValidateSet("tables", "cassandra", "gremlin", "mongo", "mongo32", "sql")] # This must be a constant so we can't re-use the $AllResourceTypes variable :(
     [Parameter(Mandatory=$false)][string[]]$ResourceSets,
-    [Parameter(Mandatory=$false)][string]$OwnerName
+    [Parameter(Mandatory=$false)][string]$OwnerName,
+    [Parameter(Mandatory=$false)][int]$TotalThroughputLimit = 10000,
+    [Parameter(Mandatory=$false)][switch]$WhatIf
+)
+
+$AllResourceTypes = @(
+  "tables",
+  "cassandra",
+  "gremlin",
+  "mongo",
+  "mongo32",
+  "sql"
 )
 
 if (-not (Get-Command bicep -ErrorAction SilentlyContinue)) {
@@ -80,28 +92,33 @@ if (-not $AzLocation) {
 }
 
 if (-not $ResourceSets) {
-    $ResourceSets = @(Get-ChildItem -Path $PSScriptRoot -Filter "*.bicep" | Select-Object -ExpandProperty BaseName)
+    $ResourceSets = $AllResourceTypes
+} else {
+    # Normalize the resource set names to the value in AllResourceTypes
+    $ResourceSets = $ResourceSets | ForEach-Object { $_.ToLower() }
 }
 
 Write-Host "Deploying test resource sets: $ResourceSets"
 Write-Host "  in $($AzLocation.DisplayName)"
 Write-Host "  to resource group $ResourceGroup"
 Write-Host "  in subscription $($AzSubscription.Name) ($($AzSubscription.Id))."
+if($WhatIf) {
+    Write-Host "  (What-If mode enabled)"
+}
 
 $continue = Read-Host "Do you want to continue? (y/n)"
 if ($continue -ne "y") {
     throw "Deployment cancelled."
 }
 
-$ResourceSets | ForEach-Object {
-    $bicepFile = "$PSScriptRoot\$_.bicep"
-    if (-not (Test-Path $bicepFile)) {
-        throw "The Bicep file '$bicepFile' could not be found."
-    }
-
-    $accountName = $ResourcePrefix + $_
-
-    Write-Host "Deploying resource set $_ with account name $accountName ..."
-    New-AzResourceGroupDeployment -ResourceGroupName $AzResourceGroup.ResourceGroupName -TemplateFile $bicepFile -accountName $accountName -location $AzLocation.Location -ownerName $OwnerName
-    Write-Host "Deployed!"
-}
+$bicepFile = Join-Path $PSScriptRoot "all-accounts.bicep"
+Write-Host "Deploying resources using $bicepFile"
+New-AzResourceGroupDeployment `
+    -ResourceGroupName $AzResourceGroup.ResourceGroupName `
+    -TemplateFile $bicepFile `
+    -WhatIf:$WhatIf `
+    -accountPrefix $ResourcePrefix `
+    -testAccountTypes $ResourceSets `
+    -location $AzLocation.Location `
+    -ownerName $OwnerName `
+    -totalThroughputLimit $TotalThroughputLimit

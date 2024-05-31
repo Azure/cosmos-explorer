@@ -1,5 +1,3 @@
-// Deploys a Mongo CosmosDB Account, using mongo 3.2, suitable for running the tests in the 'mongo' suite.
-
 targetScope = 'resourceGroup'
 
 @description('The name of the account to create/update. If the account already exists, it will be updated.')
@@ -10,15 +8,29 @@ param ownerName string
 param location string
 @description('The total throughput limit for the account. Defaults to 10000 RU/s.')
 param totalThroughputLimit int = 10000
+@allowed([
+  'tables'
+  'cassandra'
+  'gremlin'
+  'mongo'
+  'mongo32'
+  'sql'
+])
+@description('The type of account to create.')
+param testAccountType string
 
-resource testAccountMongo32 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {
+var kind = (testAccountType == 'mongo' || testAccountType == 'mongo32') ? 'MongoDB' : 'GlobalDocumentDB'
+var capabilities = (testAccountType == 'tables') ? [{name: 'EnableTable'}] : (testAccountType == 'cassandra') ? [{name: 'EnableCassandra'}] : (testAccountType == 'gremlin') ? [{name: 'EnableGremlin'}] : []
+var serverVersion = (testAccountType == 'mongo32') ? '3.2' : (testAccountType == 'mongo') ? '6.0' : null
+
+resource testCosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {
   name: accountName
   location: location
   tags: {
-    'DataExplorer:TestAccountType': 'Mongo32'
+    'DataExplorer:TestAccountType': testAccountType
     Owner: ownerName
   }
-  kind: 'MongoDB'
+  kind: kind
   properties: {
     databaseAccountOfferType: 'Standard'
     locations: [
@@ -28,8 +40,9 @@ resource testAccountMongo32 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-pr
       }
     ]
     apiProperties: {
-      serverVersion: '3.2'
+      serverVersion: serverVersion
     }
+    capabilities: capabilities 
     capacity: {
       totalThroughputLimit: totalThroughputLimit
     }
