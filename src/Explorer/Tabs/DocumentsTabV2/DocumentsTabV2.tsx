@@ -1627,6 +1627,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     async (applyFilterButtonPressed?: boolean): Promise<void> => {
       // clear documents grid
       setDocumentIds([]);
+      setContinuationToken(undefined); // For mongo
       try {
         // reset iterator which will autoload documents (in useEffect)
         setDocumentsIterator({
