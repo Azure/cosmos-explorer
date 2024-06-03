@@ -80,16 +80,16 @@ class TreeNode {
   }
 
   async expand(): Promise<void> {
-    // Wait for the expand button to be visible. Sometimes it takes a bit to pop in
-    const expandButton = this.element.locator("css=.fui-TreeItemLayout__expandIcon");
-    await expandButton.waitFor();
+    // Sometimes, the expand button doesn't load at all, because the node didn't have children when it was initially loaded.
+    // Still, clicking the node will trigger loading and expansion. So if the node isn't expanded, we click it.
 
     // The "aria-expanded" attribute is applied to the TreeItem. But we have the TreeItemLayout selected because the TreeItem contains the child tree as well.
     // So, we need to find the TreeItem that contains this TreeItemLayout.
     const treeNodeContainer = this.frame.getByTestId(`TreeNodeContainer:${this.id}`);
 
     if (await treeNodeContainer.getAttribute("aria-expanded") !== "true") {
-      await expandButton.click();
+      // Click the node, to trigger loading and expansion
+      await this.element.click();
     }
     await expect(treeNodeContainer).toHaveAttribute("aria-expanded", "true")
   }

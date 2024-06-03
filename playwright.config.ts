@@ -13,8 +13,8 @@ export default defineConfig({
   timeout: 10 * 60 * 1000,
   use: {
     actionTimeout: 5 * 60 * 1000,
-    trace: 'retain-on-failure',
-    video: 'retain-on-failure',
+    trace: 'off',
+    video: 'off',
     screenshot: 'on',
     testIdAttribute: 'data-test',
     contextOptions: {
