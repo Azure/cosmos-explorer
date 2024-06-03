@@ -17,12 +17,8 @@ test("Cassandra keyspace and table CRUD", async ({ page }) => {
   });
 
   const keyspaceNode = explorer.treeNode(`DATA/${keyspaceId}`);
-  await expect(keyspaceNode.element).toBeAttached();
-
-  await keyspaceNode.element.click();
-
+  await keyspaceNode.expand();
   const tableNode = explorer.treeNode(`DATA/${keyspaceId}/${tableId}`);
-  await expect(tableNode.element).toBeAttached();
 
   await tableNode.openContextMenu();
   await tableNode.contextMenuItem("Delete Table").click();

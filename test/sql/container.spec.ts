@@ -18,12 +18,8 @@ test("SQL database and container CRUD", async ({ page }) => {
   });
 
   const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
-  await expect(databaseNode.element).toBeAttached();
-
-  await databaseNode.element.click();
-
+  await databaseNode.expand();
   const containerNode = explorer.treeNode(`DATA/${databaseId}/${containerId}`);
-  await expect(containerNode.element).toBeAttached();
 
   await containerNode.openContextMenu();
   await containerNode.contextMenuItem("Delete Container").click();

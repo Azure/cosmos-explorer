@@ -23,7 +23,7 @@ if (-not $AzSubscription) {
     throw "The subscription '$Subscription' could not be found."
 }
 
-Set-AzContext $AzSubscription.Id
+Set-AzContext $AzSubscription.Id | Out-Null
 
 if (-not $ResourceGroup) {
     # Check for the default resource group name
@@ -57,6 +57,12 @@ Write-Host "Configuring for E2E Testing"
 Write-Host "  Subscription: $($AzSubscription.Name) ($($AzSubscription.Id))"
 Write-Host "  Resource Group: $($AzResourceGroup.ResourceGroupName)"
 Write-Host "  Resource Prefix: $ResourcePrefix"
+
+Get-AzResource -ResourceGroupName $AzResourceGroup.ResourceGroupName -ResourceType "Microsoft.DocumentDB/databaseAccounts" -ErrorAction SilentlyContinue | ForEach-Object {
+    if ($_.Name -like "$ResourcePrefix*") {
+        Write-Host "    Found CosmosDB Account: $($_.Name)"
+    }
+}
 
 $env:DE_TEST_RESOURCE_GROUP = $AzResourceGroup.ResourceGroupName
 $env:DE_TEST_SUBSCRIPTION_ID = $AzSubscription.Id

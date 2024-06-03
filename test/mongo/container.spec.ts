@@ -22,12 +22,8 @@ import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateU
     });
 
     const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
-    await expect(databaseNode.element).toBeAttached();
-
-    await databaseNode.element.click();
-
+    await databaseNode.expand();
     const collectionNode = explorer.treeNode(`DATA/${databaseId}/${collectionId}`);
-    await expect(collectionNode.element).toBeAttached();
 
     await collectionNode.openContextMenu();
     await collectionNode.contextMenuItem("Delete Collection").click();

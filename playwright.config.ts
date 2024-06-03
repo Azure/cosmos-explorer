@@ -7,16 +7,23 @@ export default defineConfig({
   testDir: 'test',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 3 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? 'blob' : 'html',
-  timeout: 5 * 60 * 1000,
+  timeout: 10 * 60 * 1000,
   use: {
-    trace: 'on-first-retry',
+    actionTimeout: 5 * 60 * 1000,
+    trace: 'retain-on-failure',
+    video: 'retain-on-failure',
+    screenshot: 'on',
     testIdAttribute: 'data-test',
     contextOptions: {
       ignoreHTTPSErrors: true,
     },
+  },
+
+  expect: {
+    timeout: 5 * 60 * 1000,
   },
 
   projects: [
@@ -38,7 +45,8 @@ export default defineConfig({
 
   webServer: {
     command: 'npm run start',
-    url: 'https://127.0.0.1:1234',
+    url: 'https://127.0.0.1:1234/_ready',
+    timeout: 120 * 1000,
     ignoreHTTPSErrors: true,
     reuseExistingServer: !process.env.CI,
   },

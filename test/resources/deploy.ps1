@@ -19,6 +19,9 @@ $AllResourceTypes = @(
   "sql"
 )
 
+Import-Module "Az.Accounts" -Scope Local
+Import-Module "Az.Resources" -Scope Local
+
 if (-not (Get-Command bicep -ErrorAction SilentlyContinue)) {
     throw "The Bicep CLI is required to run this script. Please install it first."
 }
@@ -27,32 +30,12 @@ if (-not (Get-AzContext)) {
     throw "Please login to your Azure account using Connect-AzAccount before running this script."
 }
 
-$AccountId = (Get-AzContext).Account.Id
-$MicrosoftAlias = $null
-if($AccountId.EndsWith("microsoft.com")) {
-    $MicrosoftAlias = $AccountId.Split("@")[0]
-} else {
-    Write-Warning "This script is designed with Microsoft employees in mind. However, you're welcome to use it as well! Please note that some features may not work as expected."
-    $continue = Read-Host "Do you want to continue? (y/n)"
-    if ($continue -ne "y") {
-        throw "Deployment cancelled."
-    }
-}
-
 if(-not $ResourcePrefix) {
-    if(-not $MicrosoftAlias) {
-        throw "If you're not a Microsoft employee, you must specify a resource prefix using '-ResourcePrefix'. This can be any value, it's used as the prefix for the names of Azure resources to avoid conflicts."
-    } else {
-        $ResourcePrefix = $MicrosoftAlias + "-e2e-"
-    }
+    $ResourcePrefix = $env:USERNAME + "-e2e-"
 }
 
 if(-not $OwnerName) {
-    if(-not $MicrosoftAlias) {
-        throw "If you're not a Microsoft employee, you must specify an owner name using '-OwnerName'. This can be any value, it's used to apply the 'Owner' tag to Azure resources for easier identification."
-    } else {
-        $OwnerName = $MicrosoftAlias
-    }
+    $OwnerName = $env:USERNAME
 }
 
 if (-not $Subscription) {
@@ -71,10 +54,16 @@ if (-not $AzSubscription) {
     throw "The subscription '$Subscription' could not be found."
 }
 
-Set-AzContext $AzSubscription
+Set-AzContext $AzSubscription | Out-Null
 
 if (-not $ResourceGroup) {
-    $ResourceGroup = Read-Host "Specify the name of the resource group to deploy the resources to."
+    $DefaultResourceGroupName = $env:USERNAME + "-e2e-testing"
+    if (Get-AzResourceGroup -Name $DefaultResourceGroupName -ErrorAction SilentlyContinue) {
+        Write-Host "Found a resource group with the default name ($DefaultResourceGroupName). Using that resource group. If you want to use a different resource group, specify it as a parameter."
+        $ResourceGroup = $DefaultResourceGroupName
+    } else {
+        $ResourceGroup = Read-Host "Specify the name of the resource group to deploy the resources to."
+    }
 }
 
 $AzResourceGroup = Get-AzResourceGroup -Name $ResourceGroup -ErrorAction SilentlyContinue

@@ -19,12 +19,8 @@ test("Gremlin graph CRUD", async ({ page }) => {
   });
 
   const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
-  await expect(databaseNode.element).toBeAttached();
-
-  await databaseNode.element.click();
-
+  await databaseNode.expand();
   const graphNode = explorer.treeNode(`DATA/${databaseId}/${graphId}`);
-  await expect(graphNode.element).toBeAttached();
 
   await graphNode.openContextMenu();
   await graphNode.contextMenuItem("Delete Graph").click();

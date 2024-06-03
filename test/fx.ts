@@ -1,5 +1,5 @@
 import { AzureCliCredentials } from "@azure/ms-rest-nodeauth";
-import { Frame, Locator, Page } from "@playwright/test";
+import { expect, Frame, Locator, Page } from "@playwright/test";
 import crypto from "crypto";
 
 export function generateUniqueName(baseName = "", length = 4): string {
@@ -78,6 +78,21 @@ class TreeNode {
   contextMenuItem(name: string): Locator {
     return this.frame.getByTestId(`TreeNode/ContextMenuItem:${name}`);
   }
+
+  async expand(): Promise<void> {
+    // Wait for the expand button to be visible. Sometimes it takes a bit to pop in
+    const expandButton = this.element.locator("css=.fui-TreeItemLayout__expandIcon");
+    await expandButton.waitFor();
+
+    // The "aria-expanded" attribute is applied to the TreeItem. But we have the TreeItemLayout selected because the TreeItem contains the child tree as well.
+    // So, we need to find the TreeItem that contains this TreeItemLayout.
+    const treeNodeContainer = this.frame.getByTestId(`TreeNodeContainer:${this.id}`);
+
+    if (await treeNodeContainer.getAttribute("aria-expanded") !== "true") {
+      await expandButton.click();
+    }
+    await expect(treeNodeContainer).toHaveAttribute("aria-expanded", "true")
+  }
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
@@ -106,7 +121,6 @@ export class DataExplorer {
   }
 
   static async waitForExplorer(page: Page) {
-    page.setDefaultTimeout(2 * 60 * 1000); // Set the timeout to 2 minutes
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
     if (iframeElement === null) {
       throw new Error("Explorer iframe not found");
