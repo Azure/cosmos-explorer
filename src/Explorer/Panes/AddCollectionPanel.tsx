@@ -899,7 +899,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <AddVectorEmbeddingPolicyForm
                       vectorEmbedding={this.state.vectorEmbeddingPolicy}
                       vectorIndex={this.state.vectorIndexingPolicy}
-                      onVectorEmbeddingChange={this.setVectorEmbeddingPolicy}
+                      onVectorEmbeddingChange={(vectorEmbedding: DataModels.VectorEmbedding[]) => {
+                        this.setState({ vectorEmbeddingPolicy: vectorEmbedding });
+                      }}
                       onValidationChange={(allValidated: boolean) => {
                         this.setState({ vectorEmbeddingPolicyValidated: allValidated });
                       }}
@@ -921,7 +923,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <AddVectorIndexingPolicyForm
                       vectorEmbedding={this.state.vectorEmbeddingPolicy}
                       vectorIndex={this.state.vectorIndexingPolicy}
-                      onVectorIndexingChange={this.setVectorIndexingPolicy}
+                      onVectorIndexingChange={(vectorIndex: DataModels.VectorIndex[]) => {
+                        this.setState({ vectorIndexingPolicy: vectorIndex });
+                      }}
                       onValidationChange={(allValidated: boolean) => {
                         this.setState({ vectorIndexingPolicyValidated: allValidated });
                       }}
@@ -1382,22 +1386,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       }
     }
 
-    // if (this.shouldShowVectorSearchParameters()) {
-    //   try {
-    //     JSON.parse(this.state.vectorIndexingPolicy) as DataModels.IndexingPolicy;
-    //   } catch (e) {
-    //     this.setState({ errorMessage: "Invalid JSON format for indexingPolicy" });
-    //     return false;
-    //   }
-
-    //   try {
-    //     JSON.parse(this.state.vectorEmbeddingPolicy) as DataModels.VectorEmbeddingPolicy;
-    //   } catch (e) {
-    //     this.setState({ errorMessage: "Invalid JSON format for vectorEmbeddingPolicy" });
-    //     return false;
-    //   }
-    // }
-
     return true;
   }
 
@@ -1480,7 +1468,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     let vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
 
     if (this.shouldShowVectorSearchParameters()) {
-      // indexingPolicy = JSON.parse(this.state.vectorIndexingPolicy);
       indexingPolicy.vectorIndexes = this.state.vectorIndexingPolicy;
       vectorEmbeddingPolicy = {
         vectorEmbeddings: this.state.vectorEmbeddingPolicy,
