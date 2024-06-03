@@ -1779,6 +1779,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   selectedRows={selectedRows}
                   size={tableContainerSizePx}
                   columnHeaders={columnHeaders}
+                  isSelectionDisabled={
+                    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
+                  }
                 />
                 {tableItems.length > 0 && (
                   <a
