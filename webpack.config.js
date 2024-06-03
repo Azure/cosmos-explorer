@@ -289,13 +289,13 @@ module.exports = function (_env = {}, argv = {}) {
         // Provide an HTTP API that will wait for compilation of all bundles to be completed.
         // This is used by Playwright to know when the server is ready to be tested.
         let compilationComplete = false;
-        server.compiler.hooks.done.tap('done', () => {
+        server.compiler.hooks.done.tap("done", () => {
           setImmediate(() => {
             compilationComplete = true;
           });
         });
 
-        server.app.get('/_ready', (_, res) => {
+        server.app.get("/_ready", (_, res) => {
           if (compilationComplete) {
             res.status(200).send("Compilation complete.");
           } else {

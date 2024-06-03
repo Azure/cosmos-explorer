@@ -369,6 +369,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
         >
           <CustomizedPrimaryButton
             ariaLabel="Add Entity"
+            data-test="Panel/OkButton"
             disabled={false}
             id="sidePanelOkButton"
             text="Add Entity"
@@ -376,6 +377,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
           >
             <PrimaryButton
               ariaLabel="Add Entity"
+              data-test="Panel/OkButton"
               disabled={false}
               id="sidePanelOkButton"
               text="Add Entity"
@@ -656,6 +658,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
             >
               <CustomizedDefaultButton
                 ariaLabel="Add Entity"
+                data-test="Panel/OkButton"
                 disabled={false}
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
@@ -938,6 +941,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
               >
                 <DefaultButton
                   ariaLabel="Add Entity"
+                  data-test="Panel/OkButton"
                   disabled={false}
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
@@ -1221,6 +1225,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                   <BaseButton
                     ariaLabel="Add Entity"
                     baseClassName="ms-Button"
+                    data-test="Panel/OkButton"
                     disabled={false}
                     id="sidePanelOkButton"
                     onRenderDescription={[Function]}
@@ -2095,6 +2100,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       aria-label="Add Entity"
                       className="ms-Button ms-Button--primary root-113"
                       data-is-focusable={true}
+                      data-test="Panel/OkButton"
                       id="sidePanelOkButton"
                       onClick={[Function]}
                       onKeyDown={[Function]}

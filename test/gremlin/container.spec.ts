@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
-import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from '../fx';
+import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
 
 test("Gremlin graph CRUD", async ({ page }) => {
   const databaseId = generateDatabaseNameWithTimestamp();
@@ -11,10 +11,10 @@ test("Gremlin graph CRUD", async ({ page }) => {
   // Create new database and graph
   await explorer.commandBarButton("New Graph").click();
   await explorer.whilePanelOpen("New Graph", async (panel, okButton) => {
-    await panel.getByPlaceholder('Type a new database id').fill(databaseId);
-    await panel.getByRole('textbox', { name: 'Graph id, Example Graph1' }).fill(graphId);
-    await panel.getByRole('textbox', { name: 'Partition key' }).fill('/pk');
-    await panel.getByLabel('Database max RU/s').fill("1000");
+    await panel.getByPlaceholder("Type a new database id").fill(databaseId);
+    await panel.getByRole("textbox", { name: "Graph id, Example Graph1" }).fill(graphId);
+    await panel.getByRole("textbox", { name: "Partition key" }).fill("/pk");
+    await panel.getByLabel("Database max RU/s").fill("1000");
     await okButton.click();
   });
 

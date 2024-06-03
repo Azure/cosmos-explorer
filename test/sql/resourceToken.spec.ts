@@ -2,7 +2,15 @@ import { expect, test } from "@playwright/test";
 
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
-import { DataExplorer, TestAccount, generateUniqueName, getAccountName, getAzureCLICredentials, resourceGroupName, subscriptionId } from "../fx";
+import {
+  DataExplorer,
+  TestAccount,
+  generateUniqueName,
+  getAccountName,
+  getAzureCLICredentials,
+  resourceGroupName,
+  subscriptionId,
+} from "../fx";
 
 test("SQL account using Resource token", async ({ page }) => {
   const credentials = await getAzureCLICredentials();
@@ -26,7 +34,9 @@ test("SQL account using Resource token", async ({ page }) => {
   });
   await expect(containerPermission).toBeDefined();
 
-  const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission!._token}`;
+  const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${
+    database.id
+  };CollectionId=${container.id};${containerPermission!._token}`;
 
   await page.goto("https://localhost:1234/hostedExplorer.html");
   const switchConnectionLink = page.getByTestId("Link:SwitchConnectionType");

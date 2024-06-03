@@ -2,10 +2,12 @@ import { expect, test } from "@playwright/test";
 
 import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
 
-([
-  ["latest API version", TestAccount.Mongo],
-  ["3.2 API", TestAccount.Mongo32],
-] as [string, TestAccount][]).forEach(([apiVersionDescription, accountType]) => {
+(
+  [
+    ["latest API version", TestAccount.Mongo],
+    ["3.2 API", TestAccount.Mongo32],
+  ] as [string, TestAccount][]
+).forEach(([apiVersionDescription, accountType]) => {
   test(`Mongo CRUD using ${apiVersionDescription}`, async ({ page }) => {
     const databaseId = generateDatabaseNameWithTimestamp();
     const collectionId = generateUniqueName("collection");
@@ -42,4 +44,4 @@ import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateU
 
     await expect(databaseNode.element).not.toBeAttached();
   });
-})
+});

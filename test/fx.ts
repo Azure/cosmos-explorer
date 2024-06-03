@@ -44,15 +44,19 @@ export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f
 
 function tryGetStandardName(accountType: TestAccount) {
   if (process.env.DE_TEST_ACCOUNT_PREFIX) {
-    const actualPrefix = process.env.DE_TEST_ACCOUNT_PREFIX.endsWith("-") ? process.env.DE_TEST_ACCOUNT_PREFIX : `${process.env.DE_TEST_ACCOUNT_PREFIX}-`;
+    const actualPrefix = process.env.DE_TEST_ACCOUNT_PREFIX.endsWith("-")
+      ? process.env.DE_TEST_ACCOUNT_PREFIX
+      : `${process.env.DE_TEST_ACCOUNT_PREFIX}-`;
     return `${actualPrefix}${accountType.toLocaleLowerCase()}`;
   }
 }
 
 export function getAccountName(accountType: TestAccount) {
-  return process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
+  return (
+    process.env[`DE_TEST_ACCOUNT_NAME_${accountType.toLocaleUpperCase()}`] ??
     tryGetStandardName(accountType) ??
-    defaultAccounts[accountType];
+    defaultAccounts[accountType]
+  );
 }
 
 export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: string): Promise<string> {
@@ -68,8 +72,11 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
 
 /** Helper class that provides locator methods for TreeNode elements, on top of a Locator */
 class TreeNode {
-  constructor(public element: Locator, public frame: Frame, public id: string) {
-  }
+  constructor(
+    public element: Locator,
+    public frame: Frame,
+    public id: string,
+  ) {}
 
   async openContextMenu(): Promise<void> {
     await this.element.click({ button: "right" });
@@ -87,18 +94,17 @@ class TreeNode {
     // So, we need to find the TreeItem that contains this TreeItemLayout.
     const treeNodeContainer = this.frame.getByTestId(`TreeNodeContainer:${this.id}`);
 
-    if (await treeNodeContainer.getAttribute("aria-expanded") !== "true") {
+    if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
       // Click the node, to trigger loading and expansion
       await this.element.click();
     }
-    await expect(treeNodeContainer).toHaveAttribute("aria-expanded", "true")
+    await expect(treeNodeContainer).toHaveAttribute("aria-expanded", "true");
   }
 }
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
 export class DataExplorer {
-  constructor(public frame: Frame) {
-  }
+  constructor(public frame: Frame) {}
 
   commandBarButton(label: string): Locator {
     return this.frame.getByTestId(`CommandBar/Button:${label}`).and(this.frame.locator("css=button"));
