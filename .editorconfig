@@ -1,15 +1,7 @@
-# EditorConfig is awesome: https://EditorConfig.org
+# NOTE: Prettier reads EditorConfig settings, so be careful adjusting settings here and assuming they'll only affect your editor ;).
 
 # top-most EditorConfig file
 root = true
-
-[*]
-indent_style = space
-indent_size = 4
-end_of_line = crlf
-charset = utf-8
-trim_trailing_whitespace = false
-insert_final_newline = false
 
 [*.yml]
 indent_size = 2
