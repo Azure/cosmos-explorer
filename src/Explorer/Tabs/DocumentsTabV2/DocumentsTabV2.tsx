@@ -845,8 +845,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       _deleteDocuments(toDeleteDocumentIds)
         .then(
           (deletedIds: DocumentId[]) => {
-            const deletedRids = new Set(deletedIds.map((documentId) => documentId.rid));
-            const newDocumentIds = [...documentIds.filter((documentId) => !deletedRids.has(documentId.rid))];
+            const deletedIdsSet = new Set(deletedIds.map((documentId) => documentId.id));
+            const newDocumentIds = [...documentIds.filter((documentId) => !deletedIdsSet.has(documentId.id))];
             setDocumentIds(newDocumentIds);
 
             setSelectedDocumentContent(undefined);
