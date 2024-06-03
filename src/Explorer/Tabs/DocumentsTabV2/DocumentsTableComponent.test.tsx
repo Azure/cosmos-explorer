@@ -24,10 +24,18 @@ describe("DocumentsTableComponent", () => {
       idHeader: ID_HEADER,
       partitionKeyHeaders: [PARTITION_KEY_HEADER],
     },
+    isSelectionDisabled: false,
   });
 
   it("should render documents and partition keys in header", () => {
     const props: IDocumentsTableComponentProps = createMockProps();
+    const wrapper = mount(<DocumentsTableComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should not render selection column when isSelectionDisabled is true", () => {
+    const props: IDocumentsTableComponentProps = createMockProps();
+    props.isSelectionDisabled = true;
     const wrapper = mount(<DocumentsTableComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
