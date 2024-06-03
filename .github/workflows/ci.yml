@@ -155,7 +155,7 @@ jobs:
           path: "*.nupkg"
 
   playwright-tests:
-    name: "Run Playwright Tests"
+    name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
