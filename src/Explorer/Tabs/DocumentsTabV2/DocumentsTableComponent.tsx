@@ -24,6 +24,7 @@ import {
 } from "@fluentui/react-components";
 import { NormalizedEventKey } from "Common/Constants";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
+import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
@@ -135,7 +136,13 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         return;
       }
 
-      const result = selectionHelper(selectedRows as Set<number>, index, e.shiftKey, e.ctrlKey, selectionStartIndex);
+      const result = selectionHelper(
+        selectedRows as Set<number>,
+        index,
+        isEnvironmentShiftPressed(e),
+        isEnvironmentCtrlPressed(e),
+        selectionStartIndex,
+      );
       onSelectedRowsChange(result.selection);
       if (result.selectionStartIndex !== undefined) {
         setSelectionStartIndex(result.selectionStartIndex);
