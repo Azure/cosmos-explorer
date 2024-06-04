@@ -504,7 +504,12 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
               {!showFeedbackBar && (
                 <Text style={{ fontSize: 12 }}>
                   AI-generated content can have mistakes. Make sure it&apos;s accurate and appropriate before using it.{" "}
-                  <Link href="https://aka.ms/cdb-copilot-preview-terms" target="_blank" style={{ color: "#0072D4" }}>
+                  <Link
+                    href="https://aka.ms/cdb-copilot-preview-terms"
+                    target="_blank"
+                    style={{ color: "#0072D4" }}
+                    className="underlinedLink"
+                  >
                     Read preview terms
                   </Link>
                   {showErrorMessageBar && (
