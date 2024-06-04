@@ -43,6 +43,7 @@ export interface IDocumentsTableComponentProps {
   size: { height: number; width: number };
   columnHeaders: ColumnHeaders;
   style?: React.CSSProperties;
+  isSelectionDisabled?: boolean;
 }
 
 interface TableRowData extends RowStateBase<DocumentsTableComponentItem> {
@@ -63,6 +64,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   style,
   size,
   columnHeaders,
+  isSelectionDisabled,
 }: IDocumentsTableComponentProps) => {
   const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
 
@@ -159,15 +161,17 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         aria-selected={selected}
         appearance={appearance}
       >
-        <TableSelectionCell
-          checked={selected}
-          checkboxIndicator={{ "aria-label": "Select row" }}
-          onClick={(e: React.MouseEvent) => {
-            setSelectionStartIndex(index);
-            onClick(e);
-          }}
-          onKeyDown={onKeyDown}
-        />
+        {!isSelectionDisabled && (
+          <TableSelectionCell
+            checked={selected}
+            checkboxIndicator={{ "aria-label": "Select row" }}
+            onClick={(e: React.MouseEvent) => {
+              setSelectionStartIndex(index);
+              onClick(e);
+            }}
+            onKeyDown={onKeyDown}
+          />
+        )}
         {columns.map((column) => (
           <TableCell
             key={column.columnId}
@@ -263,12 +267,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     <Table className="documentsTable" noNativeElements {...tableProps}>
       <TableHeader className="documentsTableHeader">
         <TableRow style={{ width: size ? size.width - 15 : "100%" }}>
-          <TableSelectionCell
-            checked={allRowsSelected ? true : someRowsSelected ? "mixed" : false}
-            onClick={toggleAllRows}
-            onKeyDown={toggleAllKeydown}
-            checkboxIndicator={{ "aria-label": "Select all rows " }}
-          />
+          {!isSelectionDisabled && (
+            <TableSelectionCell
+              checked={allRowsSelected ? true : someRowsSelected ? "mixed" : false}
+              onClick={toggleAllRows}
+              onKeyDown={toggleAllKeydown}
+              checkboxIndicator={{ "aria-label": "Select all rows " }}
+            />
+          )}
           {columns.map((column /* index */) => (
             <Menu openOnContext key={column.columnId}>
               <MenuTrigger>
