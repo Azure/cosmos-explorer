@@ -128,13 +128,20 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(undefined);
   const onTableCellClicked = useCallback(
     (e: React.MouseEvent, index: number) => {
+      if (isSelectionDisabled) {
+        // Only allow click
+        onSelectedRowsChange(new Set<TableRowId>([index]));
+        setSelectionStartIndex(index);
+        return;
+      }
+
       const result = selectionHelper(selectedRows as Set<number>, index, e.shiftKey, e.ctrlKey, selectionStartIndex);
       onSelectedRowsChange(result.selection);
       if (result.selectionStartIndex !== undefined) {
         setSelectionStartIndex(result.selectionStartIndex);
       }
     },
-    [selectionStartIndex, onSelectedRowsChange, selectedRows],
+    [isSelectionDisabled, selectedRows, selectionStartIndex, onSelectedRowsChange],
   );
 
   /**
@@ -202,7 +209,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     [
       useTableColumnSizing_unstable({ columnSizingOptions, onColumnResize }),
       useTableSelection({
-        selectionMode: "multiselect",
+        selectionMode: isSelectionDisabled ? "single" : "multiselect",
         selectedItems: selectedRows,
         // eslint-disable-next-line react/prop-types
         onSelectionChange: (e, data) => onSelectedRowsChange(data.selectedItems),
