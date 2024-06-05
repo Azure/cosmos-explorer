@@ -11,11 +11,13 @@ import {
   Tree,
   TreeItem,
   TreeItemLayout,
+  TreeItemValue,
   TreeOpenChangeData,
   TreeOpenChangeEvent,
+  mergeClasses
 } from "@fluentui/react-components";
-import { MoreHorizontal20Regular } from "@fluentui/react-icons";
-import { tokens } from "@fluentui/react-theme";
+import { ChevronDown16Regular, ChevronRight16Regular, MoreHorizontal20Regular } from "@fluentui/react-icons";
+import { TreeStyleName, useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import * as React from "react";
 import { useCallback } from "react";
 
@@ -34,7 +36,7 @@ export interface TreeNode {
   contextMenu?: TreeNodeMenuItem[];
   iconSrc?: string;
   isExpanded?: boolean;
-  className?: string;
+  className?: TreeStyleName;
   isAlphaSorted?: boolean;
   // data?: any; // Piece of data corresponding to this node
   timestamp?: number;
@@ -52,6 +54,7 @@ export interface TreeNodeComponentProps {
   node: TreeNode;
   className?: string;
   treeNodeId: string;
+  openItems: TreeItemValue[];
 }
 
 /** Function that returns true if any descendant (at any depth) of this node is selected. */
@@ -66,13 +69,13 @@ function isAnyDescendantSelected(node: TreeNode): boolean {
   );
 }
 
-const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 16, height: 16 }} />;
-
 export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   node,
   treeNodeId,
+  openItems,
 }: TreeNodeComponentProps): JSX.Element => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const treeStyles = useTreeStyles();
 
   const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
     if (!treeNode || !treeNode.children) {
@@ -145,6 +148,14 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     </MenuItem>
   ));
 
+  const expandIcon = isLoading
+    ? <Spinner size="extra-tiny" />
+    : !isBranch
+      ? undefined
+      : openItems.includes(treeNodeId)
+        ? <ChevronDown16Regular/>
+        : <ChevronRight16Regular />;
+
   const treeItem = (
     <TreeItem
       data-test={`TreeNodeContainer:${treeNodeId}`}
@@ -153,7 +164,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       onOpenChange={onOpenChange}
     >
       <TreeItemLayout
-        className={node.className}
+        className={mergeClasses(treeStyles.treeItemLayout, shouldShowAsSelected && treeStyles.selectedItem, node.className && treeStyles[node.className])}
         data-test={`TreeNode:${treeNodeId}`}
         actions={
           contextMenuItems.length > 0 && (
@@ -172,18 +183,14 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
             </Menu>
           )
         }
-        expandIcon={isLoading ? <Spinner size="extra-tiny" /> : undefined}
-        iconBefore={node.iconSrc && getTreeIcon(node.iconSrc)}
-        style={{
-          backgroundColor: shouldShowAsSelected ? tokens.colorNeutralBackground1Selected : undefined,
-        }}
+        expandIcon={expandIcon}
       >
         {node.label}
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
-        <Tree style={{ overflow: node.isScrollable ? "auto" : undefined }}>
+        <Tree className={treeStyles.tree} style={{ overflow: node.isScrollable ? "auto" : undefined }}>
           {getSortedChildren(node).map((childNode: TreeNode) => (
-            <TreeNodeComponent key={childNode.label} node={childNode} treeNodeId={`${treeNodeId}/${childNode.label}`} />
+            <TreeNodeComponent openItems={openItems} key={childNode.label} node={childNode} treeNodeId={`${treeNodeId}/${childNode.label}`} />
           ))}
         </Tree>
       )}

@@ -32,13 +32,13 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
     label: sampleDataResourceTokenCollection.databaseId,
     isExpanded: false,
     iconSrc: CosmosDBIcon,
-    className: "databaseHeader",
+    className: "databaseNode",
     children: [
       {
         label: sampleDataResourceTokenCollection.id(),
         iconSrc: CollectionIcon,
         isExpanded: false,
-        className: "collectionHeader",
+        className: "collectionNode",
         contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
         onClick: () => {
           useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
@@ -108,7 +108,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
     iconSrc: CollectionIcon,
     isExpanded: true,
     children,
-    className: "collectionHeader",
+    className: "collectionNode",
     onClick: () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
@@ -158,7 +158,7 @@ export const createDatabaseTreeNodes = (
       if (database.collectionsContinuationToken) {
         const loadMoreNode: TreeNode = {
           label: "load more",
-          className: "loadMoreHeader",
+          className: "loadMoreNode",
           onClick: async () => {
             await database.loadCollections();
             useDatabases.getState().updateDatabase(database);
@@ -171,7 +171,7 @@ export const createDatabaseTreeNodes = (
     const databaseNode: TreeNode = {
       label: database.id(),
       iconSrc: CosmosDBIcon,
-      className: "databaseHeader",
+      className: "databaseNode",
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
       contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
@@ -224,7 +224,7 @@ export const buildCollectionNode = (
     label: collection.id(),
     iconSrc: CollectionIcon,
     children: children,
-    className: "collectionHeader",
+    className: "collectionNode",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);

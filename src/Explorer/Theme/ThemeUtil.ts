@@ -1,4 +1,4 @@
-import { BrandVariants, Theme, createLightTheme } from "@fluentui/react-components";
+import { BrandVariants, Theme, createLightTheme, shorthands, tokens } from "@fluentui/react-components";
 import { Platform } from "ConfigContext";
 import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
 
@@ -20,6 +20,14 @@ const appThemePortalBrandRamp: BrandVariants = {
   140: "#A6BAE2",
   150: "#BAC9E9",
   160: "#CDD8EF",
+};
+
+export const cosmosShorthands = {
+  border: () => shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+  borderBottom: () => shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
+  borderRight: () => shorthands.borderRight("1px", "solid", tokens.colorNeutralStroke2),
+  borderTop: () => shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+  borderLeft: () => shorthands.borderLeft("1px", "solid", tokens.colorNeutralStroke2),
 };
 
 export function getPlatformTheme(platform: Platform): Theme {

@@ -3,7 +3,7 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
+import { isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
@@ -1142,7 +1142,8 @@ export default class Explorer {
     if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
       return;
     }
-    const copilotEnabledPromise = getCopilotEnabled();
+    // REVIEW: This should be changed back before this PR is merged. If you see this, make a comment and remind me to change it back!
+    const copilotEnabledPromise = Promise.resolve(true); //getCopilotEnabled();
     const copilotUserDBEnabledPromise = isCopilotFeatureRegistered(userContext.subscriptionId);
     const [copilotEnabled, copilotUserDBEnabled] = await Promise.all([
       copilotEnabledPromise,

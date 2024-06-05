@@ -21,6 +21,7 @@ import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
+import { Sidebar } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -36,8 +37,6 @@ import "../less/menus.less";
 import "../less/messagebox.less";
 import "../less/resourceTree.less";
 import "../less/tree.less";
-import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
-import { ResourceTreeContainer } from "./Common/ResourceTreeContainer";
 import * as StyleConstants from "./Common/StyleConstants";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
@@ -102,23 +101,7 @@ const App: React.FunctionComponent = () => {
           <div className="resourceTreeAndTabs">
             {/* Collections Tree - Start */}
             {userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo" && (
-              <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
-                <div className="collectionsTreeWithSplitter">
-                  {/* Collections Tree Expanded - Start */}
-                  <ResourceTreeContainer
-                    container={explorer}
-                    toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                    isLeftPaneExpanded={isLeftPaneExpanded}
-                  />
-                  {/* Collections Tree Expanded - End */}
-                  {/* Collections Tree Collapsed - Start */}
-                  <CollapsedResourceTree
-                    toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                    isLeftPaneExpanded={isLeftPaneExpanded}
-                  />
-                  {/* Collections Tree Collapsed - End */}
-                </div>
-              </div>
+              <Sidebar explorer={explorer} />
             )}
             <Tabs explorer={explorer} />
           </div>

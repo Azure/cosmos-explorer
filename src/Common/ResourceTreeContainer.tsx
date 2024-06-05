@@ -73,7 +73,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
         {userContext.features.enableKoResourceTree ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
         ) : (
-          <ResourceTree container={container} />
+          <ResourceTree explorer={container} />
         )}
       </div>
       {/*  Collections Window - End */}
