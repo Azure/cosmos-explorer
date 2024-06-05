@@ -75,7 +75,7 @@ a:focus {
   border-bottom: 2px solid @FabricAccentMedium;
 }
 
-.nav-tabs>li.active>.tabNavContentContainer>.tab_Content>.tabNavText {
+.nav-tabs>li.active>.tabNavContentContainer>.tab_Content>.contentWrapper>.tabNavText {
   border-bottom: 0px none transparent;
 }
 
@@ -93,9 +93,11 @@ a:focus {
     width: calc(@TabsWidth - (@SmallSpace * 2));
     padding-bottom: @SmallSpace;
 
-    .statusIconContainer {
-      margin-left: 0px;
-    }
+    .contentWrapper {
+        .statusIconContainer {
+          margin-left: 0px;
+        }
+      }
 
     .tabIconSection {
       .cancelButton {
