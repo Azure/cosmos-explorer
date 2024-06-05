@@ -153,47 +153,51 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     <li
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      onClick={() => {
-        if (tab) {
-          tab.onTabClick();
-        } else if (tabKind !== undefined) {
-          useTabs.getState().activateReactTab(tabKind);
-        }
-      }}
-      onKeyPress={({ nativeEvent: e }) => {
-        if (tab) {
-          tab.onKeyPressActivate(undefined, e);
-        } else if (tabKind !== undefined) {
-          onKeyPressReactTab(e, tabKind);
-        }
-      }}
       className={active ? "active tabList" : "tabList"}
       style={active ? { fontWeight: "bolder" } : {}}
-      title={useObservable(tab?.tabPath || ko.observable(""))}
-      aria-selected={active}
-      aria-expanded={active}
-      aria-controls={tabId}
-      tabIndex={0}
-      role="tab"
-      ref={focusTab}
     >
       <span className="tabNavContentContainer">
         <div className="tab_Content">
-          <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
-            {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-            {isTabExecuting(tab, tabKind) && (
-              <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
-            )}
-            {isQueryErrorThrown(tab, tabKind) && (
-              <img
-                src={errorQuery}
-                title="Error"
-                alt="Error"
-                style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
-              />
-            )}
+          <span
+            className="contentWrapper"
+            onClick={() => {
+              if (tab) {
+                tab.onTabClick();
+              } else if (tabKind !== undefined) {
+                useTabs.getState().activateReactTab(tabKind);
+              }
+            }}
+            onKeyPress={({ nativeEvent: e }) => {
+              if (tab) {
+                tab.onKeyPressActivate(undefined, e);
+              } else if (tabKind !== undefined) {
+                onKeyPressReactTab(e, tabKind);
+              }
+            }}
+            title={useObservable(tab?.tabPath || ko.observable(""))}
+            aria-selected={active}
+            aria-expanded={active}
+            aria-controls={tabId}
+            tabIndex={0}
+            role="tab"
+            ref={focusTab}
+          >
+            <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
+              {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
+              {isTabExecuting(tab, tabKind) && (
+                <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
+              )}
+              {isQueryErrorThrown(tab, tabKind) && (
+                <img
+                  src={errorQuery}
+                  title="Error"
+                  alt="Error"
+                  style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
+                />
+              )}
+            </span>
+            <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           </span>
-          <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           <span className="tabIconSection">
             <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
           </span>
@@ -280,7 +284,7 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
 }
 
 const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
-  if (e.key === "Enter" || e.key === "Space") {
+  if (e.key === "Enter" || e.code === "Space") {
     useTabs.getState().activateReactTab(tabKind);
     e.stopPropagation();
   }
