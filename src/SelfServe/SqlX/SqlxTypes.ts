@@ -41,7 +41,7 @@ export type PriceItem = {
 
 export type PriceType = {
   type: string;
-  unitEffectivePriceInBillingCurrency: number;
+  unitPriceinBillingCurrency: number;
 };
 
 export type PriceError = {

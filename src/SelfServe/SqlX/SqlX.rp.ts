@@ -225,9 +225,9 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
 
         const offeringId = item.id;
         const skuName = map.get(region).get(offeringId);
-        const unitEffectivePriceInBillingCurrency = item.prices.find((x) => x.type === "Consumption")
-          ?.unitEffectivePriceInBillingCurrency;
-        regionPriceMap.set(skuName, unitEffectivePriceInBillingCurrency);
+        const unitPriceinBillingCurrency = item.prices.find((x) => x.type === "Consumption")
+          ?.unitPriceinBillingCurrency;
+        regionPriceMap.set(skuName, unitPriceinBillingCurrency);
       }
       priceMap.set(region, regionPriceMap);
     }
