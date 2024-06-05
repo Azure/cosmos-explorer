@@ -1,8 +1,8 @@
-import * as _ from "underscore";
 import Q from "q";
+import * as _ from "underscore";
+import * as Constants from "./Constants";
 import * as Entities from "./Entities";
 import { CassandraTableKey } from "./TableDataClient";
-import * as Constants from "./Constants";
 
 /**
  * Generates a pseudo-random GUID.
@@ -178,30 +178,6 @@ export function onEsc(
   altKey: boolean = null,
 ): boolean {
   return onKey(event, Constants.keyCodes.Esc, action, metaKey, shiftKey, altKey);
-}
-
-/**
- * Is the environment 'ctrl' key press. This key is used for multi selection, like select one more item, select all.
- * For Windows and Linux, it's ctrl. For Mac, it's command.
- */
-export function isEnvironmentCtrlPressed(event: JQueryEventObject): boolean {
-  return isMac() ? event.metaKey : event.ctrlKey;
-}
-
-export function isEnvironmentShiftPressed(event: JQueryEventObject): boolean {
-  return event.shiftKey;
-}
-
-export function isEnvironmentAltPressed(event: JQueryEventObject): boolean {
-  return event.altKey;
-}
-
-/**
- * Returns whether the current platform is MacOS.
- */
-export function isMac(): boolean {
-  var platform = navigator.platform.toUpperCase();
-  return platform.indexOf("MAC") >= 0;
 }
 
 // MAX_SAFE_INTEGER and MIN_SAFE_INTEGER will be provided by ECMAScript 6's Number

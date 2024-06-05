@@ -476,11 +476,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     key="1"
                     style={
                       Object {
+                        "cursor": "pointer",
                         "height": 30,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
                         "top": 0,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -492,11 +494,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       role="row"
                       style={
                         Object {
+                          "cursor": "pointer",
                           "height": 30,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
                           "top": 0,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -505,7 +509,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         className="documentsTableCell"
                         key="id"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -518,7 +522,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -554,7 +558,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         className="documentsTableCell"
                         key="partitionKey"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -567,7 +571,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -660,11 +664,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     key="2"
                     style={
                       Object {
+                        "cursor": "pointer",
                         "height": 30,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
                         "top": 30,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -676,11 +682,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       role="row"
                       style={
                         Object {
+                          "cursor": "pointer",
                           "height": 30,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
                           "top": 30,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -689,7 +697,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         className="documentsTableCell"
                         key="id"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -702,7 +710,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -738,7 +746,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         className="documentsTableCell"
                         key="partitionKey"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -751,7 +759,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -844,11 +852,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     key="3"
                     style={
                       Object {
+                        "cursor": "pointer",
                         "height": 30,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
                         "top": 60,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -860,11 +870,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       role="row"
                       style={
                         Object {
+                          "cursor": "pointer",
                           "height": 30,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
                           "top": 60,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -873,7 +885,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         className="documentsTableCell"
                         key="id"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -886,7 +898,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -922,7 +934,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         className="documentsTableCell"
                         key="partitionKey"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -935,7 +947,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -1496,11 +1508,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     key="1"
                     style={
                       Object {
+                        "cursor": "pointer",
                         "height": 30,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
                         "top": 0,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -1512,11 +1526,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       role="row"
                       style={
                         Object {
+                          "cursor": "pointer",
                           "height": 30,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
                           "top": 0,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -1565,7 +1581,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         className="documentsTableCell"
                         key="id"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -1578,7 +1594,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -1614,7 +1630,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         className="documentsTableCell"
                         key="partitionKey"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -1627,7 +1643,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -1720,11 +1736,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     key="2"
                     style={
                       Object {
+                        "cursor": "pointer",
                         "height": 30,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
                         "top": 30,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -1736,11 +1754,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       role="row"
                       style={
                         Object {
+                          "cursor": "pointer",
                           "height": 30,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
                           "top": 30,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -1789,7 +1809,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         className="documentsTableCell"
                         key="id"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -1802,7 +1822,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -1838,7 +1858,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         className="documentsTableCell"
                         key="partitionKey"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -1851,7 +1871,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -1944,11 +1964,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     key="3"
                     style={
                       Object {
+                        "cursor": "pointer",
                         "height": 30,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
                         "top": 60,
+                        "userSelect": "none",
                         "width": "100%",
                       }
                     }
@@ -1960,11 +1982,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       role="row"
                       style={
                         Object {
+                          "cursor": "pointer",
                           "height": 30,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
                           "top": 60,
+                          "userSelect": "none",
                           "width": "100%",
                         }
                       }
@@ -2013,7 +2037,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         className="documentsTableCell"
                         key="id"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -2026,7 +2050,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
@@ -2062,7 +2086,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         className="documentsTableCell"
                         key="partitionKey"
                         onClick={[Function]}
-                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
                         style={
                           Object {
                             "maxWidth": 50,
@@ -2075,7 +2099,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         <div
                           className="fui-TableCell documentsTableCell ___o2cmzw0_1ilyrce f10pi13n f1nbblvp f1vdfbxk f1ov4xf1 f1f5gg8d fz36nt7 f9znhxp fqrak0z f1o2ludy f1kjnpwc fxmnebo f1witrsb f22iagw f10tiqix f122n59 fqerorx f1neuvcm fkjuxzh f1pha7fy"
                           onClick={[Function]}
-                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
                           role="cell"
                           style={
                             Object {
