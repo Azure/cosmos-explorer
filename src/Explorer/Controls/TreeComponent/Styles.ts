@@ -3,34 +3,31 @@ import { cosmosShorthands } from "Explorer/Theme/ThemeUtil";
 
 export type TreeStyleName = keyof ReturnType<typeof useTreeStyles>;
 
-const treeLeftPaddingToken = "--cosmos-Tree--leftPadding" as const;
+const treeIconWidth = "--cosmos-Tree--iconWidth" as const;
 
 export const useTreeStyles = makeStyles({
   tree: {
     rowGap: "0px",
     paddingTop: "0px",
-    [treeLeftPaddingToken]: "10px",
+    [treeIconWidth]: "20px",
+  },
+  nodeIcon: {
+    width: `var(${treeIconWidth})`,
+    height: `var(${treeIconWidth})`,
   },
   treeItemLayout: {
     minHeight: '36px',
     ...cosmosShorthands.borderBottom(),
+
+    paddingLeft: `calc(var(${treeItemLevelToken}, 1) * ${tokens.spacingHorizontalXXL})`,
   },
-  leafItemLayout: {
-    // Expanded from the built-in style, to allow for some extra padding on the left
-    // See https://github.com/microsoft/fluentui/blob/84bf9cc70812a458563435352c49d4423b19f2fc/packages/react-components/react-tree/src/components/TreeItemLayout/useTreeItemLayoutStyles.styles.ts#L49
-    paddingLeft: `calc(calc(var(${treeItemLevelToken}, 1) * ${tokens.spacingHorizontalXXL}) + var(${treeLeftPaddingToken}))`,
-  },
-  branchItemLayout: {
-    // Expanded from the built-in style, to allow for some extra padding on the left
-    // See https://github.com/microsoft/fluentui/blob/84bf9cc70812a458563435352c49d4423b19f2fc/packages/react-components/react-tree/src/components/TreeItemLayout/useTreeItemLayoutStyles.styles.ts#L49
-    paddingLeft: `calc(calc((var(${treeItemLevelToken}, 1) - 1) * ${tokens.spacingHorizontalXXL}) + var(${treeLeftPaddingToken}))`,
+  treeItemLayoutNoIcon: {
+    // Pad the text out by the level, the width of the icon, AND the usual spacing between the icon and the level.
+    // It would be nice to see if we can use Grid layout or something here, but that would require overriding a lot of the existing Tree component behavior.
+    paddingLeft: `calc((var(${treeItemLevelToken}, 1) * ${tokens.spacingHorizontalXXL}) + var(${treeIconWidth}) + var(${tokens.spacingHorizontalXXS}))`,
   },
   selectedItem: {
     backgroundColor: tokens.colorNeutralBackground1Selected,
-  },
-  treeIcon: {
-    height: "14px",
-    width: "14px",
   },
   databaseNode: {
     fontWeight: tokens.fontWeightSemibold,

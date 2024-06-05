@@ -34,7 +34,7 @@ export interface TreeNode {
   id?: string;
   children?: TreeNode[];
   contextMenu?: TreeNodeMenuItem[];
-  iconSrc?: string;
+  iconSrc?: string | JSX.Element;
   isExpanded?: boolean;
   className?: TreeStyleName;
   isAlphaSorted?: boolean;
@@ -42,7 +42,6 @@ export interface TreeNode {
   timestamp?: number;
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
   isLoading?: boolean;
-  isScrollable?: boolean;
   isSelected?: () => boolean;
   onClick?: () => void; // Only if a leaf, other click will expand/collapse
   onExpanded?: () => Promise<void>;
@@ -148,13 +147,17 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     </MenuItem>
   ));
 
+  // We use the expandIcon slot to hold the node icon too.
+  // We only show a node icon for leaf nodes, even if a branch node has an iconSrc.
   const expandIcon = isLoading
     ? <Spinner size="extra-tiny" />
     : !isBranch
-      ? undefined
-      : openItems.includes(treeNodeId)
+      ? (typeof node.iconSrc === "string"
+        ? <img src={node.iconSrc} className={treeStyles.nodeIcon} alt="" />
+        : node.iconSrc)
+      : (openItems.includes(treeNodeId)
         ? <ChevronDown20Regular />
-        : <ChevronRight20Regular />;
+        : <ChevronRight20Regular />);
 
   const treeItem = (
     <TreeItem
@@ -166,7 +169,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       <TreeItemLayout
         className={mergeClasses(
           treeStyles.treeItemLayout,
-          isBranch ? treeStyles.branchItemLayout : treeStyles.leafItemLayout,
+          expandIcon ? undefined : treeStyles.treeItemLayoutNoIcon,
           shouldShowAsSelected && treeStyles.selectedItem,
           node.className && treeStyles[node.className])}
         data-test={`TreeNode:${treeNodeId}`}
@@ -192,7 +195,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         {node.label}
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
-        <Tree className={treeStyles.tree} style={{ overflow: node.isScrollable ? "auto" : undefined }}>
+        <Tree className={treeStyles.tree}>
           {getSortedChildren(node).map((childNode: TreeNode) => (
             <TreeNodeComponent openItems={openItems} key={childNode.label} node={childNode} treeNodeId={`${treeNodeId}/${childNode.label}`} />
           ))}

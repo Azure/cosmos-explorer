@@ -4,6 +4,7 @@ import {
   TreeOpenChangeData,
   TreeOpenChangeEvent
 } from "@fluentui/react-components";
+import { Home16Regular } from "@fluentui/react-icons";
 import { AuthType } from "AuthType";
 import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
@@ -62,7 +63,6 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
   }));
 
   const databaseTreeNodes = useMemo(() => {
-    console.log("recomputing database nodes");
     return userContext.authType === AuthType.ResourceToken
       ? createResourceTokenTreeNodes(resourceTokenCollection)
       : createDatabaseTreeNodes(explorer, isNotebookEnabled, databases, refreshActiveTab)
@@ -80,9 +80,16 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
       : [];
   }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
 
+  const homeNode: TreeNode = {
+    id: "home",
+    iconSrc: <Home16Regular />,
+    label: "Home"
+  };
+
   const rootNodes: TreeNode[] = useMemo(() => {
     if (sampleDataNodes.length > 0) {
       return [
+        homeNode,
         {
           id: "data",
           label: MY_DATA_TREE_LABEL,
@@ -98,7 +105,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
         },
       ];
     } else {
-      return databaseTreeNodes;
+      return [homeNode, ...databaseTreeNodes];
     }
   }, [databaseTreeNodes, sampleDataNodes]);
 
