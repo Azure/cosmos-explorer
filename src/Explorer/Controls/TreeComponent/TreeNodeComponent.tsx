@@ -16,7 +16,7 @@ import {
   TreeOpenChangeEvent,
   mergeClasses
 } from "@fluentui/react-components";
-import { ChevronDown16Regular, ChevronRight16Regular, MoreHorizontal20Regular } from "@fluentui/react-icons";
+import { ChevronDown20Regular, ChevronRight20Regular, MoreHorizontal20Regular } from "@fluentui/react-icons";
 import { TreeStyleName, useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import * as React from "react";
 import { useCallback } from "react";
@@ -153,8 +153,8 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     : !isBranch
       ? undefined
       : openItems.includes(treeNodeId)
-        ? <ChevronDown16Regular/>
-        : <ChevronRight16Regular />;
+        ? <ChevronDown20Regular />
+        : <ChevronRight20Regular />;
 
   const treeItem = (
     <TreeItem
@@ -164,7 +164,11 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       onOpenChange={onOpenChange}
     >
       <TreeItemLayout
-        className={mergeClasses(treeStyles.treeItemLayout, shouldShowAsSelected && treeStyles.selectedItem, node.className && treeStyles[node.className])}
+        className={mergeClasses(
+          treeStyles.treeItemLayout,
+          isBranch ? treeStyles.branchItemLayout : treeStyles.leafItemLayout,
+          shouldShowAsSelected && treeStyles.selectedItem,
+          node.className && treeStyles[node.className])}
         data-test={`TreeNode:${treeNodeId}`}
         actions={
           contextMenuItems.length > 0 && (
