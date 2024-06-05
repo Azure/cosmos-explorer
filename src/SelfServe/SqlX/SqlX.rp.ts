@@ -195,7 +195,7 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
 
   try {
     const priceMap = new Map<string, Map<string, number>>();
-    let pricingCurrency;
+    let billingCurrency;
     for (const region of map.keys()) {
       const regionPriceMap = new Map<string, number>();
       const regionShortName = await getRegionShortName(region);
@@ -213,9 +213,9 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
       });
 
       for (const item of response.result) {
-        if (pricingCurrency === undefined) {
-          pricingCurrency = item.pricingCurrency;
-        } else if (item.pricingCurrency !== pricingCurrency) {
+        if (billingCurrency === undefined) {
+          billingCurrency = item.billingCurrency;
+        } else if (item.billingCurrency !== billingCurrency) {
           throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
         }
 
@@ -225,18 +225,18 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
 
         const offeringId = item.id;
         const skuName = map.get(region).get(offeringId);
-        const unitPrice = item.prices.find((x) => x.type === "Consumption")?.unitPrice;
-        regionPriceMap.set(skuName, unitPrice);
+        const unitPriceinBillingCurrency = item.prices.find((x) => x.type === "Consumption")?.unitPriceinBillingCurrency;
+        regionPriceMap.set(skuName, unitPriceinBillingCurrency);
       }
       priceMap.set(region, regionPriceMap);
     }
 
     selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: priceMap, pricingCurrency: pricingCurrency };
+    return { priceMap: priceMap, billingCurrency: billingCurrency };
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: undefined, pricingCurrency: undefined };
+    return { priceMap: undefined, billingCurrency: undefined };
   }
 };
 

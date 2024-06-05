@@ -35,13 +35,13 @@ export type FetchPricesResponse = Array<PriceItem>;
 export type PriceItem = {
   prices: Array<PriceType>;
   id: string;
-  pricingCurrency: string;
+  billingCurrency: string;
   error: PriceError;
 };
 
 export type PriceType = {
   type: string;
-  unitPrice: number;
+  unitPriceinBillingCurrency: number;
 };
 
 export type PriceError = {
@@ -51,7 +51,7 @@ export type PriceError = {
 
 export type PriceMapAndCurrencyCode = {
   priceMap: Map<string, Map<string, number>>;
-  pricingCurrency: string;
+  billingCurrency: string;
 };
 
 export type GetOfferingIdsResponse = {
