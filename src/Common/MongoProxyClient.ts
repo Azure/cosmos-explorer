@@ -550,6 +550,49 @@ export function deleteDocument_ToBeDeprecated(
     });
 }
 
+export function deleteDocuments(
+  databaseId: string,
+  collection: Collection,
+  documentIds: DocumentId[],
+): Promise<{
+  deletedCount: number;
+  isAcknowledged: boolean;
+}> {
+  const { databaseAccount } = userContext;
+  const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
+
+  const rids = documentIds.map((documentId) => documentId.id());
+
+  const params = {
+    databaseID: databaseId,
+    collectionID: collection.id(),
+    resourceUrl: `${resourceEndpoint}`,
+    resourceIDs: rids,
+    subscriptionID: userContext.subscriptionId,
+    resourceGroup: userContext.resourceGroup,
+    databaseAccountName: databaseAccount.name,
+  };
+  const endpoint = getFeatureEndpointOrDefault("bulkdelete");
+
+  return window
+    .fetch(`${endpoint}/bulkdelete`, {
+      method: "DELETE",
+      body: JSON.stringify(params),
+      headers: {
+        ...defaultHeaders,
+        ...authHeaders(),
+        [HttpHeaders.contentType]: ContentType.applicationJson,
+      },
+    })
+    .then(async (response) => {
+      if (response.ok) {
+        const result = await response.json();
+        return result;
+      }
+      return await errorHandling(response, "deleting documents", params);
+    });
+}
+
 export function createMongoCollectionWithProxy(
   params: DataModels.CreateCollectionParams,
 ): Promise<DataModels.Collection> {
