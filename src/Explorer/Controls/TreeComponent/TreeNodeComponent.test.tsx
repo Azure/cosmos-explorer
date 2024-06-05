@@ -124,6 +124,20 @@ describe("TreeNodeComponent", () => {
     expect(component).toMatchSnapshot();
   });
 
+  it("renders a node as expandable if it has empty, but defined, children array", () => {
+    const node = generateTestNode("root", {
+      isLoading: true,
+      children: [
+        generateTestNode("child1", {
+          children: [],
+        }),
+        generateTestNode("child2"),
+      ],
+    });
+    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    expect(component).toMatchSnapshot();
+  });
+
   it("does not render children if the node is loading", () => {
     const node = generateTestNode("root", {
       isLoading: true,
