@@ -2,7 +2,7 @@ import { IDropdownOption } from "@fluentui/react";
 
 const dataTypes = ["float32", "uint8", "int8"];
 const distanceFunctions = ["euclidean", "cosine", "dotproduct"];
-const indexTypes = ["flat", "diskANN", "quantizedFlat"];
+const indexTypes = ["none", "flat", "diskANN", "quantizedFlat"];
 
 export const getDataTypeOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(dataTypes);
 export const getDistanceFunctionOptions = (): IDropdownOption[] => createDropdownOptionsFromLiterals(distanceFunctions);

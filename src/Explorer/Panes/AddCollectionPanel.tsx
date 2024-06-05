@@ -22,7 +22,6 @@ import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { SubscriptionType } from "Contracts/SubscriptionType";
 import { AddVectorEmbeddingPolicyForm } from "Explorer/Panes/VectorSearchPanel/AddVectorEmbeddingPolicyForm";
-import { AddVectorIndexingPolicyForm } from "Explorer/Panes/VectorSearchPanel/AddVectorIndexingPolicyForm";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
@@ -108,9 +107,8 @@ export interface AddCollectionPanelState {
   isThroughputCapExceeded: boolean;
   teachingBubbleStep: number;
   vectorIndexingPolicy: DataModels.VectorIndex[];
-  vectorIndexingPolicyValidated: boolean;
   vectorEmbeddingPolicy: DataModels.VectorEmbedding[];
-  vectorEmbeddingPolicyValidated: boolean;
+  vectorPolicyValidated: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -147,9 +145,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isThroughputCapExceeded: false,
       teachingBubbleStep: 0,
       vectorEmbeddingPolicy: [],
-      vectorIndexingPolicyValidated: true,
       vectorIndexingPolicy: [],
-      vectorEmbeddingPolicyValidated: true,
+      vectorPolicyValidated: true,
     };
   }
 
@@ -891,7 +888,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 onExpand={() => {
                   this.scrollToSection("collapsibleVectorPolicySectionContent");
                 }}
-                tooltip={true}
                 tooltipContent={this.getContainerVectorPolicyTooltipContent()}
               >
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
@@ -899,35 +895,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <AddVectorEmbeddingPolicyForm
                       vectorEmbedding={this.state.vectorEmbeddingPolicy}
                       vectorIndex={this.state.vectorIndexingPolicy}
-                      onVectorEmbeddingChange={(vectorEmbedding: DataModels.VectorEmbedding[]) => {
-                        this.setState({ vectorEmbeddingPolicy: vectorEmbedding });
-                      }}
-                      onValidationChange={(allValidated: boolean) => {
-                        this.setState({ vectorEmbeddingPolicyValidated: allValidated });
-                      }}
-                    />
-                  </Stack>
-                </Stack>
-              </CollapsibleSectionComponent>
-              <CollapsibleSectionComponent
-                title="Vector Indexing Policy"
-                isExpandedByDefault={false}
-                onExpand={() => {
-                  this.scrollToSection("collapsibleVectorPolicySectionContent");
-                }}
-                tooltip={true}
-                tooltipContent={this.getVectorIndexingPolicyTooltipContent()}
-              >
-                <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
-                  <Stack styles={{ root: { paddingLeft: 40 } }}>
-                    <AddVectorIndexingPolicyForm
-                      vectorEmbedding={this.state.vectorEmbeddingPolicy}
-                      vectorIndex={this.state.vectorIndexingPolicy}
-                      onVectorIndexingChange={(vectorIndex: DataModels.VectorIndex[]) => {
-                        this.setState({ vectorIndexingPolicy: vectorIndex });
-                      }}
-                      onValidationChange={(allValidated: boolean) => {
-                        this.setState({ vectorIndexingPolicyValidated: allValidated });
+                      onVectorEmbeddingChange={(
+                        vectorEmbeddingPolicy: DataModels.VectorEmbedding[],
+                        vectorIndexingPolicy: DataModels.VectorIndex[],
+                        vectorPolicyValidated: boolean,
+                      ) => {
+                        this.setState({ vectorEmbeddingPolicy, vectorIndexingPolicy, vectorPolicyValidated });
                       }}
                     />
                   </Stack>
@@ -1235,19 +1208,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   private getContainerVectorPolicyTooltipContent(): JSX.Element {
     return (
       <Text variant="small">
-        Container vector policy provides essential information for the database engine to conduct efficient similarity
-        search for vectors found in the container&apos;s documents{" "}
-        <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
-          Learn more
-        </Link>
-      </Text>
-    );
-  }
-
-  private getVectorIndexingPolicyTooltipContent(): JSX.Element {
-    return (
-      <Text variant="small">
-        Vector indexes increase the efficiency when performing vector searches using the VectorDistance system function{" "}
+        Describe any properties in your data that contain vectors, so that they can be made available for similarity
+        queries.{" "}
         <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
           Learn more
         </Link>
@@ -1374,16 +1336,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    if (this.shouldShowVectorSearchParameters()) {
-      if (!this.state.vectorEmbeddingPolicyValidated) {
-        this.setState({ errorMessage: "Invalid container vector policies" });
-        return false;
-      }
-
-      if (!this.state.vectorIndexingPolicyValidated) {
-        this.setState({ errorMessage: "Invalid vector indexing policies" });
-        return false;
-      }
+    if (this.shouldShowVectorSearchParameters() && !this.state.vectorPolicyValidated) {
+      this.setState({ errorMessage: "Please fix errors in container vector policy" });
+      return false;
     }
 
     return true;

@@ -12,15 +12,34 @@ import {
 } from "@fluentui/react";
 import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
-import { getDataTypeOptions, getDistanceFunctionOptions } from "Explorer/Panes/VectorSearchPanel/VectorSearchUtils";
+import {
+  getDataTypeOptions,
+  getDistanceFunctionOptions,
+  getIndexTypeOptions,
+} from "Explorer/Panes/VectorSearchPanel/VectorSearchUtils";
 import React, { FunctionComponent, useState } from "react";
 
 export interface IAddVectorEmbeddingPolicyFormProps {
   vectorEmbedding: VectorEmbedding[];
   vectorIndex: VectorIndex[];
-  onVectorEmbeddingChange: (vectorEmbeddings: VectorEmbedding[]) => void;
-  onValidationChange: (isValid: boolean) => void;
+  onVectorEmbeddingChange: (
+    vectorEmbeddings: VectorEmbedding[],
+    vectorIndexingPolicies: VectorIndex[],
+    validationPassed: boolean,
+  ) => void;
 }
+
+export interface VectorEmbeddingPolicyData {
+  path: string;
+  dataType: VectorEmbedding["dataType"];
+  distanceFunction: VectorEmbedding["distanceFunction"];
+  dimensions: number;
+  indexType: VectorIndex["type"] | "none";
+  pathError: string;
+  dimensionsError: string;
+}
+
+type VectorEmbeddingPolicyProperty = "dataType" | "distanceFunction" | "indexType";
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
   fieldGroup: {
@@ -51,130 +70,145 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
   vectorEmbedding,
   vectorIndex,
   onVectorEmbeddingChange,
-  onValidationChange,
 }): JSX.Element => {
-  const [vectorEmbeddingPolicy, setVectorEmbeddingPolicy] = useState<VectorEmbedding[]>(vectorEmbedding);
-  const [vectorEmbeddingPathError, setvectorEmbeddingPathError] = useState<string[]>(
-    vectorEmbedding.map(() => {
-      return "";
-    }),
-  );
-  const [vectorEmbeddingDimensionError, setVectorEmbeddingDimensionError] = useState<string[]>(
-    vectorEmbedding.map(() => {
-      return "";
-    }),
-  );
+  const onVectorEmbeddingPathError = (path: string, index?: number): string => {
+    let error = "";
+    if (!path) {
+      error = "Vector embedding path should not be empty";
+    }
+    if (
+      index >= 0 &&
+      vectorEmbeddingPolicyData?.find(
+        (vectorEmbedding: VectorEmbeddingPolicyData, dataIndex: number) =>
+          dataIndex !== index && vectorEmbedding.path === path,
+      )
+    ) {
+      error = "Vector embedding path is already defined";
+    }
+    return error;
+  };
 
-  React.useEffect(() => {
-    onVectorEmbeddingChange(vectorEmbeddingPolicy);
-    runValidation();
-  }, [vectorEmbeddingPolicy]);
+  const onVectorEmbeddingDimensionError = (dimension: number, indexType: VectorIndex["type"] | "none"): string => {
+    let error = "";
+    if (dimension <= 0 || dimension > 4096) {
+      error = "Vector embedding dimension must be greater than 0 and less than or equal 4096";
+    }
+    if (indexType === "flat" && dimension > 505) {
+      error = "Maximum allowed dimension for flat index is 505";
+    }
+    return error;
+  };
 
-  React.useEffect(() => {
-    const allValidated =
-      vectorEmbeddingPathError.every((error: string) => error === "") &&
-      vectorEmbeddingDimensionError.every((error: string) => error === "");
-    onValidationChange(allValidated);
-  }, [vectorEmbeddingPathError, vectorEmbeddingDimensionError]);
-
-  React.useEffect(() => {
-    runValidation();
-  }, [vectorIndex]);
-
-  const runValidation = () => {
-    const pathErrors = [...vectorEmbeddingPathError];
-    const dimensionErrors = [...vectorEmbeddingDimensionError];
-    vectorEmbeddingPolicy.forEach((vectorEmbedding: VectorEmbedding, index: number) => {
-      const pathError = onVectorEmbeddingPathError(vectorEmbedding.path);
-      const dimensionError = onVectorEmbeddingDimensionError(vectorEmbedding.dimensions, index);
-      pathErrors[index] = pathError;
-      dimensionErrors[index] = dimensionError;
+  const initializeData = (vectorEmbedding: VectorEmbedding[], vectorIndex: VectorIndex[]) => {
+    const mergedData: VectorEmbeddingPolicyData[] = [];
+    vectorEmbedding.forEach((embedding) => {
+      const matchingIndex = vectorIndex.find((index) => index.path === embedding.path);
+      mergedData.push({
+        ...embedding,
+        indexType: matchingIndex?.type || "none",
+        pathError: onVectorEmbeddingPathError(embedding.path),
+        dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
+      });
     });
-    setvectorEmbeddingPathError(pathErrors);
-    setVectorEmbeddingDimensionError(dimensionErrors);
+    return mergedData;
+  };
+
+  const [vectorEmbeddingPolicyData, setVectorEmbeddingPolicyData] = useState<VectorEmbeddingPolicyData[]>(
+    initializeData(vectorEmbedding, vectorIndex),
+  );
+
+  React.useEffect(() => {
+    propagateData();
+  }, [vectorEmbeddingPolicyData]);
+
+  const propagateData = () => {
+    const vectorEmbeddings: VectorEmbedding[] = vectorEmbeddingPolicyData.map((policy: VectorEmbeddingPolicyData) => ({
+      dataType: policy.dataType,
+      dimensions: policy.dimensions,
+      distanceFunction: policy.distanceFunction,
+      path: policy.path,
+    }));
+    const vectorIndexingPolicies: VectorIndex[] = vectorEmbeddingPolicyData
+      .filter((policy: VectorEmbeddingPolicyData) => policy.indexType !== "none")
+      .map(
+        (policy) =>
+          ({
+            path: policy.path,
+            type: policy.indexType,
+          }) as VectorIndex,
+      );
+    const validationPassed = vectorEmbeddingPolicyData.every(
+      (policy: VectorEmbeddingPolicyData) => policy.pathError === "" && policy.dimensionsError === "",
+    );
+    onVectorEmbeddingChange(vectorEmbeddings, vectorIndexingPolicies, validationPassed);
   };
 
   const onVectorEmbeddingPathChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim();
-    const vectorEmbeddings = [...vectorEmbeddingPolicy];
-    const pathErrors = [...vectorEmbeddingPathError];
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
     if (!vectorEmbeddings[index]?.path && !value.startsWith("/")) {
       vectorEmbeddings[index].path = "/" + value;
     } else {
       vectorEmbeddings[index].path = value;
     }
-    const error = onVectorEmbeddingPathError(value);
-    pathErrors[index] = error;
-    setVectorEmbeddingPolicy(vectorEmbeddings);
-  };
-
-  const onVectorEmbeddingPathError = (path: string): string => {
-    let error = "";
-    if (!path) {
-      error = "Vector embedding path should not be empty";
-    }
-    return error;
+    const error = onVectorEmbeddingPathError(value, index);
+    vectorEmbeddings[index].pathError = error;
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
   const onVectorEmbeddingDimensionsChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value.trim()) || 0;
-    const vectorEmbeddings = [...vectorEmbeddingPolicy];
-    const dimensionErrors = [...vectorEmbeddingDimensionError];
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    const vectorEmbedding = vectorEmbeddings[index];
     vectorEmbeddings[index].dimensions = value;
-    const error = onVectorEmbeddingDimensionError(value, index);
-    dimensionErrors[index] = error;
-    setVectorEmbeddingPolicy(vectorEmbeddings);
+    const error = onVectorEmbeddingDimensionError(value, vectorEmbedding.indexType);
+    vectorEmbeddings[index].dimensionsError = error;
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
-  const onVectorEmbeddingDimensionError = (dimension: number, index?: number): string => {
-    let error = "";
-    if (dimension <= 0 || dimension > 4096) {
-      error = "Vector embedding dimension must be greater than 0 and less than or equal 4096";
-    }
-    if (index !== null) {
-      const matchingIndex = vectorIndex.find(
-        (vectorIndex: VectorIndex) => vectorIndex.path === vectorEmbeddingPolicy[index].path,
-      );
-      if (matchingIndex && matchingIndex.type === "flat" && dimension > 505) {
-        error = "Maximum allowed dimension for flat index is 505";
-      }
-    }
-
-    return error;
+  const onVectorEmbeddingIndexTypeChange = (index: number, option: IDropdownOption): void => {
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    const vectorEmbedding = vectorEmbeddings[index];
+    vectorEmbeddings[index].indexType = option.key as never;
+    const error = onVectorEmbeddingDimensionError(vectorEmbedding.dimensions, vectorEmbedding.indexType);
+    vectorEmbeddings[index].dimensionsError = error;
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
-  const onVectorEmbeddingDataTypeChange = (index: number, option: IDropdownOption): void => {
-    const vectorEmbeddings = [...vectorEmbeddingPolicy];
-    vectorEmbeddings[index].dataType = option.key as never;
-    setVectorEmbeddingPolicy(vectorEmbeddings);
-  };
-
-  const onVectorEmbeddingDistanceFunctionChange = (index: number, option: IDropdownOption): void => {
-    const vectorEmbeddings = [...vectorEmbeddingPolicy];
-    vectorEmbeddings[index].distanceFunction = option.key as never;
-    setVectorEmbeddingPolicy(vectorEmbeddings);
+  const onVectorEmbeddingPolicyChange = (
+    index: number,
+    option: IDropdownOption,
+    property: VectorEmbeddingPolicyProperty,
+  ): void => {
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    vectorEmbeddings[index][property] = option.key as never;
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
   const onAdd = () => {
-    setVectorEmbeddingPolicy([
-      ...vectorEmbeddingPolicy,
-      { path: "", dataType: "float32", distanceFunction: "euclidean", dimensions: 0 },
+    setVectorEmbeddingPolicyData([
+      ...vectorEmbeddingPolicyData,
+      {
+        path: "",
+        dataType: "float32",
+        distanceFunction: "euclidean",
+        dimensions: 0,
+        indexType: "none",
+        pathError: onVectorEmbeddingPathError(""),
+        dimensionsError: onVectorEmbeddingDimensionError(0, "none"),
+      },
     ]);
   };
 
   const onDelete = (index: number) => {
-    const vectorEmbeddings = vectorEmbeddingPolicy.filter((_uniqueKey, j) => index !== j);
-    const pathErrors = vectorEmbeddingPathError.filter((_uniqueKey, j) => index !== j);
-    const dimensionErrors = vectorEmbeddingDimensionError.filter((_uniqueKey, j) => index !== j);
-    setVectorEmbeddingPolicy(vectorEmbeddings);
-    setvectorEmbeddingPathError(pathErrors);
-    setVectorEmbeddingDimensionError(dimensionErrors);
+    const vectorEmbeddings = vectorEmbeddingPolicyData.filter((_uniqueKey, j) => index !== j);
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
 
   return (
     <Stack tokens={{ childrenGap: 4 }}>
-      {vectorEmbeddingPolicy.length > 0 &&
-        vectorEmbeddingPolicy.map((vectorEmbedding: VectorEmbedding, index: number) => (
+      {vectorEmbeddingPolicyData.length > 0 &&
+        vectorEmbeddingPolicyData.map((vectorEmbeddingPolicy: VectorEmbeddingPolicyData, index: number) => (
           <CollapsibleSectionComponent key={index} isExpandedByDefault={true} title={`Vector embedding ${index + 1}`}>
             <Stack horizontal tokens={{ childrenGap: 4 }}>
               <Stack
@@ -190,13 +224,13 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
                 <Stack>
                   <Label styles={{ root: { fontSize: 12 } }}>Path</Label>
                   <TextField
+                    id={`vector-policy-path-${index + 1}`}
                     required={true}
                     placeholder="/vector1"
                     styles={textFieldStyles}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => onVectorEmbeddingPathChange(index, event)}
-                    value={vectorEmbedding.path || ""}
-                    errorMessage={vectorEmbeddingPathError[index]}
-                    // validateOnFocusOut={true}
+                    value={vectorEmbeddingPolicy.path || ""}
+                    errorMessage={vectorEmbeddingPolicy.pathError}
                   />
                 </Stack>
                 <Stack>
@@ -205,9 +239,9 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
                     required={true}
                     styles={dropdownStyles}
                     options={getDataTypeOptions()}
-                    selectedKey={vectorEmbeddingPolicy[index].dataType}
+                    selectedKey={vectorEmbeddingPolicy.dataType}
                     onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
-                      onVectorEmbeddingDataTypeChange(index, option)
+                      onVectorEmbeddingPolicyChange(index, option, "dataType")
                     }
                   ></Dropdown>
                 </Stack>
@@ -217,26 +251,40 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
                     required={true}
                     styles={dropdownStyles}
                     options={getDistanceFunctionOptions()}
-                    selectedKey={vectorEmbeddingPolicy[index].distanceFunction}
+                    selectedKey={vectorEmbeddingPolicy.distanceFunction}
                     onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
-                      onVectorEmbeddingDistanceFunctionChange(index, option)
+                      onVectorEmbeddingPolicyChange(index, option, "distanceFunction")
                     }
                   ></Dropdown>
                 </Stack>
                 <Stack>
                   <Label styles={{ root: { fontSize: 12 } }}>Dimensions</Label>
                   <TextField
+                    id={`vector-policy-dimension-${index + 1}`}
                     required={true}
                     styles={textFieldStyles}
-                    value={String(vectorEmbedding.dimensions || 0)}
+                    value={String(vectorEmbeddingPolicy.dimensions || 0)}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       onVectorEmbeddingDimensionsChange(index, event)
                     }
-                    errorMessage={vectorEmbeddingDimensionError[index]}
+                    errorMessage={vectorEmbeddingPolicy.dimensionsError}
                   />
+                </Stack>
+                <Stack>
+                  <Label styles={{ root: { fontSize: 12 } }}>Index type</Label>
+                  <Dropdown
+                    required={true}
+                    styles={dropdownStyles}
+                    options={getIndexTypeOptions()}
+                    selectedKey={vectorEmbeddingPolicy.indexType}
+                    onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
+                      onVectorEmbeddingIndexTypeChange(index, option)
+                    }
+                  ></Dropdown>
                 </Stack>
               </Stack>
               <IconButton
+                id={`delete-vector-policy-${index + 1}`}
                 iconProps={{ iconName: "Delete" }}
                 style={{ height: 27, margin: "auto" }}
                 onClick={() => onDelete(index)}
@@ -244,7 +292,7 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
             </Stack>
           </CollapsibleSectionComponent>
         ))}
-      <DefaultButton styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
+      <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
         Add vector embedding
       </DefaultButton>
     </Stack>

@@ -8,7 +8,6 @@ export interface CollapsibleSectionProps {
   isExpandedByDefault: boolean;
   onExpand?: () => void;
   children: JSX.Element;
-  tooltip?: boolean;
   tooltipContent?: string | JSX.Element | JSX.Element[];
 }
 
@@ -57,7 +56,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
         >
           <Icon iconName={this.state.isExpanded ? "ChevronDown" : "ChevronRight"} />
           <Label>{this.props.title}</Label>
-          {this.props.tooltip && this.props.tooltipContent && (
+          {this.props.tooltipContent && (
             <TooltipHost
               directionalHint={DirectionalHint.bottomLeftEdge}
               content={this.props.tooltipContent}

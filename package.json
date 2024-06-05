@@ -211,6 +211,7 @@
     "test": "rimraf coverage && jest",
     "test:debug": "jest --runInBand",
     "test:e2e": "jest -c ./jest.config.playwright.js --detectOpenHandles",
+    "test:file": "jest --coverage=false",
     "watch": "npm run start",
     "wait-for-server": "wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/",
     "build:ase": "gulp build:ase",
