@@ -150,7 +150,6 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       data-test={`TreeNodeContainer:${treeNodeId}`}
       value={treeNodeId}
       itemType={isBranch ? "branch" : "leaf"}
-      style={{ height: "100%" }}
       onOpenChange={onOpenChange}
     >
       <TreeItemLayout
