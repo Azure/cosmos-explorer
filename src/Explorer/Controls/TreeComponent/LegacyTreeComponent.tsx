@@ -166,6 +166,7 @@ export class LegacyTreeNodeComponent extends React.Component<
 
     return (
       <div
+        data-test={`Tree/TreeNode:${node.label}`}
         className={`${this.props.node.className || ""} main${generation} nodeItem ${showSelected ? "selected" : ""}`}
         onClick={(event: React.MouseEvent<HTMLDivElement>) => this.onNodeClick(event, node)}
         onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) => this.onNodeKeyPress(event, node)}
@@ -174,9 +175,9 @@ export class LegacyTreeNodeComponent extends React.Component<
       >
         <div
           className={`treeNodeHeader ${this.state.isMenuShowing ? "showingMenu" : ""}`}
+          data-test={`Tree/TreeNode/Header:${node.label}`}
           style={headerStyle}
           tabIndex={node.children ? -1 : 0}
-          data-test={node.label}
         >
           {this.renderCollapseExpandIcon(node)}
           {node.iconSrc && <img className="nodeIcon" src={node.iconSrc} alt="" />}
@@ -264,7 +265,7 @@ export class LegacyTreeNodeComponent extends React.Component<
             onMenuDismissed: (contextualMenu?: IContextualMenuProps) => this.setState({ isMenuShowing: false }),
             contextualMenuItemAs: (props: IContextualMenuItemProps) => (
               <div
-                data-test={`treeComponentMenuItemContainer`}
+                data-test={`Tree/TreeNode/MenuItem:${props.item.text}`}
                 className="treeComponentMenuItemContainer"
                 onContextMenu={(e) => e.target.dispatchEvent(LegacyTreeNodeComponent.createClickEvent())}
               >

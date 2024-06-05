@@ -147,6 +147,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   const treeItem = (
     <TreeItem
+      data-test={`TreeNodeContainer:${treeNodeId}`}
       value={treeNodeId}
       itemType={isBranch ? "branch" : "leaf"}
       style={{ height: "100%" }}

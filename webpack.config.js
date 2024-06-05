@@ -87,6 +87,7 @@ const typescriptRule = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+/** @type {(_env: Record<string, string>, argv: Record<string, unknown>) => import("webpack").Configuration} */
 module.exports = function (_env = {}, argv = {}) {
   const mode = argv.mode || "development";
   const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
@@ -265,6 +266,8 @@ module.exports = function (_env = {}, argv = {}) {
     watch: false,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
+
+    /** @type {import("webpack-dev-server").Configuration}*/
     devServer: {
       hot: false,
       // disableHostCheck is removed in webpack 5, use: allowedHosts: "all",
@@ -281,6 +284,26 @@ module.exports = function (_env = {}, argv = {}) {
         "Access-Control-Max-Age": "3600",
         "Access-Control-Allow-Headers": "*",
         "Access-Control-Allow-Methods": "*",
+      },
+      setupMiddlewares: (middlewares, server) => {
+        // Provide an HTTP API that will wait for compilation of all bundles to be completed.
+        // This is used by Playwright to know when the server is ready to be tested.
+        let compilationComplete = false;
+        server.compiler.hooks.done.tap("done", () => {
+          setImmediate(() => {
+            compilationComplete = true;
+          });
+        });
+
+        server.app.get("/_ready", (_, res) => {
+          if (compilationComplete) {
+            res.status(200).send("Compilation complete.");
+          } else {
+            res.status(503).send("Compilation not complete.");
+          }
+        });
+
+        return middlewares;
       },
       proxy: {
         "/api": {

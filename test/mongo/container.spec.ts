@@ -1,72 +1,47 @@
-import { jest } from "@jest/globals";
-import "expect-playwright";
-import {
-  AccountType,
-  generateDatabaseNameWithTimestamp,
-  generateUniqueName,
-  getPanelSelector,
-  getTestExplorerUrl,
-  getTreeMenuItemSelector,
-  getTreeNodeSelector,
-  openContextMenu,
-} from "../utils/shared";
-import { waitForExplorer } from "../utils/waitForExplorer";
-jest.setTimeout(240000);
+import { expect, test } from "@playwright/test";
 
-test("Mongo CRUD", async () => {
-  const databaseId = generateDatabaseNameWithTimestamp();
-  const containerId = generateUniqueName("container");
+import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
 
-  page.setDefaultTimeout(50000);
+(
+  [
+    ["latest API version", TestAccount.Mongo],
+    ["3.2 API", TestAccount.Mongo32],
+  ] as [string, TestAccount][]
+).forEach(([apiVersionDescription, accountType]) => {
+  test(`Mongo CRUD using ${apiVersionDescription}`, async ({ page }) => {
+    const databaseId = generateDatabaseNameWithTimestamp();
+    const collectionId = generateUniqueName("collection");
 
-  const url = await getTestExplorerUrl(AccountType.Mongo);
-  await page.goto(url);
-  const explorer = await waitForExplorer();
+    const explorer = await DataExplorer.open(page, accountType);
 
-  // Create new database and collection
-  await explorer.click('[data-test="New Collection"]');
+    await explorer.commandBarButton("New Collection").click();
+    await explorer.whilePanelOpen("New Collection", async (panel, okButton) => {
+      await panel.getByPlaceholder("Type a new database id").fill(databaseId);
+      await panel.getByRole("textbox", { name: "Collection id, Example Collection1" }).fill(collectionId);
+      await panel.getByRole("textbox", { name: "Shard key" }).fill("pk");
+      await panel.getByLabel("Database max RU/s").fill("1000");
+      await okButton.click();
+    });
 
-  await explorer.waitForSelector(getPanelSelector("New Collection"));
-  await explorer.fill('[aria-label="New database id, Type a new database id"]', databaseId);
-  await explorer.fill('[aria-label="Collection id, Example Collection1"]', containerId);
-  await explorer.fill('[aria-label="Shard key"]', "pk");
-  await explorer.click("#sidePanelOkButton");
-  await explorer.waitForSelector(getPanelSelector("New Collection"), { state: "detached" });
+    const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
+    await databaseNode.expand();
+    const collectionNode = explorer.treeNode(`DATA/${databaseId}/${collectionId}`);
 
-  await explorer.click(getTreeNodeSelector(`DATA/${databaseId}`));
-  await explorer.click(getTreeNodeSelector(`DATA/${databaseId}/${containerId}`));
+    await collectionNode.openContextMenu();
+    await collectionNode.contextMenuItem("Delete Collection").click();
+    await explorer.whilePanelOpen("Delete Collection", async (panel, okButton) => {
+      await panel.getByRole("textbox", { name: "Confirm by typing the collection id" }).fill(collectionId);
+      await okButton.click();
+    });
+    await expect(collectionNode.element).not.toBeAttached();
 
-  // Create indexing policy
-  await explorer.click(getTreeNodeSelector(`DATA/${databaseId}/${containerId}/Settings`));
-  await explorer.click('button[role="tab"]:has-text("Indexing Policy")');
-  await explorer.click('[aria-label="Index Field Name 0"]');
-  await explorer.fill('[aria-label="Index Field Name 0"]', "foo");
-  await explorer.click("text=Select an index type");
-  await explorer.click('button[role="option"]:has-text("Single Field")');
-  await explorer.click('[data-test="Save"]');
+    await databaseNode.openContextMenu();
+    await databaseNode.contextMenuItem("Delete Database").click();
+    await explorer.whilePanelOpen("Delete Database", async (panel, okButton) => {
+      await panel.getByRole("textbox", { name: "Confirm by typing the Database id" }).fill(databaseId);
+      await okButton.click();
+    });
 
-  // Remove indexing policy
-  await explorer.click('[aria-label="Delete index Button"]');
-  await explorer.click('[data-test="Save"]');
-
-  // Delete database and collection
-  await openContextMenu(explorer, `DATA/${databaseId}/${containerId}`);
-  await explorer.click(getTreeMenuItemSelector(`DATA/${databaseId}/${containerId}`, "Delete Collection"));
-
-  await explorer.waitForSelector(getPanelSelector("Delete Collection"));
-  await explorer.fill('text=* Confirm by typing the collection id >> input[type="text"]', containerId);
-  await explorer.click('[aria-label="OK"]');
-  await explorer.waitForSelector(getPanelSelector("Delete Collection"), { state: "detached" });
-
-  await openContextMenu(explorer, `DATA/${databaseId}`);
-  await explorer.click(getTreeMenuItemSelector(`DATA/${databaseId}`, "Delete Database"));
-
-  await explorer.waitForSelector(getPanelSelector("Delete Database"));
-  await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
-  await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', databaseId);
-  await explorer.click("#sidePanelOkButton");
-  await explorer.waitForSelector(getPanelSelector("Delete Database"), { state: "detached" });
-
-  await expect(explorer).not.toHaveText(".dataResourceTree", databaseId);
-  await expect(explorer).not.toHaveText(".dataResourceTree", containerId);
+    await expect(databaseNode.element).not.toBeAttached();
+  });
 });
