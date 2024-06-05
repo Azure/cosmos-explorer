@@ -1534,6 +1534,44 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
 </TreeItem>
 `;
 
+exports[`TreeNodeComponent renders a node as expandable if it has empty, but defined, children array 1`] = `
+<TreeItem
+  itemType="branch"
+  onOpenChange={[Function]}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;
+
 exports[`TreeNodeComponent renders a node with a menu 1`] = `
 <Menu
   onOpenChange={[Function]}
