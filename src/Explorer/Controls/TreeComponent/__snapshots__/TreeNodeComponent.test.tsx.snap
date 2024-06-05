@@ -1554,6 +1554,7 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
 
 exports[`TreeNodeComponent renders a node as expandable if it has empty, but defined, children array 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="branch"
   onOpenChange={[Function]}
   style={
