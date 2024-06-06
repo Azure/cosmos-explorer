@@ -14,6 +14,7 @@ import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
+import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
@@ -53,11 +54,18 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
     });
   }, [setKeyboardHandlers]);
 
+  const defaultMessageBarStyles = {
+    root: {
+      height: `${LayoutConstants.rowHeight}px`,
+    }
+  };
+
   return (
     <div className="tabsManagerContainer">
       {networkSettingsWarning && (
         <MessageBar
           messageBarType={MessageBarType.warning}
+          styles={defaultMessageBarStyles}
           actions={
             <MessageBarButton
               onClick={() =>
@@ -84,6 +92,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             setShowRUThresholdMessageBar(false);
           }}
           styles={{
+            ...defaultMessageBarStyles,
             innerText: {
               fontWeight: "bold",
             },
@@ -103,6 +112,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
       {showMongoAndCassandraProxiesNetworkSettingsWarningState && (
         <MessageBar
           messageBarType={MessageBarType.warning}
+          styles={defaultMessageBarStyles}
           onDismiss={() => {
             setShowMongoAndCassandraProxiesNetworkSettingsWarningState(false);
           }}
