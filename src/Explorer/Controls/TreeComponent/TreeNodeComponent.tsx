@@ -165,6 +165,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       value={treeNodeId}
       itemType={isBranch ? "branch" : "leaf"}
       onOpenChange={onOpenChange}
+      className={treeStyles.treeItem}
     >
       <TreeItemLayout
         className={mergeClasses(
@@ -192,7 +193,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         }
         expandIcon={expandIcon}
       >
-        {node.label}
+        <span className={treeStyles.nodeLabel}>{node.label}</span>
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
         <Tree className={treeStyles.tree}>

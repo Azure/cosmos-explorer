@@ -1,5 +1,4 @@
 import { KeyboardAction } from "KeyboardShortcuts";
-import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
@@ -9,7 +8,6 @@ import AddTriggerIcon from "../../../../images/AddTrigger.svg";
 import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
-import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
@@ -53,26 +51,12 @@ export function createStaticCommandBarButtons(
     }
   };
 
-  if (configContext.platform !== Platform.Fabric) {
-    const homeBtn = createHomeButton();
-    buttons.push(homeBtn);
+  if (configContext.platform !== Platform.Fabric && userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
+    const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
-    const newCollectionBtn = createNewCollectionGroup(container);
-    newCollectionBtn.keyboardAction = KeyboardAction.NEW_COLLECTION; // Just for the root button, not the child version we create below.
-    buttons.push(newCollectionBtn);
-    if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
-      const addSynapseLink = createOpenSynapseLinkDialogButton(container);
-
-      if (addSynapseLink) {
-        addDivider();
-        buttons.push(addSynapseLink);
-      }
-    }
-
-    if (userContext.apiType !== "Tables") {
-      newCollectionBtn.children = [createNewCollectionGroup(container)];
-      const newDatabaseBtn = createNewDatabase(container);
-      newCollectionBtn.children.push(newDatabaseBtn);
+    if (addSynapseLink) {
+      addDivider();
+      buttons.push(addSynapseLink);
     }
   }
 
@@ -233,18 +217,6 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
     ariaLabel: label,
     hasPopup: true,
     id: "createNewContainerCommandButton",
-  };
-}
-
-function createHomeButton(): CommandButtonComponentProps {
-  const label = "Home";
-  return {
-    iconSrc: HomeIcon,
-    iconAlt: label,
-    onCommandClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Home),
-    commandButtonLabel: label,
-    hasPopup: false,
-    ariaLabel: label,
   };
 }
 

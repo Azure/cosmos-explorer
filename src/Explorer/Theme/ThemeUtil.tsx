@@ -1,6 +1,30 @@
-import { BrandVariants, Theme, createLightTheme, shorthands, tokens } from "@fluentui/react-components";
-import { Platform } from "ConfigContext";
+import { BrandVariants, FluentProvider, Theme, createLightTheme, makeStyles, mergeClasses, shorthands, tokens } from "@fluentui/react-components";
+import { Platform, configContext } from "ConfigContext";
+import React, { PropsWithChildren } from "react";
 import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
+
+export const LayoutConstants = {
+  rowHeight: 36,
+}
+
+export const layoutRowHeightToken = "--cosmos-Layout--rowHeight" as const;
+
+export const useGlobalStyles = makeStyles({
+  root: {
+    [layoutRowHeightToken]: `${LayoutConstants.rowHeight}px`,
+  }
+});
+
+export type CosmosFluentProviderProps = PropsWithChildren<{
+  className?: string;
+}>;
+
+export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ className, children }) => {
+  const styles = useGlobalStyles();
+  return <FluentProvider theme={getPlatformTheme(configContext.platform)} className={mergeClasses(styles.root, className)}>
+    {children}
+  </FluentProvider>;
+};
 
 // These are the theme colors for Fluent UI 9 React components
 const appThemePortalBrandRamp: BrandVariants = {
