@@ -1,9 +1,16 @@
-import { Menu, MenuButtonProps, MenuItem, MenuList, MenuPopover, MenuTrigger, SplitButton, makeStyles, shorthands } from "@fluentui/react-components";
+import { Button, Menu, MenuButtonProps, MenuItem, MenuList, MenuPopover, MenuTrigger, SplitButton, makeStyles, shorthands } from "@fluentui/react-components";
 import { Add16Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
+import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
+import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
 import { CosmosFluentProvider, cosmosShorthands, layoutRowHeightToken } from "Explorer/Theme/ThemeUtil";
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
-import React, { useCallback, useMemo } from "react";
+import { useDatabases } from "Explorer/useDatabases";
+import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { userContext } from "UserContext";
+import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
+import { useSidePanel } from "hooks/useSidePanel";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 const useSidebarStyles = makeStyles({
   sidebar: {
@@ -37,60 +44,106 @@ const useSidebarStyles = makeStyles({
   },
 });
 
-interface SidebarProps {
+interface GlobalCommandsProps {
   explorer: Explorer
 }
 
-const GlobalCommands: React.FC = () => {
+interface GlobalCommand {
+  id: string;
+  label: string;
+  icon: JSX.Element;
+  onClick: () => void;
+  keyboardAction?: KeyboardAction;
+}
+
+const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   const styles = useSidebarStyles();
-  const actions = useMemo(() => {
-    // TODO: Conditional on API type, etc.
-    return [
+  const actions = useMemo<GlobalCommand[]>(() => {
+    if (configContext.platform === Platform.Fabric ||
+      userContext.apiType === "Postgres" ||
+      userContext.apiType === "VCoreMongo") {
+      // No Global Commands for these API types.
+      // In fact, no sidebar for Postgres or VCoreMongo at all, but just in case, we check here anyway.
+      return [];
+    }
+
+    const actions: GlobalCommand[] = [
       {
-        id: "new_container",
-        label: "New container",
+        id: "new_collection",
+        label: `New ${getCollectionName()}`,
         icon: <Add16Regular />,
-        onClick: () => alert("New Container")
-      },
-      {
-        id: "new_database",
-        label: "New database",
-        icon: <Add16Regular />,
-        onClick: () => alert("New Database")
+        onClick: () => explorer.onNewCollectionClicked(),
+        keyboardAction: KeyboardAction.NEW_COLLECTION,
       }
-    ]
-  }, []);
+    ];
+  
+    if(userContext.apiType !== "Tables") {
+      actions.push({
+        id: "new_database",
+        label: `New ${getDatabaseName()}`,
+        icon: <Add16Regular />,
+        onClick: async () => {
+          const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+          if (throughputCap && throughputCap !== -1) {
+            await useDatabases.getState().loadAllOffers();
+          }
+          useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={explorer} />);
+        },
+        keyboardAction: KeyboardAction.NEW_DATABASE,
+      });
+    }
+
+    return actions;
+  }, [explorer]);
 
   const primaryAction = useMemo(() => actions.length > 0 ? actions[0] : undefined, [actions]);
   const onPrimaryActionClick = useCallback(() => primaryAction?.onClick(), [primaryAction]);
+  const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.GLOBAL_COMMANDS);
+
+  useEffect(() => {
+    setKeyboardActions(actions.reduce((acc, action) => {
+      if (action.keyboardAction) {
+        acc[action.keyboardAction] = action.onClick;
+      }
+      return acc;
+    }, {} as Record<KeyboardAction, KeyboardActionHandler>));
+  }, [actions, setKeyboardActions]);
 
   if (!primaryAction) {
     return null;
   }
 
   return <div className={styles.globalCommandsContainer}>
-    <Menu positioning="below-end">
-      <MenuTrigger disableButtonEnhancement>
-        {(triggerProps: MenuButtonProps) => (
-          <SplitButton
-            menuButton={triggerProps}
-            primaryActionButton={{ onClick: onPrimaryActionClick }}
-            icon={primaryAction.icon}
-          >
-            {primaryAction.label}
-          </SplitButton>
-        )}
-      </MenuTrigger>
-      <MenuPopover>
-        <MenuList>
-          {actions.map((action) => (
-            <MenuItem key={action.id} icon={action.icon} onClick={action.onClick}>{action.label}</MenuItem>
-          ))}
-        </MenuList>
-      </MenuPopover>
-    </Menu>
+    {actions.length === 1
+      ? <Button icon={primaryAction.icon} onClick={onPrimaryActionClick}>
+        {primaryAction.label}
+      </Button>
+      : <Menu positioning="below-end">
+        <MenuTrigger disableButtonEnhancement>
+          {(triggerProps: MenuButtonProps) => (
+            <SplitButton
+              menuButton={triggerProps}
+              primaryActionButton={{ onClick: onPrimaryActionClick }}
+              icon={primaryAction.icon}
+            >
+              {primaryAction.label}
+            </SplitButton>
+          )}
+        </MenuTrigger>
+        <MenuPopover>
+          <MenuList>
+            {actions.map((action) => (
+              <MenuItem key={action.id} icon={action.icon} onClick={action.onClick}>{action.label}</MenuItem>
+            ))}
+          </MenuList>
+        </MenuPopover>
+      </Menu>}
   </div>;
 };
+
+interface SidebarProps {
+  explorer: Explorer
+}
 
 export const Sidebar: React.FC<SidebarProps> = ({ explorer }) => {
   const styles = useSidebarStyles();
@@ -105,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ explorer }) => {
           </div>
         </div>
         <div className={styles.expanded}>
-          <GlobalCommands />
+          <GlobalCommands explorer={explorer} />
           <ResourceTree explorer={explorer} />
         </div>
       </>
