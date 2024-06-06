@@ -212,6 +212,10 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             onChange={handleonChangeDBId}
             autoFocus
             styles={getTextFieldStyles()}
+
+            // We've seen password managers prompt to autofill this field, which is not desired.
+            data-lpignore={true}
+            data-1p-ignore={true}
           />
 
           {!isServerlessAccount() && (
