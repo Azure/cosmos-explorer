@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import { SplitterDirection } from "Common/Splitter";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
@@ -12,7 +13,13 @@ import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
+import {
+  LocalStorageUtility,
+  StorageKey,
+  getDefaultQueryResultsView,
+  getRUThreshold,
+  ruThresholdEnabled,
+} from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
@@ -25,6 +32,7 @@ import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
 import DownloadQueryIcon from "../../../../images/DownloadQuery.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
+import CheckIcon from "../../../../images/check-1.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
@@ -103,6 +111,7 @@ interface IQueryTabStates {
   cancelQueryTimeoutID: NodeJS.Timeout;
   copilotActive: boolean;
   currentTabActive: boolean;
+  queryResultsView: SplitterDirection;
 }
 
 export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
@@ -147,6 +156,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       cancelQueryTimeoutID: undefined,
       copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
+      queryResultsView: getDefaultQueryResultsView(),
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -508,7 +518,43 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
+    buttons.push(this.createViewButtons());
+
     return buttons;
+  }
+
+  private createViewButtons(): CommandButtonComponentProps {
+    const verticalButton: CommandButtonComponentProps = {
+      isSelected: this.state.queryResultsView === SplitterDirection.Vertical,
+      iconSrc: this.state.queryResultsView === SplitterDirection.Vertical ? CheckIcon : undefined,
+      commandButtonLabel: "Vertical",
+      ariaLabel: "Vertical",
+      onCommandClick: () => this._setViewLayout(SplitterDirection.Vertical),
+      hasPopup: false,
+    };
+    const horizontalButton: CommandButtonComponentProps = {
+      isSelected: this.state.queryResultsView === SplitterDirection.Horizontal,
+      iconSrc: this.state.queryResultsView === SplitterDirection.Horizontal ? CheckIcon : undefined,
+      commandButtonLabel: "Horizontal",
+      ariaLabel: "Horizontal",
+      onCommandClick: () => this._setViewLayout(SplitterDirection.Horizontal),
+      hasPopup: false,
+    };
+
+    return {
+      commandButtonLabel: "View",
+      ariaLabel: "View",
+      hasPopup: true,
+      children: [verticalButton, horizontalButton],
+    };
+  }
+  private _setViewLayout(direction: SplitterDirection): void {
+    this.setState({ queryResultsView: direction });
+
+    // We'll need to refresh the context buttons to update the selected state of the view buttons
+    setTimeout(() => {
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    }, 100);
   }
 
   private _toggleCopilot = (active: boolean) => {
@@ -634,7 +680,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             ></QueryCopilotPromptbar>
           )}
           <div className="tabPaneContentContainer">
-            <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
+            <SplitterLayout
+              vertical={this.state.queryResultsView === SplitterDirection.Vertical}
+              primaryIndex={0}
+              primaryMinSize={100}
+              secondaryMinSize={200}
+            >
               <Fragment>
                 <div className="queryEditor" style={{ height: "100%" }}>
                   <EditorReact

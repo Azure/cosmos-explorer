@@ -60,21 +60,23 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
           iconName: btn.iconName,
         },
-        onClick: (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
-          btn.onCommandClick(ev);
-          let copilotEnabled = false;
-          if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
-            copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
-          }
-          TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
-        },
+        onClick: btn.onCommandClick
+          ? (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
+              btn.onCommandClick(ev);
+              let copilotEnabled = false;
+              if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
+                copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
+              }
+              TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
+            }
+          : undefined,
         key: `${btn.commandButtonLabel}${index}`,
         text: label,
-        "data-test": label,
         title: btn.tooltipText,
         name: label,
         disabled: btn.disabled,
         ariaLabel: btn.ariaLabel,
+        "data-test": `CommandBar/Button:${label}`,
         buttonStyles: {
           root: {
             backgroundColor: backgroundColor,

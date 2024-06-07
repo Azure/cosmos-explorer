@@ -9,12 +9,14 @@ import {
   Toggle,
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
+import { SplitterDirection } from "Common/Splitter";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
   StorageKey,
+  getDefaultQueryResultsView,
   getRUThreshold,
   ruThresholdEnabled as isRUThresholdEnabled,
 } from "Shared/StorageUtility";
@@ -47,6 +49,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
   );
   const [queryTimeout, setQueryTimeout] = useState<number>(LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout));
+  const [defaultQueryResultsView, setDefaultQueryResultsView] = useState<SplitterDirection>(
+    getDefaultQueryResultsView(),
+  );
   const [automaticallyCancelQueryAfterTimeout, setAutomaticallyCancelQueryAfterTimeout] = useState<boolean>(
     LocalStorageUtility.getEntryBoolean(StorageKey.AutomaticallyCancelQueryAfterTimeout),
   );
@@ -121,6 +126,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
     LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
     LocalStorageUtility.setEntryString(StorageKey.CopilotSampleDBEnabled, copilotSampleDBEnabled.toString());
+    LocalStorageUtility.setEntryString(StorageKey.DefaultQueryResultsView, defaultQueryResultsView);
 
     if (shouldShowGraphAutoVizOption) {
       LocalStorageUtility.setEntryBoolean(
@@ -197,6 +203,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     { key: Constants.PriorityLevel.High, text: "High" },
   ];
 
+  const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
+    { key: SplitterDirection.Vertical, text: "Vertical" },
+    { key: SplitterDirection.Horizontal, text: "Horizontal" },
+  ];
+
   const handleOnPriorityLevelOptionChange = (
     ev: React.FormEvent<HTMLInputElement>,
     option: IChoiceGroupOption,
@@ -232,6 +243,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     if (!isNaN(queryTimeout)) {
       setQueryTimeout(queryTimeout);
     }
+  };
+
+  const handleOnDefaultQueryResultsViewChange = (
+    ev: React.MouseEvent<HTMLElement>,
+    option: IChoiceGroupOption,
+  ): void => {
+    setDefaultQueryResultsView(option.key as SplitterDirection);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -436,6 +454,25 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     />
                   </div>
                 )}
+              </div>
+            </div>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
+                <div>
+                  <legend id="defaultQueryResultsView" className="settingsSectionLabel legendLabel">
+                    Default Query Results View
+                  </legend>
+                  <InfoTooltip>Select the default view to use when displaying query results.</InfoTooltip>
+                </div>
+                <div>
+                  <ChoiceGroup
+                    ariaLabelledBy="defaultQueryResultsView"
+                    selectedKey={defaultQueryResultsView}
+                    options={defaultQueryResultsViewOptionList}
+                    styles={choiceButtonStyles}
+                    onChange={handleOnDefaultQueryResultsViewChange}
+                  />
+                </div>
               </div>
             </div>
           </>

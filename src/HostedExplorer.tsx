@@ -128,6 +128,7 @@ const App: React.FunctionComponent = () => {
           // Setting key is needed so React will re-render this element on any account change
           key={databaseAccount?.id || encryptedTokenMetadata?.accountName || authType}
           ref={ref}
+          data-test="DataExplorerFrame"
           id="explorerMenu"
           name="explorer"
           className="iframe"

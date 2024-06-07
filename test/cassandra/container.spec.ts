@@ -1,57 +1,39 @@
-import { jest } from "@jest/globals";
-import "expect-playwright";
-import {
-  AccountType,
-  generateUniqueName,
-  getPanelSelector,
-  getTestExplorerUrl,
-  getTreeMenuItemSelector,
-  getTreeNodeSelector,
-  openContextMenu,
-} from "../utils/shared";
-import { waitForExplorer } from "../utils/waitForExplorer";
-jest.setTimeout(120000);
+import { expect, test } from "@playwright/test";
 
-test("Cassandra keyspace and table CRUD", async () => {
-  const keyspaceId = generateUniqueName("keyspace");
+import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
+
+test("Cassandra keyspace and table CRUD", async ({ page }) => {
+  const keyspaceId = generateDatabaseNameWithTimestamp();
   const tableId = generateUniqueName("table");
 
-  page.setDefaultTimeout(50000);
+  const explorer = await DataExplorer.open(page, TestAccount.Cassandra);
 
-  const url = await getTestExplorerUrl(AccountType.Cassandra);
-  await page.goto(url);
-  await page.waitForSelector("iframe");
-  const explorer = await waitForExplorer();
+  await explorer.commandBarButton("New Table").click();
+  await explorer.whilePanelOpen("Add Table", async (panel, okButton) => {
+    await panel.getByPlaceholder("Type a new keyspace id").fill(keyspaceId);
+    await panel.getByPlaceholder("Enter table Id").fill(tableId);
+    await panel.getByLabel("Table max RU/s").fill("1000");
+    await okButton.click();
+  });
 
-  await explorer.click('[data-test="New Table"]');
+  const keyspaceNode = explorer.treeNode(`DATA/${keyspaceId}`);
+  await keyspaceNode.expand();
+  const tableNode = explorer.treeNode(`DATA/${keyspaceId}/${tableId}`);
 
-  await explorer.waitForSelector(getPanelSelector("Add Table"));
-  await explorer.click('[aria-label="Keyspace id"]');
-  await explorer.fill('[aria-label="Keyspace id"]', keyspaceId);
-  await explorer.click('[aria-label="addCollection-table Id Create table"]');
-  await explorer.fill('[aria-label="addCollection-table Id Create table"]', tableId);
-  await explorer.fill('[aria-label="Table max RU/s"]', "1000");
-  await explorer.click("#sidePanelOkButton");
-  await explorer.waitForSelector(getPanelSelector("Add Table"), { state: "detached" });
+  await tableNode.openContextMenu();
+  await tableNode.contextMenuItem("Delete Table").click();
+  await explorer.whilePanelOpen("Delete Table", async (panel, okButton) => {
+    await panel.getByRole("textbox", { name: "Confirm by typing the table id" }).fill(tableId);
+    await okButton.click();
+  });
+  await expect(tableNode.element).not.toBeAttached();
 
-  await explorer.click(getTreeNodeSelector(`DATA/${keyspaceId}`));
-  await openContextMenu(explorer, `DATA/${keyspaceId}/${tableId}`);
-  await explorer.click(getTreeMenuItemSelector(`DATA/${keyspaceId}/${tableId}`, "Delete Table"));
+  await keyspaceNode.openContextMenu();
+  await keyspaceNode.contextMenuItem("Delete Keyspace").click();
+  await explorer.whilePanelOpen("Delete Keyspace", async (panel, okButton) => {
+    await panel.getByRole("textbox", { name: "Confirm by typing the Keyspace id" }).fill(keyspaceId);
+    await okButton.click();
+  });
 
-  await explorer.waitForSelector(getPanelSelector("Delete Table"));
-  await explorer.fill('text=* Confirm by typing the table id >> input[type="text"]', tableId);
-  await explorer.click('[aria-label="OK"]');
-  await explorer.waitForSelector(getPanelSelector("Delete Table"), { state: "detached" });
-
-  await openContextMenu(explorer, `DATA/${keyspaceId}`);
-  await explorer.click(getTreeMenuItemSelector(`DATA/${keyspaceId}`, "Delete Keyspace"));
-
-  await explorer.waitForSelector(getPanelSelector("Delete Keyspace"));
-  await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
-  await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', keyspaceId);
-  await explorer.click("#sidePanelOkButton");
-  await explorer.waitForSelector(getPanelSelector("Delete Keyspace"), { state: "detached" });
-
-  await expect(explorer).not.toHaveText(".dataResourceTree", keyspaceId);
-  await expect(explorer).not.toHaveText(".dataResourceTree", tableId);
+  await expect(keyspaceNode.element).not.toBeAttached();
 });

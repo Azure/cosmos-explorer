@@ -36,13 +36,14 @@ exports[`LegacyTreeComponent renders a simple tree 1`] = `
 exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
 <div
   className=" main2 nodeItem "
+  data-test="Tree/TreeNode:label"
   onClick={[Function]}
   onKeyPress={[Function]}
   role="treeitem"
 >
   <div
     className="treeNodeHeader "
-    data-test="label"
+    data-test="Tree/TreeNode/Header:label"
     style={
       Object {
         "paddingLeft": 9,
@@ -138,6 +139,7 @@ exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
 exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expanded) 1`] = `
 <div
   className="nodeClassname main12 nodeItem "
+  data-test="Tree/TreeNode:label"
   id="id"
   onClick={[Function]}
   onKeyPress={[Function]}
@@ -145,7 +147,7 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
 >
   <div
     className="treeNodeHeader "
-    data-test="label"
+    data-test="Tree/TreeNode/Header:label"
     style={
       Object {
         "paddingLeft": 23,
@@ -290,13 +292,14 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
 exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
 <div
   className=" main2 nodeItem "
+  data-test="Tree/TreeNode:label"
   onClick={[Function]}
   onKeyPress={[Function]}
   role="treeitem"
 >
   <div
     className="treeNodeHeader "
-    data-test="label"
+    data-test="Tree/TreeNode/Header:label"
     style={
       Object {
         "paddingLeft": 9,
@@ -363,6 +366,7 @@ exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
 exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and parents separated 1`] = `
 <div
   className="nodeClassname main12 nodeItem "
+  data-test="Tree/TreeNode:label"
   id="id"
   onClick={[Function]}
   onKeyPress={[Function]}
@@ -370,7 +374,7 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
 >
   <div
     className="treeNodeHeader "
-    data-test="label"
+    data-test="Tree/TreeNode/Header:label"
     style={
       Object {
         "paddingLeft": 23,
@@ -534,13 +538,14 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
 exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
 <div
   className=" main2 nodeItem "
+  data-test="Tree/TreeNode:label"
   onClick={[Function]}
   onKeyPress={[Function]}
   role="treeitem"
 >
   <div
     className="treeNodeHeader "
-    data-test="label"
+    data-test="Tree/TreeNode/Header:label"
     style={
       Object {
         "paddingLeft": 9,

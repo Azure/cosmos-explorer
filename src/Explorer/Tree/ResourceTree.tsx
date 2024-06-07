@@ -166,7 +166,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
   return (
     <>
-      <FluentProvider theme={lightTheme} style={{ overflow: "hidden" }}>
+      <FluentProvider theme={lightTheme} style={{ overflow: "auto" }}>
         <Tree
           aria-label="CosmosDB resources"
           openItems={openItems}
