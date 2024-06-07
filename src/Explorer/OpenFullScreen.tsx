@@ -19,7 +19,6 @@ export const OpenFullScreen: React.FunctionComponent = () => {
       hasAccountContext = true;
     }
   } else if (userContext.authType === AuthType.MasterKey || userContext.authType === AuthType.ResourceToken) {
-    searchParams.append("authType", "connectionstring")
     requiresConnectionString = true;
   }
 
@@ -30,8 +29,10 @@ export const OpenFullScreen: React.FunctionComponent = () => {
           <Text>
             Open this database account in a new browser tab with Cosmos DB Explorer.
             {requiresConnectionString && " You'll need to provide a connection string."}
-            {hasAccountContext && " You may be prompted to sign in with Entra ID, and then you'll be redirected back to this account."}
-            Open tabs and queries will not be carried over, but will remain in this tab.
+            {hasAccountContext && " You may be prompted to sign in with Entra ID again."}
+          </Text>
+          <Text>
+            Open tabs and queries will not be carried over, but you can still access them in this tab.
           </Text>
           <Stack horizontal tokens={{ childrenGap: 10 }}>
             <PrimaryButton
