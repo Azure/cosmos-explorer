@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { getMsalInstance } from "Utils/AuthorizationUtils";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import Arrow from "../images/Arrow.svg";
 import CosmosDB_20170829 from "../images/CosmosDB_20170829.svg";
@@ -9,10 +10,17 @@ import "../less/index.less";
 
 const Index = (): JSX.Element => {
   const [navigationSelection, setNavigationSelection] = useState("quickstart");
-
   const quickstart_click = () => {
     setNavigationSelection("quickstart");
   };
+  
+  useEffect(() => {
+    (async () => {
+      const msalInstance = await getMsalInstance();
+      console.log("handleRedirectPromise");
+      await msalInstance.handleRedirectPromise();
+    })();
+  }, []);
 
   const explorer_click = () => {
     setNavigationSelection("explorer");

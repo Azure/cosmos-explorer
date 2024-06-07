@@ -13,7 +13,7 @@ interface ReturnType {
   isLoggedIn: boolean;
   graphToken: string;
   armToken: string;
-  login: () => void;
+  login: (userTriggered?: boolean) => void;
   logout: () => void;
   tenantId: string;
   account: msal.AccountInfo;
@@ -37,8 +37,21 @@ export function useAADAuth(): ReturnType {
   const [armToken, setArmToken] = React.useState<string>();
   const [authFailure, setAuthFailure] = React.useState<AadAuthFailure>(undefined);
 
+  console.log("Current AAD State", {
+    isLoggedIn, account, tenantId
+  });
+
   msalInstance.setActiveAccount(account);
-  const login = React.useCallback(async () => {
+  const login = React.useCallback(async (userTriggered: boolean = true) => {
+    if (!userTriggered) {
+      console.log("Starting non-interactive login");
+      // If the user didn't trigger the login, we don't want to pop up the login dialog
+      await msalInstance.acquireTokenRedirect({
+        redirectUri: configContext.msalRedirectURI,
+        scopes: [],
+      });
+      return;
+    }
     const response = await msalInstance.loginPopup({
       redirectUri: configContext.msalRedirectURI,
       scopes: [],
@@ -47,13 +60,13 @@ export function useAADAuth(): ReturnType {
     setAccount(response.account);
     setTenantId(response.tenantId);
     localStorage.setItem("cachedTenantId", response.tenantId);
-  }, []);
+  }, [setLoggedIn, setAccount, setTenantId]);
 
   const logout = React.useCallback(() => {
     setLoggedOut();
     localStorage.removeItem("cachedTenantId");
     msalInstance.logoutRedirect();
-  }, []);
+  }, [setLoggedOut]);
 
   const switchTenant = React.useCallback(
     async (id) => {
@@ -66,7 +79,7 @@ export function useAADAuth(): ReturnType {
       setAccount(response.account);
       localStorage.setItem("cachedTenantId", response.tenantId);
     },
-    [account, tenantId],
+    [setTenantId, setAccount],
   );
 
   const acquireTokens = React.useCallback(async () => {
@@ -122,6 +135,19 @@ export function useAADAuth(): ReturnType {
       acquireTokens();
     }
   }, [account, tenantId, acquireTokens, authFailure]);
+
+  React.useEffect(() => {
+    (async () => {
+      // If we're on a redirect, handle it
+      const response = await msalInstance.handleRedirectPromise();
+      if (response) {
+        setLoggedIn();
+        setAccount(response.account);
+        setTenantId(response.tenantId);
+        localStorage.setItem("cachedTenantId", response.tenantId);
+      }
+    })()
+  }, [setLoggedIn])
 
   return {
     account,

@@ -238,6 +238,15 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
           updateConfigContext({ platform });
       }
     }
+    if (window.location.origin !== configContext.hostedExplorerURL) {
+      if (window.location.origin === "https://localhost:1234") {
+        // Special case for localhost, we need to send them to 'hostedExplorer.html'.
+        updateConfigContext({ hostedExplorerURL: "https://localhost:1234/hostedExplorer.html" });
+      } else {
+        const newOrigin = window.location.origin.endsWith("/") ? window.location.origin : `${window.location.origin}/`;
+        updateConfigContext({ hostedExplorerURL: newOrigin });
+      }
+    }
   } catch (error) {
     console.error("No configuration file found using defaults");
   }
@@ -245,3 +254,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+

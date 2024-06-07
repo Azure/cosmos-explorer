@@ -128,7 +128,7 @@ export const allowedGraphEndpoints: ReadonlyArray<string> = ["https://graph.micr
 
 export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspaceartifacts.projectarcadia.net"];
 
-export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = ["https://cosmos.azure.com/"];
+export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = ["https://cosmos.azure.com/", "https://localhost:1234/"];
 
 export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [
   "https://cosmos-explorer-preview.azurewebsites.net/",

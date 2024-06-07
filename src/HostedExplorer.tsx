@@ -1,6 +1,7 @@
 import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
+import { getMsalInstance } from "Utils/AuthorizationUtils";
 import * as React from "react";
 import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";
@@ -42,6 +43,23 @@ const App: React.FunctionComponent = () => {
   const ref = React.useRef<HTMLIFrameElement>();
 
   React.useEffect(() => {
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("authType") === "entra") {
+        const msalInstance = await getMsalInstance();
+        const response = await msalInstance.handleRedirectPromise();
+        if (response) {
+          console.log("Redirect Promise Response", response);
+        }
+        else {
+          // Send the user to log in immediately
+          console.log("Starting non-interactive login");
+          login(false);
+        }
+        return;
+      }
+    })();
+    
     // If ref.current is undefined no iframe has been rendered
     if (ref.current) {
       // In hosted mode, we can set global properties directly on the child iframe.
