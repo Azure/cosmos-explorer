@@ -2,6 +2,7 @@
 /* eslint-disable react/display-name */
 
 import { DefaultButton, IButtonStyles, IContextualMenuItem } from "@fluentui/react";
+import { urlContext } from "Utils/UrlContext";
 import * as React from "react";
 import { FunctionComponent, useEffect, useState } from "react";
 import { StyleConstants } from "../../../Common/StyleConstants";
@@ -50,12 +51,12 @@ interface Props {
 export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabaseAccount }: Props) => {
   const subscriptions = useSubscriptions(armToken);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<string>(() =>
-    localStorage.getItem("cachedSubscriptionId"),
+    urlContext.subscription || localStorage.getItem("cachedSubscriptionId"),
   );
   const selectedSubscription = subscriptions?.find((sub) => sub.subscriptionId === selectedSubscriptionId);
   const accounts = useDatabaseAccounts(selectedSubscription?.subscriptionId, armToken);
   const [selectedAccountName, setSelectedAccountName] = useState<string>(() =>
-    localStorage.getItem("cachedDatabaseAccountName"),
+    urlContext.account || localStorage.getItem("cachedDatabaseAccountName"),
   );
   const selectedAccount = accounts?.find((account) => account.name === selectedAccountName);
 

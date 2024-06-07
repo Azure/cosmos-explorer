@@ -13,7 +13,7 @@ interface ReturnType {
   isLoggedIn: boolean;
   graphToken: string;
   armToken: string;
-  login: (userTriggered?: boolean) => void;
+  login: () => void;
   logout: () => void;
   tenantId: string;
   account: msal.AccountInfo;
@@ -37,21 +37,9 @@ export function useAADAuth(): ReturnType {
   const [armToken, setArmToken] = React.useState<string>();
   const [authFailure, setAuthFailure] = React.useState<AadAuthFailure>(undefined);
 
-  console.log("Current AAD State", {
-    isLoggedIn, account, tenantId
-  });
-
   msalInstance.setActiveAccount(account);
-  const login = React.useCallback(async (userTriggered: boolean = true) => {
-    if (!userTriggered) {
-      console.log("Starting non-interactive login");
-      // If the user didn't trigger the login, we don't want to pop up the login dialog
-      await msalInstance.acquireTokenRedirect({
-        redirectUri: configContext.msalRedirectURI,
-        scopes: [],
-      });
-      return;
-    }
+
+  const login = React.useCallback(async () => {
     const response = await msalInstance.loginPopup({
       redirectUri: configContext.msalRedirectURI,
       scopes: [],

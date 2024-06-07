@@ -1,6 +1,7 @@
 import { useBoolean } from "@fluentui/react-hooks";
 import { userContext } from "UserContext";
 import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
+import { OpenedFrom, RequestedAuthType, urlContext } from "Utils/UrlContext";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
@@ -69,7 +70,9 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
 }: Props) => {
   const [isFormVisible, { setTrue: showForm }] = useBoolean(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const enableConnectionStringLogin = !userContext.features.disableConnectionStringLogin;
+  const enableConnectionStringLogin =
+    urlContext.authType !== RequestedAuthType.Entra &&
+    !userContext.features.disableConnectionStringLogin;
 
   return (
     <div id="connectExplorer" className="connectExplorerContainer" style={{ display: "flex" }}>
@@ -135,6 +138,11 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
               {enableConnectionStringLogin && (
                 <p className="switchConnectTypeText" data-test="Link:SwitchConnectionType" onClick={showForm}>
                   Connect to your account with connection string
+                </p>
+                )}
+              {urlContext.openFrom === OpenedFrom.Portal && (
+                <p className="switchConnectTypeText">
+                  Click sign in to continue your session from the Azure Portal.
                 </p>
               )}
             </div>

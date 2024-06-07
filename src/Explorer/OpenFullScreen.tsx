@@ -6,13 +6,15 @@ import * as React from "react";
 
 export const OpenFullScreen: React.FunctionComponent = () => {
   const searchParams = new URLSearchParams();
+  searchParams.append("openFrom", "portal");
+
   let hasAccountContext = false;
   let requiresConnectionString = false;
 
   if (userContext.authType === AuthType.AAD) {
     if (userContext.subscriptionId && userContext.databaseAccount) {
       searchParams.append("subscription", userContext.subscriptionId);
-      searchParams.append("account", userContext.databaseAccount.id);
+      searchParams.append("account", userContext.databaseAccount.name);
       searchParams.append("authType", "entra");
       hasAccountContext = true;
     }
