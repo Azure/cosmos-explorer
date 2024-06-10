@@ -1,4 +1,4 @@
-import { Icon, Label, Stack } from "@fluentui/react";
+import { DirectionalHint, Icon, Label, Stack, TooltipHost } from "@fluentui/react";
 import * as React from "react";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { accordionStackTokens } from "../Settings/SettingsRenderUtils";
@@ -8,6 +8,7 @@ export interface CollapsibleSectionProps {
   isExpandedByDefault: boolean;
   onExpand?: () => void;
   children: JSX.Element;
+  tooltipContent?: string | JSX.Element | JSX.Element[];
 }
 
 export interface CollapsibleSectionState {
@@ -55,6 +56,19 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
         >
           <Icon iconName={this.state.isExpanded ? "ChevronDown" : "ChevronRight"} />
           <Label>{this.props.title}</Label>
+          {this.props.tooltipContent && (
+            <TooltipHost
+              directionalHint={DirectionalHint.bottomLeftEdge}
+              content={this.props.tooltipContent}
+              styles={{
+                root: {
+                  marginLeft: "0 !important",
+                },
+              }}
+            >
+              <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+            </TooltipHost>
+          )}
         </Stack>
         {this.state.isExpanded && this.props.children}
       </>
