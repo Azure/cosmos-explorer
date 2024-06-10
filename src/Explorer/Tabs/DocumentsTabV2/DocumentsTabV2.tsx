@@ -18,6 +18,11 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import {
+  DocumentsTabPrefs,
+  readDocumentsTabPrefs,
+  saveDocumentsTabPrefs,
+} from "Explorer/Tabs/DocumentsTabV2/documentsTabPrefs";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
@@ -473,6 +478,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
+
+  // Preferences
+  const [prefs, setPrefs] = useState<DocumentsTabPrefs>(readDocumentsTabPrefs());
 
   const isQueryCopilotSampleContainer =
     _collection?.isSampleCollection &&
@@ -1742,9 +1750,20 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         )}
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
-          <Split>
+          <Split
+            onDragEnd={(preSize: number) => {
+              prefs.leftPaneWidthPercent = Math.min(100, Math.max(0, Math.round(100 * preSize) / 100));
+              saveDocumentsTabPrefs(prefs);
+              setPrefs({ ...prefs });
+            }}
+          >
             <div
-              style={{ minWidth: 120, width: "35%", overflow: "hidden", position: "relative" }}
+              style={{
+                minWidth: 60,
+                width: `${prefs.leftPaneWidthPercent}%`,
+                overflow: "hidden",
+                position: "relative",
+              }}
               ref={tableContainerRef}
             >
               <Button
@@ -1796,7 +1815,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 )}
               </div>
             </div>
-            <div style={{ minWidth: "20%", width: "100%" }}>
+            <div style={{ minWidth: 60, width: `${100 - prefs.leftPaneWidthPercent}%` }}>
               {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                 <EditorReact
                   language={"json"}

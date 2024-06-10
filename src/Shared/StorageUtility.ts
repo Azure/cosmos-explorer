@@ -27,6 +27,7 @@ export enum StorageKey {
   GalleryCalloutDismissed,
   VisitedAccounts,
   PriorityLevel,
+  DocumentsTabPrefs,
 }
 
 export const hasRUThresholdBeenConfigured = (): boolean => {
