@@ -902,9 +902,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               .showOkModalDialog("Delete documents", `${deletedIds.length} document(s) successfully deleted.`);
           },
           (error: Error) =>
-            useDialog
-              .getState()
-              .showOkModalDialog("Delete documents", `Document(s) deleted failed (${JSON.stringify(error)})`),
+            useDialog.getState().showOkModalDialog("Delete documents", `Document(s) delete failed (${error.message})`),
         )
         .finally(() => setIsExecuting(false));
     },
