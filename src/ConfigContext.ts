@@ -42,6 +42,7 @@ export interface ConfigContext {
   ARM_API_VERSION: string;
   GRAPH_ENDPOINT: string;
   GRAPH_API_VERSION: string;
+  // This is the endpoint to get offering Ids to be used to fetch prices. Refer to this doc: https://learn.microsoft.com/en-us/rest/api/marketplacecatalog/dataplane/skus/list?view=rest-marketplacecatalog-dataplane-2023-05-01-preview&tabs=HTTP
   CATALOG_ENDPOINT: string;
   CATALOG_API_VERSION: string;
   CATALOG_API_KEY: string;
@@ -251,3 +252,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
