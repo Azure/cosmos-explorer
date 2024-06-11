@@ -213,14 +213,14 @@ export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<Pr
       });
 
       for (const item of response.result) {
+        if (item.error) {
+          continue;
+        }
+
         if (billingCurrency === undefined) {
           billingCurrency = item.billingCurrency;
         } else if (item.billingCurrency !== billingCurrency) {
           throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
-        }
-
-        if (item.error) {
-          throw Error(`Get price error ${item.error.type} for ${item.id}: ${item.error.description}`);
         }
 
         const offeringId = item.id;
