@@ -1,3 +1,5 @@
+playwright.config.ts
+
 **/node_modules/
 src/**/__mocks__/**/*
 dist/

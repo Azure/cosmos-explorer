@@ -1,55 +1,40 @@
-import { jest } from "@jest/globals";
-import "expect-playwright";
-import {
-  AccountType,
-  generateUniqueName,
-  getPanelSelector,
-  getTestExplorerUrl,
-  getTreeMenuItemSelector,
-  getTreeNodeSelector,
-  openContextMenu,
-} from "../utils/shared";
-import { waitForExplorer } from "../utils/waitForExplorer";
-jest.setTimeout(120000);
+import { expect, test } from "@playwright/test";
 
-test("SQL CRUD", async () => {
-  const databaseId = generateUniqueName("db");
+import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
+
+test("SQL database and container CRUD", async ({ page }) => {
+  const databaseId = generateDatabaseNameWithTimestamp();
   const containerId = generateUniqueName("container");
 
-  page.setDefaultTimeout(50000);
+  const explorer = await DataExplorer.open(page, TestAccount.SQL);
 
-  const url = await getTestExplorerUrl(AccountType.SQL);
-  await page.goto(url);
-  const explorer = await waitForExplorer();
+  await explorer.commandBarButton("New Container").click();
+  await explorer.whilePanelOpen("New Container", async (panel, okButton) => {
+    await panel.getByPlaceholder("Type a new database id").fill(databaseId);
+    await panel.getByRole("textbox", { name: "Container id, Example Container1" }).fill(containerId);
+    await panel.getByRole("textbox", { name: "Partition key" }).fill("/pk");
+    await panel.getByLabel("Database max RU/s").fill("1000");
+    await okButton.click();
+  });
 
-  await explorer.click('[data-test="New Container"]');
+  const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
+  await databaseNode.expand();
+  const containerNode = explorer.treeNode(`DATA/${databaseId}/${containerId}`);
 
-  await explorer.waitForSelector(getPanelSelector("New Container"));
-  await explorer.fill('[aria-label="New database id, Type a new database id"]', databaseId);
-  await explorer.fill('[aria-label="Container id, Example Container1"]', containerId);
-  await explorer.fill('[aria-label="Partition key"]', "/pk");
-  await explorer.click("#sidePanelOkButton");
-  await explorer.waitForSelector(getPanelSelector("New Container"), { state: "detached" });
+  await containerNode.openContextMenu();
+  await containerNode.contextMenuItem("Delete Container").click();
+  await explorer.whilePanelOpen("Delete Container", async (panel, okButton) => {
+    await panel.getByRole("textbox", { name: "Confirm by typing the container id" }).fill(containerId);
+    await okButton.click();
+  });
+  await expect(containerNode.element).not.toBeAttached();
 
-  await explorer.click(getTreeNodeSelector(`DATA/${databaseId}`));
-  await explorer.hover(getTreeNodeSelector(`DATA/${databaseId}/${containerId}`));
-  await openContextMenu(explorer, `DATA/${databaseId}/${containerId}`);
-  await explorer.click(getTreeMenuItemSelector(`DATA/${databaseId}/${containerId}`, "Delete Container"));
+  await databaseNode.openContextMenu();
+  await databaseNode.contextMenuItem("Delete Database").click();
+  await explorer.whilePanelOpen("Delete Database", async (panel, okButton) => {
+    await panel.getByRole("textbox", { name: "Confirm by typing the database id" }).fill(databaseId);
+    await okButton.click();
+  });
 
-  await explorer.waitForSelector(getPanelSelector("Delete Container"));
-  await explorer.fill('text=* Confirm by typing the container id >> input[type="text"]', containerId);
-  await explorer.click('[aria-label="OK"]');
-  await explorer.waitForSelector(getPanelSelector("Delete Container"), { state: "detached" });
-
-  await openContextMenu(explorer, `DATA/${databaseId}`);
-  await explorer.click(getTreeMenuItemSelector(`DATA/${databaseId}`, "Delete Database"));
-
-  await explorer.waitForSelector(getPanelSelector("Delete Database"));
-  await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');
-  await explorer.fill('text=* Confirm by typing the database id >> input[type="text"]', databaseId);
-  await explorer.click("#sidePanelOkButton");
-  await explorer.waitForSelector(getPanelSelector("Delete Database"), { state: "detached" });
-
-  await expect(explorer).not.toHaveText(".dataResourceTree", databaseId);
-  await expect(explorer).not.toHaveText(".dataResourceTree", containerId);
+  await expect(databaseNode.element).not.toBeAttached();
 });

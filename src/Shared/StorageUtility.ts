@@ -1,3 +1,4 @@
+import { SplitterDirection } from "Common/Splitter";
 import * as LocalStorageUtility from "./LocalStorageUtility";
 import * as SessionStorageUtility from "./SessionStorageUtility";
 import * as StringUtility from "./StringUtility";
@@ -28,6 +29,7 @@ export enum StorageKey {
   VisitedAccounts,
   PriorityLevel,
   DocumentsTabPrefs,
+  DefaultQueryResultsView,
 }
 
 export const hasRUThresholdBeenConfigured = (): boolean => {
@@ -50,6 +52,14 @@ export const getRUThreshold = (): number => {
     return ruThresholdRaw;
   }
   return DefaultRUThreshold;
+};
+
+export const getDefaultQueryResultsView = (): SplitterDirection => {
+  const defaultQueryResultsViewRaw = LocalStorageUtility.getEntryString(StorageKey.DefaultQueryResultsView);
+  if (defaultQueryResultsViewRaw === SplitterDirection.Horizontal) {
+    return SplitterDirection.Horizontal;
+  }
+  return SplitterDirection.Vertical;
 };
 
 export const DefaultRUThreshold = 5000;

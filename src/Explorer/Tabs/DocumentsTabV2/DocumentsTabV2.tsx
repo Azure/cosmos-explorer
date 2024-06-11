@@ -91,6 +91,9 @@ export class DocumentsTabV2 extends TabsBase {
   }
 }
 
+// Use this value to initialize the very time the component is rendered
+const RESET_INDEX = -1;
+
 const filterButtonStyle: CSSProperties = {
   marginLeft: 8,
 };
@@ -470,7 +473,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [selectedDocumentContentBaseline, setSelectedDocumentContentBaseline] = useState<string>(undefined);
 
   // Table user clicked on this row
-  const [clickedRow, setClickedRow] = useState<TableRowId>(undefined);
+  const [clickedRowIndex, setClickedRowIndex] = useState<number>(RESET_INDEX);
   // Table multiple selection
   const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
 
@@ -497,6 +500,23 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       filterInput.current?.focus();
     }
   }, [isFilterFocused]);
+
+  // Clicked row must be defined
+  useEffect(() => {
+    if (documentIds.length > 0) {
+      let currentClickedRowIndex = clickedRowIndex;
+      if (
+        (currentClickedRowIndex === RESET_INDEX &&
+          editorState === ViewModels.DocumentExplorerState.noDocumentSelected) ||
+        currentClickedRowIndex > documentIds.length - 1
+      ) {
+        // reset clicked row or the current clicked row is out of bounds
+        currentClickedRowIndex = 0;
+        setSelectedRows(new Set([0]));
+        onDocumentClicked(currentClickedRowIndex, documentIds);
+      }
+    }
+  }, [documentIds, clickedRowIndex, editorState]);
 
   let lastFilterContents = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 
@@ -558,7 +578,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     if (!documentsIterator) {
       try {
-        refreshDocumentsGrid();
+        refreshDocumentsGrid(false);
       } catch (error) {
         if (onLoadStartKey !== null && onLoadStartKey !== undefined) {
           TelemetryProcessor.traceFailure(
@@ -665,7 +685,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     setSelectedDocumentContent(defaultDocument);
     setSelectedDocumentContentBaseline(defaultDocument);
     setSelectedRows(new Set());
-    setClickedRow(undefined);
+    setClickedRowIndex(undefined);
     setEditorState(ViewModels.DocumentExplorerState.newDocumentValid);
   };
 
@@ -681,8 +701,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return createDocument(_collection, document)
       .then(
         (savedDocument: DataModels.DocumentId) => {
+          // TODO: Reuse initDocumentEditor() to remove code duplication
           const value: string = renderObjectForEditor(savedDocument || {}, null, 4);
           setSelectedDocumentContentBaseline(value);
+          setSelectedDocumentContent(value);
           setInitialDocumentContent(value);
           const partitionKeyValueArray: PartitionKey[] = extractPartitionKeyValues(
             savedDocument,
@@ -746,7 +768,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       partitionKey as PartitionKeyDefinition,
     );
 
-    const selectedDocumentId = documentIds[clickedRow as number];
+    const selectedDocumentId = documentIds[clickedRowIndex as number];
     selectedDocumentId.partitionKeyValue = partitionKeyValueArray;
 
     onExecutionErrorChange(false);
@@ -794,7 +816,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         },
       )
       .finally(() => setIsExecuting(false));
-  }, [onExecutionErrorChange, tabTitle, selectedDocumentContent, _collection, partitionKey, documentIds, clickedRow]);
+  }, [
+    onExecutionErrorChange,
+    tabTitle,
+    selectedDocumentContent,
+    _collection,
+    partitionKey,
+    documentIds,
+    clickedRowIndex,
+  ]);
 
   const onRevertExistingDocumentClick = useCallback((): void => {
     setSelectedDocumentContentBaseline(initialDocumentContent);
@@ -858,7 +888,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             setDocumentIds(newDocumentIds);
 
             setSelectedDocumentContent(undefined);
-            setClickedRow(undefined);
+            setClickedRowIndex(undefined);
             setSelectedRows(new Set());
             setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
             useDialog
@@ -982,8 +1012,27 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return true;
   };
 
+  const updateDocumentIds = (newDocumentsIds: DocumentId[]): void => {
+    setDocumentIds(newDocumentsIds);
+
+    if (onLoadStartKey !== null && onLoadStartKey !== undefined) {
+      TelemetryProcessor.traceSuccess(
+        Action.Tab,
+        {
+          databaseName: _collection.databaseId,
+          collectionName: _collection.id(),
+
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle,
+        },
+        onLoadStartKey,
+      );
+      setOnLoadStartKey(undefined);
+    }
+  };
+
   let loadNextPage = useCallback(
-    (iterator: QueryIterator<ItemDefinition & Resource>, applyFilterButtonClicked?: boolean): Promise<unknown> => {
+    (iterator: QueryIterator<ItemDefinition & Resource>, applyFilterButtonClicked: boolean): Promise<unknown> => {
       setIsExecuting(true);
       onExecutionErrorChange(false);
       let automaticallyCancelQueryAfterTimeout: boolean;
@@ -1036,21 +1085,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               });
 
             const merged = currentDocuments.concat(nextDocumentIds);
-            setDocumentIds(merged);
-            if (onLoadStartKey !== null && onLoadStartKey !== undefined) {
-              TelemetryProcessor.traceSuccess(
-                Action.Tab,
-                {
-                  databaseName: _collection.databaseId,
-                  collectionName: _collection.id(),
-
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle,
-                },
-                onLoadStartKey,
-              );
-              setOnLoadStartKey(undefined);
-            }
+            updateDocumentIds(merged);
           },
           (error) => {
             onExecutionErrorChange(true);
@@ -1120,7 +1155,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const onLoadMoreKeyInput: KeyboardEventHandler<HTMLAnchorElement> = (event) => {
     if (event.key === " " || event.key === "Enter") {
       const focusElement = event.target as HTMLElement;
-      loadNextPage(documentsIterator.iterator);
+      loadNextPage(documentsIterator.iterator, false);
       focusElement && focusElement.focus();
       event.stopPropagation();
       event.preventDefault();
@@ -1166,10 +1201,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
    * Document has been clicked on in table
    * @param tabRowId
    */
-  const onDocumentClicked = (tabRowId: TableRowId) => {
+  const onDocumentClicked = (tabRowId: TableRowId, currentDocumentIds: DocumentId[]) => {
     const index = tabRowId as number;
-    setClickedRow(index);
-    loadDocument(documentIds[index]);
+    setClickedRowIndex(index);
+    loadDocument(currentDocumentIds[index]);
   };
 
   let loadDocument = (documentId: DocumentId) =>
@@ -1286,13 +1321,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     confirmDiscardingChange(() => {
       if (selectedRows.size === 0) {
         setSelectedDocumentContent(undefined);
-        setClickedRow(undefined);
+        setClickedRowIndex(undefined);
         setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
       }
 
       // Find if clickedRow is in selectedRows.If not, clear clickedRow and content
-      if (clickedRow !== undefined && !selectedRows.has(clickedRow)) {
-        setClickedRow(undefined);
+      if (clickedRowIndex !== undefined && !selectedRows.has(clickedRowIndex)) {
+        setClickedRowIndex(undefined);
         setSelectedDocumentContent(undefined);
         setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
       }
@@ -1300,6 +1335,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       // If only one selection, we consider as a click
       if (selectedRows.size === 1) {
         setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
+        onDocumentClicked(selectedRows.values().next().value, documentIds);
       }
 
       setSelectedRows(selectedRows);
@@ -1460,6 +1496,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
             const value: string = renderObjectForEditor(savedDocument || {}, null, 4);
             setSelectedDocumentContentBaseline(value);
+            setSelectedDocumentContent(value);
+            setInitialDocumentContent(value);
 
             setDocumentIds(ids);
             setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
@@ -1510,7 +1548,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         tabTitle,
       });
 
-      const selectedDocumentId = documentIds[clickedRow as number];
+      const selectedDocumentId = documentIds[clickedRowIndex as number];
       return MongoProxyClient.updateDocument(
         _collection.databaseId,
         _collection as ViewModels.Collection,
@@ -1578,8 +1616,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         .then(
           ({ continuationToken: newContinuationToken, documents }) => {
             setContinuationToken(newContinuationToken);
-            let currentDocuments = documentIds;
-            const currentDocumentsRids = currentDocuments.map((currentDocument) => currentDocument.rid);
+            const currentDocumentsRids = documentIds.map((currentDocument) => currentDocument.rid);
             const nextDocumentIds = documents
               .filter((d: { _rid: string }) => {
                 return currentDocumentsRids.indexOf(d._rid) < 0;
@@ -1588,34 +1625,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               .map((rawDocument: any) => {
                 const partitionKeyValue = rawDocument._partitionKeyValue;
                 return newDocumentId(rawDocument, partitionKeyProperties, [partitionKeyValue]);
-                // return new DocumentId(this, rawDocument, [partitionKeyValue]);
               });
 
-            const merged = currentDocuments.concat(nextDocumentIds);
-
-            setDocumentIds(merged);
-            currentDocuments = merged;
-
-            if (filterContent.length > 0 && currentDocuments.length > 0) {
-              currentDocuments[0].click();
-            } else {
-              setSelectedDocumentContent("");
-              setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-            }
-            if (_onLoadStartKey !== null && _onLoadStartKey !== undefined) {
-              TelemetryProcessor.traceSuccess(
-                Action.Tab,
-                {
-                  databaseName: _collection.databaseId,
-                  collectionName: _collection.id(),
-
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle,
-                },
-                _onLoadStartKey,
-              );
-              setOnLoadStartKey(undefined);
-            }
+            const merged = documentIds.concat(nextDocumentIds);
+            updateDocumentIds(merged);
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (error: any) => {
@@ -1643,7 +1656,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   // ***************** Mongo ***************************
 
   const refreshDocumentsGrid = useCallback(
-    async (applyFilterButtonPressed?: boolean): Promise<void> => {
+    (applyFilterButtonPressed: boolean): void => {
       // clear documents grid
       setDocumentIds([]);
       setContinuationToken(undefined); // For mongo
@@ -1657,6 +1670,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         // collapse filter
         setAppliedFilter(filterContent);
         setIsFilterExpanded(false);
+
+        // If apply filter is pressed, reset current selected document
+        if (applyFilterButtonPressed) {
+          setClickedRowIndex(RESET_INDEX);
+          setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
+          setSelectedDocumentContent(undefined);
+        }
       } catch (error) {
         console.error(error);
         useDialog.getState().showOkModalDialog("Refresh documents grid failed", getErrorMessage(error));
@@ -1804,7 +1824,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               >
                 <DocumentsTableComponent
                   items={tableItems}
-                  onItemClicked={onDocumentClicked}
+                  onItemClicked={(index) => onDocumentClicked(index, documentIds)}
                   onSelectedRowsChange={onSelectedRowsChange}
                   selectedRows={selectedRows}
                   size={tableContainerSizePx}

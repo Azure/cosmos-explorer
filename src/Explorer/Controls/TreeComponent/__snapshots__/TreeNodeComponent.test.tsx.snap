@@ -2,13 +2,9 @@
 
 exports[`TreeNodeComponent does not render children if the node is loading 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="branch"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout
@@ -114,13 +110,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
   treeNodeId="root"
 >
   <TreeItem
+    data-test="TreeNodeContainer:root"
     itemType="branch"
     onOpenChange={[Function]}
-    style={
-      Object {
-        "height": "100%",
-      }
-    }
     value="root"
   >
     <div
@@ -129,15 +121,11 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
       aria-selected="false"
       className="fui-TreeItem r1hiwysc"
       data-fui-tree-item-value="root"
+      data-test="TreeNodeContainer:root"
       onChange={[Function]}
       onClick={[Function]}
       onKeyDown={[Function]}
       role="treeitem"
-      style={
-        Object {
-          "height": "100%",
-        }
-      }
       tabIndex={-1}
     >
       <ContextSelector.Provider
@@ -228,8 +216,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 aria-selected="false"
                 class="fui-TreeItem r1hiwysc"
                 data-fui-tree-item-value="root"
+                data-test="TreeNodeContainer:root"
                 role="treeitem"
-                style="height: 100%;"
                 tabindex="-1"
               >
                 <div
@@ -282,8 +270,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     aria-selected="false"
                     class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                     data-fui-tree-item-value="root/child1Label"
+                    data-test="TreeNodeContainer:root/child1Label"
                     role="treeitem"
-                    style="height: 100%;"
                     tabindex="0"
                   >
                     <div
@@ -333,8 +321,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     aria-selected="false"
                     class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                     data-fui-tree-item-value="root/child2LoadingLabel"
+                    data-test="TreeNodeContainer:root/child2LoadingLabel"
                     role="treeitem"
-                    style="height: 100%;"
                     tabindex="-1"
                   >
                     <div
@@ -383,8 +371,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     aria-selected="false"
                     class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                     data-fui-tree-item-value="root/child3ExpandingLabel"
+                    data-test="TreeNodeContainer:root/child3ExpandingLabel"
                     role="treeitem"
-                    style="height: 100%;"
                     tabindex="-1"
                   >
                     <div
@@ -637,13 +625,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   treeNodeId="root/child1Label"
                 >
                   <TreeItem
+                    data-test="TreeNodeContainer:root/child1Label"
                     itemType="branch"
                     onOpenChange={[Function]}
-                    style={
-                      Object {
-                        "height": "100%",
-                      }
-                    }
                     value="root/child1Label"
                   >
                     <div
@@ -652,15 +636,11 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       aria-selected="false"
                       className="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                       data-fui-tree-item-value="root/child1Label"
+                      data-test="TreeNodeContainer:root/child1Label"
                       onChange={[Function]}
                       onClick={[Function]}
                       onKeyDown={[Function]}
                       role="treeitem"
-                      style={
-                        Object {
-                          "height": "100%",
-                        }
-                      }
                       tabIndex={-1}
                     >
                       <ContextSelector.Provider
@@ -751,8 +731,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 aria-selected="false"
                                 class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                                 data-fui-tree-item-value="root/child1Label"
+                                data-test="TreeNodeContainer:root/child1Label"
                                 role="treeitem"
-                                style="height: 100%;"
                                 tabindex="0"
                               >
                                 <div
@@ -932,13 +912,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   treeNodeId="root/child2LoadingLabel"
                 >
                   <TreeItem
+                    data-test="TreeNodeContainer:root/child2LoadingLabel"
                     itemType="branch"
                     onOpenChange={[Function]}
-                    style={
-                      Object {
-                        "height": "100%",
-                      }
-                    }
                     value="root/child2LoadingLabel"
                   >
                     <div
@@ -947,15 +923,11 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       aria-selected="false"
                       className="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                       data-fui-tree-item-value="root/child2LoadingLabel"
+                      data-test="TreeNodeContainer:root/child2LoadingLabel"
                       onChange={[Function]}
                       onClick={[Function]}
                       onKeyDown={[Function]}
                       role="treeitem"
-                      style={
-                        Object {
-                          "height": "100%",
-                        }
-                      }
                       tabIndex={-1}
                     >
                       <ContextSelector.Provider
@@ -1046,8 +1018,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 aria-selected="false"
                                 class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                                 data-fui-tree-item-value="root/child2LoadingLabel"
+                                data-test="TreeNodeContainer:root/child2LoadingLabel"
                                 role="treeitem"
-                                style="height: 100%;"
                                 tabindex="-1"
                               >
                                 <div
@@ -1212,13 +1184,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   treeNodeId="root/child3ExpandingLabel"
                 >
                   <TreeItem
+                    data-test="TreeNodeContainer:root/child3ExpandingLabel"
                     itemType="leaf"
                     onOpenChange={[Function]}
-                    style={
-                      Object {
-                        "height": "100%",
-                      }
-                    }
                     value="root/child3ExpandingLabel"
                   >
                     <div
@@ -1226,15 +1194,11 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       aria-selected="false"
                       className="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                       data-fui-tree-item-value="root/child3ExpandingLabel"
+                      data-test="TreeNodeContainer:root/child3ExpandingLabel"
                       onChange={[Function]}
                       onClick={[Function]}
                       onKeyDown={[Function]}
                       role="treeitem"
-                      style={
-                        Object {
-                          "height": "100%",
-                        }
-                      }
                       tabIndex={-1}
                     >
                       <ContextSelector.Provider
@@ -1332,8 +1296,8 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 aria-selected="false"
                                 class="fui-TreeItem r1hiwysc ___jer8zr0_6no3ah0 f10bgyvd"
                                 data-fui-tree-item-value="root/child3ExpandingLabel"
+                                data-test="TreeNodeContainer:root/child3ExpandingLabel"
                                 role="treeitem"
-                                style="height: 100%;"
                                 tabindex="-1"
                               >
                                 <div
@@ -1455,13 +1419,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
 
 exports[`TreeNodeComponent renders a loading spinner if the node is loading: loaded 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="leaf"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout
@@ -1493,13 +1453,9 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
 
 exports[`TreeNodeComponent renders a loading spinner if the node is loading: loading 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="leaf"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout
@@ -1534,6 +1490,40 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
 </TreeItem>
 `;
 
+exports[`TreeNodeComponent renders a node as expandable if it has empty, but defined, children array 1`] = `
+<TreeItem
+  data-test="TreeNodeContainer:root"
+  itemType="branch"
+  onOpenChange={[Function]}
+  value="root"
+>
+  <TreeItemLayout
+    actions={false}
+    className="rootClass"
+    data-test="TreeNode:root"
+    iconBefore={
+      <img
+        alt=""
+        src="rootIcon"
+        style={
+          Object {
+            "height": 16,
+            "width": 16,
+          }
+        }
+      />
+    }
+    style={
+      Object {
+        "backgroundColor": undefined,
+      }
+    }
+  >
+    rootLabel
+  </TreeItemLayout>
+</TreeItem>
+`;
+
 exports[`TreeNodeComponent renders a node with a menu 1`] = `
 <Menu
   onOpenChange={[Function]}
@@ -1544,13 +1534,9 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
     disableButtonEnhancement={true}
   >
     <TreeItem
+      data-test="TreeNodeContainer:root"
       itemType="leaf"
       onOpenChange={[Function]}
-      style={
-        Object {
-          "height": "100%",
-        }
-      }
       value="root"
     >
       <TreeItemLayout
@@ -1637,13 +1623,9 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
 
 exports[`TreeNodeComponent renders a single node 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="leaf"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout
@@ -1675,13 +1657,9 @@ exports[`TreeNodeComponent renders a single node 1`] = `
 
 exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="leaf"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout
@@ -1713,13 +1691,9 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
 
 exports[`TreeNodeComponent renders selected parent node as selected if no descendant nodes are selected 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="branch"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout
@@ -1801,13 +1775,9 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
 
 exports[`TreeNodeComponent renders selected parent node as unselected if any descendant node is selected 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="branch"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout
@@ -1890,13 +1860,9 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
 
 exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
 <TreeItem
+  data-test="TreeNodeContainer:root"
   itemType="leaf"
   onOpenChange={[Function]}
-  style={
-    Object {
-      "height": "100%",
-    }
-  }
   value="root"
 >
   <TreeItemLayout

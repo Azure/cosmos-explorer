@@ -21,7 +21,7 @@ import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { SubscriptionType } from "Contracts/SubscriptionType";
-import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { AddVectorEmbeddingPolicyForm } from "Explorer/Panes/VectorSearchPanel/AddVectorEmbeddingPolicyForm";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
@@ -82,22 +82,6 @@ export const AllPropertiesIndexed: DataModels.IndexingPolicy = {
   excludedPaths: [],
 };
 
-const DefaultDatabaseVectorIndex: DataModels.IndexingPolicy = {
-  indexingMode: "consistent",
-  automatic: true,
-  includedPaths: [
-    {
-      path: "/*",
-    },
-  ],
-  excludedPaths: [
-    {
-      path: '/"_etag"/?',
-    },
-  ],
-  vectorIndexes: [],
-};
-
 export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
   vectorEmbeddings: [],
 };
@@ -122,8 +106,9 @@ export interface AddCollectionPanelState {
   isExecuting: boolean;
   isThroughputCapExceeded: boolean;
   teachingBubbleStep: number;
-  vectorIndexingPolicy: string;
-  vectorEmbeddingPolicy: string;
+  vectorIndexingPolicy: DataModels.VectorIndex[];
+  vectorEmbeddingPolicy: DataModels.VectorEmbedding[];
+  vectorPolicyValidated: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -159,8 +144,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isExecuting: false,
       isThroughputCapExceeded: false,
       teachingBubbleStep: 0,
-      vectorIndexingPolicy: JSON.stringify(DefaultDatabaseVectorIndex, null, 2),
-      vectorEmbeddingPolicy: JSON.stringify(DefaultVectorEmbeddingPolicy, null, 2),
+      vectorEmbeddingPolicy: [],
+      vectorIndexingPolicy: [],
+      vectorPolicyValidated: true,
     };
   }
 
@@ -897,59 +883,27 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           {this.shouldShowVectorSearchParameters() && (
             <Stack>
               <CollapsibleSectionComponent
-                title="Indexing Policy"
-                isExpandedByDefault={false}
-                onExpand={() => {
-                  this.scrollToSection("collapsibleVectorPolicySectionContent");
-                }}
-              >
-                <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
-                  <Link href="https://aka.ms/CosmosDBVectorSetup" target="_blank">
-                    Learn more
-                  </Link>
-                  <EditorReact
-                    language={"json"}
-                    content={this.state.vectorIndexingPolicy}
-                    isReadOnly={false}
-                    wordWrap={"on"}
-                    ariaLabel={"Editing indexing policy"}
-                    lineNumbers={"on"}
-                    scrollBeyondLastLine={false}
-                    spinnerClassName="panelSectionSpinner"
-                    monacoContainerStyles={{
-                      minHeight: 200,
-                    }}
-                    onContentChanged={(newIndexingPolicy: string) => this.setVectorIndexingPolicy(newIndexingPolicy)}
-                  />
-                </Stack>
-              </CollapsibleSectionComponent>
-              <CollapsibleSectionComponent
                 title="Container Vector Policy"
                 isExpandedByDefault={false}
                 onExpand={() => {
                   this.scrollToSection("collapsibleVectorPolicySectionContent");
                 }}
+                tooltipContent={this.getContainerVectorPolicyTooltipContent()}
               >
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
-                  <Link href="https://aka.ms/CosmosDBVectorSetup" target="_blank">
-                    Learn more
-                  </Link>
-                  <EditorReact
-                    language={"json"}
-                    content={this.state.vectorEmbeddingPolicy}
-                    isReadOnly={false}
-                    wordWrap={"on"}
-                    ariaLabel={"Editing container vector policy"}
-                    lineNumbers={"on"}
-                    scrollBeyondLastLine={false}
-                    spinnerClassName="panelSectionSpinner"
-                    monacoContainerStyles={{
-                      minHeight: 200,
-                    }}
-                    onContentChanged={(newVectorEmbeddingPolicy: string) =>
-                      this.setVectorEmbeddingPolicy(newVectorEmbeddingPolicy)
-                    }
-                  />
+                  <Stack styles={{ root: { paddingLeft: 40 } }}>
+                    <AddVectorEmbeddingPolicyForm
+                      vectorEmbedding={this.state.vectorEmbeddingPolicy}
+                      vectorIndex={this.state.vectorIndexingPolicy}
+                      onVectorEmbeddingChange={(
+                        vectorEmbeddingPolicy: DataModels.VectorEmbedding[],
+                        vectorIndexingPolicy: DataModels.VectorIndex[],
+                        vectorPolicyValidated: boolean,
+                      ) => {
+                        this.setState({ vectorEmbeddingPolicy, vectorIndexingPolicy, vectorPolicyValidated });
+                      }}
+                    />
+                  </Stack>
                 </Stack>
               </CollapsibleSectionComponent>
             </Stack>
@@ -1159,13 +1113,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
   }
 
-  private setVectorEmbeddingPolicy(vectorEmbeddingPolicy: string): void {
+  private setVectorEmbeddingPolicy(vectorEmbeddingPolicy: DataModels.VectorEmbedding[]): void {
     this.setState({
       vectorEmbeddingPolicy,
     });
   }
 
-  private setVectorIndexingPolicy(vectorIndexingPolicy: string): void {
+  private setVectorIndexingPolicy(vectorIndexingPolicy: DataModels.VectorIndex[]): void {
     this.setState({
       vectorIndexingPolicy,
     });
@@ -1245,6 +1199,18 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         Enable analytical store capability to perform near real-time analytics on your operational data, without
         impacting the performance of transactional workloads.{" "}
         <Link target="_blank" href="https://aka.ms/analytical-store-overview">
+          Learn more
+        </Link>
+      </Text>
+    );
+  }
+
+  private getContainerVectorPolicyTooltipContent(): JSX.Element {
+    return (
+      <Text variant="small">
+        Describe any properties in your data that contain vectors, so that they can be made available for similarity
+        queries.{" "}
+        <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
           Learn more
         </Link>
       </Text>
@@ -1370,20 +1336,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    if (this.shouldShowVectorSearchParameters()) {
-      try {
-        JSON.parse(this.state.vectorIndexingPolicy) as DataModels.IndexingPolicy;
-      } catch (e) {
-        this.setState({ errorMessage: "Invalid JSON format for indexingPolicy" });
-        return false;
-      }
-
-      try {
-        JSON.parse(this.state.vectorEmbeddingPolicy) as DataModels.VectorEmbeddingPolicy;
-      } catch (e) {
-        this.setState({ errorMessage: "Invalid JSON format for vectorEmbeddingPolicy" });
-        return false;
-      }
+    if (this.shouldShowVectorSearchParameters() && !this.state.vectorPolicyValidated) {
+      this.setState({ errorMessage: "Please fix errors in container vector policy" });
+      return false;
     }
 
     return true;
@@ -1461,15 +1416,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         }
       : undefined;
 
-    let indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
+    const indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
       ? AllPropertiesIndexed
       : SharedDatabaseDefault;
 
     let vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
 
     if (this.shouldShowVectorSearchParameters()) {
-      indexingPolicy = JSON.parse(this.state.vectorIndexingPolicy);
-      vectorEmbeddingPolicy = JSON.parse(this.state.vectorEmbeddingPolicy);
+      indexingPolicy.vectorIndexes = this.state.vectorIndexingPolicy;
+      vectorEmbeddingPolicy = {
+        vectorEmbeddings: this.state.vectorEmbeddingPolicy,
+      };
     }
 
     const telemetryData = {

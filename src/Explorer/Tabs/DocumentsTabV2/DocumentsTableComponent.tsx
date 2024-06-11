@@ -24,7 +24,7 @@ import {
 import { NormalizedEventKey } from "Common/Constants";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
 export type DocumentsTableComponentItem = {
@@ -62,7 +62,6 @@ const MIN_COLUMN_WIDTH_PX = 50;
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
-  onItemClicked,
   onSelectedRowsChange,
   selectedRows,
   style,
@@ -70,8 +69,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   columnsDefinition,
   isSelectionDisabled,
 }: IDocumentsTableComponentProps) => {
-  const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
-
   const initialSizingOptions: TableColumnSizingOptions = {};
   columnsDefinition.forEach((column) => {
     initialSizingOptions[column.id] = {
@@ -231,18 +228,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     },
     [toggleAllRows],
   );
-
-  // Load document depending on selection
-  useEffect(() => {
-    if (selectedRows.size === 1 && items.length > 0) {
-      const newActiveItemIndex = selectedRows.values().next().value;
-      if (newActiveItemIndex !== activeItemIndex) {
-        onItemClicked(newActiveItemIndex);
-        setActiveItemIndex(newActiveItemIndex);
-        setSelectionStartIndex(newActiveItemIndex);
-      }
-    }
-  }, [selectedRows, items, activeItemIndex, onItemClicked]);
 
   // Cell keyboard navigation
   const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });

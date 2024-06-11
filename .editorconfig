@@ -1,0 +1,10 @@
+# NOTE: Prettier reads EditorConfig settings, so be careful adjusting settings here and assuming they'll only affect your editor ;).
+
+# top-most EditorConfig file
+root = true
+
+[*.yml]
+indent_size = 2
+
+[*.{js,jsx,ts,tsx}]
+indent_size = 2
