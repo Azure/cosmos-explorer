@@ -51,7 +51,7 @@ import { extractPartitionKeyValues } from "../../../Utils/QueryUtils";
 import DocumentId from "../../Tree/DocumentId";
 import ObjectId from "../../Tree/ObjectId";
 import TabsBase from "../TabsBase";
-import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
+import { ColumnsDefinition, DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
 
 export class DocumentsTabV2 extends TabsBase {
   public partitionKey: DataModels.PartitionKey;
@@ -1266,10 +1266,21 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return () => resizeObserver.disconnect(); // clean up
   }, []);
 
-  const columnHeaders = {
-    idHeader: isPreferredApiMongoDB ? "_id" : "id",
-    partitionKeyHeaders: (showPartitionKey(_collection, isPreferredApiMongoDB) && partitionKeyPropertyHeaders) || [],
-  };
+  const columnsDefinition: ColumnsDefinition = [
+    {
+      id: "id",
+      label: isPreferredApiMongoDB ? "_id" : "id",
+    },
+  ];
+
+  if (showPartitionKey(_collection, isPreferredApiMongoDB)) {
+    partitionKeyPropertyHeaders.forEach((header) => {
+      columnsDefinition.push({
+        id: header,
+        label: header,
+      });
+    });
+  }
 
   const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
     confirmDiscardingChange(() => {
@@ -1797,7 +1808,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   onSelectedRowsChange={onSelectedRowsChange}
                   selectedRows={selectedRows}
                   size={tableContainerSizePx}
-                  columnHeaders={columnHeaders}
+                  columnsDefinition={columnsDefinition}
                   isSelectionDisabled={
                     configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
                   }

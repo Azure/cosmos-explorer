@@ -485,16 +485,17 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
     >
       <Split
         mode="horizontal"
+        onDragEnd={[Function]}
         prefixCls="w-split"
         visiable={true}
       >
         <div
           style={
             Object {
-              "minWidth": 120,
+              "minWidth": 60,
               "overflow": "hidden",
               "position": "relative",
-              "width": "35%",
+              "width": "50%",
             }
           }
         >
@@ -526,11 +527,13 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
             }
           >
             <DocumentsTableComponent
-              columnHeaders={
-                Object {
-                  "idHeader": "id",
-                  "partitionKeyHeaders": Array [],
-                }
+              columnsDefinition={
+                Array [
+                  Object {
+                    "id": "id",
+                    "label": "id",
+                  },
+                ]
               }
               isSelectionDisabled={true}
               items={Array []}
@@ -547,8 +550,8 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         <div
           style={
             Object {
-              "minWidth": "20%",
-              "width": "100%",
+              "minWidth": 60,
+              "width": "50%",
             }
           }
         />

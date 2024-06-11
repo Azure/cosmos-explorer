@@ -16,7 +16,6 @@ import {
   TableRow,
   TableRowId,
   TableSelectionCell,
-  createTableColumn,
   useArrowNavigationGroup,
   useTableColumnSizing_unstable,
   useTableFeatures,
@@ -32,17 +31,18 @@ export type DocumentsTableComponentItem = {
   id: string;
 } & Record<string, string>;
 
-export type ColumnHeaders = {
-  idHeader: string;
-  partitionKeyHeaders: string[];
-};
+export type ColumnsDefinition = {
+  id: string;
+  label: string;
+  defaultWidthPx?: number;
+}[];
 export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
   onItemClicked: (index: number) => void;
   onSelectedRowsChange: (selectedItemsIndices: Set<TableRowId>) => void;
   selectedRows: Set<TableRowId>;
   size: { height: number; width: number };
-  columnHeaders: ColumnHeaders;
+  columnsDefinition: ColumnsDefinition;
   style?: React.CSSProperties;
   isSelectionDisabled?: boolean;
 }
@@ -57,6 +57,9 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
   data: TableRowData[];
 }
 
+const DEFAULT_COLUMN_WIDTH_PX = 200;
+const MIN_COLUMN_WIDTH_PX = 50;
+
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
   onItemClicked,
@@ -64,21 +67,16 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   selectedRows,
   style,
   size,
-  columnHeaders,
+  columnsDefinition,
   isSelectionDisabled,
 }: IDocumentsTableComponentProps) => {
   const [activeItemIndex, setActiveItemIndex] = React.useState<number>(undefined);
 
-  const initialSizingOptions: TableColumnSizingOptions = {
-    id: {
-      idealWidth: 280,
-      minWidth: 50,
-    },
-  };
-  columnHeaders.partitionKeyHeaders.forEach((pkHeader) => {
-    initialSizingOptions[pkHeader] = {
-      idealWidth: 200,
-      minWidth: 50,
+  const initialSizingOptions: TableColumnSizingOptions = {};
+  columnsDefinition.forEach((column) => {
+    initialSizingOptions[column.id] = {
+      idealWidth: column.defaultWidthPx || DEFAULT_COLUMN_WIDTH_PX, // 0 is not a valid width
+      minWidth: MIN_COLUMN_WIDTH_PX,
     };
   });
 
@@ -97,33 +95,17 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
   const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
     () =>
-      [
-        createTableColumn<DocumentsTableComponentItem>({
-          columnId: "id",
-          compare: (a, b) => a.id.localeCompare(b.id),
-          renderHeaderCell: () => columnHeaders.idHeader,
-          renderCell: (item) => (
-            <TableCellLayout truncate title={item.id}>
-              {item.id}
-            </TableCellLayout>
-          ),
-        }),
-      ].concat(
-        columnHeaders.partitionKeyHeaders.map((pkHeader) =>
-          createTableColumn<DocumentsTableComponentItem>({
-            columnId: pkHeader,
-            compare: (a, b) => a[pkHeader].localeCompare(b[pkHeader]),
-            // Show Refresh button on last column
-            renderHeaderCell: () => <span title={pkHeader}>{pkHeader}</span>,
-            renderCell: (item) => (
-              <TableCellLayout truncate title={item[pkHeader]}>
-                {item[pkHeader]}
-              </TableCellLayout>
-            ),
-          }),
+      columnsDefinition.map((column) => ({
+        columnId: column.id,
+        compare: (a, b) => a[column.id].localeCompare(b[column.id]),
+        renderHeaderCell: () => <span title={column.label}>{column.label}</span>,
+        renderCell: (item) => (
+          <TableCellLayout truncate title={item[column.id]}>
+            {item[column.id]}
+          </TableCellLayout>
         ),
-      ),
-    [columnHeaders],
+      })),
+    [columnsDefinition],
   );
 
   const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(undefined);

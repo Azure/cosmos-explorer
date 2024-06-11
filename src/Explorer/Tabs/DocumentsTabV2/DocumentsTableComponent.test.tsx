@@ -20,10 +20,10 @@ describe("DocumentsTableComponent", () => {
       height: 0,
       width: 0,
     },
-    columnHeaders: {
-      idHeader: ID_HEADER,
-      partitionKeyHeaders: [PARTITION_KEY_HEADER],
-    },
+    columnsDefinition: [
+      { id: ID_HEADER, label: "ID" },
+      { id: PARTITION_KEY_HEADER, label: "Partition Key" },
+    ],
     isSelectionDisabled: false,
   });
 

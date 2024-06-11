@@ -2,13 +2,17 @@
 
 exports[`DocumentsTableComponent should not render selection column when isSelectionDisabled is true 1`] = `
 <DocumentsTableComponent
-  columnHeaders={
-    Object {
-      "idHeader": "id",
-      "partitionKeyHeaders": Array [
-        "partitionKey",
-      ],
-    }
+  columnsDefinition={
+    Array [
+      Object {
+        "id": "id",
+        "label": "ID",
+      },
+      Object {
+        "id": "partitionKey",
+        "label": "Partition Key",
+      },
+    ]
   }
   isSelectionDisabled={true}
   items={
@@ -119,7 +123,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                             class="fui-TableHeaderCell__button ___hg3sc00_fmp4b50 fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1mtd64y f1y7q3j9 f1g0x7ka fhxju0i f1qch9an f1cnd47f f1ern45e f1n71otn f1h8hb77 f1deefiw fgusgyc f10pi13n fly5x3f f22iagw fqerorx f1l02sjl f122n59 f1ufnopg f14sijuj f1nxs5xn f1neuvcm fkjuxzh f1s6fcnf"
                             role="presentation"
                           >
-                            id
+                            <span
+                              title="ID"
+                            >
+                              ID
+                            </span>
                           </div>
                           <span
                             class="fui-TableHeaderCell__aside"
@@ -195,7 +203,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyUp={[Function]}
                           role="presentation"
                         >
-                          id
+                          <span
+                            title="ID"
+                          >
+                            ID
+                          </span>
                         </div>
                         <span
                           className="fui-TableHeaderCell__aside"
@@ -267,9 +279,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                             role="presentation"
                           >
                             <span
-                              title="partitionKey"
+                              title="Partition Key"
                             >
-                              partitionKey
+                              Partition Key
                             </span>
                           </div>
                         </div>,
@@ -323,9 +335,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           role="presentation"
                         >
                           <span
-                            title="partitionKey"
+                            title="Partition Key"
                           >
-                            partitionKey
+                            Partition Key
                           </span>
                         </div>
                       </div>
@@ -994,13 +1006,17 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
 
 exports[`DocumentsTableComponent should render documents and partition keys in header 1`] = `
 <DocumentsTableComponent
-  columnHeaders={
-    Object {
-      "idHeader": "id",
-      "partitionKeyHeaders": Array [
-        "partitionKey",
-      ],
-    }
+  columnsDefinition={
+    Array [
+      Object {
+        "id": "id",
+        "label": "ID",
+      },
+      Object {
+        "id": "partitionKey",
+        "label": "Partition Key",
+      },
+    ]
   }
   isSelectionDisabled={false}
   items={
@@ -1151,7 +1167,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                             class="fui-TableHeaderCell__button ___hg3sc00_fmp4b50 fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1mtd64y f1y7q3j9 f1g0x7ka fhxju0i f1qch9an f1cnd47f f1ern45e f1n71otn f1h8hb77 f1deefiw fgusgyc f10pi13n fly5x3f f22iagw fqerorx f1l02sjl f122n59 f1ufnopg f14sijuj f1nxs5xn f1neuvcm fkjuxzh f1s6fcnf"
                             role="presentation"
                           >
-                            id
+                            <span
+                              title="ID"
+                            >
+                              ID
+                            </span>
                           </div>
                           <span
                             class="fui-TableHeaderCell__aside"
@@ -1227,7 +1247,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyUp={[Function]}
                           role="presentation"
                         >
-                          id
+                          <span
+                            title="ID"
+                          >
+                            ID
+                          </span>
                         </div>
                         <span
                           className="fui-TableHeaderCell__aside"
@@ -1299,9 +1323,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                             role="presentation"
                           >
                             <span
-                              title="partitionKey"
+                              title="Partition Key"
                             >
-                              partitionKey
+                              Partition Key
                             </span>
                           </div>
                         </div>,
@@ -1355,9 +1379,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           role="presentation"
                         >
                           <span
-                            title="partitionKey"
+                            title="Partition Key"
                           >
-                            partitionKey
+                            Partition Key
                           </span>
                         </div>
                       </div>

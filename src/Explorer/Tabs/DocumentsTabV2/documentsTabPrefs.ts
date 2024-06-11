@@ -8,7 +8,7 @@ export interface DocumentsTabPrefs {
 }
 
 const defaultPrefs: DocumentsTabPrefs = {
-  leftPaneWidthPercent: 50,
+  leftPaneWidthPercent: 35,
 };
 
 export const readDocumentsTabPrefs = (): DocumentsTabPrefs => {
