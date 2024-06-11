@@ -255,6 +255,7 @@ export class HttpHeaders {
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
+  public static xAPIKey: string = "X-API-Key";
 }
 
 export class ContentType {

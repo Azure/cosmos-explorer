@@ -117,6 +117,7 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
 
   updateConfigContext({
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+    CATALOG_API_KEY: inputs.catalogAPIKey,
   });
 
   updateUserContext({

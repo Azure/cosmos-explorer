@@ -425,6 +425,7 @@ export interface SelfServeFrameInputs {
   authorizationToken: string;
   csmEndpoint: string;
   flights?: readonly string[];
+  catalogAPIKey: string;
 }
 
 export class MonacoEditorSettings {
