@@ -75,6 +75,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 }: TreeNodeComponentProps): JSX.Element => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const treeStyles = useTreeStyles();
+  const [actionsVisible, setActionsVisible] = React.useState<boolean>(false);
 
   const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
     if (!treeNode || !treeNode.children) {
@@ -175,21 +176,24 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
           node.className && treeStyles[node.className])}
         data-test={`TreeNode:${treeNodeId}`}
         actions={
-          contextMenuItems.length > 0 && (
-            <Menu onOpenChange={onMenuOpenChange}>
-              <MenuTrigger disableButtonEnhancement>
-                <Button
-                  aria-label="More options"
-                  data-test="TreeNode/ContextMenuTrigger"
-                  appearance="subtle"
-                  icon={<MoreHorizontal20Regular />}
-                />
-              </MenuTrigger>
-              <MenuPopover data-test={`TreeNode/ContextMenu:${treeNodeId}`}>
-                <MenuList>{contextMenuItems}</MenuList>
-              </MenuPopover>
-            </Menu>
-          )
+          contextMenuItems.length > 0 && ({
+            className: treeStyles.actionsButtonContainer,
+            children:
+              <Menu onOpenChange={onMenuOpenChange}>
+                <MenuTrigger disableButtonEnhancement>
+                  <Button
+                    aria-label="More options"
+                    className={mergeClasses(treeStyles.actionsButton, shouldShowAsSelected && treeStyles.selectedItem)}
+                    data-test="TreeNode/ContextMenuTrigger"
+                    appearance="subtle"
+                    icon={<MoreHorizontal20Regular />}
+                  />
+                </MenuTrigger>
+                <MenuPopover data-test={`TreeNode/ContextMenu:${treeNodeId}`}>
+                  <MenuList>{contextMenuItems}</MenuList>
+                </MenuPopover>
+              </Menu>
+          })
         }
         expandIcon={expandIcon}
       >

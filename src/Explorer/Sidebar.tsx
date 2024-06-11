@@ -1,9 +1,11 @@
-import { Button, Menu, MenuButtonProps, MenuItem, MenuList, MenuPopover, MenuTrigger, SplitButton, makeStyles, shorthands } from "@fluentui/react-components";
+import { Button, Menu, MenuButtonProps, MenuItem, MenuList, MenuPopover, MenuTrigger, SplitButton, makeStyles, mergeClasses, shorthands } from "@fluentui/react-components";
 import { Add16Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
+import Split from "@uiw/react-split";
 import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
-import { CosmosFluentProvider, cosmosShorthands, layoutRowHeightToken } from "Explorer/Theme/ThemeUtil";
+import { Tabs } from "Explorer/Tabs/Tabs";
+import { CosmosFluentProvider, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { ResourceTree } from "Explorer/Tree/ResourceTree";
 import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
@@ -17,10 +19,18 @@ const useSidebarStyles = makeStyles({
     ...cosmosShorthands.borderRight(),
   },
   expanded: {
+    minWidth: tokens.sidebarMinimumWidth,
+    width: tokens.sidebarInitialWidth,
+  },
+  collapsed: {
+    width: "fit-content",
+    minWidth: "fit-content",
+    maxWidth: "fit-content",
+  },
+  expandedContent: {
     display: "grid",
     height: "100%",
-    gridTemplateRows: `calc(var(${layoutRowHeightToken}) * 2) 1fr`,
-    minWidth: "300px",
+    gridTemplateRows: `calc(${tokens.layoutRowHeight} * 2) 1fr`,
   },
   floatingControlsContainer: {
     position: "relative",
@@ -145,23 +155,30 @@ interface SidebarProps {
   explorer: Explorer
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ explorer }) => {
+export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const styles = useSidebarStyles();
   const [expanded, setExpanded] = React.useState(true);
+  const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
 
-  return <CosmosFluentProvider className={styles.sidebar}>
-    {expanded
-      ? <>
-        <div className={styles.floatingControlsContainer}>
-          <div className={styles.floatingControls}>
-            <button type="button" className={styles.expandCollapseButton} title="Collapse sidebar" onClick={() => setExpanded(false)}><ChevronLeft12Regular /></button>
-          </div>
-        </div>
-        <div className={styles.expanded}>
-          <GlobalCommands explorer={explorer} />
-          <ResourceTree explorer={explorer} />
-        </div>
-      </>
-      : <button type="button" className={styles.expandCollapseButton} title="Expand sidebar" onClick={() => setExpanded(true)}><ChevronRight12Regular /></button>}
-  </CosmosFluentProvider>;
-};
+  return <Split visible={expanded} disable={!expanded} className="resourceTreeAndTabs">
+    {/* Collections Tree - Start */}
+    {hasSidebar && (
+      <CosmosFluentProvider className={mergeClasses(styles.sidebar, expanded ? styles.expanded : styles.collapsed)}>
+        {expanded
+          ? <>
+            <div className={styles.floatingControlsContainer}>
+              <div className={styles.floatingControls}>
+                <button type="button" className={styles.expandCollapseButton} title="Collapse sidebar" onClick={() => setExpanded(false)}><ChevronLeft12Regular /></button>
+              </div>
+            </div>
+            <div className={styles.expandedContent}>
+              <GlobalCommands explorer={explorer} />
+              <ResourceTree explorer={explorer} />
+            </div>
+          </>
+          : <button type="button" className={styles.expandCollapseButton} title="Expand sidebar" onClick={() => setExpanded(true)}><ChevronRight12Regular /></button>}
+      </CosmosFluentProvider>
+    )}
+    <Tabs explorer={explorer} />
+  </Split>;
+}

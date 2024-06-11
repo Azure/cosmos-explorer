@@ -1,4 +1,4 @@
-import { BrandVariants, FluentProvider, Theme, createLightTheme, makeStyles, mergeClasses, shorthands, tokens } from "@fluentui/react-components";
+import { BrandVariants, FluentProvider, Theme, createLightTheme, shorthands, themeToTokensObject, webLightTheme } from "@fluentui/react-components";
 import { Platform, configContext } from "ConfigContext";
 import React, { PropsWithChildren } from "react";
 import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
@@ -7,21 +7,12 @@ export const LayoutConstants = {
   rowHeight: 36,
 }
 
-export const layoutRowHeightToken = "--cosmos-Layout--rowHeight" as const;
-
-export const useGlobalStyles = makeStyles({
-  root: {
-    [layoutRowHeightToken]: `${LayoutConstants.rowHeight}px`,
-  }
-});
-
 export type CosmosFluentProviderProps = PropsWithChildren<{
   className?: string;
 }>;
 
-export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ className, children }) => {
-  const styles = useGlobalStyles();
-  return <FluentProvider theme={getPlatformTheme(configContext.platform)} className={mergeClasses(styles.root, className)}>
+export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ children, className }) => {
+  return <FluentProvider theme={getPlatformTheme(configContext.platform)} className={className}>
     {children}
   </FluentProvider>;
 };
@@ -46,6 +37,16 @@ const appThemePortalBrandRamp: BrandVariants = {
   160: "#CDD8EF",
 };
 
+const cosmosThemeElements = {
+  layoutRowHeight: `${LayoutConstants.rowHeight}px`,
+  sidebarMinimumWidth: "200px",
+  sidebarInitialWidth: "300px",
+}
+
+export type CosmosTheme = Theme & typeof cosmosThemeElements;
+
+export const tokens = themeToTokensObject({ ...webLightTheme, ...cosmosThemeElements });
+
 export const cosmosShorthands = {
   border: () => shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
   borderBottom: () => shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
@@ -54,10 +55,13 @@ export const cosmosShorthands = {
   borderLeft: () => shorthands.borderLeft("1px", "solid", tokens.colorNeutralStroke2),
 };
 
-export function getPlatformTheme(platform: Platform): Theme {
-  if (platform === Platform.Fabric) {
-    return createLightTheme(appThemeFabricTealBrandRamp);
-  } else {
-    return createLightTheme(appThemePortalBrandRamp);
-  }
+export function getPlatformTheme(platform: Platform): CosmosTheme {
+  const baseTheme = platform === Platform.Fabric
+    ? createLightTheme(appThemeFabricTealBrandRamp)
+    : createLightTheme(appThemePortalBrandRamp);
+
+  return {
+    ...baseTheme,
+    ...cosmosThemeElements,
+  };
 }

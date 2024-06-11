@@ -7,8 +7,6 @@ import { useDatabases } from "Explorer/useDatabases";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
-import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
-import CollectionIcon from "../../../images/tree-collection.svg";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import { Platform, configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
@@ -31,12 +29,10 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
   const updatedSampleTree: TreeNode = {
     label: sampleDataResourceTokenCollection.databaseId,
     isExpanded: false,
-    iconSrc: CosmosDBIcon,
     className: "databaseNode",
     children: [
       {
         label: sampleDataResourceTokenCollection.id(),
-        iconSrc: CollectionIcon,
         isExpanded: false,
         className: "collectionNode",
         contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
@@ -105,7 +101,6 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
 
   const collectionNode: TreeNode = {
     label: collection.id(),
-    iconSrc: CollectionIcon,
     isExpanded: true,
     children,
     className: "collectionNode",
@@ -170,7 +165,6 @@ export const createDatabaseTreeNodes = (
 
     const databaseNode: TreeNode = {
       label: database.id(),
-      iconSrc: CosmosDBIcon,
       className: "databaseNode",
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
@@ -222,7 +216,6 @@ export const buildCollectionNode = (
 
   const collectionNode: TreeNode = {
     label: collection.id(),
-    iconSrc: CollectionIcon,
     children: children,
     className: "collectionNode",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),

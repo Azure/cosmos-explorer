@@ -1,10 +1,11 @@
-import { makeStyles, shorthands, tokens, treeItemLevelToken } from "@fluentui/react-components";
-import { cosmosShorthands, layoutRowHeightToken } from "Explorer/Theme/ThemeUtil";
+import { makeStyles, shorthands, treeItemLevelToken } from "@fluentui/react-components";
+import { cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 
 export type TreeStyleName = keyof ReturnType<typeof useTreeStyles>;
 
 const treeIconWidth = "--cosmos-Tree--iconWidth" as const;
 const leafNodeSpacing = "--cosmos-Tree--leafNodeSpacing" as const;
+const actionButtonBackground = "--cosmos-Tree--actionButtonBackground" as const;
 
 export const useTreeStyles = makeStyles({
   treeContainer: {
@@ -12,6 +13,8 @@ export const useTreeStyles = makeStyles({
     ...shorthands.overflow("auto"),
   },
   tree: {
+    width: "fit-content",
+    minWidth: "100%",
     rowGap: "0px",
     paddingTop: "0px",
     [treeIconWidth]: "20px",
@@ -24,13 +27,25 @@ export const useTreeStyles = makeStyles({
   treeItem: {
   },
   nodeLabel: {
-    paddingRight: tokens.spacingHorizontalXXL,
   },
   treeItemLayout: {
-    height: `var(${layoutRowHeightToken})`,
+    fontSize: tokens.fontSizeBase300,
+    height: tokens.layoutRowHeight,
     ...cosmosShorthands.borderBottom(),
-
     paddingLeft: `calc(var(${treeItemLevelToken}, 1) * ${tokens.spacingHorizontalXXL})`,
+
+    // Some sneaky CSS variables stuff to change the background color of the action button on hover.
+    [actionButtonBackground]: tokens.colorNeutralBackground1,
+    '&:hover': {
+      [actionButtonBackground]: tokens.colorNeutralBackground1Hover,
+    }
+  },
+  actionsButtonContainer: {
+    position: "sticky",
+    right: 0,
+  },
+  actionsButton: {
+    backgroundColor: `var(${actionButtonBackground})`
   },
   treeItemLayoutNoIcon: {
     // Pad the text out by the level, the width of the icon, AND the usual spacing between the icon and the level.

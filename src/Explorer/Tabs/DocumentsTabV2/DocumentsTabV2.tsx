@@ -1,5 +1,5 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, Input, TableRowId, makeStyles, shorthands, tokens } from "@fluentui/react-components";
+import { Button, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
 import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
@@ -18,7 +18,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, layoutRowHeightToken } from "Explorer/Theme/ThemeUtil";
+import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
@@ -53,7 +53,7 @@ export const useDocumentsTabStyles = makeStyles({
     height: "100%",
   },
   filterRow: {
-    minHeight: `var(${layoutRowHeightToken})`,
+    minHeight: tokens.layoutRowHeight,
     fontSize: tokens.fontSizeBase200,
     display: "flex",
     columnGap: tokens.spacingHorizontalS,
@@ -72,7 +72,7 @@ export const useDocumentsTabStyles = makeStyles({
     marginRight: tokens.spacingHorizontalXXXL,
   },
   tableRow: {
-    height: `var(${layoutRowHeightToken})`,
+    height: tokens.layoutRowHeight,
   },
   tableCell: {
     ...cosmosShorthands.borderLeft(),
@@ -1299,12 +1299,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     if (!tableContainerRef.current) {
       return undefined;
     }
-    const resizeObserver = new ResizeObserver(() =>
+    const resizeObserver = new ResizeObserver(() => {
       setTableContainerSizePx({
         height: tableContainerRef.current.offsetHeight - loadMoreHeight,
         width: tableContainerRef.current.offsetWidth,
-      }),
-    );
+      });
+    });
     resizeObserver.observe(tableContainerRef.current);
     return () => resizeObserver.disconnect(); // clean up
   }, []);

@@ -6,7 +6,6 @@ import { initializeIcons, loadTheme } from "@fluentui/react";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
-import { userContext } from "UserContext";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
 import React, { useState } from "react";
@@ -21,7 +20,7 @@ import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
-import { Sidebar } from "Explorer/Sidebar";
+import { SidebarContainer } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -55,7 +54,6 @@ import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/Notifi
 import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import "./Explorer/SplashScreen/SplashScreen.less";
-import { Tabs } from "./Explorer/Tabs/Tabs";
 import "./Libs/jquery";
 import { appThemeFabric } from "./Platform/Fabric/FabricTheme";
 import "./Shared/appInsights";
@@ -98,13 +96,7 @@ const App: React.FunctionComponent = () => {
           {/* Main Command Bar - Start */}
           <CommandBar container={explorer} />
           {/* Collections Tree and Tabs - Begin */}
-          <div className="resourceTreeAndTabs">
-            {/* Collections Tree - Start */}
-            {userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo" && (
-              <Sidebar explorer={explorer} />
-            )}
-            <Tabs explorer={explorer} />
-          </div>
+          <SidebarContainer explorer={explorer} />
           {/* Collections Tree and Tabs - End */}
           <div
             className="dataExplorerErrorConsoleContainer"
