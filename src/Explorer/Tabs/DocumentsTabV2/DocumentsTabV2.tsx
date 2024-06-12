@@ -22,6 +22,7 @@ import {
   DocumentsTabPrefs,
   readDocumentsTabPrefs,
   saveDocumentsTabPrefs,
+  saveDocumentsTabPrefsDebounced,
 } from "Explorer/Tabs/DocumentsTabV2/documentsTabPrefs";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -1305,6 +1306,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     {
       id: "id",
       label: isPreferredApiMongoDB ? "_id" : "id",
+      defaultWidthPx: prefs.columnWidths ? prefs.columnWidths["id"] : undefined,
     },
   ];
 
@@ -1313,6 +1315,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       columnsDefinition.push({
         id: header,
         label: header,
+        defaultWidthPx: prefs.columnWidths ? prefs.columnWidths[header] : undefined,
       });
     });
   }
@@ -1685,6 +1688,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [createIterator, filterContent],
   );
 
+  const onTableColumnResize = (columnId: string, width: number) => {
+    if (!prefs.columnWidths) {
+      prefs.columnWidths = {};
+    }
+    prefs.columnWidths[columnId] = width;
+    saveDocumentsTabPrefsDebounced(prefs);
+    setPrefs({ ...prefs });
+  };
+
   return (
     <FluentProvider theme={getPlatformTheme(configContext.platform)} style={{ height: "100%" }}>
       <div className="tab-pane active documentsTab" role="tabpanel" style={{ display: "flex" }}>
@@ -1832,6 +1844,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   isSelectionDisabled={
                     configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
                   }
+                  onColumnResize={onTableColumnResize}
                 />
                 {tableItems.length > 0 && (
                   <a

@@ -4,7 +4,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 export interface DocumentsTabPrefs {
   leftPaneWidthPercent: number;
-  columnWidths?: number[];
+  columnWidths?: { [columnId: string]: number };
 }
 
 const defaultPrefs: DocumentsTabPrefs = {
@@ -18,4 +18,17 @@ export const readDocumentsTabPrefs = (): DocumentsTabPrefs => {
 
 export const saveDocumentsTabPrefs = (prefs: DocumentsTabPrefs): void => {
   LocalStorageUtility.setEntryObject(StorageKey.DocumentsTabPrefs, prefs);
+};
+
+const DEBOUNCE_TIMEOUT_MS = 300;
+let timeoutId: NodeJS.Timeout | undefined;
+/**
+ * Wait for a short period of time before saving the preferences to avoid too many updates.
+ * @param prefs
+ */
+export const saveDocumentsTabPrefsDebounced = (prefs: DocumentsTabPrefs): void => {
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
+  timeoutId = setTimeout(() => saveDocumentsTabPrefs(prefs), DEBOUNCE_TIMEOUT_MS);
 };

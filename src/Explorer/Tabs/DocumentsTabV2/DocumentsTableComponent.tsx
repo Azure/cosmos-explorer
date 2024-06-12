@@ -45,6 +45,7 @@ export interface IDocumentsTableComponentProps {
   columnsDefinition: ColumnsDefinition;
   style?: React.CSSProperties;
   isSelectionDisabled?: boolean;
+  onColumnResize?: (columnId: string, width: number) => void;
 }
 
 interface TableRowData extends RowStateBase<DocumentsTableComponentItem> {
@@ -58,7 +59,7 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
 }
 
 const DEFAULT_COLUMN_WIDTH_PX = 200;
-const MIN_COLUMN_WIDTH_PX = 50;
+const MIN_COLUMN_WIDTH_PX = 20;
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
@@ -68,6 +69,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   size,
   columnsDefinition,
   isSelectionDisabled,
+  onColumnResize: _onColumnResize,
 }: IDocumentsTableComponentProps) => {
   const initialSizingOptions: TableColumnSizingOptions = {};
   columnsDefinition.forEach((column) => {
@@ -79,15 +81,19 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(initialSizingOptions);
 
-  const onColumnResize = React.useCallback((_, { columnId, width }) => {
-    setColumnSizingOptions((state) => ({
-      ...state,
-      [columnId]: {
-        ...state[columnId],
-        idealWidth: width,
-      },
-    }));
-  }, []);
+  const onColumnResize = React.useCallback(
+    (_, { columnId, width }) => {
+      setColumnSizingOptions((state) => ({
+        ...state,
+        [columnId]: {
+          ...state[columnId],
+          idealWidth: width,
+        },
+      }));
+      _onColumnResize(columnId, width);
+    },
+    [_onColumnResize],
+  );
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
   const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
