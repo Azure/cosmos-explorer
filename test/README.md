@@ -33,9 +33,11 @@ All you need to provide is a resource group to deploy in to.
 
 To use this script, there are a few prerequisites that must be done at least once:
 
-1. [Install Azure PowerShell](https://learn.microsoft.com/en-us/powershell/azure/install-azps-windows?view=azps-12.0.0&tabs=powershell&pivots=windows-psgallery) if you don't already have it.
-2. Connect to your Azure account using `Connect-AzAccount`.
-3. Ensure you have a Resource Group _ready_ to deploy into, the deploy script requires an existing resource group. This resource group should be named `[username]-e2e-testing`, where `[username]` is your Windows username, (**Microsoft employees:** This should be your alias). The easiest way to do this is by running the `create-resource-group.ps1` script, specifying the Subscription (Name or ID) and Location in which you want to create the Resource Group. For example:
+1. This script requires Powershell 7+. Install it [here](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows).
+2. [Install Azure PowerShell](https://learn.microsoft.com/en-us/powershell/azure/install-azps-windows?view=azps-12.0.0&tabs=powershell&pivots=windows-psgallery) if you don't already have it.
+3. [Install Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#install-manually) if it is not already installed.
+4. Connect to your Azure account using `Connect-AzAccount`.
+5. Ensure you have a Resource Group _ready_ to deploy into, the deploy script requires an existing resource group. This resource group should be named `[username]-e2e-testing`, where `[username]` is your Windows username, (**Microsoft employees:** This should be your alias). The easiest way to do this is by running the `create-resource-group.ps1` script, specifying the Subscription (Name or ID) and Location in which you want to create the Resource Group. For example:
 
 ```powershell
 .\test\resources\create-resource-group.ps1 -SubscriptionName "My Subscription" -Location "West US 3"
@@ -119,6 +121,14 @@ Configuring for E2E Testing
 ```
 
 ## Running the tests
+
+If Azure CLI is not installed, please [install it](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
+
+Log into Az CLI with the following command:
+
+```powershell
+az login --scope https://management.core.windows.net//.default
+```
 
 To run all tests in a headless browser, run the following command from the root of the repo:
 
