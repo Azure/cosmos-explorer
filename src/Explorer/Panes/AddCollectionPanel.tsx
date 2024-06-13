@@ -576,9 +576,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </TooltipHost>
               </Stack>
 
-              <Text variant="small" aria-label="pkDescription">
+              <label aria-label="pkDescription" style={{ padding: "0" }}>
                 {this.getPartitionKeySubtext()}
-              </Text>
+              </label>
 
               <input
                 type="text"
