@@ -355,15 +355,15 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               ) : (
                 <div className="moreStuffContainer">
                   <div className="moreStuffColumn commonTasks">
-                    <div className="title">Recents</div>
+                    <h2 className="title">Recents</h2>
                     {this.getRecentItems()}
                   </div>
                   <div className="moreStuffColumn">
-                    <div className="title">Top 3 things you need to know</div>
+                    <h2 className="title">Top 3 things you need to know</h2>
                     {this.top3Items()}
                   </div>
                   <div className="moreStuffColumn tipsContainer">
-                    <div className="title">Learning Resources</div>
+                    <h2 className="title">Learning Resources</h2>
                     {this.getLearningResourceItems()}
                   </div>
                 </div>

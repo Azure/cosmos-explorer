@@ -1157,21 +1157,25 @@ export default class Explorer {
   }
 
   public async refreshSampleData(): Promise<void> {
-    if (!userContext.sampleDataConnectionInfo) {
+    try {
+      if (!userContext.sampleDataConnectionInfo) {
+        return;
+      }
+      const collection: DataModels.Collection = await readSampleCollection();
+      if (!collection) {
+        return;
+      }
+
+      const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
+      if (!databaseId) {
+        return;
+      }
+
+      const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
+      useDatabases.setState({ sampleDataResourceTokenCollection });
+    } catch (error) {
+      Logger.logError(getErrorMessage(error), "Explorer");
       return;
     }
-
-    const collection: DataModels.Collection = await readSampleCollection();
-    if (!collection) {
-      return;
-    }
-
-    const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
-    if (!databaseId) {
-      return;
-    }
-
-    const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
-    useDatabases.setState({ sampleDataResourceTokenCollection });
   }
 }
