@@ -11,6 +11,7 @@ import {
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
+import { useDatabases } from "Explorer/useDatabases";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
@@ -102,7 +103,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
-  const shouldShowCopilotSampleDBOption = userContext.apiType === "SQL" && useQueryCopilot.getState().copilotEnabled;
+  const shouldShowCopilotSampleDBOption =
+    userContext.apiType === "SQL" &&
+    useQueryCopilot.getState().copilotEnabled &&
+    useDatabases.getState().sampleDataResourceTokenCollection;
   const handlerOnSubmit = async () => {
     setIsExecuting(true);
 
