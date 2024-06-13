@@ -160,3 +160,52 @@ async function getOperationStatus(operationStatusUrl: string) {
   }
   throw new Error(`Operation Response: ${JSON.stringify(body)}. Retrying.`);
 }
+
+export async function getOfferingIdsRequest<T>({
+  host,
+  path,
+  apiVersion,
+  method,
+  body: requestBody,
+  queryParams,
+}: Options): Promise<{ result: T; operationStatusUrl: string }> {
+  const url = new URL(path, host);
+  url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
+  if (queryParams) {
+    queryParams.filter && url.searchParams.append("$filter", queryParams.filter);
+    queryParams.metricNames && url.searchParams.append("metricnames", queryParams.metricNames);
+  }
+
+  if (!configContext.CATALOG_API_KEY) {
+    throw new Error("No catalog API key provided");
+  }
+
+  const response = await window.fetch(url.href, {
+    method,
+    headers: {
+      [HttpHeaders.xAPIKey]: configContext.CATALOG_API_KEY,
+    },
+    body: requestBody ? JSON.stringify(requestBody) : undefined,
+  });
+  if (!response.ok) {
+    let error: ARMError;
+    try {
+      const errorResponse = (await response.json()) as ParsedErrorResponse;
+      if ("error" in errorResponse) {
+        error = new ARMError(errorResponse.error.message);
+        error.code = errorResponse.error.code;
+      } else {
+        error = new ARMError(errorResponse.message);
+        error.code = errorResponse.code;
+      }
+    } catch (error) {
+      throw new Error(await response.text());
+    }
+
+    throw error;
+  }
+
+  const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
+  const responseBody = (await response.json()) as T;
+  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+}
