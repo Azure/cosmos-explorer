@@ -101,6 +101,7 @@ interface UserContext {
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
   readonly feedbackPolicies?: AdminFeedbackPolicySettings;
+  readonly dataPlaneRbacEnabled?: boolean;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";

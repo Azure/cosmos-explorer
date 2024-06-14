@@ -179,6 +179,9 @@ export class CassandraProxyAPIs {
 export class Queries {
   public static CustomPageOption: string = "custom";
   public static UnlimitedPageOption: string = "unlimited";
+  public static setAutomaticRBACOption: string = "Automatic";
+  public static setTrueRBACOption: string = "True";
+  public static setFalseRBACOption: string = "False";
   public static itemsPerPage: number = 100;
   public static unlimitedItemsPerPage: number = 100; // TODO: Figure out appropriate value so it works for accounts with a large number of partitions
   public static containersPerPage: number = 50;

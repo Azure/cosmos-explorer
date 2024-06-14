@@ -733,7 +733,6 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private useCassandraProxyEndpoint(api: string): boolean {
     const activeCassandraProxyEndpoints: string[] = [
-    //  CassandraProxyEndpoints.Development,
       CassandraProxyEndpoints.Mpac,
       CassandraProxyEndpoints.Prod,
     ];

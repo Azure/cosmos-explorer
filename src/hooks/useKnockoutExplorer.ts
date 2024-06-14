@@ -4,6 +4,7 @@ import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesCon
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -270,8 +271,30 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
-    if (!account.properties.disableLocalAuth) {
-      keys = await listKeys(subscriptionId, resourceGroup, account.name);
+    if(LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+      var isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+        if (isDataPlaneRbacSetting == "Automatic")
+        {
+          if (!account.properties.disableLocalAuth) {
+            keys = await listKeys(subscriptionId, resourceGroup, account.name);
+          }
+          else {
+            updateUserContext({
+              dataPlaneRbacEnabled: true
+            });
+          }
+        }
+        else if(isDataPlaneRbacSetting == "True") {
+          updateUserContext({
+            dataPlaneRbacEnabled: true
+          });
+        }
+        else {
+          keys = await listKeys(subscriptionId, resourceGroup, account.name);
+          updateUserContext({
+            dataPlaneRbacEnabled: false
+          });
+        }
     }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
@@ -393,8 +416,9 @@ async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
+  
   let explorer: Explorer;
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
     if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
@@ -407,6 +431,7 @@ async function configurePortal(): Promise<Explorer> {
         console.dir(message);
         updateContextsFromPortalMessage(message);
         explorer = new Explorer();
+
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
@@ -415,11 +440,11 @@ async function configurePortal(): Promise<Explorer> {
         resolve(explorer);
       }
     }
-
+    
     // In the Portal, configuration of Explorer happens via iframe message
     window.addEventListener(
       "message",
-      (event) => {
+      async (event) => {
         if (isInvalidParentFrameOrigin(event)) {
           return;
         }
@@ -449,6 +474,37 @@ async function configurePortal(): Promise<Explorer> {
             setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
 
+          let dbAccount = userContext.databaseAccount;
+          let keys: DatabaseAccountListKeysResult = {};
+          const account = userContext.databaseAccount;
+          const subscriptionId = userContext.subscriptionId;
+          const resourceGroup = userContext.resourceGroup;
+          if(LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+            var isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+              if (isDataPlaneRbacSetting == "Automatic")
+              {
+                if (!account.properties.disableLocalAuth) {
+                  keys = await listKeys(subscriptionId, resourceGroup, account.name);
+                }
+                else {
+                  updateUserContext({
+                    dataPlaneRbacEnabled: true
+                  });
+                }
+              }
+              else if(isDataPlaneRbacSetting == "True") {
+                updateUserContext({
+                  dataPlaneRbacEnabled: true
+                });
+              }
+              else {
+                keys = await listKeys(subscriptionId, resourceGroup, account.name);
+                updateUserContext({
+                  dataPlaneRbacEnabled: false
+                });
+              }
+          }
+            
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
@@ -469,9 +525,11 @@ async function configurePortal(): Promise<Explorer> {
       },
       false,
     );
-
+    
     sendReadyMessage();
+
   });
+
 }
 
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
