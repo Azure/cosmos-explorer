@@ -44,6 +44,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? Constants.Queries.UnlimitedPageOption
       : Constants.Queries.CustomPageOption,
   );
+  const [enableDataPlaneRBACOption, setEnableDataPlaneRBACOption] = useState<string>(
+    LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.Queries.setAutomaticRBACOption
+      ? Constants.Queries.setAutomaticRBACOption
+      : LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.Queries.setTrueRBACOption
+        ? Constants.Queries.setTrueRBACOption
+        : Constants.Queries.setFalseRBACOption
+  );
   const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
   const [ruThreshold, setRUThreshold] = useState<number>(getRUThreshold());
   const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
@@ -119,7 +126,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       StorageKey.ActualItemPerPage,
       isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage,
     );
+
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
+
+    LocalStorageUtility.setEntryString(
+      StorageKey.DataPlaneRbacEnabled,
+      enableDataPlaneRBACOption
+    );
+
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
@@ -207,9 +221,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     { key: Constants.PriorityLevel.High, text: "High" },
   ];
 
-  const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
-    { key: SplitterDirection.Vertical, text: "Vertical" },
-    { key: SplitterDirection.Horizontal, text: "Horizontal" },
+  const dataPlaneRBACOptionsList: IChoiceGroupOption[] = [
+    { key: Constants.Queries.setAutomaticRBACOption, text: "Automatic" },
+    { key: Constants.Queries.setTrueRBACOption, text: "True" },
+    { key: Constants.Queries.setFalseRBACOption, text: "False"}
   ];
 
   const handleOnPriorityLevelOptionChange = (
@@ -221,6 +236,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
   const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
     setPageOption(option.key);
+  };
+
+  const handleOnDataPlaneRBACOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
+    setEnableDataPlaneRBACOption(option.key);
   };
 
   const handleOnRUThresholdToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
@@ -380,6 +399,27 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   />
                 </div>
               )}
+            </div>
+          </div>
+        )}
+        {(
+          <div className="settingsSection">
+            <div className="settingsSectionPart">
+              <fieldset>
+                <legend id="enableDataPlaneRBACOptions" className="settingsSectionLabel legendLabel">
+                  Enable DataPlane RBAC
+                </legend>
+                <InfoTooltip>
+                  Choose Automatic to enable DataPlane RBAC automatically. True/False to voluntarily enable/disable DataPlane RBAC
+                </InfoTooltip>
+                <ChoiceGroup
+                  ariaLabelledBy="enableDataPlaneRBACOptions"
+                  selectedKey={enableDataPlaneRBACOption}
+                  options={dataPlaneRBACOptionsList}
+                  styles={choiceButtonStyles}
+                  onChange={handleOnDataPlaneRBACOptionChange}
+                />
+              </fieldset>
             </div>
           </div>
         )}
