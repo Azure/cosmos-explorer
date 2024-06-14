@@ -6,6 +6,7 @@ import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
+import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
@@ -13,6 +14,7 @@ import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
+import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
 import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
@@ -41,6 +43,16 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
     showMongoAndCassandraProxiesNetworkSettingsWarningState,
     setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
   ] = useState<boolean>(showMongoAndCassandraProxiesNetworkSettingsWarning());
+
+  const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.TABS);
+  useEffect(() => {
+    setKeyboardHandlers({
+      [KeyboardAction.SELECT_LEFT_TAB]: () => useTabs.getState().selectLeftTab(),
+      [KeyboardAction.SELECT_RIGHT_TAB]: () => useTabs.getState().selectRightTab(),
+      [KeyboardAction.CLOSE_TAB]: () => useTabs.getState().closeActiveTab(),
+    });
+  }, [setKeyboardHandlers]);
+
   return (
     <div className="tabsManagerContainer">
       {networkSettingsWarning && (
@@ -80,6 +92,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           {`To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove
           the limit, go to the Settings cog on the right and find "RU Threshold".`}
           <Link
+            className="underlinedLink"
             href="https://review.learn.microsoft.com/en-us/azure/cosmos-db/data-explorer?branch=main#configure-request-unit-threshold"
             target="_blank"
           >
@@ -141,47 +154,51 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     <li
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      onClick={() => {
-        if (tab) {
-          tab.onTabClick();
-        } else if (tabKind !== undefined) {
-          useTabs.getState().activateReactTab(tabKind);
-        }
-      }}
-      onKeyPress={({ nativeEvent: e }) => {
-        if (tab) {
-          tab.onKeyPressActivate(undefined, e);
-        } else if (tabKind !== undefined) {
-          onKeyPressReactTab(e, tabKind);
-        }
-      }}
       className={active ? "active tabList" : "tabList"}
       style={active ? { fontWeight: "bolder" } : {}}
-      title={useObservable(tab?.tabPath || ko.observable(""))}
-      aria-selected={active}
-      aria-expanded={active}
-      aria-controls={tabId}
-      tabIndex={0}
-      role="tab"
-      ref={focusTab}
     >
       <span className="tabNavContentContainer">
         <div className="tab_Content">
-          <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
-            {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
-            {isTabExecuting(tab, tabKind) && (
-              <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
-            )}
-            {isQueryErrorThrown(tab, tabKind) && (
-              <img
-                src={errorQuery}
-                title="Error"
-                alt="Error"
-                style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
-              />
-            )}
+          <span
+            className="contentWrapper"
+            onClick={() => {
+              if (tab) {
+                tab.onTabClick();
+              } else if (tabKind !== undefined) {
+                useTabs.getState().activateReactTab(tabKind);
+              }
+            }}
+            onKeyPress={({ nativeEvent: e }) => {
+              if (tab) {
+                tab.onKeyPressActivate(undefined, e);
+              } else if (tabKind !== undefined) {
+                onKeyPressReactTab(e, tabKind);
+              }
+            }}
+            title={useObservable(tab?.tabPath || ko.observable(""))}
+            aria-selected={active}
+            aria-expanded={active}
+            aria-controls={tabId}
+            tabIndex={0}
+            role="tab"
+            ref={focusTab}
+          >
+            <span className="statusIconContainer" style={{ width: tabKind === ReactTabKind.Home ? 0 : 18 }}>
+              {useObservable(tab?.isExecutionError || ko.observable(false)) && <ErrorIcon tab={tab} active={active} />}
+              {isTabExecuting(tab, tabKind) && (
+                <img className="loadingIcon" title="Loading" src={loadingIcon} alt="Loading" />
+              )}
+              {isQueryErrorThrown(tab, tabKind) && (
+                <img
+                  src={errorQuery}
+                  title="Error"
+                  alt="Error"
+                  style={{ marginTop: 4, marginLeft: 4, width: 10, height: 11 }}
+                />
+              )}
+            </span>
+            <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           </span>
-          <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
           <span className="tabIconSection">
             <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
           </span>
@@ -268,7 +285,7 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
 }
 
 const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
-  if (e.key === "Enter" || e.key === "Space") {
+  if (e.key === "Enter" || e.code === "Space") {
     useTabs.getState().activateReactTab(tabKind);
     e.stopPropagation();
   }
@@ -297,6 +314,9 @@ const isQueryErrorThrown = (tab?: Tab, tabKind?: ReactTabKind): boolean => {
 };
 
 const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): JSX.Element => {
+  // React tabs have no context buttons.
+  useCommandBar.getState().setContextButtons([]);
+
   // eslint-disable-next-line no-console
   switch (activeReactTab) {
     case ReactTabKind.Connect:
@@ -324,7 +344,12 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
 
 const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
   const ipRules: IpRule[] = userContext.databaseAccount?.properties?.ipRules;
-  if ((userContext.apiType === "Mongo" || userContext.apiType === "Cassandra") && ipRules?.length) {
+  if (
+    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local) ||
+      (userContext.apiType === "Cassandra" &&
+        configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development)) &&
+    ipRules?.length
+  ) {
     const legacyPortalBackendIPs: string[] = PortalBackendIPs[configContext.BACKEND_ENDPOINT];
     const ipAddressesFromIPRules: string[] = ipRules.map((ipRule) => ipRule.ipAddressOrRange);
     const ipRulesIncludeLegacyPortalBackend: boolean = legacyPortalBackendIPs.every((legacyPortalBackendIP: string) =>

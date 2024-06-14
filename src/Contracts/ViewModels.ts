@@ -176,6 +176,11 @@ export interface Collection extends CollectionBase {
   loadTriggers(): Promise<any>;
   loadOffer(): Promise<void>;
 
+  showStoredProcedures: ko.Observable<boolean>;
+  showTriggers: ko.Observable<boolean>;
+  showUserDefinedFunctions: ko.Observable<boolean>;
+  showConflicts: ko.Observable<boolean>;
+
   createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
   createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;
   createTriggerNode(data: TriggerDefinition | SqlTriggerResource): Trigger;
@@ -324,9 +329,9 @@ export enum DocumentExplorerState {
   noDocumentSelected,
   newDocumentValid,
   newDocumentInvalid,
-  exisitingDocumentNoEdits,
-  exisitingDocumentDirtyValid,
-  exisitingDocumentDirtyInvalid,
+  existingDocumentNoEdits,
+  existingDocumentDirtyValid,
+  existingDocumentDirtyInvalid,
 }
 
 export enum IndexingPolicyEditorState {
@@ -339,9 +344,9 @@ export enum IndexingPolicyEditorState {
 export enum ScriptEditorState {
   newInvalid,
   newValid,
-  exisitingNoEdits,
-  exisitingDirtyValid,
-  exisitingDirtyInvalid,
+  existingNoEdits,
+  existingDirtyValid,
+  existingDirtyInvalid,
 }
 
 export enum CollectionTabKind {
@@ -420,6 +425,7 @@ export interface SelfServeFrameInputs {
   authorizationToken: string;
   csmEndpoint: string;
   flights?: readonly string[];
+  catalogAPIKey: string;
 }
 
 export class MonacoEditorSettings {

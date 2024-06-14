@@ -7,15 +7,15 @@ import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
-import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
+import { LegacyTreeComponent, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
 
 export const SampleDataTree = ({
   sampleDataResourceTokenCollection,
 }: {
   sampleDataResourceTokenCollection: ViewModels.CollectionBase;
 }): JSX.Element => {
-  const buildSampleDataTree = (): TreeNode => {
-    const updatedSampleTree: TreeNode = {
+  const buildSampleDataTree = (): LegacyTreeNode => {
+    const updatedSampleTree: LegacyTreeNode = {
       label: sampleDataResourceTokenCollection.databaseId,
       isExpanded: false,
       iconSrc: CosmosDBIcon,
@@ -70,7 +70,7 @@ export const SampleDataTree = ({
   };
 
   return (
-    <TreeComponent
+    <LegacyTreeComponent
       className="dataResourceTree"
       rootNode={sampleDataResourceTokenCollection ? buildSampleDataTree() : { label: "Sample data not initialized." }}
     />

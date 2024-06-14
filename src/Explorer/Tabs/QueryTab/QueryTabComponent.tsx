@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import { SplitterDirection } from "Common/Splitter";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
@@ -10,8 +11,15 @@ import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilo
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
-import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
+import {
+  LocalStorageUtility,
+  StorageKey,
+  getDefaultQueryResultsView,
+  getRUThreshold,
+  ruThresholdEnabled,
+} from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
@@ -21,8 +29,10 @@ import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
 import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
 import LaunchCopilot from "../../../../images/CopilotTabIcon.svg";
+import DownloadQueryIcon from "../../../../images/DownloadQuery.svg";
 import CancelQueryIcon from "../../../../images/Entity_cancel.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
+import CheckIcon from "../../../../images/check-1.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
@@ -101,6 +111,7 @@ interface IQueryTabStates {
   cancelQueryTimeoutID: NodeJS.Timeout;
   copilotActive: boolean;
   currentTabActive: boolean;
+  queryResultsView: SplitterDirection;
 }
 
 export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
@@ -145,6 +156,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       cancelQueryTimeoutID: undefined,
       copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
+      queryResultsView: getDefaultQueryResultsView(),
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -222,6 +234,20 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         });
       }
     }
+  };
+
+  public onDownloadQueryClick = (): void => {
+    const text = this.getCurrentEditorQuery();
+    const queryFile = new File([text], `SavedQuery.txt`, { type: "text/plain" });
+
+    // It appears the most consistent to download a file from a blob is to create an anchor element and simulate clicking it
+    const blobUrl = URL.createObjectURL(queryFile);
+    const anchor = document.createElement("a");
+    anchor.href = blobUrl;
+    anchor.download = queryFile.name;
+    document.body.appendChild(anchor); // Must put the anchor in the document.
+    anchor.click();
+    document.body.removeChild(anchor); // Clean up the anchor.
   };
 
   public onSaveQueryClick = (): void => {
@@ -393,6 +419,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.EXECUTE_ITEM,
         onCommandClick: this.props.isSampleCopilotActive
           ? () => OnExecuteQueryClick(this.props.copilotStore)
           : this.onExecuteQueryClick,
@@ -403,14 +430,28 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
-    if (this.saveQueryButton.visible && configContext.platform !== Platform.Fabric) {
-      const label = "Save Query";
+    if (this.saveQueryButton.visible) {
+      if (configContext.platform !== Platform.Fabric) {
+        const label = "Save Query";
+        buttons.push({
+          iconSrc: SaveQueryIcon,
+          iconAlt: label,
+          keyboardAction: KeyboardAction.SAVE_ITEM,
+          onCommandClick: this.onSaveQueryClick,
+          commandButtonLabel: label,
+          ariaLabel: label,
+          hasPopup: false,
+          disabled: !this.saveQueryButton.enabled,
+        });
+      }
+
       buttons.push({
-        iconSrc: SaveQueryIcon,
-        iconAlt: label,
-        onCommandClick: this.onSaveQueryClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
+        iconSrc: DownloadQueryIcon,
+        iconAlt: "Download Query",
+        keyboardAction: KeyboardAction.DOWNLOAD_ITEM,
+        onCommandClick: this.onDownloadQueryClick,
+        commandButtonLabel: "Download Query",
+        ariaLabel: "Download Query",
         hasPopup: false,
         disabled: !this.saveQueryButton.enabled,
       });
@@ -437,7 +478,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         hasPopup: false,
       };
 
-      const launchCopilotButton = {
+      const launchCopilotButton: CommandButtonComponentProps = {
         iconSrc: LaunchCopilot,
         iconAlt: mainButtonLabel,
         onCommandClick: this.launchQueryCopilotChat,
@@ -450,14 +491,15 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     }
 
     if (this.props.copilotEnabled) {
-      const toggleCopilotButton = {
+      const toggleCopilotButton: CommandButtonComponentProps = {
         iconSrc: QueryCommandIcon,
-        iconAlt: "Copilot",
+        iconAlt: "Query Advisor",
+        keyboardAction: KeyboardAction.TOGGLE_COPILOT,
         onCommandClick: () => {
           this._toggleCopilot(!this.state.copilotActive);
         },
-        commandButtonLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
-        ariaLabel: this.state.copilotActive ? "Disable Copilot" : "Enable Copilot",
+        commandButtonLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
+        ariaLabel: this.state.copilotActive ? "Disable Query Advisor" : "Enable Query Advisor",
         hasPopup: false,
       };
       buttons.push(toggleCopilotButton);
@@ -468,6 +510,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       buttons.push({
         iconSrc: CancelQueryIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.CANCEL_OR_DISCARD,
         onCommandClick: () => this.queryAbortController.abort(),
         commandButtonLabel: label,
         ariaLabel: label,
@@ -475,7 +518,43 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
     }
 
+    buttons.push(this.createViewButtons());
+
     return buttons;
+  }
+
+  private createViewButtons(): CommandButtonComponentProps {
+    const verticalButton: CommandButtonComponentProps = {
+      isSelected: this.state.queryResultsView === SplitterDirection.Vertical,
+      iconSrc: this.state.queryResultsView === SplitterDirection.Vertical ? CheckIcon : undefined,
+      commandButtonLabel: "Vertical",
+      ariaLabel: "Vertical",
+      onCommandClick: () => this._setViewLayout(SplitterDirection.Vertical),
+      hasPopup: false,
+    };
+    const horizontalButton: CommandButtonComponentProps = {
+      isSelected: this.state.queryResultsView === SplitterDirection.Horizontal,
+      iconSrc: this.state.queryResultsView === SplitterDirection.Horizontal ? CheckIcon : undefined,
+      commandButtonLabel: "Horizontal",
+      ariaLabel: "Horizontal",
+      onCommandClick: () => this._setViewLayout(SplitterDirection.Horizontal),
+      hasPopup: false,
+    };
+
+    return {
+      commandButtonLabel: "View",
+      ariaLabel: "View",
+      hasPopup: true,
+      children: [verticalButton, horizontalButton],
+    };
+  }
+  private _setViewLayout(direction: SplitterDirection): void {
+    this.setState({ queryResultsView: direction });
+
+    // We'll need to refresh the context buttons to update the selected state of the view buttons
+    setTimeout(() => {
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    }, 100);
   }
 
   private _toggleCopilot = (active: boolean) => {
@@ -519,6 +598,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         };
       }
     }
+
+    this.saveQueryButton.enabled = newContent.length > 0;
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
@@ -599,7 +680,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
             ></QueryCopilotPromptbar>
           )}
           <div className="tabPaneContentContainer">
-            <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
+            <SplitterLayout
+              vertical={this.state.queryResultsView === SplitterDirection.Vertical}
+              primaryIndex={0}
+              primaryMinSize={100}
+              secondaryMinSize={200}
+            >
               <Fragment>
                 <div className="queryEditor" style={{ height: "100%" }}>
                   <EditorReact

@@ -88,6 +88,12 @@ export class CapabilityNames {
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
+  public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
+}
+
+export enum CapacityMode {
+  Provisioned = "Provisioned",
+  Serverless = "Serverless",
 }
 
 // flight names returned from the portal are always lowercase
@@ -138,7 +144,7 @@ export class PortalBackendEndpoints {
 }
 
 export class MongoProxyEndpoints {
-  public static readonly Development: string = "https://localhost:7238";
+  public static readonly Local: string = "https://localhost:7238";
   public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
   public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
@@ -249,6 +255,7 @@ export class HttpHeaders {
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
+  public static xAPIKey: string = "X-API-Key";
 }
 
 export class ContentType {

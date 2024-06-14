@@ -23,7 +23,6 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       explorer={
         Explorer {
           "_isInitializingNotebooks": false,
-          "_resetNotebookWorkspace": [Function],
           "isFixedCollectionWithSharedThroughputSupported": [Function],
           "isTabsContentExpanded": [Function],
           "onRefreshDatabasesKeyPress": [Function],

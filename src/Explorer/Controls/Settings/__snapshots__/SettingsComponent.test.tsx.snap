@@ -30,7 +30,6 @@ exports[`SettingsComponent renders 1`] = `
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -108,7 +107,6 @@ exports[`SettingsComponent renders 1`] = `
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -198,6 +196,7 @@ exports[`SettingsComponent renders 1`] = `
               "indexingMode": "consistent",
             }
           }
+          isVectorSearchEnabled={false}
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}
@@ -225,7 +224,6 @@ exports[`SettingsComponent renders 1`] = `
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -272,7 +270,6 @@ exports[`SettingsComponent renders 1`] = `
           explorer={
             Explorer {
               "_isInitializingNotebooks": false,
-              "_resetNotebookWorkspace": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isTabsContentExpanded": [Function],
               "onRefreshDatabasesKeyPress": [Function],
@@ -300,7 +297,7 @@ exports[`SettingsComponent renders 1`] = `
         />
       </PivotItem>
       <PivotItem
-        headerText="Computed Properties (preview)"
+        headerText="Computed Properties"
         itemKey="ComputedPropertiesTab"
         key="ComputedPropertiesTab"
         style={

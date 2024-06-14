@@ -1,5 +1,6 @@
 import ko from "knockout";
 
+import { isEnvironmentAltPressed, isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
 import * as Constants from "../Constants";
 import * as Entities from "../Entities";
 import * as Utilities from "../Utilities";
@@ -28,7 +29,7 @@ export default class DataTableOperationManager {
     var elem: JQuery<Element> = $(event.currentTarget);
     this.updateLastSelectedItem(elem, event.shiftKey);
 
-    if (Utilities.isEnvironmentCtrlPressed(event)) {
+    if (isEnvironmentCtrlPressed(event)) {
       this.applyCtrlSelection(elem);
     } else if (event.shiftKey) {
       this.applyShiftSelection(elem);
@@ -74,9 +75,9 @@ export default class DataTableOperationManager {
         DataTableOperations.scrollToRowIfNeeded(dataTableRows, safeIndex, isUpArrowKey);
       }
     } else if (
-      Utilities.isEnvironmentCtrlPressed(event) &&
-      !Utilities.isEnvironmentShiftPressed(event) &&
-      !Utilities.isEnvironmentAltPressed(event) &&
+      isEnvironmentCtrlPressed(event) &&
+      !isEnvironmentShiftPressed(event) &&
+      !isEnvironmentAltPressed(event) &&
       event.keyCode === Constants.keyCodes.A
     ) {
       this.applySelectAll();

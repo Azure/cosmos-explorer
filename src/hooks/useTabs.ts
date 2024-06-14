@@ -1,3 +1,4 @@
+import { clamp } from "@fluentui/react";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { CollectionTabKind } from "../Contracts/ViewModels";
@@ -29,6 +30,11 @@ export interface TabsState {
   setQueryCopilotTabInitialInput: (input: string) => void;
   setIsTabExecuting: (state: boolean) => void;
   setIsQueryErrorThrown: (state: boolean) => void;
+  getCurrentTabIndex: () => number;
+  selectTabByIndex: (index: number) => void;
+  selectLeftTab: () => void;
+  selectRightTab: () => void;
+  closeActiveTab: () => void;
 }
 
 export enum ReactTabKind {
@@ -174,5 +180,45 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   },
   setIsQueryErrorThrown: (state: boolean) => {
     set({ isQueryErrorThrown: state });
+  },
+  getCurrentTabIndex: () => {
+    const state = get();
+    if (state.activeReactTab !== undefined) {
+      return state.openedReactTabs.indexOf(state.activeReactTab);
+    } else if (state.activeTab !== undefined) {
+      const nonReactTabIndex = state.openedTabs.indexOf(state.activeTab);
+      if (nonReactTabIndex !== -1) {
+        return state.openedReactTabs.length + nonReactTabIndex;
+      }
+    }
+
+    return -1;
+  },
+  selectTabByIndex: (index: number) => {
+    const state = get();
+    const totalTabCount = state.openedReactTabs.length + state.openedTabs.length;
+    const clampedIndex = clamp(index, totalTabCount - 1, 0);
+
+    if (clampedIndex < state.openedReactTabs.length) {
+      set({ activeTab: undefined, activeReactTab: state.openedReactTabs[clampedIndex] });
+    } else {
+      set({ activeTab: state.openedTabs[clampedIndex - state.openedReactTabs.length], activeReactTab: undefined });
+    }
+  },
+  selectLeftTab: () => {
+    const state = get();
+    state.selectTabByIndex(state.getCurrentTabIndex() - 1);
+  },
+  selectRightTab: () => {
+    const state = get();
+    state.selectTabByIndex(state.getCurrentTabIndex() + 1);
+  },
+  closeActiveTab: () => {
+    const state = get();
+    if (state.activeReactTab !== undefined) {
+      state.closeReactTab(state.activeReactTab);
+    } else if (state.activeTab !== undefined) {
+      state.closeTab(state.activeTab);
+    }
   },
 }));

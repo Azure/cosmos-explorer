@@ -9,12 +9,15 @@ import {
   Toggle,
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
+import { SplitterDirection } from "Common/Splitter";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
+import { useDatabases } from "Explorer/useDatabases";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
   StorageKey,
+  getDefaultQueryResultsView,
   getRUThreshold,
   ruThresholdEnabled as isRUThresholdEnabled,
 } from "Shared/StorageUtility";
@@ -47,6 +50,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.getEntryBoolean(StorageKey.QueryTimeoutEnabled),
   );
   const [queryTimeout, setQueryTimeout] = useState<number>(LocalStorageUtility.getEntryNumber(StorageKey.QueryTimeout));
+  const [defaultQueryResultsView, setDefaultQueryResultsView] = useState<SplitterDirection>(
+    getDefaultQueryResultsView(),
+  );
   const [automaticallyCancelQueryAfterTimeout, setAutomaticallyCancelQueryAfterTimeout] = useState<boolean>(
     LocalStorageUtility.getEntryBoolean(StorageKey.AutomaticallyCancelQueryAfterTimeout),
   );
@@ -102,7 +108,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
-  const shouldShowCopilotSampleDBOption = userContext.apiType === "SQL" && useQueryCopilot.getState().copilotEnabled;
+  const shouldShowCopilotSampleDBOption =
+    userContext.apiType === "SQL" &&
+    useQueryCopilot.getState().copilotEnabled &&
+    useDatabases.getState().sampleDataResourceTokenCollection;
   const handlerOnSubmit = async () => {
     setIsExecuting(true);
 
@@ -121,6 +130,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.setEntryNumber(StorageKey.MaxDegreeOfParellism, maxDegreeOfParallelism);
     LocalStorageUtility.setEntryString(StorageKey.PriorityLevel, priorityLevel.toString());
     LocalStorageUtility.setEntryString(StorageKey.CopilotSampleDBEnabled, copilotSampleDBEnabled.toString());
+    LocalStorageUtility.setEntryString(StorageKey.DefaultQueryResultsView, defaultQueryResultsView);
 
     if (shouldShowGraphAutoVizOption) {
       LocalStorageUtility.setEntryBoolean(
@@ -197,6 +207,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     { key: Constants.PriorityLevel.High, text: "High" },
   ];
 
+  const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
+    { key: SplitterDirection.Vertical, text: "Vertical" },
+    { key: SplitterDirection.Horizontal, text: "Horizontal" },
+  ];
+
   const handleOnPriorityLevelOptionChange = (
     ev: React.FormEvent<HTMLInputElement>,
     option: IChoiceGroupOption,
@@ -232,6 +247,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     if (!isNaN(queryTimeout)) {
       setQueryTimeout(queryTimeout);
     }
+  };
+
+  const handleOnDefaultQueryResultsViewChange = (
+    ev: React.MouseEvent<HTMLElement>,
+    option: IChoiceGroupOption,
+  ): void => {
+    setDefaultQueryResultsView(option.key as SplitterDirection);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -438,6 +460,25 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 )}
               </div>
             </div>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
+                <div>
+                  <legend id="defaultQueryResultsView" className="settingsSectionLabel legendLabel">
+                    Default Query Results View
+                  </legend>
+                  <InfoTooltip>Select the default view to use when displaying query results.</InfoTooltip>
+                </div>
+                <div>
+                  <ChoiceGroup
+                    ariaLabelledBy="defaultQueryResultsView"
+                    selectedKey={defaultQueryResultsView}
+                    options={defaultQueryResultsViewOptionList}
+                    styles={choiceButtonStyles}
+                    onChange={handleOnDefaultQueryResultsViewChange}
+                  />
+                </div>
+              </div>
+            </div>
           </>
         )}
         <div className="settingsSection">
@@ -630,7 +671,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 Enable sample database
                 <InfoTooltip>
                   This is a sample database and collection with synthetic product data you can use to explore using
-                  NoSQL queries and Copilot. This will appear as another database in the Data Explorer UI, and is
+                  NoSQL queries and Query Advisor. This will appear as another database in the Data Explorer UI, and is
                   created by, and maintained by Microsoft at no cost to you.
                 </InfoTooltip>
               </div>
@@ -640,7 +681,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   label: { padding: 0 },
                 }}
                 className="padding"
-                ariaLabel="Enable sample db for Copilot"
+                ariaLabel="Enable sample db for Query Advisor"
                 checked={copilotSampleDBEnabled}
                 onChange={handleSampleDatabaseChange}
               />

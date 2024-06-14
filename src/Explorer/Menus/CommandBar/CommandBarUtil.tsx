@@ -7,6 +7,7 @@ import {
   IDropdownStyles,
 } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { KeyboardHandlerMap } from "KeyboardShortcuts";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
@@ -59,21 +60,23 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
           iconName: btn.iconName,
         },
-        onClick: (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
-          btn.onCommandClick(ev);
-          let copilotEnabled = false;
-          if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
-            copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
-          }
-          TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
-        },
+        onClick: btn.onCommandClick
+          ? (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
+              btn.onCommandClick(ev);
+              let copilotEnabled = false;
+              if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
+                copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
+              }
+              TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
+            }
+          : undefined,
         key: `${btn.commandButtonLabel}${index}`,
         text: label,
-        "data-test": label,
         title: btn.tooltipText,
         name: label,
         disabled: btn.disabled,
         ariaLabel: btn.ariaLabel,
+        "data-test": `CommandBar/Button:${label}`,
         buttonStyles: {
           root: {
             backgroundColor: backgroundColor,
@@ -233,3 +236,28 @@ export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, 
     onRender: () => <ConnectionStatus container={container} poolId={poolId} />,
   };
 };
+
+export function createKeyboardHandlers(allButtons: CommandButtonComponentProps[]): KeyboardHandlerMap {
+  const handlers: KeyboardHandlerMap = {};
+
+  function createHandlers(buttons: CommandButtonComponentProps[]) {
+    buttons.forEach((button) => {
+      if (!button.disabled && button.keyboardAction) {
+        handlers[button.keyboardAction] = (e) => {
+          button.onCommandClick(e);
+
+          // If the handler is bound, it means the button is visible and enabled, so we should prevent the default action
+          return true;
+        };
+      }
+
+      if (button.children && button.children.length > 0) {
+        createHandlers(button.children);
+      }
+    });
+  }
+
+  createHandlers(allButtons);
+
+  return handlers;
+}

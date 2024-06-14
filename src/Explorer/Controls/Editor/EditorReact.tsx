@@ -20,7 +20,10 @@ export interface EditorReactProps {
   lineDecorationsWidth?: monaco.editor.IEditorOptions["lineDecorationsWidth"];
   minimap?: monaco.editor.IEditorOptions["minimap"];
   scrollBeyondLastLine?: monaco.editor.IEditorOptions["scrollBeyondLastLine"];
+  fontSize?: monaco.editor.IEditorOptions["fontSize"];
   monacoContainerStyles?: React.CSSProperties;
+  className?: string;
+  spinnerClassName?: string;
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
@@ -54,13 +57,17 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     const existingContent = this.editor.getModel().getValue();
 
     if (this.props.content !== existingContent) {
-      this.editor.pushUndoStop();
-      this.editor.executeEdits("", [
-        {
-          range: this.editor.getModel().getFullModelRange(),
-          text: this.props.content,
-        },
-      ]);
+      if (this.props.isReadOnly) {
+        this.editor.setValue(this.props.content);
+      } else {
+        this.editor.pushUndoStop();
+        this.editor.executeEdits("", [
+          {
+            range: this.editor.getModel().getFullModelRange(),
+            text: this.props.content,
+          },
+        ]);
+      }
     }
   }
 
@@ -71,9 +78,11 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
   public render(): JSX.Element {
     return (
       <React.Fragment>
-        {!this.state.showEditor && <Spinner size={SpinnerSize.large} className="spinner" />}
+        {!this.state.showEditor && (
+          <Spinner size={SpinnerSize.large} className={this.props.spinnerClassName || "spinner"} />
+        )}
         <div
-          className="jsonEditor"
+          className={this.props.className || "jsonEditor"}
           style={this.props.monacoContainerStyles}
           ref={(elt: HTMLElement) => this.setRef(elt)}
         />
@@ -115,7 +124,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       value: this.props.content,
       readOnly: this.props.isReadOnly,
       ariaLabel: this.props.ariaLabel,
-      fontSize: 12,
+      fontSize: this.props.fontSize || 12,
       automaticLayout: true,
       theme: this.props.theme,
       wordWrap: this.props.wordWrap || "off",
@@ -128,7 +137,13 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
     this.rootNode.innerHTML = "";
     const monaco = await loadMonaco();
-    createCallback(monaco?.editor?.create(this.rootNode, options));
+    try {
+      createCallback(monaco?.editor?.create(this.rootNode, options));
+    } catch (error) {
+      // This could happen if the parent node suddenly disappears during create()
+      console.error("Unable to create EditorReact", error);
+      return;
+    }
 
     if (this.rootNode.innerHTML) {
       this.setState({

@@ -1,17 +1,17 @@
+import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { useTabs } from "../../hooks/useTabs";
 import { updateUserContext } from "../../UserContext";
+import { useTabs } from "../../hooks/useTabs";
 import { container } from "../Controls/Settings/TestUtils";
 import DocumentId from "../Tree/DocumentId";
-import DocumentsTab from "./DocumentsTab";
 import { NewQueryTab } from "./QueryTab/QueryTab";
 
 describe("useTabs tests", () => {
   let database: ViewModels.Database;
   let collection: ViewModels.Collection;
   let queryTab: NewQueryTab;
-  let documentsTab: DocumentsTab;
+  let documentsTab: DocumentsTabV2;
 
   beforeEach(() => {
     updateUserContext({
@@ -56,7 +56,7 @@ describe("useTabs tests", () => {
       },
     );
 
-    documentsTab = new DocumentsTab({
+    documentsTab = new DocumentsTabV2({
       partitionKey: undefined,
       documentIds: ko.observableArray<DocumentId>(),
       tabKind: ViewModels.CollectionTabKind.Documents,

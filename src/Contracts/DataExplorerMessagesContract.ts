@@ -1,37 +1,22 @@
-import { MessageTypes } from "./MessageTypes";
+import { FabricMessageTypes } from "./FabricMessageTypes";
 
 // This is the current version of these messages
-export const DATA_EXPLORER_RPC_VERSION = "2";
+export const DATA_EXPLORER_RPC_VERSION = "3";
 
 // Data Explorer to Fabric
-
-// TODO Remove when upgrading to Fabric v2
-export type DataExploreMessageV1 =
-  | "ready"
+export type DataExploreMessageV3 =
   | {
-      type: MessageTypes.GetAuthorizationToken;
-      id: string;
-      params: GetCosmosTokenMessageOptions[];
-    }
-  | {
-      type: MessageTypes.GetAllResourceTokens;
-      id: string;
-    };
-// -----------------------------
-
-export type DataExploreMessageV2 =
-  | {
-      type: MessageTypes.Ready;
+      type: FabricMessageTypes.Ready;
       id: string;
       params: [string]; // version
     }
   | {
-      type: MessageTypes.GetAuthorizationToken;
+      type: FabricMessageTypes.GetAuthorizationToken;
       id: string;
       params: GetCosmosTokenMessageOptions[];
     }
   | {
-      type: MessageTypes.GetAllResourceTokens;
+      type: FabricMessageTypes.GetAllResourceTokens;
       id: string;
     };
 

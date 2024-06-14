@@ -1,11 +1,15 @@
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
-import { armRequestWithoutPolling } from "../../Utils/arm/request";
+import { get } from "../../Utils/arm/generatedClients/cosmos/locations";
+import { armRequestWithoutPolling, getOfferingIdsRequest } from "../../Utils/arm/request";
 import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
 import {
   FetchPricesResponse,
+  GetOfferingIdsResponse,
+  OfferingIdMap,
+  OfferingIdRequest,
   PriceMapAndCurrencyCode,
   RegionItem,
   RegionsResponse,
@@ -166,11 +170,21 @@ export const getRegions = async (): Promise<Array<RegionItem>> => {
   }
 };
 
+export const getRegionShortName = async (regionDisplayName: string): Promise<string> => {
+  const locationsList = await get(userContext.subscriptionId, regionDisplayName);
+
+  if ("id" in locationsList) {
+    const locationId = locationsList.id;
+    return locationId.substring(locationId.lastIndexOf("/") + 1);
+  }
+  return undefined;
+};
+
 const getFetchPricesPathForRegion = (subscriptionId: string): string => {
   return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
 };
 
-export const getPriceMapAndCurrencyCode = async (regions: Array<RegionItem>): Promise<PriceMapAndCurrencyCode> => {
+export const getPriceMapAndCurrencyCode = async (map: OfferingIdMap): Promise<PriceMapAndCurrencyCode> => {
   const telemetryData = {
     feature: "Calculate approximate cost",
     function: "getPriceMapAndCurrencyCode",
@@ -181,39 +195,94 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<RegionItem>): Pr
 
   try {
     const priceMap = new Map<string, Map<string, number>>();
-    let currencyCode;
-    for (const regionItem of regions) {
+    let billingCurrency;
+    for (const region of map.keys()) {
       const regionPriceMap = new Map<string, number>();
+      const regionShortName = await getRegionShortName(region);
+      const requestBody: OfferingIdRequest = {
+        location: regionShortName,
+        ids: Array.from(map.get(region).keys()),
+      };
 
       const response = await armRequestWithoutPolling<FetchPricesResponse>({
         host: configContext.ARM_ENDPOINT,
         path: getFetchPricesPathForRegion(userContext.subscriptionId),
         method: "POST",
-        apiVersion: "2020-01-01-preview",
-        queryParams: {
-          filter:
-            "armRegionName eq '" +
-            regionItem.locationName.split(" ").join("").toLowerCase() +
-            "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
-        },
+        apiVersion: "2023-04-01-preview",
+        body: requestBody,
       });
 
-      for (const item of response.result.Items) {
-        if (currencyCode === undefined) {
-          currencyCode = item.currencyCode;
-        } else if (item.currencyCode !== currencyCode) {
+      for (const item of response.result) {
+        if (item.error) {
+          continue;
+        }
+
+        if (billingCurrency === undefined) {
+          billingCurrency = item.billingCurrency;
+        } else if (item.billingCurrency !== billingCurrency) {
           throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
         }
-        regionPriceMap.set(item.skuName, item.retailPrice);
+
+        const offeringId = item.id;
+        const skuName = map.get(region).get(offeringId);
+        const unitPriceinBillingCurrency = item.prices.find((x) => x.type === "Consumption")
+          ?.unitPriceinBillingCurrency;
+        regionPriceMap.set(skuName, unitPriceinBillingCurrency);
       }
-      priceMap.set(regionItem.locationName, regionPriceMap);
+      priceMap.set(region, regionPriceMap);
     }
 
     selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: priceMap, currencyCode: currencyCode };
+    return { priceMap: priceMap, billingCurrency: billingCurrency };
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: undefined, currencyCode: undefined };
+    return { priceMap: undefined, billingCurrency: undefined };
+  }
+};
+
+const getOfferingIdPathForRegion = (): string => {
+  return `/skus?serviceFamily=Databases&service=Azure Cosmos DB`;
+};
+
+export const getOfferingIds = async (regions: Array<RegionItem>): Promise<OfferingIdMap> => {
+  const telemetryData = {
+    feature: "Get Offering Ids to calculate approximate cost",
+    function: "getOfferingIds",
+    description: "fetch offering ids API call",
+    selfServeClassName: SqlX.name,
+  };
+  const getOfferingIdsCodeTimestamp = selfServeTraceStart(telemetryData);
+
+  try {
+    const offeringIdMap = new Map<string, Map<string, string>>();
+    for (const regionItem of regions) {
+      const regionOfferingIdMap = new Map<string, string>();
+      const regionShortName = await getRegionShortName(regionItem.locationName);
+
+      const response = await getOfferingIdsRequest<GetOfferingIdsResponse>({
+        host: configContext.CATALOG_ENDPOINT,
+        path: getOfferingIdPathForRegion(),
+        method: "GET",
+        apiVersion: "2023-05-01-preview",
+        queryParams: {
+          filter: "armRegionName eq '" + regionShortName + "'",
+        },
+      });
+
+      for (const item of response.result.items) {
+        if (item.offeringProperties?.length > 0) {
+          regionOfferingIdMap.set(item.offeringProperties[0].offeringId, item.skuName);
+        }
+      }
+      offeringIdMap.set(regionItem.locationName, regionOfferingIdMap);
+    }
+
+    selfServeTraceSuccess(telemetryData, getOfferingIdsCodeTimestamp);
+    return offeringIdMap;
+  } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getOfferingIdsCodeTimestamp);
+    return undefined;
   }
 };
