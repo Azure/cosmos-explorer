@@ -26,7 +26,7 @@ export interface InputParameterProps {
   onDeleteParamKeyPress?: () => void;
   onAddNewParamKeyPress?: () => void;
   onParamValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
-  onParamKeyChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void;
+  onParamKeyChange: (event: React.FormEvent<HTMLElement>, selectedParam?: IDropdownOption) => void;
   paramValue: string;
   selectedKey: string | number;
 }

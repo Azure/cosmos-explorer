@@ -8,6 +8,7 @@
     "noUnusedParameters": true
   },
   "files": [
+    "./src/Explorer/Panes/ExecuteSprocParamsPane/InputParameter.tsx",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",
@@ -59,6 +60,7 @@
     "./src/Explorer/Notebook/NotebookRenderer/StatusBar.tsx",
     "./src/Explorer/Notebook/NotebookRenderer/decorators/CellCreator.tsx",
     "./src/Explorer/Notebook/NotebookRenderer/decorators/CellLabeler.tsx",
+    "./src/Explorer/Notebook/NotebookRenderer/decorators/HoverableCell.tsx",
     "./src/Explorer/Notebook/NotebookUtil.ts",
     "./src/Explorer/Notebook/SchemaAnalyzer/SchemaAnalyzerSplashScreen.tsx",
     "./src/Explorer/Notebook/SchemaAnalyzer/SchemaAnalyzerUtils.ts",
