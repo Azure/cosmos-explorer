@@ -8,7 +8,6 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollection(databaseId: string, collectionId: string): Promise<DataModels.Collection> {
   const cosmosClient = client();
-  console.log("RUNNING HERE - readCollection");
   return await readCollectionInternal(cosmosClient, databaseId, collectionId);
 }
 
@@ -23,7 +22,6 @@ export async function readSampleCollection(): Promise<DataModels.Collection> {
     return undefined;
   }
 
-  console.log("RUNNING HERE - readSampleCollection");
   return await readCollectionInternal(cosmosClient, databaseId, collectionId);
 }
 
@@ -32,7 +30,6 @@ export async function readCollectionInternal(
   databaseId: string,
   collectionId: string,
 ): Promise<DataModels.Collection> {
-  console.log("RUNNING HERE - Read Collection Internal");
   let collection: DataModels.Collection;
   const clearMessage = logConsoleProgress(`Querying container ${collectionId}`);
   try {
@@ -41,8 +38,7 @@ export async function readCollectionInternal(
   } catch (error) {
     handleError(error, "ReadCollection", `Error while querying container ${collectionId}`);
     throw error;
-  } finally {
-    clearMessage();
   }
+  clearMessage();
   return collection;
 }
