@@ -22,6 +22,7 @@ import { Platform } from "ConfigContext";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
+import "allotment/dist/style.css";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import "../images/favicon.ico";

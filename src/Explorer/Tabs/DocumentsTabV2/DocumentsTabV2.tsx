@@ -1,7 +1,6 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { Button, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
 import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
-import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
@@ -26,6 +25,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import { Allotment } from "allotment";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
@@ -1807,68 +1807,72 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
-          <Split>
-            <div
-              style={{ minWidth: 120, width: "35%", overflow: "hidden" }}
-              ref={tableContainerRef}
-            >
-              <div className={styles.floatingControlsContainer}>
-                <div className={styles.floatingControls}>
-                  <Button
-                    appearance="transparent"
-                    aria-label="Refresh"
-                    size="small"
-                    icon={<ArrowClockwise16Filled />}
-                    style={{
-                      color: StyleConstants.AccentMedium,
-                    }}
-                    onClick={() => refreshDocumentsGrid(false)}
-                    onKeyDown={onRefreshKeyInput}
+          <Allotment>
+            <Allotment.Pane preferredSize="35%" minSize={175}>
+              <div
+                style={{ height: "100%", width: "100%", overflow: "hidden" }}
+                ref={tableContainerRef}
+              >
+                <div className={styles.floatingControlsContainer}>
+                  <div className={styles.floatingControls}>
+                    <Button
+                      appearance="transparent"
+                      aria-label="Refresh"
+                      size="small"
+                      icon={<ArrowClockwise16Filled />}
+                      style={{
+                        color: StyleConstants.AccentMedium,
+                      }}
+                      onClick={() => refreshDocumentsGrid(false)}
+                      onKeyDown={onRefreshKeyInput}
+                    />
+                  </div>
+                </div>
+                <div className={styles.tableContainer}>
+                  <DocumentsTableComponent
+                    items={tableItems}
+                    onItemClicked={(index) => onDocumentClicked(index, documentIds)}
+                    onSelectedRowsChange={onSelectedRowsChange}
+                    selectedRows={selectedRows}
+                    size={tableContainerSizePx}
+                    columnHeaders={columnHeaders}
+                    isSelectionDisabled={
+                      configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
+                    }
                   />
                 </div>
+                {tableItems.length > 0 && (
+                  <a
+                    className={styles.loadMore}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => loadNextPage(documentsIterator.iterator, false)}
+                    onKeyDown={onLoadMoreKeyInput}
+                  >
+                    Load more
+                  </a>
+                )}
               </div>
-              <div className={styles.tableContainer}>
-                <DocumentsTableComponent
-                  items={tableItems}
-                  onItemClicked={(index) => onDocumentClicked(index, documentIds)}
-                  onSelectedRowsChange={onSelectedRowsChange}
-                  selectedRows={selectedRows}
-                  size={tableContainerSizePx}
-                  columnHeaders={columnHeaders}
-                  isSelectionDisabled={
-                    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
-                  }
-                />
+            </Allotment.Pane>
+            <Allotment.Pane preferredSize="65%" minSize={300}>
+              <div style={{ height: "100%", width: "100%" }}>
+                {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
+                  <EditorReact
+                    language={"json"}
+                    content={selectedDocumentContent}
+                    isReadOnly={false}
+                    ariaLabel={"Document editor"}
+                    lineNumbers={"on"}
+                    theme={"_theme"}
+                    onContentChanged={_onEditorContentChange}
+                  />
+                )}
+                {selectedRows.size > 1 && (
+                  <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
+                )}
               </div>
-              {tableItems.length > 0 && (
-                <a
-                  className={styles.loadMore}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => loadNextPage(documentsIterator.iterator, false)}
-                  onKeyDown={onLoadMoreKeyInput}
-                >
-                  Load more
-                </a>
-              )}
-            </div>
-            <div style={{ minWidth: "20%", width: "100%" }}>
-              {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
-                <EditorReact
-                  language={"json"}
-                  content={selectedDocumentContent}
-                  isReadOnly={false}
-                  ariaLabel={"Document editor"}
-                  lineNumbers={"on"}
-                  theme={"_theme"}
-                  onContentChanged={_onEditorContentChange}
-                />
-              )}
-              {selectedRows.size > 1 && (
-                <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
-              )}
-            </div>
-          </Split>
+            </Allotment.Pane>
+          </Allotment>
         </div>
       </div>
     </CosmosFluentProvider>
