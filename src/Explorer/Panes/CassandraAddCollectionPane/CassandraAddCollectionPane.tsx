@@ -275,7 +275,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
               Enter CQL command to create the table.{" "}
-              <Link href="https://aka.ms/cassandra-create-table" target="_blank">
+              <Link className="underlinedLink" href="https://aka.ms/cassandra-create-table" target="_blank">
                 Learn More
               </Link>
             </Text>

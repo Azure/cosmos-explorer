@@ -2,6 +2,7 @@
 
 exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
 <div
+  data-test="DataExplorerRoot"
   style={
     Object {
       "overflowX": "auto",
@@ -338,6 +339,7 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
 
 exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
 <div
+  data-test="DataExplorerRoot"
   style={
     Object {
       "overflowX": "auto",
@@ -732,6 +734,7 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
 
 exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
 <div
+  data-test="DataExplorerRoot"
   style={
     Object {
       "overflowX": "auto",
@@ -832,6 +835,7 @@ exports[`SelfServeComponent message bar and spinner snapshots 4`] = `
 
 exports[`SelfServeComponent should render and honor save, discard, refresh actions 1`] = `
 <div
+  data-test="DataExplorerRoot"
   style={
     Object {
       "overflowX": "auto",

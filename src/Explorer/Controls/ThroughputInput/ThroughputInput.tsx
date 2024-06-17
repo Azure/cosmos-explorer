@@ -223,6 +223,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <Text variant="small" aria-label="capacity calculator of azure cosmos db">
             Estimate your required RU/s with{" "}
             <Link
+              className="underlinedLink outlineNone"
               target="_blank"
               href="https://cosmos.azure.com/capacitycalculator/"
               aria-label="capacity calculator of azure cosmos db"
@@ -271,7 +272,12 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         <Stack className="throughputInputSpacing">
           <Text variant="small" aria-label="ruDescription">
             Estimate your required RU/s with&nbsp;
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="Capacity calculator">
+            <Link
+              className="underlinedLink"
+              target="_blank"
+              href="https://cosmos.azure.com/capacitycalculator/"
+              aria-label="Capacity calculator"
+            >
               capacity calculator
             </Link>
             .

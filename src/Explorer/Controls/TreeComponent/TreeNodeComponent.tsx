@@ -100,7 +100,8 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     return unsortedChildren;
   };
 
-  const isBranch = node.children?.length > 0;
+  // A branch node is any node with a defined children array, even if the array is empty.
+  const isBranch = !!node.children;
 
   const onOpenChange = useCallback(
     (_: TreeOpenChangeEvent, data: TreeOpenChangeData) => {
@@ -146,9 +147,9 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   const treeItem = (
     <TreeItem
+      data-test={`TreeNodeContainer:${treeNodeId}`}
       value={treeNodeId}
       itemType={isBranch ? "branch" : "leaf"}
-      style={{ height: "100%" }}
       onOpenChange={onOpenChange}
     >
       <TreeItemLayout
