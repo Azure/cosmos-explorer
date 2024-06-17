@@ -57,6 +57,10 @@ export class NotificationConsoleComponent extends React.Component<
     this.prevHeaderStatus = undefined;
   }
 
+  public componentDidMount() {
+    this.componentDidUpdate(this.props, this.state);
+  }
+
   public componentDidUpdate(
     prevProps: NotificationConsoleComponentProps,
     prevState: NotificationConsoleComponentState,
