@@ -23,8 +23,10 @@ export const useNotificationConsole: UseStore<NotificationConsoleState> = create
   expandConsole: () => set((state) => ({ ...state, isExpanded: true })),
   setIsExpanded: (isExpanded) => set((state) => ({ ...state, isExpanded })),
   setNotificationConsoleData: (consoleData: ConsoleData) => set((state) => ({ ...state, consoleData })),
-  setInProgressConsoleDataIdToBeDeleted: (id: string) =>
-    set((state) => ({ ...state, inProgressConsoleDataIdToBeDeleted: id })),
+  setInProgressConsoleDataIdToBeDeleted: (id: string) => {
+    console.log("SETTING TO BE DELETED", id);
+    set((state) => ({ ...state, inProgressConsoleDataIdToBeDeleted: id }));
+  },
   setConsoleAnimationFinished: (consoleAnimationFinished: boolean) =>
     set({ consoleAnimationFinished: consoleAnimationFinished }),
 }));

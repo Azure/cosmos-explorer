@@ -11,6 +11,7 @@ function log(type: ConsoleDataType, message: string): () => void {
   }).format(new Date());
 
   useNotificationConsole.getState().setNotificationConsoleData({ type, date, message, id });
+  console.log(message, id);
   return () => useNotificationConsole.getState().setInProgressConsoleDataIdToBeDeleted(id);
 }
 

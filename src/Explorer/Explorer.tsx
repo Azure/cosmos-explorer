@@ -1158,7 +1158,7 @@ export default class Explorer {
 
   public async refreshSampleData(): Promise<void> {
     try {
-      if (!userContext.sampleDataConnectionInfo) {
+      if (!userContext.sampleDataConnectionInfo || useDatabases.getState().sampleDataResourceTokenCollection) {
         return;
       }
       const collection: DataModels.Collection = await readSampleCollection();

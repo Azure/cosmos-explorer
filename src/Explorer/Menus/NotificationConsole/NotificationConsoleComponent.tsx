@@ -265,21 +265,69 @@ export class NotificationConsoleComponent extends React.Component<
   };
 
   private updateConsoleData = (prevProps: NotificationConsoleComponentProps): void => {
-    if (!this.areConsoleDataEqual(this.props.consoleData, prevProps.consoleData)) {
-      this.setState({ allConsoleData: [this.props.consoleData, ...this.state.allConsoleData] });
-    }
+    this.setState((prevState) => {
+      let allConsoleData = [...prevState.allConsoleData];
+      let hasChanged = false;
 
-    if (
-      this.props.inProgressConsoleDataIdToBeDeleted &&
-      prevProps.inProgressConsoleDataIdToBeDeleted !== this.props.inProgressConsoleDataIdToBeDeleted
-    ) {
-      const allConsoleData = this.state.allConsoleData.filter(
-        (data: ConsoleData) =>
-          !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted),
-      );
-      this.setState({ allConsoleData });
-    }
+      if (!this.areConsoleDataEqual(this.props.consoleData, prevProps.consoleData)) {
+        allConsoleData = [this.props.consoleData, ...allConsoleData];
+        hasChanged = true;
+      }
+
+      if (
+        this.props.inProgressConsoleDataIdToBeDeleted &&
+        prevProps.inProgressConsoleDataIdToBeDeleted !== this.props.inProgressConsoleDataIdToBeDeleted
+      ) {
+        console.log("Deleting ", this.props.inProgressConsoleDataIdToBeDeleted);
+        allConsoleData = allConsoleData.filter(
+          (data: ConsoleData) =>
+            !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted),
+        );
+        hasChanged = true;
+      }
+
+      // Only update the state if there are changes
+      if (hasChanged) {
+        return { allConsoleData };
+      } else {
+        return null;
+      }
+    });
   };
+
+  // private updateConsoleData = (prevProps: NotificationConsoleComponentProps): void => {
+  //   let allConsoleData: ConsoleData[] = [...this.state.allConsoleData];
+  //   let updateState: boolean = false;
+
+  //   if (!this.areConsoleDataEqual(this.props.consoleData, prevProps.consoleData)) {
+  //     // this.setState({ allConsoleData: [this.props.consoleData, ...this.state.allConsoleData] });
+  //     allConsoleData = [this.props.consoleData, ...allConsoleData];
+  //     updateState = true;
+  //   }
+
+  //   if (
+  //     this.props.inProgressConsoleDataIdToBeDeleted &&
+  //     prevProps.inProgressConsoleDataIdToBeDeleted !== this.props.inProgressConsoleDataIdToBeDeleted
+  //   ) {
+  //     this.pendingDeletionIds.add(this.props.inProgressConsoleDataIdToBeDeleted);
+  //     // const allConsoleData = this.state.allConsoleData.filter(
+  //     //   (data: ConsoleData) =>
+  //     //     !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted),
+  //     // );
+  //     // allConsoleData = allConsoleData.filter(
+  //     //   (data: ConsoleData) =>
+  //     //     !(data.type === ConsoleDataType.InProgress && data.id === this.props.inProgressConsoleDataIdToBeDeleted),
+  //     // );
+  //     // console.log(this.props.inProgressConsoleDataIdToBeDeleted);
+  //     // console.log(allConsoleData);
+  //   }
+  //   if (this.pendingDeletionIds.size > 0) {
+  //     allConsoleData = allConsoleData.filter((data: ConsoleData) => !this.pendingDeletionIds.has(data.id));
+  //     this.pendingDeletionIds.clear();
+  //     updateState = true;
+  //   }
+  //   updateState && this.setState({ allConsoleData });
+  // };
 
   private areConsoleDataEqual = (currentData: ConsoleData, prevData: ConsoleData): boolean => {
     if (!currentData || !prevData) {
