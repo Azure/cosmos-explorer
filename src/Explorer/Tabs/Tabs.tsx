@@ -211,7 +211,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
   );
 }
 
-const onKeyPressReactClose = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
+const onKeyPressReactTabClose = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
   if (e.key === "Enter" || e.code === "Space") {
     useTabs.getState().closeReactTab(tabKind);
     e.stopPropagation();
@@ -243,7 +243,7 @@ const CloseButton = ({
       // tabKind === ReactTabKind.QueryCopilot && useQueryCopilot.getState().resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
-    onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactClose(e, tabKind))}
+    onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactTabClose(e, tabKind))}
   >
     <span className="tabIcon close-Icon">
       <img src={errorIcon} title="Close" alt="Close" role="none" />
