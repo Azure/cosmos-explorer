@@ -162,7 +162,7 @@ export const addRootChildToGraph = (
  * @param value
  */
 export const escapeDoubleQuotes = (value: string): string => {
-  return value === undefined ? value : value.replace(/"/g, '\\"');
+  return value === undefined ? value : value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 };
 
 /**
@@ -186,5 +186,5 @@ export const getQuotedPropValue = (ip: ViewModels.InputPropertyValue): string =>
  * @param value
  */
 export const escapeSingleQuotes = (value: string): string => {
-  return value === undefined ? value : value.replace(/'/g, "\\'");
+  return value === undefined ? value : value.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 };
