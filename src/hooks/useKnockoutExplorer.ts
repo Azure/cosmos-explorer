@@ -137,6 +137,10 @@ async function configureFabric(): Promise<Explorer> {
             break;
           }
           case "explorerVisible": {
+            // REVIEW: I don't think this is needed, just working around a problem in prod?
+            if (!userContext.fabricContext) {
+              break;
+            }
             userContext.fabricContext.isVisible = data.message.visible;
             if (
               userContext.fabricContext.isVisible &&

@@ -22,16 +22,19 @@ import { useDatabases } from "Explorer/useDatabases";
 import { KeyboardAction, KeyboardActionGroup, KeyboardActionHandler, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
-import { Allotment } from "allotment";
+import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
-import React, { useCallback, useEffect, useMemo } from "react";
+import { debounce } from "lodash";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 const useSidebarStyles = makeStyles({
   sidebar: {
-    ...cosmosShorthands.borderRight(),
-  },
-  collapsed: {
     height: "100%",
+    backgroundColor: "transparent",
+  },
+  sidebarContainer: {
+    height: "100%",
+    backgroundColor: tokens.colorNeutralBackground1,
   },
   expandedContent: {
     display: "grid",
@@ -174,52 +177,81 @@ interface SidebarProps {
   explorer: Explorer;
 }
 
+const CollapseThreshold = 50;
+
 export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const styles = useSidebarStyles();
   const [expanded, setExpanded] = React.useState(true);
+  const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
+  const allotment = useRef<AllotmentHandle>(null);
 
-  if (!expanded) {
-    // Don't render the splitter if we're collapsed.
-    return (
-      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", height: "100%" }}>
-        <CosmosFluentProvider className={mergeClasses(styles.sidebar, styles.collapsed)}>
-          <button
-            type="button"
-            className={styles.expandCollapseButton}
-            title="Expand sidebar"
-            onClick={() => setExpanded(true)}
-          >
-            <ChevronRight12Regular />
-          </button>
-        </CosmosFluentProvider>
-        <Tabs explorer={explorer} />
-      </div>
-    );
-  }
+  const expand = useCallback(() => {
+    if (!expanded) {
+      allotment.current.resize([expandedSize, Infinity]);
+      setExpanded(true);
+    }
+  }, [expanded, expandedSize, setExpanded]);
+
+  const collapse = useCallback(() => {
+    if (expanded) {
+      allotment.current.resize([24, Infinity]);
+      setExpanded(false);
+    }
+  }, [expanded, setExpanded]);
+
+  const onChange = debounce((sizes: number[]) => {
+    if (expanded && sizes[0] <= CollapseThreshold) {
+      collapse();
+    } else if(!expanded && sizes[0] > CollapseThreshold) {
+      expand();
+    }
+  }, 10);
+
+  const onDragEnd = useCallback((sizes: number[]) => {
+    if (expanded) {
+      // Remember the last size we had when expanded
+      setExpandedSize(sizes[0])
+    } else {
+      allotment.current.resize([24, Infinity]);
+    }
+  }, [expanded, setExpandedSize]);
 
   return (
-    <Allotment>
+    <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
       {/* Collections Tree - Start */}
       {hasSidebar && (
         // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
-        <Allotment.Pane minSize={200} preferredSize={300}>
+        <Allotment.Pane minSize={24} preferredSize={300}>
           <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
-            <div className={styles.floatingControlsContainer}>
-              <div className={styles.floatingControls}>
-                <button
+            <div className={styles.sidebarContainer}>
+              {expanded
+                ? <>
+                  <div className={styles.floatingControlsContainer}>
+                    <div className={styles.floatingControls}>
+                      <button
+                        type="button"
+                        className={styles.expandCollapseButton}
+                        title="Collapse sidebar"
+                        onClick={() => collapse()}
+                      >
+                        <ChevronLeft12Regular />
+                      </button>
+                    </div>
+                  </div>
+                  <div className={styles.expandedContent}>
+                    <GlobalCommands explorer={explorer} />
+                    <ResourceTree explorer={explorer} />
+                  </div>
+                </>
+                : <button
                   type="button"
                   className={styles.expandCollapseButton}
-                  title="Collapse sidebar"
-                  onClick={() => setExpanded(false)}
+                  title="Expand sidebar"
+                  onClick={() => expand()}
                 >
-                  <ChevronLeft12Regular />
-                </button>
-              </div>
-            </div>
-            <div className={styles.expandedContent}>
-              <GlobalCommands explorer={explorer} />
-              <ResourceTree explorer={explorer} />
+                  <ChevronRight12Regular />
+                </button>}
             </div>
           </CosmosFluentProvider>
         </Allotment.Pane>
