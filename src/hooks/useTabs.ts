@@ -78,7 +78,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   activateReactTab: (tabKind: ReactTabKind): void => {
     // Clear the selected node when switching to a react tab.
     useSelectedNode.getState().setSelectedNode(undefined);
-    set({ activeTab: undefined, activeReactTab: tabKind })
+    set({ activeTab: undefined, activeReactTab: tabKind });
   },
   updateTab: (tab: TabsBase) => {
     if (get().activeTab?.tabId === tab.tabId) {

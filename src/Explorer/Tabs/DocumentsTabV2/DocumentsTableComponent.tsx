@@ -175,7 +175,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         style={{
           ...style,
           cursor: "pointer",
-          userSelect: "none"
+          userSelect: "none",
         }}
         key={item.id}
         aria-selected={selected}

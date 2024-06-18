@@ -14,7 +14,7 @@ import {
   TreeItemValue,
   TreeOpenChangeData,
   TreeOpenChangeEvent,
-  mergeClasses
+  mergeClasses,
 } from "@fluentui/react-components";
 import { ChevronDown20Regular, ChevronRight20Regular, MoreHorizontal20Regular } from "@fluentui/react-icons";
 import { TreeStyleName, useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
@@ -75,7 +75,6 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 }: TreeNodeComponentProps): JSX.Element => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const treeStyles = useTreeStyles();
-  const [actionsVisible, setActionsVisible] = React.useState<boolean>(false);
 
   const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
     if (!treeNode || !treeNode.children) {
@@ -150,15 +149,19 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   // We use the expandIcon slot to hold the node icon too.
   // We only show a node icon for leaf nodes, even if a branch node has an iconSrc.
-  const expandIcon = isLoading
-    ? <Spinner size="extra-tiny" />
-    : !isBranch
-      ? (typeof node.iconSrc === "string"
-        ? <img src={node.iconSrc} className={treeStyles.nodeIcon} alt="" />
-        : node.iconSrc)
-      : (openItems.includes(treeNodeId)
-        ? <ChevronDown20Regular />
-        : <ChevronRight20Regular />);
+  const expandIcon = isLoading ? (
+    <Spinner size="extra-tiny" />
+  ) : !isBranch ? (
+    typeof node.iconSrc === "string" ? (
+      <img src={node.iconSrc} className={treeStyles.nodeIcon} alt="" />
+    ) : (
+      node.iconSrc
+    )
+  ) : openItems.includes(treeNodeId) ? (
+    <ChevronDown20Regular />
+  ) : (
+    <ChevronRight20Regular />
+  );
 
   const treeItem = (
     <TreeItem
@@ -173,12 +176,13 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
           treeStyles.treeItemLayout,
           expandIcon ? undefined : treeStyles.treeItemLayoutNoIcon,
           shouldShowAsSelected && treeStyles.selectedItem,
-          node.className && treeStyles[node.className])}
+          node.className && treeStyles[node.className],
+        )}
         data-test={`TreeNode:${treeNodeId}`}
         actions={
-          contextMenuItems.length > 0 && ({
+          contextMenuItems.length > 0 && {
             className: treeStyles.actionsButtonContainer,
-            children:
+            children: (
               <Menu onOpenChange={onMenuOpenChange}>
                 <MenuTrigger disableButtonEnhancement>
                   <Button
@@ -193,7 +197,8 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
                   <MenuList>{contextMenuItems}</MenuList>
                 </MenuPopover>
               </Menu>
-          })
+            ),
+          }
         }
         expandIcon={expandIcon}
       >
@@ -202,7 +207,12 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       {!node.isLoading && node.children?.length > 0 && (
         <Tree className={treeStyles.tree}>
           {getSortedChildren(node).map((childNode: TreeNode) => (
-            <TreeNodeComponent openItems={openItems} key={childNode.label} node={childNode} treeNodeId={`${treeNodeId}/${childNode.label}`} />
+            <TreeNodeComponent
+              openItems={openItems}
+              key={childNode.label}
+              node={childNode}
+              treeNodeId={`${treeNodeId}/${childNode.label}`}
+            />
           ))}
         </Tree>
       )}

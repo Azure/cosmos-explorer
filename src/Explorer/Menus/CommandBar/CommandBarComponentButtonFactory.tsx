@@ -1,7 +1,5 @@
 import { KeyboardAction } from "KeyboardShortcuts";
 import * as React from "react";
-import AddCollectionIcon from "../../../../images/AddCollection.svg";
-import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
 import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
@@ -18,14 +16,12 @@ import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
-import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
-import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
@@ -51,7 +47,11 @@ export function createStaticCommandBarButtons(
     }
   };
 
-  if (configContext.platform !== Platform.Fabric && userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
+  if (
+    configContext.platform !== Platform.Fabric &&
+    userContext.apiType !== "Tables" &&
+    userContext.apiType !== "Cassandra"
+  ) {
     const addSynapseLink = createOpenSynapseLinkDialogButton(container);
 
     if (addSynapseLink) {
@@ -207,19 +207,6 @@ function areScriptsSupported(): boolean {
   );
 }
 
-function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
-  const label = `New ${getCollectionName()}`;
-  return {
-    iconSrc: AddCollectionIcon,
-    iconAlt: label,
-    onCommandClick: () => container.onNewCollectionClicked(),
-    commandButtonLabel: label,
-    ariaLabel: label,
-    hasPopup: true,
-    id: "createNewContainerCommandButton",
-  };
-}
-
 function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
   if (configContext.platform === Platform.Emulator) {
     return undefined;
@@ -244,25 +231,6 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     disabled:
       useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
-  };
-}
-
-function createNewDatabase(container: Explorer): CommandButtonComponentProps {
-  const label = "New " + getDatabaseName();
-  return {
-    iconSrc: AddDatabaseIcon,
-    iconAlt: label,
-    keyboardAction: KeyboardAction.NEW_DATABASE,
-    onCommandClick: async () => {
-      const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
-      if (throughputCap && throughputCap !== -1) {
-        await useDatabases.getState().loadAllOffers();
-      }
-      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />);
-    },
-    commandButtonLabel: label,
-    ariaLabel: label,
-    hasPopup: true,
   };
 }
 

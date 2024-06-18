@@ -24,10 +24,8 @@ export const useTreeStyles = makeStyles({
     width: `var(${treeIconWidth})`,
     height: `var(${treeIconWidth})`,
   },
-  treeItem: {
-  },
-  nodeLabel: {
-  },
+  treeItem: {},
+  nodeLabel: {},
   treeItemLayout: {
     fontSize: tokens.fontSizeBase300,
     height: tokens.layoutRowHeight,
@@ -36,16 +34,16 @@ export const useTreeStyles = makeStyles({
 
     // Some sneaky CSS variables stuff to change the background color of the action button on hover.
     [actionButtonBackground]: tokens.colorNeutralBackground1,
-    '&:hover': {
+    "&:hover": {
       [actionButtonBackground]: tokens.colorNeutralBackground1Hover,
-    }
+    },
   },
   actionsButtonContainer: {
     position: "sticky",
     right: 0,
   },
   actionsButton: {
-    backgroundColor: `var(${actionButtonBackground})`
+    backgroundColor: `var(${actionButtonBackground})`,
   },
   treeItemLayoutNoIcon: {
     // Pad the text out by the level, the width of the icon, AND the usual spacing between the icon and the level.

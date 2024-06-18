@@ -57,7 +57,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const defaultMessageBarStyles = {
     root: {
       height: `${LayoutConstants.rowHeight}px`,
-    }
+    },
   };
 
   return (

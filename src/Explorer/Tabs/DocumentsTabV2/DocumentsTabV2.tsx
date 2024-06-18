@@ -87,10 +87,10 @@ export const useDocumentsTabStyles = makeStyles({
     textAlign: "center",
     ":focus": {
       ...shorthands.outline("1px", "dotted"),
-    }
+    },
   },
   floatingControlsContainer: {
-    position: "relative"
+    position: "relative",
   },
   floatingControls: {
     position: "absolute",
@@ -1809,10 +1809,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Allotment>
             <Allotment.Pane preferredSize="35%" minSize={175}>
-              <div
-                style={{ height: "100%", width: "100%", overflow: "hidden" }}
-                ref={tableContainerRef}
-              >
+              <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
                 <div className={styles.floatingControlsContainer}>
                   <div className={styles.floatingControls}>
                     <Button

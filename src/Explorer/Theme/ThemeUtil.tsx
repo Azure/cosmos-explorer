@@ -1,20 +1,30 @@
-import { BrandVariants, FluentProvider, Theme, createLightTheme, shorthands, themeToTokensObject, webLightTheme } from "@fluentui/react-components";
+import {
+  BrandVariants,
+  FluentProvider,
+  Theme,
+  createLightTheme,
+  shorthands,
+  themeToTokensObject,
+  webLightTheme,
+} from "@fluentui/react-components";
 import { Platform, configContext } from "ConfigContext";
 import React, { PropsWithChildren } from "react";
 import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
 
 export const LayoutConstants = {
   rowHeight: 36,
-}
+};
 
 export type CosmosFluentProviderProps = PropsWithChildren<{
   className?: string;
 }>;
 
 export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ children, className }) => {
-  return <FluentProvider theme={getPlatformTheme(configContext.platform)} className={className}>
-    {children}
-  </FluentProvider>;
+  return (
+    <FluentProvider theme={getPlatformTheme(configContext.platform)} className={className}>
+      {children}
+    </FluentProvider>
+  );
 };
 
 // These are the theme colors for Fluent UI 9 React components
@@ -41,7 +51,7 @@ const cosmosThemeElements = {
   layoutRowHeight: `${LayoutConstants.rowHeight}px`,
   sidebarMinimumWidth: "200px",
   sidebarInitialWidth: "300px",
-}
+};
 
 export type CosmosTheme = Theme & typeof cosmosThemeElements;
 
@@ -56,9 +66,10 @@ export const cosmosShorthands = {
 };
 
 export function getPlatformTheme(platform: Platform): CosmosTheme {
-  const baseTheme = platform === Platform.Fabric
-    ? createLightTheme(appThemeFabricTealBrandRamp)
-    : createLightTheme(appThemePortalBrandRamp);
+  const baseTheme =
+    platform === Platform.Fabric
+      ? createLightTheme(appThemeFabricTealBrandRamp)
+      : createLightTheme(appThemePortalBrandRamp);
 
   return {
     ...baseTheme,

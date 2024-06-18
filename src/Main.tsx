@@ -8,7 +8,7 @@ import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuic
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
@@ -64,7 +64,6 @@ import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
-  const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
   const isCopilotCarouselOpen = useCarousel((state) => state.showCopilotCarousel);
 
@@ -75,15 +74,6 @@ const App: React.FunctionComponent = () => {
   }
   StyleConstants.updateStyles();
   const explorer = useKnockoutExplorer(config?.platform);
-
-  const toggleLeftPaneExpanded = () => {
-    setIsLeftPaneExpanded(!isLeftPaneExpanded);
-    if (isLeftPaneExpanded) {
-      document.getElementById("expandToggleLeftPaneButton").focus();
-    } else {
-      document.getElementById("collapseToggleLeftPaneButton").focus();
-    }
-  };
 
   if (!explorer) {
     return <LoadingExplorer />;
