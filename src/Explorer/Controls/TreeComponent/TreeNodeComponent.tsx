@@ -21,7 +21,7 @@ import { useCallback } from "react";
 
 export interface TreeNodeMenuItem {
   label: string;
-  onClick: () => void;
+  onClick: (value?: React.RefObject<HTMLElement>) => void;
   iconSrc?: string;
   isDisabled?: boolean;
   styleClass?: string;
@@ -73,6 +73,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   treeNodeId,
 }: TreeNodeComponentProps): JSX.Element => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const contextMenuRef = React.useRef<HTMLButtonElement>(null);
 
   const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
     if (!treeNode || !treeNode.children) {
@@ -139,7 +140,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       data-test={`TreeNode/ContextMenuItem:${menuItem.label}`}
       disabled={menuItem.isDisabled}
       key={menuItem.label}
-      onClick={menuItem.onClick}
+      onClick={() => menuItem.onClick(contextMenuRef)}
     >
       {menuItem.label}
     </MenuItem>
@@ -158,11 +159,12 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         actions={
           contextMenuItems.length > 0 && (
             <Menu onOpenChange={onMenuOpenChange}>
-              <MenuTrigger disableButtonEnhancement>
+              <MenuTrigger disableButtonEnhancement={true}>
                 <Button
                   aria-label="More options"
                   data-test="TreeNode/ContextMenuTrigger"
                   appearance="subtle"
+                  ref={contextMenuRef}
                   icon={<MoreHorizontal20Regular />}
                 />
               </MenuTrigger>

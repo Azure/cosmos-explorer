@@ -13,7 +13,7 @@ import { getDatabaseName } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTabs } from "hooks/useTabs";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
@@ -21,10 +21,12 @@ import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm
 
 interface DeleteDatabaseConfirmationPanelProps {
   refreshDatabases: () => Promise<void>;
+  lastFocusedElement: React.MutableRefObject<HTMLElement>;
 }
 
 export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = ({
   refreshDatabases,
+  lastFocusedElement,
 }: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const isLastNonEmptyDatabase = useDatabases((state) => state.isLastNonEmptyDatabase);
@@ -34,7 +36,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("");
   const selectedDatabase: Database = useDatabases.getState().findSelectedDatabase();
-
+  const lastItemElement = lastFocusedElement?.current;
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
       setFormError(
@@ -126,6 +128,13 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   };
   const confirmDatabase = `Confirm by typing the ${getDatabaseName()} id`;
   const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${getDatabaseName()}?`;
+  useEffect(() => {
+    return () => {
+      if (lastItemElement) {
+        lastItemElement.focus();
+      }
+    };
+  }, [lastItemElement]);
   return (
     <RightPaneForm {...props}>
       {!formError && <PanelInfoErrorComponent {...errorProps} />}
