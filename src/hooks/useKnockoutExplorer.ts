@@ -419,6 +419,7 @@ async function configurePortal(): Promise<Explorer> {
     authType: AuthType.AAD,
   });
   
+  
   let explorer: Explorer;
   return new Promise(async (resolve) => {
     // In development mode, try to load the iframe message from session storage.
@@ -434,6 +435,7 @@ async function configurePortal(): Promise<Explorer> {
         updateContextsFromPortalMessage(message);
         explorer = new Explorer();
 
+
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
@@ -442,7 +444,7 @@ async function configurePortal(): Promise<Explorer> {
         resolve(explorer);
       }
     }
-    
+
     // In the Portal, configuration of Explorer happens via iframe message
     window.addEventListener(
       "message",
