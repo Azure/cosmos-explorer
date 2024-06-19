@@ -45,11 +45,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       : Constants.Queries.CustomPageOption,
   );
   const [enableDataPlaneRBACOption, setEnableDataPlaneRBACOption] = useState<string>(
-    LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.Queries.setAutomaticRBACOption
-      ? Constants.Queries.setAutomaticRBACOption
-      : LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.Queries.setTrueRBACOption
-        ? Constants.Queries.setTrueRBACOption
-        : Constants.Queries.setFalseRBACOption
+    LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.RBACOptions.setAutomaticRBACOption
+      ? Constants.RBACOptions.setAutomaticRBACOption
+      : LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.RBACOptions.setTrueRBACOption
+        ? Constants.RBACOptions.setTrueRBACOption
+        : Constants.RBACOptions.setFalseRBACOption
   );
   const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
   const [ruThreshold, setRUThreshold] = useState<number>(getRUThreshold());
@@ -222,9 +222,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   ];
 
   const dataPlaneRBACOptionsList: IChoiceGroupOption[] = [
-    { key: Constants.Queries.setAutomaticRBACOption, text: "Automatic" },
-    { key: Constants.Queries.setTrueRBACOption, text: "True" },
-    { key: Constants.Queries.setFalseRBACOption, text: "False"}
+    { key: Constants.RBACOptions.setAutomaticRBACOption, text: "Automatic" },
+    { key: Constants.RBACOptions.setTrueRBACOption, text: "True" },
+    { key: Constants.RBACOptions.setFalseRBACOption, text: "False"}
+  ];
+
+  const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
+    { key: SplitterDirection.Vertical, text: "Vertical" },
+    { key: SplitterDirection.Horizontal, text: "Horizontal" },
   ];
 
   const handleOnPriorityLevelOptionChange = (

@@ -1,3 +1,4 @@
+import * as Constants from "Common/Constants";
 import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
@@ -274,7 +275,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   try {
     if(LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
       var isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
-        if (isDataPlaneRbacSetting == "Automatic")
+        if (isDataPlaneRbacSetting == Constants.RBACOptions.setAutomaticRBACOption)
         {
           if (!account.properties.disableLocalAuth) {
             keys = await listKeys(subscriptionId, resourceGroup, account.name);
@@ -285,7 +286,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
             });
           }
         }
-        else if(isDataPlaneRbacSetting == "True") {
+        else if(isDataPlaneRbacSetting == Constants.RBACOptions.setTrueRBACOption) {
           updateUserContext({
             dataPlaneRbacEnabled: true
           });
@@ -456,7 +457,7 @@ async function configurePortal(): Promise<Explorer> {
 
         // Check for init message
         const message: PortalMessage = event.data?.data;
-        const inputs = message?.inputs;
+        const inputs = message?.inputs; 
         const openAction = message?.openAction;
         if (inputs) {
           if (
@@ -475,27 +476,29 @@ async function configurePortal(): Promise<Explorer> {
             setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
 
-          let dbAccount = userContext.databaseAccount;
           let keys: DatabaseAccountListKeysResult = {};
           const account = userContext.databaseAccount;
           const subscriptionId = userContext.subscriptionId;
           const resourceGroup = userContext.resourceGroup;
+
           if(LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
             var isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
-              if (isDataPlaneRbacSetting == "Automatic")
+              if (isDataPlaneRbacSetting == Constants.RBACOptions.setAutomaticRBACOption)
               {
                 if (!account.properties.disableLocalAuth) {
                   keys = await listKeys(subscriptionId, resourceGroup, account.name);
                 }
                 else {
                   updateUserContext({
-                    dataPlaneRbacEnabled: true
+                    dataPlaneRbacEnabled: true,
+                    authorizationToken: message.inputs.authorizationToken
                   });
                 }
               }
-              else if(isDataPlaneRbacSetting == "True") {
+              else if(isDataPlaneRbacSetting == Constants.RBACOptions.setTrueRBACOption) {
                 updateUserContext({
-                  dataPlaneRbacEnabled: true
+                  dataPlaneRbacEnabled: true,
+                  authorizationToken: message.inputs.authorizationToken
                 });
               }
               else {
