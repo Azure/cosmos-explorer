@@ -49,7 +49,9 @@ describe("Delete Database Confirmation Pane", () => {
   });
 
   it("shouldRecordFeedback() should return true if last non empty database or is last database that has shared throughput", () => {
-    const wrapper = shallow(<DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} />);
+    const wrapper = shallow(
+      <DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} lastFocusedElement={undefined} />,
+    );
     expect(wrapper.exists(".deleteDatabaseFeedback")).toBe(true);
 
     useDatabases.getState().addDatabases([database]);
@@ -59,7 +61,9 @@ describe("Delete Database Confirmation Pane", () => {
   });
 
   it("Should call delete database", () => {
-    const wrapper = mount(<DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} />);
+    const wrapper = mount(
+      <DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} lastFocusedElement={undefined} />,
+    );
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#confirmDatabaseId")).toBe(true);
 
@@ -74,7 +78,9 @@ describe("Delete Database Confirmation Pane", () => {
   });
 
   it("should record feedback", async () => {
-    const wrapper = mount(<DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} />);
+    const wrapper = mount(
+      <DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} lastFocusedElement={undefined} />,
+    );
     expect(wrapper.exists("#confirmDatabaseId")).toBe(true);
     wrapper
       .find("#confirmDatabaseId")
