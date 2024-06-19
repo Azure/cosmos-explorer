@@ -159,7 +159,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         actions={
           contextMenuItems.length > 0 && (
             <Menu onOpenChange={onMenuOpenChange}>
-              <MenuTrigger disableButtonEnhancement={true}>
+              <MenuTrigger disableButtonEnhancement>
                 <Button
                   aria-label="More options"
                   data-test="TreeNode/ContextMenuTrigger"
