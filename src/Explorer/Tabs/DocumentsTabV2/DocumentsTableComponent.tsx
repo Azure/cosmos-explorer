@@ -1,6 +1,13 @@
+import { SearchBox } from "@fluentui/react";
 import {
   Menu,
+  MenuCheckedValueChangeData,
+  MenuCheckedValueChangeEvent,
+  MenuDivider,
+  MenuGroup,
+  MenuGroupHeader,
   MenuItem,
+  MenuItemCheckbox,
   MenuList,
   MenuPopover,
   MenuTrigger,
@@ -19,33 +26,36 @@ import {
   useArrowNavigationGroup,
   useTableColumnSizing_unstable,
   useTableFeatures,
-  useTableSelection,
+  useTableSelection
 } from "@fluentui/react-components";
 import { NormalizedEventKey } from "Common/Constants";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
-import React, { useCallback, useMemo } from "react";
+import React, { ChangeEvent, useCallback, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
 export type DocumentsTableComponentItem = {
   id: string;
 } & Record<string, string>;
 
-export type ColumnsDefinition = {
+export type ColumnDefinition = {
   id: string;
   label: string;
   defaultWidthPx?: number;
-}[];
+  group: string | undefined;
+};
 export interface IDocumentsTableComponentProps {
   items: DocumentsTableComponentItem[];
   onItemClicked: (index: number) => void;
   onSelectedRowsChange: (selectedItemsIndices: Set<TableRowId>) => void;
   selectedRows: Set<TableRowId>;
   size: { height: number; width: number };
-  columnsDefinition: ColumnsDefinition;
+  selectedColumnIds: string[];
+  columnDefinitions: ColumnDefinition[];
   style?: React.CSSProperties;
   isSelectionDisabled?: boolean;
   onColumnResize?: (columnId: string, width: number) => void;
+  onColumnSelectionChange?: (newSelectedColumnIds: string[]) => void;
 }
 
 interface TableRowData extends RowStateBase<DocumentsTableComponentItem> {
@@ -60,6 +70,7 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
 
 const DEFAULT_COLUMN_WIDTH_PX = 200;
 const MIN_COLUMN_WIDTH_PX = 20;
+const COLUMNS_MENU_NAME = "columnsMenu";
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
@@ -67,12 +78,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   selectedRows,
   style,
   size,
-  columnsDefinition,
+  selectedColumnIds,
+  columnDefinitions,
   isSelectionDisabled,
   onColumnResize: _onColumnResize,
+  onColumnSelectionChange,
 }: IDocumentsTableComponentProps) => {
   const initialSizingOptions: TableColumnSizingOptions = {};
-  columnsDefinition.forEach((column) => {
+  columnDefinitions.forEach((column) => {
     initialSizingOptions[column.id] = {
       idealWidth: column.defaultWidthPx || DEFAULT_COLUMN_WIDTH_PX, // 0 is not a valid width
       minWidth: MIN_COLUMN_WIDTH_PX,
@@ -80,6 +93,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   });
 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(initialSizingOptions);
+  const [columnSearchText, setColumnSearchText] = React.useState<string>("");
 
   const onColumnResize = React.useCallback(
     (_, { columnId, width }) => {
@@ -98,17 +112,19 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
   const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
     () =>
-      columnsDefinition.map((column) => ({
-        columnId: column.id,
-        compare: (a, b) => a[column.id].localeCompare(b[column.id]),
-        renderHeaderCell: () => <span title={column.label}>{column.label}</span>,
-        renderCell: (item) => (
-          <TableCellLayout truncate title={item[column.id]}>
-            {item[column.id]}
-          </TableCellLayout>
-        ),
-      })),
-    [columnsDefinition],
+      columnDefinitions
+        .filter((column) => selectedColumnIds.includes(column.id))
+        .map((column) => ({
+          columnId: column.id,
+          compare: (a, b) => a[column.id].localeCompare(b[column.id]),
+          renderHeaderCell: () => <span title={column.label}>{column.label}</span>,
+          renderCell: (item) => (
+            <TableCellLayout truncate title={item[column.id]}>
+              {item[column.id]}
+            </TableCellLayout>
+          ),
+        })),
+    [columnDefinitions, selectedColumnIds],
   );
 
   const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(undefined);
@@ -250,6 +266,66 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     ...style,
   };
 
+  const checkedValues: { [COLUMNS_MENU_NAME]: string[] } = {
+    [COLUMNS_MENU_NAME]: [],
+  };
+  columnDefinitions.forEach(
+    (columnDefinition) =>
+      selectedColumnIds.includes(columnDefinition.id) && checkedValues[COLUMNS_MENU_NAME].push(columnDefinition.id),
+  );
+
+  const onCheckedValueChange = (_: MenuCheckedValueChangeEvent, data: MenuCheckedValueChangeData) => {
+    // TODO this is expensive
+    // eslint-disable-next-line react/prop-types
+    onColumnSelectionChange(data.checkedItems);
+  };
+
+  const onSearchChange: (event?: ChangeEvent<HTMLInputElement>, newValue?: string) => void = (_, newValue) =>
+    setColumnSearchText(newValue);
+
+  const getMenuList = (columnDefinitions: ColumnDefinition[]): JSX.Element => {
+    // Group by group. Unnamed group first
+    const unnamedGroup: ColumnDefinition[] = [];
+    const groupMap = new Map<string, ColumnDefinition[]>();
+    columnDefinitions.forEach((column) => {
+      if (column.group) {
+        if (!groupMap.has(column.group)) {
+          groupMap.set(column.group, []);
+        }
+        groupMap.get(column.group).push(column);
+      } else {
+        unnamedGroup.push(column);
+      }
+    });
+
+    const menuList: JSX.Element[] = [];
+    menuList.push(<SearchBox key="search" value={columnSearchText} onChange={onSearchChange} />)
+    if (unnamedGroup.length > 0) {
+      menuList.push(
+        ...unnamedGroup.filter(def => !columnSearchText || def.label.startsWith(columnSearchText)).map((column) => (
+          <MenuItemCheckbox key={column.id} name={COLUMNS_MENU_NAME} value={column.id}>
+            {column.label}
+          </MenuItemCheckbox>
+        )),
+      );
+    }
+    groupMap.forEach((columns, group) => {
+      menuList.push(<MenuDivider key={`divider${group}`} />);
+      menuList.push(
+        <MenuGroup key={group}>
+          <MenuGroupHeader>{group}</MenuGroupHeader>
+          {...columns.map((column) => (
+            <MenuItemCheckbox key={column.id} name={COLUMNS_MENU_NAME} value={column.id}>
+              {column.label}
+            </MenuItemCheckbox>
+          ))}
+        </MenuGroup>,
+      );
+    });
+
+    return <>{menuList}</>;
+  };
+
   return (
     <Table className="documentsTable" noNativeElements {...tableProps}>
       <TableHeader className="documentsTableHeader">
@@ -263,7 +339,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             />
           )}
           {columns.map((column /* index */) => (
-            <Menu openOnContext key={column.columnId}>
+            <Menu
+              openOnContext
+              key={column.columnId}
+              checkedValues={checkedValues}
+              onCheckedValueChange={onCheckedValueChange}
+            >
               <MenuTrigger>
                 <TableHeaderCell
                   className="documentsTableCell"
@@ -274,9 +355,11 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                 </TableHeaderCell>
               </MenuTrigger>
               <MenuPopover>
-                <MenuList>
+                <MenuList style={{ maxHeight: size?.height, overflowY: "auto", overflowX: "hidden" }}>
+                  {getMenuList(columnDefinitions)}
+                  <MenuDivider />
                   <MenuItem onClick={columnSizing.enableKeyboardMode(column.columnId)}>
-                    Keyboard Column Resizing
+                    Use Left/Right Arrow keys to resize
                   </MenuItem>
                 </MenuList>
               </MenuPopover>

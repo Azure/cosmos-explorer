@@ -4,7 +4,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 export interface DocumentsTabPrefs {
   leftPaneWidthPercent: number;
-  columnWidths?: { [columnId: string]: number };
+  columnWidths?: { [columnId: string]: number }; // TODO save per database/collection
 }
 
 const defaultPrefs: DocumentsTabPrefs = {
