@@ -363,7 +363,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     entitiesToDelete: Entities.ITableEntity[],
   ): Promise<any> {
     const query = `DELETE FROM ${collection.databaseId}.${collection.id()} WHERE `;
-    const partitionKeys: CassandraTableKey[] = this.getCassandraPartitionKeys(collection);
+    const partitionKeys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys;
     await Promise.all(
       entitiesToDelete.map(async (currEntityToDelete: Entities.ITableEntity) => {
         const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Deleting row ${currEntityToDelete.RowKey._}`);
@@ -746,10 +746,6 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private getCassandraPartitionKeyProperty(collection: ViewModels.Collection): string {
     return collection.cassandraKeys.partitionKeys[0].property;
-  }
-
-  private getCassandraPartitionKeys(collection: ViewModels.Collection): CassandraTableKey[] {
-    return collection.cassandraKeys.partitionKeys;
   }
 
   private useCassandraProxyEndpoint(api: string): boolean {
