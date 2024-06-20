@@ -34,7 +34,7 @@ import {
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
-import { Add16Regular, Dismiss12Regular } from "@fluentui/react-icons";
+import { Add16Regular, Subtract12Regular } from "@fluentui/react-icons";
 import { NormalizedEventKey } from "Common/Constants";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
@@ -157,8 +157,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                 appearance="transparent"
                 aria-label="De-select column"
                 size="small"
-                icon={<Dismiss12Regular />}
-                style={{ position: "absolute", right: 0 }}
+                icon={<Subtract12Regular />}
+                style={{ position: "absolute", right: -8 }}
                 onClick={() => {
                   // Remove column id from selectedColumnIds
                   const index = selectedColumnIds.indexOf(column.id);
@@ -357,7 +357,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     if (unnamedGroup.length > 0) {
       menuList.push(
         ...unnamedGroup
-          .filter((def) => !columnSearchText || def.label.startsWith(columnSearchText))
+          .filter((def) => !columnSearchText || def.label.toLowerCase().startsWith(columnSearchText.toLowerCase()))
           .map((column) => (
             <MenuItemCheckbox key={column.id} name={COLUMNS_MENU_NAME} value={column.id}>
               {column.label}
