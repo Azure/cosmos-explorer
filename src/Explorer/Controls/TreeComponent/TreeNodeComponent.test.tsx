@@ -9,7 +9,7 @@ function generateTestNode(id: string, additionalProps?: Partial<TreeNode>): Tree
   const node: TreeNode = {
     id,
     label: `${id}Label`,
-    className: 'nodeIcon',
+    className: "nodeIcon",
     iconSrc: `${id}Icon`,
     onClick: jest.fn().mockName(`${id}Click`),
     ...additionalProps,

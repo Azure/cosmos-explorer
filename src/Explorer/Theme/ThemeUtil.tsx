@@ -29,13 +29,16 @@ const useDefaultRootStyles = makeStyles({
     // However, we often stretch our FluentProviders to full height using a `height: 100%` style.
     // When we do that, the Portal will also stretch to full height, but it will have a solid background and block out the entire document behind it.
     backgroundColor: "transparent",
-  }
+  },
 });
 
 export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ children, className }) => {
   const styles = useDefaultRootStyles();
   return (
-    <FluentProvider theme={getPlatformTheme(configContext.platform)} className={mergeClasses(styles.fluentProvider, className)}>
+    <FluentProvider
+      theme={getPlatformTheme(configContext.platform)}
+      className={mergeClasses(styles.fluentProvider, className)}
+    >
       {children}
     </FluentProvider>
   );

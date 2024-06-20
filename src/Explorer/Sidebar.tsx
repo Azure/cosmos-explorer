@@ -9,7 +9,7 @@ import {
   SplitButton,
   makeStyles,
   mergeClasses,
-  shorthands
+  shorthands,
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
 import { Platform, configContext } from "ConfigContext";
@@ -69,17 +69,17 @@ const useSidebarStyles = makeStyles({
     height: "2px",
     zIndex: 2000,
     backgroundColor: tokens.colorCompoundBrandBackground,
-    animationIterationCount: 'infinite',
-    animationDuration: '3s',
+    animationIterationCount: "infinite",
+    animationDuration: "3s",
     animationName: {
-      '0%': {
-        opacity: '.2', // matches indeterminate bar width
+      "0%": {
+        opacity: ".2", // matches indeterminate bar width
       },
-      '50%': {
-        opacity: '1',
+      "50%": {
+        opacity: "1",
       },
-      '100%': {
-        opacity: '.2',
+      "100%": {
+        opacity: ".2",
       },
     },
   },
@@ -162,7 +162,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   }
 
   return (
-    <div className={styles.globalCommandsContainer}>
+    <div className={styles.globalCommandsContainer} data-test="GlobalCommands">
       {actions.length === 1 ? (
         <Button icon={primaryAction.icon} onClick={onPrimaryActionClick}>
           {primaryAction.label}
@@ -172,7 +172,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
           <MenuTrigger disableButtonEnhancement>
             {(triggerProps: MenuButtonProps) => (
               <SplitButton
-                menuButton={triggerProps}
+                menuButton={{ ...triggerProps, "aria-label": "More commands" }}
                 primaryActionButton={{ onClick: onPrimaryActionClick }}
                 icon={primaryAction.icon}
               >
@@ -226,19 +226,22 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const onChange = debounce((sizes: number[]) => {
     if (expanded && sizes[0] <= CollapseThreshold) {
       collapse();
-    } else if(!expanded && sizes[0] > CollapseThreshold) {
+    } else if (!expanded && sizes[0] > CollapseThreshold) {
       expand();
     }
   }, 10);
 
-  const onDragEnd = useCallback((sizes: number[]) => {
-    if (expanded) {
-      // Remember the last size we had when expanded
-      setExpandedSize(sizes[0])
-    } else {
-      allotment.current.resize([24, Infinity]);
-    }
-  }, [expanded, setExpandedSize]);
+  const onDragEnd = useCallback(
+    (sizes: number[]) => {
+      if (expanded) {
+        // Remember the last size we had when expanded
+        setExpandedSize(sizes[0]);
+      } else {
+        allotment.current.resize([24, Infinity]);
+      }
+    },
+    [expanded, setExpandedSize],
+  );
 
   const onRefreshClick = useCallback(async () => {
     setLoading(true);
@@ -254,12 +257,13 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
         <Allotment.Pane minSize={24} preferredSize={300}>
           <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
             <div className={styles.sidebarContainer}>
-              {loading &&
+              {loading && (
                 // The Fluent UI progress bar has some issues in reduced-motion environments so we use a simple CSS animation here.
                 // https://github.com/microsoft/fluentui/issues/29076
-                <div className={styles.loadingProgressBar} title="Refreshing tree..." />}
-              {expanded
-                ? <>
+                <div className={styles.loadingProgressBar} title="Refreshing tree..." />
+              )}
+              {expanded ? (
+                <>
                   <div className={styles.floatingControlsContainer}>
                     <div className={styles.floatingControls}>
                       <button
@@ -286,14 +290,16 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                     <ResourceTree explorer={explorer} />
                   </div>
                 </>
-                : <button
+              ) : (
+                <button
                   type="button"
                   className={styles.floatingControlButton}
                   title="Expand sidebar"
                   onClick={() => expand()}
                 >
                   <ChevronRight12Regular />
-                </button>}
+                </button>
+              )}
             </div>
           </CosmosFluentProvider>
         </Allotment.Pane>
