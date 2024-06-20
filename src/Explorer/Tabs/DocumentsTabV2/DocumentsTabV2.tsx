@@ -196,6 +196,7 @@ type UiKeyboardEvent = (e: KeyboardEvent | React.SyntheticEvent<Element, Event>)
 
 // Export to expose to unit tests
 export type ButtonsDependencies = {
+  isPartitionSystemKey: boolean;
   _collection: ViewModels.CollectionBase;
   selectedRows: Set<TableRowId>;
   editorState: ViewModels.DocumentExplorerState;
@@ -237,6 +238,7 @@ export const UPLOAD_BUTTON_ID = "uploadItemBtn";
 
 // Export to expose in unit tests
 export const getTabsButtons = ({
+  isPartitionSystemKey,
   _collection,
   selectedRows,
   editorState,
@@ -339,7 +341,7 @@ export const getTabsButtons = ({
     });
   }
 
-  if (selectedRows.size > 0) {
+  if (selectedRows.size > 0 && (!isPartitionSystemKey || isPreferredApiMongoDB)) {
     const label = "Delete";
     buttons.push({
       iconSrc: DeleteDocumentIcon,
@@ -592,6 +594,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
 
     updateNavbarWithTabsButtons(isTabActive, {
+      isPartitionSystemKey: partitionKey.systemKey,
       _collection,
       selectedRows,
       editorState,
@@ -925,6 +928,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   useEffect(
     () =>
       updateNavbarWithTabsButtons(isTabActive, {
+        isPartitionSystemKey: partitionKey.systemKey,
         _collection,
         selectedRows,
         editorState,
@@ -1800,7 +1804,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   size={tableContainerSizePx}
                   columnHeaders={columnHeaders}
                   isSelectionDisabled={
-                    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
+                    (partitionKey.systemKey && !isPreferredApiMongoDB) ||
+                    (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
                   }
                 />
                 {tableItems.length > 0 && (
