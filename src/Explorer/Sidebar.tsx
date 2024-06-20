@@ -9,9 +9,9 @@ import {
   SplitButton,
   makeStyles,
   mergeClasses,
-  shorthands,
+  shorthands
 } from "@fluentui/react-components";
-import { Add16Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
+import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
 import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { AddDatabasePanel } from "Explorer/Panes/AddDatabasePanel/AddDatabasePanel";
@@ -30,7 +30,6 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 const useSidebarStyles = makeStyles({
   sidebar: {
     height: "100%",
-    backgroundColor: "transparent",
   },
   sidebarContainer: {
     height: "100%",
@@ -47,10 +46,12 @@ const useSidebarStyles = makeStyles({
     width: "100%",
   },
   floatingControls: {
+    display: "flex",
+    flexDirection: "row",
     position: "absolute",
     right: 0,
   },
-  expandCollapseButton: {
+  floatingControlButton: {
     ...shorthands.border("none"),
     backgroundColor: "transparent",
   },
@@ -60,6 +61,27 @@ const useSidebarStyles = makeStyles({
     justifyItems: "center",
     width: "100%",
     ...cosmosShorthands.borderBottom(),
+  },
+  loadingProgressBar: {
+    // Float above the content
+    position: "absolute",
+    width: "100%",
+    height: "2px",
+    zIndex: 2000,
+    backgroundColor: tokens.colorCompoundBrandBackground,
+    animationIterationCount: 'infinite',
+    animationDuration: '3s',
+    animationName: {
+      '0%': {
+        opacity: '.2', // matches indeterminate bar width
+      },
+      '50%': {
+        opacity: '1',
+      },
+      '100%': {
+        opacity: '.2',
+      },
+    },
   },
 });
 
@@ -182,6 +204,7 @@ const CollapseThreshold = 50;
 export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const styles = useSidebarStyles();
   const [expanded, setExpanded] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
@@ -217,6 +240,12 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
     }
   }, [expanded, setExpandedSize]);
 
+  const onRefreshClick = useCallback(async () => {
+    setLoading(true);
+    await explorer.onRefreshResourcesClick();
+    setLoading(false);
+  }, [setLoading]);
+
   return (
     <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
       {/* Collections Tree - Start */}
@@ -225,13 +254,26 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
         <Allotment.Pane minSize={24} preferredSize={300}>
           <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
             <div className={styles.sidebarContainer}>
+              {loading &&
+                // The Fluent UI progress bar has some issues in reduced-motion environments so we use a simple CSS animation here.
+                // https://github.com/microsoft/fluentui/issues/29076
+                <div className={styles.loadingProgressBar} title="Refreshing tree..." />}
               {expanded
                 ? <>
                   <div className={styles.floatingControlsContainer}>
                     <div className={styles.floatingControls}>
                       <button
                         type="button"
-                        className={styles.expandCollapseButton}
+                        className={styles.floatingControlButton}
+                        disabled={loading}
+                        title="Refresh"
+                        onClick={onRefreshClick}
+                      >
+                        <ArrowSync12Regular />
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.floatingControlButton}
                         title="Collapse sidebar"
                         onClick={() => collapse()}
                       >
@@ -246,7 +288,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                 </>
                 : <button
                   type="button"
-                  className={styles.expandCollapseButton}
+                  className={styles.floatingControlButton}
                   title="Expand sidebar"
                   onClick={() => expand()}
                 >

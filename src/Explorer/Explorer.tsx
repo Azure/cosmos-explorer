@@ -354,16 +354,16 @@ export default class Explorer {
     return true;
   };
 
-  public onRefreshResourcesClick = (): void => {
+  public onRefreshResourcesClick = async (): Promise<void> => {
     if (configContext.platform === Platform.Fabric) {
       scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 
-    userContext.authType === AuthType.ResourceToken
+    await (userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
-      : this.refreshAllDatabases();
-    this.refreshNotebookList();
+      : this.refreshAllDatabases());
+    await this.refreshNotebookList();
   };
 
   // Facade
