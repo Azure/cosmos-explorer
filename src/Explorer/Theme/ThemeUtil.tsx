@@ -3,6 +3,8 @@ import {
   FluentProvider,
   Theme,
   createLightTheme,
+  makeStyles,
+  mergeClasses,
   shorthands,
   themeToTokensObject,
   webLightTheme,
@@ -19,9 +21,21 @@ export type CosmosFluentProviderProps = PropsWithChildren<{
   className?: string;
 }>;
 
+const useDefaultRootStyles = makeStyles({
+  fluentProvider: {
+    // By default, a FluentProvider has a solid background.
+    // The styles for a FluentProvider are _copied_ to any Portals (https://react.fluentui.dev/?path=/docs/components-portal-portal--default)
+    // created by components inside the FluentProvider, such as when rendering popup-up menus.
+    // However, we often stretch our FluentProviders to full height using a `height: 100%` style.
+    // When we do that, the Portal will also stretch to full height, but it will have a solid background and block out the entire document behind it.
+    backgroundColor: "transparent",
+  }
+});
+
 export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ children, className }) => {
+  const styles = useDefaultRootStyles();
   return (
-    <FluentProvider theme={getPlatformTheme(configContext.platform)} className={className}>
+    <FluentProvider theme={getPlatformTheme(configContext.platform)} className={mergeClasses(styles.fluentProvider, className)}>
       {children}
     </FluentProvider>
   );
