@@ -753,10 +753,6 @@ export class CassandraAPIDataClient extends TableDataClient {
       configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development &&
       userContext.databaseAccount.properties.ipRules?.length > 0
     ) {
-    if (
-      configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development &&
-      userContext.databaseAccount.properties.ipRules?.length > 0
-    ) {
       canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
     }
 
@@ -766,5 +762,4 @@ export class CassandraAPIDataClient extends TableDataClient {
       activeCassandraProxyEndpoints.includes(configContext.CASSANDRA_PROXY_ENDPOINT)
     );
   }
-}
 }

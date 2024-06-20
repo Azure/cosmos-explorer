@@ -48,8 +48,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.RBACOptions.setAutomaticRBACOption
       ? Constants.RBACOptions.setAutomaticRBACOption
       : LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) === Constants.RBACOptions.setTrueRBACOption
-        ? Constants.RBACOptions.setTrueRBACOption
-        : Constants.RBACOptions.setFalseRBACOption
+      ? Constants.RBACOptions.setTrueRBACOption
+      : Constants.RBACOptions.setFalseRBACOption,
   );
   const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
   const [ruThreshold, setRUThreshold] = useState<number>(getRUThreshold());
@@ -129,16 +129,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
 
-    LocalStorageUtility.setEntryString(
-      StorageKey.DataPlaneRbacEnabled,
-      enableDataPlaneRBACOption
-    );
-
-
-    LocalStorageUtility.setEntryString(
-      StorageKey.DataPlaneRbacEnabled,
-      enableDataPlaneRBACOption
-    );
+    LocalStorageUtility.setEntryString(StorageKey.DataPlaneRbacEnabled, enableDataPlaneRBACOption);
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
@@ -230,7 +221,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const dataPlaneRBACOptionsList: IChoiceGroupOption[] = [
     { key: Constants.RBACOptions.setAutomaticRBACOption, text: "Automatic" },
     { key: Constants.RBACOptions.setTrueRBACOption, text: "True" },
-    { key: Constants.RBACOptions.setFalseRBACOption, text: "False"}
+    { key: Constants.RBACOptions.setFalseRBACOption, text: "False" },
   ];
 
   const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
@@ -249,7 +240,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     setPageOption(option.key);
   };
 
-  const handleOnDataPlaneRBACOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
+  const handleOnDataPlaneRBACOptionChange = (
+    ev: React.FormEvent<HTMLInputElement>,
+    option: IChoiceGroupOption,
+  ): void => {
     setEnableDataPlaneRBACOption(option.key);
   };
 
@@ -413,7 +407,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </div>
           </div>
         )}
-        {(
+        {
           <div className="settingsSection">
             <div className="settingsSectionPart">
               <fieldset>
@@ -421,7 +415,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   Enable DataPlane RBAC
                 </legend>
                 <InfoTooltip>
-                  Choose Automatic to enable DataPlane RBAC automatically. True/False to voluntarily enable/disable DataPlane RBAC
+                  Choose Automatic to enable DataPlane RBAC automatically. True/False to voluntarily enable/disable
+                  DataPlane RBAC
                 </InfoTooltip>
                 <ChoiceGroup
                   ariaLabelledBy="enableDataPlaneRBACOptions"
@@ -433,28 +428,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </fieldset>
             </div>
           </div>
-        )}
-        {(
-          <div className="settingsSection">
-            <div className="settingsSectionPart">
-              <fieldset>
-                <legend id="enableDataPlaneRBACOptions" className="settingsSectionLabel legendLabel">
-                  Enable DataPlane RBAC
-                </legend>
-                <InfoTooltip>
-                  Choose Automatic to enable DataPlane RBAC automatically. True/False to voluntarily enable/disable DataPlane RBAC
-                </InfoTooltip>
-                <ChoiceGroup
-                  ariaLabelledBy="enableDataPlaneRBACOptions"
-                  selectedKey={enableDataPlaneRBACOption}
-                  options={dataPlaneRBACOptionsList}
-                  styles={choiceButtonStyles}
-                  onChange={handleOnDataPlaneRBACOptionChange}
-                />
-              </fieldset>
-            </div>
-          </div>
-        )}
+        }
         {userContext.apiType === "SQL" && (
           <>
             <div className="settingsSection">
