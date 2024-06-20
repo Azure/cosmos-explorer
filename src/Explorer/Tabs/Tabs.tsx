@@ -57,6 +57,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const defaultMessageBarStyles = {
     root: {
       height: `${LayoutConstants.rowHeight}px`,
+      overflow: 'auto',
     },
   };
 
@@ -121,23 +122,21 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           re-enable "Allow access from Azure Portal" on the Networking blade for your account.`}
         </MessageBar>
       )}
-      <div id="content" className="flexContainer hideOverflows">
-        <div className="nav-tabs-margin">
-          <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
-            {openedReactTabs.map((tab) => (
-              <TabNav key={ReactTabKind[tab]} active={activeReactTab === tab} tabKind={tab} />
-            ))}
-            {openedTabs.map((tab) => (
-              <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
-            ))}
-          </ul>
-        </div>
-        <div className="tabPanesContainer">
-          {activeReactTab !== undefined && getReactTabContent(activeReactTab, explorer)}
-          {openedTabs.map((tab) => (
-            <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
+      <div className="nav-tabs-margin">
+        <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
+          {openedReactTabs.map((tab) => (
+            <TabNav key={ReactTabKind[tab]} active={activeReactTab === tab} tabKind={tab} />
           ))}
-        </div>
+          {openedTabs.map((tab) => (
+            <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
+          ))}
+        </ul>
+      </div>
+      <div className="tabPanesContainer">
+        {activeReactTab !== undefined && getReactTabContent(activeReactTab, explorer)}
+        {openedTabs.map((tab) => (
+          <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
+        ))}
       </div>
     </div>
   );

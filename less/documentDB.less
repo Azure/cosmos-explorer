@@ -2317,11 +2317,6 @@ td a:hover {
   outline: 1px dotted;
 }
 
-#content.active .tabdocuments .scrollable {
-  height: 100%;
-  overflow-y: auto;
-}
-
 .table-fixed thead {
   width: 97%;
   padding-left: 18px;
@@ -2357,12 +2352,8 @@ a:link {
 
 .tabsManagerContainer {
   height: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 300px;
-  overflow-y: scroll;
-  min-width: 800px;
+  display: grid;
+  grid-template-rows: 36px 36px 1fr;
 }
 
 .tabs {
@@ -2618,6 +2609,7 @@ a:link {
 }
 
 .tabPanesContainer {
+  grid-row: span 2; // Fill the remaining space
   display: flex;
   height: 100%;
   overflow: hidden;
