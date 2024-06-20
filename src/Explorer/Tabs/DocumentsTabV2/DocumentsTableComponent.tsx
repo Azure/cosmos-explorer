@@ -357,7 +357,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     if (unnamedGroup.length > 0) {
       menuList.push(
         ...unnamedGroup
-          .filter((def) => !columnSearchText || def.label.toLowerCase().startsWith(columnSearchText.toLowerCase()))
+          .filter((def) => !columnSearchText || def.label.toLowerCase().includes(columnSearchText.toLowerCase()))
           .map((column) => (
             <MenuItemCheckbox key={column.id} name={COLUMNS_MENU_NAME} value={column.id}>
               {column.label}
