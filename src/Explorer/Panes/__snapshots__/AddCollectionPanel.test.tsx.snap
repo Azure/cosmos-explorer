@@ -223,7 +223,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         </StyledTooltipHostBase>
       </Stack>
       <Text
-        aria-label="pkDescription"
         variant="small"
       />
       <input

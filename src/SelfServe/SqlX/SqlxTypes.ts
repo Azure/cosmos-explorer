@@ -30,22 +30,50 @@ export type UpdateDedicatedGatewayRequestProperties = {
   serviceType: string;
 };
 
-export type FetchPricesResponse = {
-  Items: Array<PriceItem>;
-  NextPageLink: string | undefined;
-  Count: number;
+export type FetchPricesResponse = Array<PriceItem>;
+
+export type PriceItem = {
+  prices: Array<PriceType>;
+  id: string;
+  billingCurrency: string;
+  error: PriceError;
+};
+
+export type PriceType = {
+  type: string;
+  unitPriceinBillingCurrency: number;
+};
+
+export type PriceError = {
+  type: string;
+  description: string;
 };
 
 export type PriceMapAndCurrencyCode = {
   priceMap: Map<string, Map<string, number>>;
-  currencyCode: string;
+  billingCurrency: string;
 };
 
-export type PriceItem = {
-  retailPrice: number;
-  skuName: string;
-  currencyCode: string;
+export type GetOfferingIdsResponse = {
+  items: Array<OfferingIdItem>;
+  nextPageLink: string | undefined;
 };
+
+export type OfferingIdItem = {
+  skuName: string;
+  offeringProperties: Array<OfferingProperties>;
+};
+
+export type OfferingProperties = {
+  offeringId: string;
+};
+
+export type OfferingIdRequest = {
+  ids: Array<string>;
+  location: string;
+};
+
+export type OfferingIdMap = Map<string, Map<string, string>>;
 
 export type RegionsResponse = {
   properties: RegionsProperties;

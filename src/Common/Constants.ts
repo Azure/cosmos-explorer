@@ -133,6 +133,7 @@ export enum MongoBackendEndpointType {
 export class BackendApi {
   public static readonly GenerateToken: string = "GenerateToken";
   public static readonly PortalSettings: string = "PortalSettings";
+  public static readonly AccountRestrictions: string = "AccountRestrictions";
 }
 
 export class PortalBackendEndpoints {
@@ -255,6 +256,7 @@ export class HttpHeaders {
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
+  public static xAPIKey: string = "X-API-Key";
 }
 
 export class ContentType {

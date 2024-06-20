@@ -2358,7 +2358,8 @@ a:link {
 .tabsManagerContainer {
   height: 100%;
   flex-grow: 1;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   min-height: 300px;
   overflow-y: scroll;
   min-width: 800px;
@@ -2652,7 +2653,7 @@ a:link {
   width: @ActiveTabWidth;
 }
 
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper> .tabNavText {
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
   font-weight: bolder;
   border-bottom: 2px solid rgba(0, 120, 212, 1);
 }
@@ -2689,67 +2690,67 @@ a:link {
     border-right: @ButtonBorderWidth solid @BaseMedium;
     white-space: nowrap;
     .contentWrapper {
-        .flex-display();
-        width: @ContentWrapper;
-    
-        .statusIconContainer {
-          width: @StatusIconContainerSize;
-          height: @StatusIconContainerSize;
-          margin-left: @SmallSpace;
-          display: inline-flex;
-    
-          .errorIconContainer {
-            width: @ErrorIconContainer;
-            height: @ErrorIconContainer;
-            margin-top: 1px;
-    
-            .errorIcon {
-              width: @ErrorIconWidth;
-              height: @LoadingErrorIconSize;
-              background-image: url(../images/error_no_outline.svg);
-              background-repeat: no-repeat;
-              background-position: center;
-              background-size: 3px;
-              display: block;
-              margin: 1px 0px 0px 6px;
-            }
-          }
-    
-          .errorIconContainer.actionsEnabled {
-            &:hover {
-              .hover();
-            }
-    
-            &:focus {
-              .focus();
-            }
-    
-            &:active {
-              .active();
-            }
-          }
-    
-          .errorIconContainer[tabindex]:active {
-            outline: none;
-          }
-    
-          .loadingIcon {
-            width: @LoadingErrorIconSize;
+      .flex-display();
+      width: @ContentWrapper;
+
+      .statusIconContainer {
+        width: @StatusIconContainerSize;
+        height: @StatusIconContainerSize;
+        margin-left: @SmallSpace;
+        display: inline-flex;
+
+        .errorIconContainer {
+          width: @ErrorIconContainer;
+          height: @ErrorIconContainer;
+          margin-top: 1px;
+
+          .errorIcon {
+            width: @ErrorIconWidth;
             height: @LoadingErrorIconSize;
-            margin: 0px 0px @SmallSpace @SmallSpace;
+            background-image: url(../images/error_no_outline.svg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 3px;
+            display: block;
+            margin: 1px 0px 0px 6px;
           }
         }
-    
-        .tabNavText {
-          margin-left: @SmallSpace;
-          margin-right: 2px;
-          color: @BaseDark;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
-          flex-grow: 1;
+
+        .errorIconContainer.actionsEnabled {
+          &:hover {
+            .hover();
+          }
+
+          &:focus {
+            .focus();
+          }
+
+          &:active {
+            .active();
+          }
+        }
+
+        .errorIconContainer[tabindex]:active {
+          outline: none;
+        }
+
+        .loadingIcon {
+          width: @LoadingErrorIconSize;
+          height: @LoadingErrorIconSize;
+          margin: 0px 0px @SmallSpace @SmallSpace;
         }
       }
+
+      .tabNavText {
+        margin-left: @SmallSpace;
+        margin-right: 2px;
+        color: @BaseDark;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        flex-grow: 1;
+      }
+    }
 
     .tabIconSection {
       width: 29px;
