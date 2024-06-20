@@ -7,7 +7,10 @@ import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
 import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
-import { deleteDocuments as deleteNoSqlDocuments } from "Common/dataAccess/deleteDocument";
+import {
+  deleteDocument as deleteNoSqlDocument,
+  deleteDocuments as deleteNoSqlDocuments,
+} from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
@@ -196,7 +199,6 @@ type UiKeyboardEvent = (e: KeyboardEvent | React.SyntheticEvent<Element, Event>)
 
 // Export to expose to unit tests
 export type ButtonsDependencies = {
-  isPartitionSystemKey: boolean;
   _collection: ViewModels.CollectionBase;
   selectedRows: Set<TableRowId>;
   editorState: ViewModels.DocumentExplorerState;
@@ -238,7 +240,6 @@ export const UPLOAD_BUTTON_ID = "uploadItemBtn";
 
 // Export to expose in unit tests
 export const getTabsButtons = ({
-  isPartitionSystemKey,
   _collection,
   selectedRows,
   editorState,
@@ -341,7 +342,7 @@ export const getTabsButtons = ({
     });
   }
 
-  if (selectedRows.size > 0 && (!isPartitionSystemKey || isPreferredApiMongoDB)) {
+  if (selectedRows.size > 0) {
     const label = "Delete";
     buttons.push({
       iconSrc: DeleteDocumentIcon,
@@ -594,7 +595,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
 
     updateNavbarWithTabsButtons(isTabActive, {
-      isPartitionSystemKey: partitionKey.systemKey,
       _collection,
       selectedRows,
       editorState,
@@ -827,7 +827,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   }, [initialDocumentContent, selectedDocumentContentBaseline, setSelectedDocumentContent]);
 
   /**
-   * Implementation using bulk delete
+   * Implementation using bulk delete NoSQL API
    */
   let _deleteDocuments = useCallback(
     async (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
@@ -837,7 +837,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         tabTitle,
       });
       setIsExecuting(true);
-      return deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
+
+      // TODO: Once JS SDK Bug fix for bulk deleting legacy containers (whose systemKey==1) is released:
+      // Remove the check for systemKey, remove call to deleteNoSqlDocument(). deleteNoSqlDocuments() should always be called.
+      return (
+        partitionKey.systemKey
+          ? deleteNoSqlDocument(_collection, toDeleteDocumentIds[0]).then(() => [toDeleteDocumentIds[0]])
+          : deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
+      )
         .then(
           (deletedIds) => {
             TelemetryProcessor.traceSuccess(
@@ -928,7 +935,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   useEffect(
     () =>
       updateNavbarWithTabsButtons(isTabActive, {
-        isPartitionSystemKey: partitionKey.systemKey,
         _collection,
         selectedRows,
         editorState,
