@@ -1,4 +1,4 @@
-import { Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { IMessageBarStyles, Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext, updateConfigContext } from "ConfigContext";
@@ -54,7 +54,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
     });
   }, [setKeyboardHandlers]);
 
-  const defaultMessageBarStyles = {
+  const defaultMessageBarStyles: IMessageBarStyles = {
     root: {
       height: `${LayoutConstants.rowHeight}px`,
       overflow: "auto",
