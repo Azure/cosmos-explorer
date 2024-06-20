@@ -1,4 +1,4 @@
-import { deleteDocument } from "Common/MongoProxyClient";
+import { deleteDocuments } from "Common/MongoProxyClient";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -49,7 +49,7 @@ jest.mock("Common/MongoProxyClient", () => ({
       id: "id1",
     }),
   ),
-  deleteDocument: jest.fn(() => Promise.resolve()),
+  deleteDocuments: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
@@ -179,8 +179,8 @@ describe("Documents tab (Mongo API)", () => {
     });
 
     it("clicking Delete Document asks for confirmation", () => {
-      const mockDeleteDocument = deleteDocument as jest.Mock;
-      mockDeleteDocument.mockClear();
+      const mockDeleteDocuments = deleteDocuments as jest.Mock;
+      mockDeleteDocuments.mockClear();
 
       act(() => {
         useCommandBar
@@ -189,7 +189,7 @@ describe("Documents tab (Mongo API)", () => {
           .onCommandClick(undefined);
       });
 
-      expect(mockDeleteDocument).toHaveBeenCalled();
+      expect(mockDeleteDocuments).toHaveBeenCalled();
     });
   });
 });
