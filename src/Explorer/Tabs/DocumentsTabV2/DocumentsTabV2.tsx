@@ -1246,9 +1246,18 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return columnDefinitions;
   };
 
+  /**
+   * Extract column definitions from document and add to the definitions
+   * @param document
+   */
   const setColumnDefinitionsFromDocument = (document: unknown): void => {
-    // TODO Add fields rather than replace
-    setColumnDefinitions(extractColumnDefinitionsFromDocument(document));
+    const currentIds = new Set(columnDefinitions.map((columnDefinition) => columnDefinition.id));
+    extractColumnDefinitionsFromDocument(document).forEach((columnDefinition) => {
+      if (!currentIds.has(columnDefinition.id)) {
+        columnDefinitions.push(columnDefinition);
+      }
+    });
+    setColumnDefinitions([...columnDefinitions]);
   };
 
   /**
@@ -1359,6 +1368,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return () => resizeObserver.disconnect(); // clean up
   }, []);
 
+  // Column definition is a map<id, ColumnDefinition> to garantee uniqueness
   const [columnDefinitions, setColumnDefinitions] = useState<ColumnDefinition[]>(() =>
     extractColumnDefinitionsFromDocument({
       id: "id",
