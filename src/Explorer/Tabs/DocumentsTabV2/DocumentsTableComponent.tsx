@@ -329,7 +329,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   );
 
   const onCheckedValueChange = (_: MenuCheckedValueChangeEvent, data: MenuCheckedValueChangeData) => {
-    // TODO this is expensive
     // eslint-disable-next-line react/prop-types
     onColumnSelectionChange(data.checkedItems);
   };

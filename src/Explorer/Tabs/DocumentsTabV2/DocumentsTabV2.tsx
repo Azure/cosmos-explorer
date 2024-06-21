@@ -1753,6 +1753,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const onColumnSelectionChange = (newSelectedColumnIds: string[]): void => {
+    // Do not allow to unselecting all columns
+    if (newSelectedColumnIds.length === 0) {
+      return;
+    }
+
     setSelectedColumnIds(newSelectedColumnIds);
   };
 
