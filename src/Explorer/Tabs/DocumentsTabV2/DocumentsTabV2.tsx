@@ -1055,8 +1055,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       );
       setOnLoadStartKey(undefined);
     }
-
-    // Update column definitions
   };
 
   let loadNextPage = useCallback(
@@ -1225,11 +1223,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   });
 
   const extractColumnDefinitionsFromDocument = (document: unknown): ColumnDefinition[] => {
-    let columnDefinitions: ColumnDefinition[] = Object.keys(document).map((key) =>
-      key === "id"
-        ? { id: key, label: isPreferredApiMongoDB ? "_id" : "id", group: undefined }
-        : { id: key, label: key, group: undefined },
-    );
+    let columnDefinitions: ColumnDefinition[] = Object.keys(document)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .filter((key) => typeof (document as any)[key] === "string" || typeof (document as any)[key] === "number") // Only allow safe types for displayable React children
+      .map((key) =>
+        key === "id"
+          ? { id: key, label: isPreferredApiMongoDB ? "_id" : "id", group: undefined }
+          : { id: key, label: key, group: undefined },
+      );
 
     if (showPartitionKey(_collection, isPreferredApiMongoDB)) {
       columnDefinitions.push(
