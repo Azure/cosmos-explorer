@@ -340,7 +340,7 @@ describe("Documents tab (noSql API)", () => {
       isPreferredApiMongoDB: false,
       documentIds: [],
       collection: undefined,
-      partitionKey: undefined,
+      partitionKey: { kind: "Hash", paths: ["/foo"], version: 2 },
       onLoadStartKey: 0,
       tabTitle: "",
       onExecutionErrorChange: (isExecutionError: boolean): void => {

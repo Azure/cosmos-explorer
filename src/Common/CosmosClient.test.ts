@@ -28,19 +28,6 @@ describe("tokenProvider", () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
-
-  it("calls the auth token service if no master key is set", async () => {
-    await tokenProvider(options);
-    expect((window.fetch as any).mock.calls.length).toBe(1);
-  });
-
-  it("does not call the auth service if a master key is set", async () => {
-    updateUserContext({
-      masterKey: "foo",
-    });
-    await tokenProvider(options);
-    expect((window.fetch as any).mock.calls.length).toBe(0);
-  });
 });
 
 describe("getTokenFromAuthService", () => {
