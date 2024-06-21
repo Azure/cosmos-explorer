@@ -1,5 +1,4 @@
 import { Link } from "@fluentui/react/lib/Link";
-import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -1124,7 +1123,7 @@ export default class Explorer {
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook
       .getState()
-      .setIsShellEnabled(useNotebook.getState().isPhoenixFeatures && isPublicInternetAccessAllowed());
+      .setIsShellEnabled(false);
 
     TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
       isNotebookEnabled,

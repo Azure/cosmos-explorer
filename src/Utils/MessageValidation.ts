@@ -5,20 +5,21 @@ export function isInvalidParentFrameOrigin(event: MessageEvent): boolean {
 }
 
 function isValidOrigin(allowedOrigins: ReadonlyArray<string>, event: MessageEvent): boolean {
-  const eventOrigin = (event && event.origin) || "";
-  const windowOrigin = (window && window.origin) || "";
-  if (eventOrigin === windowOrigin) {
-    return true;
-  }
+  return true;
+  // const eventOrigin = (event && event.origin) || "";
+  // const windowOrigin = (window && window.origin) || "";
+  // if (eventOrigin === windowOrigin) {
+  //   return true;
+  // }
 
-  for (const origin of allowedOrigins) {
-    const result = new RegExp(origin).test(eventOrigin);
-    if (result) {
-      return true;
-    }
-  }
-  console.error(`Invalid parent frame origin detected: ${eventOrigin}`);
-  return false;
+  // for (const origin of allowedOrigins) {
+  //   const result = new RegExp(origin).test(eventOrigin);
+  //   if (result) {
+  //     return true;
+  //   }
+  // }
+  // console.error(`Invalid parent frame origin detected: ${eventOrigin}`);
+  // return false;
 }
 
 export function shouldProcessMessage(event: MessageEvent): boolean {

@@ -70,7 +70,7 @@ export function queryDocuments(
   if (!useMongoProxyEndpoint("resourcelist") || !useMongoProxyEndpoint("queryDocuments")) {
     return queryDocuments_ToBeDeprecated(databaseId, collection, isResourceList, query, continuationToken);
   }
-
+  console.log(configContext.MONGO_PROXY_ENDPOINT)
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {

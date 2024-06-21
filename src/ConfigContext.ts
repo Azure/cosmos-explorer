@@ -107,7 +107,7 @@ let configContext: Readonly<ConfigContext> = {
   JUNO_ENDPOINT: JunoEndpoints.Prod,
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
-  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
+  MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Local,
   NEW_MONGO_APIS: [
     "resourcelist",
     "queryDocuments",
@@ -200,7 +200,7 @@ if (process.env.NODE_ENV === "development") {
     PROXY_PATH: "/proxy",
     EMULATOR_ENDPOINT: "https://localhost:8081",
     PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
-    MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
+    // MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
     CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Mpac,
   });
 }
@@ -255,3 +255,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
