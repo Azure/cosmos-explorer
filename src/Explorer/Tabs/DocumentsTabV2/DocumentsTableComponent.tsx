@@ -43,7 +43,7 @@ import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
 export type DocumentsTableComponentItem = {
   id: string;
-} & Record<string, string>;
+} & Record<string, string | number>;
 
 export type ColumnDefinition = {
   id: string;
@@ -149,7 +149,16 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         .filter((column) => selectedColumnIds.includes(column.id))
         .map((column) => ({
           columnId: column.id,
-          compare: (a, b) => a[column.id].localeCompare(b[column.id]),
+          compare: (a, b) => {
+            if (typeof a[column.id] === "string") {
+              return (a[column.id] as string).localeCompare(b[column.id] as string);
+            } else if (typeof a[column.id] === "number") {
+              return (a[column.id] as number) - (b[column.id] as number);
+            } else {
+              // Should not happen
+              return 0;
+            }
+          },
           renderHeaderCell: () => (
             <>
               <span title={column.label}>{column.label}</span>
@@ -173,7 +182,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             </>
           ),
           renderCell: (item) => (
-            <TableCellLayout truncate title={item[column.id]}>
+            <TableCellLayout truncate title={`${item[column.id]}`}>
               {item[column.id]}
             </TableCellLayout>
           ),
@@ -334,6 +343,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   };
 
   const onSearchChange: (event: SearchBoxChangeEvent, data: InputOnChangeData) => void = (_, data) =>
+    // eslint-disable-next-line react/prop-types
     setColumnSearchText(data.value);
 
   const getMenuList = (columnDefinitions: ColumnDefinition[]): JSX.Element => {

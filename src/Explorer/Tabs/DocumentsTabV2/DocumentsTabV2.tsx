@@ -445,6 +445,9 @@ export interface IDocumentsTabComponentProps {
   isTabActive: boolean;
 }
 
+// Extend DocumentId to include fields displayed in the table
+type ExtendedDocumentId = DocumentId & { tableFields?: DocumentsTableComponentItem };
+
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
   isPreferredApiMongoDB,
@@ -463,7 +466,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [isFilterFocused, setIsFilterFocused] = useState<boolean>(false);
   const [appliedFilter, setAppliedFilter] = useState<string>("");
   const [filterContent, setFilterContent] = useState<string>("");
-  const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
+  const [documentIds, setDocumentIds] = useState<ExtendedDocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const filterInput = useRef<HTMLInputElement>(null);
 
@@ -560,9 +563,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // new DocumentId() requires a DocumentTab which we mock with only the required properties
   const newDocumentId = useCallback(
-    (rawDocument: DataModels.DocumentId, partitionKeyProperties: string[], partitionKeyValue: string[]) => ({
-      ...rawDocument,
-      ...new DocumentId(
+    (
+      rawDocument: DataModels.DocumentId,
+      partitionKeyProperties: string[],
+      partitionKeyValue: string[],
+    ): ExtendedDocumentId => {
+      const extendedDocumentId = new DocumentId(
         {
           partitionKey,
           partitionKeyProperties,
@@ -572,8 +578,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         },
         rawDocument,
         partitionKeyValue,
-      ),
-    }),
+      ) as ExtendedDocumentId;
+      extendedDocumentId.tableFields = { ...rawDocument };
+      return extendedDocumentId;
+    },
     [partitionKey],
   );
 
@@ -1209,9 +1217,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // Table config here
   const tableItems: DocumentsTableComponentItem[] = documentIds.map((documentId) => {
-    const item: Record<string, string> & { id: string } = {
-      id: documentId.id(),
-    };
+    const item: DocumentsTableComponentItem = documentId.tableFields || { id: documentId.id() };
 
     if (partitionKeyPropertyHeaders && documentId.stringPartitionKeyValues) {
       for (let i = 0; i < partitionKeyPropertyHeaders.length; i++) {
@@ -1219,7 +1225,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       }
     }
 
-    return { ...documentId, ...item };
+    return item;
   });
 
   const extractColumnDefinitionsFromDocument = (document: unknown): ColumnDefinition[] => {
