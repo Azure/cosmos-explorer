@@ -15,7 +15,7 @@ import {
 import * as Constants from "Common/Constants";
 import { SplitterDirection } from "Common/Splitter";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
-import { Platform, configContext } from "ConfigContext"
+import { Platform, configContext } from "ConfigContext";
 import { useDatabases } from "Explorer/useDatabases";
 import {
   DefaultRUThreshold,
@@ -51,9 +51,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   );
 
   const [enableDataPlaneRBACOption, setEnableDataPlaneRBACOption] = useState<string>(
-    LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled) 
-    ? LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled)
-  : Constants.RBACOptions.setAutomaticRBACOption);
+    LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)
+      ? LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled)
+      : Constants.RBACOptions.setAutomaticRBACOption,
+  );
   const [showDataPlaneRBACWarning, setShowDataPlaneRBACWarning] = useState<boolean>(false);
 
   const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
@@ -136,15 +137,18 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
 
     LocalStorageUtility.setEntryString(StorageKey.DataPlaneRbacEnabled, enableDataPlaneRBACOption);
-    if(enableDataPlaneRBACOption === Constants.RBACOptions.setTrueRBACOption || (enableDataPlaneRBACOption === Constants.RBACOptions.setAutomaticRBACOption && userContext.databaseAccount.properties.disableLocalAuth)) {
+    if (
+      enableDataPlaneRBACOption === Constants.RBACOptions.setTrueRBACOption ||
+      (enableDataPlaneRBACOption === Constants.RBACOptions.setAutomaticRBACOption &&
+        userContext.databaseAccount.properties.disableLocalAuth)
+    ) {
       updateUserContext({
-        dataPlaneRbacEnabled: true
+        dataPlaneRbacEnabled: true,
       });
-    } 
-    else {
+    } else {
       updateUserContext({
         dataPlaneRbacEnabled: false,
-      })
+      });
     }
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
@@ -261,9 +265,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     option: IChoiceGroupOption,
   ): void => {
     setEnableDataPlaneRBACOption(option.key);
-    
-    const shouldShowWarning = option.key === Constants.RBACOptions.setTrueRBACOption || 
-                          (option.key === Constants.RBACOptions.setAutomaticRBACOption && userContext.databaseAccount.properties.disableLocalAuth === true);
+
+    const shouldShowWarning =
+      option.key === Constants.RBACOptions.setTrueRBACOption ||
+      (option.key === Constants.RBACOptions.setAutomaticRBACOption &&
+        userContext.databaseAccount.properties.disableLocalAuth === true);
     setShowDataPlaneRBACWarning(shouldShowWarning);
   };
 
@@ -427,48 +433,56 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </div>
           </div>
         )}
-        {(userContext.apiType === "SQL" && userContext.authType == AuthType.AAD) && (
+        {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && (
           <>
-          <div className="settingsSection">
-            <div className="settingsSectionPart">
-              <fieldset>
-                <legend id="enableDataPlaneRBACOptions" className="settingsSectionLabel legendLabel">
-                  Enable Entra ID RBAC
-                </legend>
-                <TooltipHost
-                content={
-                <>
-                  Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra ID RBAC. 
-                  <a href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer" target="_blank" rel="noopener noreferrer"> Learn more </a>
-                </>
-              }
-              >
-                <Icon iconName="Info" ariaLabel="Info tooltip" className="panelInfoIcon" tabIndex={0} />
-                </TooltipHost>
-                {(showDataPlaneRBACWarning && configContext.platform == Platform.Portal) && (
-                <MessageBar
-                messageBarType={MessageBarType.warning}
-                isMultiline={true}
-                onDismiss={() => setShowDataPlaneRBACWarning(false)}
-                dismissButtonAriaLabel="Close"
-                >
-                Please click on "Login for Entra ID RBAC" prior to performing Entra ID RBAC operations
-                </MessageBar>
-                )}
-                <ChoiceGroup
-                  ariaLabelledBy="enableDataPlaneRBACOptions"
-                  options={dataPlaneRBACOptionsList}
-                  styles={choiceButtonStyles}
-                  selectedKey={enableDataPlaneRBACOption}
-                  onChange={handleOnDataPlaneRBACOptionChange}
-                />
-              </fieldset>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
+                <fieldset>
+                  <legend id="enableDataPlaneRBACOptions" className="settingsSectionLabel legendLabel">
+                    Enable Entra ID RBAC
+                  </legend>
+                  <TooltipHost
+                    content={
+                      <>
+                        Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
+                        ID RBAC.
+                        <a
+                          href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {" "}
+                          Learn more{" "}
+                        </a>
+                      </>
+                    }
+                  >
+                    <Icon iconName="Info" ariaLabel="Info tooltip" className="panelInfoIcon" tabIndex={0} />
+                  </TooltipHost>
+                  {showDataPlaneRBACWarning && configContext.platform === Platform.Portal && (
+                    <MessageBar
+                      messageBarType={MessageBarType.warning}
+                      isMultiline={true}
+                      onDismiss={() => setShowDataPlaneRBACWarning(false)}
+                      dismissButtonAriaLabel="Close"
+                    >
+                      Please click on &quot;Login for Entra ID RBAC&quot; prior to performing Entra ID RBAC operations
+                    </MessageBar>
+                  )}
+                  <ChoiceGroup
+                    ariaLabelledBy="enableDataPlaneRBACOptions"
+                    options={dataPlaneRBACOptionsList}
+                    styles={choiceButtonStyles}
+                    selectedKey={enableDataPlaneRBACOption}
+                    onChange={handleOnDataPlaneRBACOptionChange}
+                  />
+                </fieldset>
+              </div>
             </div>
-          </div>
           </>
         )}
-          {(userContext.apiType === "SQL") && (
-            <>
+        {userContext.apiType === "SQL" && (
+          <>
             <div className="settingsSection">
               <div className="settingsSectionPart">
                 <div>

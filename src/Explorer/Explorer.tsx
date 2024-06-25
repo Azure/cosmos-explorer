@@ -38,11 +38,11 @@ import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { logConsoleError, logConsoleInfo } from "../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
-import { useDialog } from "./Controls/Dialog";
+import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
@@ -67,6 +67,7 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
+import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -256,7 +257,10 @@ export default class Explorer {
 
   public async openLoginForEntraIDPopUp(): Promise<void> {
     if (userContext.databaseAccount.properties?.documentEndpoint) {
-      const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+      const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
+        /\/$/,
+        "/.default",
+      );
       const msalInstance = await getMsalInstance();
 
       try {
@@ -267,25 +271,28 @@ export default class Explorer {
         localStorage.setItem("cachedTenantId", response.tenantId);
         const cachedAccount = msalInstance.getAllAccounts()?.[0];
         msalInstance.setActiveAccount(cachedAccount);
-        let aadToken = await acquireTokenWithMsal(msalInstance, {
+        const aadToken = await acquireTokenWithMsal(msalInstance, {
           forceRefresh: true,
           scopes: [hrefEndpoint],
           authority: `${configContext.AAD_ENDPOINT}${localStorage.getItem("cachedTenantId")}`,
         });
-        updateUserContext({aadToken: aadToken});
-      } catch (error) {        
+        updateUserContext({ aadToken: aadToken });
+      } catch (error) {
         if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
-              useDialog
-              .getState()
-              .showOkModalDialog(
-                "Pop up blocked",
-                "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and try again",
-              );
+          useDialog
+            .getState()
+            .showOkModalDialog(
+              "Pop up blocked",
+              "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and try again",
+            );
         } else {
           const errorJson = JSON.stringify(error);
           useDialog
-          .getState()
-          .showOkModalDialog("Failed to perform authorization", `We were unable to establish authorization for this account, due to the following error: \n${errorJson}`);
+            .getState()
+            .showOkModalDialog(
+              "Failed to perform authorization",
+              `We were unable to establish authorization for this account, due to the following error: \n${errorJson}`,
+            );
         }
       }
     }

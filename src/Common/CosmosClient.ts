@@ -20,10 +20,11 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
   if (userContext.features.enableAadDataPlane || (userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL")) {
-    if(!userContext.aadToken)
-    {
-        logConsoleError(`AAD token does not exist. Please use "Login for Entra ID" prior to performing Entra ID RBAC operations`);
-        return;
+    if (!userContext.aadToken) {
+      logConsoleError(
+        `AAD token does not exist. Please use "Login for Entra ID" prior to performing Entra ID RBAC operations`,
+      );
+      return null;
     }
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
     const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
@@ -79,19 +80,29 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
   if (userContext.masterKey) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, userContext.masterKey);
+    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
+      verb,
+      resourceId,
+      resourceType,
+      headers,
+      userContext.masterKey,
+    );
     return decodeURIComponent(headers.authorization);
-  }
-  else
-  {
+  } else {
     const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
     const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
 
-    if(keys.primaryMasterKey) {  
-      updateUserContext ({ masterKey: keys.primaryMasterKey});
-    // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, keys.primaryMasterKey);
-    return decodeURIComponent(headers.authorization);
+    if (keys.primaryMasterKey) {
+      updateUserContext({ masterKey: keys.primaryMasterKey });
+      // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
+      await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
+        verb,
+        resourceId,
+        resourceType,
+        headers,
+        keys.primaryMasterKey,
+      );
+      return decodeURIComponent(headers.authorization);
     }
   }
 
