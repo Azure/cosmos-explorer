@@ -273,27 +273,27 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
-    if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
-      const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
-      if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
-        if (!account.properties.disableLocalAuth) {
-          keys = await listKeys(subscriptionId, resourceGroup, account.name);
-        } else {
-          updateUserContext({
-            dataPlaneRbacEnabled: true,
-          });
-        }
-      } else if (isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption) {
-        updateUserContext({
-          dataPlaneRbacEnabled: true,
-        });
-      } else {
-        keys = await listKeys(subscriptionId, resourceGroup, account.name);
-        updateUserContext({
-          dataPlaneRbacEnabled: false,
-        });
-      }
-    }
+    if (userContext.apiType === "SQL")
+          {
+              if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+                const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+              
+                let dataPlaneRbacEnabled;
+                if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+                  dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+                } else {
+                  dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+                }
+              
+                updateUserContext({ dataPlaneRbacEnabled });
+              }              
+            }
+            else {
+            let keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+            updateUserContext({
+              masterKey: keys.primaryMasterKey
+            });
+          }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
       console.warn(e);
@@ -472,33 +472,29 @@ async function configurePortal(): Promise<Explorer> {
             setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
 
-          const account = userContext.databaseAccount;
-          const subscriptionId = userContext.subscriptionId;
-          const resourceGroup = userContext.resourceGroup;
-
-          if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
-            const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
-            if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
-              if (!account.properties.disableLocalAuth) {
-                await listKeys(subscriptionId, resourceGroup, account.name);
-              } else {
-                updateUserContext({
-                  dataPlaneRbacEnabled: true,
-                  authorizationToken: message.inputs.authorizationToken,
-                });
-              }
-            } else if (isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption) {
-              updateUserContext({
-                dataPlaneRbacEnabled: true,
-                authorizationToken: message.inputs.authorizationToken,
-              });
-            } else {
-              await listKeys(subscriptionId, resourceGroup, account.name);
-              updateUserContext({
-                dataPlaneRbacEnabled: false,
-              });
+          const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+         
+          if (userContext.apiType === "SQL")
+            {
+              if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+                const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+              
+                let dataPlaneRbacEnabled;
+                if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+                  dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+                } else {
+                  dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+                }
+              
+                updateUserContext({ dataPlaneRbacEnabled });
+              }              
             }
-          }
+            else {
+            let keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+            updateUserContext({
+              masterKey: keys.primaryMasterKey
+            });
+          }        
 
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
@@ -540,7 +536,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   }
 
   const authorizationToken = inputs.authorizationToken || "";
-  const masterKey = inputs.masterKey || "";
   const databaseAccount = inputs.databaseAccount;
 
   updateConfigContext({
@@ -553,7 +548,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   updateUserContext({
     authorizationToken,
-    masterKey,
     databaseAccount,
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,

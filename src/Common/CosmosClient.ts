@@ -3,10 +3,12 @@ import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizatio
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { DatabaseAccountListKeysResult } from "Utils/arm/generatedClients/cosmos/types";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
@@ -17,19 +19,14 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  console.log(`AAD Data Plane RBAC enabled "${userContext.dataPlaneRbacEnabled}" `);
-  if ((userContext.features.enableAadDataPlane || userContext.dataPlaneRbacEnabled) && userContext.aadToken) {
-    console.log(` Getting Auth token `);
+  if (userContext.features.enableAadDataPlane || (userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL")) {
+    if(!userContext.aadToken)
+    {
+        logConsoleError(`AAD token does not exist. Please use "Login for Entra ID" prior to performing Entra ID RBAC operations`);
+        return;
+    }
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
     const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
-    console.log(`Returning Auth token`);
-    return authorizationToken;
-  }
-
-  if (userContext.dataPlaneRbacEnabled && userContext.authorizationToken) {
-    console.log(` Getting Portal Auth token `);
-    const authorizationToken = `${userContext.authorizationToken}`;
-    console.log(`Returning Portal Auth token`);
     return authorizationToken;
   }
 
@@ -82,8 +79,20 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
   if (userContext.masterKey) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
+    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, userContext.masterKey);
     return decodeURIComponent(headers.authorization);
+  }
+  else
+  {
+    const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+    const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+
+    if(keys.primaryMasterKey) {  
+      updateUserContext ({ masterKey: keys.primaryMasterKey});
+    // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
+    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, keys.primaryMasterKey);
+    return decodeURIComponent(headers.authorization);
+    }
   }
 
   if (userContext.resourceToken) {
@@ -167,7 +176,6 @@ export function client(): Cosmos.CosmosClient {
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    key: userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
