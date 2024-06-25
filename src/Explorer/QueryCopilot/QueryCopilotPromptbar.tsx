@@ -20,6 +20,7 @@ import {
 } from "@fluentui/react";
 import { HttpStatusCodes } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
+import QueryError from "Common/QueryError";
 import { createUri } from "Common/UrlUtility";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
@@ -105,8 +106,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setShowErrorMessageBar,
     setGeneratedQueryComments,
     setQueryResults,
-    setErrorMessage,
-    errorMessage,
+    setErrors,
+    errors: errorMessage,
   } = useCopilotStore();
 
   const sampleProps: SamplePromptsProps = {
@@ -179,7 +180,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 
   const resetQueryResults = (): void => {
     setQueryResults(null);
-    setErrorMessage("");
+    setErrors([]);
   };
 
   const generateSQLQuery = async (): Promise<void> => {
@@ -243,7 +244,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotTooManyRequestError");
         useTabs.getState().setIsQueryErrorThrown(true);
         setShowErrorMessageBar(true);
-        setErrorMessage("Ratelimit exceeded 5 per 1 minute. Please try again after sometime");
+        setErrors([new QueryError("Ratelimit exceeded 5 per 1 minute. Please try again after sometime")]);
         TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
           databaseName: databaseId,
           collectionId: containerId,

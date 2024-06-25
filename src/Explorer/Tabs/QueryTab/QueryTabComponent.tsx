@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import QueryError from "Common/QueryError";
 import { SplitterDirection } from "Common/Splitter";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -35,7 +36,6 @@ import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import CheckIcon from "../../../../images/check-1.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
-import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
 import { queryIterator } from "../../../Common/MongoProxyClient";
@@ -103,7 +103,6 @@ interface IQueryTabStates {
   sqlQueryEditorContent: string;
   selectedContent: string;
   queryResults: ViewModels.QueryResults;
-  error: string;
   isExecutionError: boolean;
   isExecuting: boolean;
   showCopilotSidebar: boolean;
@@ -112,6 +111,7 @@ interface IQueryTabStates {
   copilotActive: boolean;
   currentTabActive: boolean;
   queryResultsView: SplitterDirection;
+  errors?: QueryError[];
 }
 
 export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
@@ -148,7 +148,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       sqlQueryEditorContent: props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c",
       selectedContent: "",
       queryResults: undefined,
-      error: "",
+      errors: [],
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
       showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
@@ -383,18 +383,18 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         firstItemIndex,
         queryDocuments,
       );
-      this.setState({ queryResults, error: "" });
+      this.setState({ queryResults, errors: [] });
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);
       this.setState({
         isExecutionError: true,
       });
-      const errorMessage = getErrorMessage(error);
-      this.setState({
-        error: errorMessage,
-      });
 
-      document.getElementById("error-display").focus();
+      // Try to parse this as a query error
+      const queryErrors = QueryError.tryParse(error);
+      this.setState({
+        errors: queryErrors,
+      })
     } finally {
       this.props.tabsBaseInstance.isExecuting(false);
       this.setState({
@@ -704,9 +704,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}
                   queryEditorContent={this.state.sqlQueryEditorContent}
-                  error={this.props.copilotStore?.errorMessage}
+                  errors={this.props.copilotStore?.errors}
                   queryResults={this.props.copilotStore?.queryResults}
-                  isExecuting={this.props.copilotStore?.isExecuting}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     QueryDocumentsPerPage(
                       firstItemIndex,
@@ -719,9 +718,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}
                   queryEditorContent={this.state.sqlQueryEditorContent}
-                  error={this.state.error}
+                  errors={this.state.errors}
                   queryResults={this.state.queryResults}
-                  isExecuting={this.state.isExecuting}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     this._executeQueryDocumentsPage(firstItemIndex)
                   }
