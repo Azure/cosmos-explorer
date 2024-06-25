@@ -743,6 +743,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
           setDocumentIds(ids);
           setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
+
+          // Update column choices
+          setColumnDefinitionsFromDocument(savedDocument);
+
           TelemetryProcessor.traceSuccess(
             Action.CreateDocument,
             {
@@ -825,6 +829,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             },
             startKey,
           );
+
+          // Update column choices
+          selectedDocumentId.tableFields = { ...documentContent };
+          setColumnDefinitionsFromDocument(documentContent);
         },
         (error) => {
           onExecutionErrorChange(true);
