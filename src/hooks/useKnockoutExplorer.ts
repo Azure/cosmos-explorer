@@ -276,24 +276,26 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       databaseAccount: config.databaseAccount,
     });
 
-    if (userContext.apiType === "SQL") {
-      if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
-        const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+    if (!userContext.features.enableAadDataPlane) {
+      if (userContext.apiType === "SQL") {
+        if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+          const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
 
-        let dataPlaneRbacEnabled;
-        if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
-          dataPlaneRbacEnabled = account.properties.disableLocalAuth;
-        } else {
-          dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+          let dataPlaneRbacEnabled;
+          if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+            dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+          } else {
+            dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+          }
+
+          updateUserContext({ dataPlaneRbacEnabled });
         }
-
-        updateUserContext({ dataPlaneRbacEnabled });
+      } else {
+        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+        updateUserContext({
+          masterKey: keys.primaryMasterKey,
+        });
       }
-    } else {
-      const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-      updateUserContext({
-        masterKey: keys.primaryMasterKey,
-      });
     }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {

@@ -19,10 +19,10 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  if (
-    (userContext.features.enableAadDataPlane && userContext.databaseAccount.properties.disableLocalAuth) ||
-    (userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL")
-  ) {
+  const aadDataPlaneFeatureEnabled =
+    userContext.features.enableAadDataPlane && userContext.databaseAccount.properties.disableLocalAuth;
+  const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL";
+  if (aadDataPlaneFeatureEnabled || (!userContext.features.enableAadDataPlane && dataPlaneRBACOptionEnabled)) {
     if (!userContext.aadToken) {
       logConsoleError(
         `AAD token does not exist. Please use "Login for Entra ID" prior to performing Entra ID RBAC operations`,
