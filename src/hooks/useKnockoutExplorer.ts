@@ -273,7 +273,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   }
   try {
     updateUserContext({
-      databaseAccount: config.databaseAccount
+      databaseAccount: config.databaseAccount,
     });
 
     if (userContext.apiType === "SQL") {
@@ -305,7 +305,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   updateUserContext({
     subscriptionId,
     resourceGroup,
-    aadToken
+    aadToken,
   });
   const explorer = new Explorer();
   return explorer;
