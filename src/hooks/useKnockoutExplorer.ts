@@ -255,7 +255,6 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
   let aadToken;
-  const keys: DatabaseAccountListKeysResult = {};
   if (account.properties?.documentEndpoint) {
     const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
     const msalInstance = await getMsalInstance();
@@ -273,6 +272,10 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
+    updateUserContext({
+      databaseAccount: config.databaseAccount
+    });
+
     if (userContext.apiType === "SQL") {
       if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
         const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
@@ -302,9 +305,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   updateUserContext({
     subscriptionId,
     resourceGroup,
-    aadToken,
-    databaseAccount: config.databaseAccount,
-    masterKey: keys.primaryMasterKey,
+    aadToken
   });
   const explorer = new Explorer();
   return explorer;
@@ -412,7 +413,6 @@ async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
-
   let explorer: Explorer;
   return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
@@ -427,7 +427,6 @@ async function configurePortal(): Promise<Explorer> {
         console.dir(message);
         updateContextsFromPortalMessage(message);
         explorer = new Explorer();
-
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {

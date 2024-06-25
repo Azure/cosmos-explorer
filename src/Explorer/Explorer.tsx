@@ -205,7 +205,7 @@ export default class Explorer {
     this.refreshNotebookList();
   }
 
-  public async openEnableSynapseLinkDialog(): Promise<void> {
+  public openEnableSynapseLinkDialog(): void {
     const addSynapseLinkDialogProps: DialogProps = {
       linkProps: {
         linkText: "Learn more",

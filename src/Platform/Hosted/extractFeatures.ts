@@ -14,7 +14,6 @@ export type Features = {
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
   readonly enableAadDataPlane: boolean;
-  readonly enableDataPlaneRbac: boolean;
   readonly enableResourceGraph: boolean;
   readonly enableKoResourceTree: boolean;
   readonly hostedDataExplorer: boolean;
@@ -70,7 +69,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
     enableAadDataPlane: "true" === get("enableaaddataplane"),
-    enableDataPlaneRbac: "true" === get("enabledataplanerbac"),
     enableResourceGraph: "true" === get("enableresourcegraph"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),

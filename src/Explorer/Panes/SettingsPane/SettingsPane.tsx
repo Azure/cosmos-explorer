@@ -115,7 +115,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const [copilotSampleDBEnabled, setCopilotSampleDBEnabled] = useState<boolean>(
     LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true",
   );
-
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
