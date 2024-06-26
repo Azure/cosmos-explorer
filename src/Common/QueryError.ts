@@ -17,13 +17,6 @@ export class ErrorPosition {
     public offset: number,
     public lineNumber?: number,
     public column?: number) { }
-
-  toString(): string {
-    if (this.lineNumber && this.column) {
-      return `(${this.lineNumber},${this.column})`;
-    }
-    return this.offset.toString();
-  }
 }
 
 // Maps severities to numbers for sorting.
@@ -52,12 +45,49 @@ export function createMonacoErrorLocationResolver(editor: monaco.editor.IStandal
   }
 }
 
+export const createMonacoMarkersForQueryErrors = (errors: QueryError[]) => {
+  if (!errors) {
+    return [];
+  }
+
+  return errors.map((error): monaco.editor.IMarkerData => {
+    // Validate that we have what we need to make a marker
+    if (error.location === undefined || error.location.start === undefined || error.location.end === undefined ||
+      error.location.start.lineNumber === undefined || error.location.end.lineNumber === undefined ||
+      error.location.start.column === undefined || error.location.end.column === undefined) {
+      return null;
+    }
+
+    return {
+      message: error.message,
+      severity: error.getMonacoSeverity(),
+      startLineNumber: error.location.start.lineNumber,
+      startColumn: error.location.start.column,
+      endLineNumber: error.location.end.lineNumber,
+      endColumn: error.location.end.column,
+    };
+  }).filter((marker) => !!marker);
+}
+
 export default class QueryError {
   constructor(
     public message: string,
     public severity: QueryErrorSeverity,
     public code?: string,
     public location?: QueryErrorLocation) { }
+
+  getMonacoSeverity(): monaco.MarkerSeverity {
+    // It's very difficult to use the monaco.MarkerSeverity enum from here, so we'll just use the numbers directly.
+    // See: https://microsoft.github.io/monaco-editor/typedoc/enums/MarkerSeverity.html
+    switch (this.severity) {
+      case QueryErrorSeverity.Error:
+        return 8;
+      case QueryErrorSeverity.Warning:
+        return 4;
+      default:
+        return 2; // Info
+    }
+  }
 
   /** Attempts to parse a query error from a string or object.
    * 

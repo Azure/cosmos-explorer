@@ -24,12 +24,15 @@ export interface EditorReactProps {
   monacoContainerStyles?: React.CSSProperties;
   className?: string;
   spinnerClassName?: string;
+
+  modelMarkers?: monaco.editor.IMarkerData[];
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
   private rootNode: HTMLElement;
   public editor: monaco.editor.IStandaloneCodeEditor;
   private selectionListener: monaco.IDisposable;
+  monacoApi: { default: typeof monaco; Emitter: typeof monaco.Emitter; MarkerTag: typeof monaco.MarkerTag; MarkerSeverity: typeof monaco.MarkerSeverity; CancellationTokenSource: typeof monaco.CancellationTokenSource; Uri: typeof monaco.Uri; KeyCode: typeof monaco.KeyCode; KeyMod: typeof monaco.KeyMod; Position: typeof monaco.Position; Range: typeof monaco.Range; Selection: typeof monaco.Selection; SelectionDirection: typeof monaco.SelectionDirection; Token: typeof monaco.Token; editor: typeof monaco.editor; languages: typeof monaco.languages; };
 
   public constructor(props: EditorReactProps) {
     super(props);
@@ -69,6 +72,8 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
         ]);
       }
     }
+
+    this.monacoApi.editor.setModelMarkers(this.editor.getModel(), "owner", this.props.modelMarkers || [])
   }
 
   public componentWillUnmount(): void {
@@ -133,12 +138,13 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       lineDecorationsWidth: this.props.lineDecorationsWidth,
       minimap: this.props.minimap,
       scrollBeyondLastLine: this.props.scrollBeyondLastLine,
+      fixedOverflowWidgets: true,
     };
 
     this.rootNode.innerHTML = "";
-    const monaco = await loadMonaco();
+    this.monacoApi = await loadMonaco();
     try {
-      createCallback(monaco?.editor?.create(this.rootNode, options));
+      createCallback(this.monacoApi?.editor?.create(this.rootNode, options));
     } catch (error) {
       // This could happen if the parent node suddenly disappears during create()
       console.error("Unable to create EditorReact", error);

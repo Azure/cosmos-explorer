@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
-import QueryError, { createMonacoErrorLocationResolver } from "Common/QueryError";
+import QueryError, { createMonacoErrorLocationResolver, createMonacoMarkersForQueryErrors } from "Common/QueryError";
 import { SplitterDirection } from "Common/Splitter";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
+import { monaco } from "Explorer/LazyMonaco";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
@@ -114,6 +115,7 @@ interface IQueryTabStates {
   currentTabActive: boolean;
   queryResultsView: SplitterDirection;
   errors?: QueryError[];
+  modelMarkers?: monaco.editor.IMarkerData[];
 }
 
 export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
@@ -410,6 +412,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       const queryErrors = QueryError.tryParse(error, createMonacoErrorLocationResolver(this.queryEditor.current.editor));
       this.setState({
         errors: queryErrors,
+        modelMarkers: createMonacoMarkersForQueryErrors(queryErrors),
       })
     } finally {
       this.props.tabsBaseInstance.isExecuting(false);
@@ -600,6 +603,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     this.setState({
       sqlQueryEditorContent: newContent,
       queryCopilotGeneratedQuery: "",
+
+      // Clear the markers when the user edits the document.
+      modelMarkers: [],
     });
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
@@ -702,6 +708,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                 className={this.props.styles.queryEditor}
                 language={"sql"}
                 content={this.getEditorContent()}
+                modelMarkers={this.state.modelMarkers}
                 isReadOnly={false}
                 wordWrap={"on"}
                 ariaLabel={"Editing Query"}
