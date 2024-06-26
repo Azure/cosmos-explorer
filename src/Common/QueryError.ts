@@ -10,10 +10,20 @@ export interface QueryErrorLocation {
   end: number,
 }
 
+// Maps severities to numbers for sorting.
+const severityMap: Record<QueryErrorSeverity, number> = {
+  "Error": 1,
+  "Warning": 0,
+}
+
+export function compareSeverity(left: QueryErrorSeverity, right: QueryErrorSeverity): number {
+  return severityMap[left] - severityMap[right]
+}
+
 export default class QueryError {
   constructor(
     public message: string,
-    public severity?: QueryErrorSeverity,
+    public severity: QueryErrorSeverity,
     public code?: string,
     public location?: QueryErrorLocation) { }
 
@@ -29,7 +39,14 @@ export default class QueryError {
     }
 
     const errorMessage = getErrorMessage(error as string | Error);
-    return [new QueryError(errorMessage)];
+
+    // Map some well known messages to richer errors
+    const knownError = knownErrors[errorMessage];
+    if (knownError) {
+      return [knownError];
+    } else {
+      return [new QueryError(errorMessage, QueryErrorSeverity.Error)];
+    }
   }
 
   static read(error: unknown): QueryError | null {
@@ -82,4 +99,8 @@ export default class QueryError {
     }
     return null;
   }
+}
+
+const knownErrors: Record<string, QueryError> = {
+  "User aborted query.": new QueryError("User aborted query.", QueryErrorSeverity.Warning),
 }
