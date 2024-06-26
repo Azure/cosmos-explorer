@@ -375,294 +375,24 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
             text="Add Entity"
             type="submit"
           >
-            <PrimaryButton
-              ariaLabel="Add Entity"
-              data-test="Panel/OkButton"
-              disabled={false}
-              id="sidePanelOkButton"
-              text="Add Entity"
-              theme={
-                Object {
-                  "disableGlobalClassNames": false,
-                  "effects": Object {
-                    "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
-                    "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                    "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
-                    "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                    "roundedCorner2": "2px",
-                    "roundedCorner4": "4px",
-                    "roundedCorner6": "6px",
-                  },
-                  "fonts": Object {
-                    "large": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "18px",
-                      "fontWeight": 400,
-                    },
-                    "medium": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "14px",
-                      "fontWeight": 400,
-                    },
-                    "mediumPlus": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "16px",
-                      "fontWeight": 400,
-                    },
-                    "mega": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "68px",
-                      "fontWeight": 600,
-                    },
-                    "small": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "12px",
-                      "fontWeight": 400,
-                    },
-                    "smallPlus": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "12px",
-                      "fontWeight": 400,
-                    },
-                    "superLarge": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "42px",
-                      "fontWeight": 600,
-                    },
-                    "tiny": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "10px",
-                      "fontWeight": 400,
-                    },
-                    "xLarge": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "20px",
-                      "fontWeight": 600,
-                    },
-                    "xLargePlus": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "24px",
-                      "fontWeight": 600,
-                    },
-                    "xSmall": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "10px",
-                      "fontWeight": 400,
-                    },
-                    "xxLarge": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "28px",
-                      "fontWeight": 600,
-                    },
-                    "xxLargePlus": Object {
-                      "MozOsxFontSmoothing": "grayscale",
-                      "WebkitFontSmoothing": "antialiased",
-                      "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                      "fontSize": "32px",
-                      "fontWeight": 600,
-                    },
-                  },
-                  "isInverted": false,
-                  "palette": Object {
-                    "accent": "#0078d4",
-                    "black": "#000000",
-                    "blackTranslucent40": "rgba(0,0,0,.4)",
-                    "blue": "#0078d4",
-                    "blueDark": "#002050",
-                    "blueLight": "#00bcf2",
-                    "blueMid": "#00188f",
-                    "green": "#107c10",
-                    "greenDark": "#004b1c",
-                    "greenLight": "#bad80a",
-                    "magenta": "#b4009e",
-                    "magentaDark": "#5c005c",
-                    "magentaLight": "#e3008c",
-                    "neutralDark": "#201f1e",
-                    "neutralLight": "#edebe9",
-                    "neutralLighter": "#f3f2f1",
-                    "neutralLighterAlt": "#faf9f8",
-                    "neutralPrimary": "#323130",
-                    "neutralPrimaryAlt": "#3b3a39",
-                    "neutralQuaternary": "#d2d0ce",
-                    "neutralQuaternaryAlt": "#e1dfdd",
-                    "neutralSecondary": "#605e5c",
-                    "neutralSecondaryAlt": "#8a8886",
-                    "neutralTertiary": "#a19f9d",
-                    "neutralTertiaryAlt": "#c8c6c4",
-                    "orange": "#d83b01",
-                    "orangeLight": "#ea4300",
-                    "orangeLighter": "#ff8c00",
-                    "purple": "#5c2d91",
-                    "purpleDark": "#32145a",
-                    "purpleLight": "#b4a0ff",
-                    "red": "#e81123",
-                    "redDark": "#a4262c",
-                    "teal": "#008272",
-                    "tealDark": "#004b50",
-                    "tealLight": "#00b294",
-                    "themeDark": "#005a9e",
-                    "themeDarkAlt": "#106ebe",
-                    "themeDarker": "#004578",
-                    "themeLight": "#c7e0f4",
-                    "themeLighter": "#deecf9",
-                    "themeLighterAlt": "#eff6fc",
-                    "themePrimary": "#0078d4",
-                    "themeSecondary": "#2b88d8",
-                    "themeTertiary": "#71afe5",
-                    "white": "#ffffff",
-                    "whiteTranslucent40": "rgba(255,255,255,.4)",
-                    "yellow": "#ffb900",
-                    "yellowDark": "#d29200",
-                    "yellowLight": "#fff100",
-                  },
-                  "rtl": undefined,
-                  "semanticColors": Object {
-                    "accentButtonBackground": "#0078d4",
-                    "accentButtonText": "#ffffff",
-                    "actionLink": "#323130",
-                    "actionLinkHovered": "#201f1e",
-                    "blockingBackground": "#FDE7E9",
-                    "blockingIcon": "#FDE7E9",
-                    "bodyBackground": "#ffffff",
-                    "bodyBackgroundChecked": "#edebe9",
-                    "bodyBackgroundHovered": "#f3f2f1",
-                    "bodyDivider": "#edebe9",
-                    "bodyFrameBackground": "#ffffff",
-                    "bodyFrameDivider": "#edebe9",
-                    "bodyStandoutBackground": "#faf9f8",
-                    "bodySubtext": "#605e5c",
-                    "bodyText": "#323130",
-                    "bodyTextChecked": "#000000",
-                    "buttonBackground": "#ffffff",
-                    "buttonBackgroundChecked": "#c8c6c4",
-                    "buttonBackgroundCheckedHovered": "#edebe9",
-                    "buttonBackgroundDisabled": "#f3f2f1",
-                    "buttonBackgroundHovered": "#f3f2f1",
-                    "buttonBackgroundPressed": "#edebe9",
-                    "buttonBorder": "#8a8886",
-                    "buttonBorderDisabled": "#f3f2f1",
-                    "buttonText": "#323130",
-                    "buttonTextChecked": "#201f1e",
-                    "buttonTextCheckedHovered": "#000000",
-                    "buttonTextDisabled": "#a19f9d",
-                    "buttonTextHovered": "#201f1e",
-                    "buttonTextPressed": "#201f1e",
-                    "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                    "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                    "cardStandoutBackground": "#ffffff",
-                    "defaultStateBackground": "#faf9f8",
-                    "disabledBackground": "#f3f2f1",
-                    "disabledBodySubtext": "#c8c6c4",
-                    "disabledBodyText": "#a19f9d",
-                    "disabledBorder": "#c8c6c4",
-                    "disabledSubtext": "#d2d0ce",
-                    "disabledText": "#a19f9d",
-                    "errorBackground": "#FDE7E9",
-                    "errorIcon": "#A80000",
-                    "errorText": "#a4262c",
-                    "focusBorder": "#605e5c",
-                    "infoBackground": "#f3f2f1",
-                    "infoIcon": "#605e5c",
-                    "inputBackground": "#ffffff",
-                    "inputBackgroundChecked": "#0078d4",
-                    "inputBackgroundCheckedHovered": "#005a9e",
-                    "inputBorder": "#605e5c",
-                    "inputBorderHovered": "#323130",
-                    "inputFocusBorderAlt": "#0078d4",
-                    "inputForegroundChecked": "#ffffff",
-                    "inputIcon": "#0078d4",
-                    "inputIconDisabled": "#a19f9d",
-                    "inputIconHovered": "#005a9e",
-                    "inputPlaceholderBackgroundChecked": "#deecf9",
-                    "inputPlaceholderText": "#605e5c",
-                    "inputText": "#323130",
-                    "inputTextHovered": "#201f1e",
-                    "link": "#0078d4",
-                    "linkHovered": "#004578",
-                    "listBackground": "#ffffff",
-                    "listHeaderBackgroundHovered": "#f3f2f1",
-                    "listHeaderBackgroundPressed": "#edebe9",
-                    "listItemBackgroundChecked": "#edebe9",
-                    "listItemBackgroundCheckedHovered": "#e1dfdd",
-                    "listItemBackgroundHovered": "#f3f2f1",
-                    "listText": "#323130",
-                    "listTextColor": "#323130",
-                    "menuBackground": "#ffffff",
-                    "menuDivider": "#c8c6c4",
-                    "menuHeader": "#0078d4",
-                    "menuIcon": "#0078d4",
-                    "menuItemBackgroundChecked": "#edebe9",
-                    "menuItemBackgroundHovered": "#f3f2f1",
-                    "menuItemBackgroundPressed": "#edebe9",
-                    "menuItemText": "#323130",
-                    "menuItemTextHovered": "#201f1e",
-                    "messageLink": "#005A9E",
-                    "messageLinkHovered": "#004578",
-                    "messageText": "#323130",
-                    "primaryButtonBackground": "#0078d4",
-                    "primaryButtonBackgroundDisabled": "#f3f2f1",
-                    "primaryButtonBackgroundHovered": "#106ebe",
-                    "primaryButtonBackgroundPressed": "#005a9e",
-                    "primaryButtonBorder": "transparent",
-                    "primaryButtonText": "#ffffff",
-                    "primaryButtonTextDisabled": "#d2d0ce",
-                    "primaryButtonTextHovered": "#ffffff",
-                    "primaryButtonTextPressed": "#ffffff",
-                    "severeWarningBackground": "#FED9CC",
-                    "severeWarningIcon": "#D83B01",
-                    "smallInputBorder": "#605e5c",
-                    "successBackground": "#DFF6DD",
-                    "successIcon": "#107C10",
-                    "successText": "#107C10",
-                    "variantBorder": "#edebe9",
-                    "variantBorderHovered": "#a19f9d",
-                    "warningBackground": "#FFF4CE",
-                    "warningHighlight": "#ffb900",
-                    "warningIcon": "#797775",
-                    "warningText": "#323130",
-                  },
-                  "spacing": Object {
-                    "l1": "20px",
-                    "l2": "32px",
-                    "m": "16px",
-                    "s1": "8px",
-                    "s2": "4px",
-                  },
-                }
-              }
-              type="submit"
+            <MergeStylesShadowRootConsumer
+              stylesheetKey="PrimaryButton"
             >
-              <CustomizedDefaultButton
+              <PrimaryButton
                 ariaLabel="Add Entity"
                 data-test="Panel/OkButton"
                 disabled={false}
                 id="sidePanelOkButton"
-                onRenderDescription={[Function]}
-                primary={true}
+                styles={
+                  Object {
+                    "__shadowConfig__": Object {
+                      "__isShadowConfig__": true,
+                      "inShadow": false,
+                      "stylesheetKey": "PrimaryButton",
+                      "window": [Window],
+                    },
+                  }
+                }
                 text="Add Entity"
                 theme={
                   Object {
@@ -939,13 +669,23 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                 }
                 type="submit"
               >
-                <DefaultButton
+                <CustomizedDefaultButton
                   ariaLabel="Add Entity"
                   data-test="Panel/OkButton"
                   disabled={false}
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
                   primary={true}
+                  styles={
+                    Object {
+                      "__shadowConfig__": Object {
+                        "__isShadowConfig__": true,
+                        "inShadow": false,
+                        "stylesheetKey": "PrimaryButton",
+                        "window": [Window],
+                      },
+                    }
+                  }
                   text="Add Entity"
                   theme={
                     Object {
@@ -1222,143 +962,522 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                   }
                   type="submit"
                 >
-                  <BaseButton
-                    ariaLabel="Add Entity"
-                    baseClassName="ms-Button"
-                    data-test="Panel/OkButton"
-                    disabled={false}
-                    id="sidePanelOkButton"
-                    onRenderDescription={[Function]}
-                    primary={true}
-                    split={false}
-                    styles={
-                      Object {
-                        "description": Object {
-                          "display": "block",
-                        },
-                        "flexContainer": Object {
-                          "alignItems": "center",
-                          "display": "flex",
-                          "flexWrap": "nowrap",
-                          "height": "100%",
-                          "justifyContent": "center",
-                        },
-                        "icon": Object {
-                          "flexShrink": 0,
-                          "fontSize": "16px",
-                          "height": "16px",
-                          "lineHeight": "16px",
-                          "margin": "0 4px",
-                          "textAlign": "center",
-                        },
-                        "iconDisabled": Object {
-                          "color": "#a19f9d",
-                          "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              "color": "GrayText",
+                  <MergeStylesShadowRootConsumer
+                    stylesheetKey="DefaultButton"
+                  >
+                    <DefaultButton
+                      ariaLabel="Add Entity"
+                      data-test="Panel/OkButton"
+                      disabled={false}
+                      id="sidePanelOkButton"
+                      onRenderDescription={[Function]}
+                      primary={true}
+                      styles={
+                        Object {
+                          "__shadowConfig__": Object {
+                            "__isShadowConfig__": true,
+                            "inShadow": false,
+                            "stylesheetKey": "DefaultButton",
+                            "window": [Window],
+                          },
+                        }
+                      }
+                      text="Add Entity"
+                      theme={
+                        Object {
+                          "disableGlobalClassNames": false,
+                          "effects": Object {
+                            "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+                            "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                            "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+                            "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                            "roundedCorner2": "2px",
+                            "roundedCorner4": "4px",
+                            "roundedCorner6": "6px",
+                          },
+                          "fonts": Object {
+                            "large": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "18px",
+                              "fontWeight": 400,
+                            },
+                            "medium": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "14px",
+                              "fontWeight": 400,
+                            },
+                            "mediumPlus": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "16px",
+                              "fontWeight": 400,
+                            },
+                            "mega": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "68px",
+                              "fontWeight": 600,
+                            },
+                            "small": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "12px",
+                              "fontWeight": 400,
+                            },
+                            "smallPlus": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "12px",
+                              "fontWeight": 400,
+                            },
+                            "superLarge": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "42px",
+                              "fontWeight": 600,
+                            },
+                            "tiny": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "10px",
+                              "fontWeight": 400,
+                            },
+                            "xLarge": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "20px",
+                              "fontWeight": 600,
+                            },
+                            "xLargePlus": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "24px",
+                              "fontWeight": 600,
+                            },
+                            "xSmall": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "10px",
+                              "fontWeight": 400,
+                            },
+                            "xxLarge": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "28px",
+                              "fontWeight": 600,
+                            },
+                            "xxLargePlus": Object {
+                              "MozOsxFontSmoothing": "grayscale",
+                              "WebkitFontSmoothing": "antialiased",
+                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                              "fontSize": "32px",
+                              "fontWeight": 600,
                             },
                           },
-                        },
-                        "label": Array [
-                          Object {
-                            "display": "block",
-                            "lineHeight": "100%",
-                            "margin": "0 4px",
+                          "isInverted": false,
+                          "palette": Object {
+                            "accent": "#0078d4",
+                            "black": "#000000",
+                            "blackTranslucent40": "rgba(0,0,0,.4)",
+                            "blue": "#0078d4",
+                            "blueDark": "#002050",
+                            "blueLight": "#00bcf2",
+                            "blueMid": "#00188f",
+                            "green": "#107c10",
+                            "greenDark": "#004b1c",
+                            "greenLight": "#bad80a",
+                            "magenta": "#b4009e",
+                            "magentaDark": "#5c005c",
+                            "magentaLight": "#e3008c",
+                            "neutralDark": "#201f1e",
+                            "neutralLight": "#edebe9",
+                            "neutralLighter": "#f3f2f1",
+                            "neutralLighterAlt": "#faf9f8",
+                            "neutralPrimary": "#323130",
+                            "neutralPrimaryAlt": "#3b3a39",
+                            "neutralQuaternary": "#d2d0ce",
+                            "neutralQuaternaryAlt": "#e1dfdd",
+                            "neutralSecondary": "#605e5c",
+                            "neutralSecondaryAlt": "#8a8886",
+                            "neutralTertiary": "#a19f9d",
+                            "neutralTertiaryAlt": "#c8c6c4",
+                            "orange": "#d83b01",
+                            "orangeLight": "#ea4300",
+                            "orangeLighter": "#ff8c00",
+                            "purple": "#5c2d91",
+                            "purpleDark": "#32145a",
+                            "purpleLight": "#b4a0ff",
+                            "red": "#e81123",
+                            "redDark": "#a4262c",
+                            "teal": "#008272",
+                            "tealDark": "#004b50",
+                            "tealLight": "#00b294",
+                            "themeDark": "#005a9e",
+                            "themeDarkAlt": "#106ebe",
+                            "themeDarker": "#004578",
+                            "themeLight": "#c7e0f4",
+                            "themeLighter": "#deecf9",
+                            "themeLighterAlt": "#eff6fc",
+                            "themePrimary": "#0078d4",
+                            "themeSecondary": "#2b88d8",
+                            "themeTertiary": "#71afe5",
+                            "white": "#ffffff",
+                            "whiteTranslucent40": "rgba(255,255,255,.4)",
+                            "yellow": "#ffb900",
+                            "yellowDark": "#d29200",
+                            "yellowLight": "#fff100",
                           },
-                          Object {
-                            "fontWeight": 600,
+                          "rtl": undefined,
+                          "semanticColors": Object {
+                            "accentButtonBackground": "#0078d4",
+                            "accentButtonText": "#ffffff",
+                            "actionLink": "#323130",
+                            "actionLinkHovered": "#201f1e",
+                            "blockingBackground": "#FDE7E9",
+                            "blockingIcon": "#FDE7E9",
+                            "bodyBackground": "#ffffff",
+                            "bodyBackgroundChecked": "#edebe9",
+                            "bodyBackgroundHovered": "#f3f2f1",
+                            "bodyDivider": "#edebe9",
+                            "bodyFrameBackground": "#ffffff",
+                            "bodyFrameDivider": "#edebe9",
+                            "bodyStandoutBackground": "#faf9f8",
+                            "bodySubtext": "#605e5c",
+                            "bodyText": "#323130",
+                            "bodyTextChecked": "#000000",
+                            "buttonBackground": "#ffffff",
+                            "buttonBackgroundChecked": "#c8c6c4",
+                            "buttonBackgroundCheckedHovered": "#edebe9",
+                            "buttonBackgroundDisabled": "#f3f2f1",
+                            "buttonBackgroundHovered": "#f3f2f1",
+                            "buttonBackgroundPressed": "#edebe9",
+                            "buttonBorder": "#8a8886",
+                            "buttonBorderDisabled": "#f3f2f1",
+                            "buttonText": "#323130",
+                            "buttonTextChecked": "#201f1e",
+                            "buttonTextCheckedHovered": "#000000",
+                            "buttonTextDisabled": "#a19f9d",
+                            "buttonTextHovered": "#201f1e",
+                            "buttonTextPressed": "#201f1e",
+                            "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                            "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                            "cardStandoutBackground": "#ffffff",
+                            "defaultStateBackground": "#faf9f8",
+                            "disabledBackground": "#f3f2f1",
+                            "disabledBodySubtext": "#c8c6c4",
+                            "disabledBodyText": "#a19f9d",
+                            "disabledBorder": "#c8c6c4",
+                            "disabledSubtext": "#d2d0ce",
+                            "disabledText": "#a19f9d",
+                            "errorBackground": "#FDE7E9",
+                            "errorIcon": "#A80000",
+                            "errorText": "#a4262c",
+                            "focusBorder": "#605e5c",
+                            "infoBackground": "#f3f2f1",
+                            "infoIcon": "#605e5c",
+                            "inputBackground": "#ffffff",
+                            "inputBackgroundChecked": "#0078d4",
+                            "inputBackgroundCheckedHovered": "#005a9e",
+                            "inputBorder": "#605e5c",
+                            "inputBorderHovered": "#323130",
+                            "inputFocusBorderAlt": "#0078d4",
+                            "inputForegroundChecked": "#ffffff",
+                            "inputIcon": "#0078d4",
+                            "inputIconDisabled": "#a19f9d",
+                            "inputIconHovered": "#005a9e",
+                            "inputPlaceholderBackgroundChecked": "#deecf9",
+                            "inputPlaceholderText": "#605e5c",
+                            "inputText": "#323130",
+                            "inputTextHovered": "#201f1e",
+                            "link": "#0078d4",
+                            "linkHovered": "#004578",
+                            "listBackground": "#ffffff",
+                            "listHeaderBackgroundHovered": "#f3f2f1",
+                            "listHeaderBackgroundPressed": "#edebe9",
+                            "listItemBackgroundChecked": "#edebe9",
+                            "listItemBackgroundCheckedHovered": "#e1dfdd",
+                            "listItemBackgroundHovered": "#f3f2f1",
+                            "listText": "#323130",
+                            "listTextColor": "#323130",
+                            "menuBackground": "#ffffff",
+                            "menuDivider": "#c8c6c4",
+                            "menuHeader": "#0078d4",
+                            "menuIcon": "#0078d4",
+                            "menuItemBackgroundChecked": "#edebe9",
+                            "menuItemBackgroundHovered": "#f3f2f1",
+                            "menuItemBackgroundPressed": "#edebe9",
+                            "menuItemText": "#323130",
+                            "menuItemTextHovered": "#201f1e",
+                            "messageLink": "#005A9E",
+                            "messageLinkHovered": "#004578",
+                            "messageText": "#323130",
+                            "primaryButtonBackground": "#0078d4",
+                            "primaryButtonBackgroundDisabled": "#f3f2f1",
+                            "primaryButtonBackgroundHovered": "#106ebe",
+                            "primaryButtonBackgroundPressed": "#005a9e",
+                            "primaryButtonBorder": "transparent",
+                            "primaryButtonText": "#ffffff",
+                            "primaryButtonTextDisabled": "#d2d0ce",
+                            "primaryButtonTextHovered": "#ffffff",
+                            "primaryButtonTextPressed": "#ffffff",
+                            "severeWarningBackground": "#FED9CC",
+                            "severeWarningIcon": "#D83B01",
+                            "smallInputBorder": "#605e5c",
+                            "successBackground": "#DFF6DD",
+                            "successIcon": "#107C10",
+                            "successText": "#107C10",
+                            "variantBorder": "#edebe9",
+                            "variantBorderHovered": "#a19f9d",
+                            "warningBackground": "#FFF4CE",
+                            "warningHighlight": "#ffb900",
+                            "warningIcon": "#797775",
+                            "warningText": "#323130",
                           },
-                        ],
-                        "menuIcon": Object {
-                          "flexShrink": 0,
-                          "fontSize": "12px",
-                          "height": "16px",
-                          "lineHeight": "16px",
-                          "margin": "0 4px",
-                          "textAlign": "center",
-                        },
-                        "menuIconDisabled": Object {
-                          "color": "#a19f9d",
-                          "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              "color": "GrayText",
+                          "spacing": Object {
+                            "l1": "20px",
+                            "l2": "32px",
+                            "m": "16px",
+                            "s1": "8px",
+                            "s2": "4px",
+                          },
+                        }
+                      }
+                      type="submit"
+                    >
+                      <BaseButton
+                        ariaLabel="Add Entity"
+                        baseClassName="ms-Button"
+                        data-test="Panel/OkButton"
+                        disabled={false}
+                        id="sidePanelOkButton"
+                        onRenderDescription={[Function]}
+                        primary={true}
+                        split={false}
+                        styles={
+                          Object {
+                            "__shadowConfig__": Object {
+                              "__isShadowConfig__": true,
+                              "inShadow": false,
+                              "stylesheetKey": "DefaultButton",
+                              "window": [Window],
                             },
-                          },
-                        },
-                        "root": Array [
-                          Object {
-                            "outline": "transparent",
-                            "position": "relative",
-                            "selectors": Object {
-                              ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                                "border": "1px solid transparent",
-                                "borderRadius": undefined,
-                                "bottom": 2,
-                                "content": "\\"\\"",
-                                "left": 2,
-                                "outline": "1px solid #605e5c",
-                                "pointerEvents": undefined,
-                                "position": "absolute",
-                                "right": 2,
+                            "description": Object {
+                              "display": "block",
+                            },
+                            "flexContainer": Object {
+                              "alignItems": "center",
+                              "display": "flex",
+                              "flexWrap": "nowrap",
+                              "height": "100%",
+                              "justifyContent": "center",
+                            },
+                            "icon": Object {
+                              "flexShrink": 0,
+                              "fontSize": "16px",
+                              "height": "16px",
+                              "lineHeight": "16px",
+                              "margin": "0 4px",
+                              "textAlign": "center",
+                            },
+                            "iconDisabled": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "color": "GrayText",
+                              },
+                              "color": "#a19f9d",
+                            },
+                            "label": Array [
+                              Object {
+                                "display": "block",
+                                "lineHeight": "100%",
+                                "margin": "0 4px",
+                              },
+                              Object {
+                                "fontWeight": 600,
+                              },
+                            ],
+                            "menuIcon": Object {
+                              "flexShrink": 0,
+                              "fontSize": "12px",
+                              "height": "16px",
+                              "lineHeight": "16px",
+                              "margin": "0 4px",
+                              "textAlign": "center",
+                            },
+                            "menuIconDisabled": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "color": "GrayText",
+                              },
+                              "color": "#a19f9d",
+                            },
+                            "root": Array [
+                              Object {
+                                "outline": "transparent",
+                                "position": "relative",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    "bottom": -2,
-                                    "left": -2,
-                                    "outlineColor": "ButtonText",
-                                    "right": -2,
-                                    "top": -2,
+                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                                    "border": "1px solid transparent",
+                                    "borderRadius": undefined,
+                                    "bottom": 2,
+                                    "content": "\\"\\"",
+                                    "left": 2,
+                                    "outline": "1px solid #605e5c",
+                                    "pointerEvents": undefined,
+                                    "position": "absolute",
+                                    "right": 2,
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                        "bottom": -2,
+                                        "left": -2,
+                                        "outlineColor": "ButtonText",
+                                        "right": -2,
+                                        "top": -2,
+                                      },
+                                    },
+                                    "top": 2,
+                                    "zIndex": 1,
+                                  },
+                                  "::-moz-focus-inner": Object {
+                                    "border": "0",
                                   },
                                 },
-                                "top": 2,
-                                "zIndex": 1,
                               },
-                              "::-moz-focus-inner": Object {
-                                "border": "0",
+                              Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "14px",
+                                "fontWeight": 400,
                               },
-                            },
-                          },
-                          Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "14px",
-                            "fontWeight": 400,
-                          },
-                          Object {
-                            "border": "1px solid #8a8886",
-                            "borderRadius": "2px",
-                            "boxSizing": "border-box",
-                            "cursor": "pointer",
-                            "display": "inline-block",
-                            "padding": "0 16px",
-                            "selectors": Object {
-                              ":active > span": Object {
-                                "left": 0,
-                                "position": "relative",
-                                "top": 0,
+                              Object {
+                                ":active > span": Object {
+                                  "left": 0,
+                                  "position": "relative",
+                                  "top": 0,
+                                },
+                                "border": "1px solid #8a8886",
+                                "borderRadius": "2px",
+                                "boxSizing": "border-box",
+                                "cursor": "pointer",
+                                "display": "inline-block",
+                                "padding": "0 16px",
+                                "textAlign": "center",
+                                "textDecoration": "none",
+                                "userSelect": "none",
                               },
-                            },
-                            "textAlign": "center",
-                            "textDecoration": "none",
-                            "userSelect": "none",
-                          },
-                          Object {
-                            "height": "32px",
-                            "minWidth": "80px",
-                          },
-                          Object {
-                            "backgroundColor": "#0078d4",
-                            "border": "1px solid #0078d4",
-                            "color": "#ffffff",
-                            "selectors": Object {
-                              ".ms-Fabric--isFocusVisible &:focus": Object {
-                                "selectors": Object {
+                              Object {
+                                "height": "32px",
+                                "minWidth": "80px",
+                              },
+                              Object {
+                                ".ms-Fabric--isFocusVisible &:focus, :host(.ms-Fabric--isFocusVisible) &:focus": Object {
                                   ":after": Object {
                                     "border": "none",
                                     "outlineColor": "#ffffff",
                                   },
                                 },
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "MsHighContrastAdjust": "none",
+                                  "backgroundColor": "WindowText",
+                                  "borderColor": "WindowText",
+                                  "color": "Window",
+                                  "forcedColorAdjust": "none",
+                                },
+                                "backgroundColor": "#0078d4",
+                                "border": "1px solid #0078d4",
+                                "color": "#ffffff",
                               },
+                            ],
+                            "rootChecked": Object {
+                              "backgroundColor": "#005a9e",
+                              "color": "#ffffff",
+                            },
+                            "rootCheckedHovered": Object {
+                              "backgroundColor": "#005a9e",
+                              "color": "#ffffff",
+                            },
+                            "rootDisabled": Array [
+                              Object {
+                                "outline": "transparent",
+                                "position": "relative",
+                                "selectors": Object {
+                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                                    "border": "1px solid transparent",
+                                    "borderRadius": undefined,
+                                    "bottom": 2,
+                                    "content": "\\"\\"",
+                                    "left": 2,
+                                    "outline": "1px solid #605e5c",
+                                    "pointerEvents": undefined,
+                                    "position": "absolute",
+                                    "right": 2,
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                        "bottom": -2,
+                                        "left": -2,
+                                        "outlineColor": "ButtonText",
+                                        "right": -2,
+                                        "top": -2,
+                                      },
+                                    },
+                                    "top": 2,
+                                    "zIndex": 1,
+                                  },
+                                  "::-moz-focus-inner": Object {
+                                    "border": "0",
+                                  },
+                                },
+                              },
+                              Object {
+                                ":focus": Object {
+                                  "outline": 0,
+                                },
+                                ":hover": Object {
+                                  "outline": 0,
+                                },
+                                "backgroundColor": "#f3f2f1",
+                                "borderColor": "#f3f2f1",
+                                "color": "#a19f9d",
+                                "cursor": "default",
+                              },
+                              Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "backgroundColor": "Window",
+                                  "borderColor": "GrayText",
+                                  "color": "GrayText",
+                                },
+                                "backgroundColor": "#f3f2f1",
+                                "color": "#d2d0ce",
+                              },
+                            ],
+                            "rootExpanded": Object {
+                              "backgroundColor": "#005a9e",
+                              "color": "#ffffff",
+                            },
+                            "rootHovered": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "backgroundColor": "Highlight",
+                                "borderColor": "Highlight",
+                                "color": "Window",
+                              },
+                              "backgroundColor": "#106ebe",
+                              "border": "1px solid #106ebe",
+                              "color": "#ffffff",
+                            },
+                            "rootPressed": Object {
                               "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
@@ -1366,169 +1485,95 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "color": "Window",
                                 "forcedColorAdjust": "none",
                               },
+                              "backgroundColor": "#005a9e",
+                              "border": "1px solid #005a9e",
+                              "color": "#ffffff",
                             },
-                          },
-                        ],
-                        "rootChecked": Object {
-                          "backgroundColor": "#005a9e",
-                          "color": "#ffffff",
-                        },
-                        "rootCheckedHovered": Object {
-                          "backgroundColor": "#005a9e",
-                          "color": "#ffffff",
-                        },
-                        "rootDisabled": Array [
-                          Object {
-                            "outline": "transparent",
-                            "position": "relative",
-                            "selectors": Object {
-                              ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                                "border": "1px solid transparent",
-                                "borderRadius": undefined,
-                                "bottom": 2,
-                                "content": "\\"\\"",
-                                "left": 2,
-                                "outline": "1px solid #605e5c",
-                                "pointerEvents": undefined,
-                                "position": "absolute",
-                                "right": 2,
+                            "screenReaderText": Object {
+                              "border": 0,
+                              "height": 1,
+                              "margin": -1,
+                              "overflow": "hidden",
+                              "padding": 0,
+                              "position": "absolute",
+                              "whiteSpace": "nowrap",
+                              "width": 1,
+                            },
+                            "splitButtonContainer": Array [
+                              Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "border": "none",
+                                },
+                              },
+                              Object {
+                                "outline": "transparent",
+                                "position": "relative",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    "bottom": -2,
-                                    "left": -2,
-                                    "outlineColor": "ButtonText",
-                                    "right": -2,
-                                    "top": -2,
+                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                                    "border": "1px solid #ffffff",
+                                    "borderRadius": undefined,
+                                    "bottom": 3,
+                                    "content": "\\"\\"",
+                                    "left": 3,
+                                    "outline": "1px solid #605e5c",
+                                    "pointerEvents": "none",
+                                    "position": "absolute",
+                                    "right": 3,
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                        "border": "none",
+                                        "bottom": -2,
+                                        "left": -2,
+                                        "right": -2,
+                                        "top": -2,
+                                      },
+                                    },
+                                    "top": 3,
+                                    "zIndex": 1,
+                                  },
+                                  "::-moz-focus-inner": Object {
+                                    "border": "0",
                                   },
                                 },
-                                "top": 2,
-                                "zIndex": 1,
                               },
-                              "::-moz-focus-inner": Object {
-                                "border": "0",
-                              },
-                            },
-                          },
-                          Object {
-                            "backgroundColor": "#f3f2f1",
-                            "borderColor": "#f3f2f1",
-                            "color": "#a19f9d",
-                            "cursor": "default",
-                            "selectors": Object {
-                              ":focus": Object {
-                                "outline": 0,
-                              },
-                              ":hover": Object {
-                                "outline": 0,
-                              },
-                            },
-                          },
-                          Object {
-                            "backgroundColor": "#f3f2f1",
-                            "color": "#d2d0ce",
-                            "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                "backgroundColor": "Window",
-                                "borderColor": "GrayText",
-                                "color": "GrayText",
-                              },
-                            },
-                          },
-                        ],
-                        "rootExpanded": Object {
-                          "backgroundColor": "#005a9e",
-                          "color": "#ffffff",
-                        },
-                        "rootHovered": Object {
-                          "backgroundColor": "#106ebe",
-                          "border": "1px solid #106ebe",
-                          "color": "#ffffff",
-                          "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              "backgroundColor": "Highlight",
-                              "borderColor": "Highlight",
-                              "color": "Window",
-                            },
-                          },
-                        },
-                        "rootPressed": Object {
-                          "backgroundColor": "#005a9e",
-                          "border": "1px solid #005a9e",
-                          "color": "#ffffff",
-                          "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              "MsHighContrastAdjust": "none",
-                              "backgroundColor": "WindowText",
-                              "borderColor": "WindowText",
-                              "color": "Window",
-                              "forcedColorAdjust": "none",
-                            },
-                          },
-                        },
-                        "screenReaderText": Object {
-                          "border": 0,
-                          "height": 1,
-                          "margin": -1,
-                          "overflow": "hidden",
-                          "padding": 0,
-                          "position": "absolute",
-                          "whiteSpace": "nowrap",
-                          "width": 1,
-                        },
-                        "splitButtonContainer": Array [
-                          Object {
-                            "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                "border": "none",
-                              },
-                            },
-                          },
-                          Object {
-                            "outline": "transparent",
-                            "position": "relative",
-                            "selectors": Object {
-                              ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                                "border": "1px solid #ffffff",
-                                "borderRadius": undefined,
-                                "bottom": 3,
-                                "content": "\\"\\"",
-                                "left": 3,
-                                "outline": "1px solid #605e5c",
-                                "pointerEvents": "none",
-                                "position": "absolute",
-                                "right": 3,
-                                "selectors": Object {
+                              Object {
+                                ".ms-Button--default": Object {
+                                  "borderBottomRightRadius": "0",
+                                  "borderRight": "none",
+                                  "borderTopRightRadius": "0",
+                                  "flexGrow": "1",
+                                },
+                                ".ms-Button--default + .ms-Button": Object {
                                   "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    "border": "none",
-                                    "bottom": -2,
-                                    "left": -2,
-                                    "right": -2,
-                                    "top": -2,
+                                    ":hover": Object {
+                                      ".ms-Button-menuIcon": Object {
+                                        "MsHighContrastAdjust": "none",
+                                        "backgroundColor": "HighlightText",
+                                        "color": "Highlight",
+                                        "forcedColorAdjust": "none",
+                                      },
+                                      "backgroundColor": "HighlightText",
+                                      "borderColor": "Highlight",
+                                      "color": "Highlight",
+                                    },
+                                    "border": "1px solid WindowText",
+                                    "borderLeftWidth": "0",
                                   },
                                 },
-                                "top": 3,
-                                "zIndex": 1,
-                              },
-                              "::-moz-focus-inner": Object {
-                                "border": "0",
-                              },
-                            },
-                          },
-                          Object {
-                            "display": "inline-flex",
-                            "selectors": Object {
-                              ".ms-Button--default": Object {
-                                "borderBottomRightRadius": "0",
-                                "borderRight": "none",
-                                "borderTopRightRadius": "0",
-                                "flexGrow": "1",
-                              },
-                              ".ms-Button--primary": Object {
-                                "border": "none",
-                                "borderBottomRightRadius": "0",
-                                "borderTopRightRadius": "0",
-                                "flexGrow": "1",
-                                "selectors": Object {
+                                ".ms-Button--default + .ms-Button[aria-expanded=\\"true\\"]": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    ".ms-Button-menuIcon": Object {
+                                      "MsHighContrastAdjust": "none",
+                                      "backgroundColor": "HighlightText",
+                                      "color": "Highlight",
+                                      "forcedColorAdjust": "none",
+                                    },
+                                    "backgroundColor": "HighlightText",
+                                    "borderColor": "Highlight",
+                                    "color": "Highlight",
+                                  },
+                                },
+                                ".ms-Button--primary": Object {
                                   ":active": Object {
                                     "border": "none",
                                   },
@@ -1536,6 +1581,15 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     "border": "none",
                                   },
                                   "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    ":active": Object {
+                                      "border": "1px solid Highlight",
+                                    },
+                                    ":hover": Object {
+                                      "backgroundColor": "Highlight",
+                                      "border": "1px solid Highlight",
+                                      "borderRightWidth": "0",
+                                      "color": "HighlightText",
+                                    },
                                     "MsHighContrastAdjust": "none",
                                     "backgroundColor": "Window",
                                     "border": "1px solid WindowText",
@@ -1543,595 +1597,590 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     "color": "WindowText",
                                     "forcedColorAdjust": "none",
                                   },
+                                  "border": "none",
+                                  "borderBottomRightRadius": "0",
+                                  "borderTopRightRadius": "0",
+                                  "flexGrow": "1",
                                 },
-                              },
-                              ".ms-Button--primary + .ms-Button": Object {
-                                "border": "none",
-                                "selectors": Object {
+                                ".ms-Button--primary + .ms-Button": Object {
                                   "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    ":hover": Object {
+                                      ".ms-Button-menuIcon": Object {
+                                        "MsHighContrastAdjust": "none",
+                                        "color": "HighlightText",
+                                        "forcedColorAdjust": "none",
+                                      },
+                                      "backgroundColor": "Highlight",
+                                      "borderColor": "Highlight",
+                                      "borderLeftWidth": "0",
+                                      "color": "HighlightText",
+                                    },
                                     "border": "1px solid WindowText",
                                     "borderLeftWidth": "0",
                                   },
+                                  "border": "none",
                                 },
-                              },
-                            },
-                          },
-                        ],
-                        "splitButtonContainerChecked": Object {
-                          "selectors": Object {
-                            ".ms-Button--primary": Object {
-                              "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                  "MsHighContrastAdjust": "none",
-                                  "backgroundColor": "WindowText",
-                                  "color": "Window",
-                                  "forcedColorAdjust": "none",
-                                },
-                              },
-                            },
-                          },
-                        },
-                        "splitButtonContainerCheckedHovered": Object {
-                          "selectors": Object {
-                            ".ms-Button--primary": Object {
-                              "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                  "MsHighContrastAdjust": "none",
-                                  "backgroundColor": "WindowText",
-                                  "color": "Window",
-                                  "forcedColorAdjust": "none",
-                                },
-                              },
-                            },
-                          },
-                        },
-                        "splitButtonContainerDisabled": Object {
-                          "border": "none",
-                          "outline": "none",
-                          "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              "MsHighContrastAdjust": "none",
-                              "backgroundColor": "Window",
-                              "borderColor": "GrayText",
-                              "color": "GrayText",
-                              "forcedColorAdjust": "none",
-                            },
-                          },
-                        },
-                        "splitButtonContainerFocused": Object {
-                          "outline": "none!important",
-                        },
-                        "splitButtonContainerHovered": Object {
-                          "selectors": Object {
-                            ".ms-Button--primary": Object {
-                              "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                  "backgroundColor": "Highlight",
-                                  "color": "Window",
-                                },
-                              },
-                            },
-                            ".ms-Button.is-disabled": Object {
-                              "color": "#a19f9d",
-                              "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                  "backgroundColor": "Window",
-                                  "borderColor": "GrayText",
-                                  "color": "GrayText",
-                                },
-                              },
-                            },
-                          },
-                        },
-                        "splitButtonDivider": Array [
-                          Object {
-                            "backgroundColor": "#ffffff",
-                            "bottom": 8,
-                            "position": "absolute",
-                            "right": 31,
-                            "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                "backgroundColor": "Window",
-                              },
-                            },
-                            "top": 8,
-                            "width": 1,
-                          },
-                          Object {
-                            "bottom": 8,
-                            "position": "absolute",
-                            "right": 31,
-                            "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                "backgroundColor": "WindowText",
-                              },
-                            },
-                            "top": 8,
-                            "width": 1,
-                          },
-                        ],
-                        "splitButtonDividerDisabled": Object {
-                          "bottom": 8,
-                          "position": "absolute",
-                          "right": 31,
-                          "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              "backgroundColor": "GrayText",
-                            },
-                          },
-                          "top": 8,
-                          "width": 1,
-                        },
-                        "splitButtonFlexContainer": Object {
-                          "alignItems": "center",
-                          "display": "flex",
-                          "flexWrap": "nowrap",
-                          "height": "100%",
-                          "justifyContent": "center",
-                        },
-                        "splitButtonMenuButton": Array [
-                          Object {
-                            "backgroundColor": "#0078d4",
-                            "color": "#ffffff",
-                            "selectors": Object {
-                              ":hover": Object {
-                                "backgroundColor": "#106ebe",
-                                "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    "color": "Highlight",
+                                ".ms-Button--primary + .ms-Button[aria-expanded=\\"true\\"]": Object {
+                                  ".ms-Button-menuIcon": Object {
+                                    "color": "HighlightText",
                                   },
+                                  "MsHighContrastAdjust": "none",
+                                  "backgroundColor": "Highlight",
+                                  "borderColor": "Highlight",
+                                  "color": "HighlightText",
+                                  "forcedColorAdjust": "none",
                                 },
-                              },
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                "backgroundColor": "Canvas",
-                              },
-                            },
-                          },
-                          Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              ".ms-Button-menuIcon": Object {
-                                "color": "WindowText",
-                              },
-                            },
-                            "border": "1px solid #8a8886",
-                            "borderBottomRightRadius": "2px",
-                            "borderLeft": "none",
-                            "borderRadius": 0,
-                            "borderTopRightRadius": "2px",
-                            "boxSizing": "border-box",
-                            "cursor": "pointer",
-                            "display": "inline-block",
-                            "height": "auto",
-                            "marginBottom": 0,
-                            "marginLeft": -1,
-                            "marginRight": 0,
-                            "marginTop": 0,
-                            "outline": "transparent",
-                            "padding": 6,
-                            "textAlign": "center",
-                            "textDecoration": "none",
-                            "userSelect": "none",
-                            "verticalAlign": "top",
-                            "width": 32,
-                          },
-                        ],
-                        "splitButtonMenuButtonChecked": Object {
-                          "backgroundColor": "#005a9e",
-                          "selectors": Object {
-                            ":hover": Object {
-                              "backgroundColor": "#005a9e",
-                            },
-                          },
-                        },
-                        "splitButtonMenuButtonDisabled": Array [
-                          Object {
-                            "backgroundColor": "#f3f2f1",
-                            "selectors": Object {
-                              ":hover": Object {
-                                "backgroundColor": "#f3f2f1",
-                              },
-                            },
-                          },
-                          Object {
-                            "border": "none",
-                            "pointerEvents": "none",
-                            "selectors": Object {
-                              ".ms-Button--primary": Object {
-                                "selectors": Object {
+                                ".ms-Button.is-disabled": Object {
                                   "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
                                   },
                                 },
+                                "display": "inline-flex",
                               },
-                              ".ms-Button-menuIcon": Object {
-                                "selectors": Object {
+                            ],
+                            "splitButtonContainerChecked": Object {
+                              ".ms-Button--primary": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "MsHighContrastAdjust": "none",
+                                  "backgroundColor": "WindowText",
+                                  "color": "Window",
+                                  "forcedColorAdjust": "none",
+                                },
+                              },
+                            },
+                            "splitButtonContainerCheckedHovered": Object {
+                              ".ms-Button--primary": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "MsHighContrastAdjust": "none",
+                                  "backgroundColor": "WindowText",
+                                  "color": "Window",
+                                  "forcedColorAdjust": "none",
+                                },
+                              },
+                            },
+                            "splitButtonContainerDisabled": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "MsHighContrastAdjust": "none",
+                                "backgroundColor": "Window",
+                                "borderColor": "GrayText",
+                                "color": "GrayText",
+                                "forcedColorAdjust": "none",
+                              },
+                              "border": "none",
+                              "outline": "none",
+                            },
+                            "splitButtonContainerFocused": Object {
+                              "outline": "none!important",
+                            },
+                            "splitButtonContainerHovered": Object {
+                              ".ms-Button--default.is-disabled": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "backgroundColor": "Window",
+                                  "borderColor": "GrayText",
+                                  "color": "GrayText",
+                                },
+                                "backgroundColor": "#f3f2f1",
+                                "color": "#a19f9d",
+                              },
+                              ".ms-Button--primary.is-disabled": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "backgroundColor": "Window",
+                                  "borderColor": "GrayText",
+                                  "color": "GrayText",
+                                },
+                                "backgroundColor": "#f3f2f1",
+                                "color": "#d2d0ce",
+                              },
+                            },
+                            "splitButtonDivider": Array [
+                              Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "backgroundColor": "Window",
+                                },
+                                "backgroundColor": "#ffffff",
+                                "bottom": 8,
+                                "position": "absolute",
+                                "right": 31,
+                                "top": 8,
+                                "width": 1,
+                              },
+                              Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "backgroundColor": "WindowText",
+                                },
+                                "bottom": 8,
+                                "position": "absolute",
+                                "right": 31,
+                                "top": 8,
+                                "width": 1,
+                              },
+                            ],
+                            "splitButtonDividerDisabled": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "backgroundColor": "GrayText",
+                              },
+                              "bottom": 8,
+                              "position": "absolute",
+                              "right": 31,
+                              "top": 8,
+                              "width": 1,
+                            },
+                            "splitButtonFlexContainer": Object {
+                              "alignItems": "center",
+                              "display": "flex",
+                              "flexWrap": "nowrap",
+                              "height": "100%",
+                              "justifyContent": "center",
+                            },
+                            "splitButtonMenuButton": Array [
+                              Object {
+                                ":hover": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    "color": "Highlight",
+                                  },
+                                  "backgroundColor": "#106ebe",
+                                },
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "backgroundColor": "Canvas",
+                                },
+                                "backgroundColor": "#0078d4",
+                                "color": "#ffffff",
+                              },
+                              Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  ".ms-Button-menuIcon": Object {
+                                    "color": "WindowText",
+                                  },
+                                },
+                                "border": "1px solid #8a8886",
+                                "borderBottomRightRadius": "2px",
+                                "borderLeft": "none",
+                                "borderRadius": 0,
+                                "borderTopRightRadius": "2px",
+                                "boxSizing": "border-box",
+                                "cursor": "pointer",
+                                "display": "inline-block",
+                                "height": "auto",
+                                "marginBottom": 0,
+                                "marginLeft": -1,
+                                "marginRight": 0,
+                                "marginTop": 0,
+                                "outline": "transparent",
+                                "padding": 6,
+                                "textAlign": "center",
+                                "textDecoration": "none",
+                                "userSelect": "none",
+                                "verticalAlign": "top",
+                                "width": 32,
+                              },
+                            ],
+                            "splitButtonMenuButtonChecked": Object {
+                              ":hover": Object {
+                                "backgroundColor": "#005a9e",
+                              },
+                              "backgroundColor": "#005a9e",
+                            },
+                            "splitButtonMenuButtonDisabled": Array [
+                              Object {
+                                ":hover": Object {
+                                  "backgroundColor": "#f3f2f1",
+                                },
+                                "backgroundColor": "#f3f2f1",
+                              },
+                              Object {
+                                ".ms-Button--primary": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    "backgroundColor": "Window",
+                                    "borderColor": "GrayText",
+                                    "color": "GrayText",
+                                  },
+                                },
+                                ".ms-Button-menuIcon": Object {
                                   "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
+                                ":hover": Object {
+                                  "cursor": "default",
+                                },
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "backgroundColor": "Window",
+                                  "border": "1px solid GrayText",
+                                  "color": "GrayText",
+                                },
+                                "border": "none",
+                                "pointerEvents": "none",
                               },
+                            ],
+                            "splitButtonMenuButtonExpanded": Object {
                               ":hover": Object {
-                                "cursor": "default",
+                                "backgroundColor": "#005a9e",
                               },
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                "backgroundColor": "Window",
-                                "border": "1px solid GrayText",
-                                "color": "GrayText",
-                              },
-                            },
-                          },
-                        ],
-                        "splitButtonMenuButtonExpanded": Object {
-                          "backgroundColor": "#005a9e",
-                          "selectors": Object {
-                            ":hover": Object {
                               "backgroundColor": "#005a9e",
                             },
-                          },
-                        },
-                        "splitButtonMenuFocused": Object {
-                          "outline": "transparent",
-                          "position": "relative",
-                          "selectors": Object {
-                            ".ms-Fabric--isFocusVisible &:focus:after": Object {
-                              "border": "1px solid #ffffff",
-                              "borderRadius": undefined,
-                              "bottom": 3,
-                              "content": "\\"\\"",
-                              "left": 3,
-                              "outline": "1px solid #605e5c",
-                              "pointerEvents": undefined,
-                              "position": "absolute",
-                              "right": 3,
+                            "splitButtonMenuFocused": Object {
+                              "outline": "transparent",
+                              "position": "relative",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                  "border": "none",
-                                  "bottom": -2,
-                                  "left": -2,
-                                  "right": -2,
-                                  "top": -2,
+                                ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                                  "border": "1px solid #ffffff",
+                                  "borderRadius": undefined,
+                                  "bottom": 3,
+                                  "content": "\\"\\"",
+                                  "left": 3,
+                                  "outline": "1px solid #605e5c",
+                                  "pointerEvents": undefined,
+                                  "position": "absolute",
+                                  "right": 3,
+                                  "selectors": Object {
+                                    "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                      "border": "none",
+                                      "bottom": -2,
+                                      "left": -2,
+                                      "right": -2,
+                                      "top": -2,
+                                    },
+                                  },
+                                  "top": 3,
+                                  "zIndex": 1,
+                                },
+                                "::-moz-focus-inner": Object {
+                                  "border": "0",
                                 },
                               },
-                              "top": 3,
-                              "zIndex": 1,
                             },
-                            "::-moz-focus-inner": Object {
-                              "border": "0",
+                            "splitButtonMenuIcon": Object {
+                              "color": "#ffffff",
                             },
-                          },
-                        },
-                        "splitButtonMenuIcon": Object {
-                          "color": "#ffffff",
-                        },
-                        "splitButtonMenuIconDisabled": Object {
-                          "color": "#a19f9d",
-                          "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                              "color": "GrayText",
+                            "splitButtonMenuIconDisabled": Object {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "color": "GrayText",
+                              },
+                              "color": "#a19f9d",
                             },
-                          },
-                        },
-                        "textContainer": Object {
-                          "display": "block",
-                          "flexGrow": 1,
-                        },
-                      }
-                    }
-                    text="Add Entity"
-                    theme={
-                      Object {
-                        "disableGlobalClassNames": false,
-                        "effects": Object {
-                          "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
-                          "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                          "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
-                          "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                          "roundedCorner2": "2px",
-                          "roundedCorner4": "4px",
-                          "roundedCorner6": "6px",
-                        },
-                        "fonts": Object {
-                          "large": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "18px",
-                            "fontWeight": 400,
-                          },
-                          "medium": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "14px",
-                            "fontWeight": 400,
-                          },
-                          "mediumPlus": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "16px",
-                            "fontWeight": 400,
-                          },
-                          "mega": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "68px",
-                            "fontWeight": 600,
-                          },
-                          "small": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "12px",
-                            "fontWeight": 400,
-                          },
-                          "smallPlus": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "12px",
-                            "fontWeight": 400,
-                          },
-                          "superLarge": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "42px",
-                            "fontWeight": 600,
-                          },
-                          "tiny": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "10px",
-                            "fontWeight": 400,
-                          },
-                          "xLarge": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "20px",
-                            "fontWeight": 600,
-                          },
-                          "xLargePlus": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "24px",
-                            "fontWeight": 600,
-                          },
-                          "xSmall": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "10px",
-                            "fontWeight": 400,
-                          },
-                          "xxLarge": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "28px",
-                            "fontWeight": 600,
-                          },
-                          "xxLargePlus": Object {
-                            "MozOsxFontSmoothing": "grayscale",
-                            "WebkitFontSmoothing": "antialiased",
-                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                            "fontSize": "32px",
-                            "fontWeight": 600,
-                          },
-                        },
-                        "isInverted": false,
-                        "palette": Object {
-                          "accent": "#0078d4",
-                          "black": "#000000",
-                          "blackTranslucent40": "rgba(0,0,0,.4)",
-                          "blue": "#0078d4",
-                          "blueDark": "#002050",
-                          "blueLight": "#00bcf2",
-                          "blueMid": "#00188f",
-                          "green": "#107c10",
-                          "greenDark": "#004b1c",
-                          "greenLight": "#bad80a",
-                          "magenta": "#b4009e",
-                          "magentaDark": "#5c005c",
-                          "magentaLight": "#e3008c",
-                          "neutralDark": "#201f1e",
-                          "neutralLight": "#edebe9",
-                          "neutralLighter": "#f3f2f1",
-                          "neutralLighterAlt": "#faf9f8",
-                          "neutralPrimary": "#323130",
-                          "neutralPrimaryAlt": "#3b3a39",
-                          "neutralQuaternary": "#d2d0ce",
-                          "neutralQuaternaryAlt": "#e1dfdd",
-                          "neutralSecondary": "#605e5c",
-                          "neutralSecondaryAlt": "#8a8886",
-                          "neutralTertiary": "#a19f9d",
-                          "neutralTertiaryAlt": "#c8c6c4",
-                          "orange": "#d83b01",
-                          "orangeLight": "#ea4300",
-                          "orangeLighter": "#ff8c00",
-                          "purple": "#5c2d91",
-                          "purpleDark": "#32145a",
-                          "purpleLight": "#b4a0ff",
-                          "red": "#e81123",
-                          "redDark": "#a4262c",
-                          "teal": "#008272",
-                          "tealDark": "#004b50",
-                          "tealLight": "#00b294",
-                          "themeDark": "#005a9e",
-                          "themeDarkAlt": "#106ebe",
-                          "themeDarker": "#004578",
-                          "themeLight": "#c7e0f4",
-                          "themeLighter": "#deecf9",
-                          "themeLighterAlt": "#eff6fc",
-                          "themePrimary": "#0078d4",
-                          "themeSecondary": "#2b88d8",
-                          "themeTertiary": "#71afe5",
-                          "white": "#ffffff",
-                          "whiteTranslucent40": "rgba(255,255,255,.4)",
-                          "yellow": "#ffb900",
-                          "yellowDark": "#d29200",
-                          "yellowLight": "#fff100",
-                        },
-                        "rtl": undefined,
-                        "semanticColors": Object {
-                          "accentButtonBackground": "#0078d4",
-                          "accentButtonText": "#ffffff",
-                          "actionLink": "#323130",
-                          "actionLinkHovered": "#201f1e",
-                          "blockingBackground": "#FDE7E9",
-                          "blockingIcon": "#FDE7E9",
-                          "bodyBackground": "#ffffff",
-                          "bodyBackgroundChecked": "#edebe9",
-                          "bodyBackgroundHovered": "#f3f2f1",
-                          "bodyDivider": "#edebe9",
-                          "bodyFrameBackground": "#ffffff",
-                          "bodyFrameDivider": "#edebe9",
-                          "bodyStandoutBackground": "#faf9f8",
-                          "bodySubtext": "#605e5c",
-                          "bodyText": "#323130",
-                          "bodyTextChecked": "#000000",
-                          "buttonBackground": "#ffffff",
-                          "buttonBackgroundChecked": "#c8c6c4",
-                          "buttonBackgroundCheckedHovered": "#edebe9",
-                          "buttonBackgroundDisabled": "#f3f2f1",
-                          "buttonBackgroundHovered": "#f3f2f1",
-                          "buttonBackgroundPressed": "#edebe9",
-                          "buttonBorder": "#8a8886",
-                          "buttonBorderDisabled": "#f3f2f1",
-                          "buttonText": "#323130",
-                          "buttonTextChecked": "#201f1e",
-                          "buttonTextCheckedHovered": "#000000",
-                          "buttonTextDisabled": "#a19f9d",
-                          "buttonTextHovered": "#201f1e",
-                          "buttonTextPressed": "#201f1e",
-                          "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                          "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                          "cardStandoutBackground": "#ffffff",
-                          "defaultStateBackground": "#faf9f8",
-                          "disabledBackground": "#f3f2f1",
-                          "disabledBodySubtext": "#c8c6c4",
-                          "disabledBodyText": "#a19f9d",
-                          "disabledBorder": "#c8c6c4",
-                          "disabledSubtext": "#d2d0ce",
-                          "disabledText": "#a19f9d",
-                          "errorBackground": "#FDE7E9",
-                          "errorIcon": "#A80000",
-                          "errorText": "#a4262c",
-                          "focusBorder": "#605e5c",
-                          "infoBackground": "#f3f2f1",
-                          "infoIcon": "#605e5c",
-                          "inputBackground": "#ffffff",
-                          "inputBackgroundChecked": "#0078d4",
-                          "inputBackgroundCheckedHovered": "#005a9e",
-                          "inputBorder": "#605e5c",
-                          "inputBorderHovered": "#323130",
-                          "inputFocusBorderAlt": "#0078d4",
-                          "inputForegroundChecked": "#ffffff",
-                          "inputIcon": "#0078d4",
-                          "inputIconDisabled": "#a19f9d",
-                          "inputIconHovered": "#005a9e",
-                          "inputPlaceholderBackgroundChecked": "#deecf9",
-                          "inputPlaceholderText": "#605e5c",
-                          "inputText": "#323130",
-                          "inputTextHovered": "#201f1e",
-                          "link": "#0078d4",
-                          "linkHovered": "#004578",
-                          "listBackground": "#ffffff",
-                          "listHeaderBackgroundHovered": "#f3f2f1",
-                          "listHeaderBackgroundPressed": "#edebe9",
-                          "listItemBackgroundChecked": "#edebe9",
-                          "listItemBackgroundCheckedHovered": "#e1dfdd",
-                          "listItemBackgroundHovered": "#f3f2f1",
-                          "listText": "#323130",
-                          "listTextColor": "#323130",
-                          "menuBackground": "#ffffff",
-                          "menuDivider": "#c8c6c4",
-                          "menuHeader": "#0078d4",
-                          "menuIcon": "#0078d4",
-                          "menuItemBackgroundChecked": "#edebe9",
-                          "menuItemBackgroundHovered": "#f3f2f1",
-                          "menuItemBackgroundPressed": "#edebe9",
-                          "menuItemText": "#323130",
-                          "menuItemTextHovered": "#201f1e",
-                          "messageLink": "#005A9E",
-                          "messageLinkHovered": "#004578",
-                          "messageText": "#323130",
-                          "primaryButtonBackground": "#0078d4",
-                          "primaryButtonBackgroundDisabled": "#f3f2f1",
-                          "primaryButtonBackgroundHovered": "#106ebe",
-                          "primaryButtonBackgroundPressed": "#005a9e",
-                          "primaryButtonBorder": "transparent",
-                          "primaryButtonText": "#ffffff",
-                          "primaryButtonTextDisabled": "#d2d0ce",
-                          "primaryButtonTextHovered": "#ffffff",
-                          "primaryButtonTextPressed": "#ffffff",
-                          "severeWarningBackground": "#FED9CC",
-                          "severeWarningIcon": "#D83B01",
-                          "smallInputBorder": "#605e5c",
-                          "successBackground": "#DFF6DD",
-                          "successIcon": "#107C10",
-                          "successText": "#107C10",
-                          "variantBorder": "#edebe9",
-                          "variantBorderHovered": "#a19f9d",
-                          "warningBackground": "#FFF4CE",
-                          "warningHighlight": "#ffb900",
-                          "warningIcon": "#797775",
-                          "warningText": "#323130",
-                        },
-                        "spacing": Object {
-                          "l1": "20px",
-                          "l2": "32px",
-                          "m": "16px",
-                          "s1": "8px",
-                          "s2": "4px",
-                        },
-                      }
-                    }
-                    type="submit"
-                    variantClassName="ms-Button--primary"
-                  >
-                    <button
-                      aria-label="Add Entity"
-                      className="ms-Button ms-Button--primary root-113"
-                      data-is-focusable={true}
-                      data-test="Panel/OkButton"
-                      id="sidePanelOkButton"
-                      onClick={[Function]}
-                      onKeyDown={[Function]}
-                      onKeyPress={[Function]}
-                      onKeyUp={[Function]}
-                      onMouseDown={[Function]}
-                      onMouseUp={[Function]}
-                      type="submit"
-                    >
-                      <span
-                        className="ms-Button-flexContainer flexContainer-114"
-                        data-automationid="splitbuttonprimary"
+                            "textContainer": Object {
+                              "display": "block",
+                              "flexGrow": 1,
+                            },
+                          }
+                        }
+                        text="Add Entity"
+                        theme={
+                          Object {
+                            "disableGlobalClassNames": false,
+                            "effects": Object {
+                              "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+                              "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                              "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+                              "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                              "roundedCorner2": "2px",
+                              "roundedCorner4": "4px",
+                              "roundedCorner6": "6px",
+                            },
+                            "fonts": Object {
+                              "large": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "18px",
+                                "fontWeight": 400,
+                              },
+                              "medium": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "14px",
+                                "fontWeight": 400,
+                              },
+                              "mediumPlus": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "16px",
+                                "fontWeight": 400,
+                              },
+                              "mega": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "68px",
+                                "fontWeight": 600,
+                              },
+                              "small": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "12px",
+                                "fontWeight": 400,
+                              },
+                              "smallPlus": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "12px",
+                                "fontWeight": 400,
+                              },
+                              "superLarge": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "42px",
+                                "fontWeight": 600,
+                              },
+                              "tiny": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "10px",
+                                "fontWeight": 400,
+                              },
+                              "xLarge": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "20px",
+                                "fontWeight": 600,
+                              },
+                              "xLargePlus": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "24px",
+                                "fontWeight": 600,
+                              },
+                              "xSmall": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "10px",
+                                "fontWeight": 400,
+                              },
+                              "xxLarge": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "28px",
+                                "fontWeight": 600,
+                              },
+                              "xxLargePlus": Object {
+                                "MozOsxFontSmoothing": "grayscale",
+                                "WebkitFontSmoothing": "antialiased",
+                                "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                "fontSize": "32px",
+                                "fontWeight": 600,
+                              },
+                            },
+                            "isInverted": false,
+                            "palette": Object {
+                              "accent": "#0078d4",
+                              "black": "#000000",
+                              "blackTranslucent40": "rgba(0,0,0,.4)",
+                              "blue": "#0078d4",
+                              "blueDark": "#002050",
+                              "blueLight": "#00bcf2",
+                              "blueMid": "#00188f",
+                              "green": "#107c10",
+                              "greenDark": "#004b1c",
+                              "greenLight": "#bad80a",
+                              "magenta": "#b4009e",
+                              "magentaDark": "#5c005c",
+                              "magentaLight": "#e3008c",
+                              "neutralDark": "#201f1e",
+                              "neutralLight": "#edebe9",
+                              "neutralLighter": "#f3f2f1",
+                              "neutralLighterAlt": "#faf9f8",
+                              "neutralPrimary": "#323130",
+                              "neutralPrimaryAlt": "#3b3a39",
+                              "neutralQuaternary": "#d2d0ce",
+                              "neutralQuaternaryAlt": "#e1dfdd",
+                              "neutralSecondary": "#605e5c",
+                              "neutralSecondaryAlt": "#8a8886",
+                              "neutralTertiary": "#a19f9d",
+                              "neutralTertiaryAlt": "#c8c6c4",
+                              "orange": "#d83b01",
+                              "orangeLight": "#ea4300",
+                              "orangeLighter": "#ff8c00",
+                              "purple": "#5c2d91",
+                              "purpleDark": "#32145a",
+                              "purpleLight": "#b4a0ff",
+                              "red": "#e81123",
+                              "redDark": "#a4262c",
+                              "teal": "#008272",
+                              "tealDark": "#004b50",
+                              "tealLight": "#00b294",
+                              "themeDark": "#005a9e",
+                              "themeDarkAlt": "#106ebe",
+                              "themeDarker": "#004578",
+                              "themeLight": "#c7e0f4",
+                              "themeLighter": "#deecf9",
+                              "themeLighterAlt": "#eff6fc",
+                              "themePrimary": "#0078d4",
+                              "themeSecondary": "#2b88d8",
+                              "themeTertiary": "#71afe5",
+                              "white": "#ffffff",
+                              "whiteTranslucent40": "rgba(255,255,255,.4)",
+                              "yellow": "#ffb900",
+                              "yellowDark": "#d29200",
+                              "yellowLight": "#fff100",
+                            },
+                            "rtl": undefined,
+                            "semanticColors": Object {
+                              "accentButtonBackground": "#0078d4",
+                              "accentButtonText": "#ffffff",
+                              "actionLink": "#323130",
+                              "actionLinkHovered": "#201f1e",
+                              "blockingBackground": "#FDE7E9",
+                              "blockingIcon": "#FDE7E9",
+                              "bodyBackground": "#ffffff",
+                              "bodyBackgroundChecked": "#edebe9",
+                              "bodyBackgroundHovered": "#f3f2f1",
+                              "bodyDivider": "#edebe9",
+                              "bodyFrameBackground": "#ffffff",
+                              "bodyFrameDivider": "#edebe9",
+                              "bodyStandoutBackground": "#faf9f8",
+                              "bodySubtext": "#605e5c",
+                              "bodyText": "#323130",
+                              "bodyTextChecked": "#000000",
+                              "buttonBackground": "#ffffff",
+                              "buttonBackgroundChecked": "#c8c6c4",
+                              "buttonBackgroundCheckedHovered": "#edebe9",
+                              "buttonBackgroundDisabled": "#f3f2f1",
+                              "buttonBackgroundHovered": "#f3f2f1",
+                              "buttonBackgroundPressed": "#edebe9",
+                              "buttonBorder": "#8a8886",
+                              "buttonBorderDisabled": "#f3f2f1",
+                              "buttonText": "#323130",
+                              "buttonTextChecked": "#201f1e",
+                              "buttonTextCheckedHovered": "#000000",
+                              "buttonTextDisabled": "#a19f9d",
+                              "buttonTextHovered": "#201f1e",
+                              "buttonTextPressed": "#201f1e",
+                              "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                              "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                              "cardStandoutBackground": "#ffffff",
+                              "defaultStateBackground": "#faf9f8",
+                              "disabledBackground": "#f3f2f1",
+                              "disabledBodySubtext": "#c8c6c4",
+                              "disabledBodyText": "#a19f9d",
+                              "disabledBorder": "#c8c6c4",
+                              "disabledSubtext": "#d2d0ce",
+                              "disabledText": "#a19f9d",
+                              "errorBackground": "#FDE7E9",
+                              "errorIcon": "#A80000",
+                              "errorText": "#a4262c",
+                              "focusBorder": "#605e5c",
+                              "infoBackground": "#f3f2f1",
+                              "infoIcon": "#605e5c",
+                              "inputBackground": "#ffffff",
+                              "inputBackgroundChecked": "#0078d4",
+                              "inputBackgroundCheckedHovered": "#005a9e",
+                              "inputBorder": "#605e5c",
+                              "inputBorderHovered": "#323130",
+                              "inputFocusBorderAlt": "#0078d4",
+                              "inputForegroundChecked": "#ffffff",
+                              "inputIcon": "#0078d4",
+                              "inputIconDisabled": "#a19f9d",
+                              "inputIconHovered": "#005a9e",
+                              "inputPlaceholderBackgroundChecked": "#deecf9",
+                              "inputPlaceholderText": "#605e5c",
+                              "inputText": "#323130",
+                              "inputTextHovered": "#201f1e",
+                              "link": "#0078d4",
+                              "linkHovered": "#004578",
+                              "listBackground": "#ffffff",
+                              "listHeaderBackgroundHovered": "#f3f2f1",
+                              "listHeaderBackgroundPressed": "#edebe9",
+                              "listItemBackgroundChecked": "#edebe9",
+                              "listItemBackgroundCheckedHovered": "#e1dfdd",
+                              "listItemBackgroundHovered": "#f3f2f1",
+                              "listText": "#323130",
+                              "listTextColor": "#323130",
+                              "menuBackground": "#ffffff",
+                              "menuDivider": "#c8c6c4",
+                              "menuHeader": "#0078d4",
+                              "menuIcon": "#0078d4",
+                              "menuItemBackgroundChecked": "#edebe9",
+                              "menuItemBackgroundHovered": "#f3f2f1",
+                              "menuItemBackgroundPressed": "#edebe9",
+                              "menuItemText": "#323130",
+                              "menuItemTextHovered": "#201f1e",
+                              "messageLink": "#005A9E",
+                              "messageLinkHovered": "#004578",
+                              "messageText": "#323130",
+                              "primaryButtonBackground": "#0078d4",
+                              "primaryButtonBackgroundDisabled": "#f3f2f1",
+                              "primaryButtonBackgroundHovered": "#106ebe",
+                              "primaryButtonBackgroundPressed": "#005a9e",
+                              "primaryButtonBorder": "transparent",
+                              "primaryButtonText": "#ffffff",
+                              "primaryButtonTextDisabled": "#d2d0ce",
+                              "primaryButtonTextHovered": "#ffffff",
+                              "primaryButtonTextPressed": "#ffffff",
+                              "severeWarningBackground": "#FED9CC",
+                              "severeWarningIcon": "#D83B01",
+                              "smallInputBorder": "#605e5c",
+                              "successBackground": "#DFF6DD",
+                              "successIcon": "#107C10",
+                              "successText": "#107C10",
+                              "variantBorder": "#edebe9",
+                              "variantBorderHovered": "#a19f9d",
+                              "warningBackground": "#FFF4CE",
+                              "warningHighlight": "#ffb900",
+                              "warningIcon": "#797775",
+                              "warningText": "#323130",
+                            },
+                            "spacing": Object {
+                              "l1": "20px",
+                              "l2": "32px",
+                              "m": "16px",
+                              "s1": "8px",
+                              "s2": "4px",
+                            },
+                          }
+                        }
+                        type="submit"
+                        variantClassName="ms-Button--primary"
                       >
-                        <span
-                          className="ms-Button-textContainer textContainer-115"
+                        <button
+                          aria-label="Add Entity"
+                          className="ms-Button ms-Button--primary root-113"
+                          data-is-focusable={true}
+                          data-test="Panel/OkButton"
+                          id="sidePanelOkButton"
+                          onClick={[Function]}
+                          onKeyDown={[Function]}
+                          onKeyPress={[Function]}
+                          onKeyUp={[Function]}
+                          onMouseDown={[Function]}
+                          onMouseUp={[Function]}
+                          type="submit"
                         >
                           <span
-                            className="ms-Button-label label-117"
-                            id="id__0"
-                            key="id__0"
+                            className="ms-Button-flexContainer flexContainer-114"
+                            data-automationid="splitbuttonprimary"
                           >
-                            Add Entity
+                            <span
+                              className="ms-Button-textContainer textContainer-115"
+                            >
+                              <span
+                                className="ms-Button-label label-117"
+                                id="id__0"
+                                key="id__0"
+                              >
+                                Add Entity
+                              </span>
+                            </span>
                           </span>
-                        </span>
-                      </span>
-                    </button>
-                    <FocusRects />
-                  </BaseButton>
-                </DefaultButton>
-              </CustomizedDefaultButton>
-            </PrimaryButton>
+                        </button>
+                        <FocusRects />
+                      </BaseButton>
+                    </DefaultButton>
+                  </MergeStylesShadowRootConsumer>
+                </CustomizedDefaultButton>
+              </PrimaryButton>
+            </MergeStylesShadowRootConsumer>
           </CustomizedPrimaryButton>
         </div>
       </PanelFooterComponent>
