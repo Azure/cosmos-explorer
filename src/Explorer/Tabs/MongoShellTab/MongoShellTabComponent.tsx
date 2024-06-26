@@ -1,6 +1,5 @@
 import { useMongoProxyEndpoint } from "Common/MongoProxyClient";
 import React, { Component } from "react";
-import * as Constants from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -113,12 +112,6 @@ export default class MongoShellTabComponent extends Component<
     const resourceId = databaseAccount?.id;
     const accountName = databaseAccount?.name;
     const documentEndpoint = databaseAccount?.properties.mongoEndpoint || databaseAccount?.properties.documentEndpoint;
-    const mongoEndpoint =
-      documentEndpoint.substr(
-        Constants.MongoDBAccounts.protocol.length + 3,
-        documentEndpoint.length -
-          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length),
-      ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();
     const apiEndpoint = this._useMongoProxyEndpoint
@@ -132,7 +125,7 @@ export default class MongoShellTabComponent extends Component<
         data: {
           resourceId: resourceId,
           accountName: accountName,
-          mongoEndpoint: mongoEndpoint,
+          mongoEndpoint: documentEndpoint,
           authorization: authorization,
           databaseId: databaseId,
           collectionId: collectionId,
