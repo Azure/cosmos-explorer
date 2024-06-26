@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
-import QueryError from "Common/QueryError";
+import QueryError, { createMonacoErrorLocationResolver } from "Common/QueryError";
 import { SplitterDirection } from "Common/Splitter";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -27,7 +27,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { Allotment } from "allotment";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
-import React, { Fragment } from "react";
+import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
 import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
@@ -152,9 +152,12 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   public isCopilotTabActive: boolean;
   private _iterator: MinimalQueryIterator;
   private queryAbortController: AbortController;
+  queryEditor: React.RefObject<EditorReact>;
 
   constructor(props: QueryTabComponentImplProps) {
     super(props);
+
+    this.queryEditor = createRef<EditorReact>();
 
     this.state = {
       toggleState: ToggleState.Result,
@@ -404,7 +407,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       });
 
       // Try to parse this as a query error
-      const queryErrors = QueryError.tryParse(error);
+      const queryErrors = QueryError.tryParse(error, createMonacoErrorLocationResolver(this.queryEditor.current.editor));
       this.setState({
         errors: queryErrors,
       })
@@ -695,6 +698,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
           <Allotment vertical={true}>
             <Allotment.Pane>
               <EditorReact
+                ref={this.queryEditor}
                 className={this.props.styles.queryEditor}
                 language={"sql"}
                 content={this.getEditorContent()}

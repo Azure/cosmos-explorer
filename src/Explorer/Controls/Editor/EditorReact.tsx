@@ -28,7 +28,7 @@ export interface EditorReactProps {
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
   private rootNode: HTMLElement;
-  private editor: monaco.editor.IStandaloneCodeEditor;
+  public editor: monaco.editor.IStandaloneCodeEditor;
   private selectionListener: monaco.IDisposable;
 
   public constructor(props: EditorReactProps) {

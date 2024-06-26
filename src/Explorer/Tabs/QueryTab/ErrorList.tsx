@@ -33,9 +33,13 @@ export const ErrorList: React.FC<{ errors: QueryError[]; }> = ({ errors }) => {
     }),
     createTableColumn<QueryError>({
       columnId: "location",
-      compare: (item1, item2) => item1.location.start - item2.location.start,
+      compare: (item1, item2) => item1.location?.start?.offset - item2.location?.start?.offset,
       renderHeaderCell: () => "Location",
-      renderCell: item => item.location ? `${item.location.start} .. ${item.location.end}` : "",
+      renderCell: item => item.location
+        ? (item.location.start.lineNumber
+          ? `Line ${item.location.start.lineNumber}`
+          : "<unknown>")
+        : "<no location>",
     }),
     createTableColumn<QueryError>({
       columnId: "message",

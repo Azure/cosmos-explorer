@@ -1,13 +1,29 @@
 import { getErrorMessage } from "Common/ErrorHandlingUtils";
+import { monaco } from "Explorer/LazyMonaco";
 
 export enum QueryErrorSeverity {
   Error = "Error",
   Warning = "Warning",
 }
 
-export interface QueryErrorLocation {
-  start: number,
-  end: number,
+export class QueryErrorLocation {
+  constructor(
+    public start: ErrorPosition,
+    public end: ErrorPosition) { }
+}
+
+export class ErrorPosition {
+  constructor(
+    public offset: number,
+    public lineNumber?: number,
+    public column?: number) { }
+
+  toString(): string {
+    if (this.lineNumber && this.column) {
+      return `(${this.lineNumber},${this.column})`;
+    }
+    return this.offset.toString();
+  }
 }
 
 // Maps severities to numbers for sorting.
@@ -18,6 +34,22 @@ const severityMap: Record<QueryErrorSeverity, number> = {
 
 export function compareSeverity(left: QueryErrorSeverity, right: QueryErrorSeverity): number {
   return severityMap[left] - severityMap[right]
+}
+
+export function createMonacoErrorLocationResolver(editor: monaco.editor.IStandaloneCodeEditor): (location: { start: number, end: number }) => QueryErrorLocation {
+  return ({ start, end }) => {
+    const model = editor.getModel();
+    if (!model) {
+      return new QueryErrorLocation(new ErrorPosition(start), new ErrorPosition(end));
+    }
+
+    const startPos = model.getPositionAt(start);
+    const endPos = model.getPositionAt(end);
+    return new QueryErrorLocation(
+      new ErrorPosition(start, startPos.lineNumber, startPos.column),
+      new ErrorPosition(end, endPos.lineNumber, endPos.column)
+    );
+  }
 }
 
 export default class QueryError {
@@ -32,8 +64,9 @@ export default class QueryError {
    * @param error The error to parse.
    * @returns An array of query errors if the error could be parsed, or null otherwise.
    */
-  static tryParse(error: unknown): QueryError[] {
-    const errors = QueryError.tryParseObject(error);
+  static tryParse(error: unknown, locationResolver?: (location: { start: number, end: number }) => QueryErrorLocation): QueryError[] {
+    locationResolver = locationResolver || (({ start, end }) => new QueryErrorLocation(new ErrorPosition(start), new ErrorPosition(end)));
+    const errors = QueryError.tryParseObject(error, locationResolver);
     if (errors !== null) {
       return errors;
     }
@@ -49,7 +82,7 @@ export default class QueryError {
     }
   }
 
-  static read(error: unknown): QueryError | null {
+  static read(error: unknown, locationResolver: (location: { start: number, end: number }) => QueryErrorLocation): QueryError | null {
     if (typeof error !== "object" || error === null) {
       return null;
     }
@@ -60,12 +93,12 @@ export default class QueryError {
     }
 
     const severity = "severity" in error && typeof error.severity === "string" ? error.severity as QueryErrorSeverity : undefined;
-    const location = "location" in error && typeof error.location === "object" ? error.location as QueryErrorLocation : undefined;
+    const location = "location" in error && typeof error.location === "object" ? locationResolver(error.location) : undefined;
     const code = "code" in error && typeof error.code === "string" ? error.code : undefined;
     return new QueryError(message, severity, code, location);
   }
 
-  private static tryParseObject(error: unknown): QueryError[] | null {
+  private static tryParseObject(error: unknown, locationResolver: (location: { start: number, end: number }) => QueryErrorLocation): QueryError[] | null {
     if (typeof error === "object" && "message" in error) {
       error = error.message;
     }
@@ -95,7 +128,7 @@ export default class QueryError {
 
     if (typeof parsed === "object" && "errors" in parsed &&
       Array.isArray(parsed.errors)) {
-      return parsed.errors.map(QueryError.read).filter(e => e !== null);
+      return parsed.errors.map(e => QueryError.read(e, locationResolver)).filter(e => e !== null);
     }
     return null;
   }
