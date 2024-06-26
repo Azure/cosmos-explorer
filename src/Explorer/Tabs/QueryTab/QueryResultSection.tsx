@@ -1,10 +1,10 @@
-import {
-  Stack,
-} from "@fluentui/react";
+import { Link } from "@fluentui/react-components";
 import QueryError from "Common/QueryError";
+import { IndeterminateProgressBar } from "Explorer/Controls/IndeterminateProgressBar";
+import { MessageBanner } from "Explorer/Controls/MessageBanner";
+import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import React from "react";
 import RunQuery from "../../../../images/RunQuery.png";
-import InfoColor from "../../../../images/info_color.svg";
 import { QueryResults } from "../../../Contracts/ViewModels";
 import { ErrorList } from "./ErrorList";
 import { ResultsView } from "./ResultsView";
@@ -18,14 +18,18 @@ export interface ResultsViewProps {
 interface QueryResultProps extends ResultsViewProps {
   queryEditorContent: string;
   errors: QueryError[];
+  isExecuting: boolean;
 }
 
 const ExecuteQueryCallToAction: React.FC = () => {
-  return <div className="queryEditorWatermark">
-    <p>
-      <img src={RunQuery} alt="Execute Query Watermark" />
-    </p>
-    <p className="queryEditorWatermarkText">Execute a query to see the results</p>
+  const styles = useQueryTabStyles();
+  return <div className={styles.executeCallToAction}>
+    <div>
+      <p>
+        <img src={RunQuery} aria-hidden="true" />
+      </p>
+      <p>Execute a query to see the results</p>
+    </div>
   </div>
 };
 
@@ -35,48 +39,37 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   errors,
   queryResults,
   executeQueryDocumentsPage,
+  isExecuting,
 }: QueryResultProps): JSX.Element => {
+  const styles = useQueryTabStyles();
   const maybeSubQuery = queryEditorContent && /.*\(.*SELECT.*\)/i.test(queryEditorContent);
 
-  return (
-    <Stack style={{ height: "100%" }}>
-      {isMongoDB && queryEditorContent.length === 0 && (
-        <div className="mongoQueryHelper">
-          Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong> or{" "}
-          <strong>
-            {"{ "}
-            {" }"}
-          </strong>{" "}
-          to get all the documents.
-        </div>
-      )}
-      {maybeSubQuery && (
-        <div className="warningErrorContainer" aria-live="assertive">
-          <div className="warningErrorContent">
-            <span>
-              <img className="paneErrorIcon" src={InfoColor} alt="Error" />
-            </span>
-            <span className="warningErrorDetailsLinkContainer">
-              We detected you may be using a subquery. To learn more about subqueries effectively,{" "}
-              <a
-                href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                visit the documentation
-              </a>
-            </span>
-          </div>
-        </div>
-      )}
-      {/* <!-- Query Results & Errors Content Container - Start--> */}
-      <div className="queryResultErrorContentContainer">
-        {errors.length > 0
-          ? <ErrorList errors={errors} />
-          : queryResults
-            ? <ResultsView queryResults={queryResults} executeQueryDocumentsPage={executeQueryDocumentsPage} isMongoDB={isMongoDB} />
-            : <ExecuteQueryCallToAction />}
-      </div>
-    </Stack>
-  );
+  return <div className={styles.queryResultsPanel}>
+    {isExecuting && <IndeterminateProgressBar />}
+    <MessageBanner messageId="QueryEditor.EmptyMongoQuery" visible={isMongoDB && queryEditorContent.length === 0} className={styles.queryResultsMessage}>
+      Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong> or{" "}
+      <strong>
+        {"{ "}
+        {" }"}
+      </strong>{" "}
+      to get all the documents.
+    </MessageBanner>
+    {/* {maybeSubQuery && ( */}
+    <MessageBanner messageId="QueryEditor.SubQueryWarning" visible={maybeSubQuery} className={styles.queryResultsMessage}>
+      We detected you may be using a subquery. To learn more about subqueries effectively,{" "}
+      <Link
+        href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        visit the documentation
+      </Link>
+    </MessageBanner>
+    {/* <!-- Query Results & Errors Content Container - Start--> */}
+    {errors.length > 0
+      ? <ErrorList errors={errors} />
+      : queryResults
+        ? <ResultsView queryResults={queryResults} executeQueryDocumentsPage={executeQueryDocumentsPage} isMongoDB={isMongoDB} />
+        : <ExecuteQueryCallToAction />}
+  </div>;
 };

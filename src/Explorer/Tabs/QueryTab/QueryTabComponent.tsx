@@ -11,6 +11,8 @@ import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptb
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { QueryTabStyles, useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
+import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
@@ -22,10 +24,10 @@ import {
   ruThresholdEnabled,
 } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { Allotment } from "allotment";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
 import React, { Fragment } from "react";
-import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
 import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
@@ -114,7 +116,8 @@ interface IQueryTabStates {
   errors?: QueryError[];
 }
 
-export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
+export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
+  const styles = useQueryTabStyles();
   const copilotStore = useCopilotStore();
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
@@ -125,10 +128,20 @@ export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any =
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
   };
-  return <QueryTabComponent {...queryTabProps}></QueryTabComponent>;
+  return <QueryTabComponentImpl styles={styles} {...queryTabProps}></QueryTabComponentImpl>;
 };
 
-export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
+export const QueryTabComponent = (props: IQueryTabComponentProps): any => {
+  const styles = useQueryTabStyles();
+  return <QueryTabComponentImpl styles={styles} {...props}></QueryTabComponentImpl>;
+};
+
+type QueryTabComponentImplProps = IQueryTabComponentProps & {
+  styles: QueryTabStyles;
+};
+
+// Inner (legacy) class component. We only use this component via one of the two functional components above (since we need to use the `useQueryTabStyles` hook).
+class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, IQueryTabStates> {
   public queryEditorId: string;
   public executeQueryButton: Button;
   public saveQueryButton: Button;
@@ -140,7 +153,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   private _iterator: MinimalQueryIterator;
   private queryAbortController: AbortController;
 
-  constructor(props: IQueryTabComponentProps) {
+  constructor(props: QueryTabComponentImplProps) {
     super(props);
 
     this.state = {
@@ -670,7 +683,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   private getEditorAndQueryResult(): JSX.Element {
     return (
       <Fragment>
-        <div className="tab-pane" id={this.props.tabId} role="tabpanel">
+        <CosmosFluentProvider id={this.props.tabId} className={this.props.styles.queryTab} role="tabpanel">
           {this.props.copilotEnabled && this.state.currentTabActive && this.state.copilotActive && (
             <QueryCopilotPromptbar
               explorer={this.props.collection.container}
@@ -679,32 +692,27 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
               containerId={this.props.collection.id()}
             ></QueryCopilotPromptbar>
           )}
-          <div className="tabPaneContentContainer">
-            <SplitterLayout
-              vertical={this.state.queryResultsView === SplitterDirection.Vertical}
-              primaryIndex={0}
-              primaryMinSize={100}
-              secondaryMinSize={200}
-            >
-              <Fragment>
-                <div className="queryEditor" style={{ height: "100%" }}>
-                  <EditorReact
-                    language={"sql"}
-                    content={this.getEditorContent()}
-                    isReadOnly={false}
-                    wordWrap={"on"}
-                    ariaLabel={"Editing Query"}
-                    lineNumbers={"on"}
-                    onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
-                    onContentSelected={(selectedContent: string) => this.onSelectedContent(selectedContent)}
-                  />
-                </div>
-              </Fragment>
+          <Allotment vertical={true}>
+            <Allotment.Pane>
+              <EditorReact
+                className={this.props.styles.queryEditor}
+                language={"sql"}
+                content={this.getEditorContent()}
+                isReadOnly={false}
+                wordWrap={"on"}
+                ariaLabel={"Editing Query"}
+                lineNumbers={"on"}
+                onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
+                onContentSelected={(selectedContent: string) => this.onSelectedContent(selectedContent)}
+              />
+            </Allotment.Pane>
+            <Allotment.Pane>
               {this.props.isSampleCopilotActive ? (
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}
                   queryEditorContent={this.state.sqlQueryEditorContent}
                   errors={this.props.copilotStore?.errors}
+                  isExecuting={this.props.copilotStore?.isExecuting}
                   queryResults={this.props.copilotStore?.queryResults}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     QueryDocumentsPerPage(
@@ -719,15 +727,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                   isMongoDB={this.props.isPreferredApiMongoDB}
                   queryEditorContent={this.state.sqlQueryEditorContent}
                   errors={this.state.errors}
+                  isExecuting={this.state.isExecuting}
                   queryResults={this.state.queryResults}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     this._executeQueryDocumentsPage(firstItemIndex)
                   }
                 />
               )}
-            </SplitterLayout>
-          </div>
-        </div>
+            </Allotment.Pane>
+          </Allotment>
+        </CosmosFluentProvider>
         {this.props.copilotEnabled && this.props.copilotStore?.showFeedbackModal && (
           <QueryCopilotFeedbackModal
             explorer={this.props.collection.container}

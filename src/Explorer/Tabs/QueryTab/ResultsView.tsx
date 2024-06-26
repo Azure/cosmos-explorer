@@ -1,29 +1,71 @@
-import {
-  DetailsList,
-  DetailsListLayoutMode,
-  IColumn,
-  Icon,
-  IconButton,
-  Link,
-  Pivot,
-  PivotItem,
-  SelectionMode, Text,
-  TooltipHost
-} from "@fluentui/react";
-import { HttpHeaders, NormalizedEventKey } from "Common/Constants";
+import { Button, DataGrid, DataGridBody, DataGridCell, DataGridHeader, DataGridHeaderCell, DataGridRow, SelectTabData, SelectTabEvent, Tab, TabList, TableColumnDefinition, createTableColumn } from "@fluentui/react-components";
+import { ArrowDownloadRegular, CopyRegular } from "@fluentui/react-icons";
+import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
 import { QueryMetrics } from "Contracts/DataModels";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { IDocument } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import { userContext } from "UserContext";
 import copy from "clipboard-copy";
-import React from "react";
-import CopilotCopy from "../../../../images/CopilotCopy.svg";
-import DownloadQueryMetrics from "../../../../images/DownloadQuery.svg";
-import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
+import React, { useCallback, useState } from "react";
 import { ResultsViewProps } from "./QueryResultSection";
 
-export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResults, executeQueryDocumentsPage }) => {
+enum ResultsTabs {
+  Results = "results",
+  QueryStats = "queryStats",
+}
+
+const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, executeQueryDocumentsPage }) => {
+  const styles = useQueryTabStyles();
+  const queryResultsString = queryResults
+    ? isMongoDB
+      ? MongoUtility.tojson(queryResults.documents, undefined, false)
+      : JSON.stringify(queryResults.documents, undefined, 4)
+    : "";
+
+  const onClickCopyResults = (): void => {
+    copy(queryResultsString);
+  };
+
+  const onFetchNextPageClick = async (): Promise<void> => {
+    const { firstItemIndex, itemCount } = queryResults;
+    await executeQueryDocumentsPage(firstItemIndex + itemCount - 1);
+  };
+
+  return <>
+    <div className={styles.queryResultsBar}>
+      <div>
+          {queryResults.itemCount > 0
+            ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}`
+            : `0 - 0`}
+      </div>
+      {queryResults.hasMoreResults && (
+        <a href="#" onClick={() => onFetchNextPageClick()}>
+          Load more
+        </a>
+      )}
+      <div className={styles.flexGrowSpacer} />
+      <Button
+        size="small"
+        appearance="transparent"
+        icon={<CopyRegular />}
+        title="Copy to Clipboard"
+        aria-label="Copy"
+        onClick={onClickCopyResults} />
+    </div>
+    <div className={styles.queryResultsViewer}>
+      <EditorReact
+        language={"json"}
+        content={queryResultsString}
+        isReadOnly={true}
+        ariaLabel={"Query results"} />
+    </div>
+  </>;
+}
+
+const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ queryResults }) => {
+  const styles = useQueryTabStyles();
   const queryMetrics = React.useRef(queryResults?.headers?.[HttpHeaders.queryMetrics]);
   React.useEffect(() => {
     const latestQueryMetrics = queryResults?.headers?.[HttpHeaders.queryMetrics];
@@ -31,154 +73,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
       queryMetrics.current = latestQueryMetrics;
     }
   }, [queryResults]);
-
-
-  const generateQueryMetricsCsvData = (): string => {
-    if (queryMetrics.current) {
-      let csvData = [
-        "Partition key range id",
-        "Retrieved document count",
-        "Retrieved document size (in bytes)",
-        "Output document count",
-        "Output document size (in bytes)",
-        "Index hit document count",
-        "Index lookup time (ms)",
-        "Document load time (ms)",
-        "Query engine execution time (ms)",
-        "System function execution time (ms)",
-        "User defined function execution time (ms)",
-        "Document write time (ms)",
-      ].join(",") + "\n";
-
-      Object.keys(queryMetrics.current).forEach((partitionKeyRangeId) => {
-        const queryMetricsPerPartition = queryMetrics.current[partitionKeyRangeId];
-        csvData +=
-          [
-            partitionKeyRangeId,
-            queryMetricsPerPartition.retrievedDocumentCount,
-            queryMetricsPerPartition.retrievedDocumentSize,
-            queryMetricsPerPartition.outputDocumentCount,
-            queryMetricsPerPartition.outputDocumentSize,
-            queryMetricsPerPartition.indexHitDocumentCount,
-            queryMetricsPerPartition.indexLookupTime?.totalMilliseconds(),
-            queryMetricsPerPartition.documentLoadTime?.totalMilliseconds(),
-            queryMetricsPerPartition.runtimeExecutionTimes?.queryEngineExecutionTime?.totalMilliseconds(),
-            queryMetricsPerPartition.runtimeExecutionTimes?.systemFunctionExecutionTime?.totalMilliseconds(),
-            queryMetricsPerPartition.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.totalMilliseconds(),
-            queryMetricsPerPartition.documentWriteTime?.totalMilliseconds(),
-          ].join(",") + "\n";
-      });
-
-      return csvData;
-    }
-
-    return undefined;
-  };
-
-  const downloadQueryMetricsCsvData = (): void => {
-    const csvData: string = generateQueryMetricsCsvData();
-    if (!csvData) {
-      return;
-    }
-
-    if (navigator.msSaveBlob) {
-      // for IE and Edge
-      navigator.msSaveBlob(
-        new Blob([csvData], { type: "data:text/csv;charset=utf-8" }),
-        "PerPartitionQueryMetrics.csv"
-      );
-    } else {
-      const downloadLink: HTMLAnchorElement = document.createElement("a");
-      downloadLink.href = "data:text/csv;charset=utf-8," + encodeURI(csvData);
-      downloadLink.target = "_self";
-      downloadLink.download = "QueryMetricsPerPartition.csv";
-
-      // for some reason, FF displays the download prompt only when
-      // the link is added to the dom so we add and remove it
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      downloadLink.remove();
-    }
-  };
-
-  const onDownloadQueryMetricsCsvClick = (): boolean => {
-    downloadQueryMetricsCsvData();
-    return false;
-  };
-
-  const onDownloadQueryMetricsCsvKeyPress = (event: React.KeyboardEvent<HTMLAnchorElement>): boolean => {
-    if (event.key === NormalizedEventKey.Space || NormalizedEventKey.Enter) {
-      downloadQueryMetricsCsvData();
-      return false;
-    }
-
-    return true;
-  };
-
-  const queryResultsString = queryResults
-    ? isMongoDB
-      ? MongoUtility.tojson(queryResults.documents, undefined, false)
-      : JSON.stringify(queryResults.documents, undefined, 4)
-    : "";
-
-  const onFetchNextPageClick = async (): Promise<void> => {
-    const { firstItemIndex, itemCount } = queryResults;
-    await executeQueryDocumentsPage(firstItemIndex + itemCount - 1);
-  };
-
-  const onClickCopyResults = (): void => {
-    copy(queryResultsString);
-  };
-
-  const onRender = (item: IDocument): JSX.Element => (
-    <>
-      <Text style={{ paddingLeft: 10, margin: 0 }}>{`${item.metric}`}</Text>
-    </>
-  );
-
-  const columns: IColumn[] = [
-    {
-      key: "column1",
-      name: "Description",
-      iconName: "Info",
-      isIconOnly: true,
-      minWidth: 10,
-      maxWidth: 12,
-      iconClassName: "iconheadercell",
-      data: String,
-      fieldName: "",
-      onRender: (item: IDocument) => {
-        if (item.toolTip !== "") {
-          return (
-            <>
-              <TooltipHost content={`${item.toolTip}`}>
-                <Link style={{ color: "#323130" }}>
-                  <Icon iconName="Info" ariaLabel={`${item.toolTip}`} className="panelInfoIcon" tabIndex={0} />
-                </Link>
-              </TooltipHost>
-            </>
-          );
-        } else {
-          return undefined;
-        }
-      },
-    },
-    {
-      key: "column2",
-      name: "METRIC",
-      minWidth: 200,
-      data: String,
-      fieldName: "metric",
-      onRender,
-    },
-    {
-      key: "column3",
-      name: "VALUE",
-      minWidth: 200,
-      data: String,
-      fieldName: "value",
-    },
-  ];
 
   const getAggregatedQueryMetrics = (): QueryMetrics => {
     const aggregatedQueryMetrics = {
@@ -228,6 +122,20 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
 
     return aggregatedQueryMetrics;
   };
+
+  const columns: TableColumnDefinition<IDocument>[] = [
+    createTableColumn<IDocument>({
+      columnId: "metric",
+      renderHeaderCell: () => "Metric",
+      renderCell: (item) => item.metric,
+    }),
+    createTableColumn<IDocument>({
+      columnId: "value",
+      renderHeaderCell: () => "Value",
+      renderCell: (item) => item.value,
+    }),
+  ];
+
 
   const generateQueryStatsItems = (): IDocument[] => {
     const items: IDocument[] = [
@@ -323,99 +231,133 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
     return items;
   };
 
+  const generateQueryMetricsCsvData = (): string => {
+    if (queryMetrics.current) {
+      let csvData = [
+        "Partition key range id",
+        "Retrieved document count",
+        "Retrieved document size (in bytes)",
+        "Output document count",
+        "Output document size (in bytes)",
+        "Index hit document count",
+        "Index lookup time (ms)",
+        "Document load time (ms)",
+        "Query engine execution time (ms)",
+        "System function execution time (ms)",
+        "User defined function execution time (ms)",
+        "Document write time (ms)",
+      ].join(",") + "\n";
 
-  return <div className="queryResultsErrorsContent">
-    <Pivot aria-label="Successful execution" style={{ height: "100%" }}>
-      <PivotItem
-        headerText="Results"
-        headerButtonProps={{
-          "data-order": 1,
-          "data-title": "Results",
-        }}
-        style={{ height: "100%" }}
-      >
-        <div className="result-metadata">
-          <span>
-            <span>
-              {queryResults.itemCount > 0
-                ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}`
-                : `0 - 0`}
-            </span>
-          </span>
-          {queryResults.hasMoreResults && (
-            <>
-              <span className="queryResultDivider">|</span>
-              <span className="queryResultNextEnable">
-                <a onClick={() => onFetchNextPageClick()}>
-                  <span>Load more</span>
-                  <img className="queryResultnextImg" src={QueryEditorNext} alt="Fetch next page" />
-                </a>
-              </span>
-            </>
+      Object.keys(queryMetrics.current).forEach((partitionKeyRangeId) => {
+        const queryMetricsPerPartition = queryMetrics.current[partitionKeyRangeId];
+        csvData +=
+          [
+            partitionKeyRangeId,
+            queryMetricsPerPartition.retrievedDocumentCount,
+            queryMetricsPerPartition.retrievedDocumentSize,
+            queryMetricsPerPartition.outputDocumentCount,
+            queryMetricsPerPartition.outputDocumentSize,
+            queryMetricsPerPartition.indexHitDocumentCount,
+            queryMetricsPerPartition.indexLookupTime?.totalMilliseconds(),
+            queryMetricsPerPartition.documentLoadTime?.totalMilliseconds(),
+            queryMetricsPerPartition.runtimeExecutionTimes?.queryEngineExecutionTime?.totalMilliseconds(),
+            queryMetricsPerPartition.runtimeExecutionTimes?.systemFunctionExecutionTime?.totalMilliseconds(),
+            queryMetricsPerPartition.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.totalMilliseconds(),
+            queryMetricsPerPartition.documentWriteTime?.totalMilliseconds(),
+          ].join(",") + "\n";
+      });
+
+      return csvData;
+    }
+
+    return undefined;
+  };
+
+  const downloadQueryMetricsCsvData = (): void => {
+    const csvData: string = generateQueryMetricsCsvData();
+    if (!csvData) {
+      return;
+    }
+
+    if (navigator.msSaveBlob) {
+      // for IE and Edge
+      navigator.msSaveBlob(
+        new Blob([csvData], { type: "data:text/csv;charset=utf-8" }),
+        "PerPartitionQueryMetrics.csv"
+      );
+    } else {
+      const downloadLink: HTMLAnchorElement = document.createElement("a");
+      downloadLink.href = "data:text/csv;charset=utf-8," + encodeURI(csvData);
+      downloadLink.target = "_self";
+      downloadLink.download = "QueryMetricsPerPartition.csv";
+
+      // for some reason, FF displays the download prompt only when
+      // the link is added to the dom so we add and remove it
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+    }
+  };
+
+  const onDownloadQueryMetricsCsvClick = (): boolean => {
+    downloadQueryMetricsCsvData();
+    return false;
+  };
+
+  return <div className={styles.metricsGridContainer}>
+    <DataGrid
+      className={styles.queryStatsGrid}
+      items={generateQueryStatsItems()}
+      columns={columns}
+      sortable
+      getRowId={(item) => item.metric}
+      focusMode="composite">
+      <DataGridHeader>
+        <DataGridRow>
+          {({ renderHeaderCell }) => (
+            <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
           )}
-          <IconButton
-            style={{
-              height: "100%",
-              verticalAlign: "middle",
-              float: "right",
-            }}
-            iconProps={{ imageProps: { src: CopilotCopy } }}
-            title="Copy to Clipboard"
-            ariaLabel="Copy"
-            onClick={onClickCopyResults} />
-        </div>
-        <div
-          style={{
-            paddingBottom: "100px",
-            height: "100%",
-          }}
-        >
-          <EditorReact
-            language={"json"}
-            content={queryResultsString}
-            isReadOnly={true}
-            ariaLabel={"Query results"} />
-        </div>
-      </PivotItem>
-      <PivotItem
-        headerText="Query Stats"
-        headerButtonProps={{
-          "data-order": 2,
-          "data-title": "Query Stats",
-        }}
-        style={{ height: "100%", overflowY: "scroll" }}
-      >
-        {queryResults && (
-          <div className="queryMetricsSummaryContainer">
-            <div className="queryMetricsSummary">
-              <h3>Query Statistics</h3>
-              <DetailsList
-                items={generateQueryStatsItems()}
-                columns={columns}
-                selectionMode={SelectionMode.none}
-                layoutMode={DetailsListLayoutMode.justified}
-                compact={true} />
-            </div>
-            {userContext.apiType === "SQL" && (
-              <div className="downloadMetricsLinkContainer">
-                <a
-                  id="downloadMetricsLink"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => onDownloadQueryMetricsCsvClick()}
-                  onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) => onDownloadQueryMetricsCsvKeyPress(event)}
-                >
-                  <img
-                    className="downloadCsvImg"
-                    src={DownloadQueryMetrics}
-                    alt="download query metrics csv" />
-                  <span>Per-partition query metrics (CSV)</span>
-                </a>
-              </div>
+        </DataGridRow>
+      </DataGridHeader>
+      <DataGridBody<IDocument>>
+        {({ item, rowId }) => (
+          <DataGridRow<IDocument> key={rowId}>
+            {({ renderCell }) => (
+              <DataGridCell>{renderCell(item)}</DataGridCell>
             )}
-          </div>
+          </DataGridRow>
         )}
-      </PivotItem>
-    </Pivot>
+      </DataGridBody>
+    </DataGrid>
+    <div className={styles.metricsGridButtons}>
+      {userContext.apiType === "SQL" && (
+        <Button
+          appearance="subtle"
+          onClick={() => onDownloadQueryMetricsCsvClick()}
+          icon={<ArrowDownloadRegular />}>
+          Per-partition query metrics (CSV)
+        </Button>
+      )}
+    </div>
   </div>;
+};
+
+export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResults, executeQueryDocumentsPage }) => {
+  const styles = useQueryTabStyles();
+  const [activeTab, setActiveTab] = useState<ResultsTabs>(ResultsTabs.Results);
+
+  const onTabSelect = useCallback((event: SelectTabEvent, data: SelectTabData) => {
+    setActiveTab(data.value as ResultsTabs);
+  }, [])
+
+  return <div className={styles.queryResultsTabPanel}>
+    <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
+      <Tab id={ResultsTabs.Results} value={ResultsTabs.Results}>Results</Tab>
+      <Tab id={ResultsTabs.QueryStats} value={ResultsTabs.QueryStats}>Query Stats</Tab>
+    </TabList>
+    <div className={styles.queryResultsTabContentContainer}>
+      {activeTab === ResultsTabs.Results && <ResultsTab queryResults={queryResults} isMongoDB={isMongoDB} executeQueryDocumentsPage={executeQueryDocumentsPage} />}
+      {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
+    </div>
+  </div>
 };
