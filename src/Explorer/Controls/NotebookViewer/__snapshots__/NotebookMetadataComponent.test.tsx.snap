@@ -3,7 +3,7 @@
 exports[`NotebookMetadataComponent renders liked notebook 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 10,
     }
   }
@@ -11,7 +11,7 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
   <Stack
     horizontal={true}
     tokens={
-      Object {
+      {
         "childrenGap": 30,
       }
     }
@@ -29,7 +29,7 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
       <Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "HeartFill",
             }
           }
@@ -53,7 +53,7 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
   <Stack
     horizontal={true}
     tokens={
-      Object {
+      {
         "childrenGap": 10,
       }
     }
@@ -96,8 +96,8 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
   </Text>
   <Text
     styles={
-      Object {
-        "root": Object {
+      {
+        "root": {
           "fontWeight": 600,
         },
       }
@@ -115,7 +115,7 @@ exports[`NotebookMetadataComponent renders liked notebook 1`] = `
 exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 10,
     }
   }
@@ -123,7 +123,7 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
   <Stack
     horizontal={true}
     tokens={
-      Object {
+      {
         "childrenGap": 30,
       }
     }
@@ -141,7 +141,7 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
       <Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Heart",
             }
           }
@@ -165,7 +165,7 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
   <Stack
     horizontal={true}
     tokens={
-      Object {
+      {
         "childrenGap": 10,
       }
     }
@@ -208,8 +208,8 @@ exports[`NotebookMetadataComponent renders un-liked notebook 1`] = `
   </Text>
   <Text
     styles={
-      Object {
-        "root": Object {
+      {
+        "root": {
           "fontWeight": 600,
         },
       }

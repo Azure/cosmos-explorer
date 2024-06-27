@@ -2,12 +2,12 @@
 
 exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
 <AddTableEntityPanel
-  cassandraApiClient={Object {}}
-  queryTablesTab={Object {}}
+  cassandraApiClient={{}}
+  queryTablesTab={{}}
   tableDataClient={TablesAPIDataClient {}}
   tableEntityListViewModel={
-    Object {
-      "headers": Array [],
+    {
+      "headers": [],
       "items": [Function],
     }
   }
@@ -44,18 +44,18 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
               alt="Add Property"
               height={30}
               key=".0:$.$.0"
-              src={Object {}}
+              src={{}}
               width={16}
             >
               <ImageBase
                 alt="Add Property"
                 height={30}
-                src={Object {}}
+                src={{}}
                 styles={[Function]}
                 theme={
-                  Object {
+                  {
                     "disableGlobalClassNames": false,
-                    "effects": Object {
+                    "effects": {
                       "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                       "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                       "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -64,92 +64,92 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       "roundedCorner4": "4px",
                       "roundedCorner6": "6px",
                     },
-                    "fonts": Object {
-                      "large": Object {
+                    "fonts": {
+                      "large": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "18px",
                         "fontWeight": 400,
                       },
-                      "medium": Object {
+                      "medium": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "14px",
                         "fontWeight": 400,
                       },
-                      "mediumPlus": Object {
+                      "mediumPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "16px",
                         "fontWeight": 400,
                       },
-                      "mega": Object {
+                      "mega": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "68px",
                         "fontWeight": 600,
                       },
-                      "small": Object {
+                      "small": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "smallPlus": Object {
+                      "smallPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "superLarge": Object {
+                      "superLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "42px",
                         "fontWeight": 600,
                       },
-                      "tiny": Object {
+                      "tiny": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xLarge": Object {
+                      "xLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "20px",
                         "fontWeight": 600,
                       },
-                      "xLargePlus": Object {
+                      "xLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "24px",
                         "fontWeight": 600,
                       },
-                      "xSmall": Object {
+                      "xSmall": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xxLarge": Object {
+                      "xxLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "28px",
                         "fontWeight": 600,
                       },
-                      "xxLargePlus": Object {
+                      "xxLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -158,7 +158,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       },
                     },
                     "isInverted": false,
-                    "palette": Object {
+                    "palette": {
                       "accent": "#0078d4",
                       "black": "#000000",
                       "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -211,7 +211,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       "yellowLight": "#fff100",
                     },
                     "rtl": undefined,
-                    "semanticColors": Object {
+                    "semanticColors": {
                       "accentButtonBackground": "#0078d4",
                       "accentButtonText": "#ffffff",
                       "actionLink": "#323130",
@@ -316,7 +316,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       "warningIcon": "#797775",
                       "warningText": "#323130",
                     },
-                    "spacing": Object {
+                    "spacing": {
                       "l1": "20px",
                       "l2": "32px",
                       "m": "16px",
@@ -330,7 +330,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                 <div
                   className="ms-Image root-110"
                   style={
-                    Object {
+                    {
                       "height": 30,
                       "width": 16,
                     }
@@ -342,7 +342,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                     key="fabricImage[object Object]"
                     onError={[Function]}
                     onLoad={[Function]}
-                    src={Object {}}
+                    src={{}}
                   />
                 </div>
               </ImageBase>
@@ -384,8 +384,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                 disabled={false}
                 id="sidePanelOkButton"
                 styles={
-                  Object {
-                    "__shadowConfig__": Object {
+                  {
+                    "__shadowConfig__": {
                       "__isShadowConfig__": true,
                       "inShadow": false,
                       "stylesheetKey": "PrimaryButton",
@@ -395,9 +395,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                 }
                 text="Add Entity"
                 theme={
-                  Object {
+                  {
                     "disableGlobalClassNames": false,
-                    "effects": Object {
+                    "effects": {
                       "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                       "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                       "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -406,92 +406,92 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       "roundedCorner4": "4px",
                       "roundedCorner6": "6px",
                     },
-                    "fonts": Object {
-                      "large": Object {
+                    "fonts": {
+                      "large": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "18px",
                         "fontWeight": 400,
                       },
-                      "medium": Object {
+                      "medium": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "14px",
                         "fontWeight": 400,
                       },
-                      "mediumPlus": Object {
+                      "mediumPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "16px",
                         "fontWeight": 400,
                       },
-                      "mega": Object {
+                      "mega": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "68px",
                         "fontWeight": 600,
                       },
-                      "small": Object {
+                      "small": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "smallPlus": Object {
+                      "smallPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "superLarge": Object {
+                      "superLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "42px",
                         "fontWeight": 600,
                       },
-                      "tiny": Object {
+                      "tiny": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xLarge": Object {
+                      "xLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "20px",
                         "fontWeight": 600,
                       },
-                      "xLargePlus": Object {
+                      "xLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "24px",
                         "fontWeight": 600,
                       },
-                      "xSmall": Object {
+                      "xSmall": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xxLarge": Object {
+                      "xxLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "28px",
                         "fontWeight": 600,
                       },
-                      "xxLargePlus": Object {
+                      "xxLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -500,7 +500,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       },
                     },
                     "isInverted": false,
-                    "palette": Object {
+                    "palette": {
                       "accent": "#0078d4",
                       "black": "#000000",
                       "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -553,7 +553,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       "yellowLight": "#fff100",
                     },
                     "rtl": undefined,
-                    "semanticColors": Object {
+                    "semanticColors": {
                       "accentButtonBackground": "#0078d4",
                       "accentButtonText": "#ffffff",
                       "actionLink": "#323130",
@@ -658,7 +658,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       "warningIcon": "#797775",
                       "warningText": "#323130",
                     },
-                    "spacing": Object {
+                    "spacing": {
                       "l1": "20px",
                       "l2": "32px",
                       "m": "16px",
@@ -677,8 +677,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                   onRenderDescription={[Function]}
                   primary={true}
                   styles={
-                    Object {
-                      "__shadowConfig__": Object {
+                    {
+                      "__shadowConfig__": {
                         "__isShadowConfig__": true,
                         "inShadow": false,
                         "stylesheetKey": "PrimaryButton",
@@ -688,9 +688,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                   }
                   text="Add Entity"
                   theme={
-                    Object {
+                    {
                       "disableGlobalClassNames": false,
-                      "effects": Object {
+                      "effects": {
                         "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                         "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                         "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -699,92 +699,92 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         "roundedCorner4": "4px",
                         "roundedCorner6": "6px",
                       },
-                      "fonts": Object {
-                        "large": Object {
+                      "fonts": {
+                        "large": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "18px",
                           "fontWeight": 400,
                         },
-                        "medium": Object {
+                        "medium": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "14px",
                           "fontWeight": 400,
                         },
-                        "mediumPlus": Object {
+                        "mediumPlus": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "16px",
                           "fontWeight": 400,
                         },
-                        "mega": Object {
+                        "mega": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "68px",
                           "fontWeight": 600,
                         },
-                        "small": Object {
+                        "small": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "12px",
                           "fontWeight": 400,
                         },
-                        "smallPlus": Object {
+                        "smallPlus": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "12px",
                           "fontWeight": 400,
                         },
-                        "superLarge": Object {
+                        "superLarge": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "42px",
                           "fontWeight": 600,
                         },
-                        "tiny": Object {
+                        "tiny": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "10px",
                           "fontWeight": 400,
                         },
-                        "xLarge": Object {
+                        "xLarge": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "20px",
                           "fontWeight": 600,
                         },
-                        "xLargePlus": Object {
+                        "xLargePlus": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "24px",
                           "fontWeight": 600,
                         },
-                        "xSmall": Object {
+                        "xSmall": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "10px",
                           "fontWeight": 400,
                         },
-                        "xxLarge": Object {
+                        "xxLarge": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                           "fontSize": "28px",
                           "fontWeight": 600,
                         },
-                        "xxLargePlus": Object {
+                        "xxLargePlus": {
                           "MozOsxFontSmoothing": "grayscale",
                           "WebkitFontSmoothing": "antialiased",
                           "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -793,7 +793,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         },
                       },
                       "isInverted": false,
-                      "palette": Object {
+                      "palette": {
                         "accent": "#0078d4",
                         "black": "#000000",
                         "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -846,7 +846,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         "yellowLight": "#fff100",
                       },
                       "rtl": undefined,
-                      "semanticColors": Object {
+                      "semanticColors": {
                         "accentButtonBackground": "#0078d4",
                         "accentButtonText": "#ffffff",
                         "actionLink": "#323130",
@@ -951,7 +951,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         "warningIcon": "#797775",
                         "warningText": "#323130",
                       },
-                      "spacing": Object {
+                      "spacing": {
                         "l1": "20px",
                         "l2": "32px",
                         "m": "16px",
@@ -973,8 +973,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       onRenderDescription={[Function]}
                       primary={true}
                       styles={
-                        Object {
-                          "__shadowConfig__": Object {
+                        {
+                          "__shadowConfig__": {
                             "__isShadowConfig__": true,
                             "inShadow": false,
                             "stylesheetKey": "DefaultButton",
@@ -984,9 +984,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       }
                       text="Add Entity"
                       theme={
-                        Object {
+                        {
                           "disableGlobalClassNames": false,
-                          "effects": Object {
+                          "effects": {
                             "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                             "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                             "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -995,92 +995,92 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                             "roundedCorner4": "4px",
                             "roundedCorner6": "6px",
                           },
-                          "fonts": Object {
-                            "large": Object {
+                          "fonts": {
+                            "large": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "18px",
                               "fontWeight": 400,
                             },
-                            "medium": Object {
+                            "medium": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "14px",
                               "fontWeight": 400,
                             },
-                            "mediumPlus": Object {
+                            "mediumPlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "16px",
                               "fontWeight": 400,
                             },
-                            "mega": Object {
+                            "mega": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "68px",
                               "fontWeight": 600,
                             },
-                            "small": Object {
+                            "small": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "12px",
                               "fontWeight": 400,
                             },
-                            "smallPlus": Object {
+                            "smallPlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "12px",
                               "fontWeight": 400,
                             },
-                            "superLarge": Object {
+                            "superLarge": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "42px",
                               "fontWeight": 600,
                             },
-                            "tiny": Object {
+                            "tiny": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "10px",
                               "fontWeight": 400,
                             },
-                            "xLarge": Object {
+                            "xLarge": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "20px",
                               "fontWeight": 600,
                             },
-                            "xLargePlus": Object {
+                            "xLargePlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "24px",
                               "fontWeight": 600,
                             },
-                            "xSmall": Object {
+                            "xSmall": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "10px",
                               "fontWeight": 400,
                             },
-                            "xxLarge": Object {
+                            "xxLarge": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "28px",
                               "fontWeight": 600,
                             },
-                            "xxLargePlus": Object {
+                            "xxLargePlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -1089,7 +1089,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                             },
                           },
                           "isInverted": false,
-                          "palette": Object {
+                          "palette": {
                             "accent": "#0078d4",
                             "black": "#000000",
                             "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -1142,7 +1142,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                             "yellowLight": "#fff100",
                           },
                           "rtl": undefined,
-                          "semanticColors": Object {
+                          "semanticColors": {
                             "accentButtonBackground": "#0078d4",
                             "accentButtonText": "#ffffff",
                             "actionLink": "#323130",
@@ -1247,7 +1247,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                             "warningIcon": "#797775",
                             "warningText": "#323130",
                           },
-                          "spacing": Object {
+                          "spacing": {
                             "l1": "20px",
                             "l2": "32px",
                             "m": "16px",
@@ -1268,24 +1268,24 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         primary={true}
                         split={false}
                         styles={
-                          Object {
-                            "__shadowConfig__": Object {
+                          {
+                            "__shadowConfig__": {
                               "__isShadowConfig__": true,
                               "inShadow": false,
                               "stylesheetKey": "DefaultButton",
                               "window": [Window],
                             },
-                            "description": Object {
+                            "description": {
                               "display": "block",
                             },
-                            "flexContainer": Object {
+                            "flexContainer": {
                               "alignItems": "center",
                               "display": "flex",
                               "flexWrap": "nowrap",
                               "height": "100%",
                               "justifyContent": "center",
                             },
-                            "icon": Object {
+                            "icon": {
                               "flexShrink": 0,
                               "fontSize": "16px",
                               "height": "16px",
@@ -1293,23 +1293,23 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "margin": "0 4px",
                               "textAlign": "center",
                             },
-                            "iconDisabled": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "iconDisabled": {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                 "color": "GrayText",
                               },
                               "color": "#a19f9d",
                             },
-                            "label": Array [
-                              Object {
+                            "label": [
+                              {
                                 "display": "block",
                                 "lineHeight": "100%",
                                 "margin": "0 4px",
                               },
-                              Object {
+                              {
                                 "fontWeight": 600,
                               },
                             ],
-                            "menuIcon": Object {
+                            "menuIcon": {
                               "flexShrink": 0,
                               "fontSize": "12px",
                               "height": "16px",
@@ -1317,29 +1317,29 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "margin": "0 4px",
                               "textAlign": "center",
                             },
-                            "menuIconDisabled": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "menuIconDisabled": {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                 "color": "GrayText",
                               },
                               "color": "#a19f9d",
                             },
-                            "root": Array [
-                              Object {
+                            "root": [
+                              {
                                 "outline": "transparent",
                                 "position": "relative",
-                                "selectors": Object {
-                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                                "selectors": {
+                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": {
                                     "border": "1px solid transparent",
                                     "borderRadius": undefined,
                                     "bottom": 2,
-                                    "content": "\\"\\"",
+                                    "content": """",
                                     "left": 2,
                                     "outline": "1px solid #605e5c",
                                     "pointerEvents": undefined,
                                     "position": "absolute",
                                     "right": 2,
-                                    "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    "selectors": {
+                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                         "bottom": -2,
                                         "left": -2,
                                         "outlineColor": "ButtonText",
@@ -1350,20 +1350,20 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     "top": 2,
                                     "zIndex": 1,
                                   },
-                                  "::-moz-focus-inner": Object {
+                                  "::-moz-focus-inner": {
                                     "border": "0",
                                   },
                                 },
                               },
-                              Object {
+                              {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "14px",
                                 "fontWeight": 400,
                               },
-                              Object {
-                                ":active > span": Object {
+                              {
+                                ":active > span": {
                                   "left": 0,
                                   "position": "relative",
                                   "top": 0,
@@ -1378,18 +1378,18 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "textDecoration": "none",
                                 "userSelect": "none",
                               },
-                              Object {
+                              {
                                 "height": "32px",
                                 "minWidth": "80px",
                               },
-                              Object {
-                                ".ms-Fabric--isFocusVisible &:focus, :host(.ms-Fabric--isFocusVisible) &:focus": Object {
-                                  ":after": Object {
+                              {
+                                ".ms-Fabric--isFocusVisible &:focus, :host(.ms-Fabric--isFocusVisible) &:focus": {
+                                  ":after": {
                                     "border": "none",
                                     "outlineColor": "#ffffff",
                                   },
                                 },
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "borderColor": "WindowText",
@@ -1401,31 +1401,31 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "color": "#ffffff",
                               },
                             ],
-                            "rootChecked": Object {
+                            "rootChecked": {
                               "backgroundColor": "#005a9e",
                               "color": "#ffffff",
                             },
-                            "rootCheckedHovered": Object {
+                            "rootCheckedHovered": {
                               "backgroundColor": "#005a9e",
                               "color": "#ffffff",
                             },
-                            "rootDisabled": Array [
-                              Object {
+                            "rootDisabled": [
+                              {
                                 "outline": "transparent",
                                 "position": "relative",
-                                "selectors": Object {
-                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                                "selectors": {
+                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": {
                                     "border": "1px solid transparent",
                                     "borderRadius": undefined,
                                     "bottom": 2,
-                                    "content": "\\"\\"",
+                                    "content": """",
                                     "left": 2,
                                     "outline": "1px solid #605e5c",
                                     "pointerEvents": undefined,
                                     "position": "absolute",
                                     "right": 2,
-                                    "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    "selectors": {
+                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                         "bottom": -2,
                                         "left": -2,
                                         "outlineColor": "ButtonText",
@@ -1436,16 +1436,16 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     "top": 2,
                                     "zIndex": 1,
                                   },
-                                  "::-moz-focus-inner": Object {
+                                  "::-moz-focus-inner": {
                                     "border": "0",
                                   },
                                 },
                               },
-                              Object {
-                                ":focus": Object {
+                              {
+                                ":focus": {
                                   "outline": 0,
                                 },
-                                ":hover": Object {
+                                ":hover": {
                                   "outline": 0,
                                 },
                                 "backgroundColor": "#f3f2f1",
@@ -1453,8 +1453,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "color": "#a19f9d",
                                 "cursor": "default",
                               },
-                              Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                              {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -1463,12 +1463,12 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "color": "#d2d0ce",
                               },
                             ],
-                            "rootExpanded": Object {
+                            "rootExpanded": {
                               "backgroundColor": "#005a9e",
                               "color": "#ffffff",
                             },
-                            "rootHovered": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "rootHovered": {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                 "backgroundColor": "Highlight",
                                 "borderColor": "Highlight",
                                 "color": "Window",
@@ -1477,8 +1477,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "border": "1px solid #106ebe",
                               "color": "#ffffff",
                             },
-                            "rootPressed": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "rootPressed": {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "borderColor": "WindowText",
@@ -1489,7 +1489,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "border": "1px solid #005a9e",
                               "color": "#ffffff",
                             },
-                            "screenReaderText": Object {
+                            "screenReaderText": {
                               "border": 0,
                               "height": 1,
                               "margin": -1,
@@ -1499,28 +1499,28 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "whiteSpace": "nowrap",
                               "width": 1,
                             },
-                            "splitButtonContainer": Array [
-                              Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonContainer": [
+                              {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "border": "none",
                                 },
                               },
-                              Object {
+                              {
                                 "outline": "transparent",
                                 "position": "relative",
-                                "selectors": Object {
-                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                                "selectors": {
+                                  ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": {
                                     "border": "1px solid #ffffff",
                                     "borderRadius": undefined,
                                     "bottom": 3,
-                                    "content": "\\"\\"",
+                                    "content": """",
                                     "left": 3,
                                     "outline": "1px solid #605e5c",
                                     "pointerEvents": "none",
                                     "position": "absolute",
                                     "right": 3,
-                                    "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                    "selectors": {
+                                      "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                         "border": "none",
                                         "bottom": -2,
                                         "left": -2,
@@ -1531,22 +1531,22 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     "top": 3,
                                     "zIndex": 1,
                                   },
-                                  "::-moz-focus-inner": Object {
+                                  "::-moz-focus-inner": {
                                     "border": "0",
                                   },
                                 },
                               },
-                              Object {
-                                ".ms-Button--default": Object {
+                              {
+                                ".ms-Button--default": {
                                   "borderBottomRightRadius": "0",
                                   "borderRight": "none",
                                   "borderTopRightRadius": "0",
                                   "flexGrow": "1",
                                 },
-                                ".ms-Button--default + .ms-Button": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    ":hover": Object {
-                                      ".ms-Button-menuIcon": Object {
+                                ".ms-Button--default + .ms-Button": {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
+                                    ":hover": {
+                                      ".ms-Button-menuIcon": {
                                         "MsHighContrastAdjust": "none",
                                         "backgroundColor": "HighlightText",
                                         "color": "Highlight",
@@ -1560,9 +1560,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     "borderLeftWidth": "0",
                                   },
                                 },
-                                ".ms-Button--default + .ms-Button[aria-expanded=\\"true\\"]": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    ".ms-Button-menuIcon": Object {
+                                ".ms-Button--default + .ms-Button[aria-expanded="true"]": {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
+                                    ".ms-Button-menuIcon": {
                                       "MsHighContrastAdjust": "none",
                                       "backgroundColor": "HighlightText",
                                       "color": "Highlight",
@@ -1573,18 +1573,18 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     "color": "Highlight",
                                   },
                                 },
-                                ".ms-Button--primary": Object {
-                                  ":active": Object {
+                                ".ms-Button--primary": {
+                                  ":active": {
                                     "border": "none",
                                   },
-                                  ":hover": Object {
+                                  ":hover": {
                                     "border": "none",
                                   },
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    ":active": Object {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
+                                    ":active": {
                                       "border": "1px solid Highlight",
                                     },
-                                    ":hover": Object {
+                                    ":hover": {
                                       "backgroundColor": "Highlight",
                                       "border": "1px solid Highlight",
                                       "borderRightWidth": "0",
@@ -1602,10 +1602,10 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                   "borderTopRightRadius": "0",
                                   "flexGrow": "1",
                                 },
-                                ".ms-Button--primary + .ms-Button": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                    ":hover": Object {
-                                      ".ms-Button-menuIcon": Object {
+                                ".ms-Button--primary + .ms-Button": {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
+                                    ":hover": {
+                                      ".ms-Button-menuIcon": {
                                         "MsHighContrastAdjust": "none",
                                         "color": "HighlightText",
                                         "forcedColorAdjust": "none",
@@ -1620,8 +1620,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                   },
                                   "border": "none",
                                 },
-                                ".ms-Button--primary + .ms-Button[aria-expanded=\\"true\\"]": Object {
-                                  ".ms-Button-menuIcon": Object {
+                                ".ms-Button--primary + .ms-Button[aria-expanded="true"]": {
+                                  ".ms-Button-menuIcon": {
                                     "color": "HighlightText",
                                   },
                                   "MsHighContrastAdjust": "none",
@@ -1630,8 +1630,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                   "color": "HighlightText",
                                   "forcedColorAdjust": "none",
                                 },
-                                ".ms-Button.is-disabled": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                ".ms-Button.is-disabled": {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
@@ -1640,9 +1640,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "display": "inline-flex",
                               },
                             ],
-                            "splitButtonContainerChecked": Object {
-                              ".ms-Button--primary": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonContainerChecked": {
+                              ".ms-Button--primary": {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -1650,9 +1650,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 },
                               },
                             },
-                            "splitButtonContainerCheckedHovered": Object {
-                              ".ms-Button--primary": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonContainerCheckedHovered": {
+                              ".ms-Button--primary": {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "color": "Window",
@@ -1660,8 +1660,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 },
                               },
                             },
-                            "splitButtonContainerDisabled": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonContainerDisabled": {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
@@ -1671,12 +1671,12 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "border": "none",
                               "outline": "none",
                             },
-                            "splitButtonContainerFocused": Object {
+                            "splitButtonContainerFocused": {
                               "outline": "none!important",
                             },
-                            "splitButtonContainerHovered": Object {
-                              ".ms-Button--default.is-disabled": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonContainerHovered": {
+                              ".ms-Button--default.is-disabled": {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -1684,8 +1684,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "backgroundColor": "#f3f2f1",
                                 "color": "#a19f9d",
                               },
-                              ".ms-Button--primary.is-disabled": Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                              ".ms-Button--primary.is-disabled": {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -1694,9 +1694,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "color": "#d2d0ce",
                               },
                             },
-                            "splitButtonDivider": Array [
-                              Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonDivider": [
+                              {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "backgroundColor": "Window",
                                 },
                                 "backgroundColor": "#ffffff",
@@ -1706,8 +1706,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "top": 8,
                                 "width": 1,
                               },
-                              Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                              {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "backgroundColor": "WindowText",
                                 },
                                 "bottom": 8,
@@ -1717,8 +1717,8 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "width": 1,
                               },
                             ],
-                            "splitButtonDividerDisabled": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonDividerDisabled": {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                 "backgroundColor": "GrayText",
                               },
                               "bottom": 8,
@@ -1727,30 +1727,30 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "top": 8,
                               "width": 1,
                             },
-                            "splitButtonFlexContainer": Object {
+                            "splitButtonFlexContainer": {
                               "alignItems": "center",
                               "display": "flex",
                               "flexWrap": "nowrap",
                               "height": "100%",
                               "justifyContent": "center",
                             },
-                            "splitButtonMenuButton": Array [
-                              Object {
-                                ":hover": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonMenuButton": [
+                              {
+                                ":hover": {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                     "color": "Highlight",
                                   },
                                   "backgroundColor": "#106ebe",
                                 },
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "backgroundColor": "Canvas",
                                 },
                                 "backgroundColor": "#0078d4",
                                 "color": "#ffffff",
                               },
-                              Object {
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
-                                  ".ms-Button-menuIcon": Object {
+                              {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
+                                  ".ms-Button-menuIcon": {
                                     "color": "WindowText",
                                   },
                                 },
@@ -1776,36 +1776,36 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "width": 32,
                               },
                             ],
-                            "splitButtonMenuButtonChecked": Object {
-                              ":hover": Object {
+                            "splitButtonMenuButtonChecked": {
+                              ":hover": {
                                 "backgroundColor": "#005a9e",
                               },
                               "backgroundColor": "#005a9e",
                             },
-                            "splitButtonMenuButtonDisabled": Array [
-                              Object {
-                                ":hover": Object {
+                            "splitButtonMenuButtonDisabled": [
+                              {
+                                ":hover": {
                                   "backgroundColor": "#f3f2f1",
                                 },
                                 "backgroundColor": "#f3f2f1",
                               },
-                              Object {
-                                ".ms-Button--primary": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                              {
+                                ".ms-Button--primary": {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
                                   },
                                 },
-                                ".ms-Button-menuIcon": Object {
-                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                ".ms-Button-menuIcon": {
+                                  "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                     "color": "GrayText",
                                   },
                                 },
-                                ":hover": Object {
+                                ":hover": {
                                   "cursor": "default",
                                 },
-                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                   "backgroundColor": "Window",
                                   "border": "1px solid GrayText",
                                   "color": "GrayText",
@@ -1814,28 +1814,28 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 "pointerEvents": "none",
                               },
                             ],
-                            "splitButtonMenuButtonExpanded": Object {
-                              ":hover": Object {
+                            "splitButtonMenuButtonExpanded": {
+                              ":hover": {
                                 "backgroundColor": "#005a9e",
                               },
                               "backgroundColor": "#005a9e",
                             },
-                            "splitButtonMenuFocused": Object {
+                            "splitButtonMenuFocused": {
                               "outline": "transparent",
                               "position": "relative",
-                              "selectors": Object {
-                                ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": Object {
+                              "selectors": {
+                                ".ms-Fabric--isFocusVisible &:focus:after, :host(.ms-Fabric--isFocusVisible) &:focus:after": {
                                   "border": "1px solid #ffffff",
                                   "borderRadius": undefined,
                                   "bottom": 3,
-                                  "content": "\\"\\"",
+                                  "content": """",
                                   "left": 3,
                                   "outline": "1px solid #605e5c",
                                   "pointerEvents": undefined,
                                   "position": "absolute",
                                   "right": 3,
-                                  "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                                  "selectors": {
+                                    "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                       "border": "none",
                                       "bottom": -2,
                                       "left": -2,
@@ -1846,21 +1846,21 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                   "top": 3,
                                   "zIndex": 1,
                                 },
-                                "::-moz-focus-inner": Object {
+                                "::-moz-focus-inner": {
                                   "border": "0",
                                 },
                               },
                             },
-                            "splitButtonMenuIcon": Object {
+                            "splitButtonMenuIcon": {
                               "color": "#ffffff",
                             },
-                            "splitButtonMenuIconDisabled": Object {
-                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": Object {
+                            "splitButtonMenuIconDisabled": {
+                              "@media screen and (-ms-high-contrast: active), screen and (forced-colors: active)": {
                                 "color": "GrayText",
                               },
                               "color": "#a19f9d",
                             },
-                            "textContainer": Object {
+                            "textContainer": {
                               "display": "block",
                               "flexGrow": 1,
                             },
@@ -1868,9 +1868,9 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         }
                         text="Add Entity"
                         theme={
-                          Object {
+                          {
                             "disableGlobalClassNames": false,
-                            "effects": Object {
+                            "effects": {
                               "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                               "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                               "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -1879,92 +1879,92 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "roundedCorner4": "4px",
                               "roundedCorner6": "6px",
                             },
-                            "fonts": Object {
-                              "large": Object {
+                            "fonts": {
+                              "large": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "18px",
                                 "fontWeight": 400,
                               },
-                              "medium": Object {
+                              "medium": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "14px",
                                 "fontWeight": 400,
                               },
-                              "mediumPlus": Object {
+                              "mediumPlus": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "16px",
                                 "fontWeight": 400,
                               },
-                              "mega": Object {
+                              "mega": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "68px",
                                 "fontWeight": 600,
                               },
-                              "small": Object {
+                              "small": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "12px",
                                 "fontWeight": 400,
                               },
-                              "smallPlus": Object {
+                              "smallPlus": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "12px",
                                 "fontWeight": 400,
                               },
-                              "superLarge": Object {
+                              "superLarge": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "42px",
                                 "fontWeight": 600,
                               },
-                              "tiny": Object {
+                              "tiny": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "10px",
                                 "fontWeight": 400,
                               },
-                              "xLarge": Object {
+                              "xLarge": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "20px",
                                 "fontWeight": 600,
                               },
-                              "xLargePlus": Object {
+                              "xLargePlus": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "24px",
                                 "fontWeight": 600,
                               },
-                              "xSmall": Object {
+                              "xSmall": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "10px",
                                 "fontWeight": 400,
                               },
-                              "xxLarge": Object {
+                              "xxLarge": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                 "fontSize": "28px",
                                 "fontWeight": 600,
                               },
-                              "xxLargePlus": Object {
+                              "xxLargePlus": {
                                 "MozOsxFontSmoothing": "grayscale",
                                 "WebkitFontSmoothing": "antialiased",
                                 "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -1973,7 +1973,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               },
                             },
                             "isInverted": false,
-                            "palette": Object {
+                            "palette": {
                               "accent": "#0078d4",
                               "black": "#000000",
                               "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -2026,7 +2026,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "yellowLight": "#fff100",
                             },
                             "rtl": undefined,
-                            "semanticColors": Object {
+                            "semanticColors": {
                               "accentButtonBackground": "#0078d4",
                               "accentButtonText": "#ffffff",
                               "actionLink": "#323130",
@@ -2131,7 +2131,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               "warningIcon": "#797775",
                               "warningText": "#323130",
                             },
-                            "spacing": Object {
+                            "spacing": {
                               "l1": "20px",
                               "l2": "32px",
                               "m": "16px",
