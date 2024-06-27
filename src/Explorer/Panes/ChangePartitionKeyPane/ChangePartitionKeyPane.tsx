@@ -264,7 +264,7 @@ export const ChangePartitionKeyPane: React.FC<ChangePartitionKeyPaneProps> = ({
                 </TooltipHost>
               </Stack>
 
-              <Text variant="small" aria-label="pkDescription">
+              <Text variant="small">
                 {getPartitionKeySubtext(userContext.features.partitionKeyDefault, userContext.apiType)}
               </Text>
 

@@ -133,6 +133,7 @@ export enum MongoBackendEndpointType {
 export class BackendApi {
   public static readonly GenerateToken: string = "GenerateToken";
   public static readonly PortalSettings: string = "PortalSettings";
+  public static readonly AccountRestrictions: string = "AccountRestrictions";
 }
 
 export class PortalBackendEndpoints {
