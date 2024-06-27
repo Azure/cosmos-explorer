@@ -49,7 +49,7 @@ export interface DataPlaneRbacState {
 
 type DataPlaneRbacStore = UseStore<Partial<DataPlaneRbacState>>;
 
-export const useDataPlaneRbac: DataPlaneRbacStore = create((set) => ({
+export const useDataPlaneRbac: DataPlaneRbacStore = create(() => ({
   dataPlaneRbacEnabled: false,
 }));
 
