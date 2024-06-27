@@ -1,5 +1,6 @@
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { BulkOperationType, Container, CosmosClient, Database, JSONObject } from "@azure/cosmos";
+import crypto from "crypto";
 import { TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName, getAccountName, getAzureCLICredentials, resourceGroupName, subscriptionId } from "./fx";
 
 export interface TestItem {
@@ -18,11 +19,11 @@ function createTestItems(): TestItem[] {
   const items: TestItem[] = [];
   for (let i = 0; i < partitionCount; i++) {
     for (let j = 0; j < itemsPerPartition; j++) {
-      const id = crypto.randomUUID();
+      const id = crypto.randomBytes(32).toString("base64");
       items.push({
         id,
         partitionKey: `partition_${i}`,
-        randomData: crypto.randomUUID(),
+        randomData: crypto.randomBytes(32).toString("base64"),
       });
     }
   }
