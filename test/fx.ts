@@ -141,7 +141,9 @@ export class Editor {
       if (win._monaco_setEditorContentForElement) {
         win._monaco_setEditorContentForElement(e, content);
       }
-    }, text)
+    }, text);
+
+    expect(await this.text()).toEqual(text);
   }
 }
 

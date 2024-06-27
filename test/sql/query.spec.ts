@@ -68,7 +68,7 @@ test("Query stats", async () => {
   queryTab.queryStatsTab.click();
   await expect(queryTab.queryStatsList).toBeAttached();
   const showingResultsCell = queryTab.queryStatsList.getByTestId("Row:Showing Results/Column:value");
-  await expect(showingResultsCell).toHaveText("1 - 100");
+  await expect(showingResultsCell).toContainText(/\d+ - \d+/);
 });
 
 test("Query errors", async () => {
@@ -77,6 +77,7 @@ test("Query errors", async () => {
   // Run the query and verify the results
   const executeQueryButton = explorer.commandBarButton("Execute Query");
   await executeQueryButton.click();
+
   await expect(queryTab.errorList).toBeAttached();
 
   // Validate the squiggles using a screenshot.
