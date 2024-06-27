@@ -109,14 +109,14 @@ let configContext: Readonly<ConfigContext> = {
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
-    "resourcelist",
-    "queryDocuments",
-    "createDocument",
-    "readDocument",
-    "updateDocument",
-    "deleteDocument",
-    "createCollectionWithProxy",
-    "legacyMongoShell",
+    // "resourcelist",
+    // "queryDocuments",
+    // "createDocument",
+    // "readDocument",
+    // "updateDocument",
+    // "deleteDocument",
+    // "createCollectionWithProxy",
+    // "legacyMongoShell",
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
@@ -200,7 +200,7 @@ if (process.env.NODE_ENV === "development") {
     PROXY_PATH: "/proxy",
     EMULATOR_ENDPOINT: "https://localhost:8081",
     PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
-    MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
+    // MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
     CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Mpac,
   });
 }
@@ -255,3 +255,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
