@@ -702,7 +702,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
             ></QueryCopilotPromptbar>
           )}
           <Allotment vertical={true}>
-            <Allotment.Pane>
+            <Allotment.Pane data-test="QueryTab/EditorPane">
               <EditorReact
                 ref={this.queryEditor}
                 className={this.props.styles.queryEditor}
@@ -763,7 +763,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   render(): JSX.Element {
     const shouldScaleElements = this.state.showCopilotSidebar && this.isCopilotTabActive;
     return (
-      <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+      <div data-test="QueryTab" style={{ display: "flex", flexDirection: "row", height: "100%" }}>
         <div style={{ width: shouldScaleElements ? "70%" : "100%", height: "100%" }}>
           {this.getEditorAndQueryResult()}
         </div>

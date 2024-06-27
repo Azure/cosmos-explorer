@@ -71,6 +71,7 @@ export const ErrorList: React.FC<{ errors: QueryError[]; }> = ({ errors }) => {
   }
 
   return <DataGrid
+    data-test="QueryTab/ResultsPane/ErrorList"
     items={errors}
     columns={columns}
     sortable
@@ -86,9 +87,9 @@ export const ErrorList: React.FC<{ errors: QueryError[]; }> = ({ errors }) => {
     </DataGridHeader>
     <DataGridBody<QueryError>>
       {({ item, rowId }) => (
-        <DataGridRow<QueryError> key={rowId}>
-          {({ renderCell }) => (
-            <DataGridCell>{renderCell(item)}</DataGridCell>
+        <DataGridRow<QueryError> key={rowId} data-test={`Row:${rowId}`}>
+          {({ columnId, renderCell }) => (
+            <DataGridCell data-test={`Row:${rowId}/Column:${columnId}`}>{renderCell(item)}</DataGridCell>
           )}
         </DataGridRow>
       )}

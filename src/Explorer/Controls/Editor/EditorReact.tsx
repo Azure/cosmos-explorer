@@ -3,6 +3,32 @@ import * as React from "react";
 import { loadMonaco, monaco } from "../../LazyMonaco";
 // import "./EditorReact.less";
 
+// In development, add a function to window to allow us to get the editor instance for a given element
+if (process.env.NODE_ENV === "development") {
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const win = window as any;
+  win._monaco_getEditorForElement = win._monaco_getEditorForElement || ((element: HTMLElement) => {
+    const editorId = element.dataset["monacoEditorId"];
+    if (!editorId || !win.__monaco_editors || typeof win.__monaco_editors !== "object") {
+      return null;
+    }
+    return win.__monaco_editors[editorId];
+  });
+
+  win._monaco_getEditorContentForElement = win._monaco_getEditorContentForElement || ((element: HTMLElement) => {
+    const editor = win._monaco_getEditorForElement(element);
+    return editor ? editor.getValue() : null;
+  });
+
+  win._monaco_setEditorContentForElement = win._monaco_setEditorContentForElement || ((element: HTMLElement, text: string) => {
+    const editor = win._monaco_getEditorForElement(element);
+    if (editor) {
+      editor.setValue(text);
+    }
+  });
+}
+
 interface EditorReactStates {
   showEditor: boolean;
 }
@@ -87,6 +113,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
           <Spinner size={SpinnerSize.large} className={this.props.spinnerClassName || "spinner"} />
         )}
         <div
+          data-test="EditorReact/Host/Unloaded"
           className={this.props.className || "jsonEditor"}
           style={this.props.monacoContainerStyles}
           ref={(elt: HTMLElement) => this.setRef(elt)}
@@ -97,6 +124,18 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
   protected configureEditor(editor: monaco.editor.IStandaloneCodeEditor) {
     this.editor = editor;
+    this.rootNode.dataset["test"] = "EditorReact/Host/Loaded";
+
+    // In development, we want to be able to access the editor instance from the console
+    if (process.env.NODE_ENV === "development") {
+      this.rootNode.dataset["monacoEditorId"] = this.editor.getId();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const win = window as any;
+
+      win["__monaco_editors"] = win["__monaco_editors"] || {};
+      win["__monaco_editors"][this.editor.getId()] = this.editor;
+    }
+
     if (!this.props.isReadOnly && this.props.onContentChanged) {
       // Hooking the model's onDidChangeContent event because of some event ordering issues.
       // If a single user input causes BOTH the editor content to change AND the cursor selection to change (which is likely),

@@ -63,11 +63,21 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
   const accountName = getAccountName(accountType);
-  const baseUrl = `https://localhost:1234/testExplorer.html?accountName=${accountName}&resourceGroup=${resourceGroupName}&subscriptionId=${subscriptionId}&token=${token}`;
+  const params = new URLSearchParams();
+  params.set("accountName", accountName);
+  params.set("resourceGroup", resourceGroupName);
+  params.set("subscriptionId", subscriptionId);
+  params.set("token", token);
+
+  // There seem to be occasional CORS issues with calling the copilot APIs (/api/tokens/sampledataconnection/v2, for example)
+  // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
+  params.set("feature.enableCopilot", "false");
+
   if (iframeSrc) {
-    return `${baseUrl}&iframeSrc=${iframeSrc}`;
+    params.set("iframeSrc", iframeSrc);
   }
-  return baseUrl;
+
+  return `https://localhost:1234/testExplorer.html?${params.toString()}`;
 }
 
 /** Helper class that provides locator methods for TreeNode elements, on top of a Locator */
@@ -76,7 +86,7 @@ class TreeNode {
     public element: Locator,
     public frame: Frame,
     public id: string,
-  ) {}
+  ) { }
 
   async openContextMenu(): Promise<void> {
     await this.element.click({ button: "right" });
@@ -96,28 +106,109 @@ class TreeNode {
 
     if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
       // Click the node, to trigger loading and expansion
-      await this.element.click();
+      await this.element.locator("css=.fui-TreeItemLayout__expandIcon").click();
     }
     await expect(treeNodeContainer).toHaveAttribute("aria-expanded", "true");
   }
 }
 
+export class Editor {
+  constructor(
+    public frame: Frame,
+    public locator: Locator,
+  ) { }
+
+  text(): Promise<string | null> {
+    return this.locator.evaluate(e => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const win = e.ownerDocument.defaultView as any;
+      if (win._monaco_getEditorContentForElement) {
+        return win._monaco_getEditorContentForElement(e);
+      }
+      return null;
+    })
+  }
+
+  async setText(text: string): Promise<void> {
+    // We trust that Monaco can handle the keyboard, and it's _extremely_ flaky to try and enter text using browser commands.
+    // So we use a hook we installed in 'window' to set the content of the editor.
+
+    // NOTE: This function is serialized and sent to the browser for execution
+    // So you can't use any variables from the outer scope, but we can send a string (via the second argument to evaluate)
+    await this.locator.evaluate((e, content) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const win = e.ownerDocument.defaultView as any;
+      if (win._monaco_setEditorContentForElement) {
+        win._monaco_setEditorContentForElement(e, content);
+      }
+    }, text)
+  }
+}
+
+
+export class QueryTab {
+  resultsPane: Locator;
+  resultsView: Locator;
+  executeCTA: Locator;
+  errorList: Locator;
+  queryStatsList: Locator;
+  resultsEditor: Editor;
+  resultsTab: Locator;
+  queryStatsTab: Locator;
+  constructor(
+    public frame: Frame,
+    public tabId: string,
+    public tab: Locator,
+    public locator: Locator,
+  ) {
+    this.resultsPane = locator.getByTestId("QueryTab/ResultsPane");
+    this.resultsView = locator.getByTestId("QueryTab/ResultsPane/ResultsView");
+    this.executeCTA = locator.getByTestId("QueryTab/ResultsPane/ExecuteCTA");
+    this.errorList = locator.getByTestId("QueryTab/ResultsPane/ErrorList");
+    this.resultsEditor = new Editor(
+      this.frame,
+      this.resultsView.getByTestId("EditorReact/Host/Loaded"));
+    this.queryStatsList = locator.getByTestId("QueryTab/ResultsPane/ResultsView/QueryStatsList");
+    this.resultsTab = this.resultsView.getByTestId("QueryTab/ResultsPane/ResultsView/ResultsTab");
+    this.queryStatsTab = this.resultsView.getByTestId("QueryTab/ResultsPane/ResultsView/QueryStatsTab");
+  }
+
+  editor(): Editor {
+    const locator = this.locator.getByTestId("EditorReact/Host/Loaded");
+    return new Editor(this.frame, locator);
+  }
+}
+
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
 export class DataExplorer {
-  constructor(public frame: Frame) {}
+  constructor(public frame: Frame) { }
 
+  tab(tabId: string): Locator {
+    return this.frame.getByTestId(`Tab:${tabId}`);
+  }
+
+  queryTab(tabId: string): QueryTab {
+    const tab = this.tab(tabId);
+    const queryTab = tab.getByTestId("QueryTab");
+    return new QueryTab(this.frame, tabId, tab, queryTab);
+  }
+
+  /** Select the command bar button with the specified label */
   commandBarButton(label: string): Locator {
     return this.frame.getByTestId(`CommandBar/Button:${label}`).and(this.frame.locator("css=button"));
   }
 
+  /** Select the side panel with the specified title */
   panel(title: string): Locator {
     return this.frame.getByTestId(`Panel:${title}`);
   }
 
+  /** Select the tree node with the specified id */
   treeNode(id: string): TreeNode {
     return new TreeNode(this.frame.getByTestId(`TreeNode:${id}`), this.frame, id);
   }
 
+  /** Waits for the panel with the specified title to be open, then runs the provided callback. After the callback completes, waits for the panel to close. */
   async whilePanelOpen(title: string, action: (panel: Locator, okButton: Locator) => Promise<void>): Promise<void> {
     const panel = this.panel(title);
     await panel.waitFor();
@@ -126,6 +217,7 @@ export class DataExplorer {
     await panel.waitFor({ state: "detached" });
   }
 
+  /** Waits for the Data Explorer app to load */
   static async waitForExplorer(page: Page) {
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
     if (iframeElement === null) {
@@ -143,6 +235,7 @@ export class DataExplorer {
     return new DataExplorer(explorerFrame);
   }
 
+  /** Opens the Data Explorer app using the specified test account (and optionally, the provided IFRAME src url). */
   static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<DataExplorer> {
     const url = await getTestExplorerUrl(testAccount, iframeSrc);
     await page.goto(url);

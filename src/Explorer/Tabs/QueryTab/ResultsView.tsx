@@ -306,6 +306,7 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
 
   return <div className={styles.metricsGridContainer}>
     <DataGrid
+      data-test="QueryTab/ResultsPane/ResultsView/QueryStatsList"
       className={styles.queryStatsGrid}
       items={generateQueryStatsItems()}
       columns={columns}
@@ -321,9 +322,9 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
       </DataGridHeader>
       <DataGridBody<IDocument>>
         {({ item, rowId }) => (
-          <DataGridRow<IDocument> key={rowId}>
-            {({ renderCell }) => (
-              <DataGridCell>{renderCell(item)}</DataGridCell>
+          <DataGridRow<IDocument> key={rowId} data-test={`Row:${rowId}`}>
+            {({ columnId, renderCell }) => (
+              <DataGridCell data-test={`Row:${rowId}/Column:${columnId}`}>{renderCell(item)}</DataGridCell>
             )}
           </DataGridRow>
         )}
@@ -350,10 +351,10 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
     setActiveTab(data.value as ResultsTabs);
   }, [])
 
-  return <div className={styles.queryResultsTabPanel}>
+  return <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
     <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
-      <Tab id={ResultsTabs.Results} value={ResultsTabs.Results}>Results</Tab>
-      <Tab id={ResultsTabs.QueryStats} value={ResultsTabs.QueryStats}>Query Stats</Tab>
+      <Tab data-test="QueryTab/ResultsPane/ResultsView/ResultsTab" id={ResultsTabs.Results} value={ResultsTabs.Results}>Results</Tab>
+      <Tab data-test="QueryTab/ResultsPane/ResultsView/QueryStatsTab" id={ResultsTabs.QueryStats} value={ResultsTabs.QueryStats}>Query Stats</Tab>
     </TabList>
     <div className={styles.queryResultsTabContentContainer}>
       {activeTab === ResultsTabs.Results && <ResultsTab queryResults={queryResults} isMongoDB={isMongoDB} executeQueryDocumentsPage={executeQueryDocumentsPage} />}

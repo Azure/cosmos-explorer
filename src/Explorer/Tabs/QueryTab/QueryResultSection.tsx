@@ -23,7 +23,7 @@ interface QueryResultProps extends ResultsViewProps {
 
 const ExecuteQueryCallToAction: React.FC = () => {
   const styles = useQueryTabStyles();
-  return <div className={styles.executeCallToAction}>
+  return <div data-test="QueryTab/ResultsPane/ExecuteCTA" className={styles.executeCallToAction}>
     <div>
       <p>
         <img src={RunQuery} aria-hidden="true" />
@@ -44,7 +44,7 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   const styles = useQueryTabStyles();
   const maybeSubQuery = queryEditorContent && /.*\(.*SELECT.*\)/i.test(queryEditorContent);
 
-  return <div className={styles.queryResultsPanel}>
+  return <div data-test="QueryTab/ResultsPane" className={styles.queryResultsPanel}>
     {isExecuting && <IndeterminateProgressBar />}
     <MessageBanner messageId="QueryEditor.EmptyMongoQuery" visible={isMongoDB && queryEditorContent.length === 0} className={styles.queryResultsMessage}>
       Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong> or{" "}
