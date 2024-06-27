@@ -35,6 +35,23 @@ import React, { FunctionComponent, useState } from "react";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { AuthType } from "AuthType";
+import create, { UseStore } from "zustand";
+
+export interface DataPlaneRbacState {
+  dataPlaneRbacEnabled: boolean;
+  aadTokenUpdated: boolean;
+
+  getState?: () => DataPlaneRbacState;
+
+  setDataPlaneRbacEnabled: (dataPlaneRbacEnabled: boolean) => void;
+  setAadDataPlaneUpdated: (aadTokenUpdated: boolean) => void;
+}
+
+type DataPlaneRbacStore = UseStore<Partial<DataPlaneRbacState>>;
+
+export const useDataPlaneRbac: DataPlaneRbacStore = create((set) => ({
+  dataPlaneRbacEnabled: false,
+}));
 
 export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   explorer,
@@ -144,10 +161,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       updateUserContext({
         dataPlaneRbacEnabled: true,
       });
+      useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
     } else {
       updateUserContext({
         dataPlaneRbacEnabled: false,
       });
+      useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
     }
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
@@ -266,9 +285,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     setEnableDataPlaneRBACOption(option.key);
 
     const shouldShowWarning =
-      option.key === Constants.RBACOptions.setTrueRBACOption ||
-      (option.key === Constants.RBACOptions.setAutomaticRBACOption &&
-        userContext.databaseAccount.properties.disableLocalAuth === true);
+      (option.key === Constants.RBACOptions.setTrueRBACOption ||
+        (option.key === Constants.RBACOptions.setAutomaticRBACOption &&
+          userContext.databaseAccount.properties.disableLocalAuth === true)) &&
+      !useDataPlaneRbac.getState().aadTokenUpdated;
     setShowDataPlaneRBACWarning(shouldShowWarning);
   };
 

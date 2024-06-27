@@ -43,6 +43,7 @@ import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/Messa
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -485,6 +486,7 @@ async function configurePortal(): Promise<Explorer> {
               }
 
               updateUserContext({ dataPlaneRbacEnabled });
+              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
           } else {
             const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);

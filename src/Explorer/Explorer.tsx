@@ -68,6 +68,7 @@ import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -277,22 +278,17 @@ export default class Explorer {
           authority: `${configContext.AAD_ENDPOINT}${localStorage.getItem("cachedTenantId")}`,
         });
         updateUserContext({ aadToken: aadToken });
+        useDataPlaneRbac.setState({ aadTokenUpdated: true });
       } catch (error) {
         if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
-          useDialog
-            .getState()
-            .showOkModalDialog(
-              "Pop up blocked",
-              "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and try again",
-            );
+          logConsoleError(
+            "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and try again",
+          );
         } else {
           const errorJson = JSON.stringify(error);
-          useDialog
-            .getState()
-            .showOkModalDialog(
-              "Failed to perform authorization",
-              `We were unable to establish authorization for this account, due to the following error: \n${errorJson}`,
-            );
+          logConsoleError(
+            `Failed to perform authorization for this account, due to the following error: \n${errorJson}`,
+          );
         }
       }
     }

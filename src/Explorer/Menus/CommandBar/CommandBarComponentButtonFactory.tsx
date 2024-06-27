@@ -20,7 +20,7 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { userContext } from "../../../UserContext";
+import { updateUserContext, userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
@@ -31,9 +31,10 @@ import { OpenFullScreen } from "../../OpenFullScreen";
 import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
-import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
+import { useEffect, useState } from "react";
 
 let counter = 0;
 
@@ -71,11 +72,18 @@ export function createStaticCommandBarButtons(
     }
 
     if (userContext.apiType === "SQL") {
-      const addLoginForEntraIDBtn = createLoginForEntraIDButton(container);
+      const [loginButtonProps, setLoginButtonProps] = useState<CommandButtonComponentProps | undefined>(undefined);
+      const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
+      const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
 
-      if (addLoginForEntraIDBtn) {
+      useEffect(() => {
+        const buttonProps = createLoginForEntraIDButton(container);
+        setLoginButtonProps(buttonProps);
+      }, [dataPlaneRbacEnabled, aadTokenUpdated, container]);
+
+      if (loginButtonProps) {
         addDivider();
-        buttons.push(addLoginForEntraIDBtn);
+        buttons.push(loginButtonProps);
       }
     }
 
@@ -290,11 +298,20 @@ function createLoginForEntraIDButton(container: Explorer): CommandButtonComponen
     return undefined;
   }
 
+  const handleCommandClick = async () => {
+    await container.openLoginForEntraIDPopUp();
+    useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
+  };
+
+  if (!userContext.dataPlaneRbacEnabled || userContext.aadToken) {
+    return undefined;
+  }
+
   const label = "Login for Entra ID RBAC";
   return {
     iconSrc: EntraIDIcon,
     iconAlt: label,
-    onCommandClick: () => container.openLoginForEntraIDPopUp(),
+    onCommandClick: handleCommandClick,
     commandButtonLabel: label,
     hasPopup: true,
     ariaLabel: label,
