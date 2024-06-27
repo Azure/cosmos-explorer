@@ -378,7 +378,6 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       options={
         Array [
           Object {
-            "disabled": true,
             "key": "off",
             "text": "Off",
           },
@@ -667,7 +666,6 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       options={
         Array [
           Object {
-            "disabled": true,
             "key": "off",
             "text": "Off",
           },
@@ -916,7 +914,6 @@ exports[`SubSettingsComponent renders 1`] = `
       options={
         Array [
           Object {
-            "disabled": true,
             "key": "off",
             "text": "Off",
           },
@@ -1204,7 +1201,6 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       options={
         Array [
           Object {
-            "disabled": true,
             "key": "off",
             "text": "Off",
           },
