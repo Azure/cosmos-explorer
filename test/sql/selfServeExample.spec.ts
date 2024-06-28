@@ -8,7 +8,6 @@ test("Self Serve", async ({ page }) => {
   await expect(loggingToggle).toBeEnabled();
 
   const regionDropdown = explorer.frame.getByText("Select a region");
-  await regionDropdown.waitFor();
   await regionDropdown.click();
   await explorer.frame.getByRole("option").first().click();
 
