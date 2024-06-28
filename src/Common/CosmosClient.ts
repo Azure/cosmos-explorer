@@ -91,7 +91,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       userContext.masterKey,
     );
     return decodeURIComponent(headers.authorization);
-  } else {
+  } else if (userContext.dataPlaneRbacEnabled == false) {
     const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
     const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
 
