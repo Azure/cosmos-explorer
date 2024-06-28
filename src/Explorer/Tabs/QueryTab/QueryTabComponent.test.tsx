@@ -2,7 +2,7 @@ import { fireEvent, render } from "@testing-library/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
-import QueryTabComponent, { IQueryTabComponentProps } from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import { IQueryTabComponentProps, QueryTabComponent, QueryTabCopilotComponent } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import { updateUserContext, userContext } from "UserContext";
 import { mount } from "enzyme";
@@ -39,7 +39,7 @@ describe("QueryTabComponent", () => {
 
     const { container } = render(<QueryTabComponent {...propsMock} />);
 
-    const launchCopilotButton = container.querySelector(".queryEditorWatermarkText");
+    const launchCopilotButton = container.querySelector("[data-test=\"QueryTab/ResultsPane/ExecuteCTA\"]");
     fireEvent.keyDown(launchCopilotButton, { key: "c", altKey: true });
 
     expect(mockStore.setShowCopilotSidebar).toHaveBeenCalledWith(true);
@@ -67,7 +67,7 @@ describe("QueryTabComponent", () => {
 
     const container = mount(
       <CopilotProvider>
-        <QueryTabComponent {...propsMock} />
+        <QueryTabCopilotComponent {...propsMock} />
       </CopilotProvider>,
     );
     expect(container.find(QueryCopilotPromptbar).exists()).toBe(true);
