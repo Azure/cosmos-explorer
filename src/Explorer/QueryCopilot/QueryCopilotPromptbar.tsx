@@ -20,7 +20,7 @@ import {
 } from "@fluentui/react";
 import { HttpStatusCodes } from "Common/Constants";
 import { handleError } from "Common/ErrorHandlingUtils";
-import QueryError from "Common/QueryError";
+import QueryError, { QueryErrorSeverity } from "Common/QueryError";
 import { createUri } from "Common/UrlUtility";
 import { CopyPopup } from "Explorer/QueryCopilot/Popup/CopyPopup";
 import { DeletePopup } from "Explorer/QueryCopilot/Popup/DeletePopup";
@@ -107,7 +107,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setGeneratedQueryComments,
     setQueryResults,
     setErrors,
-    errors: errorMessage,
+    errors,
   } = useCopilotStore();
 
   const sampleProps: SamplePromptsProps = {
@@ -244,7 +244,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotTooManyRequestError");
         useTabs.getState().setIsQueryErrorThrown(true);
         setShowErrorMessageBar(true);
-        setErrors([new QueryError("Ratelimit exceeded 5 per 1 minute. Please try again after sometime")]);
+        setErrors([new QueryError("Ratelimit exceeded 5 per 1 minute. Please try again after sometime", QueryErrorSeverity.Error)]);
         TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
           databaseName: databaseId,
           collectionId: containerId,
@@ -515,7 +515,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                   </Link>
                   {showErrorMessageBar && (
                     <MessageBar messageBarType={MessageBarType.error}>
-                      {errorMessage ? errorMessage : "We ran into an error and were not able to execute query."}
+                      {errors.length > 0 ? errors[0].message : "We ran into an error and were not able to execute query."}
                     </MessageBar>
                   )}
                   {showInvalidQueryMessageBar && (

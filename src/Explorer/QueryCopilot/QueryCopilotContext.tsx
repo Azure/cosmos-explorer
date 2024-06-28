@@ -1,4 +1,5 @@
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
+import QueryError from "Common/QueryError";
 import { QueryResults } from "Contracts/ViewModels";
 import { CopilotMessage } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
@@ -28,7 +29,7 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
       showSamplePrompts: false,
       queryIterator: undefined,
       queryResults: undefined,
-      errorMessage: "",
+      errors: [],
       isSamplePromptsOpen: false,
       showPromptTeachingBubble: true,
       showDeletePopup: false,
@@ -64,7 +65,7 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
       setShowSamplePrompts: (showSamplePrompts: boolean) => set({ showSamplePrompts }),
       setQueryIterator: (queryIterator: MinimalQueryIterator | undefined) => set({ queryIterator }),
       setQueryResults: (queryResults: QueryResults | undefined) => set({ queryResults }),
-      setErrorMessage: (errorMessage: string) => set({ errorMessage }),
+      setErrors: (errors: QueryError[]) => set({ errors }),
       setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => set({ isSamplePromptsOpen }),
       setShowPromptTeachingBubble: (showPromptTeachingBubble: boolean) => set({ showPromptTeachingBubble }),
       setShowDeletePopup: (showDeletePopup: boolean) => set({ showDeletePopup }),
@@ -136,3 +137,4 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
 };
 
 export { CopilotProvider, useCopilotStore };
+

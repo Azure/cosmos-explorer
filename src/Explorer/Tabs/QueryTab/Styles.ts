@@ -5,6 +5,8 @@ export type QueryTabStyles = ReturnType<typeof useQueryTabStyles>;
 export const useQueryTabStyles = makeStyles({
   queryTab: {
     height: "100%",
+    display: "flex",
+    flexDirection: "column",
   },
   queryEditor: {
     ...shorthands.border("none"),

@@ -705,7 +705,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
             ></QueryCopilotPromptbar>
           )}
           <Allotment vertical={true}>
-            <Allotment.Pane data-test="QueryTab/EditorPane">
+            <Allotment.Pane data-test="QueryTab/EditorPane" minSize={100}>
               <EditorReact
                 ref={this.queryEditor}
                 className={this.props.styles.queryEditor}
@@ -720,7 +720,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                 onContentSelected={(selectedContent: string) => this.onSelectedContent(selectedContent)}
               />
             </Allotment.Pane>
-            <Allotment.Pane>
+            <Allotment.Pane minSize={100}>
               {this.props.isSampleCopilotActive ? (
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}
