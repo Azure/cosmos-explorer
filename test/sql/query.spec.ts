@@ -1,11 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import {
-  DataExplorer,
-  Editor,
-  QueryTab,
-  TestAccount
-} from "../fx";
+import { DataExplorer, Editor, QueryTab, TestAccount } from "../fx";
 import { TestContainerContext, TestItem, createTestSQLContainer } from "../testData";
 
 let context: TestContainerContext = null!;
@@ -50,7 +45,7 @@ test("Query results", async () => {
 
   // Pick 3 random documents and assert them
   const randomDocs = [0, 1, 2].map(() => resultData[Math.floor(Math.random() * resultData.length)]);
-  randomDocs.forEach(doc => {
+  randomDocs.forEach((doc) => {
     const matchingDoc = context?.testData.get(doc.id);
     expect(matchingDoc).not.toBeNull();
     expect(doc.randomData).toEqual(matchingDoc?.randomData);
@@ -89,4 +84,8 @@ test("Query errors", async () => {
   await expect(queryTab.errorList.getByTestId("Row:0/Column:location")).toHaveText("Line 2");
   await expect(queryTab.errorList.getByTestId("Row:1/Column:code")).toHaveText("SC2005");
   await expect(queryTab.errorList.getByTestId("Row:1/Column:location")).toHaveText("Line 3");
+
+  // Click the details button for one of the errors
+  await queryTab.errorList.getByTestId("Row:0/Column:message").getByLabel("Details").click();
+  await expect(explorer.frame.getByTestId("NotificationConsole/Contents")).toBeVisible();
 });

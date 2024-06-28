@@ -86,7 +86,7 @@ class TreeNode {
     public element: Locator,
     public frame: Frame,
     public id: string,
-  ) { }
+  ) {}
 
   async openContextMenu(): Promise<void> {
     await this.element.click({ button: "right" });
@@ -116,17 +116,17 @@ export class Editor {
   constructor(
     public frame: Frame,
     public locator: Locator,
-  ) { }
+  ) {}
 
   text(): Promise<string | null> {
-    return this.locator.evaluate(e => {
+    return this.locator.evaluate((e) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const win = e.ownerDocument.defaultView as any;
       if (win._monaco_getEditorContentForElement) {
         return win._monaco_getEditorContentForElement(e);
       }
       return null;
-    })
+    });
   }
 
   async setText(text: string): Promise<void> {
@@ -147,7 +147,6 @@ export class Editor {
   }
 }
 
-
 export class QueryTab {
   resultsPane: Locator;
   resultsView: Locator;
@@ -167,9 +166,7 @@ export class QueryTab {
     this.resultsView = locator.getByTestId("QueryTab/ResultsPane/ResultsView");
     this.executeCTA = locator.getByTestId("QueryTab/ResultsPane/ExecuteCTA");
     this.errorList = locator.getByTestId("QueryTab/ResultsPane/ErrorList");
-    this.resultsEditor = new Editor(
-      this.frame,
-      this.resultsView.getByTestId("EditorReact/Host/Loaded"));
+    this.resultsEditor = new Editor(this.frame, this.resultsView.getByTestId("EditorReact/Host/Loaded"));
     this.queryStatsList = locator.getByTestId("QueryTab/ResultsPane/ResultsView/QueryStatsList");
     this.resultsTab = this.resultsView.getByTestId("QueryTab/ResultsPane/ResultsView/ResultsTab");
     this.queryStatsTab = this.resultsView.getByTestId("QueryTab/ResultsPane/ResultsView/QueryStatsTab");
@@ -183,7 +180,7 @@ export class QueryTab {
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
 export class DataExplorer {
-  constructor(public frame: Frame) { }
+  constructor(public frame: Frame) {}
 
   tab(tabId: string): Locator {
     return this.frame.getByTestId(`Tab:${tabId}`);

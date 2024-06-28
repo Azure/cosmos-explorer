@@ -23,14 +23,16 @@ interface QueryResultProps extends ResultsViewProps {
 
 const ExecuteQueryCallToAction: React.FC = () => {
   const styles = useQueryTabStyles();
-  return <div data-test="QueryTab/ResultsPane/ExecuteCTA" className={styles.executeCallToAction}>
-    <div>
-      <p>
-        <img src={RunQuery} aria-hidden="true" />
-      </p>
-      <p>Execute a query to see the results</p>
+  return (
+    <div data-test="QueryTab/ResultsPane/ExecuteCTA" className={styles.executeCallToAction}>
+      <div>
+        <p>
+          <img src={RunQuery} aria-hidden="true" />
+        </p>
+        <p>Execute a query to see the results</p>
+      </div>
     </div>
-  </div>
+  );
 };
 
 export const QueryResultSection: React.FC<QueryResultProps> = ({
@@ -44,32 +46,48 @@ export const QueryResultSection: React.FC<QueryResultProps> = ({
   const styles = useQueryTabStyles();
   const maybeSubQuery = queryEditorContent && /.*\(.*SELECT.*\)/i.test(queryEditorContent);
 
-  return <div data-test="QueryTab/ResultsPane" className={styles.queryResultsPanel}>
-    {isExecuting && <IndeterminateProgressBar />}
-    <MessageBanner messageId="QueryEditor.EmptyMongoQuery" visible={isMongoDB && queryEditorContent.length === 0} className={styles.queryResultsMessage}>
-      Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong> or{" "}
-      <strong>
-        {"{ "}
-        {" }"}
-      </strong>{" "}
-      to get all the documents.
-    </MessageBanner>
-    {/* {maybeSubQuery && ( */}
-    <MessageBanner messageId="QueryEditor.SubQueryWarning" visible={maybeSubQuery} className={styles.queryResultsMessage}>
-      We detected you may be using a subquery. To learn more about subqueries effectively,{" "}
-      <Link
-        href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery"
-        target="_blank"
-        rel="noreferrer noopener"
+  return (
+    <div data-test="QueryTab/ResultsPane" className={styles.queryResultsPanel}>
+      {isExecuting && <IndeterminateProgressBar />}
+      <MessageBanner
+        messageId="QueryEditor.EmptyMongoQuery"
+        visible={isMongoDB && queryEditorContent.length === 0}
+        className={styles.queryResultsMessage}
       >
-        visit the documentation
-      </Link>
-    </MessageBanner>
-    {/* <!-- Query Results & Errors Content Container - Start--> */}
-    {errors.length > 0
-      ? <ErrorList errors={errors} />
-      : queryResults
-        ? <ResultsView queryResults={queryResults} executeQueryDocumentsPage={executeQueryDocumentsPage} isMongoDB={isMongoDB} />
-        : <ExecuteQueryCallToAction />}
-  </div>;
+        Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong> or{" "}
+        <strong>
+          {"{ "}
+          {" }"}
+        </strong>{" "}
+        to get all the documents.
+      </MessageBanner>
+      {/* {maybeSubQuery && ( */}
+      <MessageBanner
+        messageId="QueryEditor.SubQueryWarning"
+        visible={maybeSubQuery}
+        className={styles.queryResultsMessage}
+      >
+        We detected you may be using a subquery. To learn more about subqueries effectively,{" "}
+        <Link
+          href="https://learn.microsoft.com/azure/cosmos-db/nosql/query/subquery"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          visit the documentation
+        </Link>
+      </MessageBanner>
+      {/* <!-- Query Results & Errors Content Container - Start--> */}
+      {errors.length > 0 ? (
+        <ErrorList errors={errors} />
+      ) : queryResults ? (
+        <ResultsView
+          queryResults={queryResults}
+          executeQueryDocumentsPage={executeQueryDocumentsPage}
+          isMongoDB={isMongoDB}
+        />
+      ) : (
+        <ExecuteQueryCallToAction />
+      )}
+    </div>
+  );
 };

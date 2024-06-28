@@ -65,9 +65,18 @@ export const useQueryTabStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     paddingBottom: "6px",
-    maxHeight: "100%"
+    maxHeight: "100%",
   },
   metricsGridButtons: {
     ...cosmosShorthands.borderTop(),
+  },
+  errorListMessageCell: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "baseline",
+  },
+  errorListMessage: {
+    flexGrow: 1,
   },
 });

@@ -1,7 +1,15 @@
 import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { BulkOperationType, Container, CosmosClient, Database, JSONObject } from "@azure/cosmos";
 import crypto from "crypto";
-import { TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName, getAccountName, getAzureCLICredentials, resourceGroupName, subscriptionId } from "./fx";
+import {
+  TestAccount,
+  generateDatabaseNameWithTimestamp,
+  generateUniqueName,
+  getAccountName,
+  getAzureCLICredentials,
+  resourceGroupName,
+  subscriptionId,
+} from "./fx";
 
 export interface TestItem {
   id: string;
@@ -38,7 +46,8 @@ export class TestContainerContext {
     public client: CosmosClient,
     public database: Database,
     public container: Container,
-    public testData: Map<string, TestItem>) { }
+    public testData: Map<string, TestItem>,
+  ) {}
 
   async dispose() {
     await this.database.delete();
@@ -59,28 +68,27 @@ export async function createTestSQLContainer(includeTestData?: boolean) {
   });
   const { database } = await client.databases.createIfNotExists({ id: databaseId });
   try {
-    const { container } = await database.containers.createIfNotExists({ id: containerId, partitionKey: "/partitionKey" });
+    const { container } = await database.containers.createIfNotExists({
+      id: containerId,
+      partitionKey: "/partitionKey",
+    });
     if (includeTestData) {
       const batchCount = TestData.length / 100;
       for (let i = 0; i < batchCount; i++) {
         const batchItems = TestData.slice(i * 100, i * 100 + 100);
-        await container.items.bulk(batchItems.map(item => ({
-          operationType: BulkOperationType.Create,
-          resourceBody: item as unknown as JSONObject,
-        })));
+        await container.items.bulk(
+          batchItems.map((item) => ({
+            operationType: BulkOperationType.Create,
+            resourceBody: item as unknown as JSONObject,
+          })),
+        );
       }
     }
 
     const testDataMap = new Map<string, TestItem>();
-    TestData.forEach(item => testDataMap.set(item.id, item));
+    TestData.forEach((item) => testDataMap.set(item.id, item));
 
-    return new TestContainerContext(
-      armClient,
-      client,
-      database,
-      container,
-      testDataMap,
-    );
+    return new TestContainerContext(armClient, client, database, container, testDataMap);
   } catch (e) {
     await database.delete();
     throw e;

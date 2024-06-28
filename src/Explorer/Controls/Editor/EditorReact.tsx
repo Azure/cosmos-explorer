@@ -5,28 +5,33 @@ import { loadMonaco, monaco } from "../../LazyMonaco";
 
 // In development, add a function to window to allow us to get the editor instance for a given element
 if (process.env.NODE_ENV === "development") {
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const win = window as any;
-  win._monaco_getEditorForElement = win._monaco_getEditorForElement || ((element: HTMLElement) => {
-    const editorId = element.dataset["monacoEditorId"];
-    if (!editorId || !win.__monaco_editors || typeof win.__monaco_editors !== "object") {
-      return null;
-    }
-    return win.__monaco_editors[editorId];
-  });
+  win._monaco_getEditorForElement =
+    win._monaco_getEditorForElement ||
+    ((element: HTMLElement) => {
+      const editorId = element.dataset["monacoEditorId"];
+      if (!editorId || !win.__monaco_editors || typeof win.__monaco_editors !== "object") {
+        return null;
+      }
+      return win.__monaco_editors[editorId];
+    });
 
-  win._monaco_getEditorContentForElement = win._monaco_getEditorContentForElement || ((element: HTMLElement) => {
-    const editor = win._monaco_getEditorForElement(element);
-    return editor ? editor.getValue() : null;
-  });
+  win._monaco_getEditorContentForElement =
+    win._monaco_getEditorContentForElement ||
+    ((element: HTMLElement) => {
+      const editor = win._monaco_getEditorForElement(element);
+      return editor ? editor.getValue() : null;
+    });
 
-  win._monaco_setEditorContentForElement = win._monaco_setEditorContentForElement || ((element: HTMLElement, text: string) => {
-    const editor = win._monaco_getEditorForElement(element);
-    if (editor) {
-      editor.setValue(text);
-    }
-  });
+  win._monaco_setEditorContentForElement =
+    win._monaco_setEditorContentForElement ||
+    ((element: HTMLElement, text: string) => {
+      const editor = win._monaco_getEditorForElement(element);
+      if (editor) {
+        editor.setValue(text);
+      }
+    });
 }
 
 interface EditorReactStates {
@@ -58,7 +63,23 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
   private rootNode: HTMLElement;
   public editor: monaco.editor.IStandaloneCodeEditor;
   private selectionListener: monaco.IDisposable;
-  monacoApi: { default: typeof monaco; Emitter: typeof monaco.Emitter; MarkerTag: typeof monaco.MarkerTag; MarkerSeverity: typeof monaco.MarkerSeverity; CancellationTokenSource: typeof monaco.CancellationTokenSource; Uri: typeof monaco.Uri; KeyCode: typeof monaco.KeyCode; KeyMod: typeof monaco.KeyMod; Position: typeof monaco.Position; Range: typeof monaco.Range; Selection: typeof monaco.Selection; SelectionDirection: typeof monaco.SelectionDirection; Token: typeof monaco.Token; editor: typeof monaco.editor; languages: typeof monaco.languages; };
+  monacoApi: {
+    default: typeof monaco;
+    Emitter: typeof monaco.Emitter;
+    MarkerTag: typeof monaco.MarkerTag;
+    MarkerSeverity: typeof monaco.MarkerSeverity;
+    CancellationTokenSource: typeof monaco.CancellationTokenSource;
+    Uri: typeof monaco.Uri;
+    KeyCode: typeof monaco.KeyCode;
+    KeyMod: typeof monaco.KeyMod;
+    Position: typeof monaco.Position;
+    Range: typeof monaco.Range;
+    Selection: typeof monaco.Selection;
+    SelectionDirection: typeof monaco.SelectionDirection;
+    Token: typeof monaco.Token;
+    editor: typeof monaco.editor;
+    languages: typeof monaco.languages;
+  };
 
   public constructor(props: EditorReactProps) {
     super(props);
@@ -99,7 +120,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       }
     }
 
-    this.monacoApi.editor.setModelMarkers(this.editor.getModel(), "owner", this.props.modelMarkers || [])
+    this.monacoApi.editor.setModelMarkers(this.editor.getModel(), "owner", this.props.modelMarkers || []);
   }
 
   public componentWillUnmount(): void {

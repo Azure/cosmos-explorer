@@ -277,7 +277,11 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
 
   if (tab) {
     if ("render" in tab) {
-      return <div data-test={`Tab:${tab.tabId}`} {...attrs}>{tab.render()}</div>;
+      return (
+        <div data-test={`Tab:${tab.tabId}`} {...attrs}>
+          {tab.render()}
+        </div>
+      );
     }
   }
 

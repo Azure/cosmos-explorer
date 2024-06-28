@@ -147,7 +147,7 @@ export class NotificationConsoleComponent extends React.Component<
           height={this.props.isConsoleExpanded ? "auto" : 0}
           onAnimationEnd={this.onConsoleWasExpanded}
         >
-          <div className="notificationConsoleContents">
+          <div data-test="NotificationConsole/Contents" className="notificationConsoleContents">
             <div className="notificationConsoleControls">
               <Dropdown
                 label="Filter:"

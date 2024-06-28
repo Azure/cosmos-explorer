@@ -3,7 +3,7 @@ import React from "react";
 
 const useStyles = makeStyles({
   indeterminateProgressBarRoot: {
-    '@media screen and (prefers-reduced-motion: reduce)': {
+    "@media screen and (prefers-reduced-motion: reduce)": {
       animationIterationCount: "infinite",
       animationDuration: "3s",
       animationName: {
@@ -17,16 +17,21 @@ const useStyles = makeStyles({
           opacity: ".2",
         },
       },
-    }
+    },
   },
   indeterminateProgressBarBar: {
-    '@media screen and (prefers-reduced-motion: reduce)': {
+    "@media screen and (prefers-reduced-motion: reduce)": {
       maxWidth: "100%",
-    }
-  }
+    },
+  },
 });
 
 export const IndeterminateProgressBar: React.FC = () => {
   const styles = useStyles();
-  return <ProgressBar bar={{className: styles.indeterminateProgressBarBar}} className={styles.indeterminateProgressBarRoot} />;
+  return (
+    <ProgressBar
+      bar={{ className: styles.indeterminateProgressBarBar }}
+      className={styles.indeterminateProgressBarRoot}
+    />
+  );
 };

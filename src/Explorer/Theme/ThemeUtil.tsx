@@ -20,7 +20,7 @@ export const LayoutConstants = {
 };
 
 // Our CosmosFluentProvider has the same props as a FluentProvider.
-export type CosmosFluentProviderProps = Omit<ComponentProps<FluentProviderSlots, "root">, 'dir'>;
+export type CosmosFluentProviderProps = Omit<ComponentProps<FluentProviderSlots, "root">, "dir">;
 
 // PropsWithChildren<{
 //   className?: string;
@@ -41,7 +41,7 @@ const FluentProviderContext = React.createContext({
   isInFluentProvider: false,
 });
 
-export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({children, className, ...props}) => {
+export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ children, className, ...props }) => {
   // We use a React context to ensure that nested CosmosFluentProviders don't create nested FluentProviders.
   // This helps during the transition from Fluent UI 8 to Fluent UI 9.
   // As we convert components to Fluent UI 9, if we end up with nested FluentProviders, the inner FluentProvider will be a no-op.
@@ -51,7 +51,11 @@ export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({child
   if (isInFluentProvider) {
     // We're already in a fluent context, don't create another.
     console.warn("Nested CosmosFluentProvider detected. This is likely a bug.");
-    return <div className={className} {...props}>{children}</div>;
+    return (
+      <div className={className} {...props}>
+        {children}
+      </div>
+    );
   }
 
   return (
@@ -87,8 +91,7 @@ const appThemePortalBrandRamp: BrandVariants = {
   160: "#CDD8EF",
 };
 
-const cosmosThemeElements = {
-};
+const cosmosThemeElements = {};
 
 export type CosmosTheme = Theme & typeof cosmosThemeElements;
 

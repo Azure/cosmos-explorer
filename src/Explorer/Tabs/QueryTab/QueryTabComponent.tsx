@@ -409,11 +409,14 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       });
 
       // Try to parse this as a query error
-      const queryErrors = QueryError.tryParse(error, createMonacoErrorLocationResolver(this.queryEditor.current.editor));
+      const queryErrors = QueryError.tryParse(
+        error,
+        createMonacoErrorLocationResolver(this.queryEditor.current.editor),
+      );
       this.setState({
         errors: queryErrors,
         modelMarkers: createMonacoMarkersForQueryErrors(queryErrors),
-      })
+      });
     } finally {
       this.props.tabsBaseInstance.isExecuting(false);
       this.setState({

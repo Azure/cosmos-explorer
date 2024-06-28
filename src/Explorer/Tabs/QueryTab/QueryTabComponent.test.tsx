@@ -2,9 +2,7 @@ import { fireEvent, render } from "@testing-library/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
-import QueryTabComponent, {
-  IQueryTabComponentProps
-} from "Explorer/Tabs/QueryTab/QueryTabComponent";
+import QueryTabComponent, { IQueryTabComponentProps } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import { updateUserContext, userContext } from "UserContext";
 import { mount } from "enzyme";

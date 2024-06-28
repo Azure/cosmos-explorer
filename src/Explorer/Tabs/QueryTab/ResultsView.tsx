@@ -1,4 +1,18 @@
-import { Button, DataGrid, DataGridBody, DataGridCell, DataGridHeader, DataGridHeaderCell, DataGridRow, SelectTabData, SelectTabEvent, Tab, TabList, TableColumnDefinition, createTableColumn } from "@fluentui/react-components";
+import {
+  Button,
+  DataGrid,
+  DataGridBody,
+  DataGridCell,
+  DataGridHeader,
+  DataGridHeaderCell,
+  DataGridRow,
+  SelectTabData,
+  SelectTabEvent,
+  Tab,
+  TabList,
+  TableColumnDefinition,
+  createTableColumn,
+} from "@fluentui/react-components";
 import { ArrowDownloadRegular, CopyRegular } from "@fluentui/react-icons";
 import { HttpHeaders } from "Common/Constants";
 import MongoUtility from "Common/MongoUtility";
@@ -33,38 +47,35 @@ const ResultsTab: React.FC<ResultsViewProps> = ({ queryResults, isMongoDB, execu
     await executeQueryDocumentsPage(firstItemIndex + itemCount - 1);
   };
 
-  return <>
-    <div className={styles.queryResultsBar}>
-      <div>
-          {queryResults.itemCount > 0
-            ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}`
-            : `0 - 0`}
+  return (
+    <>
+      <div className={styles.queryResultsBar}>
+        <div>
+          {queryResults.itemCount > 0 ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}` : `0 - 0`}
+        </div>
+        {queryResults.hasMoreResults && (
+          <a href="#" onClick={() => onFetchNextPageClick()}>
+            Load more
+          </a>
+        )}
+        <div className={styles.flexGrowSpacer} />
+        <Button
+          size="small"
+          appearance="transparent"
+          icon={<CopyRegular />}
+          title="Copy to Clipboard"
+          aria-label="Copy"
+          onClick={onClickCopyResults}
+        />
       </div>
-      {queryResults.hasMoreResults && (
-        <a href="#" onClick={() => onFetchNextPageClick()}>
-          Load more
-        </a>
-      )}
-      <div className={styles.flexGrowSpacer} />
-      <Button
-        size="small"
-        appearance="transparent"
-        icon={<CopyRegular />}
-        title="Copy to Clipboard"
-        aria-label="Copy"
-        onClick={onClickCopyResults} />
-    </div>
-    <div className={styles.queryResultsViewer}>
-      <EditorReact
-        language={"json"}
-        content={queryResultsString}
-        isReadOnly={true}
-        ariaLabel={"Query results"} />
-    </div>
-  </>;
-}
+      <div className={styles.queryResultsViewer}>
+        <EditorReact language={"json"} content={queryResultsString} isReadOnly={true} ariaLabel={"Query results"} />
+      </div>
+    </>
+  );
+};
 
-const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ queryResults }) => {
+const QueryStatsTab: React.FC<Pick<ResultsViewProps, "queryResults">> = ({ queryResults }) => {
   const styles = useQueryTabStyles();
   const queryMetrics = React.useRef(queryResults?.headers?.[HttpHeaders.queryMetrics]);
   React.useEffect(() => {
@@ -136,7 +147,6 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
     }),
   ];
 
-
   const generateQueryStatsItems = (): IDocument[] => {
     const items: IDocument[] = [
       {
@@ -192,7 +202,8 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
         {
           metric: "Query engine execution time",
           value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.queryEngineExecutionTime?.toString() || 0} ms`,
-          toolTip: "Time spent by the query engine to execute the query expression (excludes other execution times like load documents or write results)",
+          toolTip:
+            "Time spent by the query engine to execute the query expression (excludes other execution times like load documents or write results)",
         },
         {
           metric: "System function execution time",
@@ -201,14 +212,16 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
         },
         {
           metric: "User defined function execution time",
-          value: `${aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0} ms`,
+          value: `${
+            aggregatedQueryMetrics.runtimeExecutionTimes?.userDefinedFunctionExecutionTime?.toString() || 0
+          } ms`,
           toolTip: "Total time spent executing user-defined functions",
         },
         {
           metric: "Document write time",
           value: `${aggregatedQueryMetrics.documentWriteTime.toString() || 0} ms`,
           toolTip: "Time spent to write query result set to response buffer",
-        }
+        },
       );
     }
 
@@ -233,20 +246,21 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
 
   const generateQueryMetricsCsvData = (): string => {
     if (queryMetrics.current) {
-      let csvData = [
-        "Partition key range id",
-        "Retrieved document count",
-        "Retrieved document size (in bytes)",
-        "Output document count",
-        "Output document size (in bytes)",
-        "Index hit document count",
-        "Index lookup time (ms)",
-        "Document load time (ms)",
-        "Query engine execution time (ms)",
-        "System function execution time (ms)",
-        "User defined function execution time (ms)",
-        "Document write time (ms)",
-      ].join(",") + "\n";
+      let csvData =
+        [
+          "Partition key range id",
+          "Retrieved document count",
+          "Retrieved document size (in bytes)",
+          "Output document count",
+          "Output document size (in bytes)",
+          "Index hit document count",
+          "Index lookup time (ms)",
+          "Document load time (ms)",
+          "Query engine execution time (ms)",
+          "System function execution time (ms)",
+          "User defined function execution time (ms)",
+          "Document write time (ms)",
+        ].join(",") + "\n";
 
       Object.keys(queryMetrics.current).forEach((partitionKeyRangeId) => {
         const queryMetricsPerPartition = queryMetrics.current[partitionKeyRangeId];
@@ -283,7 +297,7 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
       // for IE and Edge
       navigator.msSaveBlob(
         new Blob([csvData], { type: "data:text/csv;charset=utf-8" }),
-        "PerPartitionQueryMetrics.csv"
+        "PerPartitionQueryMetrics.csv",
       );
     } else {
       const downloadLink: HTMLAnchorElement = document.createElement("a");
@@ -304,43 +318,41 @@ const QueryStatsTab: React.FC<Pick<ResultsViewProps, 'queryResults'>> = ({ query
     return false;
   };
 
-  return <div className={styles.metricsGridContainer}>
-    <DataGrid
-      data-test="QueryTab/ResultsPane/ResultsView/QueryStatsList"
-      className={styles.queryStatsGrid}
-      items={generateQueryStatsItems()}
-      columns={columns}
-      sortable
-      getRowId={(item) => item.metric}
-      focusMode="composite">
-      <DataGridHeader>
-        <DataGridRow>
-          {({ renderHeaderCell }) => (
-            <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
-          )}
-        </DataGridRow>
-      </DataGridHeader>
-      <DataGridBody<IDocument>>
-        {({ item, rowId }) => (
-          <DataGridRow<IDocument> key={rowId} data-test={`Row:${rowId}`}>
-            {({ columnId, renderCell }) => (
-              <DataGridCell data-test={`Row:${rowId}/Column:${columnId}`}>{renderCell(item)}</DataGridCell>
-            )}
+  return (
+    <div className={styles.metricsGridContainer}>
+      <DataGrid
+        data-test="QueryTab/ResultsPane/ResultsView/QueryStatsList"
+        className={styles.queryStatsGrid}
+        items={generateQueryStatsItems()}
+        columns={columns}
+        sortable
+        getRowId={(item) => item.metric}
+        focusMode="composite"
+      >
+        <DataGridHeader>
+          <DataGridRow>
+            {({ renderHeaderCell }) => <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>}
           </DataGridRow>
+        </DataGridHeader>
+        <DataGridBody<IDocument>>
+          {({ item, rowId }) => (
+            <DataGridRow<IDocument> key={rowId} data-test={`Row:${rowId}`}>
+              {({ columnId, renderCell }) => (
+                <DataGridCell data-test={`Row:${rowId}/Column:${columnId}`}>{renderCell(item)}</DataGridCell>
+              )}
+            </DataGridRow>
+          )}
+        </DataGridBody>
+      </DataGrid>
+      <div className={styles.metricsGridButtons}>
+        {userContext.apiType === "SQL" && (
+          <Button appearance="subtle" onClick={() => onDownloadQueryMetricsCsvClick()} icon={<ArrowDownloadRegular />}>
+            Per-partition query metrics (CSV)
+          </Button>
         )}
-      </DataGridBody>
-    </DataGrid>
-    <div className={styles.metricsGridButtons}>
-      {userContext.apiType === "SQL" && (
-        <Button
-          appearance="subtle"
-          onClick={() => onDownloadQueryMetricsCsvClick()}
-          icon={<ArrowDownloadRegular />}>
-          Per-partition query metrics (CSV)
-        </Button>
-      )}
+      </div>
     </div>
-  </div>;
+  );
 };
 
 export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResults, executeQueryDocumentsPage }) => {
@@ -349,16 +361,36 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ isMongoDB, queryResult
 
   const onTabSelect = useCallback((event: SelectTabEvent, data: SelectTabData) => {
     setActiveTab(data.value as ResultsTabs);
-  }, [])
+  }, []);
 
-  return <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
-    <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
-      <Tab data-test="QueryTab/ResultsPane/ResultsView/ResultsTab" id={ResultsTabs.Results} value={ResultsTabs.Results}>Results</Tab>
-      <Tab data-test="QueryTab/ResultsPane/ResultsView/QueryStatsTab" id={ResultsTabs.QueryStats} value={ResultsTabs.QueryStats}>Query Stats</Tab>
-    </TabList>
-    <div className={styles.queryResultsTabContentContainer}>
-      {activeTab === ResultsTabs.Results && <ResultsTab queryResults={queryResults} isMongoDB={isMongoDB} executeQueryDocumentsPage={executeQueryDocumentsPage} />}
-      {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
+  return (
+    <div data-test="QueryTab/ResultsPane/ResultsView" className={styles.queryResultsTabPanel}>
+      <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
+        <Tab
+          data-test="QueryTab/ResultsPane/ResultsView/ResultsTab"
+          id={ResultsTabs.Results}
+          value={ResultsTabs.Results}
+        >
+          Results
+        </Tab>
+        <Tab
+          data-test="QueryTab/ResultsPane/ResultsView/QueryStatsTab"
+          id={ResultsTabs.QueryStats}
+          value={ResultsTabs.QueryStats}
+        >
+          Query Stats
+        </Tab>
+      </TabList>
+      <div className={styles.queryResultsTabContentContainer}>
+        {activeTab === ResultsTabs.Results && (
+          <ResultsTab
+            queryResults={queryResults}
+            isMongoDB={isMongoDB}
+            executeQueryDocumentsPage={executeQueryDocumentsPage}
+          />
+        )}
+        {activeTab === ResultsTabs.QueryStats && <QueryStatsTab queryResults={queryResults} />}
+      </div>
     </div>
-  </div>
+  );
 };
