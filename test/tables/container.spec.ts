@@ -14,6 +14,9 @@ test("Tables CRUD", async ({ page }) => {
     await okButton.click();
   });
 
+  const databaseNode = explorer.treeNode("DATA/TablesDB");
+  await databaseNode.expand();
+  
   const tableNode = explorer.treeNode(`DATA/TablesDB/${tableId}`);
   await expect(tableNode.element).toBeAttached();
 
