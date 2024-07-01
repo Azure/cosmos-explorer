@@ -290,6 +290,11 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
           }
 
           updateUserContext({ dataPlaneRbacEnabled });
+        } else {
+          const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+
+          updateUserContext({ dataPlaneRbacEnabled });
+          useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
         }
       } else {
         const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
@@ -484,6 +489,11 @@ async function configurePortal(): Promise<Explorer> {
               } else {
                 dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
+
+              updateUserContext({ dataPlaneRbacEnabled });
+              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+            } else {
+              const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
 
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
