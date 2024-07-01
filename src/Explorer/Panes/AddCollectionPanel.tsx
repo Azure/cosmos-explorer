@@ -21,6 +21,7 @@ import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
 import { SubscriptionType } from "Contracts/SubscriptionType";
+import { AddVectorEmbeddingPolicyForm } from "Explorer/Panes/VectorSearchPanel/AddVectorEmbeddingPolicyForm";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import React from "react";
@@ -29,7 +30,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
-import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils";
+import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
@@ -81,6 +82,10 @@ export const AllPropertiesIndexed: DataModels.IndexingPolicy = {
   excludedPaths: [],
 };
 
+export const DefaultVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy = {
+  vectorEmbeddings: [],
+};
+
 export interface AddCollectionPanelState {
   createNewDatabase: boolean;
   newDatabaseId: string;
@@ -101,6 +106,9 @@ export interface AddCollectionPanelState {
   isExecuting: boolean;
   isThroughputCapExceeded: boolean;
   teachingBubbleStep: number;
+  vectorIndexingPolicy: DataModels.VectorIndex[];
+  vectorEmbeddingPolicy: DataModels.VectorEmbedding[];
+  vectorPolicyValidated: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -136,6 +144,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isExecuting: false,
       isThroughputCapExceeded: false,
       teachingBubbleStep: 0,
+      vectorEmbeddingPolicy: [],
+      vectorIndexingPolicy: [],
+      vectorPolicyValidated: true,
     };
   }
 
@@ -145,11 +156,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
   }
 
+  componentDidUpdate(_prevProps: AddCollectionPanelProps, prevState: AddCollectionPanelState): void {
+    if (this.state.errorMessage && this.state.errorMessage !== prevState.errorMessage) {
+      this.scrollToSection("panelContainer");
+    }
+  }
+
   render(): JSX.Element {
     const isFirstResourceCreated = useDatabases.getState().isFirstResourceCreated();
 
     return (
-      <form className="panelFormWrapper" onSubmit={this.submit.bind(this)}>
+      <form className="panelFormWrapper" onSubmit={this.submit.bind(this)} id="panelContainer">
         {this.state.errorMessage && (
           <PanelInfoErrorComponent
             message={this.state.errorMessage}
@@ -382,6 +399,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             )}
             {!this.state.createNewDatabase && (
               <Dropdown
+                ariaLabel="Choose an existing database"
                 styles={{ title: { height: 27, lineHeight: 27 }, dropdownItem: { fontSize: 12 } }}
                 style={{ width: 300, fontSize: 12 }}
                 placeholder="Choose an existing database"
@@ -558,9 +576,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </TooltipHost>
               </Stack>
 
-              <Text variant="small" aria-label="pkDescription">
-                {this.getPartitionKeySubtext()}
-              </Text>
+              <Text variant="small">{this.getPartitionKeySubtext()}</Text>
 
               <input
                 type="text"
@@ -800,8 +816,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     iconName="Info"
                     className="panelInfoIcon"
                     tabIndex={0}
-                    ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without
-        impacting the performance of transactional workloads."
+                    ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads."
                   />
                 </TooltipHost>
               </Stack>
@@ -863,17 +878,44 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               )}
             </Stack>
           )}
-
+          {this.shouldShowVectorSearchParameters() && (
+            <Stack>
+              <CollapsibleSectionComponent
+                title="Container Vector Policy"
+                isExpandedByDefault={false}
+                onExpand={() => {
+                  this.scrollToSection("collapsibleVectorPolicySectionContent");
+                }}
+                tooltipContent={this.getContainerVectorPolicyTooltipContent()}
+              >
+                <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
+                  <Stack styles={{ root: { paddingLeft: 40 } }}>
+                    <AddVectorEmbeddingPolicyForm
+                      vectorEmbedding={this.state.vectorEmbeddingPolicy}
+                      vectorIndex={this.state.vectorIndexingPolicy}
+                      onVectorEmbeddingChange={(
+                        vectorEmbeddingPolicy: DataModels.VectorEmbedding[],
+                        vectorIndexingPolicy: DataModels.VectorIndex[],
+                        vectorPolicyValidated: boolean,
+                      ) => {
+                        this.setState({ vectorEmbeddingPolicy, vectorIndexingPolicy, vectorPolicyValidated });
+                      }}
+                    />
+                  </Stack>
+                </Stack>
+              </CollapsibleSectionComponent>
+            </Stack>
+          )}
           {userContext.apiType !== "Tables" && (
             <CollapsibleSectionComponent
               title="Advanced"
               isExpandedByDefault={false}
               onExpand={() => {
                 TelemetryProcessor.traceOpen(Action.ExpandAddCollectionPaneAdvancedSection);
-                this.scrollToAdvancedSection();
+                this.scrollToSection("collapsibleAdvancedSectionContent");
               }}
             >
-              <Stack className="panelGroupSpacing" id="collapsibleSectionContent">
+              <Stack className="panelGroupSpacing" id="collapsibleAdvancedSectionContent">
                 {isCapabilityEnabled("EnableMongo") && !isCapabilityEnabled("EnableMongo16MBDocumentSupport") && (
                   <Stack className="panelGroupSpacing">
                     <Stack horizontal>
@@ -924,10 +966,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       }
                     />
                     <Text variant="small">
-                      <Icon iconName="InfoSolid" className="removeIcon" tabIndex={0} /> To ensure compatibility with
-                      older SDKs, the created container will use a legacy partitioning scheme that supports partition
-                      key values of size only up to 101 bytes. If this is enabled, you will not be able to use
-                      hierarchical partition keys.{" "}
+                      <Icon iconName="InfoSolid" className="removeIcon" /> To ensure compatibility with older SDKs, the
+                      created container will use a legacy partitioning scheme that supports partition key values of size
+                      only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.{" "}
                       <Link href="https://aka.ms/cosmos-large-pk" target="_blank">
                         Learn more
                       </Link>
@@ -1070,6 +1111,18 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
   }
 
+  private setVectorEmbeddingPolicy(vectorEmbeddingPolicy: DataModels.VectorEmbedding[]): void {
+    this.setState({
+      vectorEmbeddingPolicy,
+    });
+  }
+
+  private setVectorIndexingPolicy(vectorIndexingPolicy: DataModels.VectorIndex[]): void {
+    this.setState({
+      vectorIndexingPolicy,
+    });
+  }
+
   private isSelectedDatabaseSharedThroughput(): boolean {
     if (!this.state.selectedDatabaseId) {
       return false;
@@ -1150,6 +1203,18 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     );
   }
 
+  private getContainerVectorPolicyTooltipContent(): JSX.Element {
+    return (
+      <Text variant="small">
+        Describe any properties in your data that contain vectors, so that they can be made available for similarity
+        queries.{" "}
+        <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
+          Learn more
+        </Link>
+      </Text>
+    );
+  }
+
   private shouldShowCollectionThroughputInput(): boolean {
     if (isServerlessAccount()) {
       return false;
@@ -1209,6 +1274,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     );
   }
 
+  private shouldShowVectorSearchParameters() {
+    return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+  }
+
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {
     if (this.state.uniqueKeys?.length === 0) {
       return undefined;
@@ -1265,6 +1334,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
+    if (this.shouldShowVectorSearchParameters() && !this.state.vectorPolicyValidated) {
+      this.setState({ errorMessage: "Please fix errors in container vector policy" });
+      return false;
+    }
+
     return true;
   }
 
@@ -1287,8 +1361,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return Constants.AnalyticalStorageTtl.Disabled;
   }
 
-  private scrollToAdvancedSection(): void {
-    document.getElementById("collapsibleSectionContent")?.scrollIntoView();
+  private scrollToSection(id: string): void {
+    document.getElementById(id)?.scrollIntoView();
   }
 
   private getSampleDBName(): string {
@@ -1343,6 +1417,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
       ? AllPropertiesIndexed
       : SharedDatabaseDefault;
+
+    let vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
+
+    if (this.shouldShowVectorSearchParameters()) {
+      indexingPolicy.vectorIndexes = this.state.vectorIndexingPolicy;
+      vectorEmbeddingPolicy = {
+        vectorEmbeddings: this.state.vectorEmbeddingPolicy,
+      };
+    }
 
     const telemetryData = {
       database: {
@@ -1402,6 +1485,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       partitionKey,
       uniqueKeyPolicy,
       createMongoWildcardIndex: this.state.createMongoWildCardIndex,
+      vectorEmbeddingPolicy,
     };
 
     this.setState({ isExecuting: true });

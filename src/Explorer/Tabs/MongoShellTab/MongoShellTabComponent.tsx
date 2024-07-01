@@ -1,5 +1,5 @@
+import { useMongoProxyEndpoint } from "Common/MongoProxyClient";
 import React, { Component } from "react";
-import * as Constants from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -9,7 +9,6 @@ import { isInvalidParentFrameOrigin, isReadyMessage } from "../../../Utils/Messa
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import TabsBase from "../TabsBase";
-import { getMongoShellOrigin } from "./getMongoShellOrigin";
 import { getMongoShellUrl } from "./getMongoShellUrl";
 
 //eslint-disable-next-line
@@ -50,13 +49,15 @@ export default class MongoShellTabComponent extends Component<
   IMongoShellTabComponentStates
 > {
   private _logTraces: Map<string, number>;
+  private _useMongoProxyEndpoint: boolean;
 
   constructor(props: IMongoShellTabComponentProps) {
     super(props);
     this._logTraces = new Map();
+    this._useMongoProxyEndpoint = useMongoProxyEndpoint("legacyMongoShell");
 
     this.state = {
-      url: getMongoShellUrl(),
+      url: getMongoShellUrl(this._useMongoProxyEndpoint),
     };
 
     props.onMongoShellTabAccessor({
@@ -111,17 +112,12 @@ export default class MongoShellTabComponent extends Component<
     const resourceId = databaseAccount?.id;
     const accountName = databaseAccount?.name;
     const documentEndpoint = databaseAccount?.properties.mongoEndpoint || databaseAccount?.properties.documentEndpoint;
-    const mongoEndpoint =
-      documentEndpoint.substr(
-        Constants.MongoDBAccounts.protocol.length + 3,
-        documentEndpoint.length -
-          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length),
-      ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.props.collection.databaseId;
     const collectionId = this.props.collection.id();
-    const apiEndpoint = configContext.BACKEND_ENDPOINT;
+    const apiEndpoint = this._useMongoProxyEndpoint
+      ? configContext.MONGO_PROXY_ENDPOINT
+      : configContext.BACKEND_ENDPOINT;
     const encryptedAuthToken: string = userContext.accessToken;
-    const targetOrigin = getMongoShellOrigin();
 
     shellIframe.contentWindow.postMessage(
       {
@@ -129,7 +125,7 @@ export default class MongoShellTabComponent extends Component<
         data: {
           resourceId: resourceId,
           accountName: accountName,
-          mongoEndpoint: mongoEndpoint,
+          mongoEndpoint: documentEndpoint,
           authorization: authorization,
           databaseId: databaseId,
           collectionId: collectionId,
@@ -137,7 +133,7 @@ export default class MongoShellTabComponent extends Component<
           apiEndpoint: apiEndpoint,
         },
       },
-      targetOrigin,
+      window.origin,
     );
   }
 

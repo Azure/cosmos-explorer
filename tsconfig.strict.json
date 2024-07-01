@@ -112,6 +112,7 @@
     "./src/Utils/BlobUtils.ts",
     "./src/Utils/CapabilityUtils.ts",
     "./src/Utils/CloudUtils.ts",
+    "./src/Utils/EndpointUtils.ts",
     "./src/Utils/GitHubUtils.test.ts",
     "./src/Utils/GitHubUtils.ts",
     "./src/Utils/MessageValidation.test.ts",

@@ -25,7 +25,6 @@ import * as React from "react";
 import ConnectIcon from "../../../images/Connect_color.svg";
 import ContainersIcon from "../../../images/Containers.svg";
 import LinkIcon from "../../../images/Link_blue.svg";
-import NotebookColorIcon from "../../../images/Notebooks.svg";
 import PowerShellIcon from "../../../images/PowerShell.svg";
 import CopilotIcon from "../../../images/QueryCopilotNewLogo.svg";
 import QuickStartIcon from "../../../images/Quickstart_Lightning.svg";
@@ -148,23 +147,25 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
             />
           </Stack>
           <Stack horizontal tokens={{ childrenGap: 16 }}>
-            <SplashScreenButton
-              imgSrc={CopilotIcon}
-              title={"Query faster with Copilot"}
-              description={
-                "Copilot is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
-              }
-              onClick={() => {
-                const copilotVersion = userContext.features.copilotVersion;
-                if (copilotVersion === "v1.0") {
-                  useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
-                } else if (copilotVersion === "v2.0") {
-                  const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
-                  sampleCollection.onNewQueryClick(sampleCollection, undefined);
+            {useQueryCopilot.getState().copilotEnabled && (
+              <SplashScreenButton
+                imgSrc={CopilotIcon}
+                title={"Query faster with Query Advisor"}
+                description={
+                  "Query Advisor is your AI buddy that helps you write Azure Cosmos DB queries like a pro. Try it using our sample data set now!"
                 }
-                traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
-              }}
-            />
+                onClick={() => {
+                  const copilotVersion = userContext.features.copilotVersion;
+                  if (copilotVersion === "v1.0") {
+                    useTabs.getState().openAndActivateReactTab(ReactTabKind.QueryCopilot);
+                  } else if (copilotVersion === "v2.0") {
+                    const sampleCollection = useDatabases.getState().sampleDataResourceTokenCollection;
+                    sampleCollection.onNewQueryClick(sampleCollection, undefined);
+                  }
+                  traceOpen(Action.OpenQueryCopilotFromSplashScreen, { apiType: userContext.apiType });
+                }}
+              />
+            )}
             <SplashScreenButton
               imgSrc={ConnectIcon}
               title={"Connect"}
@@ -354,15 +355,15 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               ) : (
                 <div className="moreStuffContainer">
                   <div className="moreStuffColumn commonTasks">
-                    <div className="title">Recents</div>
+                    <h2 className="title">Recents</h2>
                     {this.getRecentItems()}
                   </div>
                   <div className="moreStuffColumn">
-                    <div className="title">Top 3 things you need to know</div>
+                    <h2 className="title">Top 3 things you need to know</h2>
                     {this.top3Items()}
                   </div>
                   <div className="moreStuffColumn tipsContainer">
-                    <div className="title">Learning Resources</div>
+                    <h2 className="title">Learning Resources</h2>
                     {this.getLearningResourceItems()}
                   </div>
                 </div>
@@ -408,14 +409,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         },
       };
       heroes.push(launchQuickstartBtn);
-    } else if (useNotebook.getState().isPhoenixNotebooks) {
-      const newNotebookBtn = {
-        iconSrc: NotebookColorIcon,
-        title: "New notebook",
-        description: "Visualize your data stored in Azure Cosmos DB",
-        onClick: () => this.container.onNewNotebookClicked(),
-      };
-      heroes.push(newNotebookBtn);
     }
 
     heroes.push(this.getShellCard());
@@ -687,11 +680,20 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       title: "Learn the Fundamentals",
       description: "Watch Azure Cosmos DB Live TV show introductory and how to videos.",
     };
-    let items: item[];
+
+    const commonItems: item[] = [
+      {
+        link: "https://learn.microsoft.com/azure/cosmos-db/data-explorer-shortcuts",
+        title: "Data Explorer keyboard shortcuts",
+        description: "Learn keyboard shortcuts to navigate Data Explorer.",
+      },
+    ];
+
+    let apiItems: item[];
     switch (userContext.apiType) {
       case "SQL":
       case "Postgres":
-        items = [
+        apiItems = [
           {
             link: "https://aka.ms/msl-sdk-connect",
             title: "Get Started using an SDK",
@@ -706,7 +708,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         ];
         break;
       case "Mongo":
-        items = [
+        apiItems = [
           {
             link: "https://aka.ms/mongonodejs",
             title: "Build an app with Node.js",
@@ -721,7 +723,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         ];
         break;
       case "Cassandra":
-        items = [
+        apiItems = [
           {
             link: "https://aka.ms/cassandracontainer",
             title: "Create a Container",
@@ -736,7 +738,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         ];
         break;
       case "Gremlin":
-        items = [
+        apiItems = [
           {
             link: "https://aka.ms/graphquickstart",
             title: "Get Started ",
@@ -751,7 +753,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         ];
         break;
       case "Tables":
-        items = [
+        apiItems = [
           {
             link: "https://aka.ms/tabledotnet",
             title: "Build a .NET App",
@@ -768,6 +770,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       default:
         break;
     }
+
+    const items = [...commonItems, ...apiItems];
+
     return (
       <Stack>
         {items.map((item, i) => (

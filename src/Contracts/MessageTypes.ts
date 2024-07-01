@@ -1,6 +1,13 @@
 /**
  * Messaging types used with Data Explorer <-> Portal communication,
- * Hosted <-> Explorer communication and Data Explorer -> Fabric communication.
+ * Hosted <-> Explorer communication
+ *
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * WARNING: !!!!!!! YOU CAN ONLY ADD NEW TYPES TO THE END OF THIS ENUM !!!!!!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *
+ * Enum are integers, so inserting or deleting a type will break the communication.
+ *
  */
 export enum MessageTypes {
   TelemetryInfo,
@@ -37,13 +44,9 @@ export enum MessageTypes {
   DisplayNPSSurvey,
   OpenVCoreMongoNetworkingBlade,
   OpenVCoreMongoConnectionStringsBlade,
-
-  // Data Explorer -> Fabric communication
-  GetAuthorizationToken,
-  GetAllResourceTokens,
-}
-
-export interface AuthorizationToken {
-  XDate: string;
-  PrimaryReadWriteToken: string;
+  GetAuthorizationToken, // unused. Can be removed if the portal uses the same list of enums.
+  GetAllResourceTokens, // unused. Can be removed if the portal uses the same list of enums.
+  Ready, // unused. Can be removed if the portal uses the same list of enums.
+  OpenCESCVAFeedbackBlade,
+  ActivateTab,
 }

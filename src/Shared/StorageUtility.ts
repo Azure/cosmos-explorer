@@ -1,9 +1,13 @@
+import { SplitterDirection } from "Common/Splitter";
 import * as LocalStorageUtility from "./LocalStorageUtility";
 import * as SessionStorageUtility from "./SessionStorageUtility";
+import * as StringUtility from "./StringUtility";
 
 export { LocalStorageUtility, SessionStorageUtility };
 export enum StorageKey {
   ActualItemPerPage,
+  RUThresholdEnabled,
+  RUThreshold,
   QueryTimeoutEnabled,
   QueryTimeout,
   RetryAttempts,
@@ -11,6 +15,7 @@ export enum StorageKey {
   MaxWaitTimeInSeconds,
   AutomaticallyCancelQueryAfterTimeout,
   ContainerPaginationEnabled,
+  CopilotSampleDBEnabled,
   CustomItemPerPage,
   DatabaseAccountId,
   EncryptedKeyToken,
@@ -23,4 +28,37 @@ export enum StorageKey {
   GalleryCalloutDismissed,
   VisitedAccounts,
   PriorityLevel,
+  DefaultQueryResultsView,
 }
+
+export const hasRUThresholdBeenConfigured = (): boolean => {
+  const ruThresholdEnabledLocalStorageRaw: string | null = LocalStorageUtility.getEntryString(
+    StorageKey.RUThresholdEnabled,
+  );
+  return ruThresholdEnabledLocalStorageRaw === "true" || ruThresholdEnabledLocalStorageRaw === "false";
+};
+
+export const ruThresholdEnabled = (): boolean => {
+  const ruThresholdEnabledLocalStorageRaw: string | null = LocalStorageUtility.getEntryString(
+    StorageKey.RUThresholdEnabled,
+  );
+  return ruThresholdEnabledLocalStorageRaw === null || StringUtility.toBoolean(ruThresholdEnabledLocalStorageRaw);
+};
+
+export const getRUThreshold = (): number => {
+  const ruThresholdRaw = LocalStorageUtility.getEntryNumber(StorageKey.RUThreshold);
+  if (ruThresholdRaw !== 0) {
+    return ruThresholdRaw;
+  }
+  return DefaultRUThreshold;
+};
+
+export const getDefaultQueryResultsView = (): SplitterDirection => {
+  const defaultQueryResultsViewRaw = LocalStorageUtility.getEntryString(StorageKey.DefaultQueryResultsView);
+  if (defaultQueryResultsViewRaw === SplitterDirection.Horizontal) {
+    return SplitterDirection.Horizontal;
+  }
+  return SplitterDirection.Vertical;
+};
+
+export const DefaultRUThreshold = 5000;

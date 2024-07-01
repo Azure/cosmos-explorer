@@ -1,4 +1,5 @@
 // TODO convert this file to an action registry in order to have actions and their handlers be more tightly coupled.
+import { useDatabases } from "Explorer/useDatabases";
 import React from "react";
 import { ActionContracts } from "../../Contracts/ExplorerContracts";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -40,97 +41,112 @@ function openCollectionTab(
   databases: ViewModels.Database[],
   initialDatabaseIndex = 0,
 ) {
-  for (let i = initialDatabaseIndex; i < databases.length; i++) {
-    const database: ViewModels.Database = databases[i];
-    if (!!action.databaseResourceId && database.id() !== action.databaseResourceId) {
-      continue;
-    }
-
-    const collectionActionHandler = (collections: ViewModels.Collection[]) => {
-      if (!action.collectionResourceId && collections.length === 0) {
-        subscription.dispose();
-        openCollectionTab(action, databases, ++i);
-        return;
-      }
-
-      for (let j = 0; j < collections.length; j++) {
-        const collection: ViewModels.Collection = collections[j];
-        if (!!action.collectionResourceId && collection.id() !== action.collectionResourceId) {
-          continue;
-        }
-
-        // select the collection
-        collection.expandCollection();
-
-        if (
-          action.tabKind === ActionContracts.TabKind.SQLDocuments ||
-          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SQLDocuments]
-        ) {
-          collection.onDocumentDBDocumentsClick();
-          break;
-        }
-
-        if (
-          action.tabKind === ActionContracts.TabKind.MongoDocuments ||
-          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.MongoDocuments]
-        ) {
-          collection.onMongoDBDocumentsClick();
-          break;
-        }
-
-        if (
-          action.tabKind === ActionContracts.TabKind.SchemaAnalyzer ||
-          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SchemaAnalyzer]
-        ) {
-          collection.onSchemaAnalyzerClick();
-          break;
-        }
-
-        if (
-          action.tabKind === ActionContracts.TabKind.TableEntities ||
-          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.TableEntities]
-        ) {
-          collection.onTableEntitiesClick();
-          break;
-        }
-
-        if (
-          action.tabKind === ActionContracts.TabKind.Graph ||
-          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.Graph]
-        ) {
-          collection.onGraphDocumentsClick();
-          break;
-        }
-
-        if (
-          action.tabKind === ActionContracts.TabKind.SQLQuery ||
-          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SQLQuery]
-        ) {
-          collection.onNewQueryClick(
-            collection,
-            undefined,
-            generateQueryText(action as ActionContracts.OpenQueryTab, collection.partitionKeyProperties),
-          );
-          break;
-        }
-
-        if (
-          action.tabKind === ActionContracts.TabKind.ScaleSettings ||
-          action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.ScaleSettings]
-        ) {
-          collection.onSettingsClick();
-          break;
-        }
-      }
-      subscription.dispose();
+  //if databases are not yet loaded, wait until loaded
+  if (!databases || databases.length === 0) {
+    const databaseActionHandler = (databases: ViewModels.Database[]) => {
+      databasesUnsubscription();
+      openCollectionTab(action, databases, 0);
+      return;
     };
+    const databasesUnsubscription = useDatabases.subscribe(databaseActionHandler, (state) => state.databases);
+  } else {
+    for (let i = initialDatabaseIndex; i < databases.length; i++) {
+      const database: ViewModels.Database = databases[i];
+      if (!!action.databaseResourceId && database.id() !== action.databaseResourceId) {
+        continue;
+      }
 
-    const subscription = database.collections.subscribe((collections) => collectionActionHandler(collections));
-    if (database.collections && database.collections() && database.collections().length) {
-      collectionActionHandler(database.collections());
+      //expand database first if not expanded to load the collections
+      if (!database.isDatabaseExpanded?.()) {
+        database.expandDatabase?.();
+      }
+
+      const collectionActionHandler = (collections: ViewModels.Collection[]) => {
+        if (!action.collectionResourceId && collections.length === 0) {
+          subscription.dispose();
+          openCollectionTab(action, databases, ++i);
+          return;
+        }
+
+        for (let j = 0; j < collections.length; j++) {
+          const collection: ViewModels.Collection = collections[j];
+          if (!!action.collectionResourceId && collection.id() !== action.collectionResourceId) {
+            continue;
+          }
+
+          // select the collection
+          collection.expandCollection();
+
+          if (
+            action.tabKind === ActionContracts.TabKind.SQLDocuments ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SQLDocuments]
+          ) {
+            collection.onDocumentDBDocumentsClick();
+            break;
+          }
+
+          if (
+            action.tabKind === ActionContracts.TabKind.MongoDocuments ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.MongoDocuments]
+          ) {
+            collection.onMongoDBDocumentsClick();
+            break;
+          }
+
+          if (
+            action.tabKind === ActionContracts.TabKind.SchemaAnalyzer ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SchemaAnalyzer]
+          ) {
+            collection.onSchemaAnalyzerClick();
+            break;
+          }
+
+          if (
+            action.tabKind === ActionContracts.TabKind.TableEntities ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.TableEntities]
+          ) {
+            collection.onTableEntitiesClick();
+            break;
+          }
+
+          if (
+            action.tabKind === ActionContracts.TabKind.Graph ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.Graph]
+          ) {
+            collection.onGraphDocumentsClick();
+            break;
+          }
+
+          if (
+            action.tabKind === ActionContracts.TabKind.SQLQuery ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SQLQuery]
+          ) {
+            collection.onNewQueryClick(
+              collection,
+              undefined,
+              generateQueryText(action as ActionContracts.OpenQueryTab, collection.partitionKeyProperties),
+            );
+            break;
+          }
+
+          if (
+            action.tabKind === ActionContracts.TabKind.ScaleSettings ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.ScaleSettings]
+          ) {
+            collection.onSettingsClick();
+            break;
+          }
+        }
+        subscription.dispose();
+      };
+
+      const subscription = database.collections.subscribe((collections) => collectionActionHandler(collections));
+      if (database.collections && database.collections() && database.collections().length) {
+        collectionActionHandler(database.collections());
+      }
+
+      break;
     }
-
-    break;
   }
 }
 
@@ -154,7 +170,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     action.paneKind === ActionContracts.PaneKind.GlobalSettings ||
     action.paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.GlobalSettings]
   ) {
-    useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
+    useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={explorer} />);
   }
 }
 

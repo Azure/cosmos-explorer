@@ -1,0 +1,639 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LegacyTreeComponent renders a simple tree 1`] = `
+<div
+  className="treeComponent tree"
+  role="tree"
+>
+  <LegacyTreeNodeComponent
+    generation={0}
+    node={
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "label": "ZgrandChild11",
+              },
+              Object {
+                "label": "AgrandChild12",
+              },
+            ],
+            "label": "Bchild1",
+          },
+          Object {
+            "label": "2child2",
+          },
+        ],
+        "label": "root",
+      }
+    }
+    paddingLeft={0}
+  />
+</div>
+`;
+
+exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
+<div
+  className=" main2 nodeItem "
+  data-test="Tree/TreeNode:label"
+  onClick={[Function]}
+  onKeyPress={[Function]}
+  role="treeitem"
+>
+  <div
+    className="treeNodeHeader "
+    data-test="Tree/TreeNode/Header:label"
+    style={
+      Object {
+        "paddingLeft": 9,
+      }
+    }
+    tabIndex={-1}
+  >
+    <img
+      alt="label branch is collapsed"
+      className="expandCollapseIcon"
+      onKeyPress={[Function]}
+      role="button"
+      src={Object {}}
+      tabIndex={0}
+    />
+    <span
+      className="nodeLabel"
+      title="label"
+    >
+      label
+    </span>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height={0}
+    style={Object {}}
+  >
+    <div
+      className="nodeChildren"
+      data-test="label"
+      role="group"
+    >
+      <LegacyTreeNodeComponent
+        generation={3}
+        key="Bchild1-3-undefined"
+        node={
+          Object {
+            "children": Array [
+              Object {
+                "label": "ZgrandChild11",
+              },
+              Object {
+                "label": "AgrandChild12",
+              },
+            ],
+            "label": "Bchild1",
+          }
+        }
+        paddingLeft={32}
+      />
+      <LegacyTreeNodeComponent
+        generation={3}
+        key="2child2-3-undefined"
+        node={
+          Object {
+            "label": "2child2",
+          }
+        }
+        paddingLeft={54}
+      />
+    </div>
+  </AnimateHeight>
+</div>
+`;
+
+exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expanded) 1`] = `
+<div
+  className="nodeClassname main12 nodeItem "
+  data-test="Tree/TreeNode:label"
+  id="id"
+  onClick={[Function]}
+  onKeyPress={[Function]}
+  role="treeitem"
+>
+  <div
+    className="treeNodeHeader "
+    data-test="Tree/TreeNode/Header:label"
+    style={
+      Object {
+        "paddingLeft": 23,
+      }
+    }
+    tabIndex={-1}
+  >
+    <img
+      alt="label branch is expanded"
+      className="expandCollapseIcon"
+      onKeyPress={[Function]}
+      role="button"
+      src={Object {}}
+      tabIndex={0}
+    />
+    <span
+      className="nodeLabel"
+      title="label"
+    >
+      label
+    </span>
+    <div
+      onContextMenu={[Function]}
+      onKeyPress={[Function]}
+    >
+      <CustomizedIconButton
+        ariaLabel="More options"
+        className="treeMenuEllipsis"
+        menuIconProps={
+          Object {
+            "iconName": "More",
+            "styles": Object {
+              "root": Object {
+                "fontSize": "18px",
+                "fontWeight": "bold",
+              },
+            },
+          }
+        }
+        menuProps={
+          Object {
+            "contextualMenuItemAs": [Function],
+            "coverTarget": true,
+            "directionalHint": 3,
+            "isBeakVisible": false,
+            "items": Array [
+              Object {
+                "className": undefined,
+                "disabled": true,
+                "key": "menuLabel",
+                "onClick": [Function],
+                "onRenderIcon": [Function],
+                "text": "menuLabel",
+              },
+            ],
+            "onMenuDismissed": [Function],
+            "onMenuOpened": [Function],
+          }
+        }
+        name="More"
+        styles={
+          Object {
+            "rootFocused": Object {
+              "outline": "1px dashed undefined",
+            },
+          }
+        }
+        title="More"
+      />
+    </div>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height="auto"
+    style={Object {}}
+  >
+    <div
+      className="nodeChildren"
+      data-test="label"
+      role="group"
+    >
+      <LegacyTreeNodeComponent
+        generation={13}
+        key="2child2-13-undefined"
+        node={
+          Object {
+            "label": "2child2",
+          }
+        }
+        paddingLeft={214}
+      />
+      <LegacyTreeNodeComponent
+        generation={13}
+        key="Bchild1-13-undefined"
+        node={
+          Object {
+            "children": Array [
+              Object {
+                "label": "ZgrandChild11",
+              },
+              Object {
+                "label": "AgrandChild12",
+              },
+            ],
+            "label": "Bchild1",
+          }
+        }
+        paddingLeft={192}
+      />
+    </div>
+  </AnimateHeight>
+</div>
+`;
+
+exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
+<div
+  className=" main2 nodeItem "
+  data-test="Tree/TreeNode:label"
+  onClick={[Function]}
+  onKeyPress={[Function]}
+  role="treeitem"
+>
+  <div
+    className="treeNodeHeader "
+    data-test="Tree/TreeNode/Header:label"
+    style={
+      Object {
+        "paddingLeft": 9,
+      }
+    }
+    tabIndex={-1}
+  >
+    <img
+      alt="label branch is expanded"
+      className="expandCollapseIcon"
+      onKeyPress={[Function]}
+      role="button"
+      src={Object {}}
+      tabIndex={0}
+    />
+    <span
+      className="nodeLabel"
+      title="label"
+    >
+      label
+    </span>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height="auto"
+    style={Object {}}
+  >
+    <div
+      className="nodeChildren"
+      data-test="label"
+      role="group"
+    />
+  </AnimateHeight>
+</div>
+`;
+
+exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and parents separated 1`] = `
+<div
+  className="nodeClassname main12 nodeItem "
+  data-test="Tree/TreeNode:label"
+  id="id"
+  onClick={[Function]}
+  onKeyPress={[Function]}
+  role="treeitem"
+>
+  <div
+    className="treeNodeHeader "
+    data-test="Tree/TreeNode/Header:label"
+    style={
+      Object {
+        "paddingLeft": 23,
+      }
+    }
+    tabIndex={-1}
+  >
+    <img
+      alt="label branch is expanded"
+      className="expandCollapseIcon"
+      onKeyPress={[Function]}
+      role="button"
+      src={Object {}}
+      tabIndex={0}
+    />
+    <span
+      className="nodeLabel"
+      title="label"
+    >
+      label
+    </span>
+    <div
+      onContextMenu={[Function]}
+      onKeyPress={[Function]}
+    >
+      <CustomizedIconButton
+        ariaLabel="More options"
+        className="treeMenuEllipsis"
+        menuIconProps={
+          Object {
+            "iconName": "More",
+            "styles": Object {
+              "root": Object {
+                "fontSize": "18px",
+                "fontWeight": "bold",
+              },
+            },
+          }
+        }
+        menuProps={
+          Object {
+            "contextualMenuItemAs": [Function],
+            "coverTarget": true,
+            "directionalHint": 3,
+            "isBeakVisible": false,
+            "items": Array [],
+            "onMenuDismissed": [Function],
+            "onMenuOpened": [Function],
+          }
+        }
+        name="More"
+        styles={
+          Object {
+            "rootFocused": Object {
+              "outline": "1px dashed undefined",
+            },
+          }
+        }
+        title="More"
+      />
+    </div>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height="auto"
+    style={Object {}}
+  >
+    <div
+      className="nodeChildren"
+      data-test="label"
+      role="group"
+    >
+      <LegacyTreeNodeComponent
+        generation={13}
+        key="bchild-13-undefined"
+        node={
+          Object {
+            "children": Array [
+              Object {
+                "label": "ZgrandChild11",
+              },
+              Object {
+                "label": "AgrandChild12",
+              },
+            ],
+            "label": "bchild",
+          }
+        }
+        paddingLeft={192}
+      />
+      <LegacyTreeNodeComponent
+        generation={13}
+        key="dchild-13-undefined"
+        node={
+          Object {
+            "children": Array [
+              Object {
+                "label": "ZgrandChild11",
+              },
+              Object {
+                "label": "AgrandChild12",
+              },
+            ],
+            "label": "dchild",
+          }
+        }
+        paddingLeft={192}
+      />
+      <LegacyTreeNodeComponent
+        generation={13}
+        key="aChild-13-undefined"
+        node={
+          Object {
+            "label": "aChild",
+          }
+        }
+        paddingLeft={214}
+      />
+      <LegacyTreeNodeComponent
+        generation={13}
+        key="cchild-13-undefined"
+        node={
+          Object {
+            "label": "cchild",
+          }
+        }
+        paddingLeft={214}
+      />
+    </div>
+  </AnimateHeight>
+</div>
+`;
+
+exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
+<div
+  className=" main2 nodeItem "
+  data-test="Tree/TreeNode:label"
+  onClick={[Function]}
+  onKeyPress={[Function]}
+  role="treeitem"
+>
+  <div
+    className="treeNodeHeader "
+    data-test="Tree/TreeNode/Header:label"
+    style={
+      Object {
+        "paddingLeft": 9,
+      }
+    }
+    tabIndex={-1}
+  >
+    <img
+      alt="label branch is expanded"
+      className="expandCollapseIcon"
+      onKeyPress={[Function]}
+      role="button"
+      src={Object {}}
+      tabIndex={0}
+    />
+    <span
+      className="nodeLabel"
+      title="label"
+    >
+      label
+    </span>
+  </div>
+  <div
+    className="loadingIconContainer"
+  >
+    <img
+      className="loadingIcon"
+      hidden={true}
+      src=""
+    />
+  </div>
+  <AnimateHeight
+    animateOpacity={false}
+    animationStateClasses={
+      Object {
+        "animating": "rah-animating",
+        "animatingDown": "rah-animating--down",
+        "animatingToHeightAuto": "rah-animating--to-height-auto",
+        "animatingToHeightSpecific": "rah-animating--to-height-specific",
+        "animatingToHeightZero": "rah-animating--to-height-zero",
+        "animatingUp": "rah-animating--up",
+        "static": "rah-static",
+        "staticHeightAuto": "rah-static--height-auto",
+        "staticHeightSpecific": "rah-static--height-specific",
+        "staticHeightZero": "rah-static--height-zero",
+      }
+    }
+    applyInlineTransitions={true}
+    delay={0}
+    duration={200}
+    easing="ease"
+    height="auto"
+    style={Object {}}
+  >
+    <div
+      className="nodeChildren"
+      data-test="label"
+      role="group"
+    >
+      <LegacyTreeNodeComponent
+        generation={3}
+        key="Bchild1-3-undefined"
+        node={
+          Object {
+            "children": Array [
+              Object {
+                "label": "ZgrandChild11",
+              },
+              Object {
+                "label": "AgrandChild12",
+              },
+            ],
+            "label": "Bchild1",
+          }
+        }
+        paddingLeft={32}
+      />
+      <LegacyTreeNodeComponent
+        generation={3}
+        key="2child2-3-undefined"
+        node={
+          Object {
+            "label": "2child2",
+          }
+        }
+        paddingLeft={54}
+      />
+    </div>
+  </AnimateHeight>
+</div>
+`;

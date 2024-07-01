@@ -31,7 +31,7 @@ module.exports = {
   coveragePathIgnorePatterns: ["/node_modules/"],
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: ["json", "text", "cobertura"],
+  coverageReporters: ["json", "text", "cobertura", "lcov"],
 
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
@@ -76,6 +76,10 @@ module.exports = {
     "^dnd-core$": "dnd-core/dist/cjs",
     "^react-dnd$": "react-dnd/dist/cjs",
     "^react-dnd-html5-backend$": "react-dnd-html5-backend/dist/cjs",
+    "d3-force": "<rootDir>/node_modules/d3-force/dist/d3-force.min.js",
+    "d3-quadtree": "<rootDir>/node_modules/d3-quadtree/dist/d3-quadtree.min.js",
+    "d3-scale-chromatic": "<rootDir>/node_modules/d3-scale-chromatic/dist/d3-scale-chromatic.min.js",
+    "d3-zoom": "<rootDir>/node_modules/d3-zoom/dist/d3-zoom.min.js",
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -130,7 +134,6 @@ module.exports = {
 
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-jsdom",
-
   modulePaths: ["node_modules", "<rootDir>/src"],
 
   // Options that will be passed to the testEnvironment

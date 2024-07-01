@@ -379,6 +379,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
         >
           <CustomizedPrimaryButton
             ariaLabel="OK"
+            data-test="Panel/OkButton"
             disabled={false}
             id="sidePanelOkButton"
             text="OK"
@@ -386,6 +387,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
           >
             <PrimaryButton
               ariaLabel="OK"
+              data-test="Panel/OkButton"
               disabled={false}
               id="sidePanelOkButton"
               text="OK"
@@ -666,6 +668,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             >
               <CustomizedDefaultButton
                 ariaLabel="OK"
+                data-test="Panel/OkButton"
                 disabled={false}
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
@@ -948,6 +951,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               >
                 <DefaultButton
                   ariaLabel="OK"
+                  data-test="Panel/OkButton"
                   disabled={false}
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
@@ -1231,6 +1235,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   <BaseButton
                     ariaLabel="OK"
                     baseClassName="ms-Button"
+                    data-test="Panel/OkButton"
                     disabled={false}
                     id="sidePanelOkButton"
                     onRenderDescription={[Function]}
@@ -2105,6 +2110,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       aria-label="OK"
                       className="ms-Button ms-Button--primary root-122"
                       data-is-focusable={true}
+                      data-test="Panel/OkButton"
                       id="sidePanelOkButton"
                       onClick={[Function]}
                       onKeyDown={[Function]}
@@ -2140,6 +2146,11 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
         </div>
       </PanelFooterComponent>
     </form>
+    <span
+      className="screenReaderOnly"
+      id="screenReaderStatus"
+      role="status"
+    />
   </RightPaneForm>
 </DeleteCollectionConfirmationPane>
 `;

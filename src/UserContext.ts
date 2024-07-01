@@ -1,4 +1,4 @@
-import { FabricDatabaseConnectionInfo } from "Contracts/FabricContract";
+import { FabricDatabaseConnectionInfo } from "Contracts/FabricMessagesContract";
 import { ParsedResourceTokenConnectionString } from "Platform/Hosted/Helpers/ResourceTokenUtils";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -47,8 +47,30 @@ export interface VCoreMongoConnectionParams {
   connectionString: string;
 }
 
-interface UserContext {
-  readonly fabricDatabaseConnectionInfo?: FabricDatabaseConnectionInfo;
+interface FabricContext {
+  connectionId: string;
+  databaseConnectionInfo: FabricDatabaseConnectionInfo | undefined;
+  isReadOnly: boolean;
+  isVisible: boolean;
+}
+
+export type AdminFeedbackControlPolicy =
+  | "connectedExperiences"
+  | "policyAllowFeedback"
+  | "policyAllowSurvey"
+  | "policyAllowScreenshot"
+  | "policyAllowContact"
+  | "policyAllowContent"
+  | "policyEmailCollectionDefault"
+  | "policyScreenshotDefault"
+  | "policyContentSamplesDefault";
+
+export type AdminFeedbackPolicySettings = {
+  [key in AdminFeedbackControlPolicy]: boolean;
+};
+
+export interface UserContext {
+  readonly fabricContext?: FabricContext;
   readonly authType?: AuthType;
   readonly masterKey?: string;
   readonly subscriptionId?: string;
@@ -67,7 +89,6 @@ interface UserContext {
   readonly isTryCosmosDBSubscription?: boolean;
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
-  readonly addCollectionFlight: string;
   readonly hasWriteAccess: boolean;
   readonly parsedResourceToken?: {
     databaseId: string;
@@ -79,10 +100,11 @@ interface UserContext {
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
+  readonly feedbackPolicies?: AdminFeedbackPolicySettings;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
-export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
+export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod1" | "rx" | "ex" | "prod" | "dev";
 
 const ONE_WEEK_IN_MS = 604800000;
 
@@ -94,7 +116,6 @@ const userContext: UserContext = {
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
   features,
-  addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
   collectionCreationDefaults: CollectionCreationDefaults,
 };

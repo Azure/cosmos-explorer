@@ -6,7 +6,7 @@ import { SettingsPane } from "./SettingsPane";
 
 describe("Settings Pane", () => {
   it("should render Default properly", () => {
-    const wrapper = shallow(<SettingsPane />);
+    const wrapper = shallow(<SettingsPane explorer={null} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -18,7 +18,7 @@ describe("Settings Pane", () => {
         },
       } as DatabaseAccount,
     });
-    const wrapper = shallow(<SettingsPane />);
+    const wrapper = shallow(<SettingsPane explorer={null} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

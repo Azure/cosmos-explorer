@@ -3,7 +3,7 @@ import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import { loadMonaco } from "../../../LazyMonaco";
-import { indexingPolicynUnsavedWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
+import { titleAndInputStackProps, unsavedEditorWarningMessage } from "../SettingsRenderUtils";
 import { isDirty, isIndexTransforming } from "../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 
@@ -16,6 +16,7 @@ export interface IndexingPolicyComponentProps {
   logIndexingPolicySuccessMessage: () => void;
   indexTransformationProgress: number;
   refreshIndexTransformationProgress: () => Promise<void>;
+  isVectorSearchEnabled?: boolean;
   onIndexingPolicyDirtyChange: (isIndexingPolicyDirty: boolean) => void;
 }
 
@@ -119,10 +120,15 @@ export class IndexingPolicyComponent extends React.Component<
           indexTransformationProgress={this.props.indexTransformationProgress}
           refreshIndexTransformationProgress={this.props.refreshIndexTransformationProgress}
         />
-        {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
-          <MessageBar messageBarType={MessageBarType.warning}>{indexingPolicynUnsavedWarningMessage}</MessageBar>
+        {this.props.isVectorSearchEnabled && (
+          <MessageBar messageBarType={MessageBarType.severeWarning}>
+            Container vector policies and vector indexes are not modifiable after container creation
+          </MessageBar>
         )}
-        <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>
+        {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
+          <MessageBar messageBarType={MessageBarType.warning}>{unsavedEditorWarningMessage("indexPolicy")}</MessageBar>
+        )}
+        <div className="settingsV2Editor" tabIndex={0} ref={this.indexingPolicyDiv}></div>
       </Stack>
     );
   }

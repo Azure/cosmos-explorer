@@ -1,5 +1,6 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
@@ -97,9 +98,19 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   /* Add new entity attribute */
   const onSubmit = async (): Promise<void> => {
     for (let i = 0; i < entities.length; i++) {
-      const { property, type } = entities[i];
-      if (property === "" || property === undefined) {
-        setFormError(`Property name cannot be empty. Please enter a property name`);
+      const { property, type, value } = entities[i];
+      if ((property === "PartitionKey" && value === "") || (property === "RowKey" && value === "")) {
+        logConsoleError(`${property} cannot be empty. Please input a value for ${property}`);
+        setFormError(`${property} cannot be empty. Please input a value for ${property}`);
+        return;
+      }
+
+      if (
+        (property === "PartitionKey" && containsAnyWhiteSpace(value) === true) ||
+        (property === "RowKey" && containsAnyWhiteSpace(value) === true)
+      ) {
+        logConsoleError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
+        setFormError(`${property} cannot have whitespace. Please input a value for ${property} without whitespace`);
         return;
       }
 
@@ -107,12 +118,14 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         setFormError(`Property type cannot be empty. Please select a type from the dropdown for property ${property}`);
         return;
       }
+
+      setFormError("");
     }
 
     setIsExecuting(true);
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
-    const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
     try {
+      const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
       await tableEntityListViewModel.addEntityToCache(newEntity);
       if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
         tableEntityListViewModel.redrawTableThrottled();
@@ -125,6 +138,13 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     } finally {
       setIsExecuting(false);
     }
+  };
+
+  const containsAnyWhiteSpace = (entityValue: string) => {
+    if (/\s/.test(entityValue)) {
+      return true;
+    }
+    return false;
   };
 
   const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
@@ -182,9 +202,14 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   const entityChange = (value: string | Date, indexOfInput: number, key: string): void => {
     const cloneEntities: EntityRowType[] = [...entities];
     if (key === "property") {
-      cloneEntities[indexOfInput].property = value.toString();
+      cloneEntities[indexOfInput].property = value.toString().trim();
     } else if (key === "time") {
       cloneEntities[indexOfInput].entityTimeValue = value.toString();
+    } else if (
+      cloneEntities[indexOfInput].property === "PartitionKey" ||
+      cloneEntities[indexOfInput].property === "RowKey"
+    ) {
+      cloneEntities[indexOfInput].value = value.toString().trim();
     } else {
       cloneEntities[indexOfInput].value = value.toString();
     }
@@ -236,6 +261,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         <TextField
           multiline
           rows={5}
+          ariaLabel={entityAttributeProperty}
           value={entityAttributeValue}
           onChange={(event, newInput?: string) => {
             entityChange(newInput, selectedRow, "value");

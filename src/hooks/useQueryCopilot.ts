@@ -10,6 +10,7 @@ import { ContainerInfo } from "../Contracts/DataModels";
 export interface QueryCopilotState {
   copilotEnabled: boolean;
   copilotUserDBEnabled: boolean;
+  copilotSampleDBEnabled: boolean;
   generatedQuery: string;
   likeQuery: boolean;
   userPrompt: string;
@@ -28,6 +29,7 @@ export interface QueryCopilotState {
   queryResults: QueryResults | undefined;
   errorMessage: string;
   isSamplePromptsOpen: boolean;
+  showPromptTeachingBubble: boolean;
   showDeletePopup: boolean;
   showFeedbackBar: boolean;
   showCopyPopup: boolean;
@@ -50,6 +52,7 @@ export interface QueryCopilotState {
 
   setCopilotEnabled: (copilotEnabled: boolean) => void;
   setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => void;
+  setCopilotSampleDBEnabled: (copilotSampleDBEnabled: boolean) => void;
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) => void;
   closeFeedbackModal: () => void;
   setHideFeedbackModalForLikedQueries: (hideFeedbackModalForLikedQueries: boolean) => void;
@@ -69,6 +72,7 @@ export interface QueryCopilotState {
   setQueryResults: (queryResults: QueryResults | undefined) => void;
   setErrorMessage: (errorMessage: string) => void;
   setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => void;
+  setShowPromptTeachingBubble: (showPromptTeachingBubble: boolean) => void;
   setShowDeletePopup: (showDeletePopup: boolean) => void;
   setShowFeedbackBar: (showFeedbackBar: boolean) => void;
   setshowCopyPopup: (showCopyPopup: boolean) => void;
@@ -91,11 +95,12 @@ export interface QueryCopilotState {
   resetQueryCopilotStates: () => void;
 }
 
-type QueryCopilotStore = UseStore<QueryCopilotState>;
+type QueryCopilotStore = UseStore<Partial<QueryCopilotState>>;
 
 export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   copilotEnabled: false,
   copilotUserDBEnabled: false,
+  copilotSampleDBEnabled: false,
   generatedQuery: "",
   likeQuery: false,
   userPrompt: "",
@@ -145,6 +150,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
 
   setCopilotEnabled: (copilotEnabled: boolean) => set({ copilotEnabled }),
   setCopilotUserDBEnabled: (copilotUserDBEnabled: boolean) => set({ copilotUserDBEnabled }),
+  setCopilotSampleDBEnabled: (copilotSampleDBEnabled: boolean) => set({ copilotSampleDBEnabled }),
   openFeedbackModal: (generatedQuery: string, likeQuery: boolean, userPrompt: string) =>
     set({ generatedQuery, likeQuery, userPrompt, showFeedbackModal: true }),
   closeFeedbackModal: () => set({ showFeedbackModal: false }),

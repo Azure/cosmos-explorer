@@ -1,6 +1,7 @@
 import { FeedOptions } from "@azure/cosmos";
 import {
   Areas,
+  BackendApi,
   ConnectionStatusType,
   ContainerStatusType,
   HttpStatusCodes,
@@ -15,7 +16,12 @@ import { MinimalQueryIterator } from "Common/IteratorUtilities";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { configContext } from "ConfigContext";
-import { ContainerConnectionInfo, CopilotEnabledConfiguration, IProvisionData } from "Contracts/DataModels";
+import {
+  ContainerConnectionInfo,
+  CopilotEnabledConfiguration,
+  FeatureRegistration,
+  IProvisionData,
+} from "Contracts/DataModels";
 import { AuthorizationTokenHeaderMetadata, QueryResults } from "Contracts/ViewModels";
 import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
@@ -25,6 +31,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getAuthorizationHeader } from "Utils/AuthorizationUtils";
+import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
@@ -52,8 +59,34 @@ async function fetchWithTimeout(
   return response;
 }
 
+export const isCopilotFeatureRegistered = async (subscriptionId: string): Promise<boolean> => {
+  const api_version = "2021-07-01";
+  const url = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.Features/featureProviders/Microsoft.DocumentDB/subscriptionFeatureRegistrations/MicrosoftCopilotForAzureInCDB?api-version=${api_version}`;
+  const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
+  const headers = { [authorizationHeader.header]: authorizationHeader.token };
+
+  let response;
+
+  try {
+    response = await fetchWithTimeout(url, headers);
+  } catch (error) {
+    return false;
+  }
+
+  if (!response?.ok) {
+    return false;
+  }
+
+  const featureRegistration = (await response?.json()) as FeatureRegistration;
+  return featureRegistration?.properties?.state === "Registered";
+};
+
 export const getCopilotEnabled = async (): Promise<boolean> => {
-  const url = `${configContext.BACKEND_ENDPOINT}/api/portalsettings/querycopilot`;
+  const backendEndpoint: string = useNewPortalBackendEndpoint(BackendApi.PortalSettings)
+    ? configContext.PORTAL_BACKEND_ENDPOINT
+    : configContext.BACKEND_ENDPOINT;
+
+  const url = `${backendEndpoint}/api/portalsettings/querycopilot`;
   const authorizationHeader: AuthorizationTokenHeaderMetadata = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 

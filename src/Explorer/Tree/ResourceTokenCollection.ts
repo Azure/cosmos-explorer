@@ -1,3 +1,4 @@
+import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
@@ -7,7 +8,6 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { useTabs } from "../../hooks/useTabs";
 import Explorer from "../Explorer";
-import DocumentsTab from "../Tabs/DocumentsTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
@@ -118,15 +118,15 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const documentsTabs: DocumentsTab[] = useTabs
+    const documentsTabs: DocumentsTabV2[] = useTabs
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.Documents,
         (tab: TabsBase) =>
           tab.collection?.id() === this.id() &&
           (tab.collection as ViewModels.CollectionBase).databaseId === this.databaseId,
-      ) as DocumentsTab[];
-    let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
+      ) as DocumentsTabV2[];
+    let documentsTab: DocumentsTabV2 = documentsTabs && documentsTabs[0];
 
     if (documentsTab) {
       useTabs.getState().activateTab(documentsTab);
@@ -139,7 +139,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         tabTitle: "Items",
       });
 
-      documentsTab = new DocumentsTab({
+      documentsTab = new DocumentsTabV2({
         partitionKey: this.partitionKey,
         resourceTokenPartitionKey: userContext.parsedResourceToken?.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),

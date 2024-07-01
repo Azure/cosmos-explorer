@@ -9,4 +9,14 @@ export const isCapabilityEnabled = (capabilityName: string): boolean => {
   return false;
 };
 
-export const isServerlessAccount = (): boolean => isCapabilityEnabled(Constants.CapabilityNames.EnableServerless);
+export const isServerlessAccount = (): boolean => {
+  const { databaseAccount } = userContext;
+  return (
+    databaseAccount?.properties?.capacityMode === Constants.CapacityMode.Serverless ||
+    isCapabilityEnabled(Constants.CapabilityNames.EnableServerless)
+  );
+};
+
+export const isVectorSearchEnabled = (): boolean => {
+  return userContext.apiType === "SQL" && isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLVectorSearch);
+};

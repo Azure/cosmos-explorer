@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ComputedPropertiesComponent renders 1`] = `
+<Stack
+  tokens={
+    Object {
+      "childrenGap": 5,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "marginBottom": "10px",
+        "marginLeft": "30px",
+      }
+    }
+  >
+    <StyledLinkBase
+      href="https://aka.ms/computed-properties-preview/"
+      target="_blank"
+    >
+      Learn more
+       
+      <FontIcon
+        iconName="NavigateExternalInline"
+      />
+    </StyledLinkBase>
+      about how to define computed properties and how to use them.
+  </Text>
+  <div
+    className="settingsV2Editor"
+    tabIndex={0}
+  />
+</Stack>
+`;

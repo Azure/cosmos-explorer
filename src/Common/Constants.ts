@@ -88,6 +88,12 @@ export class CapabilityNames {
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
+  public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
+}
+
+export enum CapacityMode {
+  Provisioned = "Provisioned",
+  Serverless = "Serverless",
 }
 
 // flight names returned from the portal are always lowercase
@@ -124,7 +130,37 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
-// TODO: 435619 Add default endpoints per cloud and use regional only when available
+export class BackendApi {
+  public static readonly GenerateToken: string = "GenerateToken";
+  public static readonly PortalSettings: string = "PortalSettings";
+  public static readonly AccountRestrictions: string = "AccountRestrictions";
+}
+
+export class PortalBackendEndpoints {
+  public static readonly Development: string = "https://localhost:7235";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-pbe.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-pbe.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-pbe.cosmos.azure.cn";
+}
+
+export class MongoProxyEndpoints {
+  public static readonly Local: string = "https://localhost:7238";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
+}
+
+export class CassandraProxyEndpoints {
+  public static readonly Development: string = "https://localhost:7240";
+  public static readonly Mpac: string = "https://cdb-ms-mpac-cp.cosmos.azure.com";
+  public static readonly Prod: string = "https://cdb-ms-prod-cp.cosmos.azure.com";
+  public static readonly Fairfax: string = "https://cdb-ff-prod-cp.cosmos.azure.us";
+  public static readonly Mooncake: string = "https://cdb-mc-prod-cp.cosmos.azure.cn";
+}
+
+//TODO: Remove this when new backend is migrated over
 export class CassandraBackend {
   public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
   public static readonly guestCreateOrDeleteApi: string = "api/guest/cassandra/createordelete";
@@ -134,6 +170,17 @@ export class CassandraBackend {
   public static readonly guestKeysApi: string = "api/guest/cassandra/keys";
   public static readonly schemaApi: string = "api/cassandra/schema";
   public static readonly guestSchemaApi: string = "api/guest/cassandra/schema";
+}
+
+export class CassandraProxyAPIs {
+  public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
+  public static readonly connectionStringCreateOrDeleteApi: string = "api/connectionstring/cassandra/createordelete";
+  public static readonly queryApi: string = "api/cassandra";
+  public static readonly connectionStringQueryApi: string = "api/connectionstring/cassandra";
+  public static readonly keysApi: string = "api/cassandra/keys";
+  public static readonly connectionStringKeysApi: string = "api/connectionstring/cassandra/keys";
+  public static readonly schemaApi: string = "api/cassandra/schema";
+  public static readonly connectionStringSchemaApi: string = "api/connectionstring/cassandra/schema";
 }
 
 export class Queries {
@@ -209,6 +256,11 @@ export class HttpHeaders {
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
+  public static xAPIKey: string = "X-API-Key";
+}
+
+export class ContentType {
+  public static applicationJson: string = "application/json";
 }
 
 export class ApiType {

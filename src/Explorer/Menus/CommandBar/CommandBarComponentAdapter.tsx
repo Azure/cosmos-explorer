@@ -5,6 +5,7 @@
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { userContext } from "UserContext";
 import * as React from "react";
 import create, { UseStore } from "zustand";
@@ -24,17 +25,23 @@ interface Props {
 export interface CommandBarStore {
   contextButtons: CommandButtonComponentProps[];
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => void;
+  isHidden: boolean;
+  setIsHidden: (isHidden: boolean) => void;
 }
 
 export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
   contextButtons: [],
   setContextButtons: (contextButtons: CommandButtonComponentProps[]) => set((state) => ({ ...state, contextButtons })),
+  isHidden: false,
+  setIsHidden: (isHidden: boolean) => set((state) => ({ ...state, isHidden })),
 }));
 
 export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const selectedNodeState = useSelectedNode();
   const buttons = useCommandBar((state) => state.contextButtons);
+  const isHidden = useCommandBar((state) => state.isHidden);
   const backgroundColor = StyleConstants.BaseLight;
+  const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
 
   if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
     const buttons =
@@ -42,7 +49,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
         ? CommandBarComponentButtonFactory.createPostgreButtons(container)
         : CommandBarComponentButtonFactory.createVCoreMongoButtons(container);
     return (
-      <div className="commandBarContainer">
+      <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
         <FluentCommandBar
           ariaLabel="Use left and right arrow keys to navigate between commands"
           items={CommandBarUtil.convertButton(buttons, backgroundColor)}
@@ -91,7 +98,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
       ? {
           root: {
             backgroundColor: "transparent",
-            padding: "0px 14px 0px 14px",
+            padding: "2px 8px 0px 8px",
           },
         }
       : {
@@ -100,8 +107,12 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
           },
         };
 
+  const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);
+  const keyboardHandlers = CommandBarUtil.createKeyboardHandlers(allButtons);
+  setKeyboardHandlers(keyboardHandlers);
+
   return (
-    <div className="commandBarContainer">
+    <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
       <FluentCommandBar
         ariaLabel="Use left and right arrow keys to navigate between commands"
         items={uiFabricStaticButtons.concat(uiFabricTabsButtons)}

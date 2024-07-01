@@ -146,6 +146,12 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
+          style={
+            Object {
+              "border": "1px solid black",
+              "borderRadius": "2px",
+            }
+          }
           tabIndex={0}
         >
           <img
@@ -311,6 +317,12 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
+          style={
+            Object {
+              "border": "1px solid black",
+              "borderRadius": "2px",
+            }
+          }
           tabIndex={0}
         >
           <img

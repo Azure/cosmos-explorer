@@ -25,33 +25,38 @@ a:focus {
 }
 
 .resourceTreeAndTabs {
-  border-radius: @FabricBoxBorderRadius;
+  border-radius: 0px;
   box-shadow: @FabricBoxBorderShadow;
   margin: @FabricBoxMargin;
-  margin-top: 4px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   background-color: #ffffff;
 }
 
 .tabsManagerContainer {
-  background-color: #fafafa
+  background-color: #ffffff
 }
 
 .nav-tabs-margin {
   padding-top: 8px;
-  background-color: #fafafa
+  background-color: #ffffff
 }
 
 .commandBarContainer {
   background-color: #ffffff;
-  border-bottom: none;
-  border-radius: @FabricBoxBorderRadius;
+  border-radius: @FabricBoxBorderRadius @FabricBoxBorderRadius 0px 0px;
   box-shadow: @FabricBoxBorderShadow;
   margin: @FabricBoxMargin;
+  margin-top: 0px;
+  margin-bottom: 0px;
   padding-top: 2px;
+  padding: 0px;
+  height: 40px;
 }
 
 .dividerContainer {
   padding: @SmallSpace 0px @SmallSpace 0px;
+  height: @FabricCommandBarButtonHeight;
   .flex-display();
 
   span {
@@ -70,7 +75,7 @@ a:focus {
   border-bottom: 2px solid @FabricAccentMedium;
 }
 
-.nav-tabs>li.active>.tabNavContentContainer>.tab_Content>.tabNavText {
+.nav-tabs>li.active>.tabNavContentContainer>.tab_Content>.contentWrapper>.tabNavText {
   border-bottom: 0px none transparent;
 }
 
@@ -88,9 +93,11 @@ a:focus {
     width: calc(@TabsWidth - (@SmallSpace * 2));
     padding-bottom: @SmallSpace;
 
-    .statusIconContainer {
-      margin-left: 0px;
-    }
+    .contentWrapper {
+        .statusIconContainer {
+          margin-left: 0px;
+        }
+      }
 
     .tabIconSection {
       .cancelButton {
@@ -158,9 +165,10 @@ a:focus {
 
 
 .dataExplorerErrorConsoleContainer {
-  border-radius: @FabricBoxBorderRadius;
+  border-radius:  0px 0px @FabricBoxBorderRadius @FabricBoxBorderRadius;
   box-shadow: @FabricBoxBorderShadow;
   margin: @FabricBoxMargin;
+  margin-top: 0px;
   width: auto;
   align-self: auto;
 }

@@ -59,7 +59,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     defaultsCheck: {
       storage: "u",
       throughput: newKeySpaceThroughput || tableThroughput,
-      flight: userContext.addCollectionFlight,
     },
     dataExplorerArea: Constants.Areas.ContextualPane,
   };
@@ -203,8 +202,8 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 required={true}
                 autoComplete="off"
                 styles={getTextFieldStyles()}
-                pattern="[^/?#\\]*[^/?# \\]"
-                title="May not end with space nor contain characters '\' '/' '#' '?'"
+                pattern="[^/?#\\-]*[^/?#- \\]"
+                title="May not end with space nor contain characters '\' '/' '#' '?' '-'"
                 placeholder="Type a new keyspace id"
                 size={40}
                 value={newKeyspaceId}
@@ -276,7 +275,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             <span className="mandatoryStar">*&nbsp;</span>
             <Text className="panelTextBold" variant="small">
               Enter CQL command to create the table.{" "}
-              <Link href="https://aka.ms/cassandra-create-table" target="_blank">
+              <Link className="underlinedLink" href="https://aka.ms/cassandra-create-table" target="_blank">
                 Learn More
               </Link>
             </Text>
@@ -293,8 +292,8 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               required={true}
               ariaLabel="addCollection-table Id Create table"
               autoComplete="off"
-              pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              pattern="[^/?#\\-]*[^/?#- \\]"
+              title="May not end with space nor contain characters '\' '/' '#' '?' '-'"
               placeholder="Enter table Id"
               size={20}
               value={tableId}

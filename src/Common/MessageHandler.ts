@@ -1,5 +1,7 @@
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import Q from "q";
 import * as _ from "underscore";
+import * as Logger from "../Common/Logger";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { getDataExplorerWindow } from "../Utils/WindowUtils";
 import * as Constants from "./Constants";
@@ -27,15 +29,24 @@ export function handleCachedDataMessage(message: any): void {
   runGarbageCollector();
 }
 
+/**
+ *
+ * @param messageType
+ * @param params
+ * @param scope Use this string to identify request Useful to distinguish response from different senders
+ * @param timeoutInMs
+ * @returns
+ */
 export function sendCachedDataMessage<TResponseDataModel>(
-  messageType: MessageTypes,
+  messageType: MessageTypes | FabricMessageTypes,
   params: Object[],
+  scope?: string,
   timeoutInMs?: number,
 ): Q.Promise<TResponseDataModel> {
   let cachedDataPromise: CachedDataPromise<TResponseDataModel> = {
     deferred: Q.defer<TResponseDataModel>(),
     startTime: new Date(),
-    id: _.uniqueId(),
+    id: _.uniqueId(scope),
   };
   RequestMap[cachedDataPromise.id] = cachedDataPromise;
   sendMessage({ type: messageType, params: params, id: cachedDataPromise.id });
@@ -47,6 +58,10 @@ export function sendCachedDataMessage<TResponseDataModel>(
   );
 }
 
+/**
+ *
+ * @param data Overwrite the data property of the message
+ */
 export function sendMessage(data: any): void {
   _sendMessage({
     signature: "pcIframe",
@@ -82,10 +97,18 @@ const _sendMessage = (message: any): void => {
     const portalChildWindow = getDataExplorerWindow(window) || window;
     if (portalChildWindow === window) {
       // Current window is a child of portal, send message to portal window
-      portalChildWindow.parent.postMessage(message, portalChildWindow.document.referrer || "*");
+      if (portalChildWindow.document.referrer) {
+        portalChildWindow.parent.postMessage(message, portalChildWindow.document.referrer);
+      } else {
+        Logger.logError("Iframe failed to send message to portal", "MessageHandler");
+      }
     } else {
       // Current window is not a child of portal, send message to the child window instead (which is data explorer)
-      portalChildWindow.postMessage(message, portalChildWindow.location.origin || "*");
+      if (portalChildWindow.location.origin) {
+        portalChildWindow.postMessage(message, portalChildWindow.location.origin);
+      } else {
+        Logger.logError("Iframe failed to send message to data explorer", "MessageHandler");
+      }
     }
   }
 };

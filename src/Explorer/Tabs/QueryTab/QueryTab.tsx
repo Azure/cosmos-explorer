@@ -1,3 +1,5 @@
+import { sendMessage } from "Common/MessageHandler";
+import { MessageTypes } from "Contracts/MessageTypes";
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { userContext } from "UserContext";
 import React from "react";
@@ -54,6 +56,11 @@ export class NewQueryTab extends TabsBase {
     );
   }
 
+  public onActivate(): void {
+    this.propagateTabInformation(MessageTypes.ActivateTab);
+    super.onActivate();
+  }
+
   public onTabClick(): void {
     useTabs.getState().activateTab(this);
     this.iTabAccessor.onTabClickEvent();
@@ -61,6 +68,7 @@ export class NewQueryTab extends TabsBase {
 
   public onCloseTabButtonClick(): void {
     useTabs.getState().closeTab(this);
+    this.propagateTabInformation(MessageTypes.CloseTab);
     if (this.iTabAccessor) {
       this.iTabAccessor.onCloseClickEvent(true);
     }
@@ -68,5 +76,16 @@ export class NewQueryTab extends TabsBase {
 
   public getContainer(): Explorer {
     return this.props.container;
+  }
+
+  private propagateTabInformation(type: MessageTypes): void {
+    sendMessage({
+      type,
+      data: {
+        kind: this.tabKind,
+        databaseId: this.collection?.databaseId,
+        collectionId: this.collection?.id?.(),
+      },
+    });
   }
 }

@@ -1,12 +1,12 @@
 import { createUri } from "Common/UrlUtility";
-import { FabricDatabaseConnectionInfo, FabricMessage } from "Contracts/FabricContract";
+import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
+import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
+import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
-import {
-  handleRequestDatabaseResourceTokensResponse,
-  scheduleRefreshDatabaseResourceToken,
-} from "Platform/Fabric/FabricUtil";
+import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -34,10 +34,9 @@ import {
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
-import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
+import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
@@ -88,6 +87,10 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
 }
 
 async function configureFabric(): Promise<Explorer> {
+  // These are the versions of Fabric that Data Explorer supports.
+  const SUPPORTED_FABRIC_VERSIONS = [FABRIC_RPC_VERSION];
+
+  let firstContainerOpened = false;
   let explorer: Explorer;
   return new Promise<Explorer>((resolve) => {
     window.addEventListener(
@@ -101,38 +104,48 @@ async function configureFabric(): Promise<Explorer> {
           return;
         }
 
-        const data: FabricMessage = event.data?.data;
+        const data: FabricMessageV2 = event.data?.data;
         if (!data) {
           return;
         }
 
         switch (data.type) {
           case "initialize": {
-            const fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo = {
-              endpoint: data.message.endpoint,
-              databaseId: data.message.databaseId,
-              resourceTokens: data.message.resourceTokens as { [resourceId: string]: string },
-              resourceTokensTimestamp: data.message.resourceTokensTimestamp,
-            };
-            explorer = await createExplorerFabric(fabricDatabaseConnectionInfo);
-            resolve(explorer);
+            const fabricVersion = data.version;
+            if (!SUPPORTED_FABRIC_VERSIONS.includes(fabricVersion)) {
+              // TODO Surface error to user
+              console.error(`Unsupported Fabric version: ${fabricVersion}`);
+              return;
+            }
 
-            explorer.refreshAllDatabases().then(() => {
-              openFirstContainer(explorer, fabricDatabaseConnectionInfo.databaseId);
-            });
-            scheduleRefreshDatabaseResourceToken();
+            explorer = createExplorerFabric(data.message);
+            await scheduleRefreshDatabaseResourceToken(true);
+            resolve(explorer);
+            await explorer.refreshAllDatabases();
+            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
+              firstContainerOpened = true;
+              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            }
             break;
           }
           case "newContainer":
             explorer.onNewCollectionClicked();
             break;
-          case "authorizationToken": {
+          case "authorizationToken":
+          case "allResourceTokens_v2": {
             handleCachedDataMessage(data);
             break;
           }
-          case "allResourceTokens": {
-            // TODO call handleCachedDataMessage when Fabric echoes message id back
-            handleRequestDatabaseResourceTokensResponse(explorer, data.message as FabricDatabaseConnectionInfo);
+          case "explorerVisible": {
+            userContext.fabricContext.isVisible = data.message.visible;
+            if (
+              userContext.fabricContext.isVisible &&
+              !firstContainerOpened &&
+              userContext?.fabricContext?.databaseConnectionInfo?.databaseId !== undefined
+            ) {
+              firstContainerOpened = true;
+              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+            }
             break;
           }
           default:
@@ -143,7 +156,11 @@ async function configureFabric(): Promise<Explorer> {
       false,
     );
 
-    sendReadyMessage();
+    sendMessage({
+      type: FabricMessageTypes.Ready,
+      id: "ready",
+      params: [DATA_EXPLORER_RPC_VERSION],
+    });
   });
 }
 
@@ -239,16 +256,19 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   let keys: DatabaseAccountListKeysResult = {};
   if (account.properties?.documentEndpoint) {
     const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
-    const msalInstance = getMsalInstance();
+    const msalInstance = await getMsalInstance();
     const cachedAccount = msalInstance.getAllAccounts()?.[0];
     msalInstance.setActiveAccount(cachedAccount);
     const cachedTenantId = localStorage.getItem("cachedTenantId");
-    const aadTokenResponse = await msalInstance.acquireTokenSilent({
-      forceRefresh: true,
-      scopes: [hrefEndpoint],
-      authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
-    });
-    aadToken = aadTokenResponse.accessToken;
+    try {
+      aadToken = await acquireTokenWithMsal(msalInstance, {
+        forceRefresh: true,
+        scopes: [hrefEndpoint],
+        authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
+      });
+    } catch (authError) {
+      logConsoleError("Failed to acquire authorization token: " + authError);
+    }
   }
   try {
     if (!account.properties.disableLocalAuth) {
@@ -319,9 +339,14 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnectionInfo): Explorer {
+function createExplorerFabric(params: { connectionId: string; isVisible: boolean }): Explorer {
   updateUserContext({
-    fabricDatabaseConnectionInfo,
+    fabricContext: {
+      connectionId: params.connectionId,
+      databaseConnectionInfo: undefined,
+      isReadOnly: true,
+      isVisible: params.isVisible ?? true,
+    },
     authType: AuthType.ConnectionString,
     databaseAccount: {
       id: "",
@@ -330,7 +355,7 @@ function createExplorerFabric(fabricDatabaseConnectionInfo: FabricDatabaseConnec
       name: "Mounted",
       kind: AccountKind.Default,
       properties: {
-        documentEndpoint: fabricDatabaseConnectionInfo.endpoint,
+        documentEndpoint: undefined,
       },
     },
   });
@@ -471,6 +496,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   updateConfigContext({
     BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+    MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
+    CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
+    PORTAL_BACKEND_ENDPOINT: inputs.portalBackendEndpoint,
   });
 
   updateUserContext({
@@ -483,9 +511,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     quotaId: inputs.quotaId,
     portalEnv: inputs.serverId as PortalEnv,
     hasWriteAccess: inputs.hasWriteAccess ?? true,
-    addCollectionFlight: inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
+    feedbackPolicies: inputs.feedbackPolicies,
   });
 
   if (inputs.isPostgresAccount) {

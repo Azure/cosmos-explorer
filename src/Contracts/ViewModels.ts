@@ -135,6 +135,7 @@ export interface Collection extends CollectionBase {
   changeFeedPolicy: ko.Observable<DataModels.ChangeFeedPolicy>;
   geospatialConfig: ko.Observable<DataModels.GeospatialConfig>;
   documentIds: ko.ObservableArray<DocumentId>;
+  computedProperties: ko.Observable<DataModels.ComputedProperties>;
 
   cassandraKeys: CassandraTableKeys;
   cassandraSchema: CassandraTableKey[];
@@ -174,6 +175,11 @@ export interface Collection extends CollectionBase {
   loadStoredProcedures(): Promise<any>;
   loadTriggers(): Promise<any>;
   loadOffer(): Promise<void>;
+
+  showStoredProcedures: ko.Observable<boolean>;
+  showTriggers: ko.Observable<boolean>;
+  showUserDefinedFunctions: ko.Observable<boolean>;
+  showConflicts: ko.Observable<boolean>;
 
   createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
   createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;
@@ -323,9 +329,9 @@ export enum DocumentExplorerState {
   noDocumentSelected,
   newDocumentValid,
   newDocumentInvalid,
-  exisitingDocumentNoEdits,
-  exisitingDocumentDirtyValid,
-  exisitingDocumentDirtyInvalid,
+  existingDocumentNoEdits,
+  existingDocumentDirtyValid,
+  existingDocumentDirtyInvalid,
 }
 
 export enum IndexingPolicyEditorState {
@@ -338,9 +344,9 @@ export enum IndexingPolicyEditorState {
 export enum ScriptEditorState {
   newInvalid,
   newValid,
-  exisitingNoEdits,
-  exisitingDirtyValid,
-  exisitingDirtyInvalid,
+  existingNoEdits,
+  existingDirtyValid,
+  existingDirtyInvalid,
 }
 
 export enum CollectionTabKind {
@@ -386,9 +392,11 @@ export interface DataExplorerInputsFrame {
   dnsSuffix?: string;
   serverId?: string;
   extensionEndpoint?: string;
+  portalBackendEndpoint?: string;
+  mongoProxyEndpoint?: string;
+  cassandraProxyEndpoint?: string;
   subscriptionType?: SubscriptionType;
   quotaId?: string;
-  addCollectionDefaultFlight?: string;
   isTryCosmosDBSubscription?: boolean;
   loadDatabaseAccountTimestamp?: number;
   sharedThroughputMinimum?: number;
@@ -406,6 +414,7 @@ export interface DataExplorerInputsFrame {
   features?: {
     [key: string]: string;
   };
+  feedbackPolicies?: any;
 }
 
 export interface SelfServeFrameInputs {
@@ -416,6 +425,7 @@ export interface SelfServeFrameInputs {
   authorizationToken: string;
   csmEndpoint: string;
   flights?: readonly string[];
+  catalogAPIKey: string;
 }
 
 export class MonacoEditorSettings {

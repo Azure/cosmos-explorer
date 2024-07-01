@@ -2264,36 +2264,47 @@ a:link {
   width: 82px;
 }
 
-.tabdocuments .scrollable {
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-left: 5px;
-  padding-right: 5px;
-  width: 100%;
-}
+// .tabdocuments .scrollable {
+//   height: 100%;
+//   overflow-y: auto;
+//   overflow-x: hidden;
+//   padding-left: 5px;
+//   padding-right: 5px;
+//   width: 100%;
+// }
 
-.tabdocuments > .tabdocumentsGridElement {
-  width: 50%;
-}
+// .tabdocuments > .tabdocumentsGridElement {
+//   width: 50%;
+// }
 
-.tabdocuments > .evenlySpacedHeader {
-  width: 30%;
-}
+// .tabdocuments > .evenlySpacedHeader {
+//   width: 30%;
+// }
 
-.tabdocuments.scrollable:focus,
-.tabdocuments.scrollable:active {
-  outline: 1px dotted;
-}
+// .tabdocuments.scrollable:focus,
+// .tabdocuments.scrollable:active {
+//   outline: 1px dotted;
+// }
 
-.tabdocuments .scrollable table td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+// .tabdocuments .scrollable table td {
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
 
 .mongoDocumentEditor .monaco-editor.vs .redsquiggly {
   display: none !important;
+}
+
+.monaco-editor .quick-input-list-label {
+  /* Restore some of Monaco's default styles that are clobbered by our global styles */
+  padding: 0;
+  line-height: 22px;
+}
+
+.monaco-editor .quick-input-list .highlight {
+  /* Padding in highlighted text within the quick input list breaks the flow of the text */
+  padding: 0;
 }
 
 td a {
@@ -2305,10 +2316,9 @@ td a:hover {
 }
 
 .loadMore {
+  display: block;
   width: 100%;
-  padding-left: 30%;
-  padding-top: 2px;
-  cursor: pointer;
+  text-align: center;
 }
 
 .loadMore > a:focus {
@@ -2356,9 +2366,9 @@ a:link {
 .tabsManagerContainer {
   height: 100%;
   flex-grow: 1;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   min-height: 300px;
-  overflow-y: scroll;
 }
 
 .tabs {
@@ -2547,10 +2557,12 @@ a:link {
 }
 
 .filterdivs {
-  padding-top: 15px;
-  height: 45px;
-  margin-bottom: 8px;
+  margin: 10px 0px;
   white-space: nowrap;
+  input {
+    line-height: 14px; // To correct vertical position of the down arrow of the input
+    outline: none; // Remove the dotted border on focus, because fluent has its own focus style (underlined)
+  }
 }
 
 .editFilterContainer {
@@ -2565,6 +2577,18 @@ a:link {
 .filterclose {
   padding: @SmallSpace 10px;
   cursor: pointer;
+}
+
+.documentsTab {
+  .documentsTable {
+    .documentsTableCell {
+      border-left: 1px solid @BaseMedium;
+      height: 100%;
+    }
+    .documentsTableHeader {
+      border-bottom: 1px solid @BaseMedium;
+    }
+  }
 }
 
 .querydropdown {
@@ -2647,7 +2671,7 @@ a:link {
   width: @ActiveTabWidth;
 }
 
-.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .tabNavText {
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
   font-weight: bolder;
   border-bottom: 2px solid rgba(0, 120, 212, 1);
 }
@@ -2683,67 +2707,71 @@ a:link {
     width: @TabsWidth;
     border-right: @ButtonBorderWidth solid @BaseMedium;
     white-space: nowrap;
+    .contentWrapper {
+      .flex-display();
+      width: @ContentWrapper;
 
-    .statusIconContainer {
-      width: @StatusIconContainerSize;
-      height: @StatusIconContainerSize;
-      margin-left: @SmallSpace;
-      display: inline-flex;
+      .statusIconContainer {
+        width: @StatusIconContainerSize;
+        height: @StatusIconContainerSize;
+        margin-left: @SmallSpace;
+        display: inline-flex;
 
-      .errorIconContainer {
-        width: @ErrorIconContainer;
-        height: @ErrorIconContainer;
-        margin-top: 1px;
+        .errorIconContainer {
+          width: @ErrorIconContainer;
+          height: @ErrorIconContainer;
+          margin-top: 1px;
 
-        .errorIcon {
-          width: @ErrorIconWidth;
+          .errorIcon {
+            width: @ErrorIconWidth;
+            height: @LoadingErrorIconSize;
+            background-image: url(../images/error_no_outline.svg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 3px;
+            display: block;
+            margin: 1px 0px 0px 6px;
+          }
+        }
+
+        .errorIconContainer.actionsEnabled {
+          &:hover {
+            .hover();
+          }
+
+          &:focus {
+            .focus();
+          }
+
+          &:active {
+            .active();
+          }
+        }
+
+        .errorIconContainer[tabindex]:active {
+          outline: none;
+        }
+
+        .loadingIcon {
+          width: @LoadingErrorIconSize;
           height: @LoadingErrorIconSize;
-          background-image: url(../images/error_no_outline.svg);
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 3px;
-          display: block;
-          margin: 1px 0px 0px 6px;
+          margin: 0px 0px @SmallSpace @SmallSpace;
         }
       }
 
-      .errorIconContainer.actionsEnabled {
-        &:hover {
-          .hover();
-        }
-
-        &:focus {
-          .focus();
-        }
-
-        &:active {
-          .active();
-        }
+      .tabNavText {
+        margin-left: @SmallSpace;
+        margin-right: 2px;
+        color: @BaseDark;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        flex-grow: 1;
       }
-
-      .errorIconContainer[tabindex]:active {
-        outline: none;
-      }
-
-      .loadingIcon {
-        width: @LoadingErrorIconSize;
-        height: @LoadingErrorIconSize;
-        margin: 0px 0px @SmallSpace @SmallSpace;
-      }
-    }
-
-    .tabNavText {
-      margin-left: @SmallSpace;
-      margin-right: 2px;
-      color: @BaseDark;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      flex-grow: 1;
     }
 
     .tabIconSection {
-      width: 30px;
+      width: 29px;
       position: relative;
       padding-top: 2px;
 
@@ -2897,9 +2925,21 @@ a:link {
     padding-left: 8px;
   }
 
+  .settingsSectionInlineCheckbox {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+  }
+
   .settingsSectionLabel {
     margin-bottom: @DefaultSpace;
     margin-right: 5px;
+
+    .panelInfoIcon {
+      margin-left: 5px;
+    }
   }
 
   .pageOptionsPart {

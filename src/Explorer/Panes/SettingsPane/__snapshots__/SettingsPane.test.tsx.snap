@@ -106,6 +106,74 @@ exports[`Settings Pane should render Default properly 1`] = `
         <div>
           <legend
             className="settingsSectionLabel legendLabel"
+            id="ruThresholdLabel"
+          >
+            RU Threshold
+          </legend>
+          <InfoTooltip>
+            If a query exceeds a configured RU threshold, the query will be aborted.
+          </InfoTooltip>
+        </div>
+        <div>
+          <StyledToggleBase
+            defaultChecked={true}
+            label="Enable RU threshold"
+            onChange={[Function]}
+            styles={
+              Object {
+                "container": Object {},
+                "label": Object {
+                  "display": "block",
+                  "fontSize": 12,
+                  "fontWeight": 400,
+                },
+                "pill": Object {},
+                "root": Object {},
+                "text": Object {},
+                "thumb": Object {},
+              }
+            }
+          />
+        </div>
+        <div>
+          <StyledSpinButton
+            decrementButtonAriaLabel="Decrease value by 1000"
+            defaultValue="5000"
+            incrementButtonAriaLabel="Increase value by 1000"
+            label="RU Threshold (RU)"
+            labelPosition={0}
+            min={1}
+            onChange={[Function]}
+            step={1000}
+            styles={
+              Object {
+                "arrowButtonsContainer": Object {},
+                "icon": Object {},
+                "input": Object {},
+                "label": Object {
+                  "fontSize": 12,
+                  "fontWeight": 400,
+                },
+                "labelWrapper": Object {},
+                "root": Object {
+                  "paddingBottom": 10,
+                },
+                "spinButtonWrapper": Object {},
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
             id="queryTimeoutLabel"
           >
             Query Timeout
@@ -131,6 +199,67 @@ exports[`Settings Pane should render Default properly 1`] = `
                 "root": Object {},
                 "text": Object {},
                 "thumb": Object {},
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div>
+          <legend
+            className="settingsSectionLabel legendLabel"
+            id="defaultQueryResultsView"
+          >
+            Default Query Results View
+          </legend>
+          <InfoTooltip>
+            Select the default view to use when displaying query results.
+          </InfoTooltip>
+        </div>
+        <div>
+          <StyledChoiceGroup
+            ariaLabelledBy="defaultQueryResultsView"
+            onChange={[Function]}
+            options={
+              Array [
+                Object {
+                  "key": "vertical",
+                  "text": "Vertical",
+                },
+                Object {
+                  "key": "horizontal",
+                  "text": "Horizontal",
+                },
+              ]
+            }
+            selectedKey="vertical"
+            styles={
+              Object {
+                "flexContainer": Array [
+                  Object {
+                    "selectors": Object {
+                      ".ms-ChoiceField": Object {
+                        "marginTop": 0,
+                      },
+                      ".ms-ChoiceField-wrapper label": Object {
+                        "fontSize": 12,
+                        "paddingTop": 0,
+                      },
+                      ".ms-ChoiceFieldGroup root-133": Object {
+                        "clear": "both",
+                      },
+                    },
+                  },
+                ],
+                "root": Object {
+                  "clear": "both",
+                },
               }
             }
           />
@@ -274,7 +403,7 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"
@@ -303,7 +432,7 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"
@@ -521,7 +650,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart"
+        className="settingsSectionPart settingsSectionInlineCheckbox"
       >
         <div
           className="settingsSectionLabel"

@@ -1,5 +1,6 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
+import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
@@ -27,9 +28,7 @@ import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
-import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
-import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
 import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
 import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
@@ -58,6 +57,7 @@ export default class Collection implements ViewModels.Collection {
   public indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   public uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   public usageSizeInKB: ko.Observable<number>;
+  public computedProperties: ko.Observable<DataModels.ComputedProperties>;
 
   public offer: ko.Observable<DataModels.Offer>;
   public conflictResolutionPolicy: ko.Observable<DataModels.ConflictResolutionPolicy>;
@@ -121,6 +121,7 @@ export default class Collection implements ViewModels.Collection {
     this.schema = data.schema;
     this.requestSchema = data.requestSchema;
     this.geospatialConfig = ko.observable(data.geospatialConfig);
+    this.computedProperties = ko.observable(data.computedProperties);
 
     this.partitionKeyPropertyHeaders = this.partitionKey?.paths;
     this.partitionKeyProperties = this.partitionKeyPropertyHeaders?.map((partitionKeyPropertyHeader, i) => {
@@ -290,13 +291,13 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const documentsTabs: DocumentsTab[] = useTabs
+    const documentsTabs: DocumentsTabV2[] = useTabs
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.Documents,
         (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id(),
-      ) as DocumentsTab[];
-    let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
+      ) as DocumentsTabV2[];
+    let documentsTab: DocumentsTabV2 = documentsTabs && documentsTabs[0];
 
     if (documentsTab) {
       useTabs.getState().activateTab(documentsTab);
@@ -306,15 +307,15 @@ export default class Collection implements ViewModels.Collection {
         collectionName: this.id(),
 
         dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: this.rawDataModel.id + " - Items",
+        tabTitle: "Items",
       });
       this.documentIds([]);
 
-      documentsTab = new DocumentsTab({
+      documentsTab = new DocumentsTabV2({
         partitionKey: this.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
-        title: this.rawDataModel.id + " - Items",
+        title: "Items",
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
@@ -492,13 +493,13 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const mongoDocumentsTabs: MongoDocumentsTab[] = useTabs
+    const mongoDocumentsTabs: DocumentsTabV2[] = useTabs
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.Documents,
         (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id(),
-      ) as MongoDocumentsTab[];
-    let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
+      ) as DocumentsTabV2[];
+    let mongoDocumentsTab: DocumentsTabV2 = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
     if (mongoDocumentsTab) {
       useTabs.getState().activateTab(mongoDocumentsTab);
@@ -512,7 +513,7 @@ export default class Collection implements ViewModels.Collection {
       });
       this.documentIds([]);
 
-      mongoDocumentsTab = new MongoDocumentsTab({
+      mongoDocumentsTab = new DocumentsTabV2({
         partitionKey: this.partitionKey,
         documentIds: this.documentIds,
         tabKind: ViewModels.CollectionTabKind.Documents,

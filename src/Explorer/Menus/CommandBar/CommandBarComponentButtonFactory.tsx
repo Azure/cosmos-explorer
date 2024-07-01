@@ -1,3 +1,5 @@
+import { KeyboardAction } from "KeyboardShortcuts";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
@@ -6,13 +8,10 @@ import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
 import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
-import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
+import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
-import GitHubIcon from "../../../../images/github.svg";
-import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
-import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
@@ -20,7 +19,6 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
@@ -31,7 +29,6 @@ import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
-import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
@@ -57,7 +54,11 @@ export function createStaticCommandBarButtons(
   };
 
   if (configContext.platform !== Platform.Fabric) {
+    const homeBtn = createHomeButton();
+    buttons.push(homeBtn);
+
     const newCollectionBtn = createNewCollectionGroup(container);
+    newCollectionBtn.keyboardAction = KeyboardAction.NEW_COLLECTION; // Just for the root button, not the child version we create below.
     buttons.push(newCollectionBtn);
     if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
       const addSynapseLink = createOpenSynapseLinkDialogButton(container);
@@ -75,57 +76,6 @@ export function createStaticCommandBarButtons(
     }
   }
 
-  if (useNotebook.getState().isNotebookEnabled) {
-    addDivider();
-    const notebookButtons: CommandButtonComponentProps[] = [];
-
-    const newNotebookButton = createNewNotebookButton(container);
-    newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
-    notebookButtons.push(newNotebookButton);
-
-    if (container.notebookManager?.gitHubOAuthService) {
-      notebookButtons.push(createManageGitHubAccountButton(container));
-    }
-    if (useNotebook.getState().isPhoenixFeatures && configContext.isTerminalEnabled) {
-      notebookButtons.push(createOpenTerminalButton(container));
-    }
-    if (useNotebook.getState().isPhoenixNotebooks && selectedNodeState.isConnectedToContainer()) {
-      notebookButtons.push(createNotebookWorkspaceResetButton(container));
-    }
-    if (
-      (userContext.apiType === "Mongo" &&
-        useNotebook.getState().isShellEnabled &&
-        selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
-      userContext.apiType === "Cassandra"
-    ) {
-      notebookButtons.push(createDivider());
-      if (userContext.apiType === "Cassandra") {
-        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Cassandra));
-      } else {
-        notebookButtons.push(createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Mongo));
-      }
-    }
-
-    notebookButtons.forEach((btn) => {
-      if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
-        }
-      } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
-        }
-      } else if (btn.commandButtonLabel.indexOf("Open Terminal") !== -1) {
-        if (!useNotebook.getState().isPhoenixFeatures) {
-          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
-        }
-      } else if (!useNotebook.getState().isPhoenixNotebooks) {
-        applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
-      }
-      buttons.push(btn);
-    });
-  }
-
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected()) {
     const isQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 
@@ -135,7 +85,7 @@ export function createStaticCommandBarButtons(
       buttons.push(newSqlQueryBtn);
     }
 
-    if (isQuerySupported && selectedNodeState.findSelectedCollection()) {
+    if (isQuerySupported && selectedNodeState.findSelectedCollection() && configContext.platform !== Platform.Fabric) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
       buttons.push(openQueryBtn);
@@ -146,6 +96,7 @@ export function createStaticCommandBarButtons(
       const newStoredProcedureBtn: CommandButtonComponentProps = {
         iconSrc: AddStoredProcedureIcon,
         iconAlt: label,
+        keyboardAction: KeyboardAction.NEW_SPROC,
         onCommandClick: () => {
           const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
@@ -196,18 +147,22 @@ export function createContextCommandBarButtons(
 }
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = [
-    {
-      iconSrc: SettingsIcon,
-      iconAlt: "Settings",
-      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane />),
-      commandButtonLabel: undefined,
-      ariaLabel: "Settings",
-      tooltipText: "Settings",
-      hasPopup: true,
-      disabled: false,
-    },
-  ];
+  const buttons: CommandButtonComponentProps[] =
+    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
+      ? []
+      : [
+          {
+            iconSrc: SettingsIcon,
+            iconAlt: "Settings",
+            onCommandClick: () =>
+              useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
+            commandButtonLabel: undefined,
+            ariaLabel: "Settings",
+            tooltipText: "Settings",
+            hasPopup: true,
+            disabled: false,
+          },
+        ];
 
   const showOpenFullScreen =
     configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
@@ -231,12 +186,12 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     buttons.push(fullScreenButton);
   }
 
-  if (configContext.platform !== Platform.Emulator) {
+  if (configContext.platform === Platform.Portal) {
     const label = "Feedback";
     const feedbackButtonOptions: CommandButtonComponentProps = {
       iconSrc: FeedbackIcon,
       iconAlt: label,
-      onCommandClick: () => container.provideFeedbackEmail(),
+      onCommandClick: () => container.openCESCVAFeedbackBlade(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,
@@ -281,6 +236,18 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
   };
 }
 
+function createHomeButton(): CommandButtonComponentProps {
+  const label = "Home";
+  return {
+    iconSrc: HomeIcon,
+    iconAlt: label,
+    onCommandClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Home),
+    commandButtonLabel: label,
+    hasPopup: false,
+    ariaLabel: label,
+  };
+}
+
 function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
   if (configContext.platform === Platform.Emulator) {
     return undefined;
@@ -313,6 +280,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.NEW_DATABASE,
     onCommandClick: async () => {
       const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
       if (throughputCap && throughputCap !== -1) {
@@ -333,6 +301,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
@@ -348,6 +317,7 @@ function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandB
       id: "newQueryBtn",
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_QUERY,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection);
@@ -373,6 +343,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newStoredProcedureBtn: CommandButtonComponentProps = {
       iconSrc: AddStoredProcedureIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_SPROC,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
@@ -392,6 +363,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newUserDefinedFunctionBtn: CommandButtonComponentProps = {
       iconSrc: AddUdfIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_UDF,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
@@ -411,6 +383,7 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
     const newTriggerBtn: CommandButtonComponentProps = {
       iconSrc: AddTriggerIcon,
       iconAlt: label,
+      keyboardAction: KeyboardAction.NEW_TRIGGER,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection);
@@ -428,45 +401,12 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
   return buttons;
 }
 
-function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentProps, tooltip: string): void {
-  if (!buttonProps.isDivider) {
-    buttonProps.disabled = true;
-    buttonProps.tooltipText = tooltip;
-  }
-}
-
-function createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
-  const label = "New Notebook";
-  return {
-    id: "newNotebookBtn",
-    iconSrc: NewNotebookIcon,
-    iconAlt: label,
-    onCommandClick: () => container.onNewNotebookClicked(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
-
-function createuploadNotebookButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Upload to Notebook Server";
-  return {
-    iconSrc: NewNotebookIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openUploadFilePanel(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
-
 function createOpenQueryButton(container: Explorer): CommandButtonComponentProps {
   const label = "Open Query";
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.OPEN_QUERY,
     onCommandClick: () =>
       useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={container} />),
     commandButtonLabel: label,
@@ -481,24 +421,12 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
+    keyboardAction: KeyboardAction.OPEN_QUERY_FROM_DISK,
     onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
     disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-  };
-}
-
-function createOpenTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open Terminal";
-  return {
-    iconSrc: CosmosTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
   };
 }
 
@@ -538,45 +466,6 @@ function createOpenTerminalButtonByKind(
     disabled: disableButton,
     ariaLabel: label,
     tooltipText: !disableButton ? "" : tooltip,
-  };
-}
-
-function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Reset Workspace";
-  return {
-    iconSrc: ResetWorkspaceIcon,
-    iconAlt: label,
-    onCommandClick: () => container.resetNotebookWorkspace(),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
-  };
-}
-
-function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
-  const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
-  const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
-  const junoClient = new JunoClient();
-  return {
-    iconSrc: GitHubIcon,
-    iconAlt: label,
-    onCommandClick: () => {
-      useSidePanel
-        .getState()
-        .openSidePanel(
-          label,
-          <GitHubReposPanel
-            explorer={container}
-            gitHubClientProp={container.notebookManager.gitHubClient}
-            junoClientProp={junoClient}
-          />,
-        );
-    },
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: useSelectedNode.getState().isQueryCopilotCollectionSelected(),
-    ariaLabel: label,
   };
 }
 

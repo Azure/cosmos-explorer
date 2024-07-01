@@ -130,6 +130,7 @@
 @ActiveTabWidth: 141px;
 @TabsHeight: 30px;
 @TabsWidth: 140px;
+@ContentWrapper: 111px;
 @StatusIconContainerSize: 18px;
 @LoadingErrorIconSize: 14px;
 @ErrorIconContainer: 16px;
@@ -147,6 +148,7 @@
 
 // CommandBar
 @CommandBarButtonHeight: 40px;
+@FabricCommandBarButtonHeight: 34px;
 
 /**********************************************************************************
                               Portal Consts
@@ -162,9 +164,10 @@
 /**********************************************************************************/
 
 @FabricFont: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+@FabricToolbarIconColor: "brightness(0) saturate(100%) invert(50%) sepia(17%) saturate(1459%) hue-rotate(81deg) brightness(99%) contrast(94%)";
 
 @FabricBoxBorderRadius: 8px;
-@FabricBoxBorderShadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.14);
+@FabricBoxBorderShadow: rgba(0, 0, 0, 0.133) 0px 1.6px 3.6px 0px, rgba(0, 0, 0, 0.11) 0px 0.3px 0.9px 0px;
 @FabricBoxMargin: 4px 3px 4px 3px;
 
 @FabricAccentMediumHigh: #0c695a;
@@ -333,4 +336,11 @@
   width: 0;
   height: 0;
   border-color: @InfoPointerColor transparent;
+}
+/*********************************************************************************************************
+                           Screen Reader Only
+**********************************************************************************************************/
+.screenReaderOnly {
+  position: absolute;
+  left: -9999px;
 }

@@ -7,6 +7,7 @@ import {
   IDropdownStyles,
 } from "@fluentui/react";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
+import { KeyboardHandlerMap } from "KeyboardShortcuts";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
@@ -25,7 +26,10 @@ import { MemoryTracker } from "./MemoryTrackerComponent";
  * @param btns
  */
 export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
-  const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
+  const buttonHeightPx =
+    configContext.platform == Platform.Fabric
+      ? StyleConstants.FabricCommandBarButtonHeight
+      : StyleConstants.CommandBarButtonHeight;
 
   const hoverColor =
     configContext.platform == Platform.Fabric ? StyleConstants.FabricAccentLight : StyleConstants.AccentLight;
@@ -34,7 +38,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
     if (isDisabled) {
       return StyleConstants.GrayScale;
     }
-    return configContext.platform == Platform.Fabric ? StyleConstants.NoColor : undefined;
+    return configContext.platform == Platform.Fabric ? StyleConstants.FabricToolbarIconColor : undefined;
   };
 
   return btns
@@ -56,21 +60,23 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
           iconName: btn.iconName,
         },
-        onClick: (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
-          btn.onCommandClick(ev);
-          let copilotEnabled = false;
-          if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
-            copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
-          }
-          TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
-        },
+        onClick: btn.onCommandClick
+          ? (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
+              btn.onCommandClick(ev);
+              let copilotEnabled = false;
+              if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
+                copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
+              }
+              TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label, copilotEnabled });
+            }
+          : undefined,
         key: `${btn.commandButtonLabel}${index}`,
         text: label,
-        "data-test": label,
         title: btn.tooltipText,
         name: label,
         disabled: btn.disabled,
         ariaLabel: btn.ariaLabel,
+        "data-test": `CommandBar/Button:${label}`,
         buttonStyles: {
           root: {
             backgroundColor: backgroundColor,
@@ -93,7 +99,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             },
             width: 16,
           },
-          label: { fontSize: StyleConstants.mediumFontSize },
+          label: {
+            fontSize:
+              configContext.platform == Platform.Fabric
+                ? StyleConstants.DefaultFontSize
+                : StyleConstants.mediumFontSize,
+          },
           rootHovered: { backgroundColor: hoverColor },
           rootPressed: { backgroundColor: hoverColor },
           splitButtonMenuButtonExpanded: {
@@ -112,6 +123,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           splitButtonContainer: {
             marginLeft: 5,
             marginRight: 5,
+            height: buttonHeightPx,
           },
         },
         className: btn.className,
@@ -129,7 +141,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               // TODO Figure out how to do it the proper way with subComponentStyles.
               // TODO Remove all this crazy styling once we adopt Ui-Fabric Azure themes
               selectors: {
-                ".ms-ContextualMenu-itemText": { fontSize: StyleConstants.mediumFontSize },
+                ".ms-ContextualMenu-itemText": {
+                  fontSize:
+                    configContext.platform == Platform.Fabric
+                      ? StyleConstants.DefaultFontSize
+                      : StyleConstants.mediumFontSize,
+                },
                 ".ms-ContextualMenu-link:hover": { backgroundColor: hoverColor },
                 ".ms-ContextualMenu-icon": { width: 16, height: 16 },
               },
@@ -219,3 +236,28 @@ export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, 
     onRender: () => <ConnectionStatus container={container} poolId={poolId} />,
   };
 };
+
+export function createKeyboardHandlers(allButtons: CommandButtonComponentProps[]): KeyboardHandlerMap {
+  const handlers: KeyboardHandlerMap = {};
+
+  function createHandlers(buttons: CommandButtonComponentProps[]) {
+    buttons.forEach((button) => {
+      if (!button.disabled && button.keyboardAction) {
+        handlers[button.keyboardAction] = (e) => {
+          button.onCommandClick(e);
+
+          // If the handler is bound, it means the button is visible and enabled, so we should prevent the default action
+          return true;
+        };
+      }
+
+      if (button.children && button.children.length > 0) {
+        createHandlers(button.children);
+      }
+    });
+  }
+
+  createHandlers(allButtons);
+
+  return handlers;
+}

@@ -1,3 +1,5 @@
+playwright.config.ts
+
 **/node_modules/
 src/**/__mocks__/**/*
 dist/
@@ -89,10 +91,7 @@ src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
 src/Explorer/Tabs/ConflictsTab.ts
 src/Explorer/Tabs/DatabaseSettingsTab.ts
-src/Explorer/Tabs/DocumentsTab.test.ts
-src/Explorer/Tabs/DocumentsTab.ts
 src/Explorer/Tabs/GraphTab.ts
-src/Explorer/Tabs/MongoDocumentsTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
 src/Explorer/Tabs/TabComponents.ts
@@ -128,7 +127,7 @@ src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.test.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
-src/Explorer/Controls/TreeComponent/TreeComponent.tsx
+src/Explorer/Controls/TreeComponent/LegacyTreeComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
@@ -145,4 +144,5 @@ src/Explorer/Notebook/temp/inputs/connected-editors/codemirror.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTree.tsx
+src/Utils/EndpointUtils.ts
 src/Utils/PriorityBasedExecutionUtils.ts

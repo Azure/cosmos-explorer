@@ -26,10 +26,10 @@ exports[`SettingsComponent renders 1`] = `
             Object {
               "analyticalStorageTtl": [Function],
               "changeFeedPolicy": [Function],
+              "computedProperties": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -103,10 +103,10 @@ exports[`SettingsComponent renders 1`] = `
             Object {
               "analyticalStorageTtl": [Function],
               "changeFeedPolicy": [Function],
+              "computedProperties": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
                 "_isInitializingNotebooks": false,
-                "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -196,12 +196,138 @@ exports[`SettingsComponent renders 1`] = `
               "indexingMode": "consistent",
             }
           }
+          isVectorSearchEnabled={false}
           logIndexingPolicySuccessMessage={[Function]}
           onIndexingPolicyContentChange={[Function]}
           onIndexingPolicyDirtyChange={[Function]}
           refreshIndexTransformationProgress={[Function]}
           resetShouldDiscardIndexingPolicy={[Function]}
           shouldDiscardIndexingPolicy={false}
+        />
+      </PivotItem>
+      <PivotItem
+        headerText="Partition Keys (preview)"
+        itemKey="PartitionKeyTab"
+        key="PartitionKeyTab"
+        style={
+          Object {
+            "marginTop": 20,
+          }
+        }
+      >
+        <PartitionKeyComponent
+          collection={
+            Object {
+              "analyticalStorageTtl": [Function],
+              "changeFeedPolicy": [Function],
+              "computedProperties": [Function],
+              "conflictResolutionPolicy": [Function],
+              "container": Explorer {
+                "_isInitializingNotebooks": false,
+                "isFixedCollectionWithSharedThroughputSupported": [Function],
+                "isTabsContentExpanded": [Function],
+                "onRefreshDatabasesKeyPress": [Function],
+                "onRefreshResourcesClick": [Function],
+                "phoenixClient": PhoenixClient {
+                  "armResourceId": undefined,
+                  "retryOptions": Object {
+                    "maxTimeout": 5000,
+                    "minTimeout": 5000,
+                    "retries": 3,
+                  },
+                },
+                "provideFeedbackEmail": [Function],
+                "queriesClient": QueriesClient {
+                  "container": [Circular],
+                },
+                "refreshNotebookList": [Function],
+                "resourceTree": ResourceTreeAdapter {
+                  "container": [Circular],
+                  "copyNotebook": [Function],
+                  "parameters": [Function],
+                },
+              },
+              "databaseId": "test",
+              "defaultTtl": [Function],
+              "geospatialConfig": [Function],
+              "getDatabase": [Function],
+              "id": [Function],
+              "indexingPolicy": [Function],
+              "offer": [Function],
+              "partitionKey": Object {
+                "kind": "hash",
+                "paths": Array [],
+                "version": 2,
+              },
+              "partitionKeyProperties": Array [
+                "partitionKey",
+              ],
+              "readSettings": [Function],
+              "uniqueKeyPolicy": Object {},
+              "usageSizeInKB": [Function],
+            }
+          }
+          explorer={
+            Explorer {
+              "_isInitializingNotebooks": false,
+              "isFixedCollectionWithSharedThroughputSupported": [Function],
+              "isTabsContentExpanded": [Function],
+              "onRefreshDatabasesKeyPress": [Function],
+              "onRefreshResourcesClick": [Function],
+              "phoenixClient": PhoenixClient {
+                "armResourceId": undefined,
+                "retryOptions": Object {
+                  "maxTimeout": 5000,
+                  "minTimeout": 5000,
+                  "retries": 3,
+                },
+              },
+              "provideFeedbackEmail": [Function],
+              "queriesClient": QueriesClient {
+                "container": [Circular],
+              },
+              "refreshNotebookList": [Function],
+              "resourceTree": ResourceTreeAdapter {
+                "container": [Circular],
+                "copyNotebook": [Function],
+                "parameters": [Function],
+              },
+            }
+          }
+        />
+      </PivotItem>
+      <PivotItem
+        headerText="Computed Properties"
+        itemKey="ComputedPropertiesTab"
+        key="ComputedPropertiesTab"
+        style={
+          Object {
+            "marginTop": 20,
+          }
+        }
+      >
+        <ComputedPropertiesComponent
+          computedPropertiesContent={
+            Array [
+              Object {
+                "name": "queryName",
+                "query": "query",
+              },
+            ]
+          }
+          computedPropertiesContentBaseline={
+            Array [
+              Object {
+                "name": "queryName",
+                "query": "query",
+              },
+            ]
+          }
+          logComputedPropertiesSuccessMessage={[Function]}
+          onComputedPropertiesContentChange={[Function]}
+          onComputedPropertiesDirtyChange={[Function]}
+          resetShouldDiscardComputedProperties={[Function]}
+          shouldDiscardComputedProperties={false}
         />
       </PivotItem>
     </StyledPivot>
