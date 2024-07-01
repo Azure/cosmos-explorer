@@ -137,4 +137,3 @@ const CopilotProvider = ({ children }: { children: React.ReactNode }): JSX.Eleme
 };
 
 export { CopilotProvider, useCopilotStore };
-

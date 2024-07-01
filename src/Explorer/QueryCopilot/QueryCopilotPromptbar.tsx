@@ -244,7 +244,12 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
         handleError(JSON.stringify(generateSQLQueryResponse), "copilotTooManyRequestError");
         useTabs.getState().setIsQueryErrorThrown(true);
         setShowErrorMessageBar(true);
-        setErrors([new QueryError("Ratelimit exceeded 5 per 1 minute. Please try again after sometime", QueryErrorSeverity.Error)]);
+        setErrors([
+          new QueryError(
+            "Ratelimit exceeded 5 per 1 minute. Please try again after sometime",
+            QueryErrorSeverity.Error,
+          ),
+        ]);
         TelemetryProcessor.traceFailure(Action.QueryGenerationFromCopilotPrompt, {
           databaseName: databaseId,
           collectionId: containerId,
@@ -515,7 +520,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                   </Link>
                   {showErrorMessageBar && (
                     <MessageBar messageBarType={MessageBarType.error}>
-                      {errors.length > 0 ? errors[0].message : "We ran into an error and were not able to execute query."}
+                      {errors.length > 0
+                        ? errors[0].message
+                        : "We ran into an error and were not able to execute query."}
                     </MessageBar>
                   )}
                   {showInvalidQueryMessageBar && (
