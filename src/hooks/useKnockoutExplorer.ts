@@ -473,7 +473,7 @@ async function configurePortal(): Promise<Explorer> {
           }
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-        
+
           if (userContext.apiType === "SQL") {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
               const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
@@ -487,11 +487,10 @@ async function configurePortal(): Promise<Explorer> {
 
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
-            }
-            else {
+            } else {
               let dataPlaneRbacEnabled;
               dataPlaneRbacEnabled = account.properties.disableLocalAuth;
-              
+
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
