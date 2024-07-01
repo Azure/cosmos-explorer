@@ -227,8 +227,8 @@ export const buildCollectionNode = (
     },
     onExpanded: async () => {
       // Rewritten version of expandCollapseCollection
-      // useSelectedNode.getState().setSelectedNode(collection);
-      // useCommandBar.getState().setContextButtons([]);
+      useSelectedNode.getState().setSelectedNode(collection);
+      useCommandBar.getState().setContextButtons([]);
       refreshActiveTab(
         (tab: TabsBase) =>
           tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId,
