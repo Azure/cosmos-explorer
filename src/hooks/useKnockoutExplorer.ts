@@ -416,10 +416,8 @@ async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
-  
-  
   let explorer: Explorer;
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
     if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
@@ -432,8 +430,6 @@ async function configurePortal(): Promise<Explorer> {
         console.dir(message);
         updateContextsFromPortalMessage(message);
         explorer = new Explorer();
-
-
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
@@ -457,7 +453,7 @@ async function configurePortal(): Promise<Explorer> {
 
         // Check for init message
         const message: PortalMessage = event.data?.data;
-        const inputs = message?.inputs; 
+        const inputs = message?.inputs;
         const openAction = message?.openAction;
         if (inputs) {
           if (
@@ -491,6 +487,11 @@ async function configurePortal(): Promise<Explorer> {
 
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+            } else {
+              const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+
+              updateUserContext({ dataPlaneRbacEnabled });
+              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
           } else {
             const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
@@ -519,11 +520,9 @@ async function configurePortal(): Promise<Explorer> {
       },
       false,
     );
-    
+
     sendReadyMessage();
-
   });
-
 }
 
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
