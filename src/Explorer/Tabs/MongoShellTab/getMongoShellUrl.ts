@@ -7,5 +7,5 @@ export function getMongoShellUrl(useMongoProxyEndpoint?: boolean): string {
   const mongoEndpoint = account?.properties?.mongoEndpoint || account?.properties?.documentEndpoint;
   const queryString = `resourceId=${resourceId}&accountName=${accountName}&mongoEndpoint=${mongoEndpoint}`;
 
-  return useMongoProxyEndpoint ? `https://localhost:8080/index.html?${queryString}` : `/mongoshell/indexv2.html?${queryString}`;
+  return useMongoProxyEndpoint ? `https://localhost:8080/index.html?${queryString}` : `https://localhost:8080/indexv2.html?${queryString}`;
 }
