@@ -34,12 +34,13 @@ import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import HintIcon from "../../../images/Hint.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { useTabs } from "../../hooks/useTabs";
+import "../Controls/ThroughputInput/ThroughputInput.less";
 import { useCopilotStore } from "../QueryCopilot/QueryCopilotContext";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -108,7 +109,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setErrorMessage,
     errorMessage,
   } = useCopilotStore();
-
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
     setIsSamplePromptsOpen: setIsSamplePromptsOpen,
@@ -301,6 +302,41 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       return "Content is updated";
     }
   };
+  const openSamplePrompts = () => {
+    inputEdited.current = true;
+    setShowSamplePrompts(true);
+  };
+  const suggestionHistory = filteredHistories.concat(filteredSuggestedPrompts.map((item) => item.text));
+  const handleKeyDown: React.KeyboardEventHandler = (e) => {
+    const { key } = e;
+    if (key === "ArrowDown") {
+      setFocusedIndex((focusedIndex + 1) % suggestionHistory.length);
+    }
+    if (key === "ArrowUp") {
+      setFocusedIndex((focusedIndex + suggestionHistory.length - 1) % suggestionHistory.length);
+    }
+    if (key === "Enter") {
+      e.preventDefault();
+      handleSelection(focusedIndex);
+    }
+  };
+  const handleSelection = (selectedIndex: number) => {
+    const selectedItem = suggestionHistory[selectedIndex];
+    if (!selectedItem) {
+      return resetSearchComplete();
+    } else {
+      handlePromptSet(selectedItem);
+    }
+  };
+  const resetSearchComplete = useCallback(() => {
+    setFocusedIndex(-1);
+    setShowSamplePrompts(false);
+  }, []);
+
+  const handlePromptSet = (promptText: string) => {
+    inputEdited.current = true;
+    setUserPrompt(promptText);
+  };
 
   React.useEffect(() => {
     useTabs.getState().setIsQueryErrorThrown(false);
@@ -331,23 +367,13 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
               id="naturalLanguageInput"
               value={userPrompt}
               onChange={handleUserPromptChange}
-              onClick={() => {
-                inputEdited.current = true;
-                setShowSamplePrompts(true);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && userPrompt) {
-                  inputEdited.current = true;
-                  startGenerateQueryProcess();
-                }
-              }}
+              onClick={openSamplePrompts}
+              onFocus={() => setShowSamplePrompts(true)}
+              onKeyDown={handleKeyDown}
               style={{ lineHeight: 30 }}
               styles={{
                 root: { width: "100%" },
-                suffix: {
-                  background: "none",
-                  padding: 0,
-                },
+                suffix: { background: "none", padding: 0 },
                 fieldGroup: {
                   borderRadius: 4,
                   borderColor: "#D1D1D1",
@@ -360,7 +386,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 },
               }}
               disabled={isGeneratingQuery}
-              autoComplete="off"
+              autoComplete="list"
+              aria-expanded={showSamplePrompts}
               placeholder="Ask a question in natural language and we’ll generate the query for you."
               aria-labelledby="copilot-textfield-label"
               onRenderSuffix={() => {
@@ -369,7 +396,10 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                     iconProps={{ iconName: "Send" }}
                     disabled={isGeneratingQuery || !userPrompt.trim()}
                     style={{ background: "none" }}
-                    onClick={() => startGenerateQueryProcess()}
+                    onClick={() => {
+                      startGenerateQueryProcess();
+                      setShowSamplePrompts(false);
+                    }}
                     aria-label="Send"
                   />
                 );
@@ -434,6 +464,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                           }}
                           onRenderIcon={() => <Image src={RecentIcon} styles={{ root: { overflow: "unset" } }} />}
                           styles={promptStyles}
+                          className={focusedIndex === i ? "highlightedButtonStyles" : "buttonstyles"}
                         >
                           {history}
                         </DefaultButton>
@@ -454,7 +485,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       >
                         Suggested Prompts
                       </Text>
-                      {filteredSuggestedPrompts.map((prompt) => (
+                      {filteredSuggestedPrompts.map((prompt, index) => (
                         <DefaultButton
                           key={prompt.id}
                           onClick={() => {
@@ -464,6 +495,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                           }}
                           onRenderIcon={() => <Image src={HintIcon} />}
                           styles={promptStyles}
+                          className={focusedIndex === filteredHistories.length + index ? "highlightedButtonStyles" : ""}
                         >
                           {prompt.text}
                         </DefaultButton>
