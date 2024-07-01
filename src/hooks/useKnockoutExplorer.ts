@@ -488,8 +488,7 @@ async function configurePortal(): Promise<Explorer> {
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             } else {
-              let dataPlaneRbacEnabled;
-              dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+              const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
 
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
