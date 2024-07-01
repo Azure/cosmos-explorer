@@ -14,11 +14,17 @@
 .throughputInputSpacing > :not(:last-child) {
   margin-bottom: @DefaultSpace;
 }
+
 .capacitycalculator-link:focus {
   text-decoration: underline;
   outline-offset: 2px;
 }
-.highlighted-buttonstyles {
-  outline: 1px dashed back;
-  background-color: #cccccc;
+
+.outlineNone{
+  outline: none !important;
+}
+
+.copyQuery:focus::after,
+.deleteQuery:focus::after {
+  outline: none !important;
 }
