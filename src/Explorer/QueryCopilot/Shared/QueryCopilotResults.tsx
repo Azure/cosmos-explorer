@@ -8,7 +8,7 @@ export const QueryCopilotResults: React.FC = (): JSX.Element => {
     <QueryResultSection
       isMongoDB={false}
       queryEditorContent={useQueryCopilot.getState().selectedQuery || useQueryCopilot.getState().query}
-      error={useQueryCopilot.getState().errorMessage}
+      error={useQueryCopilot.getState().errors}
       queryResults={useQueryCopilot.getState().queryResults}
       isExecuting={useQueryCopilot.getState().isExecuting}
       executeQueryDocumentsPage={(firstItemIndex: number) =>

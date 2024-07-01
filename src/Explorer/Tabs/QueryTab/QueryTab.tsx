@@ -7,10 +7,11 @@ import * as DataModels from "../../../Contracts/DataModels";
 import type { QueryTabOptions } from "../../../Contracts/ViewModels";
 import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
-import QueryTabComponent, {
+import {
   IQueryTabComponentProps,
   ITabAccessor,
-  QueryTabFunctionComponent,
+  QueryTabComponent,
+  QueryTabCopilotComponent,
 } from "../../Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "../TabsBase";
 
@@ -49,7 +50,7 @@ export class NewQueryTab extends TabsBase {
   public render(): JSX.Element {
     return userContext.apiType === "SQL" ? (
       <CopilotProvider>
-        <QueryTabFunctionComponent {...this.iQueryTabComponentProps} />
+        <QueryTabCopilotComponent {...this.iQueryTabComponentProps} />
       </CopilotProvider>
     ) : (
       <QueryTabComponent {...this.iQueryTabComponentProps} />

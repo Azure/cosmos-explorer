@@ -15,4 +15,8 @@ declare global {
     $: any;
     gitSha: string;
   }
+
+  interface Navigator {
+    msSaveBlob?: (blob: Blob, defaultName?: string) => boolean;
+  }
 }
