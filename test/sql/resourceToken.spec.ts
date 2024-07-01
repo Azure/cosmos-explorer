@@ -47,7 +47,7 @@ test("SQL account using Resource token", async ({ page }) => {
 
   const explorer = await DataExplorer.waitForExplorer(page);
 
-  const collectionNode = explorer.treeNode(`DATA/${collectionId}`);
+  const collectionNode = explorer.treeNode(`${collectionId}`);
   await collectionNode.element.waitFor();
   await expect(collectionNode.element).toBeAttached();
 

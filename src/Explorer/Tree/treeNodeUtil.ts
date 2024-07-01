@@ -7,8 +7,6 @@ import { useDatabases } from "Explorer/useDatabases";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
-import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
-import CollectionIcon from "../../../images/tree-collection.svg";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import { Platform, configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
@@ -31,14 +29,12 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
   const updatedSampleTree: TreeNode = {
     label: sampleDataResourceTokenCollection.databaseId,
     isExpanded: false,
-    iconSrc: CosmosDBIcon,
-    className: "databaseHeader",
+    className: "databaseNode",
     children: [
       {
         label: sampleDataResourceTokenCollection.id(),
-        iconSrc: CollectionIcon,
         isExpanded: false,
-        className: "collectionHeader",
+        className: "collectionNode",
         contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
         onClick: () => {
           useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
@@ -105,10 +101,9 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
 
   const collectionNode: TreeNode = {
     label: collection.id(),
-    iconSrc: CollectionIcon,
     isExpanded: true,
     children,
-    className: "collectionHeader",
+    className: "collectionNode",
     onClick: () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
@@ -158,7 +153,7 @@ export const createDatabaseTreeNodes = (
       if (database.collectionsContinuationToken) {
         const loadMoreNode: TreeNode = {
           label: "load more",
-          className: "loadMoreHeader",
+          className: "loadMoreNode",
           onClick: async () => {
             await database.loadCollections();
             useDatabases.getState().updateDatabase(database);
@@ -170,8 +165,7 @@ export const createDatabaseTreeNodes = (
 
     const databaseNode: TreeNode = {
       label: database.id(),
-      iconSrc: CosmosDBIcon,
-      className: "databaseHeader",
+      className: "databaseNode",
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
       contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
@@ -222,9 +216,8 @@ export const buildCollectionNode = (
 
   const collectionNode: TreeNode = {
     label: collection.id(),
-    iconSrc: CollectionIcon,
     children: children,
-    className: "collectionHeader",
+    className: "collectionNode",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);

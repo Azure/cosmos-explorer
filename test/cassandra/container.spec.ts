@@ -8,7 +8,7 @@ test("Cassandra keyspace and table CRUD", async ({ page }) => {
 
   const explorer = await DataExplorer.open(page, TestAccount.Cassandra);
 
-  await explorer.commandBarButton("New Table").click();
+  await explorer.globalCommandButton("New Table").click();
   await explorer.whilePanelOpen("Add Table", async (panel, okButton) => {
     await panel.getByPlaceholder("Type a new keyspace id").fill(keyspaceId);
     await panel.getByPlaceholder("Enter table Id").fill(tableId);
@@ -16,9 +16,9 @@ test("Cassandra keyspace and table CRUD", async ({ page }) => {
     await okButton.click();
   });
 
-  const keyspaceNode = explorer.treeNode(`DATA/${keyspaceId}`);
+  const keyspaceNode = explorer.treeNode(keyspaceId);
   await keyspaceNode.expand();
-  const tableNode = explorer.treeNode(`DATA/${keyspaceId}/${tableId}`);
+  const tableNode = explorer.treeNode(`${keyspaceId}/${tableId}`);
 
   await tableNode.openContextMenu();
   await tableNode.contextMenuItem("Delete Table").click();

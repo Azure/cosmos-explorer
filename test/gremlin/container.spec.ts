@@ -9,7 +9,7 @@ test("Gremlin graph CRUD", async ({ page }) => {
   const explorer = await DataExplorer.open(page, TestAccount.Gremlin);
 
   // Create new database and graph
-  await explorer.commandBarButton("New Graph").click();
+  await explorer.globalCommandButton("New Graph").click();
   await explorer.whilePanelOpen("New Graph", async (panel, okButton) => {
     await panel.getByPlaceholder("Type a new database id").fill(databaseId);
     await panel.getByRole("textbox", { name: "Graph id, Example Graph1" }).fill(graphId);
@@ -18,9 +18,9 @@ test("Gremlin graph CRUD", async ({ page }) => {
     await okButton.click();
   });
 
-  const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
+  const databaseNode = explorer.treeNode(databaseId);
   await databaseNode.expand();
-  const graphNode = explorer.treeNode(`DATA/${databaseId}/${graphId}`);
+  const graphNode = explorer.treeNode(`${databaseId}/${graphId}`);
 
   await graphNode.openContextMenu();
   await graphNode.contextMenuItem("Delete Graph").click();

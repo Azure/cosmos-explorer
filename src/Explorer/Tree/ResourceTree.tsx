@@ -1,14 +1,8 @@
-import {
-  BrandVariants,
-  FluentProvider,
-  Theme,
-  Tree,
-  TreeItemValue,
-  TreeOpenChangeData,
-  TreeOpenChangeEvent,
-  createLightTheme,
-} from "@fluentui/react-components";
+import { Tree, TreeItemValue, TreeOpenChangeData, TreeOpenChangeEvent } from "@fluentui/react-components";
+import { Home16Regular } from "@fluentui/react-icons";
 import { AuthType } from "AuthType";
+import { Platform, configContext } from "ConfigContext";
+import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import {
   createDatabaseTreeNodes,
@@ -16,9 +10,10 @@ import {
   createSampleDataTreeNodes,
 } from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
+import { useSelectedNode } from "Explorer/useSelectedNode";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import { useTabs } from "hooks/useTabs";
+import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
 import { useEffect, useMemo } from "react";
 import shallow from "zustand/shallow";
@@ -29,31 +24,8 @@ export const MyNotebooksTitle = "My Notebooks";
 export const GitHubReposTitle = "GitHub repos";
 
 interface ResourceTreeProps {
-  container: Explorer;
+  explorer: Explorer;
 }
-
-const cosmosdb: BrandVariants = {
-  10: "#020305",
-  20: "#111723",
-  30: "#16263D",
-  40: "#193253",
-  50: "#1B3F6A",
-  60: "#1B4C82",
-  70: "#18599B",
-  80: "#1267B4",
-  90: "#3174C2",
-  100: "#4F82C8",
-  110: "#6790CF",
-  120: "#7D9ED5",
-  130: "#92ACDC",
-  140: "#A6BAE2",
-  150: "#BAC9E9",
-  160: "#CDD8EF",
-};
-
-const lightTheme: Theme = {
-  ...createLightTheme(cosmosdb),
-};
 
 export const DATA_TREE_LABEL = "DATA";
 export const MY_DATA_TREE_LABEL = "MY DATA";
@@ -62,8 +34,9 @@ export const SAMPLE_DATA_TREE_LABEL = "SAMPLE DATA";
 /**
  * Top-level tree that has no label, but contains all subtrees
  */
-export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: ResourceTreeProps): JSX.Element => {
-  const [openItems, setOpenItems] = React.useState<Iterable<TreeItemValue>>([DATA_TREE_LABEL]);
+export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: ResourceTreeProps): JSX.Element => {
+  const [openItems, setOpenItems] = React.useState<TreeItemValue[]>([]);
+  const treeStyles = useTreeStyles();
 
   const { isNotebookEnabled } = useNotebook(
     (state) => ({
@@ -85,10 +58,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     isCopilotSampleDBEnabled: state.copilotSampleDBEnabled,
   }));
 
-  const databaseTreeNodes =
-    userContext.authType === AuthType.ResourceToken
+  const databaseTreeNodes = useMemo(() => {
+    return userContext.authType === AuthType.ResourceToken
       ? createResourceTokenTreeNodes(resourceTokenCollection)
-      : createDatabaseTreeNodes(container, isNotebookEnabled, databases, refreshActiveTab);
+      : createDatabaseTreeNodes(explorer, isNotebookEnabled, databases, refreshActiveTab);
+  }, [resourceTokenCollection, databases, isNotebookEnabled, refreshActiveTab]);
 
   const isSampleDataEnabled =
     isCopilotEnabled &&
@@ -102,33 +76,42 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       : [];
   }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
 
+  const headerNodes: TreeNode[] =
+    configContext.platform === Platform.Fabric
+      ? []
+      : [
+          {
+            id: "home",
+            iconSrc: <Home16Regular />,
+            label: "Home",
+            isSelected: () =>
+              useSelectedNode.getState().selectedNode === undefined &&
+              useTabs.getState().activeReactTab === ReactTabKind.Home,
+            onClick: () => {
+              useSelectedNode.getState().setSelectedNode(undefined);
+              useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
+            },
+          },
+        ];
+
   const rootNodes: TreeNode[] = useMemo(() => {
     if (sampleDataNodes.length > 0) {
       return [
+        ...headerNodes,
         {
           id: "data",
           label: MY_DATA_TREE_LABEL,
-          className: "accordionItemHeader",
           children: databaseTreeNodes,
           isScrollable: true,
         },
         {
           id: "sampleData",
           label: SAMPLE_DATA_TREE_LABEL,
-          className: "accordionItemHeader",
           children: sampleDataNodes,
         },
       ];
     } else {
-      return [
-        {
-          id: "data",
-          label: DATA_TREE_LABEL,
-          className: "accordionItemHeader",
-          children: databaseTreeNodes,
-          isScrollable: true,
-        },
-      ];
+      return [...headerNodes, ...databaseTreeNodes];
     }
   }, [databaseTreeNodes, sampleDataNodes]);
 
@@ -162,23 +145,28 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     rootNodes.forEach((n) => updateOpenItems(n, undefined));
   }, [rootNodes, openItems, setOpenItems]);
 
-  const handleOpenChange = (event: TreeOpenChangeEvent, data: TreeOpenChangeData) => setOpenItems(data.openItems);
+  const handleOpenChange = (event: TreeOpenChangeEvent, data: TreeOpenChangeData) =>
+    setOpenItems(Array.from(data.openItems));
 
   return (
-    <>
-      <FluentProvider theme={lightTheme} style={{ overflow: "auto" }}>
-        <Tree
-          aria-label="CosmosDB resources"
-          openItems={openItems}
-          onOpenChange={handleOpenChange}
-          size="small"
-          style={{ height: "100%", minWidth: "290px" }}
-        >
-          {rootNodes.map((node) => (
-            <TreeNodeComponent key={node.label} className="dataResourceTree" node={node} treeNodeId={node.label} />
-          ))}
-        </Tree>
-      </FluentProvider>
-    </>
+    <div className={treeStyles.treeContainer}>
+      <Tree
+        aria-label="CosmosDB resources"
+        openItems={openItems}
+        className={treeStyles.tree}
+        onOpenChange={handleOpenChange}
+        size="medium"
+      >
+        {rootNodes.map((node) => (
+          <TreeNodeComponent
+            key={node.label}
+            openItems={openItems}
+            className="dataResourceTree"
+            node={node}
+            treeNodeId={node.label}
+          />
+        ))}
+      </Tree>
+    </div>
   );
 };

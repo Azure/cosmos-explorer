@@ -21,7 +21,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -30,7 +30,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -61,7 +60,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -70,7 +69,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -80,7 +78,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -94,7 +92,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -127,7 +124,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -136,7 +133,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -146,7 +142,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -160,7 +156,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -242,7 +237,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -251,7 +246,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -261,12 +255,12 @@ Array [
         "onExpanded": [Function],
       },
       Object {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -280,7 +274,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -333,7 +326,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -352,7 +345,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -404,7 +396,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -423,7 +415,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -433,7 +424,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -447,7 +438,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -501,7 +491,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -520,7 +510,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -530,7 +519,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -544,7 +533,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -647,7 +635,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -666,7 +654,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -676,12 +663,12 @@ Array [
         "onExpanded": [Function],
       },
       Object {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -695,7 +682,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -712,7 +698,7 @@ Array [
     "children": Array [
       Object {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -720,7 +706,6 @@ Array [
             "onClick": [Function],
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -731,7 +716,7 @@ Array [
       },
       Object {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -739,7 +724,6 @@ Array [
             "onClick": [Function],
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -749,7 +733,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -763,7 +747,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -775,7 +758,7 @@ Array [
     "children": Array [
       Object {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -783,7 +766,6 @@ Array [
             "onClick": [Function],
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -793,7 +775,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -807,7 +789,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -819,7 +800,7 @@ Array [
     "children": Array [
       Object {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -827,7 +808,6 @@ Array [
             "onClick": [Function],
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -837,12 +817,12 @@ Array [
         "onExpanded": [Function],
       },
       Object {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -856,7 +836,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -968,7 +947,7 @@ Array [
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -997,7 +976,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -1069,7 +1047,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -1098,7 +1076,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -1108,7 +1085,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -1122,7 +1099,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -1196,7 +1172,7 @@ Array [
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -1225,7 +1201,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -1235,7 +1210,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -1249,7 +1224,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -1372,7 +1346,7 @@ Array [
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -1401,7 +1375,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -1411,12 +1384,12 @@ Array [
         "onExpanded": [Function],
       },
       Object {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -1430,7 +1403,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -1542,7 +1514,7 @@ Array [
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -1571,7 +1543,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -1638,7 +1609,7 @@ Array [
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -1667,7 +1638,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -1677,7 +1647,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -1691,7 +1661,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -1765,7 +1734,7 @@ Array [
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -1794,7 +1763,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -1804,7 +1772,7 @@ Array [
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -1818,7 +1786,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -1941,7 +1908,7 @@ Array [
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -1970,7 +1937,6 @@ Array [
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -1980,12 +1946,12 @@ Array [
         "onExpanded": [Function],
       },
       Object {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": Array [
       Object {
         "iconSrc": Object {},
@@ -1999,7 +1965,6 @@ Array [
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": Object {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -2020,8 +1985,7 @@ Array [
         "onClick": [Function],
       },
     ],
-    "className": "collectionHeader",
-    "iconSrc": Object {},
+    "className": "collectionNode",
     "isExpanded": true,
     "isSelected": [Function],
     "label": "testCollection",
@@ -2049,7 +2013,7 @@ Array [
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": Array [
           Object {
             "iconSrc": Object {},
@@ -2057,7 +2021,6 @@ Array [
             "onClick": [Function],
           },
         ],
-        "iconSrc": Object {},
         "isExpanded": false,
         "isSelected": [Function],
         "label": "testCollection",
@@ -2065,8 +2028,7 @@ Array [
         "onContextMenuOpen": [Function],
       },
     ],
-    "className": "databaseHeader",
-    "iconSrc": Object {},
+    "className": "databaseNode",
     "isExpanded": false,
     "label": "testDatabase",
   },

@@ -1,4 +1,5 @@
 import { clamp } from "@fluentui/react";
+import { useSelectedNode } from "Explorer/useSelectedNode";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { CollectionTabKind } from "../Contracts/ViewModels";
@@ -74,7 +75,11 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, activeReactTab: undefined }));
     tab.onActivate();
   },
-  activateReactTab: (tabKind: ReactTabKind): void => set({ activeTab: undefined, activeReactTab: tabKind }),
+  activateReactTab: (tabKind: ReactTabKind): void => {
+    // Clear the selected node when switching to a react tab.
+    useSelectedNode.getState().setSelectedNode(undefined);
+    set({ activeTab: undefined, activeReactTab: tabKind });
+  },
   updateTab: (tab: TabsBase) => {
     if (get().activeTab?.tabId === tab.tabId) {
       set({ activeTab: tab });

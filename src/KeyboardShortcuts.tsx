@@ -20,7 +20,7 @@ export enum KeyboardActionGroup {
   /** Keyboard actions related to tab navigation. */
   TABS = "TABS",
 
-  /** Keyboard actions managed by the global command bar. */
+  /** Keyboard actions managed by the command bar. */
   COMMAND_BAR = "COMMAND_BAR",
 
   /**
@@ -28,6 +28,9 @@ export enum KeyboardActionGroup {
    * This group is automatically cleared when the active tab changes.
    */
   ACTIVE_TAB = "ACTIVE_TAB",
+
+  /** Keyboard actions managed by the global commands section, in the top-left corner. */
+  GLOBAL_COMMANDS = "GLOBAL_COMMANDS",
 }
 
 /**
