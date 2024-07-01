@@ -1,3 +1,4 @@
+import * as Constants from "Common/Constants";
 import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
@@ -5,6 +6,7 @@ import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesCon
 import Explorer from "Explorer/Explorer";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -41,6 +43,7 @@ import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/Messa
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -253,7 +256,6 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
   let aadToken;
-  let keys: DatabaseAccountListKeysResult = {};
   if (account.properties?.documentEndpoint) {
     const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
     const msalInstance = await getMsalInstance();
@@ -271,8 +273,30 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
-    if (!account.properties.disableLocalAuth) {
-      keys = await listKeys(subscriptionId, resourceGroup, account.name);
+    updateUserContext({
+      databaseAccount: config.databaseAccount,
+    });
+
+    if (!userContext.features.enableAadDataPlane) {
+      if (userContext.apiType === "SQL") {
+        if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+          const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+
+          let dataPlaneRbacEnabled;
+          if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+            dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+          } else {
+            dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+          }
+
+          updateUserContext({ dataPlaneRbacEnabled });
+        }
+      } else {
+        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+        updateUserContext({
+          masterKey: keys.primaryMasterKey,
+        });
+      }
     }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
@@ -285,8 +309,6 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     subscriptionId,
     resourceGroup,
     aadToken,
-    databaseAccount: config.databaseAccount,
-    masterKey: keys.primaryMasterKey,
   });
   const explorer = new Explorer();
   return explorer;
@@ -420,7 +442,7 @@ async function configurePortal(): Promise<Explorer> {
     // In the Portal, configuration of Explorer happens via iframe message
     window.addEventListener(
       "message",
-      (event) => {
+      async (event) => {
         if (isInvalidParentFrameOrigin(event)) {
           return;
         }
@@ -448,6 +470,29 @@ async function configurePortal(): Promise<Explorer> {
 
           if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
             setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
+          }
+
+          const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+
+          if (userContext.apiType === "SQL") {
+            if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+              const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+
+              let dataPlaneRbacEnabled;
+              if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+                dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+              } else {
+                dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+              }
+
+              updateUserContext({ dataPlaneRbacEnabled });
+              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+            }
+          } else {
+            const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+            updateUserContext({
+              masterKey: keys.primaryMasterKey,
+            });
           }
 
           if (openAction) {
@@ -490,7 +535,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   }
 
   const authorizationToken = inputs.authorizationToken || "";
-  const masterKey = inputs.masterKey || "";
   const databaseAccount = inputs.databaseAccount;
 
   updateConfigContext({
@@ -503,7 +547,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   updateUserContext({
     authorizationToken,
-    masterKey,
     databaseAccount,
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,
