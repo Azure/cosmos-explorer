@@ -43,6 +43,7 @@ import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/Messa
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -255,7 +256,6 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
   let aadToken;
-  let keys: DatabaseAccountListKeysResult = {};
   if (account.properties?.documentEndpoint) {
     const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
     const msalInstance = await getMsalInstance();
@@ -273,30 +273,30 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     }
   }
   try {
-    if(LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
-      var isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
-        if (isDataPlaneRbacSetting == Constants.RBACOptions.setAutomaticRBACOption)
-        {
-          if (!account.properties.disableLocalAuth) {
-            keys = await listKeys(subscriptionId, resourceGroup, account.name);
+    updateUserContext({
+      databaseAccount: config.databaseAccount,
+    });
+
+    if (!userContext.features.enableAadDataPlane) {
+      if (userContext.apiType === "SQL") {
+        if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+          const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+
+          let dataPlaneRbacEnabled;
+          if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+            dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+          } else {
+            dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
           }
-          else {
-            updateUserContext({
-              dataPlaneRbacEnabled: true
-            });
-          }
+
+          updateUserContext({ dataPlaneRbacEnabled });
         }
-        else if(isDataPlaneRbacSetting == Constants.RBACOptions.setTrueRBACOption) {
-          updateUserContext({
-            dataPlaneRbacEnabled: true
-          });
-        }
-        else {
-          keys = await listKeys(subscriptionId, resourceGroup, account.name);
-          updateUserContext({
-            dataPlaneRbacEnabled: false
-          });
-        }
+      } else {
+        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+        updateUserContext({
+          masterKey: keys.primaryMasterKey,
+        });
+      }
     }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
@@ -309,8 +309,6 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     subscriptionId,
     resourceGroup,
     aadToken,
-    databaseAccount: config.databaseAccount,
-    masterKey: keys.primaryMasterKey,
   });
   const explorer = new Explorer();
   return explorer;
@@ -478,39 +476,29 @@ async function configurePortal(): Promise<Explorer> {
             setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
 
-          let keys: DatabaseAccountListKeysResult = {};
-          const account = userContext.databaseAccount;
-          const subscriptionId = userContext.subscriptionId;
-          const resourceGroup = userContext.resourceGroup;
+          const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
-          if(LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
-            var isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
-              if (isDataPlaneRbacSetting == Constants.RBACOptions.setAutomaticRBACOption)
-              {
-                if (!account.properties.disableLocalAuth) {
-                  keys = await listKeys(subscriptionId, resourceGroup, account.name);
-                }
-                else {
-                  updateUserContext({
-                    dataPlaneRbacEnabled: true,
-                    authorizationToken: message.inputs.authorizationToken
-                  });
-                }
+          if (userContext.apiType === "SQL") {
+            if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
+              const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+
+              let dataPlaneRbacEnabled;
+              if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
+                dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+              } else {
+                dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
-              else if(isDataPlaneRbacSetting == Constants.RBACOptions.setTrueRBACOption) {
-                updateUserContext({
-                  dataPlaneRbacEnabled: true,
-                  authorizationToken: message.inputs.authorizationToken
-                });
-              }
-              else {
-                keys = await listKeys(subscriptionId, resourceGroup, account.name);
-                updateUserContext({
-                  dataPlaneRbacEnabled: false
-                });
-              }
+
+              updateUserContext({ dataPlaneRbacEnabled });
+              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+            }
+          } else {
+            const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+            updateUserContext({
+              masterKey: keys.primaryMasterKey,
+            });
           }
-            
+
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
@@ -553,7 +541,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   }
 
   const authorizationToken = inputs.authorizationToken || "";
-  const masterKey = inputs.masterKey || "";
   const databaseAccount = inputs.databaseAccount;
 
   updateConfigContext({
@@ -566,7 +553,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   updateUserContext({
     authorizationToken,
-    masterKey,
     databaseAccount,
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,

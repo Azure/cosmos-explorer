@@ -15,6 +15,7 @@ import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
+import EntraIDIcon from "../../../../images/EntraID.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
@@ -30,9 +31,10 @@ import { OpenFullScreen } from "../../OpenFullScreen";
 import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
-import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
+import { useEffect, useState } from "react";
 
 let counter = 0;
 
@@ -66,6 +68,22 @@ export function createStaticCommandBarButtons(
       if (addSynapseLink) {
         addDivider();
         buttons.push(addSynapseLink);
+      }
+    }
+
+    if (userContext.apiType === "SQL") {
+      const [loginButtonProps, setLoginButtonProps] = useState<CommandButtonComponentProps | undefined>(undefined);
+      const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
+      const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
+
+      useEffect(() => {
+        const buttonProps = createLoginForEntraIDButton(container);
+        setLoginButtonProps(buttonProps);
+      }, [dataPlaneRbacEnabled, aadTokenUpdated, container]);
+
+      if (loginButtonProps) {
+        addDivider();
+        buttons.push(loginButtonProps);
       }
     }
 
@@ -271,6 +289,31 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     hasPopup: false,
     disabled:
       useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
+    ariaLabel: label,
+  };
+}
+
+function createLoginForEntraIDButton(container: Explorer): CommandButtonComponentProps {
+  if (configContext.platform !== Platform.Portal) {
+    return undefined;
+  }
+
+  const handleCommandClick = async () => {
+    await container.openLoginForEntraIDPopUp();
+    useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
+  };
+
+  if (!userContext.dataPlaneRbacEnabled || userContext.aadToken) {
+    return undefined;
+  }
+
+  const label = "Login for Entra ID RBAC";
+  return {
+    iconSrc: EntraIDIcon,
+    iconAlt: label,
+    onCommandClick: handleCommandClick,
+    commandButtonLabel: label,
+    hasPopup: true,
     ariaLabel: label,
   };
 }
