@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
+import { Pivot, PivotItem } from "@fluentui/react/lib/Pivot";
 import "./TabComponent.less";
 
 export interface TabContent {
@@ -35,58 +35,36 @@ export class TabComponent extends React.Component<TabComponentProps> {
   }
 
   private setActiveTab(index: number): void {
-    this.setState({ activeTabIndex: index });
     this.props.onTabIndexChange(index);
   }
 
-  private renderTabTitles(): JSX.Element[] {
-    return this.props.tabs.map((tab: Tab, index: number) => {
-      if (!tab.isVisible()) {
-        return <React.Fragment key={index} />;
-      }
-
-      let className = "toggleSwitch";
-      let ariaselected;
-      if (index === this.props.currentTabIndex) {
-        className += " selectedToggle";
-        ariaselected = true;
-      } else {
-        className += " unselectedToggle";
-        ariaselected = false;
-      }
-
-      return (
-        <div className="tab" key={index}>
-          <AccessibleElement
-            as="span"
-            className={className}
-            role="tab"
-            onActivated={() => this.setActiveTab(index)}
-            aria-label={`Select tab: ${tab.title}`}
-            aria-selected={ariaselected}
-          >
-            {tab.title}
-          </AccessibleElement>
-        </div>
-      );
-    });
-  }
-
   public render(): JSX.Element {
-    const currentTabContent = this.props.tabs[this.props.currentTabIndex].content;
+    const { tabs, currentTabIndex, hideHeader } = this.props;
+    const currentTabContent = tabs[currentTabIndex].content;
     let className = "tabComponentContent";
     if (currentTabContent.className) {
       className += ` ${currentTabContent.className}`;
     }
-
     return (
       <div className="tabComponentContainer">
-        {!this.props.hideHeader && (
-          <div className="tabs tabSwitch" role="tablist">
-            {this.renderTabTitles()}
-          </div>
-        )}
-        <div className={className}>{currentTabContent.render()}</div>
+        <div className="tabs tabSwitch">
+          {!hideHeader && (
+            <Pivot
+              aria-label="Tab navigation"
+              selectedKey={currentTabIndex.toString()}
+              linkSize="normal"
+              onLinkClick={(item) => this.setActiveTab(parseInt(item?.props.itemKey || ""))}
+            >
+              {tabs.map((tab: Tab, index: number) => {
+                if (!tab.isVisible()) {
+                  return null; // Skip rendering invisible tabs
+                }
+                return <PivotItem key={index} headerText={tab.title} itemKey={index.toString()} />;
+              })}
+            </Pivot>
+          )}
+        </div>
+        <div className={className}>{tabs[currentTabIndex].content.render()}</div>
       </div>
     );
   }
