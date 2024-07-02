@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { configContext } from "../ConfigContext";
 
-export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
+export async function fetchPhoto(accessToken: string): Promise<Blob> {
   const headers = new Headers();
   const bearer = `Bearer ${accessToken}`;
 

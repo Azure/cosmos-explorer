@@ -3,7 +3,7 @@
 exports[`Explanation Button should render explanation bubble with generated comments 1`] = `
 <Stack
   style={
-    Object {
+    {
       "alignItems": "center",
       "display": "flex",
       "margin": "5px",
@@ -14,7 +14,7 @@ exports[`Explanation Button should render explanation bubble with generated comm
   <Text
     onClick={[Function]}
     style={
-      Object {
+      {
         "border": "1.5px solid #B0BEFF",
         "borderRadius": "4px",
         "cursor": "pointer",

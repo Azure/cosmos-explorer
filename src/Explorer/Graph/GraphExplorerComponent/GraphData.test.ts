@@ -1,4 +1,4 @@
-import { GraphData, GremlinVertex, GremlinEdge } from "./GraphData";
+import { GraphData, GremlinEdge, GremlinVertex } from "./GraphData";
 
 describe("Graph Data", () => {
   it("should set only one node as root", () => {
@@ -54,12 +54,12 @@ describe("Graph Data", () => {
     // in edge
     graphData.removeEdge("e1", false);
     expect(graphData.edges.length).toBe(1);
-    expect(graphData).not.toContain(jasmine.objectContaining({ id: "e1" }));
+    expect(graphData).not.toContainEqual({ id: "e1" });
 
     // out edge
     graphData.removeEdge("e2", false);
     expect(graphData.edges.length).toBe(0);
-    expect(graphData).not.toContain(jasmine.objectContaining({ id: "e2" }));
+    expect(graphData).not.toContainEqual({ id: "e2" });
   });
 
   it("should get string node property", () => {

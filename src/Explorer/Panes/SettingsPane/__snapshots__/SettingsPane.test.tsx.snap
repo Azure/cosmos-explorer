@@ -30,12 +30,12 @@ exports[`Settings Pane should render Default properly 1`] = `
             ariaLabelledBy="pageOptions"
             onChange={[Function]}
             options={
-              Array [
-                Object {
+              [
+                {
                   "key": "custom",
                   "text": "Custom",
                 },
-                Object {
+                {
                   "key": "unlimited",
                   "text": "Unlimited",
                 },
@@ -43,24 +43,24 @@ exports[`Settings Pane should render Default properly 1`] = `
             }
             selectedKey="custom"
             styles={
-              Object {
-                "flexContainer": Array [
-                  Object {
-                    "selectors": Object {
-                      ".ms-ChoiceField": Object {
+              {
+                "flexContainer": [
+                  {
+                    "selectors": {
+                      ".ms-ChoiceField": {
                         "marginTop": 0,
                       },
-                      ".ms-ChoiceField-wrapper label": Object {
+                      ".ms-ChoiceField-wrapper label": {
                         "fontSize": 12,
                         "paddingTop": 0,
                       },
-                      ".ms-ChoiceFieldGroup root-133": Object {
+                      ".ms-ChoiceFieldGroup root-133": {
                         "clear": "both",
                       },
                     },
                   },
                 ],
-                "root": Object {
+                "root": {
                   "clear": "both",
                 },
               }
@@ -120,17 +120,17 @@ exports[`Settings Pane should render Default properly 1`] = `
             label="Enable RU threshold"
             onChange={[Function]}
             styles={
-              Object {
-                "container": Object {},
-                "label": Object {
+              {
+                "container": {},
+                "label": {
                   "display": "block",
                   "fontSize": 12,
                   "fontWeight": 400,
                 },
-                "pill": Object {},
-                "root": Object {},
-                "text": Object {},
-                "thumb": Object {},
+                "pill": {},
+                "root": {},
+                "text": {},
+                "thumb": {},
               }
             }
           />
@@ -146,19 +146,19 @@ exports[`Settings Pane should render Default properly 1`] = `
             onChange={[Function]}
             step={1000}
             styles={
-              Object {
-                "arrowButtonsContainer": Object {},
-                "icon": Object {},
-                "input": Object {},
-                "label": Object {
+              {
+                "arrowButtonsContainer": {},
+                "icon": {},
+                "input": {},
+                "label": {
                   "fontSize": 12,
                   "fontWeight": 400,
                 },
-                "labelWrapper": Object {},
-                "root": Object {
+                "labelWrapper": {},
+                "root": {
                   "paddingBottom": 10,
                 },
-                "spinButtonWrapper": Object {},
+                "spinButtonWrapper": {},
               }
             }
           />
@@ -188,17 +188,17 @@ exports[`Settings Pane should render Default properly 1`] = `
             label="Enable query timeout"
             onChange={[Function]}
             styles={
-              Object {
-                "container": Object {},
-                "label": Object {
+              {
+                "container": {},
+                "label": {
                   "display": "block",
                   "fontSize": 12,
                   "fontWeight": 400,
                 },
-                "pill": Object {},
-                "root": Object {},
-                "text": Object {},
-                "thumb": Object {},
+                "pill": {},
+                "root": {},
+                "text": {},
+                "thumb": {},
               }
             }
           />
@@ -227,12 +227,12 @@ exports[`Settings Pane should render Default properly 1`] = `
             ariaLabelledBy="defaultQueryResultsView"
             onChange={[Function]}
             options={
-              Array [
-                Object {
+              [
+                {
                   "key": "vertical",
                   "text": "Vertical",
                 },
-                Object {
+                {
                   "key": "horizontal",
                   "text": "Horizontal",
                 },
@@ -240,24 +240,24 @@ exports[`Settings Pane should render Default properly 1`] = `
             }
             selectedKey="vertical"
             styles={
-              Object {
-                "flexContainer": Array [
-                  Object {
-                    "selectors": Object {
-                      ".ms-ChoiceField": Object {
+              {
+                "flexContainer": [
+                  {
+                    "selectors": {
+                      ".ms-ChoiceField": {
                         "marginTop": 0,
                       },
-                      ".ms-ChoiceField-wrapper label": Object {
+                      ".ms-ChoiceField-wrapper label": {
                         "fontSize": 12,
                         "paddingTop": 0,
                       },
-                      ".ms-ChoiceFieldGroup root-133": Object {
+                      ".ms-ChoiceFieldGroup root-133": {
                         "clear": "both",
                       },
                     },
                   },
                 ],
-                "root": Object {
+                "root": {
                   "clear": "both",
                 },
               }
@@ -302,19 +302,19 @@ exports[`Settings Pane should render Default properly 1`] = `
           onValidate={[Function]}
           step={1}
           styles={
-            Object {
-              "arrowButtonsContainer": Object {},
-              "icon": Object {},
-              "input": Object {},
-              "label": Object {
+            {
+              "arrowButtonsContainer": {},
+              "icon": {},
+              "input": {},
+              "label": {
                 "fontSize": 12,
                 "fontWeight": 400,
               },
-              "labelWrapper": Object {},
-              "root": Object {
+              "labelWrapper": {},
+              "root": {
                 "paddingBottom": 10,
               },
-              "spinButtonWrapper": Object {},
+              "spinButtonWrapper": {},
             }
           }
           value="9"
@@ -341,19 +341,19 @@ exports[`Settings Pane should render Default properly 1`] = `
           onValidate={[Function]}
           step={1000}
           styles={
-            Object {
-              "arrowButtonsContainer": Object {},
-              "icon": Object {},
-              "input": Object {},
-              "label": Object {
+            {
+              "arrowButtonsContainer": {},
+              "icon": {},
+              "input": {},
+              "label": {
                 "fontSize": 12,
                 "fontWeight": 400,
               },
-              "labelWrapper": Object {},
-              "root": Object {
+              "labelWrapper": {},
+              "root": {
                 "paddingBottom": 10,
               },
-              "spinButtonWrapper": Object {},
+              "spinButtonWrapper": {},
             }
           }
           value="0"
@@ -380,19 +380,19 @@ exports[`Settings Pane should render Default properly 1`] = `
           onValidate={[Function]}
           step={1}
           styles={
-            Object {
-              "arrowButtonsContainer": Object {},
-              "icon": Object {},
-              "input": Object {},
-              "label": Object {
+            {
+              "arrowButtonsContainer": {},
+              "icon": {},
+              "input": {},
+              "label": {
                 "fontSize": 12,
                 "fontWeight": 400,
               },
-              "labelWrapper": Object {},
-              "root": Object {
+              "labelWrapper": {},
+              "root": {
                 "paddingBottom": 10,
               },
-              "spinButtonWrapper": Object {},
+              "spinButtonWrapper": {},
             }
           }
           value="30"
@@ -419,8 +419,8 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="padding"
           onChange={[Function]}
           styles={
-            Object {
-              "label": Object {
+            {
+              "label": {
                 "padding": 0,
               },
             }
@@ -448,8 +448,8 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="padding"
           onChange={[Function]}
           styles={
-            Object {
-              "label": Object {
+            {
+              "label": {
                 "padding": 0,
               },
             }
@@ -549,19 +549,19 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           onValidate={[Function]}
           step={1}
           styles={
-            Object {
-              "arrowButtonsContainer": Object {},
-              "icon": Object {},
-              "input": Object {},
-              "label": Object {
+            {
+              "arrowButtonsContainer": {},
+              "icon": {},
+              "input": {},
+              "label": {
                 "fontSize": 12,
                 "fontWeight": 400,
               },
-              "labelWrapper": Object {},
-              "root": Object {
+              "labelWrapper": {},
+              "root": {
                 "paddingBottom": 10,
               },
-              "spinButtonWrapper": Object {},
+              "spinButtonWrapper": {},
             }
           }
           value="9"
@@ -588,19 +588,19 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           onValidate={[Function]}
           step={1000}
           styles={
-            Object {
-              "arrowButtonsContainer": Object {},
-              "icon": Object {},
-              "input": Object {},
-              "label": Object {
+            {
+              "arrowButtonsContainer": {},
+              "icon": {},
+              "input": {},
+              "label": {
                 "fontSize": 12,
                 "fontWeight": 400,
               },
-              "labelWrapper": Object {},
-              "root": Object {
+              "labelWrapper": {},
+              "root": {
                 "paddingBottom": 10,
               },
-              "spinButtonWrapper": Object {},
+              "spinButtonWrapper": {},
             }
           }
           value="0"
@@ -627,19 +627,19 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           onValidate={[Function]}
           step={1}
           styles={
-            Object {
-              "arrowButtonsContainer": Object {},
-              "icon": Object {},
-              "input": Object {},
-              "label": Object {
+            {
+              "arrowButtonsContainer": {},
+              "icon": {},
+              "input": {},
+              "label": {
                 "fontSize": 12,
                 "fontWeight": 400,
               },
-              "labelWrapper": Object {},
-              "root": Object {
+              "labelWrapper": {},
+              "root": {
                 "paddingBottom": 10,
               },
-              "spinButtonWrapper": Object {},
+              "spinButtonWrapper": {},
             }
           }
           value="30"
@@ -666,8 +666,8 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           className="padding"
           onChange={[Function]}
           styles={
-            Object {
-              "label": Object {
+            {
+              "label": {
                 "padding": 0,
               },
             }
@@ -693,12 +693,12 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           aria-label="Graph Auto-visualization"
           onChange={[Function]}
           options={
-            Array [
-              Object {
+            [
+              {
                 "key": "false",
                 "text": "Graph",
               },
-              Object {
+              {
                 "key": "true",
                 "text": "JSON",
               },

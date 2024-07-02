@@ -16,14 +16,14 @@ exports[`SettingsComponent renders 1`] = `
         itemKey="ScaleTab"
         key="ScaleTab"
         style={
-          Object {
+          {
             "marginTop": 20,
           }
         }
       >
         <ScaleComponent
           collection={
-            Object {
+            {
               "analyticalStorageTtl": [Function],
               "changeFeedPolicy": [Function],
               "computedProperties": [Function],
@@ -36,7 +36,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "phoenixClient": PhoenixClient {
                   "armResourceId": undefined,
-                  "retryOptions": Object {
+                  "retryOptions": {
                     "maxTimeout": 5000,
                     "minTimeout": 5000,
                     "retries": 3,
@@ -60,16 +60,16 @@ exports[`SettingsComponent renders 1`] = `
               "id": [Function],
               "indexingPolicy": [Function],
               "offer": [Function],
-              "partitionKey": Object {
+              "partitionKey": {
                 "kind": "hash",
-                "paths": Array [],
+                "paths": [],
                 "version": 2,
               },
-              "partitionKeyProperties": Array [
+              "partitionKeyProperties": [
                 "partitionKey",
               ],
               "readSettings": [Function],
-              "uniqueKeyPolicy": Object {},
+              "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
             }
           }
@@ -90,7 +90,7 @@ exports[`SettingsComponent renders 1`] = `
         itemKey="SubSettingsTab"
         key="SubSettingsTab"
         style={
-          Object {
+          {
             "marginTop": 20,
           }
         }
@@ -100,7 +100,7 @@ exports[`SettingsComponent renders 1`] = `
           changeFeedPolicyBaseline="Off"
           changeFeedPolicyVisible={false}
           collection={
-            Object {
+            {
               "analyticalStorageTtl": [Function],
               "changeFeedPolicy": [Function],
               "computedProperties": [Function],
@@ -113,7 +113,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "phoenixClient": PhoenixClient {
                   "armResourceId": undefined,
-                  "retryOptions": Object {
+                  "retryOptions": {
                     "maxTimeout": 5000,
                     "minTimeout": 5000,
                     "retries": 3,
@@ -137,16 +137,16 @@ exports[`SettingsComponent renders 1`] = `
               "id": [Function],
               "indexingPolicy": [Function],
               "offer": [Function],
-              "partitionKey": Object {
+              "partitionKey": {
                 "kind": "hash",
-                "paths": Array [],
+                "paths": [],
                 "version": 2,
               },
-              "partitionKeyProperties": Array [
+              "partitionKeyProperties": [
                 "partitionKey",
               ],
               "readSettings": [Function],
-              "uniqueKeyPolicy": Object {},
+              "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
             }
           }
@@ -174,25 +174,25 @@ exports[`SettingsComponent renders 1`] = `
         itemKey="IndexingPolicyTab"
         key="IndexingPolicyTab"
         style={
-          Object {
+          {
             "marginTop": 20,
           }
         }
       >
         <IndexingPolicyComponent
           indexingPolicyContent={
-            Object {
+            {
               "automatic": true,
-              "excludedPaths": Array [],
-              "includedPaths": Array [],
+              "excludedPaths": [],
+              "includedPaths": [],
               "indexingMode": "consistent",
             }
           }
           indexingPolicyContentBaseline={
-            Object {
+            {
               "automatic": true,
-              "excludedPaths": Array [],
-              "includedPaths": Array [],
+              "excludedPaths": [],
+              "includedPaths": [],
               "indexingMode": "consistent",
             }
           }
@@ -210,14 +210,14 @@ exports[`SettingsComponent renders 1`] = `
         itemKey="PartitionKeyTab"
         key="PartitionKeyTab"
         style={
-          Object {
+          {
             "marginTop": 20,
           }
         }
       >
         <PartitionKeyComponent
           collection={
-            Object {
+            {
               "analyticalStorageTtl": [Function],
               "changeFeedPolicy": [Function],
               "computedProperties": [Function],
@@ -230,7 +230,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshResourcesClick": [Function],
                 "phoenixClient": PhoenixClient {
                   "armResourceId": undefined,
-                  "retryOptions": Object {
+                  "retryOptions": {
                     "maxTimeout": 5000,
                     "minTimeout": 5000,
                     "retries": 3,
@@ -254,16 +254,16 @@ exports[`SettingsComponent renders 1`] = `
               "id": [Function],
               "indexingPolicy": [Function],
               "offer": [Function],
-              "partitionKey": Object {
+              "partitionKey": {
                 "kind": "hash",
-                "paths": Array [],
+                "paths": [],
                 "version": 2,
               },
-              "partitionKeyProperties": Array [
+              "partitionKeyProperties": [
                 "partitionKey",
               ],
               "readSettings": [Function],
-              "uniqueKeyPolicy": Object {},
+              "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
             }
           }
@@ -276,7 +276,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshResourcesClick": [Function],
               "phoenixClient": PhoenixClient {
                 "armResourceId": undefined,
-                "retryOptions": Object {
+                "retryOptions": {
                   "maxTimeout": 5000,
                   "minTimeout": 5000,
                   "retries": 3,
@@ -301,23 +301,23 @@ exports[`SettingsComponent renders 1`] = `
         itemKey="ComputedPropertiesTab"
         key="ComputedPropertiesTab"
         style={
-          Object {
+          {
             "marginTop": 20,
           }
         }
       >
         <ComputedPropertiesComponent
           computedPropertiesContent={
-            Array [
-              Object {
+            [
+              {
                 "name": "queryName",
                 "query": "query",
               },
             ]
           }
           computedPropertiesContentBaseline={
-            Array [
-              Object {
+            [
+              {
                 "name": "queryName",
                 "query": "query",
               },

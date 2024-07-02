@@ -6,8 +6,8 @@ exports[`IndexingPolicyRefreshComponent renders 1`] = `
 >
   <Text
     styles={
-      Object {
-        "root": Object {
+      {
+        "root": {
           "color": "windowtext",
           "fontSize": 14,
         },

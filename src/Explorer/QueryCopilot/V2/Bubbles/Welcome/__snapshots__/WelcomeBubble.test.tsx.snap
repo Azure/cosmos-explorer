@@ -5,12 +5,12 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
   <Stack
     horizontalAlign="center"
     style={
-      Object {
+      {
         "color": "#707070",
       }
     }
     tokens={
-      Object {
+      {
         "childrenGap": 8,
         "padding": 8,
       }
@@ -22,14 +22,14 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
   </Stack>
   <Stack
     style={
-      Object {
+      {
         "backgroundColor": "white",
         "borderRadius": "8px",
         "margin": "5px 10px",
       }
     }
     tokens={
-      Object {
+      {
         "childrenGap": 12,
         "padding": 16,
       }
@@ -42,7 +42,7 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
     </Text>
     <Stack
       tokens={
-        Object {
+        {
           "childrenGap": 8,
         }
       }
@@ -50,19 +50,19 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
       <Stack
         horizontal={true}
         style={
-          Object {
+          {
             "marginLeft": "15px",
           }
         }
         tokens={
-          Object {
+          {
             "childrenGap": 8,
           }
         }
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": "16px",
               "lineHeight": "16px",
               "verticalAlign": "middle",
@@ -73,7 +73,7 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
         </Text>
         <Text
           style={
-            Object {
+            {
               "verticalAlign": "middle",
             }
           }
@@ -84,19 +84,19 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
       <Stack
         horizontal={true}
         style={
-          Object {
+          {
             "marginLeft": "15px",
           }
         }
         tokens={
-          Object {
+          {
             "childrenGap": 8,
           }
         }
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": "16px",
               "lineHeight": "16px",
               "verticalAlign": "middle",
@@ -107,7 +107,7 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
         </Text>
         <Text
           style={
-            Object {
+            {
               "verticalAlign": "middle",
             }
           }
@@ -118,19 +118,19 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
       <Stack
         horizontal={true}
         style={
-          Object {
+          {
             "marginLeft": "15px",
           }
         }
         tokens={
-          Object {
+          {
             "childrenGap": 8,
           }
         }
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": "16px",
               "lineHeight": "16px",
               "verticalAlign": "middle",
@@ -141,7 +141,7 @@ exports[`Welcome Bubble snapshot test should render 1`] = `
         </Text>
         <Text
           style={
-            Object {
+            {
               "verticalAlign": "middle",
             }
           }

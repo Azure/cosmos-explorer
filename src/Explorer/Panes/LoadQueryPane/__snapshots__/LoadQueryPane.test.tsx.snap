@@ -22,8 +22,8 @@ exports[`Load Query Pane should render Default properly 1`] = `
           label="Select a query document"
           readOnly={true}
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "width": 300,
               },
             }
@@ -39,7 +39,7 @@ exports[`Load Query Pane should render Default properly 1`] = `
             className="fileIcon"
             height={20}
             imageFit={4}
-            src={Object {}}
+            src={{}}
             width={20}
           />
           <input

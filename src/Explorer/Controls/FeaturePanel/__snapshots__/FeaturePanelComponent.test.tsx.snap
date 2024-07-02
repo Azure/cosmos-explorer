@@ -18,7 +18,7 @@ exports[`Feature panel renders all flags 1`] = `
   <Stack
     className="options"
     tokens={
-      Object {
+      {
         "childrenGap": 10,
       }
     }
@@ -27,7 +27,7 @@ exports[`Feature panel renders all flags 1`] = `
       horizontal={true}
       horizontalAlign="space-between"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -52,7 +52,7 @@ exports[`Feature panel renders all flags 1`] = `
       horizontal={true}
       horizontalAlign="start"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -61,16 +61,16 @@ exports[`Feature panel renders all flags 1`] = `
         label="Base Url"
         onChange={[Function]}
         options={
-          Array [
-            Object {
+          [
+            {
               "key": "https://localhost:1234/explorer.html",
               "text": "localhost:1234",
             },
-            Object {
+            {
               "key": "https://cosmos.azure.com/explorer.html",
               "text": "cosmos.azure.com",
             },
-            Object {
+            {
               "key": "https://portal.azure.com",
               "text": "portal",
             },
@@ -78,8 +78,8 @@ exports[`Feature panel renders all flags 1`] = `
         }
         selectedKey="https://localhost:1234/explorer.html"
         styles={
-          Object {
-            "dropdown": Object {
+          {
+            "dropdown": {
               "width": 200,
             },
           }
@@ -89,20 +89,20 @@ exports[`Feature panel renders all flags 1`] = `
         label="Platform"
         onChange={[Function]}
         options={
-          Array [
-            Object {
+          [
+            {
               "key": "Hosted",
               "text": "Hosted",
             },
-            Object {
+            {
               "key": "Portal",
               "text": "Portal",
             },
-            Object {
+            {
               "key": "Emulator",
               "text": "Emulator",
             },
-            Object {
+            {
               "key": "",
               "text": "None",
             },
@@ -110,8 +110,8 @@ exports[`Feature panel renders all flags 1`] = `
         }
         selectedKey="Hosted"
         styles={
-          Object {
-            "dropdown": Object {
+          {
+            "dropdown": {
               "width": 200,
             },
           }
@@ -208,7 +208,7 @@ exports[`Feature panel renders all flags 1`] = `
     <Stack
       horizontal={true}
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -222,8 +222,8 @@ exports[`Feature panel renders all flags 1`] = `
           onChange={[Function]}
           placeholder="https://notebookserver"
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "width": 300,
               },
             }
@@ -235,8 +235,8 @@ exports[`Feature panel renders all flags 1`] = `
           onChange={[Function]}
           placeholder=""
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "width": 300,
               },
             }
@@ -248,8 +248,8 @@ exports[`Feature panel renders all flags 1`] = `
           onChange={[Function]}
           placeholder=""
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "width": 300,
               },
             }
@@ -265,8 +265,8 @@ exports[`Feature panel renders all flags 1`] = `
           onChange={[Function]}
           placeholder=""
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "width": 300,
               },
             }
@@ -279,8 +279,8 @@ exports[`Feature panel renders all flags 1`] = `
           onChange={[Function]}
           placeholder="https://localhost:1234/explorer.html"
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "width": 300,
               },
             }
@@ -292,8 +292,8 @@ exports[`Feature panel renders all flags 1`] = `
           onChange={[Function]}
           placeholder=""
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "width": 300,
               },
             }

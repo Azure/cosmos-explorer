@@ -22,7 +22,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="in progress items"
-            src={Object {}}
+            src={{}}
           />
           <span
             className="numInProgress"
@@ -35,7 +35,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="error items"
-            src={Object {}}
+            src={{}}
           />
           <span
             className="numErroredItems"
@@ -48,7 +48,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="info items"
-            src={Object {}}
+            src={{}}
           />
           <span
             className="numInfoItems"
@@ -86,7 +86,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
-      Object {
+      {
         "animating": "rah-animating",
         "animatingDown": "rah-animating--down",
         "animatingToHeightAuto": "rah-animating--to-height-auto",
@@ -105,7 +105,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
     easing="ease"
     height={0}
     onAnimationEnd={[Function]}
-    style={Object {}}
+    style={{}}
   >
     <div
       className="notificationConsoleContents"
@@ -117,20 +117,20 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
           label="Filter:"
           onChange={[Function]}
           options={
-            Array [
-              Object {
+            [
+              {
                 "key": "All",
                 "text": "All",
               },
-              Object {
+              {
                 "key": "In Progress",
                 "text": "In progress",
               },
-              Object {
+              {
                 "key": "Info",
                 "text": "Info",
               },
-              Object {
+              {
                 "key": "Error",
                 "text": "Error",
               },
@@ -147,7 +147,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
           onKeyDown={[Function]}
           role="button"
           style={
-            Object {
+            {
               "border": "1px solid black",
               "borderRadius": "2px",
             }
@@ -156,7 +156,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
         >
           <img
             alt="clear notifications image"
-            src={Object {}}
+            src={{}}
           />
           Clear Notifications
         </span>
@@ -191,7 +191,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="in progress items"
-            src={Object {}}
+            src={{}}
           />
           <span
             className="numInProgress"
@@ -204,7 +204,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="error items"
-            src={Object {}}
+            src={{}}
           />
           <span
             className="numErroredItems"
@@ -217,7 +217,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="info items"
-            src={Object {}}
+            src={{}}
           />
           <span
             className="numInfoItems"
@@ -257,7 +257,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
-      Object {
+      {
         "animating": "rah-animating",
         "animatingDown": "rah-animating--down",
         "animatingToHeightAuto": "rah-animating--to-height-auto",
@@ -276,7 +276,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
     easing="ease"
     height={0}
     onAnimationEnd={[Function]}
-    style={Object {}}
+    style={{}}
   >
     <div
       className="notificationConsoleContents"
@@ -288,20 +288,20 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
           label="Filter:"
           onChange={[Function]}
           options={
-            Array [
-              Object {
+            [
+              {
                 "key": "All",
                 "text": "All",
               },
-              Object {
+              {
                 "key": "In Progress",
                 "text": "In progress",
               },
-              Object {
+              {
                 "key": "Info",
                 "text": "Info",
               },
-              Object {
+              {
                 "key": "Error",
                 "text": "Error",
               },
@@ -318,7 +318,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
           onKeyDown={[Function]}
           role="button"
           style={
-            Object {
+            {
               "border": "1px solid black",
               "borderRadius": "2px",
             }
@@ -327,7 +327,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
         >
           <img
             alt="clear notifications image"
-            src={Object {}}
+            src={{}}
           />
           Clear Notifications
         </span>
@@ -342,7 +342,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
           <img
             alt="info"
             className="infoIcon"
-            src={Object {}}
+            src={{}}
           />
           <span
             className="date"

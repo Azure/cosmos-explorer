@@ -207,9 +207,9 @@ describe("createResourceTokenTreeNodes", () => {
 
   it("returns an empty node when collection is undefined or null", () => {
     const snapshot = `
-Array [
-  Object {
-    "children": Array [],
+[
+  {
+    "children": [],
     "isExpanded": true,
     "label": "",
   },

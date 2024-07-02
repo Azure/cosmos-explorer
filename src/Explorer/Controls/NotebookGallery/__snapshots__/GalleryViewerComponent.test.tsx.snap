@@ -13,14 +13,14 @@ exports[`GalleryViewerComponent renders 1`] = `
       itemKey="OfficialSamples"
       key="OfficialSamples"
       style={
-        Object {
+        {
           "marginTop": 20,
         }
       }
     >
       <Stack
         tokens={
-          Object {
+          {
             "childrenGap": 10,
           }
         }
@@ -28,7 +28,7 @@ exports[`GalleryViewerComponent renders 1`] = `
         <Stack
           horizontal={true}
           tokens={
-            Object {
+            {
               "childrenGap": 20,
               "padding": 10,
             }
@@ -50,8 +50,8 @@ exports[`GalleryViewerComponent renders 1`] = `
           </StackItem>
           <StackItem
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "minWidth": 200,
                 },
               }
@@ -60,20 +60,20 @@ exports[`GalleryViewerComponent renders 1`] = `
             <Dropdown
               onChange={[Function]}
               options={
-                Array [
-                  Object {
+                [
+                  {
                     "key": 0,
                     "text": "Most viewed",
                   },
-                  Object {
+                  {
                     "key": 1,
                     "text": "Most downloaded",
                   },
-                  Object {
+                  {
                     "key": 3,
                     "text": "Most recent",
                   },
-                  Object {
+                  {
                     "key": 2,
                     "text": "Most favorited",
                   },

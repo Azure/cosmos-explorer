@@ -4,8 +4,8 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
 <Modal
   isOpen={false}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "minHeight": "122px",
         "minWidth": "880px",
       },
@@ -14,7 +14,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
 >
   <Stack
     style={
-      Object {
+      {
         "height": "auto",
         "padding": "16px 24px",
       }
@@ -22,7 +22,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
   >
     <Text
       style={
-        Object {
+        {
           "fontSize": "18px",
           "height": 24,
         }
@@ -34,7 +34,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
     </Text>
     <Text
       style={
-        Object {
+        {
           "marginBottom": 20,
           "marginTop": 10,
         }
@@ -46,7 +46,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
       horizontal={true}
       horizontalAlign="start"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -54,7 +54,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
       <CustomizedPrimaryButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "height": 24,
             "padding": "0px 20px",
           }
@@ -65,7 +65,7 @@ exports[`Delete Popup snapshot test should not render when showDeletePopup is fa
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "height": 24,
             "padding": "0px 20px",
           }
@@ -82,8 +82,8 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
 <Modal
   isOpen={true}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "minHeight": "122px",
         "minWidth": "880px",
       },
@@ -92,7 +92,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
 >
   <Stack
     style={
-      Object {
+      {
         "height": "auto",
         "padding": "16px 24px",
       }
@@ -100,7 +100,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
   >
     <Text
       style={
-        Object {
+        {
           "fontSize": "18px",
           "height": 24,
         }
@@ -112,7 +112,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
     </Text>
     <Text
       style={
-        Object {
+        {
           "marginBottom": 20,
           "marginTop": 10,
         }
@@ -124,7 +124,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
       horizontal={true}
       horizontalAlign="start"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -132,7 +132,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
       <CustomizedPrimaryButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "height": 24,
             "padding": "0px 20px",
           }
@@ -143,7 +143,7 @@ exports[`Delete Popup snapshot test should render when showDeletePopup is true 1
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "height": 24,
             "padding": "0px 20px",
           }

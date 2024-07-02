@@ -3,15 +3,15 @@
 exports[`Insert button snapshot tests should click and update state 1`] = `
 <CustomizedActionButton
   iconProps={
-    Object {
-      "imageProps": Object {
-        "src": Object {},
+    {
+      "imageProps": {
+        "src": {},
       },
     }
   }
   onClick={[Function]}
   style={
-    Object {
+    {
       "borderColor": "#D1D1D1",
       "borderRadius": "4px",
       "borderWidth": "1px",

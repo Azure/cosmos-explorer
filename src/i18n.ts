@@ -14,7 +14,6 @@ i18n
       formatSeparator: ",",
     },
     react: {
-      wait: true,
       bindI18n: "languageChanged added loaded",
       bindI18nStore: "added removed",
       nsMode: "default",

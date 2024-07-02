@@ -12,23 +12,23 @@ exports[`PaneContainerComponent test should be resize if notification console is
   isOpen={true}
   onDismiss={[Function]}
   style={
-    Object {
+    {
       "height": "516px",
     }
   }
   styles={
-    Object {
-      "commands": Object {
+    {
+      "commands": {
         "marginTop": 8,
         "paddingTop": 0,
       },
-      "content": Object {
+      "content": {
         "padding": 0,
       },
-      "header": Object {
+      "header": {
         "padding": "0 0 8px 34px",
       },
-      "navigation": Object {
+      "navigation": {
         "borderBottom": "1px solid #cccccc",
       },
     }
@@ -53,23 +53,23 @@ exports[`PaneContainerComponent test should render with panel content and header
   isOpen={true}
   onDismiss={[Function]}
   style={
-    Object {
+    {
       "height": "736px",
     }
   }
   styles={
-    Object {
-      "commands": Object {
+    {
+      "commands": {
         "marginTop": 8,
         "paddingTop": 0,
       },
-      "content": Object {
+      "content": {
         "padding": 0,
       },
-      "header": Object {
+      "header": {
         "padding": "0 0 8px 34px",
       },
-      "navigation": Object {
+      "navigation": {
         "borderBottom": "1px solid #cccccc",
       },
     }

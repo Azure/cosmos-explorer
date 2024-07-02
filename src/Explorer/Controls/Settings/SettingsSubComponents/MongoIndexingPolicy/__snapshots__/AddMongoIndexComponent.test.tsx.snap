@@ -3,7 +3,7 @@
 exports[`AddMongoIndexComponent renders 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 5,
     }
   }
@@ -11,7 +11,7 @@ exports[`AddMongoIndexComponent renders 1`] = `
   <Stack
     horizontal={true}
     tokens={
-      Object {
+      {
         "childrenGap": 20,
       }
     }
@@ -21,8 +21,8 @@ exports[`AddMongoIndexComponent renders 1`] = `
       componentRef={[Function]}
       onChange={[Function]}
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "paddingLeft": 10,
             "width": 210,
           },
@@ -34,12 +34,12 @@ exports[`AddMongoIndexComponent renders 1`] = `
       ariaLabel="Index Type 1"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "Single",
             "text": "Single Field",
           },
-          Object {
+          {
             "key": "Wildcard",
             "text": "Wildcard",
           },
@@ -48,8 +48,8 @@ exports[`AddMongoIndexComponent renders 1`] = `
       placeholder="Select an index type"
       selectedKey="Single"
       styles={
-        Object {
-          "dropdown": Object {
+        {
+          "dropdown": {
             "paddingleft": 10,
             "width": 202,
           },
@@ -60,7 +60,7 @@ exports[`AddMongoIndexComponent renders 1`] = `
       ariaLabel="Undo Button 1"
       disabled={false}
       iconProps={
-        Object {
+        {
           "iconName": "Undo",
         }
       }
@@ -70,8 +70,8 @@ exports[`AddMongoIndexComponent renders 1`] = `
   <StyledMessageBar
     messageBarType={1}
     styles={
-      Object {
-        "root": Object {
+      {
+        "root": {
           "marginLeft": 10,
         },
       }

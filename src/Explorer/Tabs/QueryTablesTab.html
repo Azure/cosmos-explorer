@@ -9,7 +9,7 @@
     <!-- Tables Query Tab Errors - Start-->
     <div class="error-bar">
       <div class="error-message" aria-label="Error Message" data-bind="visible: hasQueryError">
-        <span><img class="entity-error-Img" src="/error_red.svg" /></span>
+        <span><img class="entity-error-Img" src="../../../images/error_red.svg" /></span>
         <span class="error-text" role="alert" data-bind="text: queryErrorMessage"></span>
       </div>
     </div>
@@ -45,7 +45,7 @@
                     type="button"
                     data-bind="enable: canGroupClauses, attr:{title: groupSelectedClauses}, click: groupClauses"
                   >
-                    <img class="and-or-svg" src="/And-Or.svg" alt="Group selected clauses" />
+                    <img class="and-or-svg" src="../../../images/And-Or.svg" alt="Group selected clauses" />
                   </button>
                 </th>
                 <th class="clause-table-cell header-background">
@@ -81,7 +81,7 @@
                 <img
                   class="addclauseProperty-Img"
                   style="margin-bottom: 5px"
-                  src="/Add-property.svg"
+                  src="../../../images/Add-property.svg"
                   alt="Add new Clause"
                 />
                 <span style="margin-left: 5px" data-bind="text: addNewClauseLine"></span>
@@ -103,12 +103,16 @@
         >
           <!-- ko template: { ifnot: isExpanded} -->
           <div class="themed-images" type="text/html" id="ExpandChevronRight" data-bind="hasFocus: focusExpandIcon">
-            <img class="imgiconwidth expand-triangle expand-triangle-right" src="/Triangle-right.svg" alt="toggle" />
+            <img
+              class="imgiconwidth expand-triangle expand-triangle-right"
+              src="../../../images/Triangle-right.svg"
+              alt="toggle"
+            />
           </div>
           <!-- /ko -->
           <!-- ko template: { if: isExpanded} -->
           <div class="themed-images" type="text/html" id="ExpandChevronDown">
-            <img class="imgiconwidth expand-triangle" src="/Triangle-down.svg" alt="toggle" />
+            <img class="imgiconwidth expand-triangle" src="../../../images/Triangle-down.svg" alt="toggle" />
           </div>
           <!-- /ko -->
           <span>Advanced Options</span>
@@ -127,7 +131,7 @@
           <div role="alert" aria-atomic="true" class="inline-div" data-bind="visible: isExceedingLimit">
             <img
               class="advanced-options-icon"
-              src="/QueryBuilder/StatusWarning_16x.png"
+              src="../../../images/QueryBuilder/StatusWarning_16x.png"
               alt="Warning"
               role="presentation"
             />
@@ -137,7 +141,7 @@
         <div class="select">
           <span> Select fields for query: </span>
           <div data-bind="visible: isSelected">
-            <img class="advanced-options-icon" src="/QueryBuilder/QueryInformation_16x.png" />
+            <img class="advanced-options-icon" src="../../../images/QueryBuilder/QueryInformation_16x.png" />
             <span class="select-options-text" data-bind="text: selectMessage" />
           </div>
           <a
@@ -179,14 +183,14 @@
         data-bind="click: $parent.addClauseIndex.bind($data, $index()), event: { keydown: $parent.onAddClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.insertNewFilterLine}"
       >
         <span class="entity-Add-Cancel" role="button">
-          <img class="querybuilder-addpropertyImg" src="/Add-property.svg" alt="Add clause" />
+          <img class="querybuilder-addpropertyImg" src="../../../images/Add-property.svg" alt="Add clause" />
         </span>
       </button>
       <button
         data-bind="hasFocus: isDeleteButtonFocused, click: $parent.deleteClause.bind($data, $index()), event: { keydown: $parent.onDeleteClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.removeThisFilterLine}"
       >
         <span class="entity-Add-Cancel" role="button">
-          <img class="querybuilder-cancelImg" src="/Entity_cancel.svg" alt="Delete clause" />
+          <img class="querybuilder-cancelImg" src="../../../images/Entity_cancel.svg" alt="Delete clause" />
         </span>
       </button>
     </td>
@@ -271,7 +275,7 @@
   >
     <!-- ko template: {if: gi.canUngroup} -->
     <button type="button" data-bind="click: ungroupClauses, attr: {title: ungroupClausesLabel}">
-      <img src="/QueryBuilder/UngroupClause_16x.png" alt="Ungroup clauses" />
+      <img src="../../../images/QueryBuilder/UngroupClause_16x.png" alt="Ungroup clauses" />
     </button>
     <!-- /ko -->
   </td>

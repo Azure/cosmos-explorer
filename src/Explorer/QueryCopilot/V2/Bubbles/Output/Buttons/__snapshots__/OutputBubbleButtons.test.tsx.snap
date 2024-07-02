@@ -6,7 +6,7 @@ exports[`Output Bubble Buttons snapshot tests should render 1`] = `
 >
   <StackItem
     style={
-      Object {
+      {
         "paddingTop": "5px",
       }
     }

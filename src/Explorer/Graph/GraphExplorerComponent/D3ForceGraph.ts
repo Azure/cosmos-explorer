@@ -737,17 +737,17 @@ export class D3ForceGraph implements GraphRenderer {
       .on("dblclick", function (this: Element, _: MouseEvent, d: D3Node) {
         // https://stackoverflow.com/a/41945742 ('this' implicitly has type 'any' because it does not have a type annotation)
         // this is the <g> element
-        self.onNodeClicked(this.parentNode, d);
+        self.onNodeClicked(this.parentNode as BaseType, d);
       })
       .on("click", function (this: Element, _: MouseEvent, d: D3Node) {
         // this is the <g> element
-        self.onNodeClicked(this.parentNode, d);
+        self.onNodeClicked(this.parentNode as BaseType, d);
       })
       .on("keypress", function (this: Element, event: KeyboardEvent, d: D3Node) {
         if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
           event.stopPropagation();
           // this is the <g> element
-          self.onNodeClicked(this.parentNode, d);
+          self.onNodeClicked(this.parentNode as BaseType, d);
         }
       });
     var nodeSize = this.igraphConfig.nodeSize;

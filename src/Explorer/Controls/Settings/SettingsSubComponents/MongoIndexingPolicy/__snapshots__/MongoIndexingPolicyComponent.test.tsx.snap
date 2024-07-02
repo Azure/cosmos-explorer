@@ -9,7 +9,7 @@ exports[`MongoIndexingPolicyComponent error shown for collection with compound i
 exports[`MongoIndexingPolicyComponent renders 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
@@ -29,14 +29,14 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   </Text>
   <Stack
     styles={
-      Object {
-        "root": Object {
+      {
+        "root": {
           "width": 600,
         },
       }
     }
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -47,8 +47,8 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
     >
       <StyledWithViewportComponent
         columns={
-          Array [
-            Object {
+          [
+            {
               "fieldName": "definition",
               "isResizable": true,
               "key": "definition",
@@ -56,7 +56,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
               "minWidth": 100,
               "name": "Definition",
             },
-            Object {
+            {
               "fieldName": "type",
               "isResizable": true,
               "key": "type",
@@ -64,7 +64,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
               "minWidth": 100,
               "name": "Type",
             },
-            Object {
+            {
               "fieldName": "actionButton",
               "isResizable": true,
               "key": "actionButton",
@@ -75,15 +75,15 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
           ]
         }
         disableSelectionZone={true}
-        items={Array []}
+        items={[]}
         layoutMode={1}
         onRenderRow={[Function]}
         selectionMode={0}
         styles={
-          Object {
-            "root": Object {
-              "selectors": Object {
-                ".ms-FocusZone": Object {
+          {
+            "root": {
+              "selectors": {
+                ".ms-FocusZone": {
                   "paddingTop": 0,
                 },
               },
@@ -93,14 +93,14 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
       />
       <Stack
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "width": 600,
             },
           }
         }
         tokens={
-          Object {
+          {
             "childrenGap": 10,
           }
         }
@@ -117,11 +117,11 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   </Stack>
   <Separator
     styles={
-      Object {
-        "root": Array [
-          Object {
-            "selectors": Object {
-              "::before": Object {
+      {
+        "root": [
+          {
+            "selectors": {
+              "::before": {
                 "background": undefined,
               },
             },
@@ -132,8 +132,8 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
   />
   <Stack
     styles={
-      Object {
-        "root": Object {
+      {
+        "root": {
           "width": 600,
         },
       }

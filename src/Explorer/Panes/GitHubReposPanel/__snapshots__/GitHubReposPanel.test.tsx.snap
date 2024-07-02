@@ -7,7 +7,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
   <div
     className="panelMainContent"
     style={
-      Object {
+      {
         "display": "flex",
         "flexDirection": "column",
       }
@@ -15,7 +15,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
   >
     <GitHubReposComponent
       addRepoProps={
-        Object {
+        {
           "container": Explorer {
             "_isInitializingNotebooks": false,
             "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -24,7 +24,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "onRefreshResourcesClick": [Function],
             "phoenixClient": PhoenixClient {
               "armResourceId": undefined,
-              "retryOptions": Object {
+              "retryOptions": {
                 "maxTimeout": 5000,
                 "minTimeout": 5000,
                 "retries": 3,
@@ -46,7 +46,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
         }
       }
       authorizeAccessProps={
-        Object {
+        {
           "authorizeAccess": [Function],
           "scope": "public_repo",
         }
@@ -54,18 +54,18 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
       onCancelClick={[Function]}
       onOkClick={[Function]}
       reposListProps={
-        Object {
-          "branchesProps": Object {},
+        {
+          "branchesProps": {},
           "pinRepo": [Function],
-          "pinnedReposProps": Object {
-            "repos": Array [],
+          "pinnedReposProps": {
+            "repos": [],
           },
           "unpinRepo": [Function],
-          "unpinnedReposProps": Object {
+          "unpinnedReposProps": {
             "hasMore": true,
             "isLoading": true,
             "loadMore": [Function],
-            "repos": Array [],
+            "repos": [],
           },
         }
       }

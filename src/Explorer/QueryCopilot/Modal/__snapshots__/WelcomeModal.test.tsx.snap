@@ -7,8 +7,8 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
     isOpen={true}
     onDismiss={[Function]}
     styles={
-      Object {
-        "main": Object {
+      {
+        "main": {
           "borderRadius": 10,
           "maxHeight": 600,
           "overflow": "hidden",
@@ -29,7 +29,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
         >
           <StackItem>
             <Image
-              src={Object {}}
+              src={{}}
             />
           </StackItem>
         </Stack>
@@ -45,7 +45,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
               ariaLabel="Exit"
               className="exitIcon"
               iconProps={
-                Object {
+                {
                   "iconName": "Cancel",
                 }
               }
@@ -61,7 +61,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
         <StackItem
           align="center"
           style={
-            Object {
+            {
               "textAlign": "center",
             }
           }
@@ -85,7 +85,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
               className="imageTextPadding"
             >
               <Image
-                src={Object {}}
+                src={{}}
               />
             </StackItem>
             <StackItem
@@ -122,7 +122,7 @@ exports[`Query Copilot Welcome Modal snapshot test should render when isOpen is 
               className="imageTextPadding"
             >
               <Image
-                src={Object {}}
+                src={{}}
               />
             </StackItem>
             <StackItem

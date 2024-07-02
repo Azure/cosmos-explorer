@@ -3,14 +3,14 @@
 exports[`ComputedPropertiesComponent renders 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 5,
     }
   }
 >
   <Text
     style={
-      Object {
+      {
         "marginBottom": "10px",
         "marginLeft": "30px",
       }

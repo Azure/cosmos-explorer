@@ -4,7 +4,7 @@ exports[`InfoComponent renders 1`] = `
 <StyledHoverCardBase
   instantOpenOnClick={true}
   plainCardProps={
-    Object {
+    {
       "onRenderPlainCard": [Function],
     }
   }
@@ -18,8 +18,8 @@ exports[`InfoComponent renders 1`] = `
       className="infoIconMain"
       iconName="Help"
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "verticalAlign": "middle",
           },
         }

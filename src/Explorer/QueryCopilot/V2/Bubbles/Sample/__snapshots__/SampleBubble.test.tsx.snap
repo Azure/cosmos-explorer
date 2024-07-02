@@ -4,7 +4,7 @@ exports[`Sample Bubble snapshot test should render 1`] = `
 <Stack
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "display": "flex",
       "margin": "10px",
@@ -17,7 +17,7 @@ exports[`Sample Bubble snapshot test should render 1`] = `
     key="0"
     onClick={[Function]}
     style={
-      Object {
+      {
         "border": "1.5px solid #B0BEFF",
         "borderRadius": "4px",
         "cursor": "pointer",
@@ -33,7 +33,7 @@ exports[`Sample Bubble snapshot test should render 1`] = `
     key="1"
     onClick={[Function]}
     style={
-      Object {
+      {
         "border": "1.5px solid #B0BEFF",
         "borderRadius": "4px",
         "cursor": "pointer",
@@ -52,7 +52,7 @@ exports[`Sample Bubble snapshot test should render and be clicked 1`] = `
 <Stack
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "display": "flex",
       "margin": "10px",
@@ -65,7 +65,7 @@ exports[`Sample Bubble snapshot test should render and be clicked 1`] = `
     key="0"
     onClick={[Function]}
     style={
-      Object {
+      {
         "border": "1.5px solid #B0BEFF",
         "borderRadius": "4px",
         "cursor": "pointer",
@@ -81,7 +81,7 @@ exports[`Sample Bubble snapshot test should render and be clicked 1`] = `
     key="1"
     onClick={[Function]}
     style={
-      Object {
+      {
         "border": "1.5px solid #B0BEFF",
         "borderRadius": "4px",
         "cursor": "pointer",

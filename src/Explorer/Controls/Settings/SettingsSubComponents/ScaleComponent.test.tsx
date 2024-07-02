@@ -47,7 +47,7 @@ describe("ScaleComponent", () => {
     expect(wrapper.exists(ThroughputInputAutoPilotV3Component)).toEqual(true);
     expect(wrapper.exists("#throughputApplyLongDelayMessage")).toEqual(true);
     expect(wrapper.exists("#throughputApplyShortDelayMessage")).toEqual(false);
-    expect(wrapper.find("#throughputApplyLongDelayMessage").html()).toContain(targetThroughput);
+    expect(wrapper.find("#throughputApplyLongDelayMessage").html()).toContain(`${targetThroughput}`);
 
     const newCollection = { ...collection };
     const maxThroughput = 5000;
@@ -66,7 +66,7 @@ describe("ScaleComponent", () => {
     wrapper = shallow(<ScaleComponent {...newProps} />);
     expect(wrapper.exists("#throughputApplyShortDelayMessage")).toEqual(true);
     expect(wrapper.exists("#throughputApplyLongDelayMessage")).toEqual(false);
-    expect(wrapper.find("#throughputApplyShortDelayMessage").html()).toContain(maxThroughput);
+    expect(wrapper.find("#throughputApplyShortDelayMessage").html()).toContain(`${maxThroughput}`);
   });
 
   it("autoScale disabled", () => {

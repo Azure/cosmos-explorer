@@ -6,7 +6,7 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] =
 <Stack
   role="status"
   style={
-    Object {
+    {
       "background": "#FFFFFF",
       "boxShadow": "0 2px 6px rgba(0, 0, 0, 0.16)",
       "gap": 5,
@@ -22,7 +22,7 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] =
   <Stack
     horizontal={true}
     style={
-      Object {
+      {
         "display": "flex",
         "justifyContent": "space-between",
         "padding": "5px, 2px, 0px, 0px",
@@ -33,7 +33,7 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] =
     <Stack
       horizontal={true}
       style={
-        Object {
+        {
           "display": "flex",
           "gap": 10,
         }
@@ -41,9 +41,9 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] =
       verticalAlign="center"
     >
       <Image
-        src={Object {}}
+        src={{}}
         style={
-          Object {
+          {
             "height": 15,
             "width": 15,
           }
@@ -57,19 +57,19 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] =
     </Stack>
     <CustomizedIconButton
       iconProps={
-        Object {
+        {
           "iconName": "Cancel",
         }
       }
       onClick={[Function]}
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "backgroundColor": "transparent",
             "border": "none",
             "padding": 0,
-            "selectors": Object {
-              "&:focus": Object {
+            "selectors": {
+              "&:focus": {
                 "outline": "none",
               },
             },
@@ -80,7 +80,7 @@ exports[`Copy Popup snapshot test should render when showCopyPopup is true 1`] =
   </Stack>
   <Text
     style={
-      Object {
+      {
         "marginTop": -10,
       }
     }

@@ -1,0 +1,13 @@
+diff --git a/node_modules/@phosphor/virtualdom/lib/index.d.ts b/node_modules/@phosphor/virtualdom/lib/index.d.ts
+index 95682b9..73e2daa 100644
+--- a/node_modules/@phosphor/virtualdom/lib/index.d.ts
++++ b/node_modules/@phosphor/virtualdom/lib/index.d.ts
+@@ -58,7 +58,7 @@ export declare type ElementEventMap = {
+     ondrop: DragEvent;
+     ondurationchange: Event;
+     onemptied: Event;
+-    onended: MediaStreamErrorEvent;
++    onended: ErrorEvent;
+     onerror: ErrorEvent;
+     onfocus: FocusEvent;
+     oninput: Event;

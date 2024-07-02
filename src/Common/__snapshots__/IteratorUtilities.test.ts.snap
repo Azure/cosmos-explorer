@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`nextPage returns results for the next page 1`] = `
-Object {
+{
   "activityId": "foo",
-  "documents": Array [],
+  "documents": [],
   "firstItemIndex": 11,
   "hasMoreResults": false,
-  "headers": Object {},
+  "headers": {},
   "itemCount": 0,
   "lastItemIndex": 10,
   "requestCharge": 1,

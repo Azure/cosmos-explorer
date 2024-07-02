@@ -8,7 +8,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     aria-modal="true"
     role="dialog"
     style={
-      Object {
+      {
         "maxHeight": "calc(100vh - 120px)",
         "overflowY": "auto",
         "padding": "16px 24px",
@@ -19,7 +19,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <Stack
         horizontal={true}
         style={
-          Object {
+          {
             "display": "flex",
             "justifyContent": "space-between",
           }
@@ -27,7 +27,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 24,
               "fontWeight": 600,
             }
@@ -37,22 +37,22 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
           onClick={[Function]}
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "backgroundColor": "transparent",
                 "border": "none",
                 "padding": 0,
-                "selectors": Object {
-                  "&:focus": Object {
+                "selectors": {
+                  "&:focus": {
                     "outline": "none",
                   },
-                  "&:hover": Object {
+                  "&:hover": {
                     "backgroundColor": "transparent",
                     "color": "#000",
                   },
@@ -64,7 +64,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 13,
             "fontWeight": 400,
             "marginTop": 10,
@@ -76,7 +76,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     </Stack>
     <Stack
       style={
-        Object {
+        {
           "display": "flex",
           "marginTop": 30,
         }
@@ -87,9 +87,9 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src={Object {}}
+          src={{}}
           style={
-            Object {
+            {
               "height": 25,
               "width": 25,
             }
@@ -97,7 +97,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         />
         <Text
           style={
-            Object {
+            {
               "fontSize": 14,
               "fontWeight": 600,
             }
@@ -110,7 +110,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     <Stack
       horizontal={true}
       style={
-        Object {
+        {
           "gap": 35,
         }
       }
@@ -118,7 +118,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -127,7 +127,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -139,7 +139,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -149,7 +149,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -158,7 +158,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -170,7 +170,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -180,7 +180,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     </Stack>
     <Stack
       style={
-        Object {
+        {
           "display": "flex",
           "marginTop": 30,
         }
@@ -191,9 +191,9 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src={Object {}}
+          src={{}}
           style={
-            Object {
+            {
               "height": 25,
               "width": 25,
             }
@@ -201,7 +201,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         />
         <Text
           style={
-            Object {
+            {
               "fontSize": 14,
               "fontWeight": 600,
             }
@@ -214,7 +214,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     <Stack
       horizontal={true}
       style={
-        Object {
+        {
           "gap": 35,
         }
       }
@@ -222,7 +222,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -231,7 +231,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -243,7 +243,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -253,7 +253,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -262,7 +262,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -274,7 +274,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -284,7 +284,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     </Stack>
     <Stack
       style={
-        Object {
+        {
           "display": "flex",
           "marginTop": 30,
         }
@@ -295,9 +295,9 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src={Object {}}
+          src={{}}
           style={
-            Object {
+            {
               "height": 25,
               "width": 25,
             }
@@ -305,7 +305,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         />
         <Text
           style={
-            Object {
+            {
               "fontSize": 14,
               "fontWeight": 600,
             }
@@ -318,7 +318,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     <Stack
       horizontal={true}
       style={
-        Object {
+        {
           "gap": 35,
         }
       }
@@ -326,7 +326,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -335,7 +335,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -347,7 +347,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -357,7 +357,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -366,7 +366,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -378,7 +378,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -398,7 +398,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     aria-modal="true"
     role="dialog"
     style={
-      Object {
+      {
         "maxHeight": "calc(100vh - 120px)",
         "overflowY": "auto",
         "padding": "16px 24px",
@@ -409,7 +409,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <Stack
         horizontal={true}
         style={
-          Object {
+          {
             "display": "flex",
             "justifyContent": "space-between",
           }
@@ -417,7 +417,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 24,
               "fontWeight": 600,
             }
@@ -427,22 +427,22 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
           onClick={[Function]}
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "backgroundColor": "transparent",
                 "border": "none",
                 "padding": 0,
-                "selectors": Object {
-                  "&:focus": Object {
+                "selectors": {
+                  "&:focus": {
                     "outline": "none",
                   },
-                  "&:hover": Object {
+                  "&:hover": {
                     "backgroundColor": "transparent",
                     "color": "#000",
                   },
@@ -454,7 +454,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 13,
             "fontWeight": 400,
             "marginTop": 10,
@@ -466,7 +466,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     </Stack>
     <Stack
       style={
-        Object {
+        {
           "display": "flex",
           "marginTop": 30,
         }
@@ -477,9 +477,9 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src={Object {}}
+          src={{}}
           style={
-            Object {
+            {
               "height": 25,
               "width": 25,
             }
@@ -487,7 +487,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         />
         <Text
           style={
-            Object {
+            {
               "fontSize": 14,
               "fontWeight": 600,
             }
@@ -500,7 +500,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     <Stack
       horizontal={true}
       style={
-        Object {
+        {
           "gap": 35,
         }
       }
@@ -508,7 +508,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -517,7 +517,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -529,7 +529,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -539,7 +539,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -548,7 +548,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -560,7 +560,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -570,7 +570,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     </Stack>
     <Stack
       style={
-        Object {
+        {
           "display": "flex",
           "marginTop": 30,
         }
@@ -581,9 +581,9 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src={Object {}}
+          src={{}}
           style={
-            Object {
+            {
               "height": 25,
               "width": 25,
             }
@@ -591,7 +591,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         />
         <Text
           style={
-            Object {
+            {
               "fontSize": 14,
               "fontWeight": 600,
             }
@@ -604,7 +604,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     <Stack
       horizontal={true}
       style={
-        Object {
+        {
           "gap": 35,
         }
       }
@@ -612,7 +612,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -621,7 +621,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -633,7 +633,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -643,7 +643,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -652,7 +652,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -664,7 +664,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -674,7 +674,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     </Stack>
     <Stack
       style={
-        Object {
+        {
           "display": "flex",
           "marginTop": 30,
         }
@@ -685,9 +685,9 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         verticalAlign="center"
       >
         <Image
-          src={Object {}}
+          src={{}}
           style={
-            Object {
+            {
               "height": 25,
               "width": 25,
             }
@@ -695,7 +695,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
         />
         <Text
           style={
-            Object {
+            {
               "fontSize": 14,
               "fontWeight": 600,
             }
@@ -708,7 +708,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
     <Stack
       horizontal={true}
       style={
-        Object {
+        {
           "gap": 35,
         }
       }
@@ -716,7 +716,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -725,7 +725,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -737,7 +737,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }
@@ -747,7 +747,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       <CustomizedDefaultButton
         onClick={[Function]}
         style={
-          Object {
+          {
             "background": "#F6F6F7",
             "height": 135,
             "width": 352,
@@ -756,7 +756,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 13,
               "height": 80,
             }
@@ -768,7 +768,7 @@ exports[`Sample Prompts snapshot test should render properly if isSamplePromptsO
           aria-label="Forward"
           iconName="Forward"
           style={
-            Object {
+            {
               "left": "92.61%",
               "position": "absolute",
             }

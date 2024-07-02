@@ -1,4 +1,4 @@
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 import { RenderResult, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import React from "react";

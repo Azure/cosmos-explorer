@@ -3,14 +3,14 @@
 exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 10,
     }
   }
 >
   <StyledMessageBar
     messageBarIconProps={
-      Object {
+      {
         "className": "messageBarWarningIcon",
         "iconName": "WarningSolid",
       }
@@ -19,8 +19,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
   >
     <Text
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "color": "windowtext",
             "fontSize": 14,
           },
@@ -39,8 +39,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         toolTipElement={
           <Text
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "color": "windowtext",
                   "fontSize": 14,
                 },
@@ -54,18 +54,18 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     </StyledLabelBase>
     <StyledMessageBar
       messageBarIconProps={
-        Object {
+        {
           "className": "messageBarInfoIcon",
           "iconName": "InfoSolid",
         }
       }
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "backgroundColor": "white",
             "marginTop": "5px",
           },
-          "text": Object {
+          "text": {
             "fontSize": 14,
           },
         }
@@ -74,8 +74,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       <Text
         id="manualToAutoscaleDisclaimerElement"
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "color": "windowtext",
               "fontSize": 14,
             },
@@ -95,12 +95,12 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       ariaLabelledBy="settingsV2RadioButtonLabelId"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "true",
             "text": "Autoscale",
           },
-          Object {
+          {
             "key": "false",
             "text": "Manual",
           },
@@ -109,19 +109,19 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       required={true}
       selectedKey="true"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "30px",
               "display": "inline-flex",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": undefined,
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": undefined,
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -139,7 +139,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
   >
     <StackItem
       style={
-        Object {
+        {
           "maxWidth": "700px",
           "width": "70%",
         }
@@ -147,12 +147,12 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     >
       <Stack
         style={
-          Object {
+          {
             "paddingRight": "50px",
           }
         }
         tokens={
-          Object {
+          {
             "childrenGap": 20,
           }
         }
@@ -168,12 +168,12 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           required={true}
           step={1000}
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "borderColor": "",
                 "height": 25,
-                "selectors": Object {
-                  ":disabled": Object {
+                "selectors": {
+                  ":disabled": {
                     "backgroundColor": undefined,
                     "borderColor": undefined,
                   },
@@ -193,7 +193,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             >
               <StackItem
                 style={
-                  Object {
+                  {
                     "width": "34%",
                   }
                 }
@@ -204,14 +204,14 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               </StackItem>
               <StackItem
                 style={
-                  Object {
+                  {
                     "width": "66%",
                   }
                 }
               >
                 <span
                   style={
-                    Object {
+                    {
                       "float": "left",
                       "transform": "translateX(-50%)",
                     }
@@ -221,7 +221,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
                 </span>
                 <span
                   style={
-                    Object {
+                    {
                       "float": "right",
                     }
                   }
@@ -234,9 +234,9 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               barHeight={20}
               percentComplete={0}
               styles={
-                Object {
-                  "progressBar": Array [
-                    Object {
+                {
+                  "progressBar": [
+                    {
                       "backgroundColor": "rgb(251, 217, 203)",
                     },
                   ],
@@ -248,7 +248,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             >
               <StackItem
                 style={
-                  Object {
+                  {
                     "paddingRight": "5px",
                     "width": "34%",
                   }
@@ -256,11 +256,11 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               >
                 <Separator
                   styles={
-                    Object {
-                      "root": Array [
-                        Object {
-                          "selectors": Object {
-                            "::before": Object {
+                    {
+                      "root": [
+                        {
+                          "selectors": {
+                            "::before": {
                               "backgroundColor": "rgb(200, 200, 200)",
                               "height": "3px",
                               "marginTop": "-1px",
@@ -276,7 +276,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               </StackItem>
               <StackItem
                 style={
-                  Object {
+                  {
                     "paddingLeft": "5px",
                     "width": "66%",
                   }
@@ -284,11 +284,11 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               >
                 <Separator
                   styles={
-                    Object {
-                      "root": Array [
-                        Object {
-                          "selectors": Object {
-                            "::before": Object {
+                    {
+                      "root": [
+                        {
+                          "selectors": {
+                            "::before": {
                               "backgroundColor": "rgb(200, 200, 200)",
                               "height": "3px",
                               "marginTop": "-1px",
@@ -309,8 +309,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           >
             <Text
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "color": "windowtext",
                     "fontSize": 14,
                   },
@@ -331,7 +331,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         </Stack>
         <Text
           style={
-            Object {
+            {
               "marginTop": "40px",
             }
           }
@@ -351,14 +351,14 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         </Text>
         <StackItem
           style={
-            Object {
+            {
               "marginTop": "40px",
             }
           }
         >
           <Stack
             tokens={
-              Object {
+              {
                 "childrenGap": 5,
               }
             }
@@ -375,7 +375,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     </StackItem>
     <StackItem
       style={
-        Object {
+        {
           "maxWidth": "300px",
           "width": "30%",
         }
@@ -384,7 +384,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       <Stack>
         <Text
           style={
-            Object {
+            {
               "fontWeight": 600,
             }
           }
@@ -393,12 +393,12 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         </Text>
         <Stack
           style={
-            Object {
+            {
               "marginTop": 15,
             }
           }
           tokens={
-            Object {
+            {
               "childrenGap": 10,
             }
           }
@@ -406,7 +406,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           <div>
             <Text
               style={
-                Object {
+                {
                   "fontWeight": 600,
                 }
               }
@@ -416,7 +416,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             <Stack
               horizontal={true}
               style={
-                Object {
+                {
                   "marginBottom": 10,
                   "marginTop": 5,
                 }
@@ -424,7 +424,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             >
               <Text
                 style={
-                  Object {
+                  {
                     "width": "50%",
                   }
                 }
@@ -436,7 +436,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
               </Text>
               <Text
                 style={
-                  Object {
+                  {
                     "width": "50%",
                   }
                 }
@@ -450,7 +450,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           </div>
           <Text
             style={
-              Object {
+              {
                 "fontWeight": 600,
               }
             }
@@ -460,14 +460,14 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           <Stack
             horizontal={true}
             style={
-              Object {
+              {
                 "marginTop": 5,
               }
             }
           >
             <Text
               style={
-                Object {
+                {
                   "width": "50%",
                 }
               }
@@ -479,7 +479,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             </Text>
             <Text
               style={
-                Object {
+                {
                   "width": "50%",
                 }
               }
@@ -493,7 +493,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         </Stack>
         <Text
           style={
-            Object {
+            {
               "fontWeight": 600,
               "marginTop": 15,
             }
@@ -504,7 +504,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         <Stack
           id="throughputSpendElement"
           style={
-            Object {
+            {
               "marginTop": 5,
             }
           }
@@ -526,7 +526,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         </Stack>
         <Text
           style={
-            Object {
+            {
               "marginTop": 15,
             }
           }
@@ -545,7 +545,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
 exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 10,
     }
   }
@@ -559,8 +559,8 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         toolTipElement={
           <Text
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "color": "windowtext",
                   "fontSize": 14,
                 },
@@ -576,12 +576,12 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       ariaLabelledBy="settingsV2RadioButtonLabelId"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "true",
             "text": "Autoscale",
           },
-          Object {
+          {
             "key": "false",
             "text": "Manual",
           },
@@ -590,19 +590,19 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       required={true}
       selectedKey="false"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "30px",
               "display": "inline-flex",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -620,7 +620,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
   >
     <StackItem
       style={
-        Object {
+        {
           "maxWidth": "700px",
           "width": "70%",
         }
@@ -628,12 +628,12 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
     >
       <Stack
         style={
-          Object {
+          {
             "paddingRight": "50px",
           }
         }
         tokens={
-          Object {
+          {
             "childrenGap": 20,
           }
         }
@@ -647,12 +647,12 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           required={true}
           step={100}
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "borderColor": "",
                 "height": 25,
-                "selectors": Object {
-                  ":disabled": Object {
+                "selectors": {
+                  ":disabled": {
                     "backgroundColor": undefined,
                     "borderColor": undefined,
                   },
@@ -671,7 +671,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             >
               <StackItem
                 style={
-                  Object {
+                  {
                     "width": "34%",
                   }
                 }
@@ -682,14 +682,14 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               </StackItem>
               <StackItem
                 style={
-                  Object {
+                  {
                     "width": "66%",
                   }
                 }
               >
                 <span
                   style={
-                    Object {
+                    {
                       "float": "left",
                       "transform": "translateX(-50%)",
                     }
@@ -699,7 +699,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
                 </span>
                 <span
                   style={
-                    Object {
+                    {
                       "float": "right",
                     }
                   }
@@ -712,9 +712,9 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               barHeight={20}
               percentComplete={0}
               styles={
-                Object {
-                  "progressBar": Array [
-                    Object {
+                {
+                  "progressBar": [
+                    {
                       "backgroundColor": "rgb(251, 217, 203)",
                     },
                   ],
@@ -726,7 +726,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             >
               <StackItem
                 style={
-                  Object {
+                  {
                     "paddingRight": "5px",
                     "width": "34%",
                   }
@@ -734,11 +734,11 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               >
                 <Separator
                   styles={
-                    Object {
-                      "root": Array [
-                        Object {
-                          "selectors": Object {
-                            "::before": Object {
+                    {
+                      "root": [
+                        {
+                          "selectors": {
+                            "::before": {
                               "backgroundColor": "rgb(200, 200, 200)",
                               "height": "3px",
                               "marginTop": "-1px",
@@ -754,7 +754,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               </StackItem>
               <StackItem
                 style={
-                  Object {
+                  {
                     "paddingLeft": "5px",
                     "width": "66%",
                   }
@@ -762,11 +762,11 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
               >
                 <Separator
                   styles={
-                    Object {
-                      "root": Array [
-                        Object {
-                          "selectors": Object {
-                            "::before": Object {
+                    {
+                      "root": [
+                        {
+                          "selectors": {
+                            "::before": {
                               "backgroundColor": "rgb(200, 200, 200)",
                               "height": "3px",
                               "marginTop": "-1px",
@@ -787,8 +787,8 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           >
             <Text
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "color": "windowtext",
                     "fontSize": 14,
                   },
@@ -826,12 +826,12 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           label="spendAckText"
           onChange={[Function]}
           styles={
-            Object {
-              "label": Object {
+            {
+              "label": {
                 "margin": 0,
                 "padding": "2 0 2 0",
               },
-              "text": Object {
+              "text": {
                 "fontSize": 12,
               },
             }
@@ -839,14 +839,14 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         />
         <StackItem
           style={
-            Object {
+            {
               "marginTop": "40px",
             }
           }
         >
           <Stack
             tokens={
-              Object {
+              {
                 "childrenGap": 5,
               }
             }
@@ -863,7 +863,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
     </StackItem>
     <StackItem
       style={
-        Object {
+        {
           "maxWidth": "300px",
           "width": "30%",
         }
@@ -872,7 +872,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       <Stack>
         <Text
           style={
-            Object {
+            {
               "fontWeight": 600,
             }
           }
@@ -881,19 +881,19 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         </Text>
         <Stack
           style={
-            Object {
+            {
               "marginTop": 15,
             }
           }
           tokens={
-            Object {
+            {
               "childrenGap": 10,
             }
           }
         >
           <Text
             style={
-              Object {
+              {
                 "fontWeight": 600,
               }
             }
@@ -903,14 +903,14 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
           <Stack
             horizontal={true}
             style={
-              Object {
+              {
                 "marginTop": 5,
               }
             }
           >
             <Text
               style={
-                Object {
+                {
                   "width": "33%",
                 }
               }
@@ -922,7 +922,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             </Text>
             <Text
               style={
-                Object {
+                {
                   "width": "33%",
                 }
               }
@@ -934,7 +934,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             </Text>
             <Text
               style={
-                Object {
+                {
                   "width": "33%",
                 }
               }
@@ -948,7 +948,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         </Stack>
         <Text
           style={
-            Object {
+            {
               "fontWeight": 600,
               "marginTop": 15,
             }
@@ -959,7 +959,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         <Stack
           id="throughputSpendElement"
           style={
-            Object {
+            {
               "marginTop": 5,
             }
           }
@@ -980,7 +980,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         </Stack>
         <Text
           style={
-            Object {
+            {
               "marginTop": 15,
             }
           }
@@ -999,7 +999,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
 exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 10,
     }
   }
@@ -1013,8 +1013,8 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         toolTipElement={
           <Text
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "color": "windowtext",
                   "fontSize": 14,
                 },
@@ -1030,12 +1030,12 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       ariaLabelledBy="settingsV2RadioButtonLabelId"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "true",
             "text": "Autoscale",
           },
-          Object {
+          {
             "key": "false",
             "text": "Manual",
           },
@@ -1044,19 +1044,19 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       required={true}
       selectedKey="false"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "30px",
               "display": "inline-flex",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -1074,7 +1074,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
   >
     <StackItem
       style={
-        Object {
+        {
           "maxWidth": "700px",
           "width": "70%",
         }
@@ -1082,12 +1082,12 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
     >
       <Stack
         style={
-          Object {
+          {
             "paddingRight": "50px",
           }
         }
         tokens={
-          Object {
+          {
             "childrenGap": 20,
           }
         }
@@ -1101,12 +1101,12 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
           required={true}
           step={100}
           styles={
-            Object {
-              "fieldGroup": Object {
+            {
+              "fieldGroup": {
                 "borderColor": "",
                 "height": 25,
-                "selectors": Object {
-                  ":disabled": Object {
+                "selectors": {
+                  ":disabled": {
                     "backgroundColor": undefined,
                     "borderColor": undefined,
                   },
@@ -1125,7 +1125,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             >
               <StackItem
                 style={
-                  Object {
+                  {
                     "width": "34%",
                   }
                 }
@@ -1136,14 +1136,14 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               </StackItem>
               <StackItem
                 style={
-                  Object {
+                  {
                     "width": "66%",
                   }
                 }
               >
                 <span
                   style={
-                    Object {
+                    {
                       "float": "left",
                       "transform": "translateX(-50%)",
                     }
@@ -1153,7 +1153,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
                 </span>
                 <span
                   style={
-                    Object {
+                    {
                       "float": "right",
                     }
                   }
@@ -1166,9 +1166,9 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               barHeight={20}
               percentComplete={0}
               styles={
-                Object {
-                  "progressBar": Array [
-                    Object {
+                {
+                  "progressBar": [
+                    {
                       "backgroundColor": "rgb(251, 217, 203)",
                     },
                   ],
@@ -1180,7 +1180,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             >
               <StackItem
                 style={
-                  Object {
+                  {
                     "paddingRight": "5px",
                     "width": "34%",
                   }
@@ -1188,11 +1188,11 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               >
                 <Separator
                   styles={
-                    Object {
-                      "root": Array [
-                        Object {
-                          "selectors": Object {
-                            "::before": Object {
+                    {
+                      "root": [
+                        {
+                          "selectors": {
+                            "::before": {
                               "backgroundColor": "rgb(200, 200, 200)",
                               "height": "3px",
                               "marginTop": "-1px",
@@ -1208,7 +1208,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               </StackItem>
               <StackItem
                 style={
-                  Object {
+                  {
                     "paddingLeft": "5px",
                     "width": "66%",
                   }
@@ -1216,11 +1216,11 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
               >
                 <Separator
                   styles={
-                    Object {
-                      "root": Array [
-                        Object {
-                          "selectors": Object {
-                            "::before": Object {
+                    {
+                      "root": [
+                        {
+                          "selectors": {
+                            "::before": {
                               "backgroundColor": "rgb(200, 200, 200)",
                               "height": "3px",
                               "marginTop": "-1px",
@@ -1241,8 +1241,8 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
           >
             <Text
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "color": "windowtext",
                     "fontSize": 14,
                   },
@@ -1276,14 +1276,14 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         </Text>
         <StackItem
           style={
-            Object {
+            {
               "marginTop": "40px",
             }
           }
         >
           <Stack
             tokens={
-              Object {
+              {
                 "childrenGap": 5,
               }
             }
@@ -1300,7 +1300,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
     </StackItem>
     <StackItem
       style={
-        Object {
+        {
           "maxWidth": "300px",
           "width": "30%",
         }
@@ -1309,7 +1309,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       <Stack>
         <Text
           style={
-            Object {
+            {
               "fontWeight": 600,
             }
           }
@@ -1318,19 +1318,19 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         </Text>
         <Stack
           style={
-            Object {
+            {
               "marginTop": 15,
             }
           }
           tokens={
-            Object {
+            {
               "childrenGap": 10,
             }
           }
         >
           <Text
             style={
-              Object {
+              {
                 "fontWeight": 600,
               }
             }
@@ -1340,14 +1340,14 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
           <Stack
             horizontal={true}
             style={
-              Object {
+              {
                 "marginTop": 5,
               }
             }
           >
             <Text
               style={
-                Object {
+                {
                   "width": "33%",
                 }
               }
@@ -1359,7 +1359,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             </Text>
             <Text
               style={
-                Object {
+                {
                   "width": "33%",
                 }
               }
@@ -1371,7 +1371,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             </Text>
             <Text
               style={
-                Object {
+                {
                   "width": "33%",
                 }
               }
@@ -1385,7 +1385,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         </Stack>
         <Text
           style={
-            Object {
+            {
               "fontWeight": 600,
               "marginTop": 15,
             }
@@ -1396,7 +1396,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         <Stack
           id="throughputSpendElement"
           style={
-            Object {
+            {
               "marginTop": 5,
             }
           }
@@ -1417,7 +1417,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         </Stack>
         <Text
           style={
-            Object {
+            {
               "marginTop": 15,
             }
           }

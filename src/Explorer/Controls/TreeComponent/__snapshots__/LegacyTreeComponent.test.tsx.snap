@@ -8,20 +8,20 @@ exports[`LegacyTreeComponent renders a simple tree 1`] = `
   <LegacyTreeNodeComponent
     generation={0}
     node={
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
+      {
+        "children": [
+          {
+            "children": [
+              {
                 "label": "ZgrandChild11",
               },
-              Object {
+              {
                 "label": "AgrandChild12",
               },
             ],
             "label": "Bchild1",
           },
-          Object {
+          {
             "label": "2child2",
           },
         ],
@@ -45,7 +45,7 @@ exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
     className="treeNodeHeader "
     data-test="Tree/TreeNode/Header:label"
     style={
-      Object {
+      {
         "paddingLeft": 9,
       }
     }
@@ -56,7 +56,7 @@ exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src={Object {}}
+      src={{}}
       tabIndex={0}
     />
     <span
@@ -78,7 +78,7 @@ exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
-      Object {
+      {
         "animating": "rah-animating",
         "animatingDown": "rah-animating--down",
         "animatingToHeightAuto": "rah-animating--to-height-auto",
@@ -96,7 +96,7 @@ exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
     duration={200}
     easing="ease"
     height={0}
-    style={Object {}}
+    style={{}}
   >
     <div
       className="nodeChildren"
@@ -107,12 +107,12 @@ exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
         generation={3}
         key="Bchild1-3-undefined"
         node={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "ZgrandChild11",
               },
-              Object {
+              {
                 "label": "AgrandChild12",
               },
             ],
@@ -125,7 +125,7 @@ exports[`LegacyTreeNodeComponent does not render children by default 1`] = `
         generation={3}
         key="2child2-3-undefined"
         node={
-          Object {
+          {
             "label": "2child2",
           }
         }
@@ -149,7 +149,7 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
     className="treeNodeHeader "
     data-test="Tree/TreeNode/Header:label"
     style={
-      Object {
+      {
         "paddingLeft": 23,
       }
     }
@@ -160,7 +160,7 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src={Object {}}
+      src={{}}
       tabIndex={0}
     />
     <span
@@ -177,10 +177,10 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
         ariaLabel="More options"
         className="treeMenuEllipsis"
         menuIconProps={
-          Object {
+          {
             "iconName": "More",
-            "styles": Object {
-              "root": Object {
+            "styles": {
+              "root": {
                 "fontSize": "18px",
                 "fontWeight": "bold",
               },
@@ -188,13 +188,13 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
           }
         }
         menuProps={
-          Object {
+          {
             "contextualMenuItemAs": [Function],
             "coverTarget": true,
             "directionalHint": 3,
             "isBeakVisible": false,
-            "items": Array [
-              Object {
+            "items": [
+              {
                 "className": undefined,
                 "disabled": true,
                 "key": "menuLabel",
@@ -209,8 +209,8 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
         }
         name="More"
         styles={
-          Object {
-            "rootFocused": Object {
+          {
+            "rootFocused": {
               "outline": "1px dashed undefined",
             },
           }
@@ -231,7 +231,7 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
-      Object {
+      {
         "animating": "rah-animating",
         "animatingDown": "rah-animating--down",
         "animatingToHeightAuto": "rah-animating--to-height-auto",
@@ -249,7 +249,7 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
     duration={200}
     easing="ease"
     height="auto"
-    style={Object {}}
+    style={{}}
   >
     <div
       className="nodeChildren"
@@ -260,7 +260,7 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
         generation={13}
         key="2child2-13-undefined"
         node={
-          Object {
+          {
             "label": "2child2",
           }
         }
@@ -270,12 +270,12 @@ exports[`LegacyTreeNodeComponent renders a simple node (sorted children, expande
         generation={13}
         key="Bchild1-13-undefined"
         node={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "ZgrandChild11",
               },
-              Object {
+              {
                 "label": "AgrandChild12",
               },
             ],
@@ -301,7 +301,7 @@ exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
     className="treeNodeHeader "
     data-test="Tree/TreeNode/Header:label"
     style={
-      Object {
+      {
         "paddingLeft": 9,
       }
     }
@@ -312,7 +312,7 @@ exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src={Object {}}
+      src={{}}
       tabIndex={0}
     />
     <span
@@ -334,7 +334,7 @@ exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
-      Object {
+      {
         "animating": "rah-animating",
         "animatingDown": "rah-animating--down",
         "animatingToHeightAuto": "rah-animating--to-height-auto",
@@ -352,7 +352,7 @@ exports[`LegacyTreeNodeComponent renders loading icon 1`] = `
     duration={200}
     easing="ease"
     height="auto"
-    style={Object {}}
+    style={{}}
   >
     <div
       className="nodeChildren"
@@ -376,7 +376,7 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
     className="treeNodeHeader "
     data-test="Tree/TreeNode/Header:label"
     style={
-      Object {
+      {
         "paddingLeft": 23,
       }
     }
@@ -387,7 +387,7 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src={Object {}}
+      src={{}}
       tabIndex={0}
     />
     <span
@@ -404,10 +404,10 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
         ariaLabel="More options"
         className="treeMenuEllipsis"
         menuIconProps={
-          Object {
+          {
             "iconName": "More",
-            "styles": Object {
-              "root": Object {
+            "styles": {
+              "root": {
                 "fontSize": "18px",
                 "fontWeight": "bold",
               },
@@ -415,20 +415,20 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
           }
         }
         menuProps={
-          Object {
+          {
             "contextualMenuItemAs": [Function],
             "coverTarget": true,
             "directionalHint": 3,
             "isBeakVisible": false,
-            "items": Array [],
+            "items": [],
             "onMenuDismissed": [Function],
             "onMenuOpened": [Function],
           }
         }
         name="More"
         styles={
-          Object {
-            "rootFocused": Object {
+          {
+            "rootFocused": {
               "outline": "1px dashed undefined",
             },
           }
@@ -449,7 +449,7 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
-      Object {
+      {
         "animating": "rah-animating",
         "animatingDown": "rah-animating--down",
         "animatingToHeightAuto": "rah-animating--to-height-auto",
@@ -467,7 +467,7 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
     duration={200}
     easing="ease"
     height="auto"
-    style={Object {}}
+    style={{}}
   >
     <div
       className="nodeChildren"
@@ -478,12 +478,12 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
         generation={13}
         key="bchild-13-undefined"
         node={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "ZgrandChild11",
               },
-              Object {
+              {
                 "label": "AgrandChild12",
               },
             ],
@@ -496,12 +496,12 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
         generation={13}
         key="dchild-13-undefined"
         node={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "ZgrandChild11",
               },
-              Object {
+              {
                 "label": "AgrandChild12",
               },
             ],
@@ -514,7 +514,7 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
         generation={13}
         key="aChild-13-undefined"
         node={
-          Object {
+          {
             "label": "aChild",
           }
         }
@@ -524,7 +524,7 @@ exports[`LegacyTreeNodeComponent renders sorted children, expanded, leaves and p
         generation={13}
         key="cchild-13-undefined"
         node={
-          Object {
+          {
             "label": "cchild",
           }
         }
@@ -547,7 +547,7 @@ exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
     className="treeNodeHeader "
     data-test="Tree/TreeNode/Header:label"
     style={
-      Object {
+      {
         "paddingLeft": 9,
       }
     }
@@ -558,7 +558,7 @@ exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
       className="expandCollapseIcon"
       onKeyPress={[Function]}
       role="button"
-      src={Object {}}
+      src={{}}
       tabIndex={0}
     />
     <span
@@ -580,7 +580,7 @@ exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
   <AnimateHeight
     animateOpacity={false}
     animationStateClasses={
-      Object {
+      {
         "animating": "rah-animating",
         "animatingDown": "rah-animating--down",
         "animatingToHeightAuto": "rah-animating--to-height-auto",
@@ -598,7 +598,7 @@ exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
     duration={200}
     easing="ease"
     height="auto"
-    style={Object {}}
+    style={{}}
   >
     <div
       className="nodeChildren"
@@ -609,12 +609,12 @@ exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
         generation={3}
         key="Bchild1-3-undefined"
         node={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "ZgrandChild11",
               },
-              Object {
+              {
                 "label": "AgrandChild12",
               },
             ],
@@ -627,7 +627,7 @@ exports[`LegacyTreeNodeComponent renders unsorted children by default 1`] = `
         generation={3}
         key="2child2-3-undefined"
         node={
-          Object {
+          {
             "label": "2child2",
           }
         }
