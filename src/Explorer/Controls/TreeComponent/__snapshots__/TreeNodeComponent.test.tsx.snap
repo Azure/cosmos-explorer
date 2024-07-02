@@ -1560,14 +1560,14 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
               <MenuList>
                 <MenuItem
                   data-test="TreeNode/ContextMenuItem:enabledItem"
-                  onClick={[MockFunction enabledItemClick]}
+                  onClick={[Function]}
                 >
                   enabledItem
                 </MenuItem>
                 <MenuItem
                   data-test="TreeNode/ContextMenuItem:disabledItem"
                   disabled={true}
-                  onClick={[MockFunction disabledItemClick]}
+                  onClick={[Function]}
                 >
                   disabledItem
                 </MenuItem>
@@ -1604,7 +1604,7 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
       <MenuItem
         data-test="TreeNode/ContextMenuItem:enabledItem"
         key="enabledItem"
-        onClick={[MockFunction enabledItemClick]}
+        onClick={[Function]}
       >
         enabledItem
       </MenuItem>
@@ -1612,7 +1612,7 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
         data-test="TreeNode/ContextMenuItem:disabledItem"
         disabled={true}
         key="disabledItem"
-        onClick={[MockFunction disabledItemClick]}
+        onClick={[Function]}
       >
         disabledItem
       </MenuItem>
