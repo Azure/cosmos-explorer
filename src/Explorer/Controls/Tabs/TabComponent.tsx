@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pivot, PivotItem } from "@fluentui/react/lib/Pivot";
+import { Pivot, PivotItem } from "@fluentui/react";
 import "./TabComponent.less";
 
 export interface TabContent {
