@@ -7,11 +7,13 @@ import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCop
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { acquireTokenWithMsal, getMsalInstance } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
+import * as msal from "@azure/msal-browser";
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
@@ -30,14 +32,13 @@ import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { isAccountNewerThanThresholdInMs, userContext } from "../UserContext";
+import { isAccountNewerThanThresholdInMs, updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
 import "./ComponentRegisterer";
@@ -66,6 +67,8 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
+import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -251,8 +254,44 @@ export default class Explorer {
     };
     useDialog.getState().openDialog(addSynapseLinkDialogProps);
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
+  }
 
-    // TODO: return result
+  public async openLoginForEntraIDPopUp(): Promise<void> {
+    if (userContext.databaseAccount.properties?.documentEndpoint) {
+      const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
+        /\/$/,
+        "/.default",
+      );
+      const msalInstance = await getMsalInstance();
+
+      try {
+        const response = await msalInstance.loginPopup({
+          redirectUri: configContext.msalRedirectURI,
+          scopes: [],
+        });
+        localStorage.setItem("cachedTenantId", response.tenantId);
+        const cachedAccount = msalInstance.getAllAccounts()?.[0];
+        msalInstance.setActiveAccount(cachedAccount);
+        const aadToken = await acquireTokenWithMsal(msalInstance, {
+          forceRefresh: true,
+          scopes: [hrefEndpoint],
+          authority: `${configContext.AAD_ENDPOINT}${localStorage.getItem("cachedTenantId")}`,
+        });
+        updateUserContext({ aadToken: aadToken });
+        useDataPlaneRbac.setState({ aadTokenUpdated: true });
+      } catch (error) {
+        if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
+          logConsoleError(
+            "We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and try again",
+          );
+        } else {
+          const errorJson = JSON.stringify(error);
+          logConsoleError(
+            `Failed to perform authorization for this account, due to the following error: \n${errorJson}`,
+          );
+        }
+      }
+    }
   }
 
   public openNPSSurveyDialog(): void {
