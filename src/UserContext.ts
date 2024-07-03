@@ -73,6 +73,7 @@ export interface UserContext {
   readonly fabricContext?: FabricContext;
   readonly authType?: AuthType;
   readonly masterKey?: string;
+  readonly listKeysFetchInProgress?: boolean;
   readonly subscriptionId?: string;
   readonly resourceGroup?: string;
   readonly databaseAccount?: DatabaseAccount;
