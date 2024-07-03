@@ -417,11 +417,24 @@ function configureEmulator(): Explorer {
   return explorer;
 }
 
+ async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+  try {
+    updateUserContext({ listKeysFetchInProgress: true });
+    const keys = await listKeys(subscriptionId, resourceGroup, account);
+
+    updateUserContext({ masterKey: keys.primaryMasterKey, listKeysFetchInProgress: false });
+  } catch (error) {
+    updateUserContext({ listKeysFetchInProgress: false });
+    console.error("Error during fetching keys or updating user context:", error);
+  }
+}
+
 async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
   let explorer: Explorer;
+
   return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
@@ -477,7 +490,7 @@ async function configurePortal(): Promise<Explorer> {
             setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
 
-          const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+          const { databaseAccount: account , subscriptionId, resourceGroup} = userContext;
 
           if (userContext.apiType === "SQL") {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
@@ -489,16 +502,28 @@ async function configurePortal(): Promise<Explorer> {
               } else {
                 dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
+              if(!dataPlaneRbacEnabled) {
+                 (async () => {
+              await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            })();
+              }
 
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             } else {
               const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
 
+              if(!dataPlaneRbacEnabled) {
+                (async () => {
+             await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+           })();
+             }
+
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
-          } else {
+          } 
+          else {
             (async () => {
               await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
             })();
@@ -529,18 +554,6 @@ async function configurePortal(): Promise<Explorer> {
   });
 }
 
-async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
-  try {
-    updateUserContext({ listKeysFetchInProgress: true });
-    const keys = await listKeys(subscriptionId, resourceGroup, account);
-
-    updateUserContext({ masterKey: keys.primaryMasterKey, listKeysFetchInProgress: false });
-  } catch (error) {
-    updateUserContext({ listKeysFetchInProgress: false });
-    console.error("Error during fetching keys or updating user context:", error);
-  }
-}
-
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
   // Only allow forwarding messages from the same origin
   return messageOrigin === window.document.location.origin && message.type === MessageTypes.TelemetryInfo;
@@ -557,6 +570,11 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
 
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
+
+  if(userContext.apiType !== "SQL") {
+    const masterKey = inputs.masterKey || "";
+    updateUserContext({masterKey});
+  }
 
   updateConfigContext({
     BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,

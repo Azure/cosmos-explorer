@@ -3,12 +3,10 @@ import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizatio
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { DatabaseAccountListKeysResult } from "Utils/arm/generatedClients/cosmos/types";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
@@ -81,12 +79,6 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     }
   }
 
-  let retryAttempts: number = 50;
-  while (retryAttempts > 0 && userContext.listKeysFetchInProgress) {
-    retryAttempts--;
-    await sleep(100);
-  }
-
   if (userContext.masterKey) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
@@ -97,23 +89,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       userContext.masterKey,
     );
     return decodeURIComponent(headers.authorization);
-  } else if (userContext.dataPlaneRbacEnabled == false) {
-    const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-    const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-
-    if (keys.primaryMasterKey) {
-      updateUserContext({ masterKey: keys.primaryMasterKey });
-      // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-      await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
-        verb,
-        resourceId,
-        resourceType,
-        headers,
-        keys.primaryMasterKey,
-      );
-      return decodeURIComponent(headers.authorization);
-    }
-  }
+  } 
 
   if (userContext.resourceToken) {
     return userContext.resourceToken;
@@ -123,10 +99,6 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   headers[HttpHeaders.msDate] = result.XDate;
   return decodeURIComponent(result.PrimaryReadWriteToken);
 };
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
@@ -197,9 +169,10 @@ export function client(): Cosmos.CosmosClient {
     // The header will be ignored if priority based execution is disabled on the account.
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
-
+    
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
