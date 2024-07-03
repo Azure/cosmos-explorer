@@ -31,18 +31,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     }
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
     const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
-    console.log(`Returning Auth token`);
     return authorizationToken;
   }
 
-  if ((userContext.dataPlaneRbacEnabled) && userContext.authorizationToken) {
-    console.log(` Getting Portal Auth token `)
-    const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-    const authorizationToken = `${AUTH_PREFIX}${userContext.authorizationToken}`;
-    console.log(`Returning Portal Auth token`);
-    return authorizationToken;
-  }
-  
   if (configContext.platform === Platform.Emulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
@@ -90,6 +81,12 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     }
   }
 
+  let retryAttempts: number = 50;
+  while (retryAttempts > 0 && userContext.listKeysFetchInProgress) {
+    retryAttempts--;
+    await sleep(100);
+  }
+
   if (userContext.masterKey) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
@@ -126,6 +123,10 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   headers[HttpHeaders.msDate] = result.XDate;
   return decodeURIComponent(result.PrimaryReadWriteToken);
 };
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
