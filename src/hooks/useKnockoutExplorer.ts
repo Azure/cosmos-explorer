@@ -499,10 +499,9 @@ async function configurePortal(): Promise<Explorer> {
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
           } else {
-            const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-            updateUserContext({
-              masterKey: keys.primaryMasterKey,
-            });
+            (async () => {
+              await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            })();
           }
 
           if (openAction) {
@@ -528,6 +527,18 @@ async function configurePortal(): Promise<Explorer> {
 
     sendReadyMessage();
   });
+}
+
+async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+  try {
+    updateUserContext({ listKeysFetchInProgress: true });
+    const keys = await listKeys(subscriptionId, resourceGroup, account);
+
+    updateUserContext({ masterKey: keys.primaryMasterKey, listKeysFetchInProgress: false });
+  } catch (error) {
+    updateUserContext({ listKeysFetchInProgress: false });
+    console.error("Error during fetching keys or updating user context:", error);
+  }
 }
 
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
@@ -567,6 +578,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
     feedbackPolicies: inputs.feedbackPolicies,
+    listKeysFetchInProgress: false,
   });
 
   if (inputs.isPostgresAccount) {
