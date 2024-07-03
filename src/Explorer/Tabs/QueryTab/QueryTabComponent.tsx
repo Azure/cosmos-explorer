@@ -684,10 +684,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
               primaryIndex={0}
               primaryMinSize={20}
               secondaryMinSize={20}
-
               // Percentage is a bit better when the splitter flips from vertical to horizontal.
               percentage={true}
-
               // NOTE: It is intentional that this looks reversed!
               // The 'vertical' property refers to the stacking of the panes so is the opposite of the orientation of the splitter itself
               // (vertically stacked => horizontal splitter)
