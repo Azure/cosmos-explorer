@@ -89,7 +89,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       userContext.masterKey,
     );
     return decodeURIComponent(headers.authorization);
-  } 
+  }
 
   if (userContext.resourceToken) {
     return userContext.resourceToken;
@@ -169,7 +169,7 @@ export function client(): Cosmos.CosmosClient {
     // The header will be ignored if priority based execution is disabled on the account.
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
-    
+
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,

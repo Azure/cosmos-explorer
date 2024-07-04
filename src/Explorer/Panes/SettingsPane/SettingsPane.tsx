@@ -169,14 +169,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         dataPlaneRbacEnabled: false,
       });
       const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-    const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+      const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
 
-    if (keys.primaryMasterKey) {
-      updateUserContext({ masterKey: keys.primaryMasterKey });
-      
-      useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+      if (keys.primaryMasterKey) {
+        updateUserContext({ masterKey: keys.primaryMasterKey });
+
+        useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+      }
     }
-  }
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);

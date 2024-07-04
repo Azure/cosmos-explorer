@@ -417,15 +417,20 @@ function configureEmulator(): Explorer {
   return explorer;
 }
 
- async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
   try {
-    updateUserContext({ listKeysFetchInProgress: true });
+    console.log("Starting to fetch keys...");
     const keys = await listKeys(subscriptionId, resourceGroup, account);
+    console.log("Keys fetched:", keys);
 
-    updateUserContext({ masterKey: keys.primaryMasterKey, listKeysFetchInProgress: false });
+    updateUserContext({
+      masterKey: keys.primaryMasterKey,
+    });
+
+    console.log("User context updated with master key.");
   } catch (error) {
-    updateUserContext({ listKeysFetchInProgress: false });
     console.error("Error during fetching keys or updating user context:", error);
+    throw error;
   }
 }
 
@@ -483,14 +488,8 @@ async function configurePortal(): Promise<Explorer> {
           }
 
           updateContextsFromPortalMessage(inputs);
-          explorer = new Explorer();
-          resolve(explorer);
 
-          if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
-            setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
-          }
-
-          const { databaseAccount: account , subscriptionId, resourceGroup} = userContext;
+          const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
           if (userContext.apiType === "SQL") {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
@@ -502,10 +501,8 @@ async function configurePortal(): Promise<Explorer> {
               } else {
                 dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
-              if(!dataPlaneRbacEnabled) {
-                 (async () => {
-              await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-            })();
+              if (!dataPlaneRbacEnabled) {
+                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
               }
 
               updateUserContext({ dataPlaneRbacEnabled });
@@ -513,20 +510,21 @@ async function configurePortal(): Promise<Explorer> {
             } else {
               const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
 
-              if(!dataPlaneRbacEnabled) {
-                (async () => {
-             await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-           })();
-             }
+              if (!dataPlaneRbacEnabled) {
+                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+              }
 
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
-          } 
-          else {
-            (async () => {
-              await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-            })();
+          } else {
+            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+          }
+
+          explorer = new Explorer();
+          resolve(explorer);
+          if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+            setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
 
           if (openAction) {
@@ -571,9 +569,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
 
-  if(userContext.apiType !== "SQL") {
+  if (userContext.apiType !== "SQL") {
     const masterKey = inputs.masterKey || "";
-    updateUserContext({masterKey});
+    updateUserContext({ masterKey });
   }
 
   updateConfigContext({
