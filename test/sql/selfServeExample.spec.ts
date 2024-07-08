@@ -3,7 +3,7 @@ import { DataExplorer, TestAccount } from "../fx";
 
 test("Self Serve", async ({ page }) => {
   const explorer = await DataExplorer.open(page, TestAccount.SQL, "selfServe.html");
-
+  await page.waitForTimeout(5000);
   const loggingToggle = explorer.frame.locator("#enableLogging-toggle-input");
   await expect(loggingToggle).toBeEnabled();
 
