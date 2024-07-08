@@ -197,6 +197,12 @@ export class Queries {
   public static readonly DefaultMaxWaitTimeInSeconds = 30;
 }
 
+export class RBACOptions {
+  public static setAutomaticRBACOption: string = "Automatic";
+  public static setTrueRBACOption: string = "True";
+  public static setFalseRBACOption: string = "False";
+}
+
 export class SavedQueries {
   public static readonly CollectionName: string = "___Query";
   public static readonly DatabaseName: string = "___Cosmos";
