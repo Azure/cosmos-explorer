@@ -5,7 +5,7 @@ exports[`Resource tree for schema should render 1`] = `
   className="treeComponent dataResourceTree"
   role="tree"
 >
-  <TreeNodeComponent
+  <LegacyTreeNodeComponent
     generation={0}
     node={
       Object {

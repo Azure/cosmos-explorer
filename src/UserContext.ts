@@ -69,7 +69,7 @@ export type AdminFeedbackPolicySettings = {
   [key in AdminFeedbackControlPolicy]: boolean;
 };
 
-interface UserContext {
+export interface UserContext {
   readonly fabricContext?: FabricContext;
   readonly authType?: AuthType;
   readonly masterKey?: string;
@@ -101,6 +101,8 @@ interface UserContext {
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
   readonly feedbackPolicies?: AdminFeedbackPolicySettings;
+  readonly dataPlaneRbacEnabled?: boolean;
+  readonly hasDataPlaneRbacSettingChanged?: boolean;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";

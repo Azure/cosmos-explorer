@@ -88,6 +88,12 @@ export class CapabilityNames {
   public static readonly EnableStorageAnalytics: string = "EnableStorageAnalytics";
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
+  public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
+}
+
+export enum CapacityMode {
+  Provisioned = "Provisioned",
+  Serverless = "Serverless",
 }
 
 // flight names returned from the portal are always lowercase
@@ -127,6 +133,7 @@ export enum MongoBackendEndpointType {
 export class BackendApi {
   public static readonly GenerateToken: string = "GenerateToken";
   public static readonly PortalSettings: string = "PortalSettings";
+  public static readonly AccountRestrictions: string = "AccountRestrictions";
 }
 
 export class PortalBackendEndpoints {
@@ -190,6 +197,12 @@ export class Queries {
   public static readonly DefaultMaxWaitTimeInSeconds = 30;
 }
 
+export class RBACOptions {
+  public static setAutomaticRBACOption: string = "Automatic";
+  public static setTrueRBACOption: string = "True";
+  public static setFalseRBACOption: string = "False";
+}
+
 export class SavedQueries {
   public static readonly CollectionName: string = "___Query";
   public static readonly DatabaseName: string = "___Cosmos";
@@ -249,6 +262,7 @@ export class HttpHeaders {
   public static partitionKey: string = "x-ms-documentdb-partitionkey";
   public static migrateOfferToManualThroughput: string = "x-ms-cosmos-migrate-offer-to-manual-throughput";
   public static migrateOfferToAutopilot: string = "x-ms-cosmos-migrate-offer-to-autopilot";
+  public static xAPIKey: string = "X-API-Key";
 }
 
 export class ContentType {

@@ -1,3 +1,5 @@
+import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import { shouldShowScriptNodes } from "Explorer/Tree/treeNodeUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import * as ko from "knockout";
 import * as React from "react";
@@ -23,7 +25,7 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { useTabs } from "../../hooks/useTabs";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { useDialog } from "../Controls/Dialog";
-import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
+import { LegacyTreeComponent, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
@@ -33,7 +35,6 @@ import { useNotebook } from "../Notebook/useNotebook";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
-import { Platform, configContext } from "./../../ConfigContext";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
@@ -95,7 +96,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   public renderComponent(): JSX.Element {
     const dataRootNode = this.buildDataTree();
-    return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
+    return <LegacyTreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
   }
 
   public async initialize(): Promise<void[]> {
@@ -157,60 +158,62 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
   }
 
-  private buildDataTree(): TreeNode {
-    const databaseTreeNodes: TreeNode[] = useDatabases.getState().databases.map((database: ViewModels.Database) => {
-      const databaseNode: TreeNode = {
-        label: database.id(),
-        iconSrc: CosmosDBIcon,
-        isExpanded: false,
-        className: "databaseHeader",
-        children: [],
-        isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
-        onClick: async (isExpanded) => {
-          // Rewritten version of expandCollapseDatabase():
-          if (isExpanded) {
-            database.collapseDatabase();
-          } else {
-            if (databaseNode.children?.length === 0) {
-              databaseNode.isLoading = true;
+  private buildDataTree(): LegacyTreeNode {
+    const databaseTreeNodes: LegacyTreeNode[] = useDatabases
+      .getState()
+      .databases.map((database: ViewModels.Database) => {
+        const databaseNode: LegacyTreeNode = {
+          label: database.id(),
+          iconSrc: CosmosDBIcon,
+          isExpanded: false,
+          className: "databaseHeader",
+          children: [],
+          isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
+          contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
+          onClick: async (isExpanded) => {
+            // Rewritten version of expandCollapseDatabase():
+            if (isExpanded) {
+              database.collapseDatabase();
+            } else {
+              if (databaseNode.children?.length === 0) {
+                databaseNode.isLoading = true;
+              }
+              await database.expandDatabase();
             }
-            await database.expandDatabase();
-          }
-          databaseNode.isLoading = false;
-          useSelectedNode.getState().setSelectedNode(database);
-          useCommandBar.getState().setContextButtons([]);
-          useTabs.getState().refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
-        },
-        onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
-      };
+            databaseNode.isLoading = false;
+            useSelectedNode.getState().setSelectedNode(database);
+            useCommandBar.getState().setContextButtons([]);
+            useTabs.getState().refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
+          },
+          onContextMenuOpen: () => useSelectedNode.getState().setSelectedNode(database),
+        };
 
-      if (database.isDatabaseShared()) {
-        databaseNode.children.push({
-          label: "Scale",
-          isSelected: () =>
-            useSelectedNode
-              .getState()
-              .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettings]),
-          onClick: database.onSettingsClick.bind(database),
+        if (database.isDatabaseShared()) {
+          databaseNode.children.push({
+            label: "Scale",
+            isSelected: () =>
+              useSelectedNode
+                .getState()
+                .isDataNodeSelected(database.id(), undefined, [ViewModels.CollectionTabKind.DatabaseSettings]),
+            onClick: database.onSettingsClick.bind(database),
+          });
+        }
+
+        // Find collections
+        database
+          .collections()
+          .forEach((collection: ViewModels.Collection) =>
+            databaseNode.children.push(this.buildCollectionNode(database, collection)),
+          );
+
+        database.collections.subscribe((collections: ViewModels.Collection[]) => {
+          collections.forEach((collection: ViewModels.Collection) =>
+            databaseNode.children.push(this.buildCollectionNode(database, collection)),
+          );
         });
-      }
 
-      // Find collections
-      database
-        .collections()
-        .forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(this.buildCollectionNode(database, collection)),
-        );
-
-      database.collections.subscribe((collections: ViewModels.Collection[]) => {
-        collections.forEach((collection: ViewModels.Collection) =>
-          databaseNode.children.push(this.buildCollectionNode(database, collection)),
-        );
+        return databaseNode;
       });
-
-      return databaseNode;
-    });
 
     return {
       label: undefined,
@@ -219,18 +222,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  /**
-   * This is a rewrite of Collection.ts : showScriptsMenu, showStoredProcedures, showTriggers, showUserDefinedFunctions
-   * @param container
-   */
-  private static showScriptNodes(container: Explorer): boolean {
-    return (
-      configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
-    );
-  }
-
-  private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): TreeNode {
-    const children: TreeNode[] = [];
+  private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): LegacyTreeNode {
+    const children: LegacyTreeNode[] = [];
     children.push({
       label: getItemName(),
       onClick: () => {
@@ -274,12 +267,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     }
 
-    const schemaNode: TreeNode = this.buildSchemaNode(collection);
+    const schemaNode: LegacyTreeNode = this.buildSchemaNode(collection);
     if (schemaNode) {
       children.push(schemaNode);
     }
 
-    if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+    if (shouldShowScriptNodes()) {
       children.push(this.buildStoredProcedureNode(collection));
       children.push(this.buildUserDefinedFunctionsNode(collection));
       children.push(this.buildTriggerNode(collection));
@@ -321,7 +314,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           );
       },
       onExpanded: () => {
-        if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+        if (shouldShowScriptNodes()) {
           collection.loadStoredProcedures();
           collection.loadUserDefinedFunctions();
           collection.loadTriggers();
@@ -332,7 +325,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private buildStoredProcedureNode(collection: ViewModels.Collection): TreeNode {
+  private buildStoredProcedureNode(collection: ViewModels.Collection): LegacyTreeNode {
     return {
       label: "Stored Procedures",
       children: collection.storedProcedures().map((sp: StoredProcedure) => ({
@@ -358,7 +351,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): TreeNode {
+  private buildUserDefinedFunctionsNode(collection: ViewModels.Collection): LegacyTreeNode {
     return {
       label: "User Defined Functions",
       children: collection.userDefinedFunctions().map((udf: UserDefinedFunction) => ({
@@ -387,7 +380,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private buildTriggerNode(collection: ViewModels.Collection): TreeNode {
+  private buildTriggerNode(collection: ViewModels.Collection): LegacyTreeNode {
     return {
       label: "Triggers",
       children: collection.triggers().map((trigger: Trigger) => ({
@@ -411,7 +404,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  public buildSchemaNode(collection: ViewModels.Collection): TreeNode {
+  public buildSchemaNode(collection: ViewModels.Collection): LegacyTreeNode {
     if (collection.analyticalStorageTtl() == undefined) {
       return undefined;
     }
@@ -430,7 +423,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  private getSchemaNodes(fields: DataModels.IDataField[]): TreeNode[] {
+  private getSchemaNodes(fields: DataModels.IDataField[]): LegacyTreeNode[] {
     const schema: any = {};
 
     //unflatten
@@ -461,8 +454,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     });
 
-    const traverse = (obj: any): TreeNode[] => {
-      const children: TreeNode[] = [];
+    const traverse = (obj: any): LegacyTreeNode[] => {
+      const children: LegacyTreeNode[] = [];
 
       if (obj !== null && !Array.isArray(obj) && typeof obj === "object") {
         Object.entries(obj).forEach(([key, value]) => {
@@ -483,7 +476,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     onFileClick: (item: NotebookContentItem) => void,
     createDirectoryContextMenu: boolean,
     createFileContextMenu: boolean,
-  ): TreeNode[] {
+  ): LegacyTreeNode[] {
     if (!item || !item.children) {
       return [];
     } else {
@@ -502,7 +495,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     item: NotebookContentItem,
     onFileClick: (item: NotebookContentItem) => void,
     createFileContextMenu: boolean,
-  ): TreeNode {
+  ): LegacyTreeNode {
     return {
       label: item.name,
       iconSrc: NotebookUtil.isNotebookFile(item.path) ? NotebookIcon : FileIcon,
@@ -650,7 +643,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     onFileClick: (item: NotebookContentItem) => void,
     createDirectoryContextMenu: boolean,
     createFileContextMenu: boolean,
-  ): TreeNode {
+  ): LegacyTreeNode {
     return {
       label: item.name,
       iconSrc: undefined,

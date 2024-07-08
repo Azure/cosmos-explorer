@@ -1,0 +1,2074 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createDatabaseTreeNodes generates the correct tree structure for the Cassandra API, serverless, on Hosted 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Table",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Rows",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Table",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "standardCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Table",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Rows",
+            "onClick": [Function],
+          },
+          Object {
+            "isSelected": [Function],
+            "label": "Conflicts",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Table",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "conflictsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Table",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Keyspace",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "standardDb",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "id": "",
+        "isSelected": [Function],
+        "label": "Scale",
+        "onClick": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Table",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "sampleItems",
+            "isSelected": [Function],
+            "label": "Rows",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Table",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "sampleItemsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Table",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Keyspace",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "sharedDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Table",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Rows",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "street",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: true",
+                      },
+                    ],
+                    "label": "line2",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "number",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "zip",
+                  },
+                ],
+                "label": "address",
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "label": "string",
+                  },
+                  Object {
+                    "label": "HasNulls: false",
+                  },
+                ],
+                "label": "orderId",
+              },
+            ],
+            "label": "Schema",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Table",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "schemaCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "className": "loadMoreHeader",
+        "label": "load more",
+        "onClick": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Table",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Keyspace",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "giganticDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+]
+`;
+
+exports[`createDatabaseTreeNodes generates the correct tree structure for the Mongo API, with Notebooks and Phoenix features, on Emulator 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Shell",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Collection",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Documents",
+            "onClick": [Function],
+          },
+          Object {
+            "isSelected": [Function],
+            "label": "Schema (Preview)",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Shell",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Collection",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "standardCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Shell",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Collection",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Documents",
+            "onClick": [Function],
+          },
+          Object {
+            "isSelected": [Function],
+            "label": "Schema (Preview)",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "isSelected": [Function],
+            "label": "Conflicts",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Shell",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Collection",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "conflictsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Collection",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "standardDb",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "id": "",
+        "isSelected": [Function],
+        "label": "Scale",
+        "onClick": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Shell",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Collection",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "sampleItems",
+            "isSelected": [Function],
+            "label": "Documents",
+            "onClick": [Function],
+          },
+          Object {
+            "isSelected": [Function],
+            "label": "Schema (Preview)",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "sampleSettings",
+            "isSelected": [Function],
+            "label": "Settings",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Shell",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Collection",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "sampleItemsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Collection",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "sharedDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Shell",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Collection",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Documents",
+            "onClick": [Function],
+          },
+          Object {
+            "isSelected": [Function],
+            "label": "Schema (Preview)",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "street",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: true",
+                      },
+                    ],
+                    "label": "line2",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "number",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "zip",
+                  },
+                ],
+                "label": "address",
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "label": "string",
+                  },
+                  Object {
+                    "label": "HasNulls: false",
+                  },
+                ],
+                "label": "orderId",
+              },
+            ],
+            "label": "Schema",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Shell",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Collection",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "schemaCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "className": "loadMoreHeader",
+        "label": "load more",
+        "onClick": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Collection",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "giganticDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+]
+`;
+
+exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Fabric 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": undefined,
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "standardCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "children": undefined,
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "conflictsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "standardDb",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": undefined,
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "sampleItemsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "sharedDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": undefined,
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "schemaCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "className": "loadMoreHeader",
+        "label": "load more",
+        "onClick": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "giganticDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+]
+`;
+
+exports[`createDatabaseTreeNodes generates the correct tree structure for the SQL API, on Portal 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "contextMenu": Array [
+                  Object {
+                    "iconSrc": Object {},
+                    "label": "Delete Stored Procedure",
+                    "onClick": [Function],
+                  },
+                ],
+                "isSelected": [Function],
+                "label": "mockSproc3",
+                "onClick": [Function],
+              },
+            ],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "contextMenu": Array [
+                  Object {
+                    "iconSrc": Object {},
+                    "label": "Delete User Defined Function",
+                    "onClick": [Function],
+                  },
+                ],
+                "isSelected": [Function],
+                "label": "mockUdf3",
+                "onClick": [Function],
+              },
+            ],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "contextMenu": Array [
+                  Object {
+                    "iconSrc": Object {},
+                    "label": "Delete Trigger",
+                    "onClick": [Function],
+                  },
+                ],
+                "isSelected": [Function],
+                "label": "mockTrigger3",
+                "onClick": [Function],
+              },
+            ],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "standardCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+          Object {
+            "isSelected": [Function],
+            "label": "Conflicts",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "conflictsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "standardDb",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "id": "",
+        "isSelected": [Function],
+        "label": "Scale",
+        "onClick": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "sampleItems",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "sampleSettings",
+            "isSelected": [Function],
+            "label": "Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "sampleItemsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "sharedDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "street",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: true",
+                      },
+                    ],
+                    "label": "line2",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "number",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "zip",
+                  },
+                ],
+                "label": "address",
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "label": "string",
+                  },
+                  Object {
+                    "label": "HasNulls: false",
+                  },
+                ],
+                "label": "orderId",
+              },
+            ],
+            "label": "Schema",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "schemaCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "className": "loadMoreHeader",
+        "label": "load more",
+        "onClick": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "giganticDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+]
+`;
+
+exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expected tree 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "contextMenu": Array [
+                  Object {
+                    "iconSrc": Object {},
+                    "label": "Delete Stored Procedure",
+                    "onClick": [Function],
+                  },
+                ],
+                "isSelected": [Function],
+                "label": "mockSproc1",
+                "onClick": [Function],
+              },
+            ],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "contextMenu": Array [
+                  Object {
+                    "iconSrc": Object {},
+                    "label": "Delete User Defined Function",
+                    "onClick": [Function],
+                  },
+                ],
+                "isSelected": [Function],
+                "label": "mockUdf1",
+                "onClick": [Function],
+              },
+            ],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "contextMenu": Array [
+                  Object {
+                    "iconSrc": Object {},
+                    "label": "Delete Trigger",
+                    "onClick": [Function],
+                  },
+                ],
+                "isSelected": [Function],
+                "label": "mockTrigger1",
+                "onClick": [Function],
+              },
+            ],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "standardCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "conflictsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "standardDb",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "id": "",
+        "isSelected": [Function],
+        "label": "Scale",
+        "onClick": [Function],
+      },
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "sampleItems",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "sampleSettings",
+            "isSelected": [Function],
+            "label": "Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "sampleItemsCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "sharedDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Stored Procedure",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New UDF",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "New Trigger",
+                "onClick": [Function],
+              },
+              Object {
+                "iconSrc": Object {},
+                "label": "Delete Container",
+                "onClick": [Function],
+                "styleClass": "deleteCollectionMenuItem",
+              },
+            ],
+            "id": "",
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+          Object {
+            "id": "",
+            "isSelected": [Function],
+            "label": "Scale & Settings",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "street",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "string",
+                      },
+                      Object {
+                        "label": "HasNulls: true",
+                      },
+                    ],
+                    "label": "line2",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "label": "number",
+                      },
+                      Object {
+                        "label": "HasNulls: false",
+                      },
+                    ],
+                    "label": "zip",
+                  },
+                ],
+                "label": "address",
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "label": "string",
+                  },
+                  Object {
+                    "label": "HasNulls: false",
+                  },
+                ],
+                "label": "orderId",
+              },
+            ],
+            "label": "Schema",
+            "onClick": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Stored Procedures",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "User Defined Functions",
+            "onExpanded": [Function],
+          },
+          Object {
+            "children": Array [],
+            "label": "Triggers",
+            "onExpanded": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Stored Procedure",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New UDF",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "New Trigger",
+            "onClick": [Function],
+          },
+          Object {
+            "iconSrc": Object {},
+            "label": "Delete Container",
+            "onClick": [Function],
+            "styleClass": "deleteCollectionMenuItem",
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": true,
+        "isSelected": [Function],
+        "label": "schemaCollection",
+        "onClick": [Function],
+        "onCollapsed": [Function],
+        "onContextMenuOpen": [Function],
+        "onExpanded": [Function],
+      },
+      Object {
+        "className": "loadMoreHeader",
+        "label": "load more",
+        "onClick": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "contextMenu": Array [
+      Object {
+        "iconSrc": Object {},
+        "label": "New Container",
+        "onClick": [Function],
+      },
+      Object {
+        "iconSrc": Object {},
+        "label": "Delete Database",
+        "onClick": [Function],
+        "styleClass": "deleteDatabaseMenuItem",
+      },
+    ],
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "giganticDatabase",
+    "onCollapsed": [Function],
+    "onContextMenuOpen": [Function],
+    "onExpanded": [Function],
+  },
+]
+`;
+
+exports[`createResourceTokenTreeNodes creates the expected tree nodes 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "isSelected": [Function],
+        "label": "Items",
+        "onClick": [Function],
+      },
+    ],
+    "className": "collectionHeader",
+    "iconSrc": Object {},
+    "isExpanded": true,
+    "isSelected": [Function],
+    "label": "testCollection",
+    "onClick": [Function],
+  },
+]
+`;
+
+exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "contextMenu": Array [
+              Object {
+                "iconSrc": Object {},
+                "label": "New SQL Query",
+                "onClick": [Function],
+              },
+            ],
+            "isSelected": [Function],
+            "label": "Items",
+            "onClick": [Function],
+          },
+        ],
+        "className": "collectionHeader",
+        "contextMenu": Array [
+          Object {
+            "iconSrc": Object {},
+            "label": "New SQL Query",
+            "onClick": [Function],
+          },
+        ],
+        "iconSrc": Object {},
+        "isExpanded": false,
+        "isSelected": [Function],
+        "label": "testCollection",
+        "onClick": [Function],
+        "onContextMenuOpen": [Function],
+      },
+    ],
+    "className": "databaseHeader",
+    "iconSrc": Object {},
+    "isExpanded": false,
+    "label": "testDatabase",
+  },
+]
+`;

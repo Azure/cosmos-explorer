@@ -1,3 +1,4 @@
+import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
@@ -19,7 +20,6 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { Platform, configContext } from "./../ConfigContext";
-import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
 import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";

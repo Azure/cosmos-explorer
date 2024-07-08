@@ -31,7 +31,7 @@ export interface CommandButtonComponentProps {
   /**
    * Click handler for command button click
    */
-  onCommandClick: (e: React.SyntheticEvent | KeyboardEvent) => void;
+  onCommandClick?: (e: React.SyntheticEvent | KeyboardEvent) => void;
 
   /**
    * Label for the button

@@ -93,7 +93,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <KeyboardShortcutRoot>
-      <div className="flexContainer" aria-hidden="false">
+      <div className="flexContainer" aria-hidden="false" data-test="DataExplorerRoot">
         <div id="divExplorer" className="flexContainer hideOverflows">
           <div id="freeTierTeachingBubble"> </div>
           {/* Main Command Bar - Start */}

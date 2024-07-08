@@ -51,13 +51,18 @@ export const fetchEncryptedToken_ToBeDeprecated = async (connectionString: strin
 export const isAccountRestrictedForConnectionStringLogin = async (connectionString: string): Promise<boolean> => {
   const headers = new Headers();
   headers.append(HttpHeaders.connectionString, connectionString);
-  const url = configContext.BACKEND_ENDPOINT + "/api/guest/accountrestrictions/checkconnectionstringlogin";
+
+  const backendEndpoint: string = useNewPortalBackendEndpoint(BackendApi.PortalSettings)
+    ? configContext.PORTAL_BACKEND_ENDPOINT
+    : configContext.BACKEND_ENDPOINT;
+
+  const url = backendEndpoint + "/api/guest/accountrestrictions/checkconnectionstringlogin";
   const response = await fetch(url, { headers, method: "POST" });
   if (!response.ok) {
     throw response;
   }
 
-  return (await response.text()) === "True";
+  return (await response.text()).toLowerCase() === "true";
 };
 
 export const ConnectExplorer: React.FunctionComponent<Props> = ({
@@ -133,7 +138,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
             <div id="connectWithAad">
               <input className="filterbtnstyle" type="button" value="Sign In" onClick={login} />
               {enableConnectionStringLogin && (
-                <p className="switchConnectTypeText" onClick={showForm}>
+                <p className="switchConnectTypeText" data-test="Link:SwitchConnectionType" onClick={showForm}>
                   Connect to your account with connection string
                 </p>
               )}

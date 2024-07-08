@@ -53,6 +53,7 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
       query: subscriptionsQuery,
       options: {
         $allowPartialScopes: true,
+        $top: 150,
         ...(skipToken && {
           $skipToken: skipToken,
         }),

@@ -1,27 +1,31 @@
-import { jest } from "@jest/globals";
-import "expect-playwright";
-import { generateUniqueName, getAzureCLICredentialsToken } from "../utils/shared";
-import { waitForExplorer } from "../utils/waitForExplorer";
+import { expect, test } from "@playwright/test";
 
-jest.setTimeout(120000);
+import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
 
-test("Tables CRUD", async () => {
+test("Tables CRUD", async ({ page }) => {
   const tableId = generateUniqueName("table");
-  // We can't retrieve AZ CLI credentials from the browser so we get them here.
-  const token = await getAzureCLICredentialsToken();
-  page.setDefaultTimeout(50000);
 
-  await page.goto(`https://localhost:1234/testExplorer.html?accountName=portal-tables-runner&token=${token}`);
-  const explorer = await waitForExplorer();
+  const explorer = await DataExplorer.open(page, TestAccount.Tables);
 
-  await page.waitForSelector('text="Querying databases"', { state: "detached" });
-  await explorer.click('[data-test="New Table"]');
-  await explorer.fill('[aria-label="Table id, Example Table1"]', tableId);
-  await explorer.click("#sidePanelOkButton");
-  await explorer.click(`[data-test="TablesDB"]`);
-  await explorer.click(`[data-test="${tableId}"] [aria-label="More options"]`);
-  await explorer.click('button[role="menuitem"]:has-text("Delete Table")');
-  await explorer.fill('text=* Confirm by typing the table id >> input[type="text"]', tableId);
-  await explorer.click('[aria-label="OK"]');
-  await expect(explorer).not.toHaveText(".dataResourceTree", tableId);
+  await explorer.commandBarButton("New Table").click();
+  await explorer.whilePanelOpen("New Table", async (panel, okButton) => {
+    await panel.getByRole("textbox", { name: "Table id, Example Table1" }).fill(tableId);
+    await panel.getByLabel("Table Max RU/s").fill("1000");
+    await okButton.click();
+  });
+
+  const databaseNode = explorer.treeNode("DATA/TablesDB");
+  await databaseNode.expand();
+
+  const tableNode = explorer.treeNode(`DATA/TablesDB/${tableId}`);
+  await expect(tableNode.element).toBeAttached();
+
+  await tableNode.openContextMenu();
+  await tableNode.contextMenuItem("Delete Table").click();
+  await explorer.whilePanelOpen("Delete Table", async (panel, okButton) => {
+    await panel.getByRole("textbox", { name: "Confirm by typing the table id" }).fill(tableId);
+    await okButton.click();
+  });
+
+  await expect(tableNode.element).not.toBeAttached();
 });

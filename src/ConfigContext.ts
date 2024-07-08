@@ -42,6 +42,10 @@ export interface ConfigContext {
   ARM_API_VERSION: string;
   GRAPH_ENDPOINT: string;
   GRAPH_API_VERSION: string;
+  // This is the endpoint to get offering Ids to be used to fetch prices. Refer to this doc: https://learn.microsoft.com/en-us/rest/api/marketplacecatalog/dataplane/skus/list?view=rest-marketplacecatalog-dataplane-2023-05-01-preview&tabs=HTTP
+  CATALOG_ENDPOINT: string;
+  CATALOG_API_VERSION: string;
+  CATALOG_API_KEY: string;
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   BACKEND_ENDPOINT?: string;
@@ -93,6 +97,9 @@ let configContext: Readonly<ConfigContext> = {
   ARM_API_VERSION: "2016-06-01",
   GRAPH_ENDPOINT: "https://graph.microsoft.com",
   GRAPH_API_VERSION: "1.6",
+  CATALOG_ENDPOINT: "https://catalogapi.azure.com/",
+  CATALOG_API_VERSION: "2023-05-01-preview",
+  CATALOG_API_KEY: "",
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1189306
@@ -102,14 +109,14 @@ let configContext: Readonly<ConfigContext> = {
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   NEW_MONGO_APIS: [
-    "resourcelist",
-    "queryDocuments",
-    "createDocument",
-    "readDocument",
-    "updateDocument",
-    "deleteDocument",
-    "createCollectionWithProxy",
-    "legacyMongoShell",
+    // "resourcelist",
+    // "queryDocuments",
+    // "createDocument",
+    // "readDocument",
+    // "updateDocument",
+    // "deleteDocument",
+    // "createCollectionWithProxy",
+    // "legacyMongoShell",
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
@@ -192,6 +199,9 @@ if (process.env.NODE_ENV === "development") {
   updateConfigContext({
     PROXY_PATH: "/proxy",
     EMULATOR_ENDPOINT: "https://localhost:8081",
+    PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
+    MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
+    CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Mpac,
   });
 }
 

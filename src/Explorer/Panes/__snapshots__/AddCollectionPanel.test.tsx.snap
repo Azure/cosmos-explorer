@@ -3,6 +3,7 @@
 exports[`AddCollectionPanel should render Default properly 1`] = `
 <form
   className="panelFormWrapper"
+  id="panelContainer"
   onSubmit={[Function]}
 >
   <div
@@ -222,7 +223,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         </StyledTooltipHostBase>
       </Stack>
       <Text
-        aria-label="pkDescription"
         variant="small"
       />
       <input
@@ -433,7 +433,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
     >
       <Stack
         className="panelGroupSpacing"
-        id="collapsibleSectionContent"
+        id="collapsibleAdvancedSectionContent"
       >
         <Stack
           className="panelGroupSpacing"
@@ -466,7 +466,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             <Icon
               className="removeIcon"
               iconName="InfoSolid"
-              tabIndex={0}
             />
              To ensure compatibility with older SDKs, the created container will use a legacy partitioning scheme that supports partition key values of size only up to 101 bytes. If this is enabled, you will not be able to use hierarchical partition keys.
              

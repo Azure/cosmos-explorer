@@ -53,7 +53,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     if (this.isNew()) {
       this.editorState = ko.observable(ViewModels.ScriptEditorState.newInvalid);
     } else {
-      this.editorState = ko.observable(ViewModels.ScriptEditorState.exisitingNoEdits);
+      this.editorState = ko.observable(ViewModels.ScriptEditorState.existingNoEdits);
     }
 
     this.id = editable.observable<string>();
@@ -77,15 +77,15 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
             this.editorState(ViewModels.ScriptEditorState.newInvalid);
           }
           break;
-        case ViewModels.ScriptEditorState.exisitingDirtyInvalid:
-        case ViewModels.ScriptEditorState.exisitingDirtyValid:
+        case ViewModels.ScriptEditorState.existingDirtyInvalid:
+        case ViewModels.ScriptEditorState.existingDirtyValid:
           if (isValid) {
-            this.editorState(ViewModels.ScriptEditorState.exisitingDirtyValid);
+            this.editorState(ViewModels.ScriptEditorState.existingDirtyValid);
           } else {
-            this.editorState(ViewModels.ScriptEditorState.exisitingDirtyInvalid);
+            this.editorState(ViewModels.ScriptEditorState.existingDirtyInvalid);
           }
           break;
-        case ViewModels.ScriptEditorState.exisitingDirtyValid:
+        case ViewModels.ScriptEditorState.existingDirtyValid:
         default:
           break;
       }

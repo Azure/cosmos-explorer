@@ -114,7 +114,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           },
           startKey,
         );
-        this.props.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
+        this.props.editorState(ViewModels.ScriptEditorState.existingNoEdits);
         this.props.isExecuting(false);
       }
     } catch (createError) {

@@ -4,9 +4,9 @@ import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
 import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/databaseAccounts";
 
-const resourceGroup = process.env.RESOURCE_GROUP || "";
-const subscriptionId = process.env.SUBSCRIPTION_ID || "";
 const urlSearchParams = new URLSearchParams(window.location.search);
+const resourceGroup = urlSearchParams.get("resourceGroup") || process.env.RESOURCE_GROUP || "";
+const subscriptionId = urlSearchParams.get("subscriptionId") || process.env.SUBSCRIPTION_ID || "";
 const accountName = urlSearchParams.get("accountName") || "portal-sql-runner-west-us";
 const selfServeType = urlSearchParams.get("selfServeType") || "example";
 const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
@@ -22,6 +22,11 @@ const initTestExplorer = async (): Promise<void> => {
   });
   const databaseAccount = await get(subscriptionId, resourceGroup, accountName);
   const keys = await listKeys(subscriptionId, resourceGroup, accountName);
+
+  // Disable the quickstart carousel.
+  if (databaseAccount?.id) {
+    localStorage.setItem(databaseAccount.id, "true");
+  }
 
   const initTestExplorerContent = {
     inputs: {
@@ -65,6 +70,10 @@ const initTestExplorer = async (): Promise<void> => {
       // This simulates the same action that happens in the portal
       console.dir(event.data);
       if (event.data?.kind === "ready") {
+        if (!iframe.contentWindow || !iframe.contentDocument) {
+          throw new Error("iframe is not loaded");
+        }
+
         iframe.contentWindow.postMessage(
           {
             signature: "pcIframe",
@@ -78,6 +87,7 @@ const initTestExplorer = async (): Promise<void> => {
   );
   iframe.id = "explorerMenu";
   iframe.name = "explorer";
+  iframe.setAttribute("data-test", "DataExplorerFrame");
   iframe.classList.add("iframe");
   iframe.title = "explorer";
   iframe.src = iframeSrc;

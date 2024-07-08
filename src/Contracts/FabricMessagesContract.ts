@@ -1,4 +1,4 @@
-import { AuthorizationToken } from "./MessageTypes";
+import { AuthorizationToken } from "Contracts/FabricMessageTypes";
 
 // This is the version of these messages
 export const FABRIC_RPC_VERSION = "2";
