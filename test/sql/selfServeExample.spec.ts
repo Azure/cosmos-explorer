@@ -14,7 +14,7 @@ test("Self Serve", async ({ page }) => {
   await regionDropdown.click({ force: true });
   const firstOption = explorer.frame.getByRole("option").first();
   await firstOption.waitFor();
-  await firstOption.click();
+  await firstOption.click({ force: true });
 
   const currentRegionLabel = explorer.frame.getByLabel("Current Region");
   await currentRegionLabel.waitFor();
