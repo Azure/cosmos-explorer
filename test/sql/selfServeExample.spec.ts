@@ -7,7 +7,11 @@ test("Self Serve", async ({ page }) => {
   const loggingToggle = explorer.frame.locator("#enableLogging-toggle-input");
   await expect(loggingToggle).toBeEnabled();
 
-  explorer.frame.getByText("Select a region").selectOption({ index: 0 });
+  const regionDropdown = explorer.frame.getByText("Select a region");
+  await regionDropdown.click();
+  const firstOption = explorer.frame.getByRole("option").first();
+  await firstOption.waitFor();
+  await firstOption.click();
 
   const currentRegionLabel = explorer.frame.getByLabel("Current Region");
   await currentRegionLabel.waitFor();
