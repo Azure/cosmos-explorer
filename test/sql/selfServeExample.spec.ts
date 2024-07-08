@@ -9,7 +9,8 @@ test("Self Serve", async ({ page }) => {
 
   const regionDropdown = explorer.frame.getByText("Select a region");
   await regionDropdown.click();
-  const firstOption = explorer.frame.getByRole("option").first();
+  await page.waitForSelector("xpath=//button[@role='option'");
+  const firstOption = explorer.frame.locator("xpath=//button[@role='option'").first();
   await firstOption.waitFor();
   await firstOption.click();
 
