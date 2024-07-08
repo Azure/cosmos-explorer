@@ -162,11 +162,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     ) {
       updateUserContext({
         dataPlaneRbacEnabled: true,
+        hasDataPlaneRbacSettingChanged: true,
       });
       useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
     } else {
       updateUserContext({
         dataPlaneRbacEnabled: false,
+        hasDataPlaneRbacSettingChanged: true,
       });
       const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
       const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);

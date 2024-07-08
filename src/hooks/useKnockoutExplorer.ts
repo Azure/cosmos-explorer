@@ -419,14 +419,11 @@ function configureEmulator(): Explorer {
 
 async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
   try {
-    console.log("Starting to fetch keys...");
     const keys = await listKeys(subscriptionId, resourceGroup, account);
-    console.log("Keys fetched:", keys);
 
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
-
     console.log("User context updated with master key.");
   } catch (error) {
     console.error("Error during fetching keys or updating user context:", error);
@@ -439,7 +436,6 @@ async function configurePortal(): Promise<Explorer> {
     authType: AuthType.AAD,
   });
   let explorer: Explorer;
-
   return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
@@ -523,6 +519,7 @@ async function configurePortal(): Promise<Explorer> {
 
           explorer = new Explorer();
           resolve(explorer);
+
           if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
             setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
@@ -569,11 +566,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
 
-  if (userContext.apiType !== "SQL") {
-    const masterKey = inputs.masterKey || "";
-    updateUserContext({ masterKey });
-  }
-
   updateConfigContext({
     BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
@@ -594,7 +586,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     collectionCreationDefaults: inputs.defaultCollectionThroughput,
     isTryCosmosDBSubscription: inputs.isTryCosmosDBSubscription,
     feedbackPolicies: inputs.feedbackPolicies,
-    listKeysFetchInProgress: false,
   });
 
   if (inputs.isPostgresAccount) {

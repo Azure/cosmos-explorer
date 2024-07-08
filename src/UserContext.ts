@@ -73,7 +73,6 @@ export interface UserContext {
   readonly fabricContext?: FabricContext;
   readonly authType?: AuthType;
   readonly masterKey?: string;
-  readonly listKeysFetchInProgress?: boolean;
   readonly subscriptionId?: string;
   readonly resourceGroup?: string;
   readonly databaseAccount?: DatabaseAccount;
@@ -103,6 +102,7 @@ export interface UserContext {
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
   readonly feedbackPolicies?: AdminFeedbackPolicySettings;
   readonly dataPlaneRbacEnabled?: boolean;
+  readonly hasDataPlaneRbacSettingChanged?: boolean;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra" | "Postgres" | "VCoreMongo";
