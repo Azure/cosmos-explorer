@@ -29,7 +29,6 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     }
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
     const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
-    console.log(`Returning Auth token`);
     return authorizationToken;
   }
 

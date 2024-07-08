@@ -521,7 +521,9 @@ async function configurePortal(): Promise<Explorer> {
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
           } else {
-            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
+              await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            }
           }
 
           explorer = new Explorer();
