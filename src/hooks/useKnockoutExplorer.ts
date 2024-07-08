@@ -288,19 +288,26 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
           } else {
             dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
           }
+          if (!dataPlaneRbacEnabled) {
+            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+          }
 
           updateUserContext({ dataPlaneRbacEnabled });
         } else {
           const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+          if (!dataPlaneRbacEnabled) {
+            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+          }
 
           updateUserContext({ dataPlaneRbacEnabled });
           useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
         }
       } else {
-        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-        updateUserContext({
-          masterKey: keys.primaryMasterKey,
-        });
+        await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+      }
+    } else {
+      if (!account.properties.disableLocalAuth) {
+        await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
       }
     }
   } catch (e) {

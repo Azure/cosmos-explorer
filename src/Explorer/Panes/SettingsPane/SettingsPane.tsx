@@ -171,12 +171,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         hasDataPlaneRbacSettingChanged: true,
       });
       const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-      const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+      if (!userContext.features.enableAadDataPlane) {
+        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
 
-      if (keys.primaryMasterKey) {
-        updateUserContext({ masterKey: keys.primaryMasterKey });
+        if (keys.primaryMasterKey) {
+          updateUserContext({ masterKey: keys.primaryMasterKey });
 
-        useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+          useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+        }
       }
     }
 
