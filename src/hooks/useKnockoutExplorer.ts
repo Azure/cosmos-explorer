@@ -41,7 +41,6 @@ import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext"
 import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
