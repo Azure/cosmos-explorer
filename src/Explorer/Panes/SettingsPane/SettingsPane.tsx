@@ -36,6 +36,8 @@ import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { AuthType } from "AuthType";
 import create, { UseStore } from "zustand";
+import { DatabaseAccountListKeysResult } from "@azure/arm-cosmosdb/esm/models";
+import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
@@ -160,13 +162,24 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     ) {
       updateUserContext({
         dataPlaneRbacEnabled: true,
+        hasDataPlaneRbacSettingChanged: true,
       });
       useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
     } else {
       updateUserContext({
         dataPlaneRbacEnabled: false,
+        hasDataPlaneRbacSettingChanged: true,
       });
-      useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+      const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+      if (!userContext.features.enableAadDataPlane) {
+        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+
+        if (keys.primaryMasterKey) {
+          updateUserContext({ masterKey: keys.primaryMasterKey });
+
+          useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+        }
+      }
     }
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
