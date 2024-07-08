@@ -424,7 +424,6 @@ async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string,
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
-    console.log("User context updated with master key.");
   } catch (error) {
     console.error("Error during fetching keys or updating user context:", error);
     throw error;

@@ -153,7 +153,7 @@ let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
   if (_client) {
-    if(!userContext.hasDataPlaneRbacSettingChanged) {
+    if (!userContext.hasDataPlaneRbacSettingChanged) {
       return _client;
     }
   }
@@ -175,7 +175,7 @@ export function client(): Cosmos.CosmosClient {
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    key: userContext.dataPlaneRbacEnabled? "" : userContext.masterKey,
+    key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
