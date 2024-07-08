@@ -41,7 +41,6 @@ import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext"
 import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
@@ -288,19 +287,26 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
           } else {
             dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
           }
+          if (!dataPlaneRbacEnabled) {
+            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+          }
 
           updateUserContext({ dataPlaneRbacEnabled });
         } else {
           const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+          if (!dataPlaneRbacEnabled) {
+            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+          }
 
           updateUserContext({ dataPlaneRbacEnabled });
           useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
         }
       } else {
-        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-        updateUserContext({
-          masterKey: keys.primaryMasterKey,
-        });
+        await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+      }
+    } else {
+      if (!account.properties.disableLocalAuth) {
+        await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
       }
     }
   } catch (e) {
@@ -417,6 +423,19 @@ function configureEmulator(): Explorer {
   return explorer;
 }
 
+async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+  try {
+    const keys = await listKeys(subscriptionId, resourceGroup, account);
+
+    updateUserContext({
+      masterKey: keys.primaryMasterKey,
+    });
+  } catch (error) {
+    console.error("Error during fetching keys or updating user context:", error);
+    throw error;
+  }
+}
+
 async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
@@ -474,12 +493,6 @@ async function configurePortal(): Promise<Explorer> {
           }
 
           updateContextsFromPortalMessage(inputs);
-          explorer = new Explorer();
-          resolve(explorer);
-
-          if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
-            setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
-          }
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
@@ -493,20 +506,31 @@ async function configurePortal(): Promise<Explorer> {
               } else {
                 dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
+              if (!dataPlaneRbacEnabled) {
+                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+              }
 
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             } else {
               const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
 
+              if (!dataPlaneRbacEnabled) {
+                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+              }
+
               updateUserContext({ dataPlaneRbacEnabled });
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
           } else {
-            const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-            updateUserContext({
-              masterKey: keys.primaryMasterKey,
-            });
+            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+          }
+
+          explorer = new Explorer();
+          resolve(explorer);
+
+          if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+            setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
           }
 
           if (openAction) {

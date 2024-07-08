@@ -3,12 +3,10 @@ import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizatio
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { DatabaseAccountListKeysResult } from "Utils/arm/generatedClients/cosmos/types";
 import { AuthType } from "../AuthType";
 import { PriorityLevel } from "../Common/Constants";
 import { Platform, configContext } from "../ConfigContext";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
@@ -100,22 +98,6 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       userContext.masterKey,
     );
     return decodeURIComponent(headers.authorization);
-  } else if (userContext.dataPlaneRbacEnabled == false) {
-    const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-    const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-
-    if (keys.primaryMasterKey) {
-      updateUserContext({ masterKey: keys.primaryMasterKey });
-      // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-      await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
-        verb,
-        resourceId,
-        resourceType,
-        headers,
-        keys.primaryMasterKey,
-      );
-      return decodeURIComponent(headers.authorization);
-    }
   }
 
   if (userContext.resourceToken) {
@@ -179,8 +161,11 @@ enum SDKSupportedCapabilities {
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
-  if (_client) return _client;
-
+  if (_client) {
+    if (!userContext.hasDataPlaneRbacSettingChanged) {
+      return _client;
+    }
+  }
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
@@ -199,6 +184,7 @@ export function client(): Cosmos.CosmosClient {
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
