@@ -442,7 +442,7 @@ async function configurePortal(): Promise<Explorer> {
   });
 
   let explorer: Explorer;
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
     // This allows webpack hot reload to function properly in the portal
     if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
