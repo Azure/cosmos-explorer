@@ -51,11 +51,12 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
   do {
     const body = {
       query: subscriptionsQuery,
-      ...(skipToken && {
-        options: {
+      options: {
+        $allowPartialScopes: true,
+        ...(skipToken && {
           $skipToken: skipToken,
-        } as QueryRequestOptions,
-      }),
+        }),
+      } as QueryRequestOptions,
     };
 
     const response = await fetch(managementResourceGraphAPIURL, {
