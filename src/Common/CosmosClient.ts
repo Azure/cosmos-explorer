@@ -32,7 +32,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     console.log(`Returning Auth token`);
     return authorizationToken;
   }
-  
+
   if (configContext.platform === Platform.Emulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
