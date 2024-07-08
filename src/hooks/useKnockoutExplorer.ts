@@ -440,8 +440,7 @@ async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
-  
-  
+
   let explorer: Explorer;
   return new Promise(async (resolve) => {
     // In development mode, try to load the iframe message from session storage.
@@ -456,7 +455,6 @@ async function configurePortal(): Promise<Explorer> {
         console.dir(message);
         updateContextsFromPortalMessage(message);
         explorer = new Explorer();
-
 
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
@@ -481,7 +479,7 @@ async function configurePortal(): Promise<Explorer> {
 
         // Check for init message
         const message: PortalMessage = event.data?.data;
-        const inputs = message?.inputs; 
+        const inputs = message?.inputs;
         const openAction = message?.openAction;
         if (inputs) {
           if (
@@ -523,7 +521,9 @@ async function configurePortal(): Promise<Explorer> {
               useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             }
           } else {
-            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
+              await listKeys(subscriptionId, resourceGroup, account.name);
+            }
           }
 
           explorer = new Explorer();
@@ -553,11 +553,9 @@ async function configurePortal(): Promise<Explorer> {
       },
       false,
     );
-    
+
     sendReadyMessage();
-
   });
-
 }
 
 function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {

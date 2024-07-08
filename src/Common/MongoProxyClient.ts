@@ -710,4 +710,3 @@ async function errorHandling(response: Response, action: string, params: unknown
 export function getARMCreateCollectionEndpoint(params: DataModels.MongoParameters): string {
   return `subscriptions/${params.sid}/resourceGroups/${params.rg}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/mongodbDatabases/${params.db}/collections/${params.coll}`;
 }
-

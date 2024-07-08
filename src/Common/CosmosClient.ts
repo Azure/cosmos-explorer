@@ -33,14 +33,14 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     return authorizationToken;
   }
 
-  if ((userContext.dataPlaneRbacEnabled) && userContext.authorizationToken) {
-    console.log(` Getting Portal Auth token `)
+  if (userContext.dataPlaneRbacEnabled && userContext.authorizationToken) {
+    console.log(` Getting Portal Auth token `);
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
     const authorizationToken = `${AUTH_PREFIX}${userContext.authorizationToken}`;
     console.log(`Returning Portal Auth token`);
     return authorizationToken;
   }
-  
+
   if (configContext.platform === Platform.Emulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
