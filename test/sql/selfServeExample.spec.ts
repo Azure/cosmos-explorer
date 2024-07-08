@@ -2,13 +2,16 @@ import { expect, test } from "@playwright/test";
 import { DataExplorer, TestAccount } from "../fx";
 
 test("Self Serve", async ({ page }) => {
+  // Make sure viewport is large enough to display the entire page
+  page.setViewportSize({ width: 1280, height: 800 });
+
   const explorer = await DataExplorer.open(page, TestAccount.SQL, "selfServe.html");
 
   const loggingToggle = explorer.frame.locator("#enableLogging-toggle-input");
   await expect(loggingToggle).toBeEnabled();
 
   const regionDropdown = explorer.frame.getByText("Select a region");
-  await regionDropdown.click();
+  await regionDropdown.click({ force: true });
   const firstOption = explorer.frame.getByRole("option").first();
   await firstOption.waitFor();
   await firstOption.click();
