@@ -59,7 +59,7 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
         }),
       } as QueryRequestOptions,
     };
-
+    console.log(body)
     const response = await fetch(managementResourceGraphAPIURL, {
       method: "POST",
       headers,
