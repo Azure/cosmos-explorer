@@ -17,7 +17,16 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  if (userContext.features.enableAadDataPlane && userContext.aadToken) {
+  const aadDataPlaneFeatureEnabled =
+    userContext.features.enableAadDataPlane && userContext.databaseAccount.properties.disableLocalAuth;
+  const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL";
+  if (aadDataPlaneFeatureEnabled || (!userContext.features.enableAadDataPlane && dataPlaneRBACOptionEnabled)) {
+    if (!userContext.aadToken) {
+      logConsoleError(
+        `AAD token does not exist. Please use "Login for Entra ID" prior to performing Entra ID RBAC operations`,
+      );
+      return null;
+    }
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
     const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
     return authorizationToken;
@@ -72,7 +81,13 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
   if (userContext.masterKey) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
-    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
+    await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
+      verb,
+      resourceId,
+      resourceType,
+      headers,
+      userContext.masterKey,
+    );
     return decodeURIComponent(headers.authorization);
   }
 
@@ -137,8 +152,11 @@ enum SDKSupportedCapabilities {
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
-  if (_client) return _client;
-
+  if (_client) {
+    if (!userContext.hasDataPlaneRbacSettingChanged) {
+      return _client;
+    }
+  }
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
@@ -157,7 +175,7 @@ export function client(): Cosmos.CosmosClient {
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    key: userContext.masterKey,
+    key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,

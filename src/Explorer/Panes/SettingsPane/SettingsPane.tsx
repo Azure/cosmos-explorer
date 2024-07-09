@@ -4,14 +4,19 @@ import {
   IChoiceGroupOption,
   ISpinButtonStyles,
   IToggleStyles,
+  Icon,
+  MessageBar,
+  MessageBarType,
   Position,
   SpinButton,
   Toggle,
+  TooltipHost,
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { SplitterDirection } from "Common/Splitter";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
-import { configContext } from "ConfigContext";
+import { Platform, configContext } from "ConfigContext";
+import { useDatabases } from "Explorer/useDatabases";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
@@ -21,7 +26,7 @@ import {
   ruThresholdEnabled as isRUThresholdEnabled,
 } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
-import { userContext } from "UserContext";
+import { updateUserContext, userContext } from "UserContext";
 import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -29,6 +34,26 @@ import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
+import { AuthType } from "AuthType";
+import create, { UseStore } from "zustand";
+import { DatabaseAccountListKeysResult } from "@azure/arm-cosmosdb/esm/models";
+import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+
+export interface DataPlaneRbacState {
+  dataPlaneRbacEnabled: boolean;
+  aadTokenUpdated: boolean;
+
+  getState?: () => DataPlaneRbacState;
+
+  setDataPlaneRbacEnabled: (dataPlaneRbacEnabled: boolean) => void;
+  setAadDataPlaneUpdated: (aadTokenUpdated: boolean) => void;
+}
+
+type DataPlaneRbacStore = UseStore<Partial<DataPlaneRbacState>>;
+
+export const useDataPlaneRbac: DataPlaneRbacStore = create(() => ({
+  dataPlaneRbacEnabled: false,
+}));
 
 export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   explorer,
@@ -43,6 +68,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? Constants.Queries.UnlimitedPageOption
       : Constants.Queries.CustomPageOption,
   );
+
+  const [enableDataPlaneRBACOption, setEnableDataPlaneRBACOption] = useState<string>(
+    LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)
+      ? LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled)
+      : Constants.RBACOptions.setAutomaticRBACOption,
+  );
+  const [showDataPlaneRBACWarning, setShowDataPlaneRBACWarning] = useState<boolean>(false);
+
   const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
   const [ruThreshold, setRUThreshold] = useState<number>(getRUThreshold());
   const [queryTimeoutEnabled, setQueryTimeoutEnabled] = useState<boolean>(
@@ -107,7 +140,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
-  const shouldShowCopilotSampleDBOption = userContext.apiType === "SQL" && useQueryCopilot.getState().copilotEnabled;
+  const shouldShowCopilotSampleDBOption =
+    userContext.apiType === "SQL" &&
+    useQueryCopilot.getState().copilotEnabled &&
+    useDatabases.getState().sampleDataResourceTokenCollection;
   const handlerOnSubmit = async () => {
     setIsExecuting(true);
 
@@ -115,7 +151,37 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       StorageKey.ActualItemPerPage,
       isCustomPageOptionSelected() ? customItemPerPage : Constants.Queries.unlimitedItemsPerPage,
     );
+
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
+
+    LocalStorageUtility.setEntryString(StorageKey.DataPlaneRbacEnabled, enableDataPlaneRBACOption);
+    if (
+      enableDataPlaneRBACOption === Constants.RBACOptions.setTrueRBACOption ||
+      (enableDataPlaneRBACOption === Constants.RBACOptions.setAutomaticRBACOption &&
+        userContext.databaseAccount.properties.disableLocalAuth)
+    ) {
+      updateUserContext({
+        dataPlaneRbacEnabled: true,
+        hasDataPlaneRbacSettingChanged: true,
+      });
+      useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
+    } else {
+      updateUserContext({
+        dataPlaneRbacEnabled: false,
+        hasDataPlaneRbacSettingChanged: true,
+      });
+      const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+      if (!userContext.features.enableAadDataPlane) {
+        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+
+        if (keys.primaryMasterKey) {
+          updateUserContext({ masterKey: keys.primaryMasterKey });
+
+          useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+        }
+      }
+    }
+
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
@@ -203,6 +269,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     { key: Constants.PriorityLevel.High, text: "High" },
   ];
 
+  const dataPlaneRBACOptionsList: IChoiceGroupOption[] = [
+    { key: Constants.RBACOptions.setAutomaticRBACOption, text: "Automatic" },
+    { key: Constants.RBACOptions.setTrueRBACOption, text: "True" },
+    { key: Constants.RBACOptions.setFalseRBACOption, text: "False" },
+  ];
+
   const defaultQueryResultsViewOptionList: IChoiceGroupOption[] = [
     { key: SplitterDirection.Vertical, text: "Vertical" },
     { key: SplitterDirection.Horizontal, text: "Horizontal" },
@@ -217,6 +289,20 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
   const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
     setPageOption(option.key);
+  };
+
+  const handleOnDataPlaneRBACOptionChange = (
+    ev: React.FormEvent<HTMLInputElement>,
+    option: IChoiceGroupOption,
+  ): void => {
+    setEnableDataPlaneRBACOption(option.key);
+
+    const shouldShowWarning =
+      (option.key === Constants.RBACOptions.setTrueRBACOption ||
+        (option.key === Constants.RBACOptions.setAutomaticRBACOption &&
+          userContext.databaseAccount.properties.disableLocalAuth === true)) &&
+      !useDataPlaneRbac.getState().aadTokenUpdated;
+    setShowDataPlaneRBACWarning(shouldShowWarning);
   };
 
   const handleOnRUThresholdToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
@@ -378,6 +464,54 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               )}
             </div>
           </div>
+        )}
+        {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && (
+          <>
+            <div className="settingsSection">
+              <div className="settingsSectionPart">
+                <fieldset>
+                  <legend id="enableDataPlaneRBACOptions" className="settingsSectionLabel legendLabel">
+                    Enable Entra ID RBAC
+                  </legend>
+                  <TooltipHost
+                    content={
+                      <>
+                        Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
+                        ID RBAC.
+                        <a
+                          href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {" "}
+                          Learn more{" "}
+                        </a>
+                      </>
+                    }
+                  >
+                    <Icon iconName="Info" ariaLabel="Info tooltip" className="panelInfoIcon" tabIndex={0} />
+                  </TooltipHost>
+                  {showDataPlaneRBACWarning && configContext.platform === Platform.Portal && (
+                    <MessageBar
+                      messageBarType={MessageBarType.warning}
+                      isMultiline={true}
+                      onDismiss={() => setShowDataPlaneRBACWarning(false)}
+                      dismissButtonAriaLabel="Close"
+                    >
+                      Please click on &quot;Login for Entra ID RBAC&quot; prior to performing Entra ID RBAC operations
+                    </MessageBar>
+                  )}
+                  <ChoiceGroup
+                    ariaLabelledBy="enableDataPlaneRBACOptions"
+                    options={dataPlaneRBACOptionsList}
+                    styles={choiceButtonStyles}
+                    selectedKey={enableDataPlaneRBACOption}
+                    onChange={handleOnDataPlaneRBACOptionChange}
+                  />
+                </fieldset>
+              </div>
+            </div>
+          </>
         )}
         {userContext.apiType === "SQL" && (
           <>
