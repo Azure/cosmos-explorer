@@ -440,6 +440,7 @@ async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
+
   let explorer: Explorer;
   return new Promise((resolve) => {
     // In development mode, try to load the iframe message from session storage.
@@ -454,6 +455,7 @@ async function configurePortal(): Promise<Explorer> {
         console.dir(message);
         updateContextsFromPortalMessage(message);
         explorer = new Explorer();
+
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
@@ -492,33 +494,27 @@ async function configurePortal(): Promise<Explorer> {
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
+          let dataPlaneRbacEnabled;
           if (userContext.apiType === "SQL") {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
               const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
 
-              let dataPlaneRbacEnabled;
               if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
                 dataPlaneRbacEnabled = account.properties.disableLocalAuth;
               } else {
                 dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
-              if (!dataPlaneRbacEnabled) {
-                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-              }
-
-              updateUserContext({ dataPlaneRbacEnabled });
-              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             } else {
-              const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
-
-              if (!dataPlaneRbacEnabled) {
-                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-              }
-
-              updateUserContext({ dataPlaneRbacEnabled });
-              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+              dataPlaneRbacEnabled = account.properties.disableLocalAuth;
             }
-          } else {
+
+            if (!dataPlaneRbacEnabled) {
+              await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            }
+
+            updateUserContext({ dataPlaneRbacEnabled });
+            useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+          } else if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
             await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
           }
 
