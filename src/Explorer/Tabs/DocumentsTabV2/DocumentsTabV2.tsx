@@ -7,9 +7,7 @@ import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
 import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
-import {
-  deleteDocuments as deleteNoSqlDocuments
-} from "Common/dataAccess/deleteDocument";
+import { deleteDocuments as deleteNoSqlDocuments } from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
@@ -840,15 +838,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       const deletePromise = !isPreferredApiMongoDB
         ? deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
         : MongoProxyClient.deleteDocuments(
-          _collection.databaseId,
-          _collection as ViewModels.Collection,
-          toDeleteDocumentIds,
-        ).then(({ deletedCount, isAcknowledged }) => {
-          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-            return toDeleteDocumentIds;
-          }
-          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-        });
+            _collection.databaseId,
+            _collection as ViewModels.Collection,
+            toDeleteDocumentIds,
+          ).then(({ deletedCount, isAcknowledged }) => {
+            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+              return toDeleteDocumentIds;
+            }
+            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+          });
 
       return deletePromise
         .then(
@@ -921,8 +919,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-        ? `the selected ${selectedRows.size} documents`
-        : "the selected document";
+      ? `the selected ${selectedRows.size} documents`
+      : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog
@@ -1759,7 +1757,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   selectedRows={selectedRows}
                   size={tableContainerSizePx}
                   columnHeaders={columnHeaders}
-                  isSelectionDisabled={configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly}
+                  isSelectionDisabled={
+                    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
+                  }
                 />
                 {tableItems.length > 0 && (
                   <a
