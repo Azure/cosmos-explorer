@@ -494,36 +494,28 @@ async function configurePortal(): Promise<Explorer> {
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
+          let dataPlaneRbacEnabled;
           if (userContext.apiType === "SQL") {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
               const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
 
-              let dataPlaneRbacEnabled;
               if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
                 dataPlaneRbacEnabled = account.properties.disableLocalAuth;
               } else {
                 dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
-              if (!dataPlaneRbacEnabled) {
-                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-              }
-
-              updateUserContext({ dataPlaneRbacEnabled });
-              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
             } else {
-              const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
-
-              if (!dataPlaneRbacEnabled) {
-                await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-              }
-
-              updateUserContext({ dataPlaneRbacEnabled });
-              useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+              dataPlaneRbacEnabled = account.properties.disableLocalAuth;
             }
-          } else {
-            if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
+
+            if (!dataPlaneRbacEnabled) {
               await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
             }
+
+            updateUserContext({ dataPlaneRbacEnabled });
+            useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
+          } else if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
+            await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
           }
 
           explorer = new Explorer();
