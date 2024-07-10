@@ -11,6 +11,7 @@ import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
+import * as Logger from "../Common/Logger"
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -21,6 +22,10 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     userContext.features.enableAadDataPlane && userContext.databaseAccount.properties.disableLocalAuth;
   const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL";
   if (aadDataPlaneFeatureEnabled || (!userContext.features.enableAadDataPlane && dataPlaneRBACOptionEnabled)) {
+    Logger.logInfo(
+      `AAD Data Plane Feature flag set to ${userContext.features.enableAadDataPlane} for account with disable local auth ${userContext.databaseAccount.properties.disableLocalAuth} `,
+      "Explorer/tokenProvider",
+    );
     if (!userContext.aadToken) {
       logConsoleError(
         `AAD token does not exist. Please use "Login for Entra ID" prior to performing Entra ID RBAC operations`,
@@ -80,6 +85,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   }
 
   if (userContext.masterKey) {
+    Logger.logInfo(
+      `Master Key exists`, "Explorer/tokenProvider",
+    );
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
       verb,
