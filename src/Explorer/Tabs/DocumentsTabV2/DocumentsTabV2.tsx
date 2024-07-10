@@ -1,11 +1,10 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { Button, FluentProvider, Input, TableRowId } from "@fluentui/react-components";
-import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
+import { Dismiss16Filled } from "@fluentui/react-icons";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
-import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
 import { deleteDocuments as deleteNoSqlDocuments } from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
@@ -1184,16 +1183,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     documentsIterator, // loadNextPage: disabled as it will trigger a circular dependency and infinite loop
   ]);
 
-  const onRefreshKeyInput: KeyboardEventHandler<HTMLButtonElement> = (event) => {
-    if (event.key === " " || event.key === "Enter") {
-      const focusElement = event.target as HTMLElement;
-      refreshDocumentsGrid(false);
-      focusElement && focusElement.focus();
-      event.stopPropagation();
-      event.preventDefault();
-    }
-  };
-
   const onLoadMoreKeyInput: KeyboardEventHandler<HTMLAnchorElement> = (event) => {
     if (event.key === " " || event.key === "Enter") {
       const focusElement = event.target as HTMLElement;
@@ -1242,13 +1231,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       .filter((key) => typeof (document as any)[key] === "string" || typeof (document as any)[key] === "number") // Only allow safe types for displayable React children
       .map((key) =>
         key === "id"
-          ? { id: key, label: isPreferredApiMongoDB ? "_id" : "id", group: undefined }
-          : { id: key, label: key, group: undefined },
+          ? { id: key, label: isPreferredApiMongoDB ? "_id" : "id", isPartitionKey: false }
+          : { id: key, label: key, isPartitionKey: false },
       );
 
     if (showPartitionKey(_collection, isPreferredApiMongoDB)) {
       columnDefinitions.push(
-        ...partitionKeyPropertyHeaders.map((key) => ({ id: key, label: key, group: "Partition Key" })),
+        ...partitionKeyPropertyHeaders.map((key) => ({ id: key, label: key, isPartitionKey: true })),
       );
 
       // Remove properties that are the partition keys, since they are already included
@@ -1908,23 +1897,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               }}
               ref={tableContainerRef}
             >
-              <Button
-                appearance="transparent"
-                aria-label="Refresh"
-                size="small"
-                icon={<ArrowClockwise16Filled />}
-                style={{
-                  position: "absolute",
-                  top: 6,
-                  right: 0,
-                  float: "right",
-                  backgroundColor: "white",
-                  zIndex: 1,
-                  color: StyleConstants.AccentMedium,
-                }}
-                onClick={() => refreshDocumentsGrid(false)}
-                onKeyDown={onRefreshKeyInput}
-              />
               <div
                 style={
                   {
@@ -1934,6 +1906,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 }
               >
                 <DocumentsTableComponent
+                  onRefreshTable={() => refreshDocumentsGrid(false)}
                   items={tableItems}
                   onItemClicked={(index) => onDocumentClicked(index, documentIds)}
                   onSelectedRowsChange={onSelectedRowsChange}

@@ -1,22 +1,12 @@
 import {
   Button,
-  InputOnChangeData,
   Menu,
-  MenuCheckedValueChangeData,
-  MenuCheckedValueChangeEvent,
   MenuDivider,
-  MenuGroup,
-  MenuGroupHeader,
   MenuItem,
-  MenuItemCheckbox,
   MenuList,
   MenuPopover,
-  MenuProps,
   MenuTrigger,
-  PositioningImperativeRef,
   TableRowData as RowStateBase,
-  SearchBox,
-  SearchBoxChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -29,16 +19,23 @@ import {
   TableRowId,
   TableSelectionCell,
   useArrowNavigationGroup,
-  useRestoreFocusTarget,
   useTableColumnSizing_unstable,
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
-import { Add16Regular, Subtract12Regular } from "@fluentui/react-icons";
+import {
+  ArrowClockwise16Regular,
+  DeleteRegular,
+  EditRegular,
+  MoreHorizontalRegular,
+  TableResizeColumnRegular,
+} from "@fluentui/react-icons";
 import { NormalizedEventKey } from "Common/Constants";
+import { TableColumnSelectionPane } from "Explorer/Panes/TableColumnSelectionPane/TableColumnSelectionPane";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSidePanel } from "hooks/useSidePanel";
+import React, { useCallback, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 
 export type DocumentsTableComponentItem = {
@@ -48,10 +45,11 @@ export type DocumentsTableComponentItem = {
 export type ColumnDefinition = {
   id: string;
   label: string;
+  isPartitionKey: boolean;
   defaultWidthPx?: number;
-  group: string | undefined;
 };
 export interface IDocumentsTableComponentProps {
+  onRefreshTable: () => void;
   items: DocumentsTableComponentItem[];
   onItemClicked: (index: number) => void;
   onSelectedRowsChange: (selectedItemsIndices: Set<TableRowId>) => void;
@@ -80,6 +78,7 @@ const MIN_COLUMN_WIDTH_PX = 20;
 const COLUMNS_MENU_NAME = "columnsMenu";
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
+  onRefreshTable,
   items,
   onSelectedRowsChange,
   selectedRows,
@@ -102,31 +101,9 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(initialSizingOptions);
 
   // This is for the menu to select columns
-  const [columnSearchText, setColumnSearchText] = useState<string>("");
-  const [isColumnSelectionMenuOpen, setIsColumnSelectionMenuOpen] = useState<boolean>(false);
-  const columnSelectionMenuButtonRef = useRef<HTMLButtonElement>(null);
-  const columnSelectionMenuPositionRef = useRef<HTMLDivElement>(null);
-  const positioningRef = React.useRef<PositioningImperativeRef>(null);
-  const onColumnSelectionMenuOpenChange: MenuProps["onOpenChange"] = (e, data) => {
-    // do not close menu as an outside click if clicking on the custom trigger/target
-    // this prevents it from closing & immediately re-opening when clicking custom triggers
-    if (
-      data.type === "clickOutside" &&
-      (e.target === columnSelectionMenuButtonRef.current || e.target === columnSelectionMenuPositionRef.current)
-    ) {
-      return;
-    }
+  // const [columnSearchText, setColumnSearchText] = useState<string>("");
 
-    setIsColumnSelectionMenuOpen(data.open);
-  };
-
-  useEffect(() => {
-    if (columnSelectionMenuPositionRef.current) {
-      positioningRef.current?.setTarget(columnSelectionMenuPositionRef.current);
-    }
-  }, [columnSelectionMenuPositionRef, positioningRef]);
-
-  const restoreFocusTargetAttribute = useRestoreFocusTarget();
+  // const restoreFocusTargetAttribute = useRestoreFocusTarget();
 
   const onColumnResize = React.useCallback(
     (_, { columnId, width }) => {
@@ -162,23 +139,52 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           renderHeaderCell: () => (
             <>
               <span title={column.label}>{column.label}</span>
-              <Button
-                appearance="transparent"
-                aria-label="De-select column"
-                size="small"
-                icon={<Subtract12Regular />}
-                style={{ position: "absolute", right: -8 }}
-                onClick={() => {
-                  // Remove column id from selectedColumnIds
-                  const index = selectedColumnIds.indexOf(column.id);
-                  if (index === -1) {
-                    return;
-                  }
-                  const newSelectedColumnIds = [...selectedColumnIds];
-                  newSelectedColumnIds.splice(index, 1);
-                  onColumnSelectionChange(newSelectedColumnIds);
-                }}
-              />
+              <Menu>
+                <MenuTrigger disableButtonEnhancement>
+                  <Button
+                    // {...restoreFocusTargetAttribute}
+                    appearance="transparent"
+                    aria-label="Select column"
+                    size="small"
+                    icon={<MoreHorizontalRegular />}
+                    style={{ position: "absolute", right: -6 }}
+                  />
+                </MenuTrigger>
+                <MenuPopover>
+                  <MenuList>
+                    <MenuItem key="refresh" icon={<ArrowClockwise16Regular />} onClick={onRefreshTable}>
+                      Refresh
+                    </MenuItem>
+                    <MenuItem key="editcolumns" icon={<EditRegular />} onClick={openColumnSelectionPane}>
+                      Edit columns
+                    </MenuItem>
+                    <MenuDivider />
+                    <MenuItem
+                      key="keyboardresize"
+                      icon={<TableResizeColumnRegular />}
+                      onClick={columnSizing.enableKeyboardMode(column.id)}
+                    >
+                      Resize with left/right arrow keys
+                    </MenuItem>
+                    <MenuItem
+                      key="remove"
+                      icon={<DeleteRegular />}
+                      onClick={() => {
+                        // Remove column id from selectedColumnIds
+                        const index = selectedColumnIds.indexOf(column.id);
+                        if (index === -1) {
+                          return;
+                        }
+                        const newSelectedColumnIds = [...selectedColumnIds];
+                        newSelectedColumnIds.splice(index, 1);
+                        onColumnSelectionChange(newSelectedColumnIds);
+                      }}
+                    >
+                      Remove column
+                    </MenuItem>
+                  </MenuList>
+                </MenuPopover>
+              </Menu>
             </>
           ),
           renderCell: (item) => (
@@ -187,7 +193,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             </TableCellLayout>
           ),
         })),
-    [columnDefinitions, selectedColumnIds],
+    [columnDefinitions, onColumnSelectionChange, selectedColumnIds],
   );
 
   const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(undefined);
@@ -337,58 +343,17 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       selectedColumnIds.includes(columnDefinition.id) && checkedValues[COLUMNS_MENU_NAME].push(columnDefinition.id),
   );
 
-  const onCheckedValueChange = (_: MenuCheckedValueChangeEvent, data: MenuCheckedValueChangeData) => {
-    // eslint-disable-next-line react/prop-types
-    onColumnSelectionChange(data.checkedItems);
-  };
-
-  const onSearchChange: (event: SearchBoxChangeEvent, data: InputOnChangeData) => void = (_, data) =>
-    // eslint-disable-next-line react/prop-types
-    setColumnSearchText(data.value);
-
-  const getMenuList = (columnDefinitions: ColumnDefinition[]): JSX.Element => {
-    // Group by group. Unnamed group first
-    const unnamedGroup: ColumnDefinition[] = [];
-    const groupMap = new Map<string, ColumnDefinition[]>();
-    columnDefinitions.forEach((column) => {
-      if (column.group) {
-        if (!groupMap.has(column.group)) {
-          groupMap.set(column.group, []);
-        }
-        groupMap.get(column.group).push(column);
-      } else {
-        unnamedGroup.push(column);
-      }
-    });
-
-    const menuList: JSX.Element[] = [];
-    menuList.push(<SearchBox key="search" size="small" value={columnSearchText} onChange={onSearchChange} />);
-    if (unnamedGroup.length > 0) {
-      menuList.push(
-        ...unnamedGroup
-          .filter((def) => !columnSearchText || def.label.toLowerCase().includes(columnSearchText.toLowerCase()))
-          .map((column) => (
-            <MenuItemCheckbox key={column.id} name={COLUMNS_MENU_NAME} value={column.id}>
-              {column.label}
-            </MenuItemCheckbox>
-          )),
+  const openColumnSelectionPane = (): void => {
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Save Query",
+        <TableColumnSelectionPane
+          selectedColumnIds={selectedColumnIds}
+          columnDefinitions={columnDefinitions}
+          onSelectionChange={onColumnSelectionChange}
+        />,
       );
-    }
-    groupMap.forEach((columns, group) => {
-      menuList.push(<MenuDivider key={`divider${group}`} />);
-      menuList.push(
-        <MenuGroup key={group}>
-          <MenuGroupHeader>{group}</MenuGroupHeader>
-          {...columns.map((column) => (
-            <MenuItemCheckbox key={column.id} name={COLUMNS_MENU_NAME} value={column.id}>
-              {column.label}
-            </MenuItemCheckbox>
-          ))}
-        </MenuGroup>,
-      );
-    });
-
-    return <>{menuList}</>;
   };
 
   return (
@@ -397,6 +362,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         <TableRow style={{ width: size ? size.width - 15 : "100%" }}>
           {!isSelectionDisabled && (
             <TableSelectionCell
+              key="selectcell"
               checked={allRowsSelected ? true : someRowsSelected ? "mixed" : false}
               onClick={toggleAllRows}
               onKeyDown={toggleAllKeydown}
@@ -404,52 +370,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             />
           )}
           {columns.map((column) => (
-            <Menu openOnContext key={column.columnId}>
-              <MenuTrigger>
-                <TableHeaderCell
-                  className="documentsTableCell"
-                  key={column.columnId}
-                  {...columnSizing.getTableHeaderCellProps(column.columnId)}
-                >
-                  {column.renderHeaderCell()}
-                </TableHeaderCell>
-              </MenuTrigger>
-              <MenuPopover>
-                <MenuList>
-                  <MenuItem onClick={columnSizing.enableKeyboardMode(column.columnId)}>
-                    Enable Left/Right Arrow keys to resize
-                  </MenuItem>
-                </MenuList>
-              </MenuPopover>
-            </Menu>
+            <TableHeaderCell
+              className="documentsTableCell"
+              key={column.columnId}
+              {...columnSizing.getTableHeaderCellProps(column.columnId)}
+            >
+              {column.renderHeaderCell()}
+            </TableHeaderCell>
           ))}
-          <Button
-            {...restoreFocusTargetAttribute}
-            appearance="transparent"
-            aria-label="Select column"
-            size="small"
-            icon={<Add16Regular />}
-            style={{ position: "absolute", right: 25 }}
-            onClick={() => setIsColumnSelectionMenuOpen((s) => !s)}
-          />
-          <div
-            {...restoreFocusTargetAttribute}
-            ref={columnSelectionMenuPositionRef}
-            style={{ height: 0, position: "absolute", right: 20, top: 0 }}
-          />
-          <Menu
-            checkedValues={checkedValues}
-            onCheckedValueChange={onCheckedValueChange}
-            open={isColumnSelectionMenuOpen}
-            onOpenChange={onColumnSelectionMenuOpenChange}
-            positioning={{ positioningRef }}
-          >
-            <MenuPopover>
-              <MenuList style={{ maxHeight: size?.height, overflowY: "auto", overflowX: "hidden" }}>
-                {getMenuList(columnDefinitions)}
-              </MenuList>
-            </MenuPopover>
-          </Menu>
         </TableRow>
       </TableHeader>
       <TableBody>
