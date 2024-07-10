@@ -43,6 +43,7 @@ import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/Messa
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
+import * as Logger from "../Common/Logger";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -275,26 +276,55 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     updateUserContext({
       databaseAccount: config.databaseAccount,
     });
-
+    Logger.logInfo(
+      `Configuring Data Explorer for ${userContext.apiType} account ${account.name}`,
+      "Explorer/configureHostedWithAAD",
+    );
     if (!userContext.features.enableAadDataPlane) {
+      Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
       if (userContext.apiType === "SQL") {
         if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
           const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+          Logger.logInfo(
+            `Local storage RBAC setting for ${userContext.apiType} account ${account.name} is ${isDataPlaneRbacSetting}`,
+            "Explorer/configureHostedWithAAD",
+          );
 
           let dataPlaneRbacEnabled;
           if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
             dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+            Logger.logInfo(
+              `Data Plane RBAC value for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
+              "Explorer/configureHostedWithAAD",
+            );
           } else {
             dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
+            Logger.logInfo(
+              `Data Plane RBAC value for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
+              "Explorer/configureHostedWithAAD",
+            );
           }
           if (!dataPlaneRbacEnabled) {
+            Logger.logInfo(
+              `Calling fetch keys for ${userContext.apiType} account ${account.name} with RBAC setting ${dataPlaneRbacEnabled}`,
+              "Explorer/configureHostedWithAAD",
+            );
             await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
           }
 
           updateUserContext({ dataPlaneRbacEnabled });
         } else {
           const dataPlaneRbacEnabled = account.properties.disableLocalAuth;
+          Logger.logInfo(
+            `Local storage setting does not exist : Data Plane RBAC value for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
+            "Explorer/configureHostedWithAAD",
+          );
+
           if (!dataPlaneRbacEnabled) {
+            Logger.logInfo(
+              `Fetching keys for ${userContext.apiType} account ${account.name} with RBAC setting ${dataPlaneRbacEnabled}`,
+              "Explorer/configureHostedWithAAD",
+            );
             await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
           }
 
@@ -302,10 +332,22 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
           useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
         }
       } else {
+        Logger.logInfo(
+          `Fetching keys for ${userContext.apiType} account ${account.name}`,
+          "Explorer/configureHostedWithAAD",
+        );
         await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
       }
     } else {
+      Logger.logInfo(
+        `AAD Feature flag is enabled for account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} `,
+        "Explorer/configureHostedWithAAD",
+      );
       if (!account.properties.disableLocalAuth) {
+        Logger.logInfo(
+          `Fetching keys for ${userContext.apiType} account ${account.name} with AAD data plane feature enabled`,
+          "Explorer/configureHostedWithAAD",
+        );
         await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
       }
     }
@@ -425,13 +467,23 @@ function configureEmulator(): Explorer {
 
 async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
   try {
+    Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
     const keys = await listKeys(subscriptionId, resourceGroup, account);
+    Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
 
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
+    Logger.logInfo(
+      `User context updated with Master key for ${userContext.apiType} account ${account}`,
+      "Explorer/fetchAndUpdateKeys",
+    );
   } catch (error) {
     console.error("Error during fetching keys or updating user context:", error);
+    Logger.logError(
+      `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
+      "Explorer/fetchAndUpdateKeys",
+    );
     throw error;
   }
 }
@@ -498,6 +550,10 @@ async function configurePortal(): Promise<Explorer> {
           if (userContext.apiType === "SQL") {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
               const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
+              Logger.logInfo(
+                `Local storage RBAC setting for ${userContext.apiType} account ${account.name} is ${isDataPlaneRbacSetting}`,
+                "Explorer/configurePortal",
+              );
 
               if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
                 dataPlaneRbacEnabled = account.properties.disableLocalAuth;
@@ -505,16 +561,32 @@ async function configurePortal(): Promise<Explorer> {
                 dataPlaneRbacEnabled = isDataPlaneRbacSetting === Constants.RBACOptions.setTrueRBACOption;
               }
             } else {
+              Logger.logInfo(
+                `Local storage does not exist for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
+                "Explorer/configurePortal",
+              );
               dataPlaneRbacEnabled = account.properties.disableLocalAuth;
             }
+            Logger.logInfo(
+              `Data Plane RBAC value for ${userContext.apiType} account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} is ${dataPlaneRbacEnabled}`,
+              "Explorer/configurePortal",
+            );
 
             if (!dataPlaneRbacEnabled) {
+              Logger.logInfo(
+                `Calling fetch keys for ${userContext.apiType} account ${account.name}`,
+                "Explorer/configurePortal",
+              );
               await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
             }
 
             updateUserContext({ dataPlaneRbacEnabled });
             useDataPlaneRbac.setState({ dataPlaneRbacEnabled: dataPlaneRbacEnabled });
           } else if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
+            Logger.logInfo(
+              `Calling fetch keys for ${userContext.apiType} account ${account.name}`,
+              "Explorer/configurePortal",
+            );
             await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
           }
 
