@@ -447,6 +447,9 @@ export interface IDocumentsTabComponentProps {
 // Extend DocumentId to include fields displayed in the table
 type ExtendedDocumentId = DocumentId & { tableFields?: DocumentsTableComponentItem };
 
+// This is based on some heuristics
+const calculateOffset = (columnNumber: number): number => columnNumber * 13.71428571 - 46;
+
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
   isPreferredApiMongoDB,
@@ -1901,7 +1904,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 style={
                   {
                     height: "100%",
-                    width: "calc(100% - 50px)",
+                    width: `calc(100% + ${calculateOffset(selectedColumnIds.length)}px)`,
                   } /* Fix to make table not resize beyond parent's width */
                 }
               >
