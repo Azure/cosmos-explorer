@@ -281,13 +281,9 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       "Explorer/configureHostedWithAAD",
     );
     if (!userContext.features.enableAadDataPlane) {
-      Logger.logInfo(
-        `AAD Feature flag is not enabled for account ${account.name}`,
-        "Explorer/configureHostedWithAAD",
-      );
+      Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
       if (userContext.apiType === "SQL") {
         if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
-
           const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
           Logger.logInfo(
             `Local storage RBAC setting for ${userContext.apiType} account ${account.name} is ${isDataPlaneRbacSetting}`,
@@ -471,15 +467,9 @@ function configureEmulator(): Explorer {
 
 async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
   try {
-    Logger.logInfo(
-      `Fetching keys for ${userContext.apiType} account ${account}`,
-      "Explorer/fetchAndUpdateKeys",
-    );
+    Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
     const keys = await listKeys(subscriptionId, resourceGroup, account);
-    Logger.logInfo(
-      `Keys fetched for ${userContext.apiType} account ${account}`,
-      "Explorer/fetchAndUpdateKeys",
-    );
+    Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
 
     updateUserContext({
       masterKey: keys.primaryMasterKey,

@@ -11,7 +11,7 @@ import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
-import * as Logger from "../Common/Logger"
+import * as Logger from "../Common/Logger";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -85,9 +85,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   }
 
   if (userContext.masterKey) {
-    Logger.logInfo(
-      `Master Key exists`, "Explorer/tokenProvider",
-    );
+    Logger.logInfo(`Master Key exists`, "Explorer/tokenProvider");
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await Cosmos.setAuthorizationTokenHeaderUsingMasterKey(
       verb,
