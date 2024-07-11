@@ -12,6 +12,7 @@ import {
   TableCell,
   TableCellLayout,
   TableColumnDefinition,
+  TableColumnId,
   TableColumnSizingOptions,
   TableHeader,
   TableHeaderCell,
@@ -22,13 +23,17 @@ import {
   useTableColumnSizing_unstable,
   useTableFeatures,
   useTableSelection,
+  useTableSort
 } from "@fluentui/react-components";
 import {
   ArrowClockwise16Regular,
+  ArrowResetRegular,
   DeleteRegular,
   EditRegular,
   MoreHorizontalRegular,
   TableResizeColumnRegular,
+  TextSortAscendingRegular,
+  TextSortDescendingRegular,
 } from "@fluentui/react-icons";
 import { NormalizedEventKey } from "Common/Constants";
 import { TableColumnSelectionPane } from "Explorer/Panes/TableColumnSelectionPane/TableColumnSelectionPane";
@@ -99,11 +104,13 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   });
 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(initialSizingOptions);
-
-  // This is for the menu to select columns
-  // const [columnSearchText, setColumnSearchText] = useState<string>("");
-
-  // const restoreFocusTargetAttribute = useRestoreFocusTarget();
+  const [sortState, setSortState] = React.useState<{
+    sortDirection: "ascending" | "descending";
+    sortColumn: TableColumnId | undefined;
+  }>({
+    sortDirection: undefined,
+    sortColumn: undefined,
+  });
 
   const onColumnResize = React.useCallback(
     (_, { columnId, width }) => {
@@ -118,6 +125,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     },
     [_onColumnResize],
   );
+
+  // const restoreFocusTargetAttribute = useRestoreFocusTarget();
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
   const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
@@ -155,6 +164,9 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     <MenuItem key="refresh" icon={<ArrowClockwise16Regular />} onClick={onRefreshTable}>
                       Refresh
                     </MenuItem>
+                    <MenuItem icon={<TextSortAscendingRegular />} onClick={(e) => setColumnSort(e, column.id, "ascending")}>Sort ascending</MenuItem>
+                    <MenuItem icon={<TextSortDescendingRegular />} onClick={(e) => setColumnSort(e, column.id, "descending")}>Sort descending</MenuItem>
+                    <MenuItem icon={<ArrowResetRegular />} onClick={(e) => setColumnSort(e, undefined, undefined)}>Reset sorting</MenuItem>
                     <MenuItem key="editcolumns" icon={<EditRegular />} onClick={openColumnSelectionPane}>
                       Edit columns
                     </MenuItem>
@@ -278,6 +290,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     columnSizing_unstable: columnSizing,
     tableRef,
     selection: { allRowsSelected, someRowsSelected, toggleAllRows, toggleRow, isRowSelected },
+    sort: { getSortDirection, setColumnSort, sort },
   } = useTableFeatures(
     {
       columns,
@@ -291,10 +304,19 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         // eslint-disable-next-line react/prop-types
         onSelectionChange: (e, data) => onSelectedRowsChange(data.selectedItems),
       }),
+      useTableSort({
+        sortState,
+        onSortChange: (e, nextSortState) => setSortState(nextSortState),
+      }),
     ],
   );
 
-  const rows: TableRowData[] = getRows((row) => {
+  const headerSortProps = (columnId: TableColumnId) => ({
+    // onClick: (e: React.MouseEvent) => toggleColumnSort(e, columnId),
+    sortDirection: getSortDirection(columnId),
+  });
+
+  const rows: TableRowData[] = sort(getRows((row) => {
     const selected = isRowSelected(row.rowId);
     return {
       ...row,
@@ -308,7 +330,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       selected,
       appearance: selected ? ("brand" as const) : ("none" as const),
     };
-  });
+  }));
 
   const toggleAllKeydown = React.useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -357,7 +379,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   };
 
   return (
-    <Table className="documentsTable" noNativeElements {...tableProps}>
+    <Table className="documentsTable" noNativeElements sortable {...tableProps}>
       <TableHeader className="documentsTableHeader">
         <TableRow style={{ width: size ? size.width - 15 : "100%" }}>
           {!isSelectionDisabled && (
@@ -374,6 +396,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
               className="documentsTableCell"
               key={column.columnId}
               {...columnSizing.getTableHeaderCellProps(column.columnId)}
+              {...headerSortProps(column.columnId)}
             >
               {column.renderHeaderCell()}
             </TableHeaderCell>
