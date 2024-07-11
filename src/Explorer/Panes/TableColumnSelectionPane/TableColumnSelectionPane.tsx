@@ -35,6 +35,10 @@ export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> =
     if (checked) {
       selectedColumnIdsSet.add(id);
     } else {
+      if (selectedColumnIdsSet.size === 1 && selectedColumnIdsSet.has(id)) {
+        // Don't allow unchecking the last column
+        return;
+      }
       selectedColumnIdsSet.delete(id);
     }
     setNewSelectedColumnIds([...selectedColumnIdsSet]);
