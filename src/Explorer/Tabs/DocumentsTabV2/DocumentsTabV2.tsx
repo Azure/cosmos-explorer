@@ -448,7 +448,7 @@ export interface IDocumentsTabComponentProps {
 type ExtendedDocumentId = DocumentId & { tableFields?: DocumentsTableComponentItem };
 
 // This is based on some heuristics
-const calculateOffset = (columnNumber: number): number => columnNumber * 13.71428571 - 46;
+const calculateOffset = (columnNumber: number): number => columnNumber * 16 - 59;
 
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
