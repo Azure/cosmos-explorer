@@ -27,7 +27,7 @@ import {
 } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { updateUserContext, userContext } from "UserContext";
-import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
@@ -172,12 +172,17 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       });
       const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
       if (!userContext.features.enableAadDataPlane) {
-        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
+        try {
+          const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
 
-        if (keys.primaryMasterKey) {
-          updateUserContext({ masterKey: keys.primaryMasterKey });
+          if (keys.primaryMasterKey) {
+            updateUserContext({ masterKey: keys.primaryMasterKey });
 
-          useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+            useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+          }
+        } catch (error) {
+          logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+          throw error;
         }
       }
     }
