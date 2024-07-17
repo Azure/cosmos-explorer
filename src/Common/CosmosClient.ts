@@ -19,10 +19,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
   const dataPlaneRBACOptionEnabled = userContext.dataPlaneRbacEnabled && userContext.apiType === "SQL";
-  if (
-    userContext.features.enableAadDataPlane ||
-    (!userContext.features.enableAadDataPlane && dataPlaneRBACOptionEnabled)
-  ) {
+  if (userContext.features.enableAadDataPlane || dataPlaneRBACOptionEnabled) {
     Logger.logInfo(
       `AAD Data Plane Feature flag set to ${userContext.features.enableAadDataPlane} for account with disable local auth ${userContext.databaseAccount.properties.disableLocalAuth} `,
       "Explorer/tokenProvider",
