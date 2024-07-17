@@ -143,6 +143,21 @@ export function createContextCommandBarButtons(
     buttons.push(newMongoShellBtn);
   }
 
+  if (useNotebook.getState().isShellEnabled && !selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Cassandra") {
+    const label: string = "Open Cassandra Shell";
+    const newCassandraShellButton: CommandButtonComponentProps = {
+      iconSrc: HostedTerminalIcon,
+      iconAlt: label,
+      onCommandClick: () => {
+        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+      },
+      commandButtonLabel: label,
+      ariaLabel: label,
+      hasPopup: true,
+    };
+    buttons.push(newCassandraShellButton);
+  }
+
   return buttons;
 }
 

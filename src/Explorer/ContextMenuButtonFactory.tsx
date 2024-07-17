@@ -100,6 +100,16 @@ export const createCollectionContextMenuButton = (
     });
   }
 
+  if (useNotebook.getState().isShellEnabled && userContext.apiType === "Cassandra") {
+    items.push({
+      iconSrc: HostedTerminalIcon,
+      onClick: () => {
+        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+      },
+      label: "Open Cassandra Shell"
+    });
+  }
+
   if (
     configContext.platform !== Platform.Fabric &&
     (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
