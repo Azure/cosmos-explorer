@@ -338,18 +338,6 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
         );
         await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
       }
-    } else {
-      Logger.logInfo(
-        `AAD Feature flag is enabled for account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} `,
-        "Explorer/configureHostedWithAAD",
-      );
-      if (!account.properties.disableLocalAuth) {
-        Logger.logInfo(
-          `Fetching keys for ${userContext.apiType} account ${account.name} with AAD data plane feature enabled`,
-          "Explorer/configureHostedWithAAD",
-        );
-        await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-      }
     }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
@@ -470,7 +458,6 @@ async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string,
     Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
     const keys = await listKeys(subscriptionId, resourceGroup, account);
     Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
-
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
@@ -479,7 +466,7 @@ async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string,
       "Explorer/fetchAndUpdateKeys",
     );
   } catch (error) {
-    console.error("Error during fetching keys or updating user context:", error);
+    logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
     Logger.logError(
       `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
       "Explorer/fetchAndUpdateKeys",
