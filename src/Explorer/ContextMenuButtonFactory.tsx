@@ -106,7 +106,7 @@ export const createCollectionContextMenuButton = (
       onClick: () => {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       },
-      label: "Open Cassandra Shell"
+      label: "Open Cassandra Shell",
     });
   }
 
