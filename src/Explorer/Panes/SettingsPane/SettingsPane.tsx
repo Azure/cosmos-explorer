@@ -171,7 +171,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         hasDataPlaneRbacSettingChanged: true,
       });
       const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-      if (!userContext.features.enableAadDataPlane) {
+      if (!userContext.features.enableAadDataPlane && !userContext.masterKey) {
         try {
           const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
 
