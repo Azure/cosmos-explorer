@@ -11,6 +11,6 @@ export const emulatorAccount = {
     tableEndpoint: "",
     gremlinEndpoint: "",
     cassandraEndpoint: "",
-    capabilities: [{"name": "EnableNoSqlVectorSearch"}]
+    capabilities: [{"name": "EnableNoSqlVectorSearch", description: "Enable Vector Search on NoSQL account"}]
   },
 };
