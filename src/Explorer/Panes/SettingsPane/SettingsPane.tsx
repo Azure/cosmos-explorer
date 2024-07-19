@@ -36,8 +36,7 @@ import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { AuthType } from "AuthType";
 import create, { UseStore } from "zustand";
-import { DatabaseAccountListKeysResult } from "@azure/arm-cosmosdb/esm/models";
-import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
@@ -172,18 +171,25 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       });
       const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
       if (!userContext.features.enableAadDataPlane && !userContext.masterKey) {
+        let keys;
         try {
-          const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-
-          if (keys.primaryMasterKey) {
-            updateUserContext({ masterKey: keys.primaryMasterKey });
-
-            useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
-          }
+          keys = await listKeys(subscriptionId, resourceGroup, account.name);
+          updateUserContext({
+            masterKey: keys.primaryMasterKey,
+          });
         } catch (error) {
-          logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
-          throw error;
+          // if listKeys fail because of permissions issue, then make call to get ReadOnlyKeys
+          if (error.code === "AuthorizationFailed") {
+            keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account.name);
+            updateUserContext({
+              masterKey: keys.primaryReadonlyMasterKey,
+            });
+          } else {
+            logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+            throw error;
+          }
         }
+        useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
       }
     }
 
