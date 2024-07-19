@@ -453,25 +453,33 @@ function configureEmulator(): Explorer {
   return explorer;
 }
 
-async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+  Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
+  let keys;
   try {
-    Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
-    const keys = await listKeys(subscriptionId, resourceGroup, account);
+    keys = await listKeys(subscriptionId, resourceGroup, account);
     Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
-    Logger.logInfo(
-      `User context updated with Master key for ${userContext.apiType} account ${account}`,
-      "Explorer/fetchAndUpdateKeys",
-    );
   } catch (error) {
-    logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
-    Logger.logError(
-      `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
-      "Explorer/fetchAndUpdateKeys",
-    );
-    throw error;
+    if (error.code === "AuthorizationFailed") {
+      keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account);
+      Logger.logInfo(
+        `Read only Keys fetched for ${userContext.apiType} account ${account}`,
+        "Explorer/fetchAndUpdateKeys",
+      );
+      updateUserContext({
+        masterKey: keys.primaryReadonlyMasterKey,
+      });
+    } else {
+      logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+      Logger.logError(
+        `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
+        "Explorer/fetchAndUpdateKeys",
+      );
+      throw error;
+    }
   }
 }
 
