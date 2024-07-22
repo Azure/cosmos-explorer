@@ -24,9 +24,9 @@ import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/
 import {
   DocumentsTabStateData,
   readDocumentsTabState,
-  readFilterHistory,
+  readSubComponentState,
   saveDocumentsTabState,
-  saveFilterHistory,
+  saveSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -521,7 +521,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // User's filter history
   const [lastFilterContents, setLastFilterContents] = useState<string[]>(() =>
-    readFilterHistory(_collection.databaseId, _collection.id()),
+    readSubComponentState("FilterHistory", _collection, []),
   );
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
@@ -1690,7 +1690,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     // Save filter content to local storage
     lastFilterContents.unshift(filterContent);
     setLastFilterContents([...lastFilterContents]);
-    saveFilterHistory(_collection.databaseId, _collection.id(), lastFilterContents);
+    saveSubComponentState("FilterHistory", _collection, lastFilterContents);
   };
 
   const refreshDocumentsGrid = useCallback(

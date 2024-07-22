@@ -1,4 +1,5 @@
 import {
+  createTableColumn,
   Menu,
   MenuItem,
   MenuList,
@@ -16,14 +17,18 @@ import {
   TableRow,
   TableRowId,
   TableSelectionCell,
-  createTableColumn,
   useArrowNavigationGroup,
   useTableColumnSizing_unstable,
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
 import { NormalizedEventKey } from "Common/Constants";
-import { readColumnSizes, saveColumnSizes } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
+import {
+  ColumnSizesMap,
+  readSubComponentState,
+  saveSubComponentState,
+  WidthDefinition,
+} from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
 import React, { useCallback, useMemo } from "react";
@@ -60,6 +65,11 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
   data: TableRowData[];
 }
 
+const defaultSize: WidthDefinition = {
+  idealWidth: 200,
+  minWidth: 50,
+};
+
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
   onSelectedRowsChange,
@@ -70,9 +80,15 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   isSelectionDisabled,
   collection,
 }: IDocumentsTableComponentProps) => {
-  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() =>
-    readColumnSizes(collection.databaseId, collection.id(), ["id"].concat(columnHeaders.partitionKeyHeaders)),
-  );
+  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
+    const columnIds = ["id"].concat(columnHeaders.partitionKeyHeaders);
+    const columnSizesMap: ColumnSizesMap = readSubComponentState("ColumnSizes", collection, {});
+    const columnSizesPx: ColumnSizesMap = {};
+    columnIds.forEach((columnId) => {
+      columnSizesPx[columnId] = (columnSizesMap && columnSizesMap[columnId]) || defaultSize;
+    });
+    return columnSizesPx;
+  });
 
   const onColumnResize = React.useCallback((_, { columnId, width }) => {
     setColumnSizingOptions((state) => {
@@ -84,7 +100,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         },
       };
 
-      saveColumnSizes(collection.databaseId, collection.id(), newSizingOptions);
+      saveSubComponentState("ColumnSizes", collection, newSizingOptions, true);
 
       return newSizingOptions;
     });
