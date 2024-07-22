@@ -485,6 +485,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
     >
       <Split
         mode="horizontal"
+        onDragEnd={[Function]}
         prefixCls="w-split"
         visiable={true}
       >

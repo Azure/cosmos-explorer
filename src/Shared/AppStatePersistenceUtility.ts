@@ -50,40 +50,26 @@ export const saveStateDebounced = (path: StorePath, state: unknown, debounceDela
   timeoutId = setTimeout(() => saveState(path, state), debounceDelayMs);
 };
 
-// Internal stored state
-// interface ApplicationState {
-//   data: GlobalStateData;
-//   globalAccounts: {
-//     [globalAccountName: string]: {
-//       data: GlobalAccountStateData;
-//       databases: {
-//         [databaseName: string]: {
-//           data: DatabaseStateData;
-//           containers: {
-//             data: ContainerStateData;
-//             [containerName: string]: {
-//               [componentName: string]: BaseStateData;
-//             };
-//           };
-//         };
-//       };
-//     };
-//   };
-// }
-
 interface ApplicationState {
   [statePath: string]: StateData;
 }
 
+const orderedPathSegments: (keyof StorePath)[] = [
+  "subComponentName",
+  "globalAccountName",
+  "databaseName",
+  "containerName",
+];
+
 /**
- * /componentName/globalAccountName/databaseName/containerName/
+ * /componentName/subComponentName/globalAccountName/databaseName/containerName/
  * Any of the path segments can be "" except componentName
  * @param path
  */
 const createKeyFromPath = (path: StorePath): string => {
-  let key = `/${path.componentName}`;
-  ["subComponentName", "globalAccountName", "databaseName", "containerName"].forEach((segment) => {
-    const segmentValue = (path as any)[segment];
+  let key = `/${path.componentName}`; // ComponentName is always there
+  orderedPathSegments.forEach((segment) => {
+    const segmentValue = path[segment as keyof StorePath];
     key += `/${segmentValue !== undefined ? segmentValue : ""}`;
   });
   return key;

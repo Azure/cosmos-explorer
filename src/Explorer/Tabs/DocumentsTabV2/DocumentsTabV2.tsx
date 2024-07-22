@@ -24,7 +24,9 @@ import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/
 import {
   DocumentsTabStateData,
   readDocumentsTabState,
+  readFilterHistory,
   saveDocumentsTabState,
+  saveFilterHistory,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -425,6 +427,24 @@ export const buildQuery = (
   return QueryUtils.buildDocumentsQuery(filter, partitionKeyProperties, partitionKey);
 };
 
+/**
+ * Export to expose to unit tests
+ *
+ * Add array2 to array1 without duplicates
+ * @param array1
+ * @param array2
+ * @return array1 with array2 added without duplicates
+ */
+export const addStringsNoDuplicate = (array1: string[], array2: string[]): string[] => {
+  const result = [...array1];
+  array2.forEach((item) => {
+    if (!result.includes(item)) {
+      result.push(item);
+    }
+  });
+  return result;
+};
+
 // Export to expose to unit tests
 export interface IDocumentsTabComponentProps {
   isPreferredApiMongoDB: boolean;
@@ -438,6 +458,9 @@ export interface IDocumentsTabComponentProps {
   onIsExecutingChange: (isExecuting: boolean) => void;
   isTabActive: boolean;
 }
+
+const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
+const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
@@ -496,6 +519,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   // For Mongo only
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
 
+  // User's filter history
+  const [lastFilterContents, setLastFilterContents] = useState<string[]>(() =>
+    readFilterHistory(_collection.databaseId, _collection.id()),
+  );
+
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
 
   useEffect(() => {
@@ -520,8 +548,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       }
     }
   }, [documentIds, clickedRowIndex, editorState]);
-
-  let lastFilterContents = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 
   const applyFilterButton = {
     enabled: true,
@@ -1377,7 +1403,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return partitionKey;
     };
 
-    lastFilterContents = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
     partitionKeyProperties = partitionKeyProperties?.map((partitionKeyProperty, i) => {
       if (partitionKeyProperty && ~partitionKeyProperty.indexOf(`"`)) {
         partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
@@ -1654,6 +1679,20 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   }
   // ***************** Mongo ***************************
 
+  const onApplyFilterClick = (): void => {
+    refreshDocumentsGrid(true);
+
+    // Remove duplicates, but keep order
+    if (lastFilterContents.includes(filterContent)) {
+      lastFilterContents.splice(lastFilterContents.indexOf(filterContent), 1);
+    }
+
+    // Save filter content to local storage
+    lastFilterContents.unshift(filterContent);
+    setLastFilterContents([...lastFilterContents]);
+    saveFilterHistory(_collection.databaseId, _collection.id(), lastFilterContents);
+  };
+
   const refreshDocumentsGrid = useCallback(
     (applyFilterButtonPressed: boolean): void => {
       // clear documents grid
@@ -1734,7 +1773,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     />
 
                     <datalist id="filtersList">
-                      {lastFilterContents.map((filter) => (
+                      {addStringsNoDuplicate(
+                        lastFilterContents,
+                        isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,
+                      ).map((filter) => (
                         <option key={filter} value={filter} />
                       ))}
                     </datalist>
@@ -1743,7 +1785,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       <Button
                         appearance="primary"
                         style={filterButtonStyle}
-                        onClick={() => refreshDocumentsGrid(true)}
+                        onClick={onApplyFilterClick}
                         disabled={!applyFilterButton.enabled}
                         aria-label="Apply filter"
                         tabIndex={0}

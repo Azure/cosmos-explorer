@@ -1,7 +1,7 @@
 // Definitions of State data
 
 import { TableColumnSizingOptions } from "@fluentui/react-components";
-import { loadState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
+import { loadState, saveState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
 import { userContext } from "UserContext";
 
 // Component states
@@ -70,5 +70,38 @@ export const saveColumnSizes = (databaseName: string, containerName: string, col
       containerName,
     },
     columnSizesMap,
+  );
+};
+
+const filterHistorySubComponentName = "FilterHistory";
+export type FilterHistory = string[];
+export const readFilterHistory = (databaseName: string, containerName: string): FilterHistory => {
+  const globalAccountName = userContext.databaseAccount?.name;
+  // TODO what if databaseAccount doesn't exist?
+
+  const state = loadState({
+    globalAccountName,
+    databaseName,
+    containerName,
+    componentName: ComponentName,
+    subComponentName: filterHistorySubComponentName,
+  }) as FilterHistory;
+
+  return state || [];
+};
+
+export const saveFilterHistory = (databaseName: string, containerName: string, filterHistory: FilterHistory): void => {
+  const globalAccountName = userContext.databaseAccount?.name;
+  // TODO what if databaseAccount doesn't exist?
+
+  saveState(
+    {
+      componentName: ComponentName,
+      subComponentName: filterHistorySubComponentName,
+      globalAccountName,
+      databaseName,
+      containerName,
+    },
+    filterHistory,
   );
 };
