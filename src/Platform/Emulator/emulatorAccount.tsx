@@ -13,7 +13,7 @@ export const emulatorAccount = {
     cassandraEndpoint: "",
     capabilities: [
       {
-        name: "EnableNoSqlVectorSearch",
+        name: "EnableNoSQLVectorSearch",
         description: "Enable Vector Search on NoSQL account",
       },
     ],
