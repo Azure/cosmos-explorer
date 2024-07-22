@@ -21,6 +21,11 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import {
+  DocumentsTabStateData,
+  readDocumentsTabState,
+  saveDocumentsTabState,
+} from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
@@ -479,6 +484,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
+
+  // State
+  const [tabStateData, setTabStateData] = useState<DocumentsTabStateData>(() => readDocumentsTabState());
 
   const isQueryCopilotSampleContainer =
     _collection?.isSampleCollection &&
@@ -1772,7 +1780,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         )}
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
-          <Split>
+          <Split
+            onDragEnd={(preSize: number) => {
+              tabStateData.leftPaneWidthPercent = Math.min(100, Math.max(0, Math.round(100 * preSize) / 100));
+              saveDocumentsTabState(tabStateData);
+              setTabStateData({ ...tabStateData });
+            }}
+          >
             <div
               style={{ minWidth: 120, width: "35%", overflow: "hidden", position: "relative" }}
               ref={tableContainerRef}
@@ -1813,6 +1827,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     (partitionKey.systemKey && !isPreferredApiMongoDB) ||
                     (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
                   }
+                  collection={_collection}
                 />
                 {tableItems.length > 0 && (
                   <a
