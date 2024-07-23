@@ -13,13 +13,14 @@ import {
   SAVE_BUTTON_ID,
   UPDATE_BUTTON_ID,
   UPLOAD_BUTTON_ID,
+  addStringsNoDuplicate,
   buildQuery,
   getDiscardExistingDocumentChangesButtonState,
   getDiscardNewDocumentChangesButtonState,
   getSaveExistingDocumentButtonState,
   getSaveNewDocumentButtonState,
   getTabsButtons,
-  showPartitionKey
+  showPartitionKey,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { ReactWrapper, ShallowWrapper, mount, shallow } from "enzyme";
 import * as ko from "knockout";
@@ -68,7 +69,7 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => { },
+      showOkModalDialog: () => {},
     })),
   },
 }));
@@ -339,7 +340,10 @@ describe("Documents tab (noSql API)", () => {
     const createMockProps = (): IDocumentsTabComponentProps => ({
       isPreferredApiMongoDB: false,
       documentIds: [],
-      collection: undefined,
+      collection: {
+        id: ko.observable<string>("collectionId"),
+        databaseId: "databaseId",
+      } as ViewModels.CollectionBase,
       partitionKey: { kind: "Hash", paths: ["/foo"], version: 2 },
       onLoadStartKey: 0,
       tabTitle: "",
@@ -477,6 +481,10 @@ describe("Documents tab (noSql API)", () => {
 
 describe("Documents tab", () => {
   it("should add strings to array without duplicate", () => {
-    addStringsNoDuplicates(test this);
+    const array1 = ["a", "b", "c"];
+    const array2 = ["b", "c", "d"];
+
+    const array3 = addStringsNoDuplicate(array1, array2);
+    expect(array3).toEqual(["a", "b", "c", "d"]);
   });
 });

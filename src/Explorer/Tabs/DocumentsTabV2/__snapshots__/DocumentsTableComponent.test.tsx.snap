@@ -2,6 +2,12 @@
 
 exports[`DocumentsTableComponent should not render selection column when isSelectionDisabled is true 1`] = `
 <DocumentsTableComponent
+  collection={
+    Object {
+      "databaseId": "db",
+      "id": [Function],
+    }
+  }
   columnHeaders={
     Object {
       "idHeader": "id",
@@ -994,6 +1000,12 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
 
 exports[`DocumentsTableComponent should render documents and partition keys in header 1`] = `
 <DocumentsTableComponent
+  collection={
+    Object {
+      "databaseId": "db",
+      "id": [Function],
+    }
+  }
   columnHeaders={
     Object {
       "idHeader": "id",

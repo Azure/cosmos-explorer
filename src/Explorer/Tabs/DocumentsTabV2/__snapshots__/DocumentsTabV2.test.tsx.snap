@@ -527,6 +527,12 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
             }
           >
             <DocumentsTableComponent
+              collection={
+                Object {
+                  "databaseId": "databaseId",
+                  "id": [Function],
+                }
+              }
               columnHeaders={
                 Object {
                   "idHeader": "id",
