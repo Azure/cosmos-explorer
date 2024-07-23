@@ -25,7 +25,6 @@ import {
   DocumentsTabStateData,
   readDocumentsTabState,
   readSubComponentState,
-  saveDocumentsTabState,
   saveSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
@@ -1827,7 +1826,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           <Split
             onDragEnd={(preSize: number) => {
               tabStateData.leftPaneWidthPercent = Math.min(100, Math.max(0, Math.round(100 * preSize) / 100));
-              saveDocumentsTabState(tabStateData);
+              // saveDocumentsTabState(tabStateData); // Disable saving split position for now
               setTabStateData({ ...tabStateData });
             }}
           >
