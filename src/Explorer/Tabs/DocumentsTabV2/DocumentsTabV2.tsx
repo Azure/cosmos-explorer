@@ -459,6 +459,8 @@ export interface IDocumentsTabComponentProps {
   isTabActive: boolean;
 }
 
+const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collection.databaseId}-${collection.id()}`;
+
 const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 
@@ -1756,7 +1758,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       id="filterInput"
                       ref={filterInput}
                       type="text"
-                      list="filtersList"
+                      list={`filtersList-${getUniqueId(_collection)}`}
                       className={`${filterContent.length === 0 ? "placeholderVisible" : ""}`}
                       style={{ width: "100%" }}
                       title="Type a query predicate or choose one from the list."
@@ -1772,7 +1774,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       onBlur={() => setIsFilterFocused(false)}
                     />
 
-                    <datalist id="filtersList">
+                    <datalist id={`filtersList-${getUniqueId(_collection)}`}>
                       {addStringsNoDuplicate(
                         lastFilterContents,
                         isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,

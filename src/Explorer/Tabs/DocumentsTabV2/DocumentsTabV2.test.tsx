@@ -19,7 +19,7 @@ import {
   getSaveExistingDocumentButtonState,
   getSaveNewDocumentButtonState,
   getTabsButtons,
-  showPartitionKey,
+  showPartitionKey
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { ReactWrapper, ShallowWrapper, mount, shallow } from "enzyme";
 import * as ko from "knockout";
@@ -68,7 +68,7 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => {},
+      showOkModalDialog: () => { },
     })),
   },
 }));
@@ -472,5 +472,11 @@ describe("Documents tab (noSql API)", () => {
 
       expect(mockDeleteDocuments).toHaveBeenCalled();
     });
+  });
+});
+
+describe("Documents tab", () => {
+  it("should add strings to array without duplicate", () => {
+    addStringsNoDuplicates(test this);
   });
 });
