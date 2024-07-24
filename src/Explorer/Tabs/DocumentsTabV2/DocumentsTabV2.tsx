@@ -1,5 +1,5 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, FluentProvider, Input, TableRowId } from "@fluentui/react-components";
+import { Button, FluentProvider, TableRowId } from "@fluentui/react-components";
 import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
@@ -36,6 +36,8 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { format } from "react-string-format";
 import { CSSProperties } from "styled-components";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
@@ -950,8 +952,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-      ? `the selected ${selectedRows.size} documents`
-      : "the selected document";
+        ? `the selected ${selectedRows.size} documents`
+        : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog
@@ -1727,6 +1729,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   return (
     <FluentProvider theme={getPlatformTheme(configContext.platform)} style={{ height: "100%" }}>
       <div className="tab-pane active documentsTab" role="tabpanel" style={{ display: "flex" }}>
+        filterContent: {filterContent}
         {isFilterCreated && (
           <div className="filterdivs">
             {!isFilterExpanded && !isPreferredApiMongoDB && (
@@ -1753,7 +1756,30 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 <div>
                   <div className="editFilterContainer">
                     {!isPreferredApiMongoDB && <span className="filterspan"> SELECT * FROM c </span>}
-                    <Input
+                    <Typeahead
+                      id="filterInput"
+                      style={{ width: "100%", display: "block" }}
+                      // ref={filterInput}
+                      allowNew
+                      // onChange={sel => console.log(`onChange ${JSON.stringify(sel)}`) /*setFilterContent(sel[0] as string)*/}
+                      onChange={sel => setFilterContent(sel[0] as string)}
+                      // onInputChange={text => console.log(`onInputChange ${text}`) /*setFilterContent(sel[0] as string)*/}
+                      onInputChange={text => setFilterContent(text)}
+                      className={`${!filterContent || filterContent.length === 0 ? "placeholderVisible" : ""}`}
+                      // title="Type a query predicate or choose one from the list."
+                      options={addStringsNoDuplicate(
+                        lastFilterContents,
+                        isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,
+                      )}
+                      placeholder={
+                        isPreferredApiMongoDB
+                          ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
+                          : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
+                      }
+                      autoFocus={true}
+                      selected={[filterContent]}
+                    />
+                    {/* <Input
                       id="filterInput"
                       ref={filterInput}
                       type="text"
@@ -1780,7 +1806,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       ).map((filter) => (
                         <option key={filter} value={filter} />
                       ))}
-                    </datalist>
+                    </datalist> */}
 
                     <span className="filterbuttonpad">
                       <Button

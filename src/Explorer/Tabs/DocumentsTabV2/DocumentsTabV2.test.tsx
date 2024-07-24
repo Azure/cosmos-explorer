@@ -69,7 +69,7 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => {},
+      showOkModalDialog: () => { },
     })),
   },
 }));
@@ -480,11 +480,30 @@ describe("Documents tab (noSql API)", () => {
 });
 
 describe("Documents tab", () => {
-  it("should add strings to array without duplicate", () => {
-    const array1 = ["a", "b", "c"];
-    const array2 = ["b", "c", "d"];
+  describe("addStringsNoDuplicate", () => {
+    it("should add strings to array without duplicate", () => {
+      const array1 = ["a", "b", "c"];
+      const array2 = ["b", "c", "d"];
 
-    const array3 = addStringsNoDuplicate(array1, array2);
-    expect(array3).toEqual(["a", "b", "c", "d"]);
+      const array3 = addStringsNoDuplicate(array1, array2);
+      expect(array3).toEqual(["a", "b", "c", "d"]);
+    });
+
+    it("should handle initial empty arrays", () => {
+      const array1: string[] = [];
+      const array2 = ["b", "c", "d"];
+
+      const array3 = addStringsNoDuplicate(array1, array2);
+      expect(array3).toEqual(["b", "c", "d"]);
+    });
+
+    it("should handle adding empty arrays", () => {
+      const array1 = ["a", "b", "c"];
+      const array2: string[] = [];
+
+      const array3 = addStringsNoDuplicate(array1, array2);
+      expect(array3).toEqual(["a", "b", "c"]);
+    });
+
   });
 });
