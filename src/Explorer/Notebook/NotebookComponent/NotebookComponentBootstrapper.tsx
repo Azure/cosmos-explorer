@@ -2,22 +2,13 @@
 import { Link } from "@fluentui/react";
 import { CellId, CellType, ImmutableNotebook } from "@nteract/commutable";
 // Vendor modules
-import {
-  actions,
-  AppState,
-  ContentRef,
-  DocumentRecordProps,
-  KernelRef,
-  NotebookContentRecord,
-  selectors,
-} from "@nteract/core";
+import { actions, AppState, ContentRef, KernelRef, NotebookContentRecord, selectors } from "@nteract/core";
 import "@nteract/styles/editor-overrides.css";
 import "@nteract/styles/global-variables.css";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/lib/codemirror.css";
 import { Notebook } from "Common/Constants";
 import { useDialog } from "Explorer/Controls/Dialog";
-import * as Immutable from "immutable";
 import * as React from "react";
 import { Provider } from "react-redux";
 import "react-table/react-table.css";
@@ -315,7 +306,8 @@ export class NotebookComponentBootstrapper {
       return false;
     }
 
-    return selectors.notebook.isDirty(content.model as Immutable.RecordOf<DocumentRecordProps>);
+    // TODO Fix this typing here
+    return selectors.notebook.isDirty(content.model as never);
   }
 
   public isNotebookUntrusted(): boolean {

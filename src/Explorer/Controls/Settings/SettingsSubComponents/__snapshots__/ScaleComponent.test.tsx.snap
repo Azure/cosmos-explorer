@@ -3,7 +3,7 @@
 exports[`ScaleComponent renders with correct initial notification 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
@@ -14,8 +14,8 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
     <Text
       id="throughputApplyLongDelayMessage"
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "color": "windowtext",
             "fontSize": 14,
           },
@@ -30,7 +30,7 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
   </StyledMessageBar>
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 20,
       }
     }
