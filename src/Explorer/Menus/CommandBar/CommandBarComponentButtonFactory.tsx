@@ -1,6 +1,7 @@
 import { KeyboardAction } from "KeyboardShortcuts";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
@@ -8,6 +9,7 @@ import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
 import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
+import EntraIDIcon from "../../../../images/EntraID.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
@@ -15,7 +17,6 @@ import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
-import EntraIDIcon from "../../../../images/EntraID.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
@@ -34,7 +35,6 @@ import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
-import { useEffect, useState } from "react";
 
 let counter = 0;
 
@@ -159,6 +159,25 @@ export function createContextCommandBarButtons(
       hasPopup: true,
     };
     buttons.push(newMongoShellBtn);
+  }
+
+  if (
+    useNotebook.getState().isShellEnabled &&
+    !selectedNodeState.isDatabaseNodeOrNoneSelected() &&
+    userContext.apiType === "Cassandra"
+  ) {
+    const label: string = "Open Cassandra Shell";
+    const newCassandraShellButton: CommandButtonComponentProps = {
+      iconSrc: HostedTerminalIcon,
+      iconAlt: label,
+      onCommandClick: () => {
+        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+      },
+      commandButtonLabel: label,
+      ariaLabel: label,
+      hasPopup: true,
+    };
+    buttons.push(newCassandraShellButton);
   }
 
   return buttons;

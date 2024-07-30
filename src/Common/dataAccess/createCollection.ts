@@ -269,6 +269,7 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
     indexingPolicy: params.indexingPolicy || undefined,
     uniqueKeyPolicy: params.uniqueKeyPolicy || undefined,
     analyticalStorageTtl: params.analyticalStorageTtl,
+    vectorEmbeddingPolicy: params.vectorEmbeddingPolicy,
   } as ContainerRequest; // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
   const collectionOptions: RequestOptions = {};
   const createDatabaseBody: DatabaseRequest = { id: params.databaseId };
