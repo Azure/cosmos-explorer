@@ -10,7 +10,7 @@ export class QueryErrorLocation {
   constructor(
     public start: ErrorPosition,
     public end: ErrorPosition,
-  ) { }
+  ) {}
 }
 
 export class ErrorPosition {
@@ -18,7 +18,7 @@ export class ErrorPosition {
     public offset: number,
     public lineNumber?: number,
     public column?: number,
-  ) { }
+  ) {}
 }
 
 // Maps severities to numbers for sorting.
@@ -87,7 +87,7 @@ export default class QueryError {
     public severity: QueryErrorSeverity,
     public code?: string,
     public location?: QueryErrorLocation,
-  ) { }
+  ) {}
 
   getMonacoSeverity(): monaco.MarkerSeverity {
     // It's very difficult to use the monaco.MarkerSeverity enum from here, so we'll just use the numbers directly.
@@ -146,7 +146,9 @@ export default class QueryError {
     const severity =
       "severity" in error && typeof error.severity === "string" ? (error.severity as QueryErrorSeverity) : undefined;
     const location =
-      "location" in error && typeof error.location === "object" ? locationResolver(error.location as { start: number, end: number }) : undefined;
+      "location" in error && typeof error.location === "object"
+        ? locationResolver(error.location as { start: number; end: number })
+        : undefined;
     const code = "code" in error && typeof error.code === "string" ? error.code : undefined;
     return new QueryError(message, severity, code, location);
   }
