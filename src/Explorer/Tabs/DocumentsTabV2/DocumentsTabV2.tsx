@@ -1,5 +1,17 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, FluentProvider, Input, TableRowId } from "@fluentui/react-components";
+import {
+  Button,
+  FluentProvider,
+  Input,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuProps,
+  PositioningImperativeRef,
+  TableRowId,
+  useRestoreFocusTarget,
+} from "@fluentui/react-components";
 import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
 import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
@@ -1338,6 +1350,26 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return () => resizeObserver.disconnect(); // clean up
   }, []);
 
+  const [filterMenuOpen, setFilterMenuOpen] = React.useState(false);
+  const onFilterMenuOpenChange: MenuProps["onOpenChange"] = (e, data) => {
+    // do not close menu as an outside click if clicking on the custom trigger/target
+    // this prevents it from closing & immediately re-opening when clicking custom triggers
+    if (data.type === "clickOutside" && (e.target === filterInput.current || e.target === inputRef.current)) {
+      return;
+    }
+    setFilterMenuOpen(data.open);
+  };
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const positioningRef = React.useRef<PositioningImperativeRef>(null);
+
+  React.useEffect(() => {
+    if (filterInput.current) {
+      positioningRef.current?.setTarget(filterInput.current);
+    }
+  }, [filterInput, positioningRef]);
+
+  const restoreFocusTargetAttribute = useRestoreFocusTarget();
+
   const columnHeaders = {
     idHeader: isPreferredApiMongoDB ? "_id" : "id",
     partitionKeyHeaders: (showPartitionKey(_collection, isPreferredApiMongoDB) && partitionKeyPropertyHeaders) || [],
@@ -1756,6 +1788,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     <Input
                       id="filterInput"
                       ref={filterInput}
+                      {...restoreFocusTargetAttribute}
+                      autocomplete="off"
                       type="text"
                       list={`filtersList-${getUniqueId(_collection)}`}
                       className={`${filterContent.length === 0 ? "placeholderVisible" : ""}`}
@@ -1769,18 +1803,32 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       value={filterContent}
                       autoFocus={true}
                       onKeyDown={onFilterKeyDown}
-                      onChange={(e) => setFilterContent(e.target.value)}
+                      onChange={(e) => {
+                        setFilterContent(e.target.value);
+                        setFilterMenuOpen(true);
+                      }}
                       onBlur={() => setIsFilterFocused(false)}
                     />
-
-                    <datalist id={`filtersList-${getUniqueId(_collection)}`}>
+                    <Menu open={filterMenuOpen} onOpenChange={onFilterMenuOpenChange} positioning={{ positioningRef }}>
+                      <MenuPopover>
+                        <MenuList>
+                          {addStringsNoDuplicate(
+                            lastFilterContents,
+                            isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,
+                          ).map((filter) => (
+                            <MenuItem key={filter}>{filter}</MenuItem>
+                          ))}
+                        </MenuList>
+                      </MenuPopover>
+                    </Menu>
+                    {/* <datalist id={`filtersList-${getUniqueId(_collection)}`}>
                       {addStringsNoDuplicate(
                         lastFilterContents,
                         isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,
                       ).map((filter) => (
                         <option key={filter} value={filter} />
                       ))}
-                    </datalist>
+                    </datalist> */}
 
                     <span className="filterbuttonpad">
                       <Button
