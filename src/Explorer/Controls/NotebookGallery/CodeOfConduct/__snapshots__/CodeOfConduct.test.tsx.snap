@@ -3,7 +3,7 @@
 exports[`CodeOfConduct renders 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
@@ -11,7 +11,7 @@ exports[`CodeOfConduct renders 1`] = `
   <StackItem>
     <Text
       style={
-        Object {
+        {
           "fontSize": "20px",
           "fontWeight": 500,
         }
@@ -41,12 +41,12 @@ exports[`CodeOfConduct renders 1`] = `
       label="I have read and accept the code of conduct."
       onChange={[Function]}
       styles={
-        Object {
-          "label": Object {
+        {
+          "label": {
             "margin": 0,
             "padding": "2 0 2 0",
           },
-          "text": Object {
+          "text": {
             "fontSize": 12,
           },
         }

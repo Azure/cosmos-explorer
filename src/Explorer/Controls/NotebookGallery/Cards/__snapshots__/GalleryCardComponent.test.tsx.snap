@@ -4,8 +4,8 @@ exports[`GalleryCardComponent renders 1`] = `
 <StyledDocumentCardBase
   aria-label="name"
   styles={
-    Object {
-      "root": Object {
+    {
+      "root": {
         "display": "inline-block",
         "marginRight": 20,
         "width": 256,
@@ -16,8 +16,8 @@ exports[`GalleryCardComponent renders 1`] = `
   <StyledDocumentCardActivityBase
     activity="Invalid Date"
     people={
-      Array [
-        Object {
+      [
+        {
           "name": "author",
           "profileImageSrc": false,
         },
@@ -26,8 +26,8 @@ exports[`GalleryCardComponent renders 1`] = `
   />
   <StyledDocumentCardPreviewBase
     previewImages={
-      Array [
-        Object {
+      [
+        {
           "height": 144,
           "imageFit": 2,
           "previewImageSrc": "thumbnailUrl",
@@ -40,8 +40,8 @@ exports[`GalleryCardComponent renders 1`] = `
     <Text
       nowrap={true}
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "height": 18,
             "padding": "2px 16px",
           },
@@ -69,15 +69,15 @@ exports[`GalleryCardComponent renders 1`] = `
     />
     <span
       style={
-        Object {
+        {
           "padding": "8px 16px",
         }
       }
     >
       <Text
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "color": "#605E5C",
               "paddingRight": 8,
             },
@@ -88,8 +88,8 @@ exports[`GalleryCardComponent renders 1`] = `
         <Icon
           iconName="RedEye"
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "verticalAlign": "middle",
               },
             }
@@ -100,8 +100,8 @@ exports[`GalleryCardComponent renders 1`] = `
       </Text>
       <Text
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "color": "#605E5C",
               "paddingRight": 8,
             },
@@ -112,8 +112,8 @@ exports[`GalleryCardComponent renders 1`] = `
         <Icon
           iconName="Download"
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "verticalAlign": "middle",
               },
             }
@@ -124,8 +124,8 @@ exports[`GalleryCardComponent renders 1`] = `
       </Text>
       <Text
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "color": "#605E5C",
               "paddingRight": 8,
             },
@@ -136,8 +136,8 @@ exports[`GalleryCardComponent renders 1`] = `
         <Icon
           iconName="Heart"
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "verticalAlign": "middle",
               },
             }
@@ -151,8 +151,8 @@ exports[`GalleryCardComponent renders 1`] = `
   <StyledDocumentCardDetailsBase>
     <Separator
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "height": 1,
             "padding": 0,
           },
@@ -161,22 +161,22 @@ exports[`GalleryCardComponent renders 1`] = `
     />
     <span
       style={
-        Object {
+        {
           "padding": "0px 16px",
         }
       }
     >
       <StyledTooltipHostBase
         calloutProps={
-          Object {
+          {
             "gapSpace": 0,
           }
         }
         content="Favorite"
         id="TooltipHost-IconButton-Heart"
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "display": "inline-block",
               "float": "left",
             },
@@ -186,7 +186,7 @@ exports[`GalleryCardComponent renders 1`] = `
         <CustomizedIconButton
           ariaLabel="Favorite"
           iconProps={
-            Object {
+            {
               "iconName": "Heart",
             }
           }
@@ -196,15 +196,15 @@ exports[`GalleryCardComponent renders 1`] = `
       </StyledTooltipHostBase>
       <StyledTooltipHostBase
         calloutProps={
-          Object {
+          {
             "gapSpace": 0,
           }
         }
         content="Download"
         id="TooltipHost-IconButton-Download"
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "display": "inline-block",
               "float": "left",
             },
@@ -214,7 +214,7 @@ exports[`GalleryCardComponent renders 1`] = `
         <CustomizedIconButton
           ariaLabel="Download"
           iconProps={
-            Object {
+            {
               "iconName": "Download",
             }
           }
@@ -224,15 +224,15 @@ exports[`GalleryCardComponent renders 1`] = `
       </StyledTooltipHostBase>
       <StyledTooltipHostBase
         calloutProps={
-          Object {
+          {
             "gapSpace": 0,
           }
         }
         content="Remove"
         id="TooltipHost-IconButton-Delete"
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "display": "inline-block",
               "float": "right",
             },
@@ -242,7 +242,7 @@ exports[`GalleryCardComponent renders 1`] = `
         <CustomizedIconButton
           ariaLabel="Remove"
           iconProps={
-            Object {
+            {
               "iconName": "Delete",
             }
           }

@@ -3,60 +3,60 @@
 exports[`More button snapshot tests should render 1`] = `
 <CustomizedIconButton
   iconProps={
-    Object {
+    {
       "iconName": "More",
     }
   }
   menuIconProps={
-    Object {
+    {
       "hidden": true,
     }
   }
   menuProps={
-    Object {
-      "calloutProps": Object {
-        "styles": Object {
-          "calloutMain": Object {
+    {
+      "calloutProps": {
+        "styles": {
+          "calloutMain": {
             "borderRadius": "4px",
           },
-          "root": Object {
+          "root": {
             "borderRadius": "4px",
           },
         },
       },
       "directionalHint": 2,
-      "items": Array [
-        Object {
-          "iconProps": Object {
-            "imageProps": Object {
-              "src": Object {},
+      "items": [
+        {
+          "iconProps": {
+            "imageProps": {
+              "src": {},
             },
           },
           "key": "regenerate",
           "text": "Regenerate code",
         },
-        Object {
-          "iconProps": Object {
-            "imageProps": Object {
-              "src": Object {},
+        {
+          "iconProps": {
+            "imageProps": {
+              "src": {},
             },
           },
           "key": "explain",
           "text": "Explain code",
         },
-        Object {
-          "iconProps": Object {
-            "imageProps": Object {
-              "src": Object {},
+        {
+          "iconProps": {
+            "imageProps": {
+              "src": {},
             },
           },
           "key": "optimize",
           "text": "Optimize",
         },
-        Object {
-          "iconProps": Object {
-            "imageProps": Object {
-              "src": Object {},
+        {
+          "iconProps": {
+            "imageProps": {
+              "src": {},
             },
           },
           "key": "simplify",

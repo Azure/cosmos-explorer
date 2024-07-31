@@ -2354,6 +2354,7 @@ a:link {
   height: 100%;
   display: grid;
   grid-template-rows: 36px 36px 1fr;
+  min-width: 0; // This prevents it to grow past the parent's width if its content is too wide
 }
 
 .tabs {

@@ -146,6 +146,9 @@ export class DocumentsTabV2 extends TabsBase {
 // Use this value to initialize the very time the component is rendered
 const RESET_INDEX = -1;
 
+// Auto-select first row. Define as constant to show where first row is selected
+export const INITIAL_SELECTED_ROW_INDEX = 0;
+
 // From TabsBase.renderObjectForEditor()
 let renderObjectForEditor = (
   value: unknown,
@@ -557,8 +560,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         currentClickedRowIndex > documentIds.length - 1
       ) {
         // reset clicked row or the current clicked row is out of bounds
-        currentClickedRowIndex = 0;
-        setSelectedRows(new Set([0]));
+        currentClickedRowIndex = INITIAL_SELECTED_ROW_INDEX;
+        setSelectedRows(new Set([INITIAL_SELECTED_ROW_INDEX]));
         onDocumentClicked(currentClickedRowIndex, documentIds);
       }
     }

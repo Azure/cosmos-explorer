@@ -36,21 +36,21 @@ describe("The Heatmap Control", () => {
     });
 
     it("should call _getChartSettings when drawHeatmap is invoked", () => {
-      const _getChartSettings = spyOn<any>(heatmap, "_getChartSettings");
+      const _getChartSettings = jest.spyOn(heatmap, "_getChartSettings");
       heatmap.drawHeatmap();
-      expect(_getChartSettings.calls.any()).toBe(true);
+      expect(_getChartSettings).toHaveBeenCalled();
     });
 
     it("should call _getLayoutSettings when drawHeatmap is invoked", () => {
-      const _getLayoutSettings = spyOn<any>(heatmap, "_getLayoutSettings");
+      const _getLayoutSettings = jest.spyOn(heatmap, "_getLayoutSettings");
       heatmap.drawHeatmap();
-      expect(_getLayoutSettings.calls.any()).toBe(true);
+      expect(_getLayoutSettings).toHaveBeenCalled();
     });
 
     it("should call _getChartDisplaySettings when drawHeatmap is invoked", () => {
-      const _getChartDisplaySettings = spyOn<any>(heatmap, "_getChartDisplaySettings");
+      const _getChartDisplaySettings = jest.spyOn(heatmap, "_getChartDisplaySettings");
       heatmap.drawHeatmap();
-      expect(_getChartDisplaySettings.calls.any()).toBe(true);
+      expect(_getChartDisplaySettings).toHaveBeenCalled();
     });
 
     it("drawHeatmap should render a Heatmap inside the div element", () => {

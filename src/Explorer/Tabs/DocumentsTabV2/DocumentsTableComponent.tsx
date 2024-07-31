@@ -23,7 +23,7 @@ import {
   useTableSelection,
 } from "@fluentui/react-components";
 import { NormalizedEventKey } from "Common/Constants";
-import { useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
+import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
@@ -127,7 +127,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     [columnHeaders],
   );
 
-  const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(undefined);
+  const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(INITIAL_SELECTED_ROW_INDEX);
   const onTableCellClicked = useCallback(
     (e: React.MouseEvent, index: number) => {
       if (isSelectionDisabled) {
