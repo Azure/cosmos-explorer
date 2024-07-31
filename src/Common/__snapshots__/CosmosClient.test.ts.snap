@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`requestPlugin Emulator builds a url for emulator proxy via webpack 1`] = `
-Object {
+{
   "endpoint": "http://localhost/proxy",
-  "headers": Object {
+  "headers": {
     "x-ms-proxy-target": "http://localhost",
   },
   "path": "/dbs/foo",
@@ -11,9 +11,9 @@ Object {
 `;
 
 exports[`requestPlugin Hosted builds a proxy URL in development 1`] = `
-Object {
+{
   "endpoint": "http://localhost/proxy",
-  "headers": Object {
+  "headers": {
     "x-ms-proxy-target": "baz",
   },
   "path": "/dbs/foo",

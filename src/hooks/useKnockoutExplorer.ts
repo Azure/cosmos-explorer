@@ -40,7 +40,7 @@ import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
-import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import * as Logger from "../Common/Logger";
@@ -338,18 +338,6 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
         );
         await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
       }
-    } else {
-      Logger.logInfo(
-        `AAD Feature flag is enabled for account ${account.name} with disable local auth set to ${account.properties.disableLocalAuth} `,
-        "Explorer/configureHostedWithAAD",
-      );
-      if (!account.properties.disableLocalAuth) {
-        Logger.logInfo(
-          `Fetching keys for ${userContext.apiType} account ${account.name} with AAD data plane feature enabled`,
-          "Explorer/configureHostedWithAAD",
-        );
-        await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
-      }
     }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
@@ -465,26 +453,33 @@ function configureEmulator(): Explorer {
   return explorer;
 }
 
-async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+  Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
+  let keys;
   try {
-    Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
-    const keys = await listKeys(subscriptionId, resourceGroup, account);
+    keys = await listKeys(subscriptionId, resourceGroup, account);
     Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
-
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
-    Logger.logInfo(
-      `User context updated with Master key for ${userContext.apiType} account ${account}`,
-      "Explorer/fetchAndUpdateKeys",
-    );
   } catch (error) {
-    console.error("Error during fetching keys or updating user context:", error);
-    Logger.logError(
-      `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
-      "Explorer/fetchAndUpdateKeys",
-    );
-    throw error;
+    if (error.code === "AuthorizationFailed") {
+      keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account);
+      Logger.logInfo(
+        `Read only Keys fetched for ${userContext.apiType} account ${account}`,
+        "Explorer/fetchAndUpdateKeys",
+      );
+      updateUserContext({
+        masterKey: keys.primaryReadonlyMasterKey,
+      });
+    } else {
+      logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+      Logger.logError(
+        `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
+        "Explorer/fetchAndUpdateKeys",
+      );
+      throw error;
+    }
   }
 }
 
