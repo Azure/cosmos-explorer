@@ -1755,6 +1755,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     {!isPreferredApiMongoDB && <span className="filterspan"> SELECT * FROM c </span>}
                     <Input
                       id="filterInput"
+                      autoComplete="off"
                       ref={filterInput}
                       type="text"
                       list={`filtersList-${getUniqueId(_collection)}`}
