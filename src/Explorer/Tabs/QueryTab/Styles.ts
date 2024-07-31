@@ -76,7 +76,7 @@ export const useQueryTabStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     width: "100%",
-    alignItems: "baseline",
+    alignItems: "center",
   },
   errorListMessage: {
     flexGrow: 1,

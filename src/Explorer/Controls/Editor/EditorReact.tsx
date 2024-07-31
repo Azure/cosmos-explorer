@@ -108,7 +108,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
     if (this.props.content !== existingContent) {
       if (this.props.isReadOnly) {
-        this.editor.setValue(this.props.content);
+        this.editor.setValue(this.props.content || ""); // Monaco throws an error if you set the value to undefined.
       } else {
         this.editor.pushUndoStop();
         this.editor.executeEdits("", [
