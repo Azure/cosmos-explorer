@@ -16,7 +16,8 @@ declare global {
     gitSha: string;
   }
 
+  // msSaveBlob has been removed from typescript 4.4, but not completely deprecated from browsers
   interface Navigator {
-    msSaveBlob?: (blob: Blob, defaultName?: string) => boolean;
+    msSaveBlob?: (blob: any, defaultName?: string) => boolean;
   }
 }

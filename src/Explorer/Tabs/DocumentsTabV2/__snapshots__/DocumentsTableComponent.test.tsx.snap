@@ -3,25 +3,25 @@
 exports[`DocumentsTableComponent should not render selection column when isSelectionDisabled is true 1`] = `
 <DocumentsTableComponent
   columnHeaders={
-    Object {
+    {
       "idHeader": "id",
-      "partitionKeyHeaders": Array [
+      "partitionKeyHeaders": [
         "partitionKey",
       ],
     }
   }
   isSelectionDisabled={true}
   items={
-    Array [
-      Object {
+    [
+      {
         "id": "1",
         "partitionKey": "pk1",
       },
-      Object {
+      {
         "id": "2",
         "partitionKey": "pk2",
       },
-      Object {
+      {
         "id": "3",
         "partitionKey": "pk3",
       },
@@ -31,7 +31,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
   onSelectedRowsChange={[Function]}
   selectedRows={Set {}}
   size={
-    Object {
+    {
       "height": 0,
       "width": 0,
     }
@@ -40,12 +40,12 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
   <Table
     aria-label="Filtered documents table"
     className="documentsTable"
-    data-tabster="{\\"mover\\":{\\"cyclic\\":false,\\"direction\\":3,\\"memorizeCurrent\\":true}}"
+    data-tabster="{"mover":{"cyclic":false,"direction":3,"memorizeCurrent":true}}"
     noNativeElements={true}
     role="grid"
     size="extra-small"
     style={
-      Object {
+      {
         "minWidth": "fit-content",
       }
     }
@@ -53,10 +53,10 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
     <div
       aria-label="Filtered documents table"
       className="fui-Table documentsTable ___1kbqy50_18rlg51 fgkb47j fhovq9v ftgm304"
-      data-tabster="{\\"mover\\":{\\"cyclic\\":false,\\"direction\\":3,\\"memorizeCurrent\\":true}}"
+      data-tabster="{"mover":{"cyclic":false,"direction":3,"memorizeCurrent":true}}"
       role="grid"
       style={
-        Object {
+        {
           "minWidth": "fit-content",
         }
       }
@@ -70,7 +70,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
         >
           <TableRow
             style={
-              Object {
+              {
                 "width": -15,
               }
             }
@@ -79,7 +79,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
               className="fui-TableRow ___fjp17h0_1kcw78z f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w fy9rknc f22iagw f122n59"
               role="row"
               style={
-                Object {
+                {
                   "width": -15,
                 }
               }
@@ -90,13 +90,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
               >
                 <ContextSelector.Provider
                   value={
-                    Object {
-                      "checkedValues": Object {},
+                    {
+                      "checkedValues": {},
                       "hasCheckmarks": false,
                       "hasIcons": false,
                       "inline": false,
                       "isSubmenu": false,
-                      "menuPopoverRef": Object {
+                      "menuPopoverRef": {
                         "current": null,
                       },
                       "mountNode": null,
@@ -107,10 +107,10 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       "persistOnItemClick": false,
                       "setOpen": [Function],
                       "triggerId": "menu17",
-                      "triggerRef": Object {
+                      "triggerRef": {
                         "current": <div
                           class="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                          data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                          data-tabster="{"restorer":{"type":1}}"
                           id="menu17"
                           role="columnheader"
                           style="width: 50px; min-width: 50px; max-width: 50px;"
@@ -129,7 +129,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                               aria-label="Resize column"
                               aria-valuetext="50 pixels"
                               class="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                               role="separator"
                             />
                           </span>
@@ -147,7 +147,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           aria-hidden={true}
                           aria-label="Resize column"
                           aria-valuetext="50 pixels"
-                          data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                          data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                           onBlur={[Function]}
                           onKeyDown={[Function]}
                           onMouseDown={[Function]}
@@ -156,7 +156,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         />
                       }
                       className="documentsTableCell"
-                      data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                      data-tabster="{"restorer":{"type":1}}"
                       id="menu17"
                       key="id"
                       onContextMenu={[Function]}
@@ -164,7 +164,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       onMouseLeave={[Function]}
                       onMouseMove={[Function]}
                       style={
-                        Object {
+                        {
                           "maxWidth": 50,
                           "minWidth": 50,
                           "width": 50,
@@ -173,7 +173,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     >
                       <div
                         className="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                        data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                        data-tabster="{"restorer":{"type":1}}"
                         id="menu17"
                         onContextMenu={[Function]}
                         onMouseEnter={[Function]}
@@ -181,7 +181,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onMouseMove={[Function]}
                         role="columnheader"
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -204,7 +204,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                             aria-hidden={true}
                             aria-label="Resize column"
                             aria-valuetext="50 pixels"
-                            data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                            data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                             onBlur={[Function]}
                             onKeyDown={[Function]}
                             onMouseDown={[Function]}
@@ -216,7 +216,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                               aria-label="Resize column"
                               aria-valuetext="50 pixels"
                               className="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                               onBlur={[Function]}
                               onClick={[Function]}
                               onKeyDown={[Function]}
@@ -237,13 +237,13 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
               >
                 <ContextSelector.Provider
                   value={
-                    Object {
-                      "checkedValues": Object {},
+                    {
+                      "checkedValues": {},
                       "hasCheckmarks": false,
                       "hasIcons": false,
                       "inline": false,
                       "isSubmenu": false,
-                      "menuPopoverRef": Object {
+                      "menuPopoverRef": {
                         "current": null,
                       },
                       "mountNode": null,
@@ -254,10 +254,10 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       "persistOnItemClick": false,
                       "setOpen": [Function],
                       "triggerId": "menu18",
-                      "triggerRef": Object {
+                      "triggerRef": {
                         "current": <div
                           class="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                          data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                          data-tabster="{"restorer":{"type":1}}"
                           id="menu18"
                           role="columnheader"
                           style="width: 50px; min-width: 50px; max-width: 50px;"
@@ -283,7 +283,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     <TableHeaderCell
                       aside={null}
                       className="documentsTableCell"
-                      data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                      data-tabster="{"restorer":{"type":1}}"
                       id="menu18"
                       key="partitionKey"
                       onContextMenu={[Function]}
@@ -291,7 +291,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       onMouseLeave={[Function]}
                       onMouseMove={[Function]}
                       style={
-                        Object {
+                        {
                           "maxWidth": 50,
                           "minWidth": 50,
                           "width": 50,
@@ -300,7 +300,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     >
                       <div
                         className="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                        data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                        data-tabster="{"restorer":{"type":1}}"
                         id="menu18"
                         onContextMenu={[Function]}
                         onMouseEnter={[Function]}
@@ -308,7 +308,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onMouseMove={[Function]}
                         role="columnheader"
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -347,10 +347,10 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
             height={-53}
             itemCount={3}
             itemData={
-              Array [
-                Object {
+              [
+                {
                   "appearance": "none",
-                  "item": Object {
+                  "item": {
                     "id": "1",
                     "partitionKey": "pk1",
                   },
@@ -359,9 +359,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   "rowId": 0,
                   "selected": false,
                 },
-                Object {
+                {
                   "appearance": "none",
-                  "item": Object {
+                  "item": {
                     "id": "2",
                     "partitionKey": "pk2",
                   },
@@ -370,9 +370,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   "rowId": 1,
                   "selected": false,
                 },
-                Object {
+                {
                   "appearance": "none",
-                  "item": Object {
+                  "item": {
                     "id": "3",
                     "partitionKey": "pk3",
                   },
@@ -387,7 +387,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
             layout="vertical"
             overscanCount={2}
             style={
-              Object {
+              {
                 "overflowY": "scroll",
               }
             }
@@ -397,7 +397,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
             <div
               onScroll={[Function]}
               style={
-                Object {
+                {
                   "WebkitOverflowScrolling": "touch",
                   "direction": "ltr",
                   "height": -53,
@@ -411,7 +411,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
             >
               <div
                 style={
-                  Object {
+                  {
                     "height": 90,
                     "pointerEvents": undefined,
                     "width": "100%",
@@ -420,10 +420,10 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
               >
                 <RenderRow
                   data={
-                    Array [
-                      Object {
+                    [
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "1",
                           "partitionKey": "pk1",
                         },
@@ -432,9 +432,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         "rowId": 0,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "2",
                           "partitionKey": "pk2",
                         },
@@ -443,9 +443,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         "rowId": 1,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "3",
                           "partitionKey": "pk3",
                         },
@@ -459,7 +459,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   index={0}
                   key="0"
                   style={
-                    Object {
+                    {
                       "height": 30,
                       "left": 0,
                       "position": "absolute",
@@ -475,7 +475,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     aria-selected={false}
                     key="1"
                     style={
-                      Object {
+                      {
                         "cursor": "pointer",
                         "height": 30,
                         "left": 0,
@@ -493,7 +493,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       className="fui-TableRow ___1krbsl3_1c5rp6c f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w f1wfn5kd f1g4hkjv f15ngxrw fjbbrdp f1t94bn6 feu1g3u f1uorfem fw60kww f4xjyn1 ff1wgvm fiob0tu f1j6scgf f1x4h75k fy9rknc f22iagw f122n59"
                       role="row"
                       style={
-                        Object {
+                        {
                           "cursor": "pointer",
                           "height": 30,
                           "left": 0,
@@ -511,7 +511,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -525,7 +525,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -560,7 +560,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -574,7 +574,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -608,10 +608,10 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                 </RenderRow>
                 <RenderRow
                   data={
-                    Array [
-                      Object {
+                    [
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "1",
                           "partitionKey": "pk1",
                         },
@@ -620,9 +620,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         "rowId": 0,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "2",
                           "partitionKey": "pk2",
                         },
@@ -631,9 +631,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         "rowId": 1,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "3",
                           "partitionKey": "pk3",
                         },
@@ -647,7 +647,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   index={1}
                   key="1"
                   style={
-                    Object {
+                    {
                       "height": 30,
                       "left": 0,
                       "position": "absolute",
@@ -663,7 +663,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     aria-selected={false}
                     key="2"
                     style={
-                      Object {
+                      {
                         "cursor": "pointer",
                         "height": 30,
                         "left": 0,
@@ -681,7 +681,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       className="fui-TableRow ___1krbsl3_1c5rp6c f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w f1wfn5kd f1g4hkjv f15ngxrw fjbbrdp f1t94bn6 feu1g3u f1uorfem fw60kww f4xjyn1 ff1wgvm fiob0tu f1j6scgf f1x4h75k fy9rknc f22iagw f122n59"
                       role="row"
                       style={
-                        Object {
+                        {
                           "cursor": "pointer",
                           "height": 30,
                           "left": 0,
@@ -699,7 +699,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -713,7 +713,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -748,7 +748,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -762,7 +762,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -796,10 +796,10 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                 </RenderRow>
                 <RenderRow
                   data={
-                    Array [
-                      Object {
+                    [
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "1",
                           "partitionKey": "pk1",
                         },
@@ -808,9 +808,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         "rowId": 0,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "2",
                           "partitionKey": "pk2",
                         },
@@ -819,9 +819,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         "rowId": 1,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "3",
                           "partitionKey": "pk3",
                         },
@@ -835,7 +835,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   index={2}
                   key="2"
                   style={
-                    Object {
+                    {
                       "height": 30,
                       "left": 0,
                       "position": "absolute",
@@ -851,7 +851,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     aria-selected={false}
                     key="3"
                     style={
-                      Object {
+                      {
                         "cursor": "pointer",
                         "height": 30,
                         "left": 0,
@@ -869,7 +869,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       className="fui-TableRow ___1krbsl3_1c5rp6c f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w f1wfn5kd f1g4hkjv f15ngxrw fjbbrdp f1t94bn6 feu1g3u f1uorfem fw60kww f4xjyn1 ff1wgvm fiob0tu f1j6scgf f1x4h75k fy9rknc f22iagw f122n59"
                       role="row"
                       style={
-                        Object {
+                        {
                           "cursor": "pointer",
                           "height": 30,
                           "left": 0,
@@ -887,7 +887,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -901,7 +901,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -936,7 +936,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -950,7 +950,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -995,25 +995,25 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
 exports[`DocumentsTableComponent should render documents and partition keys in header 1`] = `
 <DocumentsTableComponent
   columnHeaders={
-    Object {
+    {
       "idHeader": "id",
-      "partitionKeyHeaders": Array [
+      "partitionKeyHeaders": [
         "partitionKey",
       ],
     }
   }
   isSelectionDisabled={false}
   items={
-    Array [
-      Object {
+    [
+      {
         "id": "1",
         "partitionKey": "pk1",
       },
-      Object {
+      {
         "id": "2",
         "partitionKey": "pk2",
       },
-      Object {
+      {
         "id": "3",
         "partitionKey": "pk3",
       },
@@ -1023,7 +1023,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
   onSelectedRowsChange={[Function]}
   selectedRows={Set {}}
   size={
-    Object {
+    {
       "height": 0,
       "width": 0,
     }
@@ -1032,12 +1032,12 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
   <Table
     aria-label="Filtered documents table"
     className="documentsTable"
-    data-tabster="{\\"mover\\":{\\"cyclic\\":false,\\"direction\\":3,\\"memorizeCurrent\\":true}}"
+    data-tabster="{"mover":{"cyclic":false,"direction":3,"memorizeCurrent":true}}"
     noNativeElements={true}
     role="grid"
     size="extra-small"
     style={
-      Object {
+      {
         "minWidth": "fit-content",
       }
     }
@@ -1045,10 +1045,10 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
     <div
       aria-label="Filtered documents table"
       className="fui-Table documentsTable ___1kbqy50_18rlg51 fgkb47j fhovq9v ftgm304"
-      data-tabster="{\\"mover\\":{\\"cyclic\\":false,\\"direction\\":3,\\"memorizeCurrent\\":true}}"
+      data-tabster="{"mover":{"cyclic":false,"direction":3,"memorizeCurrent":true}}"
       role="grid"
       style={
-        Object {
+        {
           "minWidth": "fit-content",
         }
       }
@@ -1062,7 +1062,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
         >
           <TableRow
             style={
-              Object {
+              {
                 "width": -15,
               }
             }
@@ -1071,14 +1071,14 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
               className="fui-TableRow ___fjp17h0_1kcw78z f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w fy9rknc f22iagw f122n59"
               role="row"
               style={
-                Object {
+                {
                   "width": -15,
                 }
               }
             >
               <TableSelectionCell
                 checkboxIndicator={
-                  Object {
+                  {
                     "aria-label": "Select all rows ",
                   }
                 }
@@ -1122,13 +1122,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
               >
                 <ContextSelector.Provider
                   value={
-                    Object {
-                      "checkedValues": Object {},
+                    {
+                      "checkedValues": {},
                       "hasCheckmarks": false,
                       "hasIcons": false,
                       "inline": false,
                       "isSubmenu": false,
-                      "menuPopoverRef": Object {
+                      "menuPopoverRef": {
                         "current": null,
                       },
                       "mountNode": null,
@@ -1139,10 +1139,10 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       "persistOnItemClick": false,
                       "setOpen": [Function],
                       "triggerId": "menu3",
-                      "triggerRef": Object {
+                      "triggerRef": {
                         "current": <div
                           class="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                          data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                          data-tabster="{"restorer":{"type":1}}"
                           id="menu3"
                           role="columnheader"
                           style="width: 50px; min-width: 50px; max-width: 50px;"
@@ -1161,7 +1161,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                               aria-label="Resize column"
                               aria-valuetext="50 pixels"
                               class="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                               role="separator"
                             />
                           </span>
@@ -1179,7 +1179,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           aria-hidden={true}
                           aria-label="Resize column"
                           aria-valuetext="50 pixels"
-                          data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                          data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                           onBlur={[Function]}
                           onKeyDown={[Function]}
                           onMouseDown={[Function]}
@@ -1188,7 +1188,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         />
                       }
                       className="documentsTableCell"
-                      data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                      data-tabster="{"restorer":{"type":1}}"
                       id="menu3"
                       key="id"
                       onContextMenu={[Function]}
@@ -1196,7 +1196,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       onMouseLeave={[Function]}
                       onMouseMove={[Function]}
                       style={
-                        Object {
+                        {
                           "maxWidth": 50,
                           "minWidth": 50,
                           "width": 50,
@@ -1205,7 +1205,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     >
                       <div
                         className="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                        data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                        data-tabster="{"restorer":{"type":1}}"
                         id="menu3"
                         onContextMenu={[Function]}
                         onMouseEnter={[Function]}
@@ -1213,7 +1213,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onMouseMove={[Function]}
                         role="columnheader"
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -1236,7 +1236,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                             aria-hidden={true}
                             aria-label="Resize column"
                             aria-valuetext="50 pixels"
-                            data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                            data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                             onBlur={[Function]}
                             onKeyDown={[Function]}
                             onMouseDown={[Function]}
@@ -1248,7 +1248,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                               aria-label="Resize column"
                               aria-valuetext="50 pixels"
                               className="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{\\"focusable\\":{\\"ignoreKeydown\\":{\\"ArrowLeft\\":true,\\"ArrowRight\\":true}}}"
+                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
                               onBlur={[Function]}
                               onClick={[Function]}
                               onKeyDown={[Function]}
@@ -1269,13 +1269,13 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
               >
                 <ContextSelector.Provider
                   value={
-                    Object {
-                      "checkedValues": Object {},
+                    {
+                      "checkedValues": {},
                       "hasCheckmarks": false,
                       "hasIcons": false,
                       "inline": false,
                       "isSubmenu": false,
-                      "menuPopoverRef": Object {
+                      "menuPopoverRef": {
                         "current": null,
                       },
                       "mountNode": null,
@@ -1286,10 +1286,10 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       "persistOnItemClick": false,
                       "setOpen": [Function],
                       "triggerId": "menu4",
-                      "triggerRef": Object {
+                      "triggerRef": {
                         "current": <div
                           class="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                          data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                          data-tabster="{"restorer":{"type":1}}"
                           id="menu4"
                           role="columnheader"
                           style="width: 50px; min-width: 50px; max-width: 50px;"
@@ -1315,7 +1315,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     <TableHeaderCell
                       aside={null}
                       className="documentsTableCell"
-                      data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                      data-tabster="{"restorer":{"type":1}}"
                       id="menu4"
                       key="partitionKey"
                       onContextMenu={[Function]}
@@ -1323,7 +1323,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       onMouseLeave={[Function]}
                       onMouseMove={[Function]}
                       style={
-                        Object {
+                        {
                           "maxWidth": 50,
                           "minWidth": 50,
                           "width": 50,
@@ -1332,7 +1332,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     >
                       <div
                         className="fui-TableHeaderCell documentsTableCell ___g3gp0b0_n32kis0 figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix"
-                        data-tabster="{\\"restorer\\":{\\"type\\":1}}"
+                        data-tabster="{"restorer":{"type":1}}"
                         id="menu4"
                         onContextMenu={[Function]}
                         onMouseEnter={[Function]}
@@ -1340,7 +1340,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onMouseMove={[Function]}
                         role="columnheader"
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -1379,10 +1379,10 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
             height={-53}
             itemCount={3}
             itemData={
-              Array [
-                Object {
+              [
+                {
                   "appearance": "none",
-                  "item": Object {
+                  "item": {
                     "id": "1",
                     "partitionKey": "pk1",
                   },
@@ -1391,9 +1391,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   "rowId": 0,
                   "selected": false,
                 },
-                Object {
+                {
                   "appearance": "none",
-                  "item": Object {
+                  "item": {
                     "id": "2",
                     "partitionKey": "pk2",
                   },
@@ -1402,9 +1402,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   "rowId": 1,
                   "selected": false,
                 },
-                Object {
+                {
                   "appearance": "none",
-                  "item": Object {
+                  "item": {
                     "id": "3",
                     "partitionKey": "pk3",
                   },
@@ -1419,7 +1419,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
             layout="vertical"
             overscanCount={2}
             style={
-              Object {
+              {
                 "overflowY": "scroll",
               }
             }
@@ -1429,7 +1429,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
             <div
               onScroll={[Function]}
               style={
-                Object {
+                {
                   "WebkitOverflowScrolling": "touch",
                   "direction": "ltr",
                   "height": -53,
@@ -1443,7 +1443,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
             >
               <div
                 style={
-                  Object {
+                  {
                     "height": 90,
                     "pointerEvents": undefined,
                     "width": "100%",
@@ -1452,10 +1452,10 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
               >
                 <RenderRow
                   data={
-                    Array [
-                      Object {
+                    [
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "1",
                           "partitionKey": "pk1",
                         },
@@ -1464,9 +1464,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "rowId": 0,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "2",
                           "partitionKey": "pk2",
                         },
@@ -1475,9 +1475,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "rowId": 1,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "3",
                           "partitionKey": "pk3",
                         },
@@ -1491,7 +1491,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   index={0}
                   key="0"
                   style={
-                    Object {
+                    {
                       "height": 30,
                       "left": 0,
                       "position": "absolute",
@@ -1507,7 +1507,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     aria-selected={false}
                     key="1"
                     style={
-                      Object {
+                      {
                         "cursor": "pointer",
                         "height": 30,
                         "left": 0,
@@ -1525,7 +1525,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       className="fui-TableRow ___1krbsl3_1c5rp6c f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w f1wfn5kd f1g4hkjv f15ngxrw fjbbrdp f1t94bn6 feu1g3u f1uorfem fw60kww f4xjyn1 ff1wgvm fiob0tu f1j6scgf f1x4h75k fy9rknc f22iagw f122n59"
                       role="row"
                       style={
-                        Object {
+                        {
                           "cursor": "pointer",
                           "height": 30,
                           "left": 0,
@@ -1539,7 +1539,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     >
                       <TableSelectionCell
                         checkboxIndicator={
-                          Object {
+                          {
                             "aria-label": "Select row",
                           }
                         }
@@ -1583,7 +1583,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -1597,7 +1597,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -1632,7 +1632,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -1646,7 +1646,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -1680,10 +1680,10 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                 </RenderRow>
                 <RenderRow
                   data={
-                    Array [
-                      Object {
+                    [
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "1",
                           "partitionKey": "pk1",
                         },
@@ -1692,9 +1692,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "rowId": 0,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "2",
                           "partitionKey": "pk2",
                         },
@@ -1703,9 +1703,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "rowId": 1,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "3",
                           "partitionKey": "pk3",
                         },
@@ -1719,7 +1719,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   index={1}
                   key="1"
                   style={
-                    Object {
+                    {
                       "height": 30,
                       "left": 0,
                       "position": "absolute",
@@ -1735,7 +1735,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     aria-selected={false}
                     key="2"
                     style={
-                      Object {
+                      {
                         "cursor": "pointer",
                         "height": 30,
                         "left": 0,
@@ -1753,7 +1753,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       className="fui-TableRow ___1krbsl3_1c5rp6c f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w f1wfn5kd f1g4hkjv f15ngxrw fjbbrdp f1t94bn6 feu1g3u f1uorfem fw60kww f4xjyn1 ff1wgvm fiob0tu f1j6scgf f1x4h75k fy9rknc f22iagw f122n59"
                       role="row"
                       style={
-                        Object {
+                        {
                           "cursor": "pointer",
                           "height": 30,
                           "left": 0,
@@ -1767,7 +1767,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     >
                       <TableSelectionCell
                         checkboxIndicator={
-                          Object {
+                          {
                             "aria-label": "Select row",
                           }
                         }
@@ -1811,7 +1811,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -1825,7 +1825,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -1860,7 +1860,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -1874,7 +1874,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -1908,10 +1908,10 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                 </RenderRow>
                 <RenderRow
                   data={
-                    Array [
-                      Object {
+                    [
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "1",
                           "partitionKey": "pk1",
                         },
@@ -1920,9 +1920,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "rowId": 0,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "2",
                           "partitionKey": "pk2",
                         },
@@ -1931,9 +1931,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         "rowId": 1,
                         "selected": false,
                       },
-                      Object {
+                      {
                         "appearance": "none",
-                        "item": Object {
+                        "item": {
                           "id": "3",
                           "partitionKey": "pk3",
                         },
@@ -1947,7 +1947,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   index={2}
                   key="2"
                   style={
-                    Object {
+                    {
                       "height": 30,
                       "left": 0,
                       "position": "absolute",
@@ -1963,7 +1963,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     aria-selected={false}
                     key="3"
                     style={
-                      Object {
+                      {
                         "cursor": "pointer",
                         "height": 30,
                         "left": 0,
@@ -1981,7 +1981,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       className="fui-TableRow ___1krbsl3_1c5rp6c f19n0e5 f1ewtqcl f1jazu75 f1xeqee6 f1dxfoyt f2krc9w f1wfn5kd f1g4hkjv f15ngxrw fjbbrdp f1t94bn6 feu1g3u f1uorfem fw60kww f4xjyn1 ff1wgvm fiob0tu f1j6scgf f1x4h75k fy9rknc f22iagw f122n59"
                       role="row"
                       style={
-                        Object {
+                        {
                           "cursor": "pointer",
                           "height": 30,
                           "left": 0,
@@ -1995,7 +1995,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     >
                       <TableSelectionCell
                         checkboxIndicator={
-                          Object {
+                          {
                             "aria-label": "Select row",
                           }
                         }
@@ -2039,7 +2039,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -2053,7 +2053,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,
@@ -2088,7 +2088,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                         onClick={[Function]}
                         onKeyPress={[Function]}
                         style={
-                          Object {
+                          {
                             "maxWidth": 50,
                             "minWidth": 50,
                             "width": 50,
@@ -2102,7 +2102,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyPress={[Function]}
                           role="cell"
                           style={
-                            Object {
+                            {
                               "maxWidth": 50,
                               "minWidth": 50,
                               "width": 50,

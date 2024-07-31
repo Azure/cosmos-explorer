@@ -5,7 +5,7 @@ exports[`RetrievingBubble should render properly when isGeneratingExplanation is
   <Stack
     horizontalAlign="end"
     style={
-      Object {
+      {
         "alignItems": "center",
         "backgroundColor": "#FAFAFA",
         "borderRadius": "8px",
@@ -18,7 +18,7 @@ exports[`RetrievingBubble should render properly when isGeneratingExplanation is
   >
     <Text
       style={
-        Object {
+        {
           "backgroundColor": "white",
           "borderRadius": "8px",
           "fontWeight": "bold",
@@ -34,7 +34,7 @@ exports[`RetrievingBubble should render properly when isGeneratingExplanation is
     </Text>
     <div
       style={
-        Object {
+        {
           "backgroundColor": "#E6E6E6",
           "borderRadius": "4px",
           "height": "4px",
@@ -45,7 +45,7 @@ exports[`RetrievingBubble should render properly when isGeneratingExplanation is
     >
       <div
         style={
-          Object {
+          {
             "animation": "loadingAnimation 2s linear infinite",
             "backgroundColor": "#0078D4",
             "height": "100%",
@@ -57,7 +57,7 @@ exports[`RetrievingBubble should render properly when isGeneratingExplanation is
     <Stack
       horizontalAlign="center"
       style={
-        Object {
+        {
           "alignItems": "center",
           "gap": "8px",
           "marginTop": "8px",
@@ -69,13 +69,13 @@ exports[`RetrievingBubble should render properly when isGeneratingExplanation is
         onClick={[Function]}
         onRenderIcon={[Function]}
         style={
-          Object {
+          {
             "color": "#424242",
           }
         }
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "background": "none",
               "border": "none",
               "color": "#424242",
@@ -96,7 +96,7 @@ exports[`RetrievingBubble should render properly when isGeneratingQuery is true 
   <Stack
     horizontalAlign="end"
     style={
-      Object {
+      {
         "alignItems": "center",
         "backgroundColor": "#FAFAFA",
         "borderRadius": "8px",
@@ -109,7 +109,7 @@ exports[`RetrievingBubble should render properly when isGeneratingQuery is true 
   >
     <Text
       style={
-        Object {
+        {
           "backgroundColor": "white",
           "borderRadius": "8px",
           "fontWeight": "bold",
@@ -125,7 +125,7 @@ exports[`RetrievingBubble should render properly when isGeneratingQuery is true 
     </Text>
     <div
       style={
-        Object {
+        {
           "backgroundColor": "#E6E6E6",
           "borderRadius": "4px",
           "height": "4px",
@@ -136,7 +136,7 @@ exports[`RetrievingBubble should render properly when isGeneratingQuery is true 
     >
       <div
         style={
-          Object {
+          {
             "animation": "loadingAnimation 2s linear infinite",
             "backgroundColor": "#0078D4",
             "height": "100%",
@@ -148,7 +148,7 @@ exports[`RetrievingBubble should render properly when isGeneratingQuery is true 
     <Stack
       horizontalAlign="center"
       style={
-        Object {
+        {
           "alignItems": "center",
           "gap": "8px",
           "marginTop": "8px",
@@ -160,13 +160,13 @@ exports[`RetrievingBubble should render properly when isGeneratingQuery is true 
         onClick={[Function]}
         onRenderIcon={[Function]}
         style={
-          Object {
+          {
             "color": "#424242",
           }
         }
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "background": "none",
               "border": "none",
               "color": "#424242",

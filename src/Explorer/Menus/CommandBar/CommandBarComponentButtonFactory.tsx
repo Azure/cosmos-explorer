@@ -1,6 +1,7 @@
 import { KeyboardAction } from "KeyboardShortcuts";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
 import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
@@ -8,6 +9,7 @@ import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
 import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
+import EntraIDIcon from "../../../../images/EntraID.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
@@ -30,7 +32,7 @@ import { OpenFullScreen } from "../../OpenFullScreen";
 import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
-import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
 
@@ -66,6 +68,22 @@ export function createStaticCommandBarButtons(
       if (addSynapseLink) {
         addDivider();
         buttons.push(addSynapseLink);
+      }
+    }
+
+    if (userContext.apiType === "SQL") {
+      const [loginButtonProps, setLoginButtonProps] = useState<CommandButtonComponentProps | undefined>(undefined);
+      const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
+      const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
+
+      useEffect(() => {
+        const buttonProps = createLoginForEntraIDButton(container);
+        setLoginButtonProps(buttonProps);
+      }, [dataPlaneRbacEnabled, aadTokenUpdated, container]);
+
+      if (loginButtonProps) {
+        addDivider();
+        buttons.push(loginButtonProps);
       }
     }
 
@@ -141,6 +159,25 @@ export function createContextCommandBarButtons(
       hasPopup: true,
     };
     buttons.push(newMongoShellBtn);
+  }
+
+  if (
+    useNotebook.getState().isShellEnabled &&
+    !selectedNodeState.isDatabaseNodeOrNoneSelected() &&
+    userContext.apiType === "Cassandra"
+  ) {
+    const label: string = "Open Cassandra Shell";
+    const newCassandraShellButton: CommandButtonComponentProps = {
+      iconSrc: HostedTerminalIcon,
+      iconAlt: label,
+      onCommandClick: () => {
+        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+      },
+      commandButtonLabel: label,
+      ariaLabel: label,
+      hasPopup: true,
+    };
+    buttons.push(newCassandraShellButton);
   }
 
   return buttons;
@@ -271,6 +308,31 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     hasPopup: false,
     disabled:
       useSelectedNode.getState().isQueryCopilotCollectionSelected() || useNotebook.getState().isSynapseLinkUpdating,
+    ariaLabel: label,
+  };
+}
+
+function createLoginForEntraIDButton(container: Explorer): CommandButtonComponentProps {
+  if (configContext.platform !== Platform.Portal) {
+    return undefined;
+  }
+
+  const handleCommandClick = async () => {
+    await container.openLoginForEntraIDPopUp();
+    useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
+  };
+
+  if (!userContext.dataPlaneRbacEnabled || userContext.aadToken) {
+    return undefined;
+  }
+
+  const label = "Login for Entra ID RBAC";
+  return {
+    iconSrc: EntraIDIcon,
+    iconAlt: label,
+    onCommandClick: handleCommandClick,
+    commandButtonLabel: label,
+    hasPopup: true,
     ariaLabel: label,
   };
 }

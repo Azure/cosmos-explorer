@@ -80,6 +80,7 @@ module.exports = {
     "d3-quadtree": "<rootDir>/node_modules/d3-quadtree/dist/d3-quadtree.min.js",
     "d3-scale-chromatic": "<rootDir>/node_modules/d3-scale-chromatic/dist/d3-scale-chromatic.min.js",
     "d3-zoom": "<rootDir>/node_modules/d3-zoom/dist/d3-zoom.min.js",
+    uuid: require.resolve("uuid"), // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -133,7 +134,7 @@ module.exports = {
   snapshotSerializers: ["enzyme-to-json/serializer"],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-jsdom",
+  testEnvironment: "jsdom",
   modulePaths: ["node_modules", "<rootDir>/src"],
 
   // Options that will be passed to the testEnvironment
@@ -157,7 +158,7 @@ module.exports = {
   // testResultsProcessor: "./trxProcessor.js",
 
   // This option allows use of a custom test runner
-  // testRunner: "jasmine2",
+  testRunner: "jest-circus/runner",
 
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
   // testURL: "http://localhost",
@@ -167,9 +168,9 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.html?$": "html-loader-jest",
+    "^.+\\.html?$": "jest-html-loader",
     "^.+\\.[t|j]sx?$": "babel-jest",
-    "^.+\\.svg$": "<rootDir>/svgTransform.js",
+    "^.+\\.svg$": "<rootDir>/jest/svgTransform.js",
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
@@ -186,4 +187,7 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  // TODO: toMatchInlineSnapshot() does not work with prettier 3. Remove when fixed: https://github.com/jestjs/jest/issues/14305
+  prettierPath: null,
 };

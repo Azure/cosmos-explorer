@@ -16,7 +16,7 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -24,7 +24,7 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": undefined,
       }
     }
@@ -37,11 +37,11 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
 exports[`TreeNodeComponent fully renders a tree 1`] = `
 <TreeNodeComponent
   node={
-    Object {
-      "children": Array [
-        Object {
-          "children": Array [
-            Object {
+    {
+      "children": [
+        {
+          "children": [
+            {
               "className": "grandchild1Class",
               "iconSrc": "grandchild1Icon.svg",
               "id": "grandchild1",
@@ -49,7 +49,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               "label": "grandchild1Label",
               "onClick": [MockFunction grandchild1Click],
             },
-            Object {
+            {
               "className": "grandchild2Class",
               "iconSrc": "grandchild2Icon",
               "id": "grandchild2",
@@ -63,9 +63,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
           "label": "child1Label",
           "onClick": [MockFunction child1Click],
         },
-        Object {
-          "children": Array [
-            Object {
+        {
+          "children": [
+            {
               "className": "grandchild3NotRenderedClass",
               "iconSrc": "grandchild3NotRenderedIcon",
               "id": "grandchild3NotRendered",
@@ -80,17 +80,17 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
           "label": "child2LoadingLabel",
           "onClick": [MockFunction child2LoadingClick],
         },
-        Object {
+        {
           "className": "child3ExpandingClass",
           "iconSrc": "child3ExpandingIcon",
           "id": "child3Expanding",
           "label": "child3ExpandingLabel",
           "onClick": [MockFunction child3ExpandingClick] {
-            "calls": Array [
-              Array [],
+            "calls": [
+              [],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": undefined,
               },
@@ -129,12 +129,12 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
     >
       <ContextSelector.Provider
         value={
-          Object {
-            "actionsRef": Object {
+          {
+            "actionsRef": {
               "current": null,
             },
             "checked": false,
-            "expandIconRef": Object {
+            "expandIconRef": {
               "current": <div
                 aria-hidden="true"
                 class="fui-TreeItemLayout__expandIcon rh4pu5o"
@@ -159,7 +159,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
             "isActionsVisible": false,
             "isAsideVisible": false,
             "itemType": "branch",
-            "layoutRef": Object {
+            "layoutRef": {
               "current": <div
                 class="fui-TreeItemLayout r1bx0xiv rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
                 data-test="TreeNode:root"
@@ -202,13 +202,13 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               </div>,
             },
             "open": false,
-            "selectionRef": Object {
+            "selectionRef": {
               "current": null,
             },
-            "subtreeRef": Object {
+            "subtreeRef": {
               "current": null,
             },
-            "treeItemRef": Object {
+            "treeItemRef": {
               "current": <div
                 aria-expanded="false"
                 aria-level="0"
@@ -424,7 +424,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               alt=""
               src="rootIcon"
               style={
-                Object {
+                {
                   "height": 16,
                   "width": 16,
                 }
@@ -432,7 +432,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
             />
           }
           style={
-            Object {
+            {
               "backgroundColor": undefined,
             }
           }
@@ -441,7 +441,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
             className="fui-TreeItemLayout r1bx0xiv rootClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
             data-test="TreeNode:root"
             style={
-              Object {
+              {
                 "backgroundColor": undefined,
               }
             }
@@ -453,7 +453,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               <TreeItemChevron>
                 <ChevronRight12Regular
                   style={
-                    Object {
+                    {
                       "transform": "rotate(0deg)",
                     }
                   }
@@ -464,7 +464,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     fill="currentColor"
                     height="12"
                     style={
-                      Object {
+                      {
                         "transform": "rotate(0deg)",
                       }
                     }
@@ -488,7 +488,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 alt=""
                 src="rootIcon"
                 style={
-                  Object {
+                  {
                     "height": 16,
                     "width": 16,
                   }
@@ -504,16 +504,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
         </TreeItemLayout>
         <Tree
           style={
-            Object {
+            {
               "overflow": undefined,
             }
           }
         >
           <TreeProvider
             value={
-              Object {
+              {
                 "appearance": "subtle",
-                "checkedItems": Object {
+                "checkedItems": {
                   "clear": [Function],
                   "dangerouslyGetInternalMap_unstable": [Function],
                   "delete": [Function],
@@ -525,7 +525,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 },
                 "contextType": "root",
                 "level": 1,
-                "openItems": Object {
+                "openItems": {
                   "add": [Function],
                   "clear": [Function],
                   "dangerouslyGetInternalSet_unstable": [Function],
@@ -543,9 +543,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
           >
             <ContextSelector.Provider
               value={
-                Object {
+                {
                   "appearance": "subtle",
-                  "checkedItems": Object {
+                  "checkedItems": {
                     "clear": [Function],
                     "dangerouslyGetInternalMap_unstable": [Function],
                     "delete": [Function],
@@ -557,7 +557,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   },
                   "contextType": "root",
                   "level": 1,
-                  "openItems": Object {
+                  "openItems": {
                     "add": [Function],
                     "clear": [Function],
                     "dangerouslyGetInternalSet_unstable": [Function],
@@ -577,7 +577,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 className="fui-Tree rnv2ez3"
                 role="tree"
                 style={
-                  Object {
+                  {
                     "overflow": undefined,
                   }
                 }
@@ -585,9 +585,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 <TreeNodeComponent
                   key="child1Label"
                   node={
-                    Object {
-                      "children": Array [
-                        Object {
+                    {
+                      "children": [
+                        {
                           "className": "grandchild1Class",
                           "iconSrc": "grandchild1Icon.svg",
                           "id": "grandchild1",
@@ -595,7 +595,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                           "label": "grandchild1Label",
                           "onClick": [MockFunction grandchild1Click],
                         },
-                        Object {
+                        {
                           "className": "grandchild2Class",
                           "iconSrc": "grandchild2Icon",
                           "id": "grandchild2",
@@ -632,12 +632,12 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     >
                       <ContextSelector.Provider
                         value={
-                          Object {
-                            "actionsRef": Object {
+                          {
+                            "actionsRef": {
                               "current": null,
                             },
                             "checked": false,
-                            "expandIconRef": Object {
+                            "expandIconRef": {
                               "current": <div
                                 aria-hidden="true"
                                 class="fui-TreeItemLayout__expandIcon rh4pu5o"
@@ -662,7 +662,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "isActionsVisible": false,
                             "isAsideVisible": false,
                             "itemType": "branch",
-                            "layoutRef": Object {
+                            "layoutRef": {
                               "current": <div
                                 class="fui-TreeItemLayout r1bx0xiv child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
                                 data-test="TreeNode:root/child1Label"
@@ -705,13 +705,13 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               </div>,
                             },
                             "open": false,
-                            "selectionRef": Object {
+                            "selectionRef": {
                               "current": null,
                             },
-                            "subtreeRef": Object {
+                            "subtreeRef": {
                               "current": null,
                             },
-                            "treeItemRef": Object {
+                            "treeItemRef": {
                               "current": <div
                                 aria-expanded="false"
                                 aria-level="1"
@@ -776,7 +776,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               alt=""
                               src="child1Icon"
                               style={
-                                Object {
+                                {
                                   "height": 16,
                                   "width": 16,
                                 }
@@ -784,7 +784,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             />
                           }
                           style={
-                            Object {
+                            {
                               "backgroundColor": undefined,
                             }
                           }
@@ -793,7 +793,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             className="fui-TreeItemLayout r1bx0xiv child1Class ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
                             data-test="TreeNode:root/child1Label"
                             style={
-                              Object {
+                              {
                                 "backgroundColor": undefined,
                               }
                             }
@@ -805,7 +805,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               <TreeItemChevron>
                                 <ChevronRight12Regular
                                   style={
-                                    Object {
+                                    {
                                       "transform": "rotate(0deg)",
                                     }
                                   }
@@ -816,7 +816,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     fill="currentColor"
                                     height="12"
                                     style={
-                                      Object {
+                                      {
                                         "transform": "rotate(0deg)",
                                       }
                                     }
@@ -840,7 +840,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 alt=""
                                 src="child1Icon"
                                 style={
-                                  Object {
+                                  {
                                     "height": 16,
                                     "width": 16,
                                   }
@@ -856,14 +856,14 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         </TreeItemLayout>
                         <Tree
                           style={
-                            Object {
+                            {
                               "overflow": undefined,
                             }
                           }
                         >
                           <TreeProvider
                             value={
-                              Object {
+                              {
                                 "contextType": "subtree",
                                 "level": 2,
                               }
@@ -877,9 +877,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 <TreeNodeComponent
                   key="child2LoadingLabel"
                   node={
-                    Object {
-                      "children": Array [
-                        Object {
+                    {
+                      "children": [
+                        {
                           "className": "grandchild3NotRenderedClass",
                           "iconSrc": "grandchild3NotRenderedIcon",
                           "id": "grandchild3NotRendered",
@@ -917,12 +917,12 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     >
                       <ContextSelector.Provider
                         value={
-                          Object {
-                            "actionsRef": Object {
+                          {
+                            "actionsRef": {
                               "current": null,
                             },
                             "checked": false,
-                            "expandIconRef": Object {
+                            "expandIconRef": {
                               "current": <div
                                 aria-hidden="true"
                                 class="fui-TreeItemLayout__expandIcon rh4pu5o"
@@ -947,7 +947,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "isActionsVisible": false,
                             "isAsideVisible": false,
                             "itemType": "branch",
-                            "layoutRef": Object {
+                            "layoutRef": {
                               "current": <div
                                 class="fui-TreeItemLayout r1bx0xiv child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
                                 data-test="TreeNode:root/child2LoadingLabel"
@@ -990,13 +990,13 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               </div>,
                             },
                             "open": false,
-                            "selectionRef": Object {
+                            "selectionRef": {
                               "current": null,
                             },
-                            "subtreeRef": Object {
+                            "subtreeRef": {
                               "current": null,
                             },
-                            "treeItemRef": Object {
+                            "treeItemRef": {
                               "current": <div
                                 aria-expanded="false"
                                 aria-level="1"
@@ -1061,7 +1061,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               alt=""
                               src="child2LoadingIcon"
                               style={
-                                Object {
+                                {
                                   "height": 16,
                                   "width": 16,
                                 }
@@ -1069,7 +1069,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             />
                           }
                           style={
-                            Object {
+                            {
                               "backgroundColor": undefined,
                             }
                           }
@@ -1078,7 +1078,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             className="fui-TreeItemLayout r1bx0xiv child2LoadingClass ___51javz0_ow08sb0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9"
                             data-test="TreeNode:root/child2LoadingLabel"
                             style={
-                              Object {
+                              {
                                 "backgroundColor": undefined,
                               }
                             }
@@ -1090,7 +1090,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               <TreeItemChevron>
                                 <ChevronRight12Regular
                                   style={
-                                    Object {
+                                    {
                                       "transform": "rotate(0deg)",
                                     }
                                   }
@@ -1101,7 +1101,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     fill="currentColor"
                                     height="12"
                                     style={
-                                      Object {
+                                      {
                                         "transform": "rotate(0deg)",
                                       }
                                     }
@@ -1125,7 +1125,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 alt=""
                                 src="child2LoadingIcon"
                                 style={
-                                  Object {
+                                  {
                                     "height": 16,
                                     "width": 16,
                                   }
@@ -1146,17 +1146,17 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 <TreeNodeComponent
                   key="child3ExpandingLabel"
                   node={
-                    Object {
+                    {
                       "className": "child3ExpandingClass",
                       "iconSrc": "child3ExpandingIcon",
                       "id": "child3Expanding",
                       "label": "child3ExpandingLabel",
                       "onClick": [MockFunction child3ExpandingClick] {
-                        "calls": Array [
-                          Array [],
+                        "calls": [
+                          [],
                         ],
-                        "results": Array [
-                          Object {
+                        "results": [
+                          {
                             "type": "return",
                             "value": undefined,
                           },
@@ -1186,12 +1186,12 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     >
                       <ContextSelector.Provider
                         value={
-                          Object {
-                            "actionsRef": Object {
+                          {
+                            "actionsRef": {
                               "current": null,
                             },
                             "checked": false,
-                            "expandIconRef": Object {
+                            "expandIconRef": {
                               "current": <div
                                 aria-hidden="true"
                                 class="fui-TreeItemLayout__expandIcon rh4pu5o"
@@ -1213,7 +1213,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "isActionsVisible": false,
                             "isAsideVisible": false,
                             "itemType": "leaf",
-                            "layoutRef": Object {
+                            "layoutRef": {
                               "current": <div
                                 class="fui-TreeItemLayout r1bx0xiv child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
                                 data-test="TreeNode:root/child3ExpandingLabel"
@@ -1253,13 +1253,13 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               </div>,
                             },
                             "open": false,
-                            "selectionRef": Object {
+                            "selectionRef": {
                               "current": null,
                             },
-                            "subtreeRef": Object {
+                            "subtreeRef": {
                               "current": null,
                             },
-                            "treeItemRef": Object {
+                            "treeItemRef": {
                               "current": <div
                                 aria-level="1"
                                 class="fui-TreeItem r15xhw3a ___jer8zr0_6no3ah0 f10bgyvd"
@@ -1320,7 +1320,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               alt=""
                               src="child3ExpandingIcon"
                               style={
-                                Object {
+                                {
                                   "height": 16,
                                   "width": 16,
                                 }
@@ -1328,7 +1328,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             />
                           }
                           style={
-                            Object {
+                            {
                               "backgroundColor": undefined,
                             }
                           }
@@ -1337,7 +1337,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             className="fui-TreeItemLayout r1bx0xiv child3ExpandingClass ___ehtpr00_100l8p1 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc"
                             data-test="TreeNode:root/child3ExpandingLabel"
                             style={
-                              Object {
+                              {
                                 "backgroundColor": undefined,
                               }
                             }
@@ -1350,7 +1350,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 alt=""
                                 src="child3ExpandingIcon"
                                 style={
-                                  Object {
+                                  {
                                     "height": 16,
                                     "width": 16,
                                   }
@@ -1394,7 +1394,7 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1402,7 +1402,7 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": undefined,
       }
     }
@@ -1433,7 +1433,7 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1441,7 +1441,7 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": undefined,
       }
     }
@@ -1467,7 +1467,7 @@ exports[`TreeNodeComponent renders a node as expandable if it has empty, but def
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1475,7 +1475,7 @@ exports[`TreeNodeComponent renders a node as expandable if it has empty, but def
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": undefined,
       }
     }
@@ -1543,7 +1543,7 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
             alt=""
             src="rootIcon"
             style={
-              Object {
+              {
                 "height": 16,
                 "width": 16,
               }
@@ -1551,7 +1551,7 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
           />
         }
         style={
-          Object {
+          {
             "backgroundColor": undefined,
           }
         }
@@ -1598,7 +1598,7 @@ exports[`TreeNodeComponent renders a single node 1`] = `
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1606,7 +1606,7 @@ exports[`TreeNodeComponent renders a single node 1`] = `
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": undefined,
       }
     }
@@ -1632,7 +1632,7 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
         alt=""
         src="the-icon.svg"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1640,7 +1640,7 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": undefined,
       }
     }
@@ -1666,7 +1666,7 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1674,7 +1674,7 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": "var(--colorNeutralBackground1Selected)",
       }
     }
@@ -1683,7 +1683,7 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
   </TreeItemLayout>
   <Tree
     style={
-      Object {
+      {
         "overflow": undefined,
       }
     }
@@ -1691,16 +1691,16 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
     <TreeNodeComponent
       key="child1Label"
       node={
-        Object {
-          "children": Array [
-            Object {
+        {
+          "children": [
+            {
               "className": "grandchild1Class",
               "iconSrc": "grandchild1Icon",
               "id": "grandchild1",
               "label": "grandchild1Label",
               "onClick": [MockFunction grandchild1Click],
             },
-            Object {
+            {
               "className": "grandchild2Class",
               "iconSrc": "grandchild2Icon",
               "id": "grandchild2",
@@ -1720,7 +1720,7 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
     <TreeNodeComponent
       key="child2Label"
       node={
-        Object {
+        {
           "className": "child2Class",
           "iconSrc": "child2Icon",
           "id": "child2",
@@ -1750,7 +1750,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1758,7 +1758,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": undefined,
       }
     }
@@ -1767,7 +1767,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
   </TreeItemLayout>
   <Tree
     style={
-      Object {
+      {
         "overflow": undefined,
       }
     }
@@ -1775,9 +1775,9 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
     <TreeNodeComponent
       key="child1Label"
       node={
-        Object {
-          "children": Array [
-            Object {
+        {
+          "children": [
+            {
               "className": "grandchild1Class",
               "iconSrc": "grandchild1Icon",
               "id": "grandchild1",
@@ -1785,7 +1785,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
               "label": "grandchild1Label",
               "onClick": [MockFunction grandchild1Click],
             },
-            Object {
+            {
               "className": "grandchild2Class",
               "iconSrc": "grandchild2Icon",
               "id": "grandchild2",
@@ -1805,7 +1805,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
     <TreeNodeComponent
       key="child2Label"
       node={
-        Object {
+        {
           "className": "child2Class",
           "iconSrc": "child2Icon",
           "id": "child2",
@@ -1835,7 +1835,7 @@ exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
         alt=""
         src="rootIcon"
         style={
-          Object {
+          {
             "height": 16,
             "width": 16,
           }
@@ -1843,7 +1843,7 @@ exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
       />
     }
     style={
-      Object {
+      {
         "backgroundColor": "var(--colorNeutralBackground1Selected)",
       }
     }

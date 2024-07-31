@@ -4,7 +4,7 @@ exports[`Header snapshot test should close on button click 1`] = `
 <Stack
   horizontal={true}
   style={
-    Object {
+    {
       "display": "flex",
       "justifyContent": "space-between",
       "margin": "15px 0px 0px 0px",
@@ -18,11 +18,11 @@ exports[`Header snapshot test should close on button click 1`] = `
     verticalAlign="center"
   >
     <Image
-      src={Object {}}
+      src={{}}
     />
     <Text
       style={
-        Object {
+        {
           "fontWeight": "bold",
           "marginLeft": "5px",
         }
@@ -32,7 +32,7 @@ exports[`Header snapshot test should close on button click 1`] = `
     </Text>
     <Text
       style={
-        Object {
+        {
           "background": "#f0f0f0",
           "borderRadius": "8px",
           "fontSize": "10px",
@@ -47,13 +47,13 @@ exports[`Header snapshot test should close on button click 1`] = `
   <CustomizedIconButton
     ariaLabel="Exit"
     iconProps={
-      Object {
+      {
         "iconName": "Cancel",
       }
     }
     onClick={[Function]}
     style={
-      Object {
+      {
         "color": "#424242",
         "verticalAlign": "middle",
       }

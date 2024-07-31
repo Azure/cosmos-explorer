@@ -4,8 +4,8 @@ exports[`Browse queries panel Should render Default properly 1`] = `
 <BrowseQueriesPane
   closePanel={[Function]}
   explorer={
-    Object {
-      "queriesClient": Object {
+    {
+      "queriesClient": {
         "getQueries": [Function],
       },
     }
@@ -21,7 +21,7 @@ exports[`Browse queries panel Should render Default properly 1`] = `
         containerVisible={true}
         onQuerySelect={[Function]}
         queriesClient={
-          Object {
+          {
             "getQueries": [Function],
           }
         }
@@ -41,7 +41,7 @@ exports[`Browse queries panel Should render Default properly 1`] = `
             alt="Save query helper banner"
             src=""
             style={
-              Object {
+              {
                 "border": "1px solid undefined",
                 "height": "150px",
                 "marginTop": "20px",

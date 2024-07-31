@@ -5,7 +5,7 @@ exports[`Footer snapshot test should not pass if no text 1`] = `
   horizontal={true}
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "background": "white",
       "borderRadius": "20px",
@@ -19,18 +19,18 @@ exports[`Footer snapshot test should not pass if no text 1`] = `
   <Stack>
     <Image
       onClick={[Function]}
-      src={Object {}}
+      src={{}}
       styles={
-        Object {
-          "label": Object {
+        {
+          "label": {
             "fontWeight": 400,
             "paddingLeft": 8,
             "textAlign": "left",
           },
-          "root": Object {
+          "root": {
             "border": "5px",
-            "selectors": Object {
-              ":hover": Object {
+            "selectors": {
+              ":hover": {
                 "outline": "1px dashed #605e5c",
               },
             },
@@ -40,7 +40,7 @@ exports[`Footer snapshot test should not pass if no text 1`] = `
     />
     <SamplePrompts
       sampleProps={
-        Object {
+        {
           "isSamplePromptsOpen": false,
           "setIsSamplePromptsOpen": [Function],
           "setTextBox": [Function],
@@ -56,11 +56,11 @@ exports[`Footer snapshot test should not pass if no text 1`] = `
     placeholder="Write your own prompt or ask a question"
     resizable={false}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "border": "none",
         },
-        "root": Object {
+        "root": {
           "border": "none",
           "borderRadius": "20px",
           "height": "80px",
@@ -76,7 +76,7 @@ exports[`Footer snapshot test should not pass if no text 1`] = `
   <CustomizedIconButton
     disabled={null}
     iconProps={
-      Object {
+      {
         "iconName": "Send",
       }
     }
@@ -90,7 +90,7 @@ exports[`Footer snapshot test should not pass text with non enter key 1`] = `
   horizontal={true}
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "background": "white",
       "borderRadius": "20px",
@@ -104,18 +104,18 @@ exports[`Footer snapshot test should not pass text with non enter key 1`] = `
   <Stack>
     <Image
       onClick={[Function]}
-      src={Object {}}
+      src={{}}
       styles={
-        Object {
-          "label": Object {
+        {
+          "label": {
             "fontWeight": 400,
             "paddingLeft": 8,
             "textAlign": "left",
           },
-          "root": Object {
+          "root": {
             "border": "5px",
-            "selectors": Object {
-              ":hover": Object {
+            "selectors": {
+              ":hover": {
                 "outline": "1px dashed #605e5c",
               },
             },
@@ -125,7 +125,7 @@ exports[`Footer snapshot test should not pass text with non enter key 1`] = `
     />
     <SamplePrompts
       sampleProps={
-        Object {
+        {
           "isSamplePromptsOpen": false,
           "setIsSamplePromptsOpen": [Function],
           "setTextBox": [Function],
@@ -141,11 +141,11 @@ exports[`Footer snapshot test should not pass text with non enter key 1`] = `
     placeholder="Write your own prompt or ask a question"
     resizable={false}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "border": "none",
         },
-        "root": Object {
+        "root": {
           "border": "none",
           "borderRadius": "20px",
           "height": "80px",
@@ -161,7 +161,7 @@ exports[`Footer snapshot test should not pass text with non enter key 1`] = `
   <CustomizedIconButton
     disabled={null}
     iconProps={
-      Object {
+      {
         "iconName": "Send",
       }
     }
@@ -175,7 +175,7 @@ exports[`Footer snapshot test should open sample prompts on button click 1`] = `
   horizontal={true}
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "background": "white",
       "borderRadius": "20px",
@@ -189,18 +189,18 @@ exports[`Footer snapshot test should open sample prompts on button click 1`] = `
   <Stack>
     <Image
       onClick={[Function]}
-      src={Object {}}
+      src={{}}
       styles={
-        Object {
-          "label": Object {
+        {
+          "label": {
             "fontWeight": 400,
             "paddingLeft": 8,
             "textAlign": "left",
           },
-          "root": Object {
+          "root": {
             "border": "5px",
-            "selectors": Object {
-              ":hover": Object {
+            "selectors": {
+              ":hover": {
                 "outline": "1px dashed #605e5c",
               },
             },
@@ -210,7 +210,7 @@ exports[`Footer snapshot test should open sample prompts on button click 1`] = `
     />
     <SamplePrompts
       sampleProps={
-        Object {
+        {
           "isSamplePromptsOpen": false,
           "setIsSamplePromptsOpen": [Function],
           "setTextBox": [Function],
@@ -226,11 +226,11 @@ exports[`Footer snapshot test should open sample prompts on button click 1`] = `
     placeholder="Write your own prompt or ask a question"
     resizable={false}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "border": "none",
         },
-        "root": Object {
+        "root": {
           "border": "none",
           "borderRadius": "20px",
           "height": "80px",
@@ -246,7 +246,7 @@ exports[`Footer snapshot test should open sample prompts on button click 1`] = `
   <CustomizedIconButton
     disabled={null}
     iconProps={
-      Object {
+      {
         "iconName": "Send",
       }
     }
@@ -260,7 +260,7 @@ exports[`Footer snapshot test should pass text with enter key 1`] = `
   horizontal={true}
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "background": "white",
       "borderRadius": "20px",
@@ -274,18 +274,18 @@ exports[`Footer snapshot test should pass text with enter key 1`] = `
   <Stack>
     <Image
       onClick={[Function]}
-      src={Object {}}
+      src={{}}
       styles={
-        Object {
-          "label": Object {
+        {
+          "label": {
             "fontWeight": 400,
             "paddingLeft": 8,
             "textAlign": "left",
           },
-          "root": Object {
+          "root": {
             "border": "5px",
-            "selectors": Object {
-              ":hover": Object {
+            "selectors": {
+              ":hover": {
                 "outline": "1px dashed #605e5c",
               },
             },
@@ -295,7 +295,7 @@ exports[`Footer snapshot test should pass text with enter key 1`] = `
     />
     <SamplePrompts
       sampleProps={
-        Object {
+        {
           "isSamplePromptsOpen": false,
           "setIsSamplePromptsOpen": [Function],
           "setTextBox": [Function],
@@ -311,11 +311,11 @@ exports[`Footer snapshot test should pass text with enter key 1`] = `
     placeholder="Write your own prompt or ask a question"
     resizable={false}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "border": "none",
         },
-        "root": Object {
+        "root": {
           "border": "none",
           "borderRadius": "20px",
           "height": "80px",
@@ -331,7 +331,7 @@ exports[`Footer snapshot test should pass text with enter key 1`] = `
   <CustomizedIconButton
     disabled={null}
     iconProps={
-      Object {
+      {
         "iconName": "Send",
       }
     }
@@ -345,7 +345,7 @@ exports[`Footer snapshot test should pass text with icon button 1`] = `
   horizontal={true}
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "background": "white",
       "borderRadius": "20px",
@@ -359,18 +359,18 @@ exports[`Footer snapshot test should pass text with icon button 1`] = `
   <Stack>
     <Image
       onClick={[Function]}
-      src={Object {}}
+      src={{}}
       styles={
-        Object {
-          "label": Object {
+        {
+          "label": {
             "fontWeight": 400,
             "paddingLeft": 8,
             "textAlign": "left",
           },
-          "root": Object {
+          "root": {
             "border": "5px",
-            "selectors": Object {
-              ":hover": Object {
+            "selectors": {
+              ":hover": {
                 "outline": "1px dashed #605e5c",
               },
             },
@@ -380,7 +380,7 @@ exports[`Footer snapshot test should pass text with icon button 1`] = `
     />
     <SamplePrompts
       sampleProps={
-        Object {
+        {
           "isSamplePromptsOpen": false,
           "setIsSamplePromptsOpen": [Function],
           "setTextBox": [Function],
@@ -396,11 +396,11 @@ exports[`Footer snapshot test should pass text with icon button 1`] = `
     placeholder="Write your own prompt or ask a question"
     resizable={false}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "border": "none",
         },
-        "root": Object {
+        "root": {
           "border": "none",
           "borderRadius": "20px",
           "height": "80px",
@@ -416,7 +416,7 @@ exports[`Footer snapshot test should pass text with icon button 1`] = `
   <CustomizedIconButton
     disabled={null}
     iconProps={
-      Object {
+      {
         "iconName": "Send",
       }
     }
@@ -430,7 +430,7 @@ exports[`Footer snapshot test should update user input 1`] = `
   horizontal={true}
   horizontalAlign="end"
   style={
-    Object {
+    {
       "alignItems": "center",
       "background": "white",
       "borderRadius": "20px",
@@ -444,18 +444,18 @@ exports[`Footer snapshot test should update user input 1`] = `
   <Stack>
     <Image
       onClick={[Function]}
-      src={Object {}}
+      src={{}}
       styles={
-        Object {
-          "label": Object {
+        {
+          "label": {
             "fontWeight": 400,
             "paddingLeft": 8,
             "textAlign": "left",
           },
-          "root": Object {
+          "root": {
             "border": "5px",
-            "selectors": Object {
-              ":hover": Object {
+            "selectors": {
+              ":hover": {
                 "outline": "1px dashed #605e5c",
               },
             },
@@ -465,7 +465,7 @@ exports[`Footer snapshot test should update user input 1`] = `
     />
     <SamplePrompts
       sampleProps={
-        Object {
+        {
           "isSamplePromptsOpen": false,
           "setIsSamplePromptsOpen": [Function],
           "setTextBox": [Function],
@@ -481,11 +481,11 @@ exports[`Footer snapshot test should update user input 1`] = `
     placeholder="Write your own prompt or ask a question"
     resizable={false}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "border": "none",
         },
-        "root": Object {
+        "root": {
           "border": "none",
           "borderRadius": "20px",
           "height": "80px",
@@ -501,7 +501,7 @@ exports[`Footer snapshot test should update user input 1`] = `
   <CustomizedIconButton
     disabled={null}
     iconProps={
-      Object {
+      {
         "iconName": "Send",
       }
     }

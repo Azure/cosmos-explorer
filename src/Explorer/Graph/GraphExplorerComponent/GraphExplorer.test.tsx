@@ -342,7 +342,7 @@ describe("GraphExplorer", () => {
     });
 
     describe("Load Graph button", () => {
-      beforeEach(async (done) => {
+      beforeEach((done) => {
         const backendResponses: BackendResponses = {};
         backendResponses["g.V()"] = backendResponses["g.V('1')"] = {
           response: [{ id: "1", type: "vertex" }],

@@ -3,12 +3,12 @@
 exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
 <FluentProvider
   style={
-    Object {
+    {
       "height": "100%",
     }
   }
   theme={
-    Object {
+    {
       "borderRadiusCircular": "10000px",
       "borderRadiusLarge": "6px",
       "borderRadiusMedium": "4px",
@@ -452,7 +452,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
     className="tab-pane active documentsTab"
     role="tabpanel"
     style={
-      Object {
+      {
         "display": "flex",
       }
     }
@@ -475,7 +475,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
           appearance="primary"
           onClick={[Function]}
           style={
-            Object {
+            {
               "marginLeft": 8,
             }
           }
@@ -486,7 +486,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
     </div>
     <div
       style={
-        Object {
+        {
           "height": "100%",
           "overflow": "hidden",
         }
@@ -499,7 +499,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
       >
         <div
           style={
-            Object {
+            {
               "minWidth": 120,
               "overflow": "hidden",
               "position": "relative",
@@ -515,7 +515,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
             onKeyDown={[Function]}
             size="small"
             style={
-              Object {
+              {
                 "backgroundColor": "white",
                 "color": undefined,
                 "float": "right",
@@ -528,7 +528,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
           />
           <div
             style={
-              Object {
+              {
                 "height": "100%",
                 "width": "calc(100% - 50px)",
               }
@@ -536,13 +536,13 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
           >
             <DocumentsTableComponent
               columnHeaders={
-                Object {
+                {
                   "idHeader": "id",
-                  "partitionKeyHeaders": Array [],
+                  "partitionKeyHeaders": [],
                 }
               }
               isSelectionDisabled={true}
-              items={Array []}
+              items={[]}
               onItemClicked={[Function]}
               onSelectedRowsChange={[Function]}
               selectedRows={
@@ -555,7 +555,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         </div>
         <div
           style={
-            Object {
+            {
               "minWidth": "20%",
               "width": "100%",
             }
