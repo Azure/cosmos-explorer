@@ -7,10 +7,7 @@ import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
 import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
-import {
-  deleteDocument as deleteNoSqlDocument,
-  deleteDocuments as deleteNoSqlDocuments,
-} from "Common/dataAccess/deleteDocument";
+import { deleteDocuments as deleteNoSqlDocuments } from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
@@ -829,7 +826,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   /**
    * Implementation using bulk delete NoSQL API
    */
-  let _deleteDocuments = useCallback(
+  const _deleteDocuments = useCallback(
     async (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
       onExecutionErrorChange(false);
       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocuments, {
@@ -838,13 +835,20 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       });
       setIsExecuting(true);
 
-      // TODO: Once JS SDK Bug fix for bulk deleting legacy containers (whose systemKey==1) is released:
-      // Remove the check for systemKey, remove call to deleteNoSqlDocument(). deleteNoSqlDocuments() should always be called.
-      return (
-        partitionKey.systemKey
-          ? deleteNoSqlDocument(_collection, toDeleteDocumentIds[0]).then(() => [toDeleteDocumentIds[0]])
-          : deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
-      )
+      const deletePromise = !isPreferredApiMongoDB
+        ? deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
+        : MongoProxyClient.deleteDocuments(
+            _collection.databaseId,
+            _collection as ViewModels.Collection,
+            toDeleteDocumentIds,
+          ).then(({ deletedCount, isAcknowledged }) => {
+            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+              return toDeleteDocumentIds;
+            }
+            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+          });
+
+      return deletePromise
         .then(
           (deletedIds) => {
             TelemetryProcessor.traceSuccess(
@@ -875,7 +879,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         )
         .finally(() => setIsExecuting(false));
     },
-    [_collection, onExecutionErrorChange, tabTitle],
+    [_collection, isPreferredApiMongoDB, onExecutionErrorChange, tabTitle],
   );
 
   const deleteDocuments = useCallback(
@@ -900,7 +904,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           (error: Error) =>
             useDialog
               .getState()
-              .showOkModalDialog("Delete documents", `Document(s) deleted failed (${JSON.stringify(error)})`),
+              .showOkModalDialog("Delete documents", `Deleting document(s) failed (${error.message})`),
         )
         .finally(() => setIsExecuting(false));
     },
@@ -1384,62 +1388,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return partitionKeyProperty;
     });
 
-    /**
-     * Mongo implementation
-     * TODO: update proxy to use mongo driver deleteMany
-     */
-    _deleteDocuments = (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
-      const promises = toDeleteDocumentIds.map((documentId) => _deleteDocument(documentId));
-      return Promise.all(promises);
-    };
-
-    const __deleteDocument = async (documentId: DocumentId): Promise<DocumentId> => {
-      await MongoProxyClient.deleteDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId);
-      return documentId;
-    };
-
-    const _deleteDocument = useCallback(
-      (documentId: DocumentId): Promise<DocumentId> => {
-        onExecutionErrorChange(false);
-        const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
-          dataExplorerArea: Constants.Areas.Tab,
-          tabTitle,
-        });
-        setIsExecuting(true);
-        return __deleteDocument(documentId)
-          .then(
-            (deletedDocumentId) => {
-              TelemetryProcessor.traceSuccess(
-                Action.DeleteDocument,
-                {
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle,
-                },
-                startKey,
-              );
-              return deletedDocumentId;
-            },
-            (error) => {
-              onExecutionErrorChange(true);
-              console.error(error);
-              TelemetryProcessor.traceFailure(
-                Action.DeleteDocument,
-                {
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle,
-                  error: getErrorMessage(error),
-                  errorStack: getErrorStack(error),
-                },
-                startKey,
-              );
-              return undefined;
-            },
-          )
-          .finally(() => setIsExecuting(false));
-      },
-      [__deleteDocument, onExecutionErrorChange, tabTitle],
-    );
-
     onSaveNewDocumentClick = useCallback((): Promise<unknown> => {
       const documentContent = JSON.parse(selectedDocumentContent);
       const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
@@ -1810,8 +1758,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   size={tableContainerSizePx}
                   columnHeaders={columnHeaders}
                   isSelectionDisabled={
-                    (partitionKey.systemKey && !isPreferredApiMongoDB) ||
-                    (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
+                    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
                   }
                 />
                 {tableItems.length > 0 && (
