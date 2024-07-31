@@ -24,7 +24,6 @@ export interface EditorReactProps {
   monacoContainerStyles?: React.CSSProperties;
   className?: string;
   spinnerClassName?: string;
-  enableGotoSymbolContextMenuItem?: boolean; // Enable/Disable "Go to Symbol..." context menu item
 
   enableWordWrapContextMenuItem?: boolean; // Enable/Disable "Word Wrap" context menu item
   onWordWrapChanged?: (wordWrap: "on" | "off") => void; // Called when word wrap is changed
@@ -118,34 +117,6 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
           this.props.onContentSelected(selectedContent);
         },
       );
-    }
-
-    // Remove "Go to Symbol..." from Context menu
-    if (!this.props.enableGotoSymbolContextMenuItem) {
-      // This uses a private api to remove the "Go to Symbol..." context menu item
-      const removableIds = ["editor.action.quickOutline"];
-      const contextmenu = this.editor.getContribution("editor.contrib.contextmenu");
-      const realMethod = (contextmenu as monaco.editor.IEditorContribution & { _getMenuActions: () => void })
-        ._getMenuActions;
-
-      // eslint-disable-next-line prefer-arrow/prefer-arrow-functions -- Monaco needs a function
-      (contextmenu as monaco.editor.IEditorContribution & { _getMenuActions: () => void })._getMenuActions =
-        function () {
-          // eslint-disable-next-line prefer-rest-params
-          const items: { id: string }[] = realMethod.apply(contextmenu, arguments);
-          const filteredItems = items.filter((item: { id: string }) => !removableIds.includes(item.id));
-
-          // Remove separator if it is the first item
-          if (filteredItems[0].id === "vs.actions.separator") {
-            filteredItems.shift();
-          }
-
-          // Remove separator if it is the last item
-          if (filteredItems[filteredItems.length - 1].id === "vs.actions.separator") {
-            filteredItems.pop();
-          }
-          return filteredItems;
-        };
     }
 
     if (this.props.enableWordWrapContextMenuItem) {
