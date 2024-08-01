@@ -143,7 +143,6 @@ async function createGremlineDatabase(params: DataModels.CreateDatabaseParams): 
 }
 
 async function createDatabaseWithSDK(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  console.log("got here")
   const createBody: DatabaseRequest = { id: params.databaseId };
 
   if (params.databaseLevelThroughput) {
