@@ -14,7 +14,7 @@ import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateU
 
     const explorer = await DataExplorer.open(page, accountType);
 
-    await explorer.commandBarButton("New Collection").click();
+    await explorer.globalCommandButton("New Collection").click();
     await explorer.whilePanelOpen("New Collection", async (panel, okButton) => {
       await panel.getByPlaceholder("Type a new database id").fill(databaseId);
       await panel.getByRole("textbox", { name: "Collection id, Example Collection1" }).fill(collectionId);
@@ -23,9 +23,9 @@ import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateU
       await okButton.click();
     });
 
-    const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
+    const databaseNode = explorer.treeNode(databaseId);
     await databaseNode.expand();
-    const collectionNode = explorer.treeNode(`DATA/${databaseId}/${collectionId}`);
+    const collectionNode = explorer.treeNode(`${databaseId}/${collectionId}`);
 
     await collectionNode.openContextMenu();
     await collectionNode.contextMenuItem("Delete Collection").click();

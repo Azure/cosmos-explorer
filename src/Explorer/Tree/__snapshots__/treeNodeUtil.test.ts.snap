@@ -21,7 +21,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -30,7 +30,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -61,7 +60,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -70,7 +69,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -80,7 +78,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -94,7 +92,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -127,7 +124,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -136,7 +133,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -146,7 +142,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -160,7 +156,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -242,7 +237,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -251,7 +246,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -261,12 +255,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "onExpanded": [Function],
       },
       {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -280,7 +274,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -333,7 +326,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -352,7 +345,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -404,7 +396,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -423,7 +415,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -433,7 +424,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -447,7 +438,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -501,7 +491,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -520,7 +510,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -530,7 +519,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -544,7 +533,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -647,7 +635,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -666,7 +654,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -676,12 +663,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "onExpanded": [Function],
       },
       {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -695,7 +682,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -712,7 +698,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "children": [
       {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -720,7 +706,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -731,7 +716,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
       },
       {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -739,7 +724,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -749,7 +733,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -763,7 +747,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -775,7 +758,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "children": [
       {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -783,7 +766,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -793,7 +775,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -807,7 +789,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -819,7 +800,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
     "children": [
       {
         "children": undefined,
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -827,7 +808,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -837,12 +817,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "onExpanded": [Function],
       },
       {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -856,7 +836,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -968,7 +947,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -997,7 +976,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -1069,7 +1047,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -1098,7 +1076,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -1108,7 +1085,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -1122,7 +1099,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -1196,7 +1172,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -1225,7 +1201,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -1235,7 +1210,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -1249,7 +1224,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -1372,7 +1346,7 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -1401,7 +1375,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -1411,12 +1384,12 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "onExpanded": [Function],
       },
       {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -1430,7 +1403,6 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -1542,7 +1514,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -1571,7 +1543,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -1638,7 +1609,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -1667,7 +1638,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -1677,7 +1647,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -1691,7 +1661,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -1765,7 +1734,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -1794,7 +1763,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -1804,7 +1772,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "onExpanded": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -1818,7 +1786,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -1941,7 +1908,7 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "onExpanded": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -1970,7 +1937,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
-        "iconSrc": {},
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -1980,12 +1946,12 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "onExpanded": [Function],
       },
       {
-        "className": "loadMoreHeader",
+        "className": "loadMoreNode",
         "label": "load more",
         "onClick": [Function],
       },
     ],
-    "className": "databaseHeader",
+    "className": "databaseNode",
     "contextMenu": [
       {
         "iconSrc": {},
@@ -1999,7 +1965,6 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
-    "iconSrc": {},
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -2020,8 +1985,7 @@ exports[`createResourceTokenTreeNodes creates the expected tree nodes 1`] = `
         "onClick": [Function],
       },
     ],
-    "className": "collectionHeader",
-    "iconSrc": {},
+    "className": "collectionNode",
     "isExpanded": true,
     "isSelected": [Function],
     "label": "testCollection",
@@ -2049,7 +2013,7 @@ exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
             "onClick": [Function],
           },
         ],
-        "className": "collectionHeader",
+        "className": "collectionNode",
         "contextMenu": [
           {
             "iconSrc": {},
@@ -2057,7 +2021,6 @@ exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
             "onClick": [Function],
           },
         ],
-        "iconSrc": {},
         "isExpanded": false,
         "isSelected": [Function],
         "label": "testCollection",
@@ -2065,8 +2028,7 @@ exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
         "onContextMenuOpen": [Function],
       },
     ],
-    "className": "databaseHeader",
-    "iconSrc": {},
+    "className": "databaseNode",
     "isExpanded": false,
     "label": "testDatabase",
   },
