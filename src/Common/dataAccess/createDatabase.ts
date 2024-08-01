@@ -155,7 +155,7 @@ async function createDatabaseWithSDK(params: DataModels.CreateDatabaseParams): P
   let response: DatabaseResponse;
   try {
     response = await client().databases.create(createBody);
-  } catch(error) {
+  } catch (error) {
     if (error.message.includes("Shared throughput database creation is not supported for serverless accounts")) {
       createBody.maxThroughput = undefined;
       createBody.throughput = undefined;
