@@ -4,6 +4,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import { useDatabases } from "../../Explorer/useDatabases";
 import { userContext } from "../../UserContext";
 import { getDatabaseName } from "../../Utils/APITypeUtils";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { createUpdateCassandraKeyspace } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import { createUpdateGremlinDatabase } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import { createUpdateMongoDBDatabase } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
@@ -15,7 +16,6 @@ import {
   MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
 } from "../../Utils/arm/generatedClients/cosmos/types";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
 
@@ -152,8 +152,18 @@ async function createDatabaseWithSDK(params: DataModels.CreateDatabaseParams): P
       createBody.throughput = params.offerThroughput;
     }
   }
-
-  const response: DatabaseResponse = await client().databases.create(createBody);
+  let response: DatabaseResponse;
+  try {
+    response = await client().databases.create(createBody);
+  } catch (error) {
+    if (error.message.includes("Shared throughput database creation is not supported for serverless accounts")) {
+      createBody.maxThroughput = undefined;
+      createBody.throughput = undefined;
+      response = await client().databases.create(createBody);
+    } else {
+      throw error;
+    }
+  }
   return response.resource;
 }
 

@@ -91,7 +91,11 @@ const appThemePortalBrandRamp: BrandVariants = {
   160: "#CDD8EF",
 };
 
-const cosmosThemeElements = {};
+const cosmosThemeElements = {
+  layoutRowHeight: `${LayoutConstants.rowHeight}px`,
+  sidebarMinimumWidth: "200px",
+  sidebarInitialWidth: "300px",
+};
 
 export type CosmosTheme = Theme & typeof cosmosThemeElements;
 

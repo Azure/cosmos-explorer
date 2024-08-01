@@ -8,7 +8,7 @@ test("SQL database and container CRUD", async ({ page }) => {
 
   const explorer = await DataExplorer.open(page, TestAccount.SQL);
 
-  await explorer.commandBarButton("New Container").click();
+  await explorer.globalCommandButton("New Container").click();
   await explorer.whilePanelOpen("New Container", async (panel, okButton) => {
     await panel.getByPlaceholder("Type a new database id").fill(databaseId);
     await panel.getByRole("textbox", { name: "Container id, Example Container1" }).fill(containerId);
@@ -17,9 +17,9 @@ test("SQL database and container CRUD", async ({ page }) => {
     await okButton.click();
   });
 
-  const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
+  const databaseNode = explorer.treeNode(databaseId);
   await databaseNode.expand();
-  const containerNode = explorer.treeNode(`DATA/${databaseId}/${containerId}`);
+  const containerNode = explorer.treeNode(`${databaseId}/${containerId}`);
 
   await containerNode.openContextMenu();
   await containerNode.contextMenuItem("Delete Container").click();
