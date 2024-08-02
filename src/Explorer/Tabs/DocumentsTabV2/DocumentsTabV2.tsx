@@ -969,8 +969,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-        ? `the selected ${selectedRows.size} documents`
-        : "the selected document";
+      ? `the selected ${selectedRows.size} documents`
+      : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog
