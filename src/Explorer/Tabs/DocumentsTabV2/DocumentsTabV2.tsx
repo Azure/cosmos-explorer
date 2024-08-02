@@ -1876,6 +1876,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     lineNumbers={"on"}
                     theme={"_theme"}
                     onContentChanged={_onEditorContentChange}
+                    enableWordWrapContextMenuItem={true}
                   />
                 )}
                 {selectedRows.size > 1 && (
