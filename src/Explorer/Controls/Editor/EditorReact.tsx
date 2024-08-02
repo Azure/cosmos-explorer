@@ -30,6 +30,7 @@ export interface EditorReactProps {
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
+  private static readonly VIEWING_OPTIONS_GROUP_ID = "viewingoptions"; // Group ID for the context menu group
   private rootNode: HTMLElement;
   private editor: monaco.editor.IStandaloneCodeEditor;
   private selectionListener: monaco.IDisposable;
@@ -123,19 +124,9 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       editor.addAction({
         // An unique identifier of the contributed action.
         id: "wordwrap",
-
         label: "Toggle Word Wrap",
-
-        // A precondition for this action.
-        precondition: null,
-
-        // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
-        keybindingContext: null,
-
-        contextMenuGroupId: "navigation",
-
+        contextMenuGroupId: EditorReact.VIEWING_OPTIONS_GROUP_ID,
         contextMenuOrder: 1,
-
         // Method that will be executed when the action is triggered.
         // @param editor The editor instance is passed in as a convenience
         run: (ed) => {
