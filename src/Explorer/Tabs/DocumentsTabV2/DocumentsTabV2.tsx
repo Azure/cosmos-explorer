@@ -20,7 +20,13 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import { readSubComponentState, saveSubComponentState } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
+import {
+  DocumentsTabStateData,
+  readDocumentsTabState,
+  readSubComponentState,
+  saveDocumentsTabState,
+  saveSubComponentState,
+} from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
@@ -559,7 +565,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   // State
-  // const [tabStateData, setTabStateData] = useState<DocumentsTabStateData>(() => readDocumentsTabState());
+  const [tabStateData, setTabStateData] = useState<DocumentsTabStateData>(() => readDocumentsTabState());
 
   const isQueryCopilotSampleContainer =
     _collection?.isSampleCollection &&
@@ -1867,8 +1873,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
-          <Allotment>
-            <Allotment.Pane preferredSize="35%" minSize={175}>
+          <Allotment
+            onChange={(sizes: number[]) => {
+              tabStateData.leftPaneWidthPercent = sizes[0] / (sizes[0] + sizes[1]);
+              saveDocumentsTabState(tabStateData);
+              setTabStateData(tabStateData);
+            }}
+          >
+            <Allotment.Pane preferredSize={tabStateData.leftPaneWidthPercent} minSize={175}>
               <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
                 <div className={styles.floatingControlsContainer}>
                   <div className={styles.floatingControls}>
