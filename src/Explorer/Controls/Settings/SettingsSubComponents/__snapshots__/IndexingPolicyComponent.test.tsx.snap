@@ -3,7 +3,7 @@
 exports[`IndexingPolicyComponent renders 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 5,
     }
   }
