@@ -111,7 +111,8 @@ const makeMapStateToProps = (_initialState: AppState, initialProps: InitialProps
     } else if (kernel?.kernelSpecName) {
       kernelSpecDisplayName = kernel.kernelSpecName;
     } else if (content && content.type === "notebook") {
-      kernelSpecDisplayName = selectors.notebook.displayName(content.model) || " ";
+      // TODO Fix typing here
+      kernelSpecDisplayName = selectors.notebook.displayName(content.model as never) || " ";
     }
 
     return {

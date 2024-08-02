@@ -1,40 +1,34 @@
 import { KeyboardAction } from "KeyboardShortcuts";
-import { ReactTabKind, useTabs } from "hooks/useTabs";
 import * as React from "react";
-import AddCollectionIcon from "../../../../images/AddCollection.svg";
-import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
+import { useEffect, useState } from "react";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
 import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
 import AddUdfIcon from "../../../../images/AddUdf.svg";
 import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
+import EntraIDIcon from "../../../../images/EntraID.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
-import HomeIcon from "../../../../images/Home_16.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
 import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
-import EntraIDIcon from "../../../../images/EntraID.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { Platform, configContext } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
-import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
-import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane, useDataPlaneRbac } from "../../Panes/SettingsPane/SettingsPane";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
-import { useEffect, useState } from "react";
 
 let counter = 0;
 
@@ -55,42 +49,31 @@ export function createStaticCommandBarButtons(
     }
   };
 
-  if (configContext.platform !== Platform.Fabric) {
-    const homeBtn = createHomeButton();
-    buttons.push(homeBtn);
-
-    const newCollectionBtn = createNewCollectionGroup(container);
-    newCollectionBtn.keyboardAction = KeyboardAction.NEW_COLLECTION; // Just for the root button, not the child version we create below.
-    buttons.push(newCollectionBtn);
-    if (userContext.apiType !== "Tables" && userContext.apiType !== "Cassandra") {
-      const addSynapseLink = createOpenSynapseLinkDialogButton(container);
-
-      if (addSynapseLink) {
-        addDivider();
-        buttons.push(addSynapseLink);
-      }
+  if (
+    configContext.platform !== Platform.Fabric &&
+    userContext.apiType !== "Tables" &&
+    userContext.apiType !== "Cassandra"
+  ) {
+    const addSynapseLink = createOpenSynapseLinkDialogButton(container);
+    if (addSynapseLink) {
+      addDivider();
+      buttons.push(addSynapseLink);
     }
+  }
 
-    if (userContext.apiType === "SQL") {
-      const [loginButtonProps, setLoginButtonProps] = useState<CommandButtonComponentProps | undefined>(undefined);
-      const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
-      const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
+  if (userContext.apiType === "SQL") {
+    const [loginButtonProps, setLoginButtonProps] = useState<CommandButtonComponentProps | undefined>(undefined);
+    const dataPlaneRbacEnabled = useDataPlaneRbac((state) => state.dataPlaneRbacEnabled);
+    const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
 
-      useEffect(() => {
-        const buttonProps = createLoginForEntraIDButton(container);
-        setLoginButtonProps(buttonProps);
-      }, [dataPlaneRbacEnabled, aadTokenUpdated, container]);
+    useEffect(() => {
+      const buttonProps = createLoginForEntraIDButton(container);
+      setLoginButtonProps(buttonProps);
+    }, [dataPlaneRbacEnabled, aadTokenUpdated, container]);
 
-      if (loginButtonProps) {
-        addDivider();
-        buttons.push(loginButtonProps);
-      }
-    }
-
-    if (userContext.apiType !== "Tables") {
-      newCollectionBtn.children = [createNewCollectionGroup(container)];
-      const newDatabaseBtn = createNewDatabase(container);
-      newCollectionBtn.children.push(newDatabaseBtn);
+    if (loginButtonProps) {
+      addDivider();
+      buttons.push(loginButtonProps);
     }
   }
 
@@ -159,6 +142,25 @@ export function createContextCommandBarButtons(
       hasPopup: true,
     };
     buttons.push(newMongoShellBtn);
+  }
+
+  if (
+    useNotebook.getState().isShellEnabled &&
+    !selectedNodeState.isDatabaseNodeOrNoneSelected() &&
+    userContext.apiType === "Cassandra"
+  ) {
+    const label: string = "Open Cassandra Shell";
+    const newCassandraShellButton: CommandButtonComponentProps = {
+      iconSrc: HostedTerminalIcon,
+      iconAlt: label,
+      onCommandClick: () => {
+        container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
+      },
+      commandButtonLabel: label,
+      ariaLabel: label,
+      hasPopup: true,
+    };
+    buttons.push(newCassandraShellButton);
   }
 
   return buttons;
@@ -241,31 +243,6 @@ function areScriptsSupported(): boolean {
   );
 }
 
-function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
-  const label = `New ${getCollectionName()}`;
-  return {
-    iconSrc: AddCollectionIcon,
-    iconAlt: label,
-    onCommandClick: () => container.onNewCollectionClicked(),
-    commandButtonLabel: label,
-    ariaLabel: label,
-    hasPopup: true,
-    id: "createNewContainerCommandButton",
-  };
-}
-
-function createHomeButton(): CommandButtonComponentProps {
-  const label = "Home";
-  return {
-    iconSrc: HomeIcon,
-    iconAlt: label,
-    onCommandClick: () => useTabs.getState().openAndActivateReactTab(ReactTabKind.Home),
-    commandButtonLabel: label,
-    hasPopup: false,
-    ariaLabel: label,
-  };
-}
-
 function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
   if (configContext.platform === Platform.Emulator) {
     return undefined;
@@ -315,25 +292,6 @@ function createLoginForEntraIDButton(container: Explorer): CommandButtonComponen
     commandButtonLabel: label,
     hasPopup: true,
     ariaLabel: label,
-  };
-}
-
-function createNewDatabase(container: Explorer): CommandButtonComponentProps {
-  const label = "New " + getDatabaseName();
-  return {
-    iconSrc: AddDatabaseIcon,
-    iconAlt: label,
-    keyboardAction: KeyboardAction.NEW_DATABASE,
-    onCommandClick: async () => {
-      const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
-      if (throughputCap && throughputCap !== -1) {
-        await useDatabases.getState().loadAllOffers();
-      }
-      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />);
-    },
-    commandButtonLabel: label,
-    ariaLabel: label,
-    hasPopup: true,
   };
 }
 

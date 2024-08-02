@@ -1,4 +1,4 @@
-import { Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { IMessageBarStyles, Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext, updateConfigContext } from "ConfigContext";
@@ -14,6 +14,7 @@ import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
 import { QuickstartTab } from "Explorer/Tabs/QuickstartTab";
 import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
+import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
@@ -53,11 +54,19 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
     });
   }, [setKeyboardHandlers]);
 
+  const defaultMessageBarStyles: IMessageBarStyles = {
+    root: {
+      height: `${LayoutConstants.rowHeight}px`,
+      overflow: "auto",
+    },
+  };
+
   return (
     <div className="tabsManagerContainer">
       {networkSettingsWarning && (
         <MessageBar
           messageBarType={MessageBarType.warning}
+          styles={defaultMessageBarStyles}
           actions={
             <MessageBarButton
               onClick={() =>
@@ -84,6 +93,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             setShowRUThresholdMessageBar(false);
           }}
           styles={{
+            ...defaultMessageBarStyles,
             innerText: {
               fontWeight: "bold",
             },
@@ -103,6 +113,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
       {showMongoAndCassandraProxiesNetworkSettingsWarningState && (
         <MessageBar
           messageBarType={MessageBarType.warning}
+          styles={defaultMessageBarStyles}
           onDismiss={() => {
             setShowMongoAndCassandraProxiesNetworkSettingsWarningState(false);
           }}
@@ -111,23 +122,21 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           re-enable "Allow access from Azure Portal" on the Networking blade for your account.`}
         </MessageBar>
       )}
-      <div id="content" className="flexContainer hideOverflows">
-        <div className="nav-tabs-margin">
-          <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
-            {openedReactTabs.map((tab) => (
-              <TabNav key={ReactTabKind[tab]} active={activeReactTab === tab} tabKind={tab} />
-            ))}
-            {openedTabs.map((tab) => (
-              <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
-            ))}
-          </ul>
-        </div>
-        <div className="tabPanesContainer">
-          {activeReactTab !== undefined && getReactTabContent(activeReactTab, explorer)}
-          {openedTabs.map((tab) => (
-            <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
+      <div className="nav-tabs-margin">
+        <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
+          {openedReactTabs.map((tab) => (
+            <TabNav key={ReactTabKind[tab]} active={activeReactTab === tab} tabKind={tab} />
           ))}
-        </div>
+          {openedTabs.map((tab) => (
+            <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
+          ))}
+        </ul>
+      </div>
+      <div className="tabPanesContainer">
+        {activeReactTab !== undefined && getReactTabContent(activeReactTab, explorer)}
+        {openedTabs.map((tab) => (
+          <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
+        ))}
       </div>
     </div>
   );
@@ -145,6 +154,8 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
     return ko.observable(ReactTabKind[tabKind]);
   };
 
+  const tabTitle = useObservable(tab?.tabTitle || getReactTabTitle());
+
   useEffect(() => {
     if (active && focusTab.current) {
       focusTab.current.focus();
@@ -156,6 +167,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
       onMouseLeave={() => setHovering(false)}
       className={active ? "active tabList" : "tabList"}
       style={active ? { fontWeight: "bolder" } : {}}
+      role="presentation"
     >
       <span className="tabNavContentContainer">
         <div className="tab_Content">
@@ -197,10 +209,10 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
                 />
               )}
             </span>
-            <span className="tabNavText">{useObservable(tab?.tabTitle || getReactTabTitle())}</span>
+            <span className="tabNavText">{tabTitle}</span>
           </span>
           <span className="tabIconSection">
-            <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} />
+            <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} ariaLabel={tabTitle} />
           </span>
         </div>
       </span>
@@ -208,22 +220,31 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
   );
 }
 
+const onKeyPressReactTabClose = (e: KeyboardEvent, tabKind: ReactTabKind): void => {
+  if (e.key === "Enter" || e.code === "Space") {
+    useTabs.getState().closeReactTab(tabKind);
+    e.stopPropagation();
+  }
+};
+
 const CloseButton = ({
   tab,
   active,
   hovering,
   tabKind,
+  ariaLabel,
 }: {
   tab: Tab;
   active: boolean;
   hovering: boolean;
   tabKind?: ReactTabKind;
+  ariaLabel: string;
 }) => (
   <span
     style={{ display: hovering || active ? undefined : "none" }}
     title="Close"
     role="button"
-    aria-label="Close Tab"
+    aria-label={ariaLabel}
     className="cancelButton"
     onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
       event.stopPropagation();
@@ -231,10 +252,10 @@ const CloseButton = ({
       // tabKind === ReactTabKind.QueryCopilot && useQueryCopilot.getState().resetQueryCopilotStates();
     }}
     tabIndex={active ? 0 : undefined}
-    onKeyPress={({ nativeEvent: e }) => tab.onKeyPressClose(undefined, e)}
+    onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactTabClose(e, tabKind))}
   >
     <span className="tabIcon close-Icon">
-      <img src={errorIcon} title="Close" alt="Close" />
+      <img src={errorIcon} title="Close" alt="Close" role="none" />
     </span>
   </span>
 );

@@ -29,7 +29,9 @@ import {
   saveSubComponentState,
   WidthDefinition,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
+import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
+import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
 import React, { useCallback, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
@@ -90,6 +92,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     return columnSizesPx;
   });
 
+  const styles = useDocumentsTabStyles();
+
   const onColumnResize = React.useCallback((_, { columnId, width }) => {
     setColumnSizingOptions((state) => {
       const newSizingOptions = {
@@ -138,7 +142,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     [columnHeaders],
   );
 
-  const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(undefined);
+  const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(INITIAL_SELECTED_ROW_INDEX);
   const onTableCellClicked = useCallback(
     (e: React.MouseEvent, index: number) => {
       if (isSelectionDisabled) {
@@ -182,7 +186,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     return (
       <TableRow
         aria-rowindex={index + 2}
-        style={{ ...style, cursor: "pointer", userSelect: "none" }}
+        className={styles.tableRow}
+        style={{
+          ...style,
+          cursor: "pointer",
+          userSelect: "none",
+        }}
         key={item.id}
         aria-selected={selected}
         appearance={appearance}
@@ -201,7 +210,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         {columns.map((column) => (
           <TableCell
             key={column.columnId}
-            className="documentsTableCell"
+            className={styles.tableCell}
             // When clicking on a cell with shift/ctrl key, onKeyDown is called instead of onClick.
             onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index)}
             onKeyPress={(e: React.KeyboardEvent<Element>) => onIdClicked(e, index)}
@@ -272,15 +281,15 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     role: "grid",
     ...columnSizing.getTableProps(),
     ...keyboardNavAttr,
-    size: "extra-small",
+    size: "small",
     ref: tableRef,
     ...style,
   };
 
   return (
-    <Table className="documentsTable" noNativeElements {...tableProps}>
-      <TableHeader className="documentsTableHeader">
-        <TableRow style={{ width: size ? size.width - 15 : "100%" }}>
+    <Table noNativeElements {...tableProps}>
+      <TableHeader>
+        <TableRow className={styles.tableRow} style={{ width: size ? size.width - 15 : "100%" }}>
           {!isSelectionDisabled && (
             <TableSelectionCell
               checked={allRowsSelected ? true : someRowsSelected ? "mixed" : false}
@@ -293,7 +302,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             <Menu openOnContext key={column.columnId}>
               <MenuTrigger>
                 <TableHeaderCell
-                  className="documentsTableCell"
+                  className={styles.tableCell}
                   key={column.columnId}
                   {...columnSizing.getTableHeaderCellProps(column.columnId)}
                 >
@@ -313,9 +322,9 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       </TableHeader>
       <TableBody>
         <List
-          height={size !== undefined ? size.height - 32 /* table header */ - 21 /* load more */ : 0}
+          height={size !== undefined ? size.height - LayoutConstants.rowHeight /* table header */ : 0}
           itemCount={items.length}
-          itemSize={30}
+          itemSize={LayoutConstants.rowHeight}
           width={size ? size.width : 0}
           itemData={rows}
           style={{ overflowY: "scroll" }}
