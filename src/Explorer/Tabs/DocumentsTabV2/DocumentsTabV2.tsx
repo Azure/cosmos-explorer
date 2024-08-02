@@ -20,12 +20,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import {
-  DocumentsTabStateData,
-  readDocumentsTabState,
-  readSubComponentState,
-  saveSubComponentState,
-} from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
+import { readSubComponentState, saveSubComponentState } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
@@ -564,7 +559,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   // State
-  const [tabStateData, setTabStateData] = useState<DocumentsTabStateData>(() => readDocumentsTabState());
+  // const [tabStateData, setTabStateData] = useState<DocumentsTabStateData>(() => readDocumentsTabState());
 
   const isQueryCopilotSampleContainer =
     _collection?.isSampleCollection &&
