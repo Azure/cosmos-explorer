@@ -38,7 +38,9 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         }
       }
     >
-      <Allotment>
+      <Allotment
+        onChange={[Function]}
+      >
         <Allotment.Pane
           minSize={175}
           preferredSize="35%"

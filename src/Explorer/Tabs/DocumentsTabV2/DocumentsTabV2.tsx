@@ -1807,13 +1807,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               <div className={styles.filterRow}>
                 {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
                 <Input
-                  id="filterInput"
-                  autoComplete="off"
                   ref={filterInput}
                   type="text"
                   size="small"
                   list={`filtersList-${getUniqueId(_collection)}`}
-                  className={styles.filterInput}
+                  className={`filterInput ${styles.filterInput}`}
                   title="Type a query predicate or choose one from the list."
                   placeholder={
                     isPreferredApiMongoDB
@@ -1880,7 +1878,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               setTabStateData(tabStateData);
             }}
           >
-            <Allotment.Pane preferredSize={tabStateData.leftPaneWidthPercent} minSize={175}>
+            <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={175}>
               <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
                 <div className={styles.floatingControlsContainer}>
                   <div className={styles.floatingControls}>

@@ -384,7 +384,7 @@ describe("Documents tab (noSql API)", () => {
         .findWhere((node) => node.text() === "Edit Filter")
         .at(0)
         .simulate("click");
-      expect(wrapper.find("#filterInput").exists()).toBeTruthy();
+      expect(wrapper.find("Input.filterInput").exists()).toBeTruthy();
     });
   });
 
