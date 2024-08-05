@@ -1872,12 +1872,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Allotment
             onChange={(sizes: number[]) => {
-              tabStateData.leftPaneWidthPercent = sizes[0] / (sizes[0] + sizes[1]);
+              tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
               saveDocumentsTabState(tabStateData);
               setTabStateData(tabStateData);
             }}
           >
-            <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent * 100}%`} minSize={55}>
+            <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
               <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
                 <div className={styles.floatingControlsContainer}>
                   <div className={styles.floatingControls}>

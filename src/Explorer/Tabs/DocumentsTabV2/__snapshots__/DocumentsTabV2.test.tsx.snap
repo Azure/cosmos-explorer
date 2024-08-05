@@ -42,7 +42,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         onChange={[Function]}
       >
         <Allotment.Pane
-          minSize={175}
+          minSize={55}
           preferredSize="35%"
         >
           <div
@@ -105,8 +105,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
           </div>
         </Allotment.Pane>
         <Allotment.Pane
-          minSize={300}
-          preferredSize="65%"
+          minSize={30}
         >
           <div
             style={
