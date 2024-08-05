@@ -509,7 +509,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       onDismiss={() => setShowDataPlaneRBACWarning(false)}
                       dismissButtonAriaLabel="Close"
                     >
-                      Please click on &quot;Login for Entra ID RBAC&quot; prior to performing Entra ID RBAC operations
+                      Please click on &quot;Login for Entra ID RBAC&quot; button prior to performing Entra ID RBAC
+                      operations
                     </MessageBar>
                   )}
                   <ChoiceGroup
