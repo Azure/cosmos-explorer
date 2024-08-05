@@ -1868,7 +1868,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             )}
           </>
         )}
-
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Allotment
@@ -1878,7 +1877,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               setTabStateData(tabStateData);
             }}
           >
-            <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={175}>
+            <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent * 100}%`} minSize={55}>
               <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
                 <div className={styles.floatingControlsContainer}>
                   <div className={styles.floatingControls}>
@@ -1923,7 +1922,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 )}
               </div>
             </Allotment.Pane>
-            <Allotment.Pane preferredSize="65%" minSize={300}>
+            <Allotment.Pane minSize={30}>
               <div style={{ height: "100%", width: "100%" }}>
                 {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                   <EditorReact
