@@ -3,6 +3,7 @@ import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
 import { configContext } from "../ConfigContext";
 import { acquireTokenWithMsal, getMsalInstance } from "../Utils/AuthorizationUtils";
+import { updateUserContext } from "UserContext";
 
 const msalInstance = await getMsalInstance();
 
@@ -79,7 +80,7 @@ export function useAADAuth(): ReturnType {
         authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
         scopes: [`${configContext.ARM_ENDPOINT}/.default`],
       });
-
+      updateUserContext({ armToken: armToken});
       setArmToken(armToken);
       setAuthFailure(null);
     } catch (error) {

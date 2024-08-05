@@ -1,10 +1,8 @@
 import { HttpHeaders } from "Common/Constants";
-import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph";
 import useSWR from "swr";
-import { configContext } from "../ConfigContext";
-import { DatabaseAccount } from "../Contracts/DataModels";
 import { acquireTokenWithMsal, getMsalInstance } from "Utils/AuthorizationUtils";
 import React from "react";
+import { updateUserContext, userContext } from "UserContext";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 interface AccountListResult {
@@ -36,11 +34,10 @@ export async function fetchDatabaseAccounts(subscriptionId: string, accessToken:
 }
 
 export async function fetchDatabaseAccountsFromGraph(
-  subscriptionId: string,
-  accessToken: string,
+  subscriptionId: string
 ): Promise<DatabaseAccount[]> {
   const headers = new Headers();
-  const bearer = `Bearer ${accessToken}`;
+  const bearer = `Bearer ${userContext.armToken}`;
 
   headers.append("Authorization", bearer);
   headers.append(HttpHeaders.contentType, "application/json");
@@ -48,8 +45,9 @@ export async function fetchDatabaseAccountsFromGraph(
   const apiVersion = "2021-03-01";
   const managementResourceGraphAPIURL = `${configContext.ARM_ENDPOINT}providers/Microsoft.ResourceGraph/resources?api-version=${apiVersion}`;
 
-  const databaseAccounts: DatabaseAccount[] = [];
+  let databaseAccounts: DatabaseAccount[] = [];
   let skipToken: string;
+  console.log("Old ARM Token", userContext.armToken);
   do {
     const body = {
       query: databaseAccountsQuery,
@@ -74,38 +72,121 @@ export async function fetchDatabaseAccountsFromGraph(
     });
 
     if (!response.ok) {
-     // throw new Error(await response.text());
-   // }
+      throw new Error(await response.text());
+    }
+    
 
     const queryResponse: QueryResponse = (await response.json()) as QueryResponse;
     skipToken = queryResponse.$skipToken;
     queryResponse.data?.map((databaseAccount: any) => {
       databaseAccounts.push(databaseAccount as DatabaseAccount);
     });
-  } else {
-    try{
-      console.log("Token expired");
-      await acquireNewTokenAndRetry(body);
-    }
-    catch (error) {
-     throw new Error(error);
-    }
   
-  }
+  //  else {
+  //   try{
+  //     console.log("Token expired");
+  //     databaseAccounts = await acquireNewTokenAndRetry(body);
+  //   }
+    // catch (error) {
+    //  throw new Error(error);
+    // }
+  
+  //}
   } while (skipToken);
-
   return databaseAccounts.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] | undefined {
+export function useDatabaseAccounts(subscriptionId: string): DatabaseAccount[] | undefined {
   const { data } = useSWR(
-    () => (armToken && subscriptionId ? ["databaseAccounts", subscriptionId, armToken] : undefined),
-    (_, subscriptionId, armToken) => fetchDatabaseAccountsFromGraph(subscriptionId, armToken),
+    () => ( subscriptionId ? ["databaseAccounts", subscriptionId] : undefined),
+    (_, subscriptionId) => runCommand(fetchDatabaseAccountsFromGraph, subscriptionId),
   );
   return data;
 }
 
-async function acquireNewTokenAndRetry(body: any) {
+
+
+// Define the types for your responses
+interface DatabaseAccount {
+  name: string;
+  id: string;
+  // Add other relevant fields as per your use case
+}
+
+interface Subscription {
+  displayName: string;
+  subscriptionId: string;
+  state: string;
+}
+
+interface QueryRequestOptions {
+  $top?: number;
+  $skipToken?: string;
+  $allowPartialScopes?: boolean;
+}
+
+// Define the configuration context and headers if not already defined
+const configContext = {
+  ARM_ENDPOINT: 'https://management.azure.com/',
+  AAD_ENDPOINT: 'https://login.microsoftonline.com/'
+};
+
+interface QueryResponse {
+  data?: any[];
+  $skipToken?: string;
+}
+
+// Define a generic runCommand function
+export async function runCommand<T>(
+  fn: (...args: any[]) => Promise<T>,
+  ...args: any[]
+): Promise<T> {
+  try {
+      // Attempt to execute the function passed as an argument
+      const result = await fn(...args);
+      console.log('Successfully executed function:', result);
+      return result;
+
+  } catch (error) {
+      // Handle any error that is thrown during the execution of the function
+      //(error.code === "ExpiredAuthenticationToken") 
+      if(error) {
+        console.log('Creating new token');
+        const msalInstance = await getMsalInstance();
+    
+        const cachedAccount = msalInstance.getAllAccounts()?.[0];
+        const cachedTenantId = localStorage.getItem("cachedTenantId");
+        
+          
+            msalInstance.setActiveAccount(cachedAccount);
+        
+            const newAccessToken = await acquireTokenWithMsal(msalInstance, {
+              authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
+              scopes: [`${configContext.ARM_ENDPOINT}/.default`],
+            });
+            
+  console.log("Latest ARM Token", userContext.armToken);
+            updateUserContext({armToken: newAccessToken});
+            const result = await fn(...args);
+            return result;
+      }
+      else {
+          console.error('An error occurred:', error.message);
+          throw new error; 
+      }
+      
+  }
+}
+
+// Running the functions using runCommand
+
+const accessToken = 'your-access-token';
+const subscriptionId = 'your-subscription-id';
+
+//runCommand(fetchDatabaseAccountsFromGraph, subscriptionId, accessToken);
+//runCommand(fetchSubscriptionsFromGraph, accessToken);
+
+async function acquireNewTokenAndRetry(body: any) : Promise<DatabaseAccount[]> {
   try {
     const msalInstance = await getMsalInstance();
     
@@ -121,6 +202,7 @@ const cachedTenantId = localStorage.getItem("cachedTenantId");
       authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
       scopes: [`${configContext.ARM_ENDPOINT}/.default`],
     });
+    console.log("New ARM Token", newAccessToken);
     const newBearer = `Bearer ${newAccessToken}`;
     const newHeaders = new Headers();
     newHeaders.append("Authorization", newBearer);
@@ -146,6 +228,7 @@ const cachedTenantId = localStorage.getItem("cachedTenantId");
       queryResponse.data?.forEach((databaseAccount: any) => {
         databaseAccounts.push(databaseAccount as DatabaseAccount);
       });
+      return databaseAccounts;
     } else {
       throw new Error(`Failed to fetch data after acquiring new token. Status: ${response.status}, ${await response.text()}`);
     }
@@ -154,3 +237,4 @@ const cachedTenantId = localStorage.getItem("cachedTenantId");
     throw error;
   }
 }
+
