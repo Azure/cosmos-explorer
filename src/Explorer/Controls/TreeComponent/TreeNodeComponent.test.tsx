@@ -1,4 +1,4 @@
-import { TreeItem, TreeItemLayout, tokens } from "@fluentui/react-components";
+import { TreeItem, TreeItemLayout } from "@fluentui/react-components";
 import PromiseSource from "Utils/PromiseSource";
 import { mount, shallow } from "enzyme";
 import React from "react";
@@ -9,7 +9,7 @@ function generateTestNode(id: string, additionalProps?: Partial<TreeNode>): Tree
   const node: TreeNode = {
     id,
     label: `${id}Label`,
-    className: `${id}Class`,
+    className: "nodeIcon",
     iconSrc: `${id}Icon`,
     onClick: jest.fn().mockName(`${id}Click`),
     ...additionalProps,
@@ -20,7 +20,7 @@ function generateTestNode(id: string, additionalProps?: Partial<TreeNode>): Tree
 describe("TreeNodeComponent", () => {
   it("renders a single node", () => {
     const node = generateTestNode("root");
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
 
     // The "click" handler is actually attached to onOpenChange, with a type of "Click".
@@ -45,7 +45,7 @@ describe("TreeNodeComponent", () => {
         },
       ],
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
   });
 
@@ -54,7 +54,7 @@ describe("TreeNodeComponent", () => {
     const node = generateTestNode("root", {
       onExpanded: () => loading.promise,
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
 
     act(() => {
       component
@@ -72,10 +72,7 @@ describe("TreeNodeComponent", () => {
     const node = generateTestNode("root", {
       isSelected: () => true,
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
-    expect(component.find(TreeItemLayout).props().style?.backgroundColor).toStrictEqual(
-      tokens.colorNeutralBackground1Selected,
-    );
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
   });
 
@@ -89,10 +86,7 @@ describe("TreeNodeComponent", () => {
         generateTestNode("child2"),
       ],
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
-    expect(component.find(TreeItemLayout).props().style?.backgroundColor).toStrictEqual(
-      tokens.colorNeutralBackground1Selected,
-    );
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
   });
 
@@ -111,7 +105,7 @@ describe("TreeNodeComponent", () => {
         generateTestNode("child2"),
       ],
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component.find(TreeItemLayout).props().style?.backgroundColor).toBeUndefined();
     expect(component).toMatchSnapshot();
   });
@@ -120,7 +114,7 @@ describe("TreeNodeComponent", () => {
     const node = generateTestNode("root", {
       iconSrc: "the-icon.svg",
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
   });
 
@@ -134,7 +128,7 @@ describe("TreeNodeComponent", () => {
         generateTestNode("child2"),
       ],
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
   });
 
@@ -148,7 +142,7 @@ describe("TreeNodeComponent", () => {
         generateTestNode("child2"),
       ],
     });
-    const component = shallow(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = shallow(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
     expect(component).toMatchSnapshot();
   });
 
@@ -175,7 +169,7 @@ describe("TreeNodeComponent", () => {
         }),
       ],
     });
-    const component = mount(<TreeNodeComponent node={node} treeNodeId={node.id} />);
+    const component = mount(<TreeNodeComponent openItems={[]} node={node} treeNodeId={node.id} />);
 
     // Find and expand the child3Expanding node
     const expandingChild = component.find(TreeItem).filterWhere((n) => n.props().value === "root/child3ExpandingLabel");

@@ -63,11 +63,21 @@ export async function getTestExplorerUrl(accountType: TestAccount, iframeSrc?: s
   // We can't retrieve AZ CLI credentials from the browser so we get them here.
   const token = await getAzureCLICredentialsToken();
   const accountName = getAccountName(accountType);
-  const baseUrl = `https://localhost:1234/testExplorer.html?accountName=${accountName}&resourceGroup=${resourceGroupName}&subscriptionId=${subscriptionId}&token=${token}`;
+  const params = new URLSearchParams();
+  params.set("accountName", accountName);
+  params.set("resourceGroup", resourceGroupName);
+  params.set("subscriptionId", subscriptionId);
+  params.set("token", token);
+
+  // There seem to be occasional CORS issues with calling the copilot APIs (/api/tokens/sampledataconnection/v2, for example)
+  // For now, since we don't test copilot, we can disable the copilot APIs by setting the feature flag to false.
+  params.set("feature.enableCopilot", "false");
+
   if (iframeSrc) {
-    return `${baseUrl}&iframeSrc=${iframeSrc}`;
+    params.set("iframeSrc", iframeSrc);
   }
-  return baseUrl;
+
+  return `https://localhost:1234/testExplorer.html?${params.toString()}`;
 }
 
 /** Helper class that provides locator methods for TreeNode elements, on top of a Locator */
@@ -106,18 +116,30 @@ class TreeNode {
 export class DataExplorer {
   constructor(public frame: Frame) {}
 
+  /** Select the primary global command button.
+   *
+   * There's only a single "primary" button, but we still require you to pass the label to confirm you're selecting the right button.
+   */
+  globalCommandButton(label: string): Locator {
+    return this.frame.getByTestId("GlobalCommands").getByText(label);
+  }
+
+  /** Select the command bar button with the specified label */
   commandBarButton(label: string): Locator {
     return this.frame.getByTestId(`CommandBar/Button:${label}`).and(this.frame.locator("css=button"));
   }
 
+  /** Select the side panel with the specified title */
   panel(title: string): Locator {
     return this.frame.getByTestId(`Panel:${title}`);
   }
 
+  /** Select the tree node with the specified id */
   treeNode(id: string): TreeNode {
     return new TreeNode(this.frame.getByTestId(`TreeNode:${id}`), this.frame, id);
   }
 
+  /** Waits for the panel with the specified title to be open, then runs the provided callback. After the callback completes, waits for the panel to close. */
   async whilePanelOpen(title: string, action: (panel: Locator, okButton: Locator) => Promise<void>): Promise<void> {
     const panel = this.panel(title);
     await panel.waitFor();
@@ -126,6 +148,7 @@ export class DataExplorer {
     await panel.waitFor({ state: "detached" });
   }
 
+  /** Waits for the Data Explorer app to load */
   static async waitForExplorer(page: Page) {
     const iframeElement = await page.getByTestId("DataExplorerFrame").elementHandle();
     if (iframeElement === null) {
@@ -143,6 +166,7 @@ export class DataExplorer {
     return new DataExplorer(explorerFrame);
   }
 
+  /** Opens the Data Explorer app using the specified test account (and optionally, the provided IFRAME src url). */
   static async open(page: Page, testAccount: TestAccount, iframeSrc?: string): Promise<DataExplorer> {
     const url = await getTestExplorerUrl(testAccount, iframeSrc);
     await page.goto(url);

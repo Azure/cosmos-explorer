@@ -7,7 +7,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
   <Stack
     className="panelMainContent"
     tokens={
-      Object {
+      {
         "childrenGap": 20,
       }
     }
@@ -55,12 +55,12 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
         label="Cover image"
         onChange={[Function]}
         options={
-          Array [
-            Object {
+          [
+            {
               "key": "Custom Image",
               "text": "Custom Image",
             },
-            Object {
+            {
               "key": "URL",
               "text": "URL",
             },
@@ -85,7 +85,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
     <StackItem>
       <GalleryCardComponent
         data={
-          Object {
+          {
             "author": "CosmosDB",
             "created": "2020-07-17T00:00:00Z",
             "description": "sample description",
@@ -98,7 +98,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
             "newCellId": undefined,
             "pendingScanJobIds": undefined,
             "policyViolations": undefined,
-            "tags": Array [
+            "tags": [
               "tag1",
               " tag2",
             ],

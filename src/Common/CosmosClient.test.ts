@@ -1,34 +1,6 @@
-import { ResourceType } from "@azure/cosmos";
 import { Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { updateUserContext } from "../UserContext";
-import { endpoint, getTokenFromAuthService, requestPlugin, tokenProvider } from "./CosmosClient";
-
-describe("tokenProvider", () => {
-  const options = {
-    verb: "GET" as any,
-    path: "/",
-    resourceId: "",
-    resourceType: "dbs" as ResourceType,
-    headers: {},
-    getAuthorizationTokenUsingMasterKey: () => "",
-  };
-
-  beforeEach(() => {
-    updateConfigContext({
-      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-    });
-    window.fetch = jest.fn().mockImplementation(() => {
-      return {
-        json: () => "{}",
-        headers: new Map(),
-      };
-    });
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-});
+import { endpoint, getTokenFromAuthService, requestPlugin } from "./CosmosClient";
 
 describe("getTokenFromAuthService", () => {
   beforeEach(() => {

@@ -8,93 +8,93 @@ exports[`Resource tree for schema should render 1`] = `
   <LegacyTreeNodeComponent
     generation={0}
     node={
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
+      {
+        "children": [
+          {
+            "children": [
+              {
                 "label": "String",
               },
-              Object {
+              {
                 "label": "HasNulls: true",
               },
             ],
             "label": "_rid",
           },
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "Int64",
               },
-              Object {
+              {
                 "label": "HasNulls: true",
               },
             ],
             "label": "_ts",
           },
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "String",
               },
-              Object {
+              {
                 "label": "HasNulls: true",
               },
             ],
             "label": "id",
           },
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "String",
               },
-              Object {
+              {
                 "label": "HasNulls: true",
               },
             ],
             "label": "pk",
           },
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "String",
               },
-              Object {
+              {
                 "label": "HasNulls: true",
               },
             ],
             "label": "other",
           },
-          Object {
-            "children": Array [
-              Object {
-                "children": Array [
-                  Object {
+          {
+            "children": [
+              {
+                "children": [
+                  {
                     "label": "String",
                   },
-                  Object {
+                  {
                     "label": "HasNulls: true",
                   },
                 ],
                 "label": "name",
               },
-              Object {
-                "children": Array [
-                  Object {
+              {
+                "children": [
+                  {
                     "label": "Int64",
                   },
-                  Object {
+                  {
                     "label": "HasNulls: true",
                   },
                 ],
                 "label": "someNumber",
               },
-              Object {
-                "children": Array [
-                  Object {
+              {
+                "children": [
+                  {
                     "label": "Double",
                   },
-                  Object {
+                  {
                     "label": "HasNulls: true",
                   },
                 ],
@@ -103,40 +103,40 @@ exports[`Resource tree for schema should render 1`] = `
             ],
             "label": "nested",
           },
-          Object {
-            "children": Array [
-              Object {
-                "children": Array [
-                  Object {
-                    "children": Array [
-                      Object {
-                        "children": Array [
-                          Object {
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
                             "label": "String",
                           },
-                          Object {
+                          {
                             "label": "HasNulls: true",
                           },
                         ],
                         "label": "name",
                       },
-                      Object {
-                        "children": Array [
-                          Object {
+                      {
+                        "children": [
+                          {
                             "label": "Int64",
                           },
-                          Object {
+                          {
                             "label": "HasNulls: true",
                           },
                         ],
                         "label": "someNumber",
                       },
-                      Object {
-                        "children": Array [
-                          Object {
+                      {
+                        "children": [
+                          {
                             "label": "Double",
                           },
-                          Object {
+                          {
                             "label": "HasNulls: true",
                           },
                         ],
@@ -151,12 +151,12 @@ exports[`Resource tree for schema should render 1`] = `
             ],
             "label": "items",
           },
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "label": "String",
               },
-              Object {
+              {
                 "label": "HasNulls: true",
               },
             ],

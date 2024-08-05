@@ -6,11 +6,11 @@ exports[`Feedback buttons snapshot tests should click dislike and show popup 1`]
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -22,11 +22,11 @@ exports[`Feedback buttons snapshot tests should click dislike and show popup 1`]
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -46,11 +46,11 @@ exports[`Feedback buttons snapshot tests should click like and dismiss callout 1
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -62,11 +62,11 @@ exports[`Feedback buttons snapshot tests should click like and dismiss callout 1
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -89,17 +89,17 @@ exports[`Feedback buttons snapshot tests should click like and show callout 1`] 
     onDismiss={[Function]}
     role="dialog"
     style={
-      Object {
+      {
         "borderRadius": "4px",
         "padding": "5px 12px 5px 12px",
       }
     }
     styles={
-      Object {
-        "beakCurtain": Object {
+      {
+        "beakCurtain": {
           "borderRadius": "4px",
         },
-        "root": Object {
+        "root": {
           "borderRadius": "4px",
         },
       }
@@ -121,11 +121,11 @@ exports[`Feedback buttons snapshot tests should click like and show callout 1`] 
   </Callout>
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -137,11 +137,11 @@ exports[`Feedback buttons snapshot tests should click like and show callout 1`] 
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -161,11 +161,11 @@ exports[`Feedback buttons snapshot tests should click like and submit feedback 1
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -177,11 +177,11 @@ exports[`Feedback buttons snapshot tests should click like and submit feedback 1
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -201,11 +201,11 @@ exports[`Feedback buttons snapshot tests should dobule click on dislike 1`] = `
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -217,11 +217,11 @@ exports[`Feedback buttons snapshot tests should dobule click on dislike 1`] = `
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -241,11 +241,11 @@ exports[`Feedback buttons snapshot tests should dobule click on like 1`] = `
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -257,11 +257,11 @@ exports[`Feedback buttons snapshot tests should dobule click on like 1`] = `
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -281,11 +281,11 @@ exports[`Feedback buttons snapshot tests should hover over dislike 1`] = `
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -297,11 +297,11 @@ exports[`Feedback buttons snapshot tests should hover over dislike 1`] = `
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeHover",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -321,11 +321,11 @@ exports[`Feedback buttons snapshot tests should hover over dislike and click 1`]
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -337,11 +337,11 @@ exports[`Feedback buttons snapshot tests should hover over dislike and click 1`]
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -361,11 +361,11 @@ exports[`Feedback buttons snapshot tests should hover over like 1`] = `
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeHover",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -377,11 +377,11 @@ exports[`Feedback buttons snapshot tests should hover over like 1`] = `
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -404,17 +404,17 @@ exports[`Feedback buttons snapshot tests should hover over like and click 1`] = 
     onDismiss={[Function]}
     role="dialog"
     style={
-      Object {
+      {
         "borderRadius": "4px",
         "padding": "5px 12px 5px 12px",
       }
     }
     styles={
-      Object {
-        "beakCurtain": Object {
+      {
+        "beakCurtain": {
           "borderRadius": "4px",
         },
-        "root": Object {
+        "root": {
           "borderRadius": "4px",
         },
       }
@@ -436,11 +436,11 @@ exports[`Feedback buttons snapshot tests should hover over like and click 1`] = 
   </Callout>
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -452,11 +452,11 @@ exports[`Feedback buttons snapshot tests should hover over like and click 1`] = 
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -476,11 +476,11 @@ exports[`Feedback buttons snapshot tests should hover over pressed dislike and l
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -492,11 +492,11 @@ exports[`Feedback buttons snapshot tests should hover over pressed dislike and l
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -519,17 +519,17 @@ exports[`Feedback buttons snapshot tests should hover over pressed like and leav
     onDismiss={[Function]}
     role="dialog"
     style={
-      Object {
+      {
         "borderRadius": "4px",
         "padding": "5px 12px 5px 12px",
       }
     }
     styles={
-      Object {
-        "beakCurtain": Object {
+      {
+        "beakCurtain": {
           "borderRadius": "4px",
         },
-        "root": Object {
+        "root": {
           "borderRadius": "4px",
         },
       }
@@ -551,11 +551,11 @@ exports[`Feedback buttons snapshot tests should hover over pressed like and leav
   </Callout>
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikePressed",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -567,11 +567,11 @@ exports[`Feedback buttons snapshot tests should hover over pressed like and leav
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -591,11 +591,11 @@ exports[`Feedback buttons snapshot tests should hover over rest dislike and leav
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -607,11 +607,11 @@ exports[`Feedback buttons snapshot tests should hover over rest dislike and leav
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },
@@ -631,11 +631,11 @@ exports[`Feedback buttons snapshot tests should hover over rest like and leave 1
 >
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
         },
       }
@@ -647,11 +647,11 @@ exports[`Feedback buttons snapshot tests should hover over rest like and leave 1
   />
   <CustomizedIconButton
     iconProps={
-      Object {
-        "imageProps": Object {
+      {
+        "imageProps": {
           "src": "LikeRest",
         },
-        "style": Object {
+        "style": {
           "minHeight": "18px",
           "transform": "rotate(180deg)",
         },

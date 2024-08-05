@@ -4,14 +4,14 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
 <div
   data-test="DataExplorerRoot"
   style={
-    Object {
+    {
       "overflowX": "auto",
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
         "padding": 10,
       }
@@ -20,38 +20,38 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
     <StackItem>
       <StyledCommandBarBase
         items={
-          Array [
-            Object {
+          [
+            {
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Save",
               },
               "key": "save",
               "onClick": [Function],
               "text": "Save",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Undo",
               },
               "key": "discard",
               "onClick": [Function],
               "text": "Discard",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": false,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Refresh",
               },
               "key": "refresh",
@@ -61,8 +61,8 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
           ]
         }
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "paddingLeft": 0,
             },
           }
@@ -70,12 +70,12 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
       />
       <Separator
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "height": 1,
               "padding": 0,
-              "selectors": Object {
-                "::before": Object {
+              "selectors": {
+                "::before": {
                   "background": undefined,
                 },
               },
@@ -94,17 +94,17 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
     <SmartUiComponent
       currentValues={
         Map {
-          "throughput" => Object {
+          "throughput" => {
             "disabled": false,
             "hidden": false,
             "value": 450,
           },
-          "analyticalStore" => Object {
+          "analyticalStore" => {
             "disabled": false,
             "hidden": false,
             "value": false,
           },
-          "database" => Object {
+          "database" => {
             "disabled": false,
             "hidden": false,
             "value": "db2",
@@ -112,127 +112,127 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
         }
       }
       descriptor={
-        Object {
+        {
           "initialize": [MockFunction] {
-            "calls": Array [
-              Array [],
-              Array [],
-              Array [],
+            "calls": [
+              [],
+              [],
+              [],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
-          "inputNames": Array [
+          "inputNames": [
             "throughput",
             "analyticalStore",
             "database",
           ],
           "onRefresh": [MockFunction] {
-            "calls": Array [
-              Array [],
-              Array [],
-              Array [],
-              Array [],
+            "calls": [
+              [],
+              [],
+              [],
+              [],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
           "onSave": [MockFunction] {
-            "calls": Array [
-              Array [
+            "calls": [
+              [
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
                   },
                 },
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
                   },
                 },
               ],
-              Array [
+              [
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
                   },
                 },
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
@@ -240,23 +240,23 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
                 },
               ],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
-          "root": Object {
-            "children": Array [
-              Object {
+          "root": {
+            "children": [
+              {
                 "id": "throughput",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "throughput",
                   "defaultValue": 400,
                   "labelTKey": "Throughput (input)",
@@ -268,20 +268,20 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
                   "uiType": "Spinner",
                 },
               },
-              Object {
+              {
                 "id": "containerId",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "containerId",
                   "labelTKey": "Container id",
                   "placeholderTKey": undefined,
                   "type": "string",
                 },
               },
-              Object {
+              {
                 "id": "analyticalStore",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "analyticalStore",
                   "defaultValue": true,
                   "falseLabelTKey": "Disabled",
@@ -291,20 +291,20 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
                   "type": "boolean",
                 },
               },
-              Object {
+              {
                 "id": "database",
                 "info": undefined,
-                "input": Object {
-                  "choices": Array [
-                    Object {
+                "input": {
+                  "choices": [
+                    {
                       "key": "db1",
                       "labelTKey": "Database 1",
                     },
-                    Object {
+                    {
                       "key": "db2",
                       "labelTKey": "Database 2",
                     },
-                    Object {
+                    {
                       "key": "db3",
                       "labelTKey": "Database 3",
                     },
@@ -318,8 +318,8 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
               },
             ],
             "id": "root",
-            "info": Object {
-              "link": Object {
+            "info": {
+              "link": {
                 "href": "https://aka.ms/azure-cosmos-db-pricing",
                 "textTKey": "More Details",
               },
@@ -341,14 +341,14 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
 <div
   data-test="DataExplorerRoot"
   style={
-    Object {
+    {
       "overflowX": "auto",
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
         "padding": 10,
       }
@@ -357,38 +357,38 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
     <StackItem>
       <StyledCommandBarBase
         items={
-          Array [
-            Object {
+          [
+            {
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Save",
               },
               "key": "save",
               "onClick": [Function],
               "text": "Save",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Undo",
               },
               "key": "discard",
               "onClick": [Function],
               "text": "Discard",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": false,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Refresh",
               },
               "key": "refresh",
@@ -398,8 +398,8 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
           ]
         }
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "paddingLeft": 0,
             },
           }
@@ -407,12 +407,12 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
       />
       <Separator
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "height": 1,
               "padding": 0,
-              "selectors": Object {
-                "::before": Object {
+              "selectors": {
+                "::before": {
                   "background": undefined,
                 },
               },
@@ -424,17 +424,17 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
     <SmartUiComponent
       currentValues={
         Map {
-          "throughput" => Object {
+          "throughput" => {
             "disabled": false,
             "hidden": false,
             "value": 450,
           },
-          "analyticalStore" => Object {
+          "analyticalStore" => {
             "disabled": false,
             "hidden": false,
             "value": false,
           },
-          "database" => Object {
+          "database" => {
             "disabled": false,
             "hidden": false,
             "value": "db2",
@@ -442,188 +442,188 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
         }
       }
       descriptor={
-        Object {
+        {
           "initialize": [MockFunction] {
-            "calls": Array [
-              Array [],
-              Array [],
-              Array [],
-              Array [],
+            "calls": [
+              [],
+              [],
+              [],
+              [],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
-          "inputNames": Array [
+          "inputNames": [
             "throughput",
             "analyticalStore",
             "database",
           ],
           "onRefresh": [MockFunction] {
-            "calls": Array [
-              Array [],
-              Array [],
-              Array [],
-              Array [],
-              Array [],
-              Array [],
-              Array [],
-              Array [],
+            "calls": [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
           "onSave": [MockFunction] {
-            "calls": Array [
-              Array [
+            "calls": [
+              [
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
                   },
                 },
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
-                    "disabled": false,
-                    "hidden": false,
-                    "value": "db2",
-                  },
-                },
-              ],
-              Array [
-                Map {
-                  "throughput" => Object {
-                    "disabled": false,
-                    "hidden": false,
-                    "value": 450,
-                  },
-                  "analyticalStore" => Object {
-                    "disabled": false,
-                    "hidden": false,
-                    "value": false,
-                  },
-                  "database" => Object {
-                    "disabled": false,
-                    "hidden": false,
-                    "value": "db2",
-                  },
-                },
-                Map {
-                  "throughput" => Object {
-                    "disabled": false,
-                    "hidden": false,
-                    "value": 450,
-                  },
-                  "analyticalStore" => Object {
-                    "disabled": false,
-                    "hidden": false,
-                    "value": false,
-                  },
-                  "database" => Object {
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
                   },
                 },
               ],
-              Array [
+              [
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
                   },
                 },
                 Map {
-                  "throughput" => Object {
+                  "throughput" => {
                     "disabled": false,
                     "hidden": false,
                     "value": 450,
                   },
-                  "analyticalStore" => Object {
+                  "analyticalStore" => {
                     "disabled": false,
                     "hidden": false,
                     "value": false,
                   },
-                  "database" => Object {
+                  "database" => {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+              ],
+              [
+                Map {
+                  "throughput" => {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+                Map {
+                  "throughput" => {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => {
                     "disabled": false,
                     "hidden": false,
                     "value": "db2",
@@ -631,27 +631,27 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
                 },
               ],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
-              Object {
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
-          "root": Object {
-            "children": Array [
-              Object {
+          "root": {
+            "children": [
+              {
                 "id": "throughput",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "throughput",
                   "defaultValue": 400,
                   "labelTKey": "Throughput (input)",
@@ -663,20 +663,20 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
                   "uiType": "Spinner",
                 },
               },
-              Object {
+              {
                 "id": "containerId",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "containerId",
                   "labelTKey": "Container id",
                   "placeholderTKey": undefined,
                   "type": "string",
                 },
               },
-              Object {
+              {
                 "id": "analyticalStore",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "analyticalStore",
                   "defaultValue": true,
                   "falseLabelTKey": "Disabled",
@@ -686,20 +686,20 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
                   "type": "boolean",
                 },
               },
-              Object {
+              {
                 "id": "database",
                 "info": undefined,
-                "input": Object {
-                  "choices": Array [
-                    Object {
+                "input": {
+                  "choices": [
+                    {
                       "key": "db1",
                       "labelTKey": "Database 1",
                     },
-                    Object {
+                    {
                       "key": "db2",
                       "labelTKey": "Database 2",
                     },
-                    Object {
+                    {
                       "key": "db3",
                       "labelTKey": "Database 3",
                     },
@@ -713,8 +713,8 @@ exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
               },
             ],
             "id": "root",
-            "info": Object {
-              "link": Object {
+            "info": {
+              "link": {
                 "href": "https://aka.ms/azure-cosmos-db-pricing",
                 "textTKey": "More Details",
               },
@@ -736,14 +736,14 @@ exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
 <div
   data-test="DataExplorerRoot"
   style={
-    Object {
+    {
       "overflowX": "auto",
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
         "padding": 10,
       }
@@ -752,38 +752,38 @@ exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
     <StackItem>
       <StyledCommandBarBase
         items={
-          Array [
-            Object {
+          [
+            {
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Save",
               },
               "key": "save",
               "onClick": [Function],
               "text": "Save",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Undo",
               },
               "key": "discard",
               "onClick": [Function],
               "text": "Discard",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Refresh",
               },
               "key": "refresh",
@@ -793,8 +793,8 @@ exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
           ]
         }
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "paddingLeft": 0,
             },
           }
@@ -802,12 +802,12 @@ exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
       />
       <Separator
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "height": 1,
               "padding": 0,
-              "selectors": Object {
-                "::before": Object {
+              "selectors": {
+                "::before": {
                   "background": undefined,
                 },
               },
@@ -837,14 +837,14 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
 <div
   data-test="DataExplorerRoot"
   style={
-    Object {
+    {
       "overflowX": "auto",
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
         "padding": 10,
       }
@@ -853,38 +853,38 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
     <StackItem>
       <StyledCommandBarBase
         items={
-          Array [
-            Object {
+          [
+            {
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Save",
               },
               "key": "save",
               "onClick": [Function],
               "text": "Save",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": true,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Undo",
               },
               "key": "discard",
               "onClick": [Function],
               "text": "Discard",
             },
-            Object {
-              "buttonStyles": Object {
-                "root": Object {
+            {
+              "buttonStyles": {
+                "root": {
                   "paddingLeft": 20,
                 },
               },
               "disabled": false,
-              "iconProps": Object {
+              "iconProps": {
                 "iconName": "Refresh",
               },
               "key": "refresh",
@@ -894,8 +894,8 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
           ]
         }
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "paddingLeft": 0,
             },
           }
@@ -903,12 +903,12 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
       />
       <Separator
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "height": 1,
               "padding": 0,
-              "selectors": Object {
-                "::before": Object {
+              "selectors": {
+                "::before": {
                   "background": undefined,
                 },
               },
@@ -920,17 +920,17 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
     <SmartUiComponent
       currentValues={
         Map {
-          "throughput" => Object {
+          "throughput" => {
             "disabled": false,
             "hidden": false,
             "value": 450,
           },
-          "analyticalStore" => Object {
+          "analyticalStore" => {
             "disabled": false,
             "hidden": false,
             "value": false,
           },
-          "database" => Object {
+          "database" => {
             "disabled": false,
             "hidden": false,
             "value": "db2",
@@ -938,41 +938,41 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
         }
       }
       descriptor={
-        Object {
+        {
           "initialize": [MockFunction] {
-            "calls": Array [
-              Array [],
+            "calls": [
+              [],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
-          "inputNames": Array [
+          "inputNames": [
             "throughput",
             "analyticalStore",
             "database",
           ],
           "onRefresh": [MockFunction] {
-            "calls": Array [
-              Array [],
+            "calls": [
+              [],
             ],
-            "results": Array [
-              Object {
+            "results": [
+              {
                 "type": "return",
                 "value": Promise {},
               },
             ],
           },
           "onSave": [MockFunction],
-          "root": Object {
-            "children": Array [
-              Object {
+          "root": {
+            "children": [
+              {
                 "id": "throughput",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "throughput",
                   "defaultValue": 400,
                   "labelTKey": "Throughput (input)",
@@ -984,20 +984,20 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
                   "uiType": "Spinner",
                 },
               },
-              Object {
+              {
                 "id": "containerId",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "containerId",
                   "labelTKey": "Container id",
                   "placeholderTKey": undefined,
                   "type": "string",
                 },
               },
-              Object {
+              {
                 "id": "analyticalStore",
                 "info": undefined,
-                "input": Object {
+                "input": {
                   "dataFieldName": "analyticalStore",
                   "defaultValue": true,
                   "falseLabelTKey": "Disabled",
@@ -1007,20 +1007,20 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
                   "type": "boolean",
                 },
               },
-              Object {
+              {
                 "id": "database",
                 "info": undefined,
-                "input": Object {
-                  "choices": Array [
-                    Object {
+                "input": {
+                  "choices": [
+                    {
                       "key": "db1",
                       "labelTKey": "Database 1",
                     },
-                    Object {
+                    {
                       "key": "db2",
                       "labelTKey": "Database 2",
                     },
-                    Object {
+                    {
                       "key": "db3",
                       "labelTKey": "Database 3",
                     },
@@ -1034,8 +1034,8 @@ exports[`SelfServeComponent should render and honor save, discard, refresh actio
               },
             ],
             "id": "root",
-            "info": Object {
-              "link": Object {
+            "info": {
+              "link": {
                 "href": "https://aka.ms/azure-cosmos-db-pricing",
                 "textTKey": "More Details",
               },

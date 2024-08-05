@@ -4,8 +4,8 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
 <Modal
   isOpen={true}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "width": 880,
       },
     }
@@ -13,7 +13,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
 >
   <Stack
     style={
-      Object {
+      {
         "padding": 16,
       }
     }
@@ -29,7 +29,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <CustomizedIconButton
         iconProps={
-          Object {
+          {
             "iconName": "Cancel",
           }
         }
@@ -38,14 +38,14 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
     </Stack>
     <Stack
       style={
-        Object {
+        {
           "marginTop": 8,
         }
       }
     >
       <Text
         style={
-          Object {
+          {
             "fontSize": 13,
           }
         }
@@ -54,7 +54,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "fontWeight": 600,
             "marginTop": 16,
@@ -65,7 +65,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <Text
         style={
-          Object {
+          {
             "fontSize": 13,
             "marginTop": 8,
           }
@@ -74,16 +74,16 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
         To generate queries , just describe the query you want and copilot will generate the query for you.Watch this video to learn more about how to use copilot.
       </Text>
       <Image
-        src={Object {}}
+        src={{}}
         style={
-          Object {
+          {
             "margin": "16px auto",
           }
         }
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "fontWeight": 600,
           }
@@ -93,7 +93,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <Text
         style={
-          Object {
+          {
             "fontSize": 13,
             "marginTop": 8,
           }
@@ -112,7 +112,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "fontWeight": 600,
             "marginTop": 16,
@@ -123,7 +123,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <Text
         style={
-          Object {
+          {
             "fontSize": 13,
             "marginTop": 8,
           }
@@ -140,7 +140,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "fontWeight": 600,
             "marginTop": 16,
@@ -151,7 +151,7 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
       </Text>
       <Text
         style={
-          Object {
+          {
             "fontSize": 13,
             "marginTop": 8,
           }
@@ -169,12 +169,12 @@ exports[`Query Copilot Carousel snapshot test should render when isOpen is true 
     </Stack>
     <Separator
       styles={
-        Object {
-          "root": Object {
+        {
+          "root": {
             "height": 1,
             "padding": "16px 0",
-            "selectors": Object {
-              "::before": Object {
+            "selectors": {
+              "::before": {
                 "background": undefined,
               },
             },

@@ -4,14 +4,14 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
 <Stack
   className="tab-pane"
   style={
-    Object {
+    {
       "width": "100%",
     }
   }
 >
   <div
     style={
-      Object {
+      {
         "height": "100%",
         "overflowY": "auto",
       }
@@ -29,7 +29,7 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
           "onRefreshResourcesClick": [Function],
           "phoenixClient": PhoenixClient {
             "armResourceId": undefined,
-            "retryOptions": Object {
+            "retryOptions": {
               "maxTimeout": 5000,
               "minTimeout": 5000,
               "retries": 3,

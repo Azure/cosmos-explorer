@@ -3,7 +3,7 @@
 exports[`ConflictResolutionComponent Path text field displayed 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
@@ -12,12 +12,12 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
     label="Mode"
     onChange={[Function]}
     options={
-      Array [
-        Object {
+      [
+        {
           "key": "LastWriterWins",
           "text": "Last Write Wins (default)",
         },
-        Object {
+        {
           "key": "Custom",
           "text": "Merge Procedure (custom)",
         },
@@ -25,19 +25,19 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
     }
     selectedKey="LastWriterWins"
     styles={
-      Object {
-        "flexContainer": Array [
-          Object {
+      {
+        "flexContainer": [
+          {
             "columnGap": "default",
             "display": "default",
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
+            "selectors": {
+              ".ms-ChoiceField-field.is-checked::after": {
                 "borderColor": undefined,
               },
-              ".ms-ChoiceField-field.is-checked::before": Object {
+              ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": undefined,
               },
-              ".ms-ChoiceField-wrapper label": Object {
+              ".ms-ChoiceField-wrapper label": {
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
@@ -55,12 +55,12 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
     onChange={[Function]}
     onRenderLabel={[Function]}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "borderColor": "",
           "height": 25,
-          "selectors": Object {
-            ":disabled": Object {
+          "selectors": {
+            ":disabled": {
               "backgroundColor": undefined,
               "borderColor": undefined,
             },
@@ -77,7 +77,7 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
 exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
@@ -86,12 +86,12 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
     label="Mode"
     onChange={[Function]}
     options={
-      Array [
-        Object {
+      [
+        {
           "key": "LastWriterWins",
           "text": "Last Write Wins (default)",
         },
-        Object {
+        {
           "key": "Custom",
           "text": "Merge Procedure (custom)",
         },
@@ -99,19 +99,19 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
     }
     selectedKey="Custom"
     styles={
-      Object {
-        "flexContainer": Array [
-          Object {
+      {
+        "flexContainer": [
+          {
             "columnGap": "default",
             "display": "default",
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
+            "selectors": {
+              ".ms-ChoiceField-field.is-checked::after": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-field.is-checked::before": Object {
+              ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-wrapper label": Object {
+              ".ms-ChoiceField-wrapper label": {
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
@@ -129,12 +129,12 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
     onChange={[Function]}
     onRenderLabel={[Function]}
     styles={
-      Object {
-        "fieldGroup": Object {
+      {
+        "fieldGroup": {
           "borderColor": "",
           "height": 25,
-          "selectors": Object {
-            ":disabled": Object {
+          "selectors": {
+            ":disabled": {
               "backgroundColor": undefined,
               "borderColor": undefined,
             },
