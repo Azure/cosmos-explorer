@@ -26,7 +26,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     );
     if (!userContext.aadToken) {
       logConsoleError(
-        `AAD token does not exist. Please use "Login for Entra ID" prior to performing Entra ID RBAC operations`,
+        `AAD token does not exist. Please use "Login for Entra ID" button prior to performing Entra ID RBAC operations`,
       );
       return null;
     }
