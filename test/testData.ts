@@ -3,12 +3,11 @@ import { BulkOperationType, Container, CosmosClient, Database, JSONObject } from
 import crypto from "crypto";
 import {
   TestAccount,
-  generateDatabaseNameWithTimestamp,
   generateUniqueName,
   getAccountName,
   getAzureCLICredentials,
   resourceGroupName,
-  subscriptionId,
+  subscriptionId
 } from "./fx";
 
 export interface TestItem {
@@ -47,7 +46,7 @@ export class TestContainerContext {
     public database: Database,
     public container: Container,
     public testData: Map<string, TestItem>,
-  ) {}
+  ) { }
 
   async dispose() {
     await this.database.delete();
@@ -55,8 +54,8 @@ export class TestContainerContext {
 }
 
 export async function createTestSQLContainer(includeTestData?: boolean) {
-  const databaseId = generateDatabaseNameWithTimestamp();
-  const containerId = generateUniqueName("container");
+  const databaseId = generateUniqueName("db");
+  const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
   const credentials = await getAzureCLICredentials();
   const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);

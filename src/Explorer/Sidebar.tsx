@@ -268,6 +268,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                     <div className={styles.floatingControls}>
                       <button
                         type="button"
+                        data-test="Sidebar/RefreshButton"
                         className={styles.floatingControlButton}
                         disabled={loading}
                         title="Refresh"

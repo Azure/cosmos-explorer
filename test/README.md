@@ -98,7 +98,7 @@ If you used all the standard deployment scripts and naming scheme, you can set t
 If Azure Powershell's current subscription is not the one you want to use for testing, you can set the subscription using the following command:
 
 ```powershell
-.\test\scripts\set-test-subscription.ps1 -Subscription "My Subscription"
+.\test\scripts\set-test-accounts.ps1 -Subscription "My Subscription"
 ```
 
 That script will confirm the resource group exists and then set the necessary environment variables:
@@ -151,3 +151,42 @@ npx playwright test --ui
 The UI allows you to select a specific test to run and to see the results of the test in the browser.
 
 See the [Playwright docs](https://playwright.dev/docs/running-tests) for more information on running tests.
+
+## Clean-up
+
+Tests should clean-up after themselves if they succeed (and sometimes even when they fail).
+However, this is not guaranteed, and you may find that you have resources left over from failed tests.
+Any resource (database, container, etc.) prefixed with `t_` is a test resource and can be safely deleted if you aren't currently running tests.
+The `test/scripts/clean-test-accounts.ps1` script will attempt to clean all the test resources.
+
+```powershell
+.\test\scripts\clean-test-accounts.ps1 -Subscription "My Subscription"
+```
+
+That script will confirm the resource group exists and then prompt you to confirm the deletion of the resources:
+
+```
+Found a resource with the default resource prefix (ashleyst-e2e-). Configuring that prefix for E2E testing.
+Cleaning E2E Testing Resources
+  Subscription: cosmosdb-portalteam-generaltest-msft (b9c77f10-b438-4c32-9819-eef8a654e478)
+  Resource Group: ashleyst-e2e-testing
+  Resource Prefix: ashleyst-e2e-
+
+All databases with the prefix 't_' will be deleted.
+Are you sure you want to delete these resources? (y/n): y
+    Cleaning Mongo Account: ashleyst-e2e-mongo
+    Cleaning Gremlin Account: ashleyst-e2e-gremlin
+    Cleaning Table Account: ashleyst-e2e-tables
+    Cleaning Cassandra Account: ashleyst-e2e-cassandra
+      Cleaning Keyspace: t_db90_1722888413729
+      Cleaning Keyspace: t_db76_1722882571248
+      Cleaning Keyspace: t_db3a_1722882413947
+      Cleaning Keyspace: t_db4d_1722882342943
+      Cleaning Keyspace: t_db64_1722888944788
+      Cleaning Keyspace: t_db90_1722882507916
+      Cleaning Keyspace: t_dbf5_1722888997915
+      Cleaning Keyspace: t_db7e_1722882689913
+    Cleaning SQL Account: ashleyst-e2e-sql
+      Cleaning Database: t_db32_1722890547089
+    Cleaning Mongo Account: ashleyst-e2e-mongo32
+```

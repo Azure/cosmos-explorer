@@ -131,6 +131,7 @@ export class NotificationConsoleComponent extends React.Component<
           </div>
           <div
             className="expandCollapseButton"
+            data-test="NotificationConsole/ExpandCollapseButton"
             role="button"
             tabIndex={0}
             aria-label={"console button" + (this.props.isConsoleExpanded ? " expanded" : " collapsed")}
