@@ -3,8 +3,10 @@
 import { loadState, saveState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
 import { userContext } from "UserContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-const ComponentName = "DocumentsTab";
+const componentName = "DocumentsTab";
 export type SubComponentName = "ColumnSizes" | "FilterHistory" | "MainTabDivider";
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
@@ -24,10 +26,15 @@ export const readSubComponentState = <T>(
   defaultValue: T,
 ): T => {
   const globalAccountName = userContext.databaseAccount?.name;
-  // TODO what if databaseAccount doesn't exist?
+  if (!globalAccountName) {
+    const message = "Database account name not found in userContext";
+    console.error(message);
+    TelemetryProcessor.traceFailure(Action.ReadPersistedTabState, { message, componentName });
+    return defaultValue;
+  }
 
   const state = loadState({
-    componentName: ComponentName,
+    componentName: componentName,
     subComponentName,
     globalAccountName,
     databaseName: collection.databaseId,
@@ -51,11 +58,16 @@ export const saveSubComponentState = <T>(
   debounce?: boolean,
 ): void => {
   const globalAccountName = userContext.databaseAccount?.name;
-  // TODO what if databaseAccount doesn't exist?
+  if (!globalAccountName) {
+    const message = "Database account name not found in userContext";
+    console.error(message);
+    TelemetryProcessor.traceFailure(Action.SavePersistedTabState, { message, componentName });
+    return;
+  }
 
   (debounce ? saveStateDebounced : saveState)(
     {
-      componentName: ComponentName,
+      componentName: componentName,
       subComponentName,
       globalAccountName,
       databaseName: collection.databaseId,
