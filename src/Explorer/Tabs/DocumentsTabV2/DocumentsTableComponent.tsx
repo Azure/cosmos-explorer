@@ -23,7 +23,7 @@ import {
   useTableColumnSizing_unstable,
   useTableFeatures,
   useTableSelection,
-  useTableSort
+  useTableSort,
 } from "@fluentui/react-components";
 import {
   ArrowClockwise16Regular,
@@ -164,9 +164,21 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     <MenuItem key="refresh" icon={<ArrowClockwise16Regular />} onClick={onRefreshTable}>
                       Refresh
                     </MenuItem>
-                    <MenuItem icon={<TextSortAscendingRegular />} onClick={(e) => setColumnSort(e, column.id, "ascending")}>Sort ascending</MenuItem>
-                    <MenuItem icon={<TextSortDescendingRegular />} onClick={(e) => setColumnSort(e, column.id, "descending")}>Sort descending</MenuItem>
-                    <MenuItem icon={<ArrowResetRegular />} onClick={(e) => setColumnSort(e, undefined, undefined)}>Reset sorting</MenuItem>
+                    <MenuItem
+                      icon={<TextSortAscendingRegular />}
+                      onClick={(e) => setColumnSort(e, column.id, "ascending")}
+                    >
+                      Sort ascending
+                    </MenuItem>
+                    <MenuItem
+                      icon={<TextSortDescendingRegular />}
+                      onClick={(e) => setColumnSort(e, column.id, "descending")}
+                    >
+                      Sort descending
+                    </MenuItem>
+                    <MenuItem icon={<ArrowResetRegular />} onClick={(e) => setColumnSort(e, undefined, undefined)}>
+                      Reset sorting
+                    </MenuItem>
                     <MenuItem key="editcolumns" icon={<EditRegular />} onClick={openColumnSelectionPane}>
                       Edit columns
                     </MenuItem>
@@ -316,21 +328,23 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     sortDirection: getSortDirection(columnId),
   });
 
-  const rows: TableRowData[] = sort(getRows((row) => {
-    const selected = isRowSelected(row.rowId);
-    return {
-      ...row,
-      onClick: (e: React.MouseEvent) => toggleRow(e, row.rowId),
-      onKeyDown: (e: React.KeyboardEvent) => {
-        if (e.key === " ") {
-          e.preventDefault();
-          toggleRow(e, row.rowId);
-        }
-      },
-      selected,
-      appearance: selected ? ("brand" as const) : ("none" as const),
-    };
-  }));
+  const rows: TableRowData[] = sort(
+    getRows((row) => {
+      const selected = isRowSelected(row.rowId);
+      return {
+        ...row,
+        onClick: (e: React.MouseEvent) => toggleRow(e, row.rowId),
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === " ") {
+            e.preventDefault();
+            toggleRow(e, row.rowId);
+          }
+        },
+        selected,
+        appearance: selected ? ("brand" as const) : ("none" as const),
+      };
+    }),
+  );
 
   const toggleAllKeydown = React.useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
