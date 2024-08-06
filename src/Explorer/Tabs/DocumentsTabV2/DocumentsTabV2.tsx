@@ -21,10 +21,8 @@ import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
-  DocumentsTabStateData,
-  readDocumentsTabState,
+  TabDivider,
   readSubComponentState,
-  saveDocumentsTabState,
   saveSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
@@ -565,7 +563,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   // State
-  const [tabStateData, setTabStateData] = useState<DocumentsTabStateData>(() => readDocumentsTabState());
+  const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
+    readSubComponentState("LeftPaneWidthPercent", _collection, {
+      leftPaneWidthPercent: 35,
+    }),
+  );
 
   const isQueryCopilotSampleContainer =
     _collection?.isSampleCollection &&
@@ -1873,7 +1875,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           <Allotment
             onChange={(sizes: number[]) => {
               tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveDocumentsTabState(tabStateData);
+              saveSubComponentState("LeftPaneWidthPercent", _collection, tabStateData);
               setTabStateData(tabStateData);
             }}
           >

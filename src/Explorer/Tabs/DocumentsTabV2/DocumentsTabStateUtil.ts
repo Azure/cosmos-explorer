@@ -4,31 +4,22 @@ import { loadState, saveState, saveStateDebounced } from "Shared/AppStatePersist
 import { userContext } from "UserContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 
-// Component states
-export interface DocumentsTabStateData {
-  leftPaneWidthPercent: number;
-}
-
-const defaultState: DocumentsTabStateData = {
-  leftPaneWidthPercent: 35,
-};
-
 const ComponentName = "DocumentsTab";
-
-export const readDocumentsTabState = (): DocumentsTabStateData => {
-  const state = loadState({ componentName: ComponentName });
-  return (state as DocumentsTabStateData) || defaultState;
-};
-
-export const saveDocumentsTabState = (state: DocumentsTabStateData): void => {
-  saveStateDebounced({ componentName: ComponentName }, state);
-};
+export type SubComponentName = "ColumnSizes" | "FilterHistory" | "MainTabDivider";
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
 export type WidthDefinition = { idealWidth?: number; minWidth?: number };
+export type TabDivider = { leftPaneWidthPercent: number };
 
+/**
+ *
+ * @param subComponentName
+ * @param collection
+ * @param defaultValue Will be returned if persisted state is not found
+ * @returns
+ */
 export const readSubComponentState = <T>(
-  subComponentName: "ColumnSizes" | "FilterHistory",
+  subComponentName: SubComponentName,
   collection: ViewModels.CollectionBase,
   defaultValue: T,
 ): T => {
@@ -46,8 +37,15 @@ export const readSubComponentState = <T>(
   return state || defaultValue;
 };
 
+/**
+ *
+ * @param subComponentName
+ * @param collection
+ * @param state State to save
+ * @param debounce true for high-frequency calls (e.g mouse drag events)
+ */
 export const saveSubComponentState = <T>(
-  subComponentName: "ColumnSizes" | "FilterHistory",
+  subComponentName: SubComponentName,
   collection: ViewModels.CollectionBase,
   state: T,
   debounce?: boolean,
