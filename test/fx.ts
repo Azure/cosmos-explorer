@@ -5,9 +5,9 @@ import crypto from "crypto";
 const RETRY_COUNT = 3;
 
 export interface TestNameOptions {
-  length?: number,
-  timestampped?: boolean,
-  prefixed?: boolean,
+  length?: number;
+  timestampped?: boolean;
+  prefixed?: boolean;
 }
 
 export function generateUniqueName(baseName, options?: TestNameOptions): string {
@@ -95,7 +95,7 @@ class TreeNode {
     public element: Locator,
     public frame: Frame,
     public id: string,
-  ) { }
+  ) {}
 
   async openContextMenu(): Promise<void> {
     await this.element.click({ button: "right" });
@@ -124,14 +124,14 @@ class TreeNode {
           return true;
         } catch {
           // Just try again
-          if (await treeNodeContainer.getAttribute("aria-expanded") !== "true") {
+          if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
             // We might have collapsed the node, try expanding it again, then retry.
             await this.element.click();
           }
         }
       }
       return false;
-    }
+    };
 
     if (await expandNode()) {
       return;
@@ -152,7 +152,7 @@ export class Editor {
   constructor(
     public frame: Frame,
     public locator: Locator,
-  ) { }
+  ) {}
 
   text(): Promise<string | null> {
     return this.locator.evaluate((e) => {
@@ -215,12 +215,12 @@ export class QueryTab {
 }
 
 type PanelOpenOptions = {
-  closeTimeout?: number,
-}
+  closeTimeout?: number;
+};
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
 export class DataExplorer {
-  constructor(public frame: Frame) { }
+  constructor(public frame: Frame) {}
 
   tab(tabId: string): Locator {
     return this.frame.getByTestId(`Tab:${tabId}`);
@@ -300,7 +300,11 @@ export class DataExplorer {
   }
 
   /** Waits for the panel with the specified title to be open, then runs the provided callback. After the callback completes, waits for the panel to close. */
-  async whilePanelOpen(title: string, action: (panel: Locator, okButton: Locator) => Promise<void>, options?: PanelOpenOptions): Promise<void> {
+  async whilePanelOpen(
+    title: string,
+    action: (panel: Locator, okButton: Locator) => Promise<void>,
+    options?: PanelOpenOptions,
+  ): Promise<void> {
     options ||= {};
 
     const panel = this.panel(title);

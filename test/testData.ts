@@ -7,7 +7,7 @@ import {
   getAccountName,
   getAzureCLICredentials,
   resourceGroupName,
-  subscriptionId
+  subscriptionId,
 } from "./fx";
 
 export interface TestItem {
@@ -46,7 +46,7 @@ export class TestContainerContext {
     public database: Database,
     public container: Container,
     public testData: Map<string, TestItem>,
-  ) { }
+  ) {}
 
   async dispose() {
     await this.database.delete();
