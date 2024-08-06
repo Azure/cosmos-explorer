@@ -57,9 +57,12 @@ export interface EditorReactProps {
   spinnerClassName?: string;
 
   modelMarkers?: monaco.editor.IMarkerData[];
+  enableWordWrapContextMenuItem?: boolean; // Enable/Disable "Word Wrap" context menu item
+  onWordWrapChanged?: (wordWrap: "on" | "off") => void; // Called when word wrap is changed
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
+  private static readonly VIEWING_OPTIONS_GROUP_ID = "viewingoptions"; // Group ID for the context menu group
   private rootNode: HTMLElement;
   public editor: monaco.editor.IStandaloneCodeEditor;
   private selectionListener: monaco.IDisposable;
@@ -178,6 +181,23 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
         },
       );
     }
+
+    if (this.props.enableWordWrapContextMenuItem) {
+      editor.addAction({
+        // An unique identifier of the contributed action.
+        id: "wordwrap",
+        label: "Toggle Word Wrap",
+        contextMenuGroupId: EditorReact.VIEWING_OPTIONS_GROUP_ID,
+        contextMenuOrder: 1,
+        // Method that will be executed when the action is triggered.
+        // @param editor The editor instance is passed in as a convenience
+        run: (ed) => {
+          const newOption = ed.getOption(this.monacoApi.editor.EditorOption.wordWrap) === "on" ? "off" : "on";
+          ed.updateOptions({ wordWrap: newOption });
+          this.props.onWordWrapChanged(newOption);
+        },
+      });
+    }
   }
 
   /**
@@ -203,8 +223,9 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
 
     this.rootNode.innerHTML = "";
     this.monacoApi = await loadMonaco();
+
     try {
-      createCallback(this.monacoApi?.editor?.create(this.rootNode, options));
+      createCallback(this.monacoApi.editor.create(this.rootNode, options));
     } catch (error) {
       // This could happen if the parent node suddenly disappears during create()
       console.error("Unable to create EditorReact", error);
