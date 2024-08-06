@@ -564,7 +564,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // State
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
-    readSubComponentState("LeftPaneWidthPercent", _collection, {
+    readSubComponentState("MainTabDivider", _collection, {
       leftPaneWidthPercent: 35,
     }),
   );
@@ -1875,7 +1875,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           <Allotment
             onChange={(sizes: number[]) => {
               tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveSubComponentState("LeftPaneWidthPercent", _collection, tabStateData);
+              saveSubComponentState("MainTabDivider", _collection, tabStateData);
               setTabStateData(tabStateData);
             }}
           >
