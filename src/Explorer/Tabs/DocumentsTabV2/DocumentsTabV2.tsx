@@ -1,6 +1,6 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
-import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
+import { Button, ButtonProps, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
+import { ArrowClockwise16Filled, ArrowResetRegular, Dismiss16Filled } from "@fluentui/react-icons";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
@@ -22,6 +22,7 @@ import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdap
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
   TabDivider,
+  deleteSubComponentState,
   readSubComponentState,
   saveSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
@@ -514,6 +515,16 @@ const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collec
 
 const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
+
+const ResetFilterButton: React.FunctionComponent<ButtonProps> = (props) => (
+  <Button
+    {...props}
+    appearance="transparent"
+    icon={<ArrowResetRegular />}
+    // icon={<DeleteRegular />}
+    size="small"
+  />
+);
 
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
@@ -1258,7 +1269,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   const onFilterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
-      refreshDocumentsGrid(true);
+      onApplyFilterClick();
 
       // Suppress the default behavior of the key
       e.preventDefault();
@@ -1781,6 +1792,20 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [createIterator, filterContent],
   );
 
+  const deleteRecentFilters = () => {
+    useDialog.getState().showOkCancelModalDialog(
+      "Delete recent filters",
+      "Are you sure to delete your recent filters?",
+      "Delete",
+      () => {
+        setLastFilterContents([]);
+        deleteSubComponentState("FilterHistory", _collection);
+      },
+      "Cancel",
+      undefined,
+    );
+  };
+
   return (
     <CosmosFluentProvider className={styles.container}>
       <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
@@ -1825,6 +1850,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   onKeyDown={onFilterKeyDown}
                   onChange={(e) => setFilterContent(e.target.value)}
                   onBlur={() => setIsFilterFocused(false)}
+                  contentAfter={
+                    <ResetFilterButton
+                      title="Delete recent filters"
+                      aria-label="Delete recent filters"
+                      onClick={deleteRecentFilters}
+                    />
+                  }
                 />
 
                 <datalist id={`filtersList-${getUniqueId(_collection)}`}>

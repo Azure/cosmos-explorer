@@ -1,6 +1,6 @@
 // Definitions of State data
 
-import { loadState, saveState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
+import { deleteState, loadState, saveState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
 import { userContext } from "UserContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -75,4 +75,22 @@ export const saveSubComponentState = <T>(
     },
     state,
   );
+};
+
+export const deleteSubComponentState = (subComponentName: SubComponentName, collection: ViewModels.CollectionBase) => {
+  const globalAccountName = userContext.databaseAccount?.name;
+  if (!globalAccountName) {
+    const message = "Database account name not found in userContext";
+    console.error(message);
+    TelemetryProcessor.traceFailure(Action.DeletePersistedTabState, { message, componentName });
+    return;
+  }
+
+  deleteState({
+    componentName: componentName,
+    subComponentName,
+    globalAccountName,
+    databaseName: collection.databaseId,
+    containerName: collection.id(),
+  });
 };

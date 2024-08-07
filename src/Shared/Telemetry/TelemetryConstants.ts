@@ -141,6 +141,7 @@ export enum Action {
   DeleteDocuments,
   ReadPersistedTabState,
   SavePersistedTabState,
+  DeletePersistedTabState,
 }
 
 export const ActionModifiers = {

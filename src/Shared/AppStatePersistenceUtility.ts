@@ -41,6 +41,15 @@ export const saveState = (path: StorePath, state: unknown): void => {
   LocalStorageUtility.setEntryObject(StorageKey.AppState, appState);
 };
 
+export const deleteState = (path: StorePath): void => {
+  // Retrieve state object
+  const appState =
+    LocalStorageUtility.getEntryObject<ApplicationState>(StorageKey.AppState) || ({} as ApplicationState);
+  const key = createKeyFromPath(path);
+  delete appState[key];
+  LocalStorageUtility.setEntryObject(StorageKey.AppState, appState);
+};
+
 // This is for high-frequency state changes
 let timeoutId: NodeJS.Timeout | undefined;
 export const saveStateDebounced = (path: StorePath, state: unknown, debounceDelayMs = 1000): void => {
