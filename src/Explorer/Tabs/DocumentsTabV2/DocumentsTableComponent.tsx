@@ -414,20 +414,18 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
               checkboxIndicator={{ "aria-label": "Select all rows " }}
             />
           )}
-          {
-            columns.map((column) => (
-              <TableHeaderCell
-                className={styles.tableCell}
-                key={column.columnId}
-                {...columnSizing.getTableHeaderCellProps(column.columnId)}
-                {...headerSortProps(column.columnId)}
-              >
-                {column.renderHeaderCell()}
-              </TableHeaderCell>
-            ))
-          }
-        </TableRow >
-      </TableHeader >
+          {columns.map((column) => (
+            <TableHeaderCell
+              className={styles.tableCell}
+              key={column.columnId}
+              {...columnSizing.getTableHeaderCellProps(column.columnId)}
+              {...headerSortProps(column.columnId)}
+            >
+              {column.renderHeaderCell()}
+            </TableHeaderCell>
+          ))}
+        </TableRow>
+      </TableHeader>
       <TableBody>
         <List
           height={size !== undefined ? size.height - LayoutConstants.rowHeight /* table header */ : 0}
@@ -440,6 +438,6 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
           {RenderRow}
         </List>
       </TableBody>
-    </Table >
+    </Table>
   );
 };

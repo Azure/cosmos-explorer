@@ -24,7 +24,7 @@ import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import {
   DocumentsTabPrefs,
   readDocumentsTabPrefs,
-  saveDocumentsTabPrefsDebounced
+  saveDocumentsTabPrefsDebounced,
 } from "Explorer/Tabs/DocumentsTabV2/documentsTabPrefs";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -1014,8 +1014,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-        ? `the selected ${selectedRows.size} documents`
-        : "the selected document";
+      ? `the selected ${selectedRows.size} documents`
+      : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog
@@ -2029,8 +2029,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               </div>
             </Allotment.Pane>
           </Allotment>
-        </div >
-      </div >
-    </CosmosFluentProvider >
+        </div>
+      </div>
+    </CosmosFluentProvider>
   );
 };
