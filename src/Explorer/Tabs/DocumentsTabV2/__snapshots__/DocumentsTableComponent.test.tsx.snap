@@ -117,7 +117,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                             class="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
                             role="presentation"
                           >
-                            id
+                            <span
+                              title="ID"
+                            >
+                              ID
+                            </span>
                           </div>
                           <span
                             class="fui-TableHeaderCell__aside"
@@ -193,7 +197,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           onKeyUp={[Function]}
                           role="presentation"
                         >
-                          id
+                          <span
+                            title="ID"
+                          >
+                            ID
+                          </span>
                         </div>
                         <span
                           className="fui-TableHeaderCell__aside"
@@ -265,9 +273,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                             role="presentation"
                           >
                             <span
-                              title="partitionKey"
+                              title="Partition Key"
                             >
-                              partitionKey
+                              Partition Key
                             </span>
                           </div>
                         </div>,
@@ -321,9 +329,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           role="presentation"
                         >
                           <span
-                            title="partitionKey"
+                            title="Partition Key"
                           >
-                            partitionKey
+                            Partition Key
                           </span>
                         </div>
                       </div>
@@ -1150,7 +1158,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                             class="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
                             role="presentation"
                           >
-                            id
+                            <span
+                              title="ID"
+                            >
+                              ID
+                            </span>
                           </div>
                           <span
                             class="fui-TableHeaderCell__aside"
@@ -1226,7 +1238,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           onKeyUp={[Function]}
                           role="presentation"
                         >
-                          id
+                          <span
+                            title="ID"
+                          >
+                            ID
+                          </span>
                         </div>
                         <span
                           className="fui-TableHeaderCell__aside"
@@ -1298,9 +1314,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                             role="presentation"
                           >
                             <span
-                              title="partitionKey"
+                              title="Partition Key"
                             >
-                              partitionKey
+                              Partition Key
                             </span>
                           </div>
                         </div>,
@@ -1354,9 +1370,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           role="presentation"
                         >
                           <span
-                            title="partitionKey"
+                            title="Partition Key"
                           >
-                            partitionKey
+                            Partition Key
                           </span>
                         </div>
                       </div>
