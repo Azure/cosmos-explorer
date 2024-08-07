@@ -1,5 +1,16 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, ButtonProps, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
+import {
+  Button,
+  Input,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  TableRowId,
+  makeStyles,
+  shorthands,
+} from "@fluentui/react-components";
 import { ArrowClockwise16Filled, ArrowResetRegular, Dismiss16Filled } from "@fluentui/react-icons";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
@@ -516,14 +527,23 @@ const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collec
 const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 
-const ResetFilterButton: React.FunctionComponent<ButtonProps> = (props) => (
-  <Button
-    {...props}
-    appearance="transparent"
-    icon={<ArrowResetRegular />}
-    // icon={<DeleteRegular />}
-    size="small"
-  />
+const ResetFilterButton: React.FunctionComponent<{ onClick: () => void }> = ({ onClick }) => (
+  <Menu positioning="below-end">
+    <MenuTrigger disableButtonEnhancement>
+      <Button
+        appearance="transparent"
+        icon={<ArrowResetRegular />}
+        size="small"
+        title="Delete recent filters"
+        aria-label="Delete recent filters"
+      />
+    </MenuTrigger>
+    <MenuPopover>
+      <MenuList>
+        <MenuItem onClick={onClick}>Clear filter history</MenuItem>
+      </MenuList>
+    </MenuPopover>
+  </Menu>
 );
 
 // Export to expose to unit tests
@@ -1793,17 +1813,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   const deleteRecentFilters = () => {
-    useDialog.getState().showOkCancelModalDialog(
-      "Delete recent filters",
-      "Are you sure to delete your recent filters?",
-      "Delete",
-      () => {
-        setLastFilterContents([]);
-        deleteSubComponentState("FilterHistory", _collection);
-      },
-      "Cancel",
-      undefined,
-    );
+    setLastFilterContents([]);
+    deleteSubComponentState("FilterHistory", _collection);
   };
 
   return (
@@ -1850,13 +1861,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   onKeyDown={onFilterKeyDown}
                   onChange={(e) => setFilterContent(e.target.value)}
                   onBlur={() => setIsFilterFocused(false)}
-                  contentAfter={
-                    <ResetFilterButton
-                      title="Delete recent filters"
-                      aria-label="Delete recent filters"
-                      onClick={deleteRecentFilters}
-                    />
-                  }
+                  contentAfter={<ResetFilterButton onClick={deleteRecentFilters} />}
                 />
 
                 <datalist id={`filtersList-${getUniqueId(_collection)}`}>
