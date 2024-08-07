@@ -1,47 +1,6 @@
-import { ResourceType } from "@azure/cosmos";
 import { Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { updateUserContext } from "../UserContext";
-import { endpoint, getTokenFromAuthService, requestPlugin, tokenProvider } from "./CosmosClient";
-
-describe("tokenProvider", () => {
-  const options = {
-    verb: "GET" as any,
-    path: "/",
-    resourceId: "",
-    resourceType: "dbs" as ResourceType,
-    headers: {},
-    getAuthorizationTokenUsingMasterKey: () => "",
-  };
-
-  beforeEach(() => {
-    updateConfigContext({
-      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
-    });
-    window.fetch = jest.fn().mockImplementation(() => {
-      return {
-        json: () => "{}",
-        headers: new Map(),
-      };
-    });
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  it("calls the auth token service if no master key is set", async () => {
-    await tokenProvider(options);
-    expect((window.fetch as any).mock.calls.length).toBe(1);
-  });
-
-  it("does not call the auth service if a master key is set", async () => {
-    updateUserContext({
-      masterKey: "foo",
-    });
-    await tokenProvider(options);
-    expect((window.fetch as any).mock.calls.length).toBe(0);
-  });
-});
+import { endpoint, getTokenFromAuthService, requestPlugin } from "./CosmosClient";
 
 describe("getTokenFromAuthService", () => {
   beforeEach(() => {

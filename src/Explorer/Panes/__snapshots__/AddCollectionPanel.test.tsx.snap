@@ -93,12 +93,12 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           id="newDatabaseId"
           name="newDatabaseId"
           onChange={[Function]}
-          pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+          pattern="[^/?#\\\\]*[^/?# \\\\]"
           placeholder="Type a new database id"
           required={true}
           size={40}
           tabIndex={0}
-          title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+          title="May not end with space nor contain characters '\\' '/' '#' '?'"
           type="text"
           value=""
         />
@@ -110,16 +110,16 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             label="Share throughput across containers"
             onChange={[Function]}
             styles={
-              Object {
-                "checkbox": Object {
+              {
+                "checkbox": {
                   "height": 12,
                   "width": 12,
                 },
-                "label": Object {
+                "label": {
                   "alignItems": "center",
                   "padding": 0,
                 },
-                "text": Object {
+                "text": {
                   "fontSize": 12,
                 },
               }
@@ -186,11 +186,11 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         id="collectionId"
         name="collectionId"
         onChange={[Function]}
-        pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+        pattern="[^/?#\\\\]*[^/?# \\\\]"
         placeholder="e.g., Container1"
         required={true}
         size={40}
-        title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+        title="May not end with space nor contain characters '\\' '/' '#' '?'"
         type="text"
         value=""
       />
@@ -223,7 +223,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         </StyledTooltipHostBase>
       </Stack>
       <Text
-        aria-label="pkDescription"
         variant="small"
       />
       <input
@@ -248,11 +247,11 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           hidden={false}
           onClick={[Function]}
           styles={
-            Object {
-              "label": Object {
+            {
+              "label": {
                 "fontSize": 12,
               },
-              "root": Object {
+              "root": {
                 "height": 30,
                 "padding": 0,
                 "width": 200,
@@ -288,17 +287,17 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
       </Stack>
       <CustomizedActionButton
         iconProps={
-          Object {
+          {
             "iconName": "Add",
           }
         }
         onClick={[Function]}
         styles={
-          Object {
-            "label": Object {
+          {
+            "label": {
               "fontSize": 12,
             },
-            "root": Object {
+            "root": {
               "padding": 0,
             },
           }
@@ -411,14 +410,14 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         <CustomizedDefaultButton
           onClick={[Function]}
           style={
-            Object {
+            {
               "height": 27,
               "width": 80,
             }
           }
           styles={
-            Object {
-              "label": Object {
+            {
+              "label": {
                 "fontSize": 12,
               },
             }
@@ -444,18 +443,18 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             label="My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)"
             onChange={[Function]}
             styles={
-              Object {
-                "checkbox": Object {
+              {
+                "checkbox": {
                   "height": 12,
                   "width": 12,
                 },
-                "label": Object {
+                "label": {
                   "alignItems": "center",
                   "padding": 0,
                   "whiteSpace": "break-spaces",
                   "wordWrap": "break-word",
                 },
-                "text": Object {
+                "text": {
                   "fontSize": 12,
                 },
               }

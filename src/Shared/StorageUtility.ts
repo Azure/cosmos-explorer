@@ -6,6 +6,7 @@ import * as StringUtility from "./StringUtility";
 export { LocalStorageUtility, SessionStorageUtility };
 export enum StorageKey {
   ActualItemPerPage,
+  DataPlaneRbacEnabled,
   RUThresholdEnabled,
   RUThreshold,
   QueryTimeoutEnabled,

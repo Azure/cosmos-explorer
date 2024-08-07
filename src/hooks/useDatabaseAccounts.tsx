@@ -52,11 +52,17 @@ export async function fetchDatabaseAccountsFromGraph(
     const body = {
       query: databaseAccountsQuery,
       subscriptions: [subscriptionId],
-      ...(skipToken && {
-        options: {
-          $skipToken: skipToken,
-        } as QueryRequestOptions,
-      }),
+      ...(skipToken
+        ? {
+            options: {
+              $skipToken: skipToken,
+            } as QueryRequestOptions,
+          }
+        : {
+            options: {
+              $top: 150,
+            } as QueryRequestOptions,
+          }),
     };
 
     const response = await fetch(managementResourceGraphAPIURL, {

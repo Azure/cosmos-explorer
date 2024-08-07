@@ -30,7 +30,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           aria-label="Throughput header"
           key=".0:$.$.1"
           style={
-            Object {
+            {
               "fontWeight": 600,
               "lineHeight": "20px",
             }
@@ -41,7 +41,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             aria-label="Throughput header"
             className="css-110"
             style={
-              Object {
+              {
                 "fontWeight": 600,
                 "lineHeight": "20px",
               }
@@ -62,9 +62,9 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 delay={1}
                 styles={[Function]}
                 theme={
-                  Object {
+                  {
                     "disableGlobalClassNames": false,
-                    "effects": Object {
+                    "effects": {
                       "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                       "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                       "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -73,92 +73,92 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       "roundedCorner4": "4px",
                       "roundedCorner6": "6px",
                     },
-                    "fonts": Object {
-                      "large": Object {
+                    "fonts": {
+                      "large": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "18px",
                         "fontWeight": 400,
                       },
-                      "medium": Object {
+                      "medium": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "14px",
                         "fontWeight": 400,
                       },
-                      "mediumPlus": Object {
+                      "mediumPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "16px",
                         "fontWeight": 400,
                       },
-                      "mega": Object {
+                      "mega": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "68px",
                         "fontWeight": 600,
                       },
-                      "small": Object {
+                      "small": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "smallPlus": Object {
+                      "smallPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "superLarge": Object {
+                      "superLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "42px",
                         "fontWeight": 600,
                       },
-                      "tiny": Object {
+                      "tiny": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xLarge": Object {
+                      "xLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "20px",
                         "fontWeight": 600,
                       },
-                      "xLargePlus": Object {
+                      "xLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "24px",
                         "fontWeight": 600,
                       },
-                      "xSmall": Object {
+                      "xSmall": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xxLarge": Object {
+                      "xxLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "28px",
                         "fontWeight": 600,
                       },
-                      "xxLargePlus": Object {
+                      "xxLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -167,7 +167,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       },
                     },
                     "isInverted": false,
-                    "palette": Object {
+                    "palette": {
                       "accent": "#0078d4",
                       "black": "#000000",
                       "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -220,7 +220,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       "yellowLight": "#fff100",
                     },
                     "rtl": undefined,
-                    "semanticColors": Object {
+                    "semanticColors": {
                       "accentButtonBackground": "#0078d4",
                       "accentButtonText": "#ffffff",
                       "actionLink": "#323130",
@@ -325,7 +325,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       "warningIcon": "#797775",
                       "warningText": "#323130",
                     },
-                    "spacing": Object {
+                    "spacing": {
                       "l1": "20px",
                       "l2": "32px",
                       "m": "16px",
@@ -357,9 +357,9 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       styles={[Function]}
                       tabIndex={0}
                       theme={
-                        Object {
+                        {
                           "disableGlobalClassNames": false,
-                          "effects": Object {
+                          "effects": {
                             "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                             "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                             "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -368,92 +368,92 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             "roundedCorner4": "4px",
                             "roundedCorner6": "6px",
                           },
-                          "fonts": Object {
-                            "large": Object {
+                          "fonts": {
+                            "large": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "18px",
                               "fontWeight": 400,
                             },
-                            "medium": Object {
+                            "medium": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "14px",
                               "fontWeight": 400,
                             },
-                            "mediumPlus": Object {
+                            "mediumPlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "16px",
                               "fontWeight": 400,
                             },
-                            "mega": Object {
+                            "mega": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "68px",
                               "fontWeight": 600,
                             },
-                            "small": Object {
+                            "small": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "12px",
                               "fontWeight": 400,
                             },
-                            "smallPlus": Object {
+                            "smallPlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "12px",
                               "fontWeight": 400,
                             },
-                            "superLarge": Object {
+                            "superLarge": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "42px",
                               "fontWeight": 600,
                             },
-                            "tiny": Object {
+                            "tiny": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "10px",
                               "fontWeight": 400,
                             },
-                            "xLarge": Object {
+                            "xLarge": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "20px",
                               "fontWeight": 600,
                             },
-                            "xLargePlus": Object {
+                            "xLargePlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "24px",
                               "fontWeight": 600,
                             },
-                            "xSmall": Object {
+                            "xSmall": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "10px",
                               "fontWeight": 400,
                             },
-                            "xxLarge": Object {
+                            "xxLarge": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                               "fontSize": "28px",
                               "fontWeight": 600,
                             },
-                            "xxLargePlus": Object {
+                            "xxLargePlus": {
                               "MozOsxFontSmoothing": "grayscale",
                               "WebkitFontSmoothing": "antialiased",
                               "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -462,7 +462,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             },
                           },
                           "isInverted": false,
-                          "palette": Object {
+                          "palette": {
                             "accent": "#0078d4",
                             "black": "#000000",
                             "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -515,7 +515,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             "yellowLight": "#fff100",
                           },
                           "rtl": undefined,
-                          "semanticColors": Object {
+                          "semanticColors": {
                             "accentButtonBackground": "#0078d4",
                             "accentButtonText": "#ffffff",
                             "actionLink": "#323130",
@@ -620,7 +620,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             "warningIcon": "#797775",
                             "warningText": "#323130",
                           },
-                          "spacing": Object {
+                          "spacing": {
                             "l1": "20px",
                             "l2": "32px",
                             "m": "16px",
@@ -645,7 +645,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     hidden={true}
                     id="tooltip0"
                     style={
-                      Object {
+                      {
                         "border": 0,
                         "height": 1,
                         "margin": -1,
@@ -733,20 +733,20 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
              
             <StyledLinkBase
               aria-label="capacity calculator of azure cosmos db"
-              className="underlinedLink"
+              className="underlinedLink outlineNone"
               href="https://cosmos.azure.com/capacitycalculator/"
               target="_blank"
             >
               <LinkBase
                 aria-label="capacity calculator of azure cosmos db"
-                className="underlinedLink"
+                className="underlinedLink outlineNone"
                 href="https://cosmos.azure.com/capacitycalculator/"
                 styles={[Function]}
                 target="_blank"
                 theme={
-                  Object {
+                  {
                     "disableGlobalClassNames": false,
-                    "effects": Object {
+                    "effects": {
                       "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                       "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                       "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -755,92 +755,92 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       "roundedCorner4": "4px",
                       "roundedCorner6": "6px",
                     },
-                    "fonts": Object {
-                      "large": Object {
+                    "fonts": {
+                      "large": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "18px",
                         "fontWeight": 400,
                       },
-                      "medium": Object {
+                      "medium": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "14px",
                         "fontWeight": 400,
                       },
-                      "mediumPlus": Object {
+                      "mediumPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "16px",
                         "fontWeight": 400,
                       },
-                      "mega": Object {
+                      "mega": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "68px",
                         "fontWeight": 600,
                       },
-                      "small": Object {
+                      "small": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "smallPlus": Object {
+                      "smallPlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "12px",
                         "fontWeight": 400,
                       },
-                      "superLarge": Object {
+                      "superLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "42px",
                         "fontWeight": 600,
                       },
-                      "tiny": Object {
+                      "tiny": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xLarge": Object {
+                      "xLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "20px",
                         "fontWeight": 600,
                       },
-                      "xLargePlus": Object {
+                      "xLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "24px",
                         "fontWeight": 600,
                       },
-                      "xSmall": Object {
+                      "xSmall": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "10px",
                         "fontWeight": 400,
                       },
-                      "xxLarge": Object {
+                      "xxLarge": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                         "fontSize": "28px",
                         "fontWeight": 600,
                       },
-                      "xxLargePlus": Object {
+                      "xxLargePlus": {
                         "MozOsxFontSmoothing": "grayscale",
                         "WebkitFontSmoothing": "antialiased",
                         "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -849,7 +849,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       },
                     },
                     "isInverted": false,
-                    "palette": Object {
+                    "palette": {
                       "accent": "#0078d4",
                       "black": "#000000",
                       "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -902,7 +902,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       "yellowLight": "#fff100",
                     },
                     "rtl": undefined,
-                    "semanticColors": Object {
+                    "semanticColors": {
                       "accentButtonBackground": "#0078d4",
                       "accentButtonText": "#ffffff",
                       "actionLink": "#323130",
@@ -1007,7 +1007,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       "warningIcon": "#797775",
                       "warningText": "#323130",
                     },
-                    "spacing": Object {
+                    "spacing": {
                       "l1": "20px",
                       "l2": "32px",
                       "m": "16px",
@@ -1019,7 +1019,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               >
                 <a
                   aria-label="capacity calculator of azure cosmos db"
-                  className="ms-Link underlinedLink root-117"
+                  className="ms-Link underlinedLink outlineNone root-117"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
                   target="_blank"
@@ -1042,7 +1042,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               aria-label="maxRUDescription"
               key=".0:$.$.0"
               style={
-                Object {
+                {
                   "fontWeight": 600,
                   "lineHeight": "20px",
                 }
@@ -1053,7 +1053,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 aria-label="maxRUDescription"
                 className="css-110"
                 style={
-                  Object {
+                  {
                     "fontWeight": 600,
                     "lineHeight": "20px",
                   }
@@ -1075,9 +1075,9 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     delay={1}
                     styles={[Function]}
                     theme={
-                      Object {
+                      {
                         "disableGlobalClassNames": false,
-                        "effects": Object {
+                        "effects": {
                           "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                           "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                           "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -1086,92 +1086,92 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           "roundedCorner4": "4px",
                           "roundedCorner6": "6px",
                         },
-                        "fonts": Object {
-                          "large": Object {
+                        "fonts": {
+                          "large": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "18px",
                             "fontWeight": 400,
                           },
-                          "medium": Object {
+                          "medium": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "14px",
                             "fontWeight": 400,
                           },
-                          "mediumPlus": Object {
+                          "mediumPlus": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "16px",
                             "fontWeight": 400,
                           },
-                          "mega": Object {
+                          "mega": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "68px",
                             "fontWeight": 600,
                           },
-                          "small": Object {
+                          "small": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "12px",
                             "fontWeight": 400,
                           },
-                          "smallPlus": Object {
+                          "smallPlus": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "12px",
                             "fontWeight": 400,
                           },
-                          "superLarge": Object {
+                          "superLarge": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "42px",
                             "fontWeight": 600,
                           },
-                          "tiny": Object {
+                          "tiny": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "10px",
                             "fontWeight": 400,
                           },
-                          "xLarge": Object {
+                          "xLarge": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "20px",
                             "fontWeight": 600,
                           },
-                          "xLargePlus": Object {
+                          "xLargePlus": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "24px",
                             "fontWeight": 600,
                           },
-                          "xSmall": Object {
+                          "xSmall": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "10px",
                             "fontWeight": 400,
                           },
-                          "xxLarge": Object {
+                          "xxLarge": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                             "fontSize": "28px",
                             "fontWeight": 600,
                           },
-                          "xxLargePlus": Object {
+                          "xxLargePlus": {
                             "MozOsxFontSmoothing": "grayscale",
                             "WebkitFontSmoothing": "antialiased",
                             "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -1180,7 +1180,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           },
                         },
                         "isInverted": false,
-                        "palette": Object {
+                        "palette": {
                           "accent": "#0078d4",
                           "black": "#000000",
                           "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -1233,7 +1233,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           "yellowLight": "#fff100",
                         },
                         "rtl": undefined,
-                        "semanticColors": Object {
+                        "semanticColors": {
                           "accentButtonBackground": "#0078d4",
                           "accentButtonText": "#ffffff",
                           "actionLink": "#323130",
@@ -1338,7 +1338,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           "warningIcon": "#797775",
                           "warningText": "#323130",
                         },
-                        "spacing": Object {
+                        "spacing": {
                           "l1": "20px",
                           "l2": "32px",
                           "m": "16px",
@@ -1370,9 +1370,9 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           styles={[Function]}
                           tabIndex={0}
                           theme={
-                            Object {
+                            {
                               "disableGlobalClassNames": false,
-                              "effects": Object {
+                              "effects": {
                                 "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                                 "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                                 "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -1381,92 +1381,92 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                 "roundedCorner4": "4px",
                                 "roundedCorner6": "6px",
                               },
-                              "fonts": Object {
-                                "large": Object {
+                              "fonts": {
+                                "large": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "18px",
                                   "fontWeight": 400,
                                 },
-                                "medium": Object {
+                                "medium": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "14px",
                                   "fontWeight": 400,
                                 },
-                                "mediumPlus": Object {
+                                "mediumPlus": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "16px",
                                   "fontWeight": 400,
                                 },
-                                "mega": Object {
+                                "mega": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "68px",
                                   "fontWeight": 600,
                                 },
-                                "small": Object {
+                                "small": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "12px",
                                   "fontWeight": 400,
                                 },
-                                "smallPlus": Object {
+                                "smallPlus": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "12px",
                                   "fontWeight": 400,
                                 },
-                                "superLarge": Object {
+                                "superLarge": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "42px",
                                   "fontWeight": 600,
                                 },
-                                "tiny": Object {
+                                "tiny": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "10px",
                                   "fontWeight": 400,
                                 },
-                                "xLarge": Object {
+                                "xLarge": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "20px",
                                   "fontWeight": 600,
                                 },
-                                "xLargePlus": Object {
+                                "xLargePlus": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "24px",
                                   "fontWeight": 600,
                                 },
-                                "xSmall": Object {
+                                "xSmall": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "10px",
                                   "fontWeight": 400,
                                 },
-                                "xxLarge": Object {
+                                "xxLarge": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                                   "fontSize": "28px",
                                   "fontWeight": 600,
                                 },
-                                "xxLargePlus": Object {
+                                "xxLargePlus": {
                                   "MozOsxFontSmoothing": "grayscale",
                                   "WebkitFontSmoothing": "antialiased",
                                   "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -1475,7 +1475,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                 },
                               },
                               "isInverted": false,
-                              "palette": Object {
+                              "palette": {
                                 "accent": "#0078d4",
                                 "black": "#000000",
                                 "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -1528,7 +1528,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                 "yellowLight": "#fff100",
                               },
                               "rtl": undefined,
-                              "semanticColors": Object {
+                              "semanticColors": {
                                 "accentButtonBackground": "#0078d4",
                                 "accentButtonText": "#ffffff",
                                 "actionLink": "#323130",
@@ -1633,7 +1633,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                 "warningIcon": "#797775",
                                 "warningText": "#323130",
                               },
-                              "spacing": Object {
+                              "spacing": {
                                 "l1": "20px",
                                 "l2": "32px",
                                 "m": "16px",
@@ -1658,7 +1658,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         hidden={true}
                         id="tooltip1"
                         style={
-                          Object {
+                          {
                             "border": 0,
                             "height": 1,
                             "margin": -1,
@@ -1690,11 +1690,11 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           required={true}
           step={1000}
           styles={
-            Object {
-              "field": Object {
+            {
+              "field": {
                 "fontSize": 12,
               },
-              "fieldGroup": Object {
+              "fieldGroup": {
                 "height": 27,
                 "width": 300,
               },
@@ -1716,9 +1716,9 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             step={1000}
             styles={[Function]}
             theme={
-              Object {
+              {
                 "disableGlobalClassNames": false,
-                "effects": Object {
+                "effects": {
                   "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
                   "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
                   "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
@@ -1727,92 +1727,92 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   "roundedCorner4": "4px",
                   "roundedCorner6": "6px",
                 },
-                "fonts": Object {
-                  "large": Object {
+                "fonts": {
+                  "large": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "18px",
                     "fontWeight": 400,
                   },
-                  "medium": Object {
+                  "medium": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "14px",
                     "fontWeight": 400,
                   },
-                  "mediumPlus": Object {
+                  "mediumPlus": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "16px",
                     "fontWeight": 400,
                   },
-                  "mega": Object {
+                  "mega": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "68px",
                     "fontWeight": 600,
                   },
-                  "small": Object {
+                  "small": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "12px",
                     "fontWeight": 400,
                   },
-                  "smallPlus": Object {
+                  "smallPlus": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "12px",
                     "fontWeight": 400,
                   },
-                  "superLarge": Object {
+                  "superLarge": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "42px",
                     "fontWeight": 600,
                   },
-                  "tiny": Object {
+                  "tiny": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "10px",
                     "fontWeight": 400,
                   },
-                  "xLarge": Object {
+                  "xLarge": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "20px",
                     "fontWeight": 600,
                   },
-                  "xLargePlus": Object {
+                  "xLargePlus": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "24px",
                     "fontWeight": 600,
                   },
-                  "xSmall": Object {
+                  "xSmall": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "10px",
                     "fontWeight": 400,
                   },
-                  "xxLarge": Object {
+                  "xxLarge": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
                     "fontSize": "28px",
                     "fontWeight": 600,
                   },
-                  "xxLargePlus": Object {
+                  "xxLargePlus": {
                     "MozOsxFontSmoothing": "grayscale",
                     "WebkitFontSmoothing": "antialiased",
                     "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
@@ -1821,7 +1821,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   },
                 },
                 "isInverted": false,
-                "palette": Object {
+                "palette": {
                   "accent": "#0078d4",
                   "black": "#000000",
                   "blackTranslucent40": "rgba(0,0,0,.4)",
@@ -1874,7 +1874,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   "yellowLight": "#fff100",
                 },
                 "rtl": undefined,
-                "semanticColors": Object {
+                "semanticColors": {
                   "accentButtonBackground": "#0078d4",
                   "accentButtonText": "#ffffff",
                   "actionLink": "#323130",
@@ -1979,7 +1979,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   "warningIcon": "#797775",
                   "warningText": "#323130",
                 },
-                "spacing": Object {
+                "spacing": {
                   "l1": "20px",
                   "l2": "32px",
                   "m": "16px",

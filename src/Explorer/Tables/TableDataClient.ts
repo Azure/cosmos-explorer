@@ -363,18 +363,24 @@ export class CassandraAPIDataClient extends TableDataClient {
     entitiesToDelete: Entities.ITableEntity[],
   ): Promise<any> {
     const query = `DELETE FROM ${collection.databaseId}.${collection.id()} WHERE `;
-    const partitionKeyProperty = this.getCassandraPartitionKeyProperty(collection);
-
+    const partitionKeys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys;
     await Promise.all(
       entitiesToDelete.map(async (currEntityToDelete: Entities.ITableEntity) => {
         const clearMessage = NotificationConsoleUtils.logConsoleProgress(`Deleting row ${currEntityToDelete.RowKey._}`);
-        const partitionKeyValue = currEntityToDelete[partitionKeyProperty];
-        const currQuery =
-          query +
-          (this.isStringType(partitionKeyValue.$)
-            ? `${partitionKeyProperty} = '${partitionKeyValue._}'`
-            : `${partitionKeyProperty} = ${partitionKeyValue._}`);
 
+        let currQuery = query;
+        for (let partitionKeyIndex = 0; partitionKeyIndex < partitionKeys.length; partitionKeyIndex++) {
+          const partitionKey: CassandraTableKey = partitionKeys[partitionKeyIndex];
+          const partitionKeyValue: Entities.ITableEntityAttribute = currEntityToDelete[partitionKey.property];
+          currQuery =
+            currQuery +
+            (this.isStringType(partitionKeyValue.$)
+              ? `${partitionKey.property} = '${partitionKeyValue._}'`
+              : `${partitionKey.property} = ${partitionKeyValue._}`);
+          if (partitionKeyIndex < partitionKeys.length - 1) {
+            currQuery = `${currQuery} AND `;
+          }
+        }
         try {
           await this.queryDocuments(collection, currQuery);
           NotificationConsoleUtils.logConsoleInfo(`Successfully deleted row ${currEntityToDelete.RowKey._}`);

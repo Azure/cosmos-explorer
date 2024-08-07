@@ -7,14 +7,17 @@ test("Tables CRUD", async ({ page }) => {
 
   const explorer = await DataExplorer.open(page, TestAccount.Tables);
 
-  await explorer.commandBarButton("New Table").click();
+  await explorer.globalCommandButton("New Table").click();
   await explorer.whilePanelOpen("New Table", async (panel, okButton) => {
     await panel.getByRole("textbox", { name: "Table id, Example Table1" }).fill(tableId);
     await panel.getByLabel("Table Max RU/s").fill("1000");
     await okButton.click();
   });
 
-  const tableNode = explorer.treeNode(`DATA/TablesDB/${tableId}`);
+  const databaseNode = explorer.treeNode("TablesDB");
+  await databaseNode.expand();
+
+  const tableNode = explorer.treeNode(`TablesDB/${tableId}`);
   await expect(tableNode.element).toBeAttached();
 
   await tableNode.openContextMenu();

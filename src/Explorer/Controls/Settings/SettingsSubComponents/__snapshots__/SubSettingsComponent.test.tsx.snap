@@ -3,14 +3,14 @@
 exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -20,16 +20,16 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       label="Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -37,19 +37,19 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
       selectedKey="on"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -69,12 +69,12 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       onChange={[Function]}
       required={true}
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -93,12 +93,12 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
     label="Geospatial Configuration"
     onChange={[Function]}
     options={
-      Array [
-        Object {
+      [
+        {
           "key": "Geography",
           "text": "Geography",
         },
-        Object {
+        {
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -106,19 +106,19 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
     }
     selectedKey="Geography"
     styles={
-      Object {
-        "flexContainer": Array [
-          Object {
+      {
+        "flexContainer": [
+          {
             "columnGap": "default",
             "display": "default",
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
+            "selectors": {
+              ".ms-ChoiceField-field.is-checked::after": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-field.is-checked::before": Object {
+              ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-wrapper label": Object {
+              ".ms-ChoiceField-wrapper label": {
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
@@ -139,8 +139,8 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         toolTipElement={
           <Text
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "color": "windowtext",
                   "fontSize": 14,
                 },
@@ -157,12 +157,12 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       id="changeFeedPolicy"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "Off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "On",
             "text": "On",
           },
@@ -170,19 +170,19 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
       selectedKey="On"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -197,7 +197,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
   </Stack>
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -207,12 +207,12 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       disabled={true}
       label="Partition key"
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -237,14 +237,14 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
 exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -254,16 +254,16 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       label="Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -271,19 +271,19 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
       selectedKey="on"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -303,12 +303,12 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       onChange={[Function]}
       required={true}
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -327,12 +327,12 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
     label="Geospatial Configuration"
     onChange={[Function]}
     options={
-      Array [
-        Object {
+      [
+        {
           "key": "Geography",
           "text": "Geography",
         },
-        Object {
+        {
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -340,19 +340,19 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
     }
     selectedKey="Geography"
     styles={
-      Object {
-        "flexContainer": Array [
-          Object {
+      {
+        "flexContainer": [
+          {
             "columnGap": "default",
             "display": "default",
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
+            "selectors": {
+              ".ms-ChoiceField-field.is-checked::after": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-field.is-checked::before": Object {
+              ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-wrapper label": Object {
+              ".ms-ChoiceField-wrapper label": {
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
@@ -366,7 +366,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
   />
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -376,17 +376,17 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       label="Analytical Storage Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "disabled": true,
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -394,19 +394,19 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
       selectedKey="on-nodefault"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": undefined,
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": undefined,
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -428,8 +428,8 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         toolTipElement={
           <Text
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "color": "windowtext",
                   "fontSize": 14,
                 },
@@ -446,12 +446,12 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       id="changeFeedPolicy"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "Off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "On",
             "text": "On",
           },
@@ -459,19 +459,19 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
       selectedKey="On"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -486,7 +486,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
   </Stack>
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -496,12 +496,12 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       disabled={true}
       label="Partition key"
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -526,14 +526,14 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
 exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -543,16 +543,16 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       label="Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -560,19 +560,19 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
       selectedKey="on"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -592,12 +592,12 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       onChange={[Function]}
       required={true}
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -616,12 +616,12 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     label="Geospatial Configuration"
     onChange={[Function]}
     options={
-      Array [
-        Object {
+      [
+        {
           "key": "Geography",
           "text": "Geography",
         },
-        Object {
+        {
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -629,19 +629,19 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
     }
     selectedKey="Geography"
     styles={
-      Object {
-        "flexContainer": Array [
-          Object {
+      {
+        "flexContainer": [
+          {
             "columnGap": "default",
             "display": "default",
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
+            "selectors": {
+              ".ms-ChoiceField-field.is-checked::after": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-field.is-checked::before": Object {
+              ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-wrapper label": Object {
+              ".ms-ChoiceField-wrapper label": {
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
@@ -655,7 +655,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
   />
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -665,17 +665,17 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       label="Analytical Storage Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "disabled": true,
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -683,19 +683,19 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
       selectedKey="on"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -714,12 +714,12 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       onChange={[Function]}
       required={true}
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -735,7 +735,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
   </Stack>
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -745,12 +745,12 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       disabled={true}
       label="Partition key"
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -775,14 +775,14 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
 exports[`SubSettingsComponent renders 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -792,16 +792,16 @@ exports[`SubSettingsComponent renders 1`] = `
       label="Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -809,19 +809,19 @@ exports[`SubSettingsComponent renders 1`] = `
       }
       selectedKey="on"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -841,12 +841,12 @@ exports[`SubSettingsComponent renders 1`] = `
       onChange={[Function]}
       required={true}
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -865,12 +865,12 @@ exports[`SubSettingsComponent renders 1`] = `
     label="Geospatial Configuration"
     onChange={[Function]}
     options={
-      Array [
-        Object {
+      [
+        {
           "key": "Geography",
           "text": "Geography",
         },
-        Object {
+        {
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -878,19 +878,19 @@ exports[`SubSettingsComponent renders 1`] = `
     }
     selectedKey="Geography"
     styles={
-      Object {
-        "flexContainer": Array [
-          Object {
+      {
+        "flexContainer": [
+          {
             "columnGap": "default",
             "display": "default",
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
+            "selectors": {
+              ".ms-ChoiceField-field.is-checked::after": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-field.is-checked::before": Object {
+              ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-wrapper label": Object {
+              ".ms-ChoiceField-wrapper label": {
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
@@ -904,7 +904,7 @@ exports[`SubSettingsComponent renders 1`] = `
   />
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -914,17 +914,17 @@ exports[`SubSettingsComponent renders 1`] = `
       label="Analytical Storage Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "disabled": true,
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -932,19 +932,19 @@ exports[`SubSettingsComponent renders 1`] = `
       }
       selectedKey="on"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -963,12 +963,12 @@ exports[`SubSettingsComponent renders 1`] = `
       onChange={[Function]}
       required={true}
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -991,8 +991,8 @@ exports[`SubSettingsComponent renders 1`] = `
         toolTipElement={
           <Text
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "color": "windowtext",
                   "fontSize": 14,
                 },
@@ -1009,12 +1009,12 @@ exports[`SubSettingsComponent renders 1`] = `
       id="changeFeedPolicy"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "Off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "On",
             "text": "On",
           },
@@ -1022,19 +1022,19 @@ exports[`SubSettingsComponent renders 1`] = `
       }
       selectedKey="On"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -1049,7 +1049,7 @@ exports[`SubSettingsComponent renders 1`] = `
   </Stack>
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -1059,12 +1059,12 @@ exports[`SubSettingsComponent renders 1`] = `
       disabled={true}
       label="Partition key"
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -1089,14 +1089,14 @@ exports[`SubSettingsComponent renders 1`] = `
 exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
 <Stack
   tokens={
-    Object {
+    {
       "childrenGap": 20,
     }
   }
 >
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -1106,16 +1106,16 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       label="Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -1123,19 +1123,19 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
       selectedKey="off"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": undefined,
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": undefined,
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -1153,12 +1153,12 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
     label="Geospatial Configuration"
     onChange={[Function]}
     options={
-      Array [
-        Object {
+      [
+        {
           "key": "Geography",
           "text": "Geography",
         },
-        Object {
+        {
           "key": "Geometry",
           "text": "Geometry",
         },
@@ -1166,19 +1166,19 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
     }
     selectedKey="Geography"
     styles={
-      Object {
-        "flexContainer": Array [
-          Object {
+      {
+        "flexContainer": [
+          {
             "columnGap": "default",
             "display": "default",
-            "selectors": Object {
-              ".ms-ChoiceField-field.is-checked::after": Object {
+            "selectors": {
+              ".ms-ChoiceField-field.is-checked::after": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-field.is-checked::before": Object {
+              ".ms-ChoiceField-field.is-checked::before": {
                 "borderColor": "",
               },
-              ".ms-ChoiceField-wrapper label": Object {
+              ".ms-ChoiceField-wrapper label": {
                 "fontFamily": undefined,
                 "fontSize": 14,
                 "padding": "2px 5px",
@@ -1192,7 +1192,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
   />
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -1202,17 +1202,17 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       label="Analytical Storage Time to Live"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "disabled": true,
             "key": "off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "on-nodefault",
             "text": "On (no default)",
           },
-          Object {
+          {
             "key": "on",
             "text": "On",
           },
@@ -1220,19 +1220,19 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
       selectedKey="on"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -1251,12 +1251,12 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       onChange={[Function]}
       required={true}
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },
@@ -1279,8 +1279,8 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         toolTipElement={
           <Text
             styles={
-              Object {
-                "root": Object {
+              {
+                "root": {
                   "color": "windowtext",
                   "fontSize": 14,
                 },
@@ -1297,12 +1297,12 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       id="changeFeedPolicy"
       onChange={[Function]}
       options={
-        Array [
-          Object {
+        [
+          {
             "key": "Off",
             "text": "Off",
           },
-          Object {
+          {
             "key": "On",
             "text": "On",
           },
@@ -1310,19 +1310,19 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
       selectedKey="On"
       styles={
-        Object {
-          "flexContainer": Array [
-            Object {
+        {
+          "flexContainer": [
+            {
               "columnGap": "default",
               "display": "default",
-              "selectors": Object {
-                ".ms-ChoiceField-field.is-checked::after": Object {
+              "selectors": {
+                ".ms-ChoiceField-field.is-checked::after": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-field.is-checked::before": Object {
+                ".ms-ChoiceField-field.is-checked::before": {
                   "borderColor": "",
                 },
-                ".ms-ChoiceField-wrapper label": Object {
+                ".ms-ChoiceField-wrapper label": {
                   "fontFamily": undefined,
                   "fontSize": 14,
                   "padding": "2px 5px",
@@ -1337,7 +1337,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
   </Stack>
   <Stack
     tokens={
-      Object {
+      {
         "childrenGap": 5,
       }
     }
@@ -1347,12 +1347,12 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       disabled={true}
       label="Partition key"
       styles={
-        Object {
-          "fieldGroup": Object {
+        {
+          "fieldGroup": {
             "borderColor": "",
             "height": 25,
-            "selectors": Object {
-              ":disabled": Object {
+            "selectors": {
+              ":disabled": {
                 "backgroundColor": undefined,
                 "borderColor": undefined,
               },

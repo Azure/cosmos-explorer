@@ -133,6 +133,7 @@ export enum MongoBackendEndpointType {
 export class BackendApi {
   public static readonly GenerateToken: string = "GenerateToken";
   public static readonly PortalSettings: string = "PortalSettings";
+  public static readonly AccountRestrictions: string = "AccountRestrictions";
 }
 
 export class PortalBackendEndpoints {
@@ -194,6 +195,12 @@ export class Queries {
   public static readonly DefaultRetryAttempts = 9;
   public static readonly DefaultRetryIntervalInMs = 0;
   public static readonly DefaultMaxWaitTimeInSeconds = 30;
+}
+
+export class RBACOptions {
+  public static setAutomaticRBACOption: string = "Automatic";
+  public static setTrueRBACOption: string = "True";
+  public static setFalseRBACOption: string = "False";
 }
 
 export class SavedQueries {

@@ -4,7 +4,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
 <Stack
   className="widgetRendererContainer"
   tokens={
-    Object {
+    {
       "childrenGap": 10,
     }
   }
@@ -16,7 +16,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -28,7 +28,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
               aria-labelledby="description-label"
               id="description-text-display"
               style={
-                Object {
+                {
                   "whiteSpace": "pre-line",
                 }
               }
@@ -53,7 +53,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -70,14 +70,14 @@ exports[`SmartUiComponent disable all inputs 1`] = `
             </StyledLabelBase>
             <Stack
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "width": 400,
                   },
                 }
               }
               tokens={
-                Object {
+                {
                   "childrenGap": 2,
                 }
               }
@@ -107,7 +107,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -133,11 +133,11 @@ exports[`SmartUiComponent disable all inputs 1`] = `
                 onChange={[Function]}
                 step={10}
                 styles={
-                  Object {
-                    "root": Object {
+                  {
+                    "root": {
                       "width": 400,
                     },
-                    "valueLabel": Object {
+                    "valueLabel": {
                       "color": "#393939",
                       "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
                       "fontSize": 12,
@@ -157,7 +157,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -178,7 +178,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -199,8 +199,8 @@ exports[`SmartUiComponent disable all inputs 1`] = `
               id="containerId-textField-input"
               onChange={[Function]}
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "width": 400,
                   },
                 }
@@ -219,7 +219,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -243,8 +243,8 @@ exports[`SmartUiComponent disable all inputs 1`] = `
               onChange={[Function]}
               onText="Enabled"
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "width": 400,
                   },
                 }
@@ -261,7 +261,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -282,16 +282,16 @@ exports[`SmartUiComponent disable all inputs 1`] = `
               id="database-dropdown-input"
               onChange={[Function]}
               options={
-                Array [
-                  Object {
+                [
+                  {
                     "key": "db1",
                     "text": "Database 1",
                   },
-                  Object {
+                  {
                     "key": "db2",
                     "text": "Database 2",
                   },
-                  Object {
+                  {
                     "key": "db3",
                     "text": "Database 3",
                   },
@@ -299,13 +299,13 @@ exports[`SmartUiComponent disable all inputs 1`] = `
               }
               selectedKey="db2"
               styles={
-                Object {
-                  "dropdown": Object {
+                {
+                  "dropdown": {
                     "color": "#393939",
                     "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
                     "fontSize": 12,
                   },
-                  "root": Object {
+                  "root": {
                     "width": 400,
                   },
                 }
@@ -323,7 +323,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
 <Stack
   className="widgetRendererContainer"
   tokens={
-    Object {
+    {
       "childrenGap": 10,
     }
   }
@@ -335,7 +335,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -347,7 +347,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
               aria-labelledby="description-label"
               id="description-text-display"
               style={
-                Object {
+                {
                   "whiteSpace": "pre-line",
                 }
               }
@@ -372,7 +372,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -389,14 +389,14 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
             </StyledLabelBase>
             <Stack
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "width": 400,
                   },
                 }
               }
               tokens={
-                Object {
+                {
                   "childrenGap": 2,
                 }
               }
@@ -425,7 +425,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -450,11 +450,11 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
                 onChange={[Function]}
                 step={10}
                 styles={
-                  Object {
-                    "root": Object {
+                  {
+                    "root": {
                       "width": 400,
                     },
-                    "valueLabel": Object {
+                    "valueLabel": {
                       "color": "#393939",
                       "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
                       "fontSize": 12,
@@ -474,7 +474,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -495,7 +495,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -515,8 +515,8 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
               id="containerId-textField-input"
               onChange={[Function]}
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "width": 400,
                   },
                 }
@@ -535,7 +535,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -558,8 +558,8 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
               onChange={[Function]}
               onText="Enabled"
               styles={
-                Object {
-                  "root": Object {
+                {
+                  "root": {
                     "width": 400,
                   },
                 }
@@ -576,7 +576,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     <Stack
       className="widgetRendererContainer"
       tokens={
-        Object {
+        {
           "childrenGap": 10,
         }
       }
@@ -596,16 +596,16 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
               id="database-dropdown-input"
               onChange={[Function]}
               options={
-                Array [
-                  Object {
+                [
+                  {
                     "key": "db1",
                     "text": "Database 1",
                   },
-                  Object {
+                  {
                     "key": "db2",
                     "text": "Database 2",
                   },
-                  Object {
+                  {
                     "key": "db3",
                     "text": "Database 3",
                   },
@@ -613,13 +613,13 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
               }
               selectedKey="db2"
               styles={
-                Object {
-                  "dropdown": Object {
+                {
+                  "dropdown": {
                     "color": "#393939",
                     "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
                     "fontSize": 12,
                   },
-                  "root": Object {
+                  "root": {
                     "width": 400,
                   },
                 }

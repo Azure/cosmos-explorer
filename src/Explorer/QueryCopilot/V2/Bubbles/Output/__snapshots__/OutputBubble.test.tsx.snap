@@ -4,7 +4,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
 <Stack
   id="outputBubble"
   style={
-    Object {
+    {
       "alignItems": "center",
       "backgroundColor": "white",
       "borderRadius": "8px",
@@ -14,7 +14,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
     }
   }
   tokens={
-    Object {
+    {
       "childrenGap": 8,
       "padding": 8,
     }
@@ -22,7 +22,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
 >
   <StackItem
     style={
-      Object {
+      {
         "alignSelf": "flex-start",
         "paddingLeft": "2px",
       }
@@ -32,7 +32,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
   </StackItem>
   <StackItem
     style={
-      Object {
+      {
         "alignSelf": "stretch",
         "flexGrow": 4,
       }
@@ -47,12 +47,12 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
       lineNumbers="on"
       lineNumbersMinChars={2}
       minimap={
-        Object {
+        {
           "enabled": false,
         }
       }
       monacoContainerStyles={
-        Object {
+        {
           "borderRadius": "4px",
           "height": "NaNpx",
         }
@@ -63,7 +63,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
   </StackItem>
   <StackItem
     style={
-      Object {
+      {
         "alignSelf": "flex-start",
       }
     }
@@ -75,7 +75,7 @@ exports[`Output Bubble snapshot tests should render and update height 1`] = `
   <StackItem>
     <Text
       style={
-        Object {
+        {
           "fontSize": "10px",
           "fontWeight": 400,
           "lineHeight": "14px",

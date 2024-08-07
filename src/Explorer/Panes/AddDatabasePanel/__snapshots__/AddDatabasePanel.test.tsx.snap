@@ -35,27 +35,29 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
         aria-required="true"
         autoComplete="off"
         autoFocus={true}
+        data-1p-ignore={true}
+        data-lpignore={true}
         id="database-id"
         onChange={[Function]}
-        pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+        pattern="[^/?#\\\\]*[^/?# \\\\]"
         placeholder="Type a new database id"
         size={40}
         styles={
-          Object {
-            "field": Object {
+          {
+            "field": {
               "fontSize": 12,
-              "selectors": Object {
-                "::placeholder": Object {
+              "selectors": {
+                "::placeholder": {
                   "fontSize": 12,
                 },
               },
             },
-            "root": Object {
+            "root": {
               "width": 300,
             },
           }
         }
-        title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+        title="May not end with space nor contain characters '\\' '/' '#' '?'"
         type="text"
         value=""
       />
@@ -67,16 +69,16 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
           label="Provision throughput"
           onChange={[Function]}
           styles={
-            Object {
-              "checkbox": Object {
+            {
+              "checkbox": {
                 "height": 12,
                 "width": 12,
               },
-              "label": Object {
+              "label": {
                 "alignItems": "center",
                 "padding": 0,
               },
-              "text": Object {
+              "text": {
                 "fontSize": 12,
               },
             }

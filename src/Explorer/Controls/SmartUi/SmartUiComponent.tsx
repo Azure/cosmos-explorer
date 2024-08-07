@@ -14,7 +14,6 @@ import {
   TextField,
   Toggle,
 } from "@fluentui/react";
-import { TFunction } from "i18next";
 import * as React from "react";
 import {
   ChoiceItem,
@@ -100,7 +99,7 @@ export interface SmartUiComponentProps {
   onInputChange: (input: AnyDisplay, newValue: InputType) => void;
   onError: (hasError: boolean) => void;
   disabled: boolean;
-  getTranslation: TFunction;
+  getTranslation: (messageKey: string, namespace?: string) => string;
 }
 
 interface SmartUiComponentState {

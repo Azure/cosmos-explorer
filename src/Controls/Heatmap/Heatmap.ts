@@ -96,7 +96,8 @@ export class Heatmap {
     return output;
   }
 
-  private _getChartSettings(): ChartSettings[] {
+  // public for testing purposes
+  public _getChartSettings(): ChartSettings[] {
     return [
       {
         z: this._chartData.dataPoints,
@@ -131,7 +132,8 @@ export class Heatmap {
     ];
   }
 
-  private _getLayoutSettings(): LayoutSettings {
+  // public for testing purposes
+  public _getLayoutSettings(): LayoutSettings {
     return {
       margin: {
         l: 40,
@@ -177,7 +179,8 @@ export class Heatmap {
     };
   }
 
-  private _getChartDisplaySettings(): DisplaySettings {
+  // public for testing purposes
+  public _getChartDisplaySettings(): DisplaySettings {
     return {
       /* heatmap can be fully responsive however the min-height needed in that case is greater than the iframe portal height, hence explicit width + height have been set in _getLayoutSettings
       responsive: true,*/

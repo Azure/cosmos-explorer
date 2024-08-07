@@ -132,7 +132,7 @@ export default class MongoShellTabComponent extends Component<
         data: {
           resourceId: resourceId,
           accountName: accountName,
-          mongoEndpoint: mongoEndpoint,
+          mongoEndpoint: this._useMongoProxyEndpoint ? documentEndpoint : mongoEndpoint,
           authorization: authorization,
           databaseId: databaseId,
           collectionId: collectionId,

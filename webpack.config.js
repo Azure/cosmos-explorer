@@ -62,12 +62,6 @@ const htmlRule = {
   use: [
     {
       loader: "html-loader",
-      options: {
-        minify: false,
-        removeComments: false,
-        collapseWhitespace: false,
-        root: path.resolve(__dirname, "images"),
-      },
     },
   ],
 };
