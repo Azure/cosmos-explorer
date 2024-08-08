@@ -5,7 +5,8 @@ export type ComponentName = "DocumentsTab";
 
 const SCHEMA_VERSION = 1;
 
-const MAX_ENTRY_NB = 4; //100_000; // Limit number of entries to 100k
+// Export for testing purposes
+export const MAX_ENTRY_NB = 100_000; // Limit number of entries to 100k
 
 export interface StateData {
   schemaVersion: number;
@@ -82,9 +83,10 @@ const orderedPathSegments: (keyof StorePath)[] = [
 /**
  * /componentName/subComponentName/globalAccountName/databaseName/containerName/
  * Any of the path segments can be "" except componentName
+ * Export for testing purposes
  * @param path
  */
-const createKeyFromPath = (path: StorePath): string => {
+export const createKeyFromPath = (path: StorePath): string => {
   let key = `/${path.componentName}`; // ComponentName is always there
   orderedPathSegments.forEach((segment) => {
     const segmentValue = path[segment as keyof StorePath];
