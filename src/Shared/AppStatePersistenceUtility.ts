@@ -94,3 +94,10 @@ export const createKeyFromPath = (path: StorePath): string => {
   });
   return key;
 };
+
+/**
+ * Remove the entire app state key from local storage
+ */
+export const deleteAllStates = (): void => {
+  LocalStorageUtility.removeEntry(StorageKey.AppState);
+};

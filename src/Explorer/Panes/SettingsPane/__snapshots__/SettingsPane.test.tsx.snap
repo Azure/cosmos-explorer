@@ -491,6 +491,19 @@ exports[`Settings Pane should render Default properly 1`] = `
       <div
         className="settingsSectionPart"
       >
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Clear your settings and history
+        </CustomizedDefaultButton>
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
         <div
           className="settingsSectionLabel"
         >
@@ -706,6 +719,19 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           }
           selectedKey="false"
         />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <CustomizedDefaultButton
+          onClick={[Function]}
+        >
+          Clear your settings and history
+        </CustomizedDefaultButton>
       </div>
     </div>
     <div

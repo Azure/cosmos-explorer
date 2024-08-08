@@ -1,6 +1,7 @@
 import {
   Checkbox,
   ChoiceGroup,
+  DefaultButton,
   IChoiceGroupOption,
   ISpinButtonStyles,
   IToggleStyles,
@@ -10,13 +11,16 @@ import {
   Position,
   SpinButton,
   Toggle,
-  TooltipHost,
+  TooltipHost
 } from "@fluentui/react";
+import { AuthType } from "AuthType";
 import * as Constants from "Common/Constants";
 import { SplitterDirection } from "Common/Splitter";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
+import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
+import { deleteAllStates } from "Shared/AppStatePersistenceUtility";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
@@ -29,14 +33,13 @@ import * as StringUtility from "Shared/StringUtility";
 import { updateUserContext, userContext } from "UserContext";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
+import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
+import create, { UseStore } from "zustand";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
-import { AuthType } from "AuthType";
-import create, { UseStore } from "zustand";
-import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
@@ -238,8 +241,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     if (shouldShowGraphAutoVizOption) {
       logConsoleInfo(
-        `Graph result will be displayed as ${
-          LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
+        `Graph result will be displayed as ${LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
         }`,
       );
     }
@@ -829,6 +831,20 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </div>
           </div>
         )}
+        <div className="settingsSection">
+          <div className="settingsSectionPart">
+            <DefaultButton onClick={() => {
+              useDialog.getState().showOkCancelModalDialog(
+                "Clear your settings and history",
+                "Are you sure?",
+                "Clear",
+                () => deleteAllStates(),
+                "Cancel",
+                undefined,
+              );
+            }}>Clear your settings and history</DefaultButton>
+          </div>
+        </div>
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">Explorer Version</div>
