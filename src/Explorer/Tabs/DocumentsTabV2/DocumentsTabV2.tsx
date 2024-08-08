@@ -1910,7 +1910,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
           <Allotment
-            onChange={(sizes: number[]) => {
+            onDragEnd={(sizes: number[]) => {
               tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
               saveSubComponentState("MainTabDivider", _collection, tabStateData);
               setTabStateData(tabStateData);
