@@ -1,9 +1,12 @@
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 // The component name whose state is being saved. Component name must not include special characters.
-export type ComponentName = "DocumentsTab" | "DocumentsTab.columnSizes";
+export type ComponentName = "DocumentsTab";
 
 const SCHEMA_VERSION = 1;
+
+const MAX_ENTRY_NB = 4; //100_000; // Limit number of entries to 100k
+
 export interface StateData {
   schemaVersion: number;
   timestamp: number;
@@ -36,7 +39,13 @@ export const saveState = (path: StorePath, state: unknown): void => {
     data: state,
   };
 
-  // TODO Add logic to clean up old state data based on timestamp
+  if (Object.keys(appState).length > MAX_ENTRY_NB) {
+    // Remove the oldest entry
+    const oldestKey = Object.keys(appState).reduce((oldest, current) =>
+      appState[current].timestamp < appState[oldest].timestamp ? current : oldest,
+    );
+    delete appState[oldestKey];
+  }
 
   LocalStorageUtility.setEntryObject(StorageKey.AppState, appState);
 };
