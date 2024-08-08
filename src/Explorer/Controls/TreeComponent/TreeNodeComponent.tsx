@@ -107,7 +107,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   const onOpenChange = useCallback(
     (_: TreeOpenChangeEvent, data: TreeOpenChangeData) => {
-      if (data.type === "Click" && !isBranch && node.onClick) {
+      if (data.type === "Click" && node.onClick) {
         node.onClick();
       }
       if (!node.isExpanded && data.open && node.onExpanded) {
@@ -119,7 +119,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         node.onCollapsed?.();
       }
     },
-    [isBranch, node, setIsLoading],
+    [node, setIsLoading],
   );
 
   const onMenuOpenChange = useCallback(

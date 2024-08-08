@@ -20,9 +20,11 @@ import "../externals/jquery.typeahead.min.css";
 import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import { Platform } from "ConfigContext";
+import { CommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { QueryCopilotCarousel } from "Explorer/QueryCopilot/CopilotCarousel";
 import { SidebarContainer } from "Explorer/Sidebar";
 import { KeyboardShortcutRoot } from "KeyboardShortcuts";
+import { userContext } from "UserContext";
 import "allotment/dist/style.css";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -48,7 +50,6 @@ import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
-import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import "./Explorer/Menus/CommandBar/ConnectionStatusComponent.less";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
@@ -86,7 +87,7 @@ const App: React.FunctionComponent = () => {
         <div id="divExplorer" className="flexContainer hideOverflows">
           <div id="freeTierTeachingBubble"> </div>
           {/* Main Command Bar - Start */}
-          <CommandBar container={explorer} />
+          {!userContext.features.commandBarV2 && <CommandBar container={explorer} />}
           {/* Collections Tree and Tabs - Begin */}
           <SidebarContainer explorer={explorer} />
           {/* Collections Tree and Tabs - End */}

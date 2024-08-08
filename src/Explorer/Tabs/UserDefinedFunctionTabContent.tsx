@@ -1,5 +1,6 @@
 import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { KeyboardAction } from "KeyboardShortcuts";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
@@ -13,7 +14,6 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../Controls/Editor/EditorReact";
-import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import UserDefinedFunctionTab from "./UserDefinedFunctionTab";
 
 interface IUserDefinedFunctionTabContentState {

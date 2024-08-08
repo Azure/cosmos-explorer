@@ -1,4 +1,5 @@
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import { shouldShowScriptNodes } from "Explorer/Tree/treeNodeUtil";
 import { getItemName } from "Utils/APITypeUtils";
@@ -28,7 +29,6 @@ import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFacto
 import { useDialog } from "../Controls/Dialog";
 import { LegacyTreeComponent, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
-import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import { useNotebook } from "../Notebook/useNotebook";

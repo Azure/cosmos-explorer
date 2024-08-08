@@ -152,7 +152,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
         ariaLabel: saveLabel,
         children: saveButtonChildren.length && [
           {
-            iconName: "Save",
             onCommandClick: () => this.notebookComponentAdapter.notebookSave(),
             commandButtonLabel: saveLabel,
             hasPopup: false,

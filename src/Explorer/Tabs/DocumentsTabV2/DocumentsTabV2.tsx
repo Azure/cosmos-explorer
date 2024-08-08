@@ -28,7 +28,7 @@ import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
 import Explorer from "Explorer/Explorer";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
   ColumnsSelection,

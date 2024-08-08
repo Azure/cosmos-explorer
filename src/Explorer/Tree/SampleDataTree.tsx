@@ -1,4 +1,4 @@
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { useTabs } from "hooks/useTabs";
