@@ -11,7 +11,7 @@ import {
   Position,
   SpinButton,
   Toggle,
-  TooltipHost
+  TooltipHost,
 } from "@fluentui/react";
 import { AuthType } from "AuthType";
 import * as Constants from "Common/Constants";
@@ -241,7 +241,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     if (shouldShowGraphAutoVizOption) {
       logConsoleInfo(
-        `Graph result will be displayed as ${LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
+        `Graph result will be displayed as ${
+          LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
         }`,
       );
     }
@@ -833,16 +834,22 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         )}
         <div className="settingsSection">
           <div className="settingsSectionPart">
-            <DefaultButton onClick={() => {
-              useDialog.getState().showOkCancelModalDialog(
-                "Clear your settings and history",
-                "Are you sure?",
-                "Clear",
-                () => deleteAllStates(),
-                "Cancel",
-                undefined,
-              );
-            }}>Clear your settings and history</DefaultButton>
+            <DefaultButton
+              onClick={() => {
+                useDialog
+                  .getState()
+                  .showOkCancelModalDialog(
+                    "Clear your settings and history",
+                    "Are you sure?",
+                    "Clear",
+                    () => deleteAllStates(),
+                    "Cancel",
+                    undefined,
+                  );
+              }}
+            >
+              Clear your settings and history
+            </DefaultButton>
           </div>
         </div>
         <div className="settingsSection">
