@@ -34,7 +34,7 @@ import { SamplePrompts, SamplePromptsProps } from "Explorer/QueryCopilot/Shared/
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import HintIcon from "../../../images/Hint.svg";
 import RecentIcon from "../../../images/Recent.svg";
 import errorIcon from "../../../images/close-black.svg";
@@ -70,6 +70,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
 }: QueryCopilotPromptProps): JSX.Element => {
   const [copilotTeachingBubbleVisible, setCopilotTeachingBubbleVisible] = useState<boolean>(false);
   const inputEdited = useRef(false);
+  const itemRefs = useRef([]);
+  const searchInputRef = useRef(null);
   const {
     openFeedbackModal,
     hideFeedbackModalForLikedQueries,
@@ -108,7 +110,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     setErrorMessage,
     errorMessage,
   } = useCopilotStore();
-
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const sampleProps: SamplePromptsProps = {
     isSamplePromptsOpen: isSamplePromptsOpen,
     setIsSamplePromptsOpen: setIsSamplePromptsOpen,
@@ -301,7 +303,38 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
       return "Content is updated";
     }
   };
+  const openSamplePrompts = () => {
+    inputEdited.current = true;
+    setShowSamplePrompts(true);
+  };
+  const totalSuggestions = useMemo(
+    () => [...filteredSuggestedPrompts, ...filteredHistories],
+    [filteredSuggestedPrompts, filteredHistories],
+  );
 
+  const handleKeyDownForInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "ArrowDown") {
+      setFocusedIndex(0);
+      itemRefs.current[0]?.current?.focus();
+    } else if (event.key === "Enter" && userPrompt) {
+      inputEdited.current = true;
+      startGenerateQueryProcess();
+    }
+  };
+
+  const handleKeyDownForItem = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "ArrowUp" && focusedIndex > 0) {
+      itemRefs.current[focusedIndex - 1].current?.focus();
+      setFocusedIndex((prevIndex) => prevIndex - 1);
+    } else if (event.key === "ArrowDown" && focusedIndex < totalSuggestions.length - 1) {
+      itemRefs.current[focusedIndex + 1].current?.focus();
+      setFocusedIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  React.useEffect(() => {
+    itemRefs.current = totalSuggestions.map(() => React.createRef());
+  }, [totalSuggestions]);
   React.useEffect(() => {
     useTabs.getState().setIsQueryErrorThrown(false);
   }, []);
@@ -331,23 +364,14 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
               id="naturalLanguageInput"
               value={userPrompt}
               onChange={handleUserPromptChange}
-              onClick={() => {
-                inputEdited.current = true;
-                setShowSamplePrompts(true);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && userPrompt) {
-                  inputEdited.current = true;
-                  startGenerateQueryProcess();
-                }
-              }}
+              onClick={openSamplePrompts}
+              onFocus={() => setShowSamplePrompts(true)}
+              elementRef={searchInputRef}
+              onKeyDown={handleKeyDownForInput}
               style={{ lineHeight: 30 }}
               styles={{
                 root: { width: "100%" },
-                suffix: {
-                  background: "none",
-                  padding: 0,
-                },
+                suffix: { background: "none", padding: 0 },
                 fieldGroup: {
                   borderRadius: 4,
                   borderColor: "#D1D1D1",
@@ -360,7 +384,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 },
               }}
               disabled={isGeneratingQuery}
-              autoComplete="off"
+              autoComplete="list"
+              aria-expanded={showSamplePrompts}
               placeholder="Ask a question in natural language and we’ll generate the query for you."
               aria-labelledby="copilot-textfield-label"
               onRenderSuffix={() => {
@@ -432,6 +457,8 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                             setShowSamplePrompts(false);
                             inputEdited.current = true;
                           }}
+                          elementRef={itemRefs.current[i]}
+                          onKeyDown={handleKeyDownForItem}
                           onRenderIcon={() => <Image src={RecentIcon} styles={{ root: { overflow: "unset" } }} />}
                           styles={promptStyles}
                         >
@@ -454,14 +481,16 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                       >
                         Suggested Prompts
                       </Text>
-                      {filteredSuggestedPrompts.map((prompt) => (
+                      {filteredSuggestedPrompts.map((prompt, index) => (
                         <DefaultButton
                           key={prompt.id}
+                          elementRef={itemRefs.current[filteredHistories.length + index]}
                           onClick={() => {
                             setUserPrompt(prompt.text);
                             setShowSamplePrompts(false);
                             inputEdited.current = true;
                           }}
+                          onKeyDown={handleKeyDownForItem}
                           onRenderIcon={() => <Image src={HintIcon} />}
                           styles={promptStyles}
                         >
