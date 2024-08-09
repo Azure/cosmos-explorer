@@ -42,7 +42,7 @@ export interface EditorReactProps {
   content: string;
   isReadOnly: boolean;
   ariaLabel: string; // Sets what will be read to the user to define the control
-  onContentSelected?: (selectedContent: string) => void; // Called when text is selected
+  onContentSelected?: (selectedContent: string, selection: monaco.Selection) => void; // Called when text is selected
   onContentChanged?: (newContent: string) => void; // Called when text is changed
   theme?: string; // Monaco editor theme
   wordWrap?: monaco.editor.IEditorOptions["wordWrap"];
@@ -177,7 +177,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
       this.selectionListener = this.editor.onDidChangeCursorSelection(
         (event: monaco.editor.ICursorSelectionChangedEvent) => {
           const selectedContent: string = this.editor.getModel().getValueInRange(event.selection);
-          this.props.onContentSelected(selectedContent);
+          this.props.onContentSelected(selectedContent, event.selection);
         },
       );
     }

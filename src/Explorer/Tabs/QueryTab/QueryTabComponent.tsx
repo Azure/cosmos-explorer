@@ -105,6 +105,8 @@ interface IQueryTabStates {
   toggleState: ToggleState;
   sqlQueryEditorContent: string;
   selectedContent: string;
+  selection?: monaco.Selection;
+  executedSelection?: monaco.Selection; // We need to capture the selection that was used when executing, in case the user changes their section while the query is executing.
   queryResults: ViewModels.QueryResults;
   isExecutionError: boolean;
   isExecuting: boolean;
@@ -239,9 +241,10 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
   public onExecuteQueryClick = async (): Promise<void> => {
     this._iterator = undefined;
+
     setTimeout(async () => {
       await this._executeQueryDocumentsPage(0);
-    }, 100);
+    }, 100); // TODO: Revert this
     if (this.state.copilotActive) {
       const query = this.state.sqlQueryEditorContent.split("\r\n")?.pop();
       const isqueryEdited = this.props.copilotStore.generatedQuery && this.props.copilotStore.generatedQuery !== query;
@@ -320,18 +323,26 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   }
 
   private async _executeQueryDocumentsPage(firstItemIndex: number): Promise<void> {
+    // Capture the query content and the selection being executed (if any).
+    const query = this.state.selectedContent || this.state.sqlQueryEditorContent;
+    const selection = this.state.selection;
+    this.setState({
+      // Track the executed selection so that we can evaluate error positions relative to it, even if the user changes their current selection.
+      executedSelection: selection,
+    });
+
     this.queryAbortController = new AbortController();
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(
             this.props.collection.databaseId,
             this.props.viewModelcollection,
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
+            query,
           )
         : queryDocuments(
             this.props.collection.databaseId,
             this.props.collection.id(),
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
+            query,
             {
               enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
               abortSignal: this.queryAbortController.signal,
@@ -411,7 +422,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       // Try to parse this as a query error
       const queryErrors = QueryError.tryParse(
         error,
-        createMonacoErrorLocationResolver(this.queryEditor.current.editor),
+        createMonacoErrorLocationResolver(this.queryEditor.current.editor, this.state.executedSelection),
       );
       this.setState({
         errors: queryErrors,
@@ -629,14 +640,16 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  public onSelectedContent(selectedContent: string): void {
+  public onSelectedContent(selectedContent: string, selection: monaco.Selection): void {
     if (selectedContent.trim().length > 0) {
       this.setState({
         selectedContent,
+        selection,
       });
     } else {
       this.setState({
         selectedContent: "",
+        selection: undefined,
       });
     }
 
@@ -717,7 +730,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                 ariaLabel={"Editing Query"}
                 lineNumbers={"on"}
                 onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
-                onContentSelected={(selectedContent: string) => this.onSelectedContent(selectedContent)}
+                onContentSelected={(selectedContent: string, selection: monaco.Selection) => this.onSelectedContent(selectedContent, selection)}
               />
             </Allotment.Pane>
             <Allotment.Pane minSize={100}>

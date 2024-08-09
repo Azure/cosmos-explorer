@@ -10,7 +10,7 @@ export class QueryErrorLocation {
   constructor(
     public start: ErrorPosition,
     public end: ErrorPosition,
-  ) {}
+  ) { }
 }
 
 export class ErrorPosition {
@@ -18,7 +18,7 @@ export class ErrorPosition {
     public offset: number,
     public lineNumber?: number,
     public column?: number,
-  ) {}
+  ) { }
 }
 
 // Maps severities to numbers for sorting.
@@ -33,11 +33,27 @@ export function compareSeverity(left: QueryErrorSeverity, right: QueryErrorSever
 
 export function createMonacoErrorLocationResolver(
   editor: monaco.editor.IStandaloneCodeEditor,
+  selection?: monaco.Selection,
 ): (location: { start: number; end: number }) => QueryErrorLocation {
   return ({ start, end }) => {
+    // Start and end are absolute offsets (character index) in the document.
+    // But we need line numbers and columns for the monaco editor.
+    // To get those, we use the editor's model to convert the offsets to positions.
     const model = editor.getModel();
     if (!model) {
       return new QueryErrorLocation(new ErrorPosition(start), new ErrorPosition(end));
+    }
+
+    // If the error was found in a selection, adjust the start and end positions to be relative to the document.
+    if (selection) {
+      // Get the character index of the start of the selection.
+      const selectionStartOffset = model.getOffsetAt(selection.getStartPosition());
+
+      // Adjust the start and end positions to be relative to the document.
+      start = selectionStartOffset + start;
+      end = selectionStartOffset + end;
+
+      // Now, when we resolve the positions, they will be relative to the document and appear in the correct location.
     }
 
     const startPos = model.getPositionAt(start);
@@ -87,7 +103,7 @@ export default class QueryError {
     public severity: QueryErrorSeverity,
     public code?: string,
     public location?: QueryErrorLocation,
-  ) {}
+  ) { }
 
   getMonacoSeverity(): monaco.MarkerSeverity {
     // It's very difficult to use the monaco.MarkerSeverity enum from here, so we'll just use the numbers directly.
@@ -132,7 +148,7 @@ export default class QueryError {
 
   static read(
     error: unknown,
-    locationResolver: (location: { start: number; end: number }) => QueryErrorLocation,
+    locationResolver: (location: { start: numbe; end: number }) => QueryErrorLocation,
   ): QueryError | null {
     if (typeof error !== "object" || error === null) {
       return null;
