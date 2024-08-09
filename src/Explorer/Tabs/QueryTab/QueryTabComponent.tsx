@@ -717,7 +717,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
               containerId={this.props.collection.id()}
             ></QueryCopilotPromptbar>
           )}
-          <Allotment vertical={true}>
+          <Allotment vertical={this.state.queryResultsView === SplitterDirection.Horizontal}>
             <Allotment.Pane data-test="QueryTab/EditorPane" minSize={100}>
               <EditorReact
                 ref={this.queryEditor}
