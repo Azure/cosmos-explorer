@@ -494,7 +494,7 @@ exports[`Settings Pane should render Default properly 1`] = `
         <CustomizedDefaultButton
           onClick={[Function]}
         >
-          Clear your settings and history
+          Restore default settings
         </CustomizedDefaultButton>
       </div>
     </div>
@@ -730,7 +730,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         <CustomizedDefaultButton
           onClick={[Function]}
         >
-          Clear your settings and history
+          Restore default settings
         </CustomizedDefaultButton>
       </div>
     </div>
