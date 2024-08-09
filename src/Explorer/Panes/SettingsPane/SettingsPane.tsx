@@ -839,9 +839,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 useDialog
                   .getState()
                   .showOkCancelModalDialog(
-                    "Clear your settings and history",
-                    "Are you sure?",
-                    "Clear",
+                    "Restore default settings",
+                    "This will delete any custom settings stored in your browser, like customized tab layout, table column preferences, and it will also erase your filter history.",
+                    "Reset",
                     () => deleteAllStates(),
                     "Cancel",
                     undefined,

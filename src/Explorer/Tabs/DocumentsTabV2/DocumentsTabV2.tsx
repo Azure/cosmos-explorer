@@ -1,17 +1,6 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import {
-  Button,
-  Input,
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
-  TableRowId,
-  makeStyles,
-  shorthands,
-} from "@fluentui/react-components";
-import { ArrowClockwise16Filled, ArrowResetRegular, Dismiss16Filled } from "@fluentui/react-icons";
+import { Button, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
+import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
@@ -33,7 +22,6 @@ import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdap
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
   TabDivider,
-  deleteSubComponentState,
   readSubComponentState,
   saveSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
@@ -66,6 +54,8 @@ import DocumentId from "../../Tree/DocumentId";
 import ObjectId from "../../Tree/ObjectId";
 import TabsBase from "../TabsBase";
 import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
+
+const MAX_FILTER_HISTORY_COUNT = 100; // Datalist will become scrollable, so we can afford to keep more items than fit on the screen
 
 const loadMoreHeight = LayoutConstants.rowHeight;
 export const useDocumentsTabStyles = makeStyles({
@@ -526,25 +516,6 @@ const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collec
 
 const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
-
-const ResetFilterButton: React.FunctionComponent<{ onClick: () => void }> = ({ onClick }) => (
-  <Menu positioning="below-end">
-    <MenuTrigger disableButtonEnhancement>
-      <Button
-        appearance="transparent"
-        icon={<ArrowResetRegular />}
-        size="small"
-        title="Delete recent filters"
-        aria-label="Delete recent filters"
-      />
-    </MenuTrigger>
-    <MenuPopover>
-      <MenuList>
-        <MenuItem onClick={onClick}>Clear filter history</MenuItem>
-      </MenuList>
-    </MenuPopover>
-  </Menu>
-);
 
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
@@ -1778,7 +1749,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     // Save filter content to local storage
     lastFilterContents.unshift(filterContent);
-    setLastFilterContents([...lastFilterContents]);
+
+    // Keep the list size under MAX_FILTER_HISTORY_COUNT. Drop last element if needed.
+    const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
+
+    setLastFilterContents(limitedLastFilterContents);
     saveSubComponentState("FilterHistory", _collection, lastFilterContents);
   };
 
@@ -1811,11 +1786,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     },
     [createIterator, filterContent],
   );
-
-  const deleteRecentFilters = () => {
-    setLastFilterContents([]);
-    deleteSubComponentState("FilterHistory", _collection);
-  };
 
   return (
     <CosmosFluentProvider className={styles.container}>
@@ -1861,7 +1831,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   onKeyDown={onFilterKeyDown}
                   onChange={(e) => setFilterContent(e.target.value)}
                   onBlur={() => setIsFilterFocused(false)}
-                  contentAfter={<ResetFilterButton onClick={deleteRecentFilters} />}
                 />
 
                 <datalist id={`filtersList-${getUniqueId(_collection)}`}>
