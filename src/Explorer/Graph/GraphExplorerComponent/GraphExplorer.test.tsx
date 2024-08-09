@@ -632,24 +632,15 @@ describe("GraphExplorer", () => {
 
       it("should display RU consumption", () => {
         // Find link for query stats
-        const links = wrapper.find(".toggleSwitch");
+        const queryStatsTab = wrapper.find(`button[name="${GraphExplorer.QUERY_STATS_BUTTON_LABEL}"]`);
+        queryStatsTab.simulate("click");
+        const values = wrapper.find(".queryMetricsSummary td");
         let isRUDisplayed = false;
-        for (let i = 0; i < links.length; i++) {
-          const link = links.at(i);
-          if (link.text() === GraphExplorer.QUERY_STATS_BUTTON_LABEL) {
-            link.simulate("click");
-
-            const values = wrapper.find(".queryMetricsSummary td");
-            for (let j = 0; j < values.length; j++) {
-              if (Number(values.at(j).text()) === gVRU) {
-                isRUDisplayed = true;
-                break;
-              }
-            }
-            break;
+        values.forEach((value) => {
+          if (Number(value.text()) === gVRU) {
+            isRUDisplayed = true;
           }
-        }
-
+        });
         expect(isRUDisplayed).toBe(true);
       });
     });
