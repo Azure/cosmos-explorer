@@ -249,9 +249,11 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
     setLoading(false);
   }, [setLoading]);
 
-  const hasGlobalCommands = !(configContext.platform === Platform.Fabric ||
+  const hasGlobalCommands = !(
+    configContext.platform === Platform.Fabric ||
     userContext.apiType === "Postgres" ||
-    userContext.apiType === "VCoreMongo");
+    userContext.apiType === "VCoreMongo"
+  );
 
   return (
     <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
@@ -289,7 +291,10 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                       </button>
                     </div>
                   </div>
-                  <div className={styles.expandedContent} style={(!hasGlobalCommands) && { gridTemplateRows: '1fr' }}>
+                  <div
+                    className={styles.expandedContent}
+                    style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}
+                  >
                     {hasGlobalCommands && <GlobalCommands explorer={explorer} />}
                     <ResourceTree explorer={explorer} />
                   </div>
