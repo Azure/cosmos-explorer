@@ -1,6 +1,7 @@
 import { TableRowId } from "@fluentui/react-components";
 import { mount } from "enzyme";
 import React from "react";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import { DocumentsTableComponent, IDocumentsTableComponentProps } from "./DocumentsTableComponent";
 
 const PARTITION_KEY_HEADER = "partitionKey";
@@ -25,6 +26,10 @@ describe("DocumentsTableComponent", () => {
       partitionKeyHeaders: [PARTITION_KEY_HEADER],
     },
     isSelectionDisabled: false,
+    collection: {
+      databaseId: "db",
+      id: ((): string => "coll") as ko.Observable<string>,
+    } as ViewModels.CollectionBase,
   });
 
   it("should render documents and partition keys in header", () => {

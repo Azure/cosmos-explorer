@@ -13,6 +13,7 @@ import {
   SAVE_BUTTON_ID,
   UPDATE_BUTTON_ID,
   UPLOAD_BUTTON_ID,
+  addStringsNoDuplicate,
   buildQuery,
   getDiscardExistingDocumentChangesButtonState,
   getDiscardNewDocumentChangesButtonState,
@@ -339,7 +340,10 @@ describe("Documents tab (noSql API)", () => {
     const createMockProps = (): IDocumentsTabComponentProps => ({
       isPreferredApiMongoDB: false,
       documentIds: [],
-      collection: undefined,
+      collection: {
+        id: ko.observable<string>("collectionId"),
+        databaseId: "databaseId",
+      } as ViewModels.CollectionBase,
       partitionKey: { kind: "Hash", paths: ["/foo"], version: 2 },
       onLoadStartKey: 0,
       tabTitle: "",
@@ -380,7 +384,7 @@ describe("Documents tab (noSql API)", () => {
         .findWhere((node) => node.text() === "Edit Filter")
         .at(0)
         .simulate("click");
-      expect(wrapper.find("#filterInput").exists()).toBeTruthy();
+      expect(wrapper.find("Input.filterInput").exists()).toBeTruthy();
     });
   });
 
@@ -472,5 +476,15 @@ describe("Documents tab (noSql API)", () => {
 
       expect(mockDeleteDocuments).toHaveBeenCalled();
     });
+  });
+});
+
+describe("Documents tab", () => {
+  it("should add strings to array without duplicate", () => {
+    const array1 = ["a", "b", "c"];
+    const array2 = ["b", "c", "d"];
+
+    const array3 = addStringsNoDuplicate(array1, array2);
+    expect(array3).toEqual(["a", "b", "c", "d"]);
   });
 });
