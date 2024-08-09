@@ -334,20 +334,11 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     this.queryAbortController = new AbortController();
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
-        ? queryIterator(
-            this.props.collection.databaseId,
-            this.props.viewModelcollection,
-            query,
-          )
-        : queryDocuments(
-            this.props.collection.databaseId,
-            this.props.collection.id(),
-            query,
-            {
-              enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-              abortSignal: this.queryAbortController.signal,
-            } as unknown as FeedOptions,
-          );
+        ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
+        : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
+            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+            abortSignal: this.queryAbortController.signal,
+          } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -706,6 +697,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   }
 
   private getEditorAndQueryResult(): JSX.Element {
+    const vertical = this.state.queryResultsView === SplitterDirection.Horizontal;
     return (
       <Fragment>
         <CosmosFluentProvider id={this.props.tabId} className={this.props.styles.queryTab} role="tabpanel">
@@ -717,8 +709,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
               containerId={this.props.collection.id()}
             ></QueryCopilotPromptbar>
           )}
-          <Allotment vertical={this.state.queryResultsView === SplitterDirection.Horizontal}>
-            <Allotment.Pane data-test="QueryTab/EditorPane" minSize={100}>
+          {/* Set 'key' to the value of vertical to force re-rendering when vertical changes, to work around https://github.com/johnwalley/allotment/issues/457 */}
+          <Allotment key={vertical.toString()} vertical={vertical}>
+            <Allotment.Pane data-test="QueryTab/EditorPane">
               <EditorReact
                 ref={this.queryEditor}
                 className={this.props.styles.queryEditor}
@@ -730,10 +723,12 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
                 ariaLabel={"Editing Query"}
                 lineNumbers={"on"}
                 onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
-                onContentSelected={(selectedContent: string, selection: monaco.Selection) => this.onSelectedContent(selectedContent, selection)}
+                onContentSelected={(selectedContent: string, selection: monaco.Selection) =>
+                  this.onSelectedContent(selectedContent, selection)
+                }
               />
             </Allotment.Pane>
-            <Allotment.Pane minSize={100}>
+            <Allotment.Pane>
               {this.props.isSampleCopilotActive ? (
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}

@@ -148,7 +148,7 @@ export default class QueryError {
 
   static read(
     error: unknown,
-    locationResolver: (location: { start: numbe; end: number }) => QueryErrorLocation,
+    locationResolver: (location: { start: number; end: number }) => QueryErrorLocation,
   ): QueryError | null {
     if (typeof error !== "object" || error === null) {
       return null;
