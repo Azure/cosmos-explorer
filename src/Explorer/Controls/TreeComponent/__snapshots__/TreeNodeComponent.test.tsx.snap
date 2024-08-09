@@ -12,7 +12,11 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
     actions={false}
     className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={<ChevronRight20Regular />}
+    expandIcon={
+      <ChevronRight20Regular
+        data-text="TreeNode/ExpandIcon"
+      />
+    }
   >
     <span
       className=""
@@ -133,6 +137,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 <svg
                   aria-hidden="true"
                   class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                  data-text="TreeNode/ExpandIcon"
                   fill="currentColor"
                   height="20"
                   viewBox="0 0 20 20"
@@ -161,6 +166,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   <svg
                     aria-hidden="true"
                     class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                    data-text="TreeNode/ExpandIcon"
                     fill="currentColor"
                     height="20"
                     viewBox="0 0 20 20"
@@ -212,6 +218,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     <svg
                       aria-hidden="true"
                       class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                      data-text="TreeNode/ExpandIcon"
                       fill="currentColor"
                       height="20"
                       viewBox="0 0 20 20"
@@ -236,6 +243,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 </div>
                 <div
                   class="fui-Tree rnv2ez3 ___jy13a00_lpffjy0 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+                  data-test="Tree:root"
                   role="tree"
                 >
                   <div
@@ -258,6 +266,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         <svg
                           aria-hidden="true"
                           class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                          data-text="TreeNode/ExpandIcon"
                           fill="currentColor"
                           height="20"
                           viewBox="0 0 20 20"
@@ -301,6 +310,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         <svg
                           aria-hidden="true"
                           class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                          data-text="TreeNode/ExpandIcon"
                           fill="currentColor"
                           height="20"
                           viewBox="0 0 20 20"
@@ -375,7 +385,11 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
           actions={false}
           className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
           data-test="TreeNode:root"
-          expandIcon={<ChevronRight20Regular />}
+          expandIcon={
+            <ChevronRight20Regular
+              data-text="TreeNode/ExpandIcon"
+            />
+          }
         >
           <div
             className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
@@ -385,10 +399,13 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               aria-hidden={true}
               className="fui-TreeItemLayout__expandIcon rh4pu5o"
             >
-              <ChevronRight20Regular>
+              <ChevronRight20Regular
+                data-text="TreeNode/ExpandIcon"
+              >
                 <svg
                   aria-hidden={true}
                   className="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                  data-text="TreeNode/ExpandIcon"
                   fill="currentColor"
                   height="20"
                   viewBox="0 0 20 20"
@@ -415,6 +432,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
         </TreeItemLayout>
         <Tree
           className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+          data-test="Tree:root"
         >
           <TreeProvider
             value={
@@ -482,6 +500,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
             >
               <div
                 className="fui-Tree rnv2ez3 ___jy13a00_lpffjy0 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+                data-test="Tree:root"
                 role="tree"
               >
                 <TreeNodeComponent
@@ -549,6 +568,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 <svg
                                   aria-hidden="true"
                                   class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                  data-text="TreeNode/ExpandIcon"
                                   fill="currentColor"
                                   height="20"
                                   viewBox="0 0 20 20"
@@ -577,6 +597,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                   <svg
                                     aria-hidden="true"
                                     class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                    data-text="TreeNode/ExpandIcon"
                                     fill="currentColor"
                                     height="20"
                                     viewBox="0 0 20 20"
@@ -628,6 +649,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     <svg
                                       aria-hidden="true"
                                       class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                      data-text="TreeNode/ExpandIcon"
                                       fill="currentColor"
                                       height="20"
                                       viewBox="0 0 20 20"
@@ -660,7 +682,11 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                           actions={false}
                           className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
                           data-test="TreeNode:root/child1Label"
-                          expandIcon={<ChevronRight20Regular />}
+                          expandIcon={
+                            <ChevronRight20Regular
+                              data-text="TreeNode/ExpandIcon"
+                            />
+                          }
                         >
                           <div
                             className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
@@ -670,10 +696,13 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               aria-hidden={true}
                               className="fui-TreeItemLayout__expandIcon rh4pu5o"
                             >
-                              <ChevronRight20Regular>
+                              <ChevronRight20Regular
+                                data-text="TreeNode/ExpandIcon"
+                              >
                                 <svg
                                   aria-hidden={true}
                                   className="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                  data-text="TreeNode/ExpandIcon"
                                   fill="currentColor"
                                   height="20"
                                   viewBox="0 0 20 20"
@@ -700,6 +729,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         </TreeItemLayout>
                         <Tree
                           className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+                          data-test="Tree:root/child1Label"
                         >
                           <TreeProvider
                             value={
@@ -772,6 +802,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 <svg
                                   aria-hidden="true"
                                   class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                  data-text="TreeNode/ExpandIcon"
                                   fill="currentColor"
                                   height="20"
                                   viewBox="0 0 20 20"
@@ -800,6 +831,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                   <svg
                                     aria-hidden="true"
                                     class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                    data-text="TreeNode/ExpandIcon"
                                     fill="currentColor"
                                     height="20"
                                     viewBox="0 0 20 20"
@@ -851,6 +883,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     <svg
                                       aria-hidden="true"
                                       class="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                      data-text="TreeNode/ExpandIcon"
                                       fill="currentColor"
                                       height="20"
                                       viewBox="0 0 20 20"
@@ -883,7 +916,11 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                           actions={false}
                           className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
                           data-test="TreeNode:root/child2LoadingLabel"
-                          expandIcon={<ChevronRight20Regular />}
+                          expandIcon={
+                            <ChevronRight20Regular
+                              data-text="TreeNode/ExpandIcon"
+                            />
+                          }
                         >
                           <div
                             className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
@@ -893,10 +930,13 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               aria-hidden={true}
                               className="fui-TreeItemLayout__expandIcon rh4pu5o"
                             >
-                              <ChevronRight20Regular>
+                              <ChevronRight20Regular
+                                data-text="TreeNode/ExpandIcon"
+                              >
                                 <svg
                                   aria-hidden={true}
                                   className="___12fm75w_v8ls9a0 f1w7gpdv fez10in fg4l7m0"
+                                  data-text="TreeNode/ExpandIcon"
                                   fill="currentColor"
                                   height="20"
                                   viewBox="0 0 20 20"
@@ -1202,7 +1242,11 @@ exports[`TreeNodeComponent renders a node as expandable if it has empty, but def
     actions={false}
     className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={<ChevronRight20Regular />}
+    expandIcon={
+      <ChevronRight20Regular
+        data-text="TreeNode/ExpandIcon"
+      />
+    }
   >
     <span
       className=""
@@ -1379,7 +1423,11 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
     actions={false}
     className="___kqkdor0_ihxn0o0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1nfm20t f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={<ChevronRight20Regular />}
+    expandIcon={
+      <ChevronRight20Regular
+        data-text="TreeNode/ExpandIcon"
+      />
+    }
   >
     <span
       className=""
@@ -1389,6 +1437,7 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
   </TreeItemLayout>
   <Tree
     className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+    data-test="Tree:root"
   >
     <TreeNodeComponent
       key="child1Label"
@@ -1450,7 +1499,11 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
     actions={false}
     className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={<ChevronRight20Regular />}
+    expandIcon={
+      <ChevronRight20Regular
+        data-text="TreeNode/ExpandIcon"
+      />
+    }
   >
     <span
       className=""
@@ -1460,6 +1513,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
   </TreeItemLayout>
   <Tree
     className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+    data-test="Tree:root"
   >
     <TreeNodeComponent
       key="child1Label"

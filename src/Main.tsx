@@ -6,6 +6,7 @@ import { initializeIcons, loadTheme } from "@fluentui/react";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
+import "allotment/dist/style.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useCarousel } from "hooks/useCarousel";
 import React from "react";

@@ -131,6 +131,7 @@ export class NotificationConsoleComponent extends React.Component<
           </div>
           <div
             className="expandCollapseButton"
+            data-test="NotificationConsole/ExpandCollapseButton"
             role="button"
             tabIndex={0}
             aria-label={"console button" + (this.props.isConsoleExpanded ? " expanded" : " collapsed")}
@@ -147,7 +148,7 @@ export class NotificationConsoleComponent extends React.Component<
           height={this.props.isConsoleExpanded ? "auto" : 0}
           onAnimationEnd={this.onConsoleWasExpanded}
         >
-          <div className="notificationConsoleContents">
+          <div data-test="NotificationConsole/Contents" className="notificationConsoleContents">
             <div className="notificationConsoleControls">
               <Dropdown
                 label="Filter:"

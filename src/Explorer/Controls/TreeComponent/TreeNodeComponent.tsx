@@ -158,9 +158,9 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       node.iconSrc
     )
   ) : openItems.includes(treeNodeId) ? (
-    <ChevronDown20Regular />
+    <ChevronDown20Regular data-test="TreeNode/CollapseIcon" />
   ) : (
-    <ChevronRight20Regular />
+    <ChevronRight20Regular data-text="TreeNode/ExpandIcon" />
   );
 
   const treeItem = (
@@ -205,7 +205,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         <span className={treeStyles.nodeLabel}>{node.label}</span>
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
-        <Tree className={treeStyles.tree}>
+        <Tree data-test={`Tree:${treeNodeId}`} className={treeStyles.tree}>
           {getSortedChildren(node).map((childNode: TreeNode) => (
             <TreeNodeComponent
               openItems={openItems}

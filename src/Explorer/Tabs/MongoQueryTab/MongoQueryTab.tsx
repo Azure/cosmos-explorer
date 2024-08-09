@@ -3,7 +3,7 @@ import MongoUtility from "../../../Common/MongoUtility";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
 import { NewQueryTab } from "../QueryTab/QueryTab";
-import QueryTabComponent, { IQueryTabComponentProps, ITabAccessor } from "../QueryTab/QueryTabComponent";
+import { IQueryTabComponentProps, ITabAccessor, QueryTabComponent } from "../QueryTab/QueryTabComponent";
 
 export interface IMongoQueryTabProps {
   container: Explorer;
