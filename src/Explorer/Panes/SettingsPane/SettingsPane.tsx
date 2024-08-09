@@ -848,7 +848,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   );
               }}
             >
-              Clear your settings and history
+              Restore default settings
             </DefaultButton>
           </div>
         </div>
