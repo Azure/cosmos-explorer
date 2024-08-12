@@ -208,7 +208,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
-
+  const firstFocusableElementRef = useRef<HTMLButtonElement>(null);
   const expand = useCallback(() => {
     if (!expanded) {
       allotment.current.resize([expandedSize, Infinity]);
@@ -255,6 +255,12 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
     userContext.apiType === "VCoreMongo"
   );
 
+  useEffect(() => {
+    if (expanded && firstFocusableElementRef.current) {
+      firstFocusableElementRef.current.focus();
+    }
+  }, [expanded]);
+
   return (
     <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
       {/* Collections Tree - Start */}
@@ -278,6 +284,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                         disabled={loading}
                         title="Refresh"
                         onClick={onRefreshClick}
+                        ref={firstFocusableElementRef}
                       >
                         <ArrowSync12Regular />
                       </button>
