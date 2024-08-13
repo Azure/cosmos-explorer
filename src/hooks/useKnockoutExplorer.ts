@@ -83,6 +83,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
+      explorer.openNPSSurveyDialog();
     }
   }, [explorer]);
 
@@ -587,10 +588,6 @@ async function configurePortal(): Promise<Explorer> {
 
           explorer = new Explorer();
           resolve(explorer);
-
-          // if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
-          //   setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
-          // }
 
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);

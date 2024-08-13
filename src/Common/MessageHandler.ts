@@ -70,6 +70,7 @@ export function sendMessage(data: any): void {
 }
 
 export function sendReadyMessage(): void {
+  console.log("SENDING READY MESSAGE");
   _sendMessage({
     signature: "pcIframe",
     kind: "ready",

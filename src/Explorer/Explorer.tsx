@@ -187,7 +187,6 @@ export default class Explorer {
     }
 
     this.refreshExplorer();
-    this.openNPSSurveyDialog();
   }
 
   public async initiateAndRefreshNotebookList(): Promise<void> {
