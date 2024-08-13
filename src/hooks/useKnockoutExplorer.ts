@@ -4,6 +4,7 @@ import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContrac
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
+import * as Logger from "../Common/Logger";
 import { handleCachedDataMessage, sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { Platform, configContext, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction, TabKind } from "../Contracts/ActionContracts";
@@ -42,8 +44,6 @@ import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from ".
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { applyExplorerBindings } from "../applyExplorerBindings";
-import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
-import * as Logger from "../Common/Logger";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
@@ -588,9 +588,9 @@ async function configurePortal(): Promise<Explorer> {
           explorer = new Explorer();
           resolve(explorer);
 
-          if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
-            setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
-          }
+          // if (userContext.apiType === "Postgres" || userContext.apiType === "SQL" || userContext.apiType === "Mongo") {
+          //   setTimeout(() => explorer.openNPSSurveyDialog(), 3000);
+          // }
 
           if (openAction) {
             handleOpenAction(openAction, useDatabases.getState().databases, explorer);
