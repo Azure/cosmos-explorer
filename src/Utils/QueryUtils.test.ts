@@ -108,6 +108,7 @@ describe("Query Utils", () => {
       },
       Elevation: 3742,
       Type: "Stratovolcano",
+      Category: "",
       Status: "Tephrochronology",
       "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
       id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
@@ -145,6 +146,22 @@ describe("Query Utils", () => {
       expect(partitionKeyValues.length).toBe(2);
       expect(expectedPartitionKeyValues).toContain(documentContent["Type"]);
       expect(expectedPartitionKeyValues).toContain(documentContent["Status"]);
+    });
+
+    it("should extract three partition key values", () => {
+      const multiPartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Country", "/Region", "/Category"],
+      };
+      const expectedPartitionKeyValues: string[] = ["United States", "US-Washington", ""];
+      const partitioinKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        multiPartitionKeyDefinition,
+      );
+      expect(partitioinKeyValues.length).toBe(3);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Country"]);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Region"]);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Category"]);
     });
   });
 });
