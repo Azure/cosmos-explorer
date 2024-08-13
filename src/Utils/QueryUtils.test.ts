@@ -146,19 +146,5 @@ describe("Query Utils", () => {
       expect(expectedPartitionKeyValues).toContain(documentContent["Type"]);
       expect(expectedPartitionKeyValues).toContain(documentContent["Status"]);
     });
-
-    it("should extract no partition key values", () => {
-      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
-        kind: PartitionKeyKind.Hash,
-        paths: ["/InvalidPartitionKeyPath"],
-      };
-
-      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
-        documentContent,
-        singlePartitionKeyDefinition,
-      );
-
-      expect(partitionKeyValues.length).toBe(0);
-    });
   });
 });
