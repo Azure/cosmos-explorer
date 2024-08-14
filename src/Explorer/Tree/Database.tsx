@@ -4,8 +4,6 @@ import * as _ from "underscore";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import * as Logger from "../../Common/Logger";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import { readCollections, readCollectionsWithPagination } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
 import * as DataModels from "../../Contracts/DataModels";
@@ -76,7 +74,6 @@ export default class Database implements ViewModels.Database {
       await useDatabases.getState().loadAllOffers();
     }
 
-    const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
     const tabKind = ViewModels.CollectionTabKind.DatabaseSettingsV2;
     const matchingTabs = useTabs.getState().getTabs(tabKind, (tab) => tab.node?.id() === this.id());
     let settingsTab = matchingTabs?.[0] as DatabaseSettingsTabV2;
@@ -87,53 +84,39 @@ export default class Database implements ViewModels.Database {
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Scale",
       });
-      pendingNotificationsPromise.then(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (data: any) => {
-          const pendingNotification: DataModels.Notification = data?.[0];
-          const tabOptions: ViewModels.TabOptions = {
-            tabKind,
-            title: "Scale",
-            tabPath: "",
-            node: this,
-            rid: this.rid,
-            database: this,
-            onLoadStartKey: startKey,
-          };
-          settingsTab = new DatabaseSettingsTabV2(tabOptions);
-          settingsTab.pendingNotification(pendingNotification);
-          useTabs.getState().activateNewTab(settingsTab);
-        },
-        (error) => {
-          const errorMessage = getErrorMessage(error);
-          TelemetryProcessor.traceFailure(
-            Action.Tab,
-            {
-              databaseName: this.id(),
-              collectionName: this.id(),
 
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: "Scale",
-              error: errorMessage,
-              errorStack: getErrorStack(error),
-            },
-            startKey,
-          );
-          logConsoleError(`Error while fetching database settings for database ${this.id()}: ${errorMessage}`);
-          throw error;
-        },
-      );
+      try {
+        const tabOptions: ViewModels.TabOptions = {
+          tabKind,
+          title: "Scale",
+          tabPath: "",
+          node: this,
+          rid: this.rid,
+          database: this,
+          onLoadStartKey: startKey,
+        };
+        settingsTab = new DatabaseSettingsTabV2(tabOptions);
+        useTabs.getState().activateNewTab(settingsTab);
+      } catch (error) {
+        const errorMessage = getErrorMessage(error);
+        TelemetryProcessor.traceFailure(
+          Action.Tab,
+          {
+            databaseName: this.id(),
+            collectionName: this.id(),
+
+            dataExplorerArea: Constants.Areas.Tab,
+            tabTitle: "Scale",
+            error: errorMessage,
+            errorStack: getErrorStack(error),
+          },
+          startKey,
+        );
+        logConsoleError(`Error while fetching database settings for database ${this.id()}: ${errorMessage}`);
+        throw error;
+      }
     } else {
-      pendingNotificationsPromise.then(
-        (pendingNotification: DataModels.Notification) => {
-          settingsTab.pendingNotification(pendingNotification);
-          useTabs.getState().activateTab(settingsTab);
-        },
-        () => {
-          settingsTab.pendingNotification(undefined);
-          useTabs.getState().activateTab(settingsTab);
-        },
-      );
+      useTabs.getState().activateTab(settingsTab);
     }
   };
 
@@ -257,42 +240,6 @@ export default class Database implements ViewModels.Database {
       };
       this.offer(await readDatabaseOffer(params));
       this.isOfferRead = true;
-    }
-  }
-
-  public async getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
-    if (!this.container) {
-      return undefined;
-    }
-
-    try {
-      const notifications: DataModels.Notification[] = await fetchPortalNotifications();
-      if (!notifications || notifications.length === 0) {
-        return undefined;
-      }
-
-      return _.find(notifications, (notification: DataModels.Notification) => {
-        const throughputUpdateRegExp = new RegExp("Throughput update (.*) in progress");
-        return (
-          notification.kind === "message" &&
-          !notification.collectionName &&
-          notification.databaseName === this.id() &&
-          notification.description &&
-          throughputUpdateRegExp.test(notification.description)
-        );
-      });
-    } catch (error) {
-      Logger.logError(
-        JSON.stringify({
-          error: getErrorMessage(error),
-          accountName: userContext?.databaseAccount,
-          databaseName: this.id(),
-          collectionName: this.id(),
-        }),
-        "Settings tree node",
-      );
-
-      return undefined;
     }
   }
 
