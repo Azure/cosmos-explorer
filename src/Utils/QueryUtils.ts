@@ -85,20 +85,61 @@ export const queryPagesUntilContentPresent = async (
 };
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-export const extractPartitionKeyValues = (
-  documentContent: any,
-  partitionKeyDefinition: PartitionKeyDefinition,
-): PartitionKey[] => {
-  if (!partitionKeyDefinition.paths || partitionKeyDefinition.paths.length === 0) {
-    return undefined;
-  }
+// export const extractPartitionKeyValues = (
+//   documentContent: any,
+//   partitionKeyDefinition: PartitionKeyDefinition,
+// ): PartitionKey[] => {
+//   if (!partitionKeyDefinition.paths || partitionKeyDefinition.paths.length === 0) {
+//     return undefined;
+//   }
 
-  const partitionKeyValues: PartitionKey[] = [];
-  partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
-    const partitionKeyPathWithoutSlash: string = partitionKeyPath.substring(1);
-    if (documentContent[partitionKeyPathWithoutSlash]) {
-      partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
-    }
-  });
-  return partitionKeyValues;
-};
+//   const partitionKeyValues: PartitionKey[] = [];
+//   partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
+//     const partitionKeyPathWithoutSlash: string = partitionKeyPath.substring(1);
+//     // if (documentContent[partitionKeyPathWithoutSlash]) {
+//     //   partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
+//     // }
+
+//     const partitionKeyPathParts: string[] = partitionKeyPathWithoutSlash.split("/");
+//     let partitionKeyValue: any = documentContent;
+
+//     for(let partitionKeyPathPartIndex in partitionKeyPathParts) {
+//       const partitionKeyPathPart: string = partitionKeyPathParts[partitionKeyPathPartIndex];
+//       if (!(partitionKeyPathPart in documentContent)) {
+//         partitionKeyValue = {};
+//         break;
+//       }
+//       partitionKeyValue = partitionKeyValue[partitionKeyPathPart];
+//     }
+
+//     partitionKeyValues.push(partitionKeyValue);
+//   });
+//   return partitionKeyValues;
+// };
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+export const extractPartitionKeyValues = (document: any, partitionKeyDefinition: PartitionKeyDefinition): PartitionKey[] => {
+  if (partitionKeyDefinition && partitionKeyDefinition.paths && partitionKeyDefinition.paths.length > 0) {
+      var partitionKey: any = [];
+      partitionKeyDefinition.paths.forEach(function (path) {
+        path = path.substring(1);
+        const pathParts: string[] = path.split("/");
+          
+          var obj = document;
+          for (var i = 0; i < pathParts.length; ++i) {
+              if (!((typeof obj === "object") && (pathParts[i] in obj))) {
+                  obj = {};
+                  break;
+              }
+              
+              obj = obj[pathParts[i]];
+          }
+          
+          partitionKey.push(obj);
+      });
+      
+      return partitionKey;
+  }
+  
+  return undefined;
+}
