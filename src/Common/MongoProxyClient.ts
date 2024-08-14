@@ -676,7 +676,7 @@ export function useMongoProxyEndpoint(api: string): boolean {
   const activeMongoProxyEndpoints: string[] = [
     MongoProxyEndpoints.Local,
     MongoProxyEndpoints.Mpac,
-    // MongoProxyEndpoints.Prod,
+    MongoProxyEndpoints.Prod,
     // MongoProxyEndpoints.Fairfax,
   ];
   let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
