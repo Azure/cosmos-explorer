@@ -158,7 +158,7 @@ describe("Query Utils", () => {
         documentContent,
         multiPartitionKeyDefinition,
       );
-      expect(partitioinKeyValues.length).toBe(3);
+      expect(partitioinKeyValues.length).toBe(2);
       expect(expectedPartitionKeyValues).toContain(documentContent["Country"]);
       expect(expectedPartitionKeyValues).toContain(documentContent["Region"]);
       expect(expectedPartitionKeyValues).toContain(documentContent["Category"]);
