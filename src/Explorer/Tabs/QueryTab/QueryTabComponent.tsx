@@ -1,15 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { FeedOptions, QueryOperationOptions } from "@azure/cosmos";
+import QueryError, { createMonacoErrorLocationResolver, createMonacoMarkersForQueryErrors } from "Common/QueryError";
 import { SplitterDirection } from "Common/Splitter";
 import { Platform, configContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
+import { monaco } from "Explorer/LazyMonaco";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import { QueryTabStyles, useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
+import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
@@ -21,10 +25,10 @@ import {
   ruThresholdEnabled,
 } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { Allotment } from "allotment";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { TabsState, useTabs } from "hooks/useTabs";
-import React, { Fragment } from "react";
-import SplitterLayout from "react-splitter-layout";
+import React, { Fragment, createRef } from "react";
 import "react-splitter-layout/lib/index.css";
 import { format } from "react-string-format";
 import QueryCommandIcon from "../../../../images/CopilotCommand.svg";
@@ -35,7 +39,6 @@ import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import CheckIcon from "../../../../images/check-1.svg";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
-import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
 import { queryIterator } from "../../../Common/MongoProxyClient";
@@ -102,8 +105,9 @@ interface IQueryTabStates {
   toggleState: ToggleState;
   sqlQueryEditorContent: string;
   selectedContent: string;
+  selection?: monaco.Selection;
+  executedSelection?: monaco.Selection; // We need to capture the selection that was used when executing, in case the user changes their section while the query is executing.
   queryResults: ViewModels.QueryResults;
-  error: string;
   isExecutionError: boolean;
   isExecuting: boolean;
   showCopilotSidebar: boolean;
@@ -112,9 +116,12 @@ interface IQueryTabStates {
   copilotActive: boolean;
   currentTabActive: boolean;
   queryResultsView: SplitterDirection;
+  errors?: QueryError[];
+  modelMarkers?: monaco.editor.IMarkerData[];
 }
 
-export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any => {
+export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
+  const styles = useQueryTabStyles();
   const copilotStore = useCopilotStore();
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
@@ -125,10 +132,20 @@ export const QueryTabFunctionComponent = (props: IQueryTabComponentProps): any =
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
   };
-  return <QueryTabComponent {...queryTabProps}></QueryTabComponent>;
+  return <QueryTabComponentImpl styles={styles} {...queryTabProps}></QueryTabComponentImpl>;
 };
 
-export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
+export const QueryTabComponent = (props: IQueryTabComponentProps): any => {
+  const styles = useQueryTabStyles();
+  return <QueryTabComponentImpl styles={styles} {...props}></QueryTabComponentImpl>;
+};
+
+type QueryTabComponentImplProps = IQueryTabComponentProps & {
+  styles: QueryTabStyles;
+};
+
+// Inner (legacy) class component. We only use this component via one of the two functional components above (since we need to use the `useQueryTabStyles` hook).
+class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, IQueryTabStates> {
   public queryEditorId: string;
   public executeQueryButton: Button;
   public saveQueryButton: Button;
@@ -139,16 +156,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   public isCopilotTabActive: boolean;
   private _iterator: MinimalQueryIterator;
   private queryAbortController: AbortController;
+  queryEditor: React.RefObject<EditorReact>;
 
-  constructor(props: IQueryTabComponentProps) {
+  constructor(props: QueryTabComponentImplProps) {
     super(props);
+
+    this.queryEditor = createRef<EditorReact>();
 
     this.state = {
       toggleState: ToggleState.Result,
       sqlQueryEditorContent: props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c",
       selectedContent: "",
       queryResults: undefined,
-      error: "",
+      errors: [],
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
       showCopilotSidebar: useQueryCopilot.getState().showCopilotSidebar,
@@ -221,9 +241,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onExecuteQueryClick = async (): Promise<void> => {
     this._iterator = undefined;
+
     setTimeout(async () => {
       await this._executeQueryDocumentsPage(0);
-    }, 100);
+    }, 100); // TODO: Revert this
     if (this.state.copilotActive) {
       const query = this.state.sqlQueryEditorContent.split("\r\n")?.pop();
       const isqueryEdited = this.props.copilotStore.generatedQuery && this.props.copilotStore.generatedQuery !== query;
@@ -302,23 +323,22 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   private async _executeQueryDocumentsPage(firstItemIndex: number): Promise<void> {
+    // Capture the query content and the selection being executed (if any).
+    const query = this.state.selectedContent || this.state.sqlQueryEditorContent;
+    const selection = this.state.selection;
+    this.setState({
+      // Track the executed selection so that we can evaluate error positions relative to it, even if the user changes their current selection.
+      executedSelection: selection,
+    });
+
     this.queryAbortController = new AbortController();
     if (this._iterator === undefined) {
       this._iterator = this.props.isPreferredApiMongoDB
-        ? queryIterator(
-            this.props.collection.databaseId,
-            this.props.viewModelcollection,
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
-          )
-        : queryDocuments(
-            this.props.collection.databaseId,
-            this.props.collection.id(),
-            this.state.selectedContent || this.state.sqlQueryEditorContent,
-            {
-              enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-              abortSignal: this.queryAbortController.signal,
-            } as unknown as FeedOptions,
-          );
+        ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
+        : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
+            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+            abortSignal: this.queryAbortController.signal,
+          } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -383,18 +403,22 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         firstItemIndex,
         queryDocuments,
       );
-      this.setState({ queryResults, error: "" });
+      this.setState({ queryResults, errors: [] });
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);
       this.setState({
         isExecutionError: true,
       });
-      const errorMessage = getErrorMessage(error);
-      this.setState({
-        error: errorMessage,
-      });
 
-      document.getElementById("error-display").focus();
+      // Try to parse this as a query error
+      const queryErrors = QueryError.tryParse(
+        error,
+        createMonacoErrorLocationResolver(this.queryEditor.current.editor, this.state.executedSelection),
+      );
+      this.setState({
+        errors: queryErrors,
+        modelMarkers: createMonacoMarkersForQueryErrors(queryErrors),
+      });
     } finally {
       this.props.tabsBaseInstance.isExecuting(false);
       this.setState({
@@ -584,6 +608,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({
       sqlQueryEditorContent: newContent,
       queryCopilotGeneratedQuery: "",
+
+      // Clear the markers when the user edits the document.
+      modelMarkers: [],
     });
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
@@ -604,14 +631,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  public onSelectedContent(selectedContent: string): void {
+  public onSelectedContent(selectedContent: string, selection: monaco.Selection): void {
     if (selectedContent.trim().length > 0) {
       this.setState({
         selectedContent,
+        selection,
       });
     } else {
       this.setState({
         selectedContent: "",
+        selection: undefined,
       });
     }
 
@@ -668,9 +697,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   private getEditorAndQueryResult(): JSX.Element {
+    const vertical = this.state.queryResultsView === SplitterDirection.Horizontal;
     return (
       <Fragment>
-        <div className="tab-pane" id={this.props.tabId} role="tabpanel">
+        <CosmosFluentProvider id={this.props.tabId} className={this.props.styles.queryTab} role="tabpanel">
           {this.props.copilotEnabled && this.state.currentTabActive && this.state.copilotActive && (
             <QueryCopilotPromptbar
               explorer={this.props.collection.container}
@@ -679,40 +709,33 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
               containerId={this.props.collection.id()}
             ></QueryCopilotPromptbar>
           )}
-          <div className="tabPaneContentContainer">
-            <SplitterLayout
-              primaryIndex={0}
-              primaryMinSize={20}
-              secondaryMinSize={20}
-              // Percentage is a bit better when the splitter flips from vertical to horizontal.
-              percentage={true}
-              // NOTE: It is intentional that this looks reversed!
-              // The 'vertical' property refers to the stacking of the panes so is the opposite of the orientation of the splitter itself
-              // (vertically stacked => horizontal splitter)
-              // Our setting refers to the orientation of the splitter, so we need to reverse it here.
-              vertical={this.state.queryResultsView === SplitterDirection.Horizontal}
-            >
-              <Fragment>
-                <div className="queryEditor" style={{ height: "100%" }}>
-                  <EditorReact
-                    language={"sql"}
-                    content={this.getEditorContent()}
-                    isReadOnly={false}
-                    wordWrap={"on"}
-                    ariaLabel={"Editing Query"}
-                    lineNumbers={"on"}
-                    onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
-                    onContentSelected={(selectedContent: string) => this.onSelectedContent(selectedContent)}
-                  />
-                </div>
-              </Fragment>
+          {/* Set 'key' to the value of vertical to force re-rendering when vertical changes, to work around https://github.com/johnwalley/allotment/issues/457 */}
+          <Allotment key={vertical.toString()} vertical={vertical}>
+            <Allotment.Pane data-test="QueryTab/EditorPane">
+              <EditorReact
+                ref={this.queryEditor}
+                className={this.props.styles.queryEditor}
+                language={"sql"}
+                content={this.getEditorContent()}
+                modelMarkers={this.state.modelMarkers}
+                isReadOnly={false}
+                wordWrap={"on"}
+                ariaLabel={"Editing Query"}
+                lineNumbers={"on"}
+                onContentChanged={(newContent: string) => this.onChangeContent(newContent)}
+                onContentSelected={(selectedContent: string, selection: monaco.Selection) =>
+                  this.onSelectedContent(selectedContent, selection)
+                }
+              />
+            </Allotment.Pane>
+            <Allotment.Pane>
               {this.props.isSampleCopilotActive ? (
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}
                   queryEditorContent={this.state.sqlQueryEditorContent}
-                  error={this.props.copilotStore?.errorMessage}
-                  queryResults={this.props.copilotStore?.queryResults}
+                  errors={this.props.copilotStore?.errors}
                   isExecuting={this.props.copilotStore?.isExecuting}
+                  queryResults={this.props.copilotStore?.queryResults}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     QueryDocumentsPerPage(
                       firstItemIndex,
@@ -725,17 +748,17 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 <QueryResultSection
                   isMongoDB={this.props.isPreferredApiMongoDB}
                   queryEditorContent={this.state.sqlQueryEditorContent}
-                  error={this.state.error}
-                  queryResults={this.state.queryResults}
+                  errors={this.state.errors}
                   isExecuting={this.state.isExecuting}
+                  queryResults={this.state.queryResults}
                   executeQueryDocumentsPage={(firstItemIndex: number) =>
                     this._executeQueryDocumentsPage(firstItemIndex)
                   }
                 />
               )}
-            </SplitterLayout>
-          </div>
-        </div>
+            </Allotment.Pane>
+          </Allotment>
+        </CosmosFluentProvider>
         {this.props.copilotEnabled && this.props.copilotStore?.showFeedbackModal && (
           <QueryCopilotFeedbackModal
             explorer={this.props.collection.container}
@@ -751,7 +774,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   render(): JSX.Element {
     const shouldScaleElements = this.state.showCopilotSidebar && this.isCopilotTabActive;
     return (
-      <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+      <div data-test="QueryTab" style={{ display: "flex", flexDirection: "row", height: "100%" }}>
         <div style={{ width: shouldScaleElements ? "70%" : "100%", height: "100%" }}>
           {this.getEditorAndQueryResult()}
         </div>
