@@ -1,6 +1,7 @@
 import {
   Button,
   Menu,
+  MenuButton,
   MenuButtonProps,
   MenuItem,
   MenuList,
@@ -60,6 +61,7 @@ const useSidebarStyles = makeStyles({
     alignItems: "center",
     justifyItems: "center",
     width: "100%",
+    containerType: "size", // Use this container for "@container" queries below this.
     ...cosmosShorthands.borderBottom(),
   },
   loadingProgressBar: {
@@ -81,6 +83,18 @@ const useSidebarStyles = makeStyles({
       "100%": {
         opacity: ".2",
       },
+    },
+  },
+  globalCommandsMenuButton: {
+    display: "initial",
+    "@container (min-width: 250px)": {
+      display: "none",
+    },
+  },
+  globalCommandsSplitButton: {
+    display: "none",
+    "@container (min-width: 250px)": {
+      display: "flex",
     },
   },
 });
@@ -171,13 +185,19 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
         <Menu positioning="below-end">
           <MenuTrigger disableButtonEnhancement>
             {(triggerProps: MenuButtonProps) => (
-              <SplitButton
-                menuButton={{ ...triggerProps, "aria-label": "More commands" }}
-                primaryActionButton={{ onClick: onPrimaryActionClick }}
-                icon={primaryAction.icon}
-              >
-                {primaryAction.label}
-              </SplitButton>
+              <>
+                <SplitButton
+                  menuButton={{ ...triggerProps, "aria-label": "More commands" }}
+                  primaryActionButton={{ onClick: onPrimaryActionClick }}
+                  className={styles.globalCommandsSplitButton}
+                  icon={primaryAction.icon}
+                >
+                  {primaryAction.label}
+                </SplitButton>
+                <MenuButton {...triggerProps} icon={primaryAction.icon} className={styles.globalCommandsMenuButton}>
+                  New...
+                </MenuButton>
+              </>
             )}
           </MenuTrigger>
           <MenuPopover>
@@ -199,7 +219,7 @@ interface SidebarProps {
   explorer: Explorer;
 }
 
-const CollapseThreshold = 50;
+const CollapseThreshold = 140;
 
 export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const styles = useSidebarStyles();

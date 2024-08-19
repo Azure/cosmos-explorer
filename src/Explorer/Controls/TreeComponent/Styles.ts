@@ -25,7 +25,9 @@ export const useTreeStyles = makeStyles({
     height: `var(${treeIconWidth})`,
   },
   treeItem: {},
-  nodeLabel: {},
+  nodeLabel: {
+    whiteSpace: "nowrap", // Don't wrap text, there will be a scrollbar.
+  },
   treeItemLayout: {
     fontSize: tokens.fontSizeBase300,
     height: tokens.layoutRowHeight,
