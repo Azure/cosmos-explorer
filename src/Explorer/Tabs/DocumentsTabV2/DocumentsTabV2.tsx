@@ -6,7 +6,10 @@ import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
 import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
-import { deleteDocuments as deleteNoSqlDocuments } from "Common/dataAccess/deleteDocument";
+import {
+  deleteDocument as deleteNoSqlDocument,
+  deleteDocuments as deleteNoSqlDocuments,
+} from "Common/dataAccess/deleteDocument";
 import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
@@ -39,6 +42,7 @@ import * as Logger from "../../../Common/Logger";
 import * as MongoProxyClient from "../../../Common/MongoProxyClient";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { CollectionBase } from "../../../Contracts/ViewModels";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { extractPartitionKeyValues } from "../../../Utils/QueryUtils";
@@ -889,8 +893,19 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       });
       setIsExecuting(true);
 
+      // TODO: Once JS SDK Bug fix for bulk deleting legacy containers (whose systemKey==1) is released:
+      // Remove the check for systemKey, remove call to deleteNoSqlDocument(). deleteNoSqlDocuments() should always be called.
+      const _deleteNoSqlDocuments = async (
+        collection: CollectionBase,
+        toDeleteDocumentIds: DocumentId[],
+      ): Promise<DocumentId[]> => {
+        return partitionKey.systemKey
+          ? deleteNoSqlDocument(collection, toDeleteDocumentIds[0]).then(() => [toDeleteDocumentIds[0]])
+          : deleteNoSqlDocuments(collection, toDeleteDocumentIds);
+      };
+
       const deletePromise = !isPreferredApiMongoDB
-        ? deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
+        ? _deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
         : MongoProxyClient.deleteDocuments(
             _collection.databaseId,
             _collection as ViewModels.Collection,
