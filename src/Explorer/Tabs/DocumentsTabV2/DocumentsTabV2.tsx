@@ -1,7 +1,6 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, FluentProvider, Input, TableRowId } from "@fluentui/react-components";
+import { Button, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
 import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
-import Split from "@uiw/react-split";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
@@ -18,7 +17,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
-import { getPlatformTheme } from "Explorer/Theme/ThemeUtil";
+import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
@@ -26,9 +25,9 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import { Allotment } from "allotment";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
-import { CSSProperties } from "styled-components";
 import DeleteDocumentIcon from "../../../../images/DeleteDocument.svg";
 import NewDocumentIcon from "../../../../images/NewDocument.svg";
 import UploadIcon from "../../../../images/Upload_16x16.svg";
@@ -47,6 +46,61 @@ import DocumentId from "../../Tree/DocumentId";
 import ObjectId from "../../Tree/ObjectId";
 import TabsBase from "../TabsBase";
 import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
+
+const loadMoreHeight = LayoutConstants.rowHeight;
+export const useDocumentsTabStyles = makeStyles({
+  container: {
+    height: "100%",
+  },
+  filterRow: {
+    minHeight: tokens.layoutRowHeight,
+    fontSize: tokens.fontSizeBase200,
+    display: "flex",
+    columnGap: tokens.spacingHorizontalS,
+    paddingLeft: tokens.spacingHorizontalS,
+    paddingRight: tokens.spacingHorizontalL,
+    alignItems: "center",
+    ...cosmosShorthands.borderBottom(),
+  },
+  filterInput: {
+    flexGrow: 1,
+  },
+  appliedFilter: {
+    flexGrow: 1,
+  },
+  tableContainer: {
+    marginRight: tokens.spacingHorizontalXXXL,
+  },
+  tableRow: {
+    height: tokens.layoutRowHeight,
+  },
+  tableCell: {
+    ...cosmosShorthands.borderLeft(),
+  },
+  loadMore: {
+    ...cosmosShorthands.borderTop(),
+    display: "grid",
+    alignItems: "center",
+    justifyItems: "center",
+    width: "100%",
+    height: `${loadMoreHeight}px`,
+    textAlign: "center",
+    ":focus": {
+      ...shorthands.outline("1px", "dotted"),
+    },
+  },
+  floatingControlsContainer: {
+    position: "relative",
+  },
+  floatingControls: {
+    position: "absolute",
+    top: "6px",
+    right: 0,
+    float: "right",
+    backgroundColor: "white",
+    zIndex: 1,
+  },
+});
 
 export class DocumentsTabV2 extends TabsBase {
   public partitionKey: DataModels.PartitionKey;
@@ -89,9 +143,8 @@ export class DocumentsTabV2 extends TabsBase {
 // Use this value to initialize the very time the component is rendered
 const RESET_INDEX = -1;
 
-const filterButtonStyle: CSSProperties = {
-  marginLeft: 8,
-};
+// Auto-select first row. Define as constant to show where first row is selected
+export const INITIAL_SELECTED_ROW_INDEX = 0;
 
 // From TabsBase.renderObjectForEditor()
 let renderObjectForEditor = (
@@ -452,6 +505,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const filterInput = useRef<HTMLInputElement>(null);
+  const styles = useDocumentsTabStyles();
 
   // Query
   const [documentsIterator, setDocumentsIterator] = useState<{
@@ -503,8 +557,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         currentClickedRowIndex > documentIds.length - 1
       ) {
         // reset clicked row or the current clicked row is out of bounds
-        currentClickedRowIndex = 0;
-        setSelectedRows(new Set([0]));
+        currentClickedRowIndex = INITIAL_SELECTED_ROW_INDEX;
+        setSelectedRows(new Set([INITIAL_SELECTED_ROW_INDEX]));
         onDocumentClicked(currentClickedRowIndex, documentIds);
       }
     }
@@ -838,15 +892,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       const deletePromise = !isPreferredApiMongoDB
         ? deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
         : MongoProxyClient.deleteDocuments(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds,
-          ).then(({ deletedCount, isAcknowledged }) => {
-            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-              return toDeleteDocumentIds;
-            }
-            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-          });
+          _collection.databaseId,
+          _collection as ViewModels.Collection,
+          toDeleteDocumentIds,
+        ).then(({ deletedCount, isAcknowledged }) => {
+          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+            return toDeleteDocumentIds;
+          }
+          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+        });
 
       return deletePromise
         .then(
@@ -919,8 +973,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-      ? `the selected ${selectedRows.size} documents`
-      : "the selected document";
+        ? `the selected ${selectedRows.size} documents`
+        : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog
@@ -1297,12 +1351,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     if (!tableContainerRef.current) {
       return undefined;
     }
-    const resizeObserver = new ResizeObserver(() =>
+    const resizeObserver = new ResizeObserver(() => {
       setTableContainerSizePx({
-        height: tableContainerRef.current.offsetHeight,
+        height: tableContainerRef.current.offsetHeight - loadMoreHeight,
         width: tableContainerRef.current.offsetWidth,
-      }),
-    );
+      });
+    });
     resizeObserver.observe(tableContainerRef.current);
     return () => resizeObserver.disconnect(); // clean up
   }, []);
@@ -1625,145 +1679,130 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   return (
-    <FluentProvider theme={getPlatformTheme(configContext.platform)} style={{ height: "100%" }}>
-      <div className="tab-pane active documentsTab" role="tabpanel" style={{ display: "flex" }}>
+    <CosmosFluentProvider className={styles.container}>
+      <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
         {isFilterCreated && (
-          <div className="filterdivs">
+          <>
             {!isFilterExpanded && !isPreferredApiMongoDB && (
-              <div className="filterDocCollapsed">
-                <span className="selectQuery">SELECT * FROM c</span>
-                <span className="appliedQuery">{appliedFilter}</span>
-                <Button appearance="primary" onClick={onShowFilterClick} style={filterButtonStyle}>
+              <div className={styles.filterRow}>
+                <span>SELECT * FROM c</span>
+                <span className={styles.appliedFilter}>{appliedFilter}</span>
+                <Button appearance="primary" size="small" onClick={onShowFilterClick}>
                   Edit Filter
                 </Button>
               </div>
             )}
             {!isFilterExpanded && isPreferredApiMongoDB && (
-              <div className="filterDocCollapsed">
-                {appliedFilter.length > 0 && <span className="selectQuery">Filter :</span>}
+              <div className={styles.filterRow}>
+                {appliedFilter.length > 0 && <span>Filter :</span>}
                 {!(appliedFilter.length > 0) && <span className="noFilterApplied">No filter applied</span>}
-                <span className="appliedQuery">{appliedFilter}</span>
-                <Button style={filterButtonStyle} appearance="primary" onClick={onShowFilterClick}>
+                <span className={styles.appliedFilter}>{appliedFilter}</span>
+                <Button appearance="primary" size="small" onClick={onShowFilterClick}>
                   Edit Filter
                 </Button>
               </div>
             )}
             {isFilterExpanded && (
-              <div className="filterDocExpanded">
-                <div>
-                  <div className="editFilterContainer">
-                    {!isPreferredApiMongoDB && <span className="filterspan"> SELECT * FROM c </span>}
-                    <Input
-                      id="filterInput"
-                      ref={filterInput}
-                      type="text"
-                      list="filtersList"
-                      className={`${filterContent.length === 0 ? "placeholderVisible" : ""}`}
-                      style={{ width: "100%" }}
-                      title="Type a query predicate or choose one from the list."
-                      placeholder={
-                        isPreferredApiMongoDB
-                          ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
-                          : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
-                      }
-                      value={filterContent}
-                      autoFocus={true}
-                      onKeyDown={onFilterKeyDown}
-                      onChange={(e) => setFilterContent(e.target.value)}
-                      onBlur={() => setIsFilterFocused(false)}
-                    />
+              <div className={styles.filterRow}>
+                {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
+                <Input
+                  id="filterInput"
+                  ref={filterInput}
+                  type="text"
+                  size="small"
+                  list="filtersList"
+                  className={styles.filterInput}
+                  title="Type a query predicate or choose one from the list."
+                  placeholder={
+                    isPreferredApiMongoDB
+                      ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
+                      : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
+                  }
+                  value={filterContent}
+                  autoFocus={true}
+                  onKeyDown={onFilterKeyDown}
+                  onChange={(e) => setFilterContent(e.target.value)}
+                  onBlur={() => setIsFilterFocused(false)}
+                />
 
-                    <datalist id="filtersList">
-                      {lastFilterContents.map((filter) => (
-                        <option key={filter} value={filter} />
-                      ))}
-                    </datalist>
+                <datalist id="filtersList">
+                  {lastFilterContents.map((filter) => (
+                    <option key={filter} value={filter} />
+                  ))}
+                </datalist>
 
-                    <span className="filterbuttonpad">
-                      <Button
-                        appearance="primary"
-                        style={filterButtonStyle}
-                        onClick={() => refreshDocumentsGrid(true)}
-                        disabled={!applyFilterButton.enabled}
-                        aria-label="Apply filter"
-                        tabIndex={0}
-                      >
-                        Apply Filter
-                      </Button>
-                    </span>
-                    <span className="filterbuttonpad">
-                      {!isPreferredApiMongoDB && isExecuting && (
-                        <Button
-                          style={filterButtonStyle}
-                          appearance="primary"
-                          aria-label="Cancel Query"
-                          onClick={() => queryAbortController.abort()}
-                          tabIndex={0}
-                        >
-                          Cancel Query
-                        </Button>
-                      )}
-                    </span>
+                <Button
+                  appearance="primary"
+                  size="small"
+                  onClick={() => refreshDocumentsGrid(true)}
+                  disabled={!applyFilterButton.enabled}
+                  aria-label="Apply filter"
+                  tabIndex={0}
+                >
+                  Apply Filter
+                </Button>
+                {!isPreferredApiMongoDB && isExecuting && (
+                  <Button
+                    appearance="primary"
+                    size="small"
+                    aria-label="Cancel Query"
+                    onClick={() => queryAbortController.abort()}
+                    tabIndex={0}
+                  >
+                    Cancel Query
+                  </Button>
+                )}
+                <Button
+                  aria-label="close filter"
+                  tabIndex={0}
+                  onClick={onHideFilterClick}
+                  onKeyDown={onCloseButtonKeyDown}
+                  appearance="transparent"
+                  size="small"
+                  icon={<Dismiss16Filled />}
+                />
+              </div>
+            )}
+          </>
+        )}
+
+        {/* <Split> doesn't like to be a flex child */}
+        <div style={{ overflow: "hidden", height: "100%" }}>
+          <Allotment>
+            <Allotment.Pane preferredSize="35%" minSize={175}>
+              <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
+                <div className={styles.floatingControlsContainer}>
+                  <div className={styles.floatingControls}>
                     <Button
-                      aria-label="close filter"
-                      tabIndex={0}
-                      onClick={onHideFilterClick}
-                      onKeyDown={onCloseButtonKeyDown}
                       appearance="transparent"
-                      icon={<Dismiss16Filled />}
+                      aria-label="Refresh"
+                      size="small"
+                      icon={<ArrowClockwise16Filled />}
+                      style={{
+                        color: StyleConstants.AccentMedium,
+                      }}
+                      onClick={() => refreshDocumentsGrid(false)}
+                      onKeyDown={onRefreshKeyInput}
                     />
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-        {/* <Split> doesn't like to be a flex child */}
-        <div style={{ overflow: "hidden", height: "100%" }}>
-          <Split>
-            <div
-              style={{ minWidth: 120, width: "35%", overflow: "hidden", position: "relative" }}
-              ref={tableContainerRef}
-            >
-              <Button
-                appearance="transparent"
-                aria-label="Refresh"
-                size="small"
-                icon={<ArrowClockwise16Filled />}
-                style={{
-                  position: "absolute",
-                  top: 6,
-                  right: 0,
-                  float: "right",
-                  backgroundColor: "white",
-                  zIndex: 1,
-                  color: StyleConstants.AccentMedium,
-                }}
-                onClick={() => refreshDocumentsGrid(false)}
-                onKeyDown={onRefreshKeyInput}
-              />
-              <div
-                style={
-                  {
-                    height: "100%",
-                    width: "calc(100% - 50px)",
-                  } /* Fix to make table not resize beyond parent's width */
-                }
-              >
-                <DocumentsTableComponent
-                  items={tableItems}
-                  onItemClicked={(index) => onDocumentClicked(index, documentIds)}
-                  onSelectedRowsChange={onSelectedRowsChange}
-                  selectedRows={selectedRows}
-                  size={tableContainerSizePx}
-                  columnHeaders={columnHeaders}
-                  isSelectionDisabled={
-                    configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
-                  }
-                />
+                <div className={styles.tableContainer}>
+                  <DocumentsTableComponent
+                    items={tableItems}
+                    onItemClicked={(index) => onDocumentClicked(index, documentIds)}
+                    onSelectedRowsChange={onSelectedRowsChange}
+                    selectedRows={selectedRows}
+                    size={tableContainerSizePx}
+                    columnHeaders={columnHeaders}
+                    isSelectionDisabled={
+                      (partitionKey.systemKey && !isPreferredApiMongoDB) ||
+                      (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
+                    }
+                  />
+                </div>
                 {tableItems.length > 0 && (
                   <a
-                    className="loadMore"
+                    className={styles.loadMore}
                     role="button"
                     tabIndex={0}
                     onClick={() => loadNextPage(documentsIterator.iterator, false)}
@@ -1773,26 +1812,29 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   </a>
                 )}
               </div>
-            </div>
-            <div style={{ minWidth: "20%", width: "100%" }}>
-              {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
-                <EditorReact
-                  language={"json"}
-                  content={selectedDocumentContent}
-                  isReadOnly={false}
-                  ariaLabel={"Document editor"}
-                  lineNumbers={"on"}
-                  theme={"_theme"}
-                  onContentChanged={_onEditorContentChange}
-                />
-              )}
-              {selectedRows.size > 1 && (
-                <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
-              )}
-            </div>
-          </Split>
+            </Allotment.Pane>
+            <Allotment.Pane preferredSize="65%" minSize={300}>
+              <div style={{ height: "100%", width: "100%" }}>
+                {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
+                  <EditorReact
+                    language={"json"}
+                    content={selectedDocumentContent}
+                    isReadOnly={false}
+                    ariaLabel={"Document editor"}
+                    lineNumbers={"on"}
+                    theme={"_theme"}
+                    onContentChanged={_onEditorContentChange}
+                    enableWordWrapContextMenuItem={true}
+                  />
+                )}
+                {selectedRows.size > 1 && (
+                  <span style={{ margin: 10 }}>Number of selected documents: {selectedRows.size}</span>
+                )}
+              </div>
+            </Allotment.Pane>
+          </Allotment>
         </div>
       </div>
-    </FluentProvider>
+    </CosmosFluentProvider>
   );
 };

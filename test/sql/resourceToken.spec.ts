@@ -19,7 +19,7 @@ test("SQL account using Resource token", async ({ page }) => {
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
   const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
   const dbId = generateUniqueName("db");
-  const collectionId = generateUniqueName("col");
+  const collectionId = "testcollection";
   const client = new CosmosClient({
     endpoint: account.documentEndpoint!,
     key: keys.primaryMasterKey,
@@ -47,7 +47,7 @@ test("SQL account using Resource token", async ({ page }) => {
 
   const explorer = await DataExplorer.waitForExplorer(page);
 
-  const collectionNode = explorer.treeNode(`DATA/${collectionId}`);
+  const collectionNode = explorer.treeNode(`${collectionId}`);
   await collectionNode.element.waitFor();
   await expect(collectionNode.element).toBeAttached();
 

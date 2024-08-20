@@ -11,11 +11,13 @@ import {
   Tree,
   TreeItem,
   TreeItemLayout,
+  TreeItemValue,
   TreeOpenChangeData,
   TreeOpenChangeEvent,
+  mergeClasses,
 } from "@fluentui/react-components";
-import { MoreHorizontal20Regular } from "@fluentui/react-icons";
-import { tokens } from "@fluentui/react-theme";
+import { ChevronDown20Regular, ChevronRight20Regular, MoreHorizontal20Regular } from "@fluentui/react-icons";
+import { TreeStyleName, useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import * as React from "react";
 import { useCallback } from "react";
 
@@ -32,15 +34,14 @@ export interface TreeNode {
   id?: string;
   children?: TreeNode[];
   contextMenu?: TreeNodeMenuItem[];
-  iconSrc?: string;
+  iconSrc?: string | JSX.Element;
   isExpanded?: boolean;
-  className?: string;
+  className?: TreeStyleName;
   isAlphaSorted?: boolean;
   // data?: any; // Piece of data corresponding to this node
   timestamp?: number;
   isLeavesParentsSeparate?: boolean; // Display parents together first, then leaves
   isLoading?: boolean;
-  isScrollable?: boolean;
   isSelected?: () => boolean;
   onClick?: () => void; // Only if a leaf, other click will expand/collapse
   onExpanded?: () => Promise<void>;
@@ -52,6 +53,7 @@ export interface TreeNodeComponentProps {
   node: TreeNode;
   className?: string;
   treeNodeId: string;
+  openItems: TreeItemValue[];
 }
 
 /** Function that returns true if any descendant (at any depth) of this node is selected. */
@@ -66,13 +68,13 @@ function isAnyDescendantSelected(node: TreeNode): boolean {
   );
 }
 
-const getTreeIcon = (iconSrc: string): JSX.Element => <img src={iconSrc} alt="" style={{ width: 16, height: 16 }} />;
-
 export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   node,
   treeNodeId,
+  openItems,
 }: TreeNodeComponentProps): JSX.Element => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const treeStyles = useTreeStyles();
 
   const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
     if (!treeNode || !treeNode.children) {
@@ -145,45 +147,72 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     </MenuItem>
   ));
 
+  // We use the expandIcon slot to hold the node icon too.
+  // We only show a node icon for leaf nodes, even if a branch node has an iconSrc.
+  const expandIcon = isLoading ? (
+    <Spinner size="extra-tiny" />
+  ) : !isBranch ? (
+    typeof node.iconSrc === "string" ? (
+      <img src={node.iconSrc} className={treeStyles.nodeIcon} alt="" />
+    ) : (
+      node.iconSrc
+    )
+  ) : openItems.includes(treeNodeId) ? (
+    <ChevronDown20Regular data-test="TreeNode/CollapseIcon" />
+  ) : (
+    <ChevronRight20Regular data-text="TreeNode/ExpandIcon" />
+  );
+
   const treeItem = (
     <TreeItem
       data-test={`TreeNodeContainer:${treeNodeId}`}
       value={treeNodeId}
       itemType={isBranch ? "branch" : "leaf"}
       onOpenChange={onOpenChange}
+      className={treeStyles.treeItem}
     >
       <TreeItemLayout
-        className={node.className}
+        className={mergeClasses(
+          treeStyles.treeItemLayout,
+          expandIcon ? undefined : treeStyles.treeItemLayoutNoIcon,
+          shouldShowAsSelected && treeStyles.selectedItem,
+          node.className && treeStyles[node.className],
+        )}
         data-test={`TreeNode:${treeNodeId}`}
         actions={
-          contextMenuItems.length > 0 && (
-            <Menu onOpenChange={onMenuOpenChange}>
-              <MenuTrigger disableButtonEnhancement>
-                <Button
-                  aria-label="More options"
-                  data-test="TreeNode/ContextMenuTrigger"
-                  appearance="subtle"
-                  icon={<MoreHorizontal20Regular />}
-                />
-              </MenuTrigger>
-              <MenuPopover data-test={`TreeNode/ContextMenu:${treeNodeId}`}>
-                <MenuList>{contextMenuItems}</MenuList>
-              </MenuPopover>
-            </Menu>
-          )
+          contextMenuItems.length > 0 && {
+            className: treeStyles.actionsButtonContainer,
+            children: (
+              <Menu onOpenChange={onMenuOpenChange}>
+                <MenuTrigger disableButtonEnhancement>
+                  <Button
+                    aria-label="More options"
+                    className={mergeClasses(treeStyles.actionsButton, shouldShowAsSelected && treeStyles.selectedItem)}
+                    data-test="TreeNode/ContextMenuTrigger"
+                    appearance="subtle"
+                    icon={<MoreHorizontal20Regular />}
+                  />
+                </MenuTrigger>
+                <MenuPopover data-test={`TreeNode/ContextMenu:${treeNodeId}`}>
+                  <MenuList>{contextMenuItems}</MenuList>
+                </MenuPopover>
+              </Menu>
+            ),
+          }
         }
-        expandIcon={isLoading ? <Spinner size="extra-tiny" /> : undefined}
-        iconBefore={node.iconSrc && getTreeIcon(node.iconSrc)}
-        style={{
-          backgroundColor: shouldShowAsSelected ? tokens.colorNeutralBackground1Selected : undefined,
-        }}
+        expandIcon={expandIcon}
       >
-        {node.label}
+        <span className={treeStyles.nodeLabel}>{node.label}</span>
       </TreeItemLayout>
       {!node.isLoading && node.children?.length > 0 && (
-        <Tree style={{ overflow: node.isScrollable ? "auto" : undefined }}>
+        <Tree data-test={`Tree:${treeNodeId}`} className={treeStyles.tree}>
           {getSortedChildren(node).map((childNode: TreeNode) => (
-            <TreeNodeComponent key={childNode.label} node={childNode} treeNodeId={`${treeNodeId}/${childNode.label}`} />
+            <TreeNodeComponent
+              openItems={openItems}
+              key={childNode.label}
+              node={childNode}
+              treeNodeId={`${treeNodeId}/${childNode.label}`}
+            />
           ))}
         </Tree>
       )}

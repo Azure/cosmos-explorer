@@ -1,19 +1,21 @@
+import * as msal from "@azure/msal-browser";
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireTokenWithMsal, getMsalInstance } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
+import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
-import * as msal from "@azure/msal-browser";
 import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
@@ -67,8 +69,6 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
-import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -295,7 +295,7 @@ export default class Explorer {
   }
 
   public openNPSSurveyDialog(): void {
-    if (!Platform.Portal) {
+    if (!Platform.Portal || !["Postgres", "SQL", "Mongo"].includes(userContext.apiType)) {
       return;
     }
 
@@ -393,16 +393,16 @@ export default class Explorer {
     return true;
   };
 
-  public onRefreshResourcesClick = (): void => {
+  public onRefreshResourcesClick = async (): Promise<void> => {
     if (configContext.platform === Platform.Fabric) {
       scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
       return;
     }
 
-    userContext.authType === AuthType.ResourceToken
+    await (userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
-      : this.refreshAllDatabases();
-    this.refreshNotebookList();
+      : this.refreshAllDatabases());
+    await this.refreshNotebookList();
   };
 
   // Facade

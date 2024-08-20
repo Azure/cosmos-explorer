@@ -4,8 +4,8 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
 <Modal
   isOpen={true}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "borderRadius": 8,
         "maxWidth": 600,
       },
@@ -17,7 +17,7 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
   >
     <Stack
       style={
-        Object {
+        {
           "padding": 24,
         }
       }
@@ -28,7 +28,7 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 20,
               "fontWeight": 600,
               "marginBottom": 20,
@@ -39,7 +39,7 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
@@ -48,7 +48,7 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "marginBottom": 14,
           }
@@ -64,8 +64,8 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
         required={true}
         rows={3}
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -79,13 +79,13 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
         readOnly={true}
         rows={3}
         styles={
-          Object {
-            "fieldGroup": Object {
+          {
+            "fieldGroup": {
               "backgroundColor": "#F3F2F1",
               "borderColor": "#D1D1D1",
               "borderRadius": 4,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -93,7 +93,7 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 12,
             "marginBottom": 14,
           }
@@ -116,8 +116,8 @@ exports[`Query Copilot Feedback Modal snapshot test shoud render and match snaps
       >
         <CustomizedPrimaryButton
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "marginRight": 8,
               },
             }
@@ -141,8 +141,8 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
 <Modal
   isOpen={false}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "borderRadius": 8,
         "maxWidth": 600,
       },
@@ -154,7 +154,7 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
   >
     <Stack
       style={
-        Object {
+        {
           "padding": 24,
         }
       }
@@ -165,7 +165,7 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 20,
               "fontWeight": 600,
               "marginBottom": 20,
@@ -176,7 +176,7 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
@@ -185,7 +185,7 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "marginBottom": 14,
           }
@@ -201,8 +201,8 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
         required={true}
         rows={3}
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -216,13 +216,13 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
         readOnly={true}
         rows={3}
         styles={
-          Object {
-            "fieldGroup": Object {
+          {
+            "fieldGroup": {
               "backgroundColor": "#F3F2F1",
               "borderColor": "#D1D1D1",
               "borderRadius": 4,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -230,7 +230,7 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 12,
             "marginBottom": 14,
           }
@@ -253,8 +253,8 @@ exports[`Query Copilot Feedback Modal snapshot test should cancel submission 1`]
       >
         <CustomizedPrimaryButton
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "marginRight": 8,
               },
             }
@@ -278,8 +278,8 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
 <Modal
   isOpen={false}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "borderRadius": 8,
         "maxWidth": 600,
       },
@@ -291,7 +291,7 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
   >
     <Stack
       style={
-        Object {
+        {
           "padding": 24,
         }
       }
@@ -302,7 +302,7 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 20,
               "fontWeight": 600,
               "marginBottom": 20,
@@ -313,7 +313,7 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
@@ -322,7 +322,7 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "marginBottom": 14,
           }
@@ -338,8 +338,8 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
         required={true}
         rows={3}
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -353,13 +353,13 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
         readOnly={true}
         rows={3}
         styles={
-          Object {
-            "fieldGroup": Object {
+          {
+            "fieldGroup": {
               "backgroundColor": "#F3F2F1",
               "borderColor": "#D1D1D1",
               "borderRadius": 4,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -367,7 +367,7 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 12,
             "marginBottom": 14,
           }
@@ -390,8 +390,8 @@ exports[`Query Copilot Feedback Modal snapshot test should close on cancel click
       >
         <CustomizedPrimaryButton
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "marginRight": 8,
               },
             }
@@ -415,8 +415,8 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
 <Modal
   isOpen={false}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "borderRadius": 8,
         "maxWidth": 600,
       },
@@ -428,7 +428,7 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
   >
     <Stack
       style={
-        Object {
+        {
           "padding": 24,
         }
       }
@@ -439,7 +439,7 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 20,
               "fontWeight": 600,
               "marginBottom": 20,
@@ -450,7 +450,7 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
@@ -459,7 +459,7 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "marginBottom": 14,
           }
@@ -475,8 +475,8 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
         required={true}
         rows={3}
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -490,13 +490,13 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
         readOnly={true}
         rows={3}
         styles={
-          Object {
-            "fieldGroup": Object {
+          {
+            "fieldGroup": {
               "backgroundColor": "#F3F2F1",
               "borderColor": "#D1D1D1",
               "borderRadius": 4,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -504,7 +504,7 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 12,
             "marginBottom": 14,
           }
@@ -527,8 +527,8 @@ exports[`Query Copilot Feedback Modal snapshot test should get user unput 1`] = 
       >
         <CustomizedPrimaryButton
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "marginRight": 8,
               },
             }
@@ -552,8 +552,8 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
 <Modal
   isOpen={false}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "borderRadius": 8,
         "maxWidth": 600,
       },
@@ -565,7 +565,7 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
   >
     <Stack
       style={
-        Object {
+        {
           "padding": 24,
         }
       }
@@ -576,7 +576,7 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 20,
               "fontWeight": 600,
               "marginBottom": 20,
@@ -587,7 +587,7 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
@@ -596,7 +596,7 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "marginBottom": 14,
           }
@@ -612,8 +612,8 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
         required={true}
         rows={3}
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -627,13 +627,13 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
         readOnly={true}
         rows={3}
         styles={
-          Object {
-            "fieldGroup": Object {
+          {
+            "fieldGroup": {
               "backgroundColor": "#F3F2F1",
               "borderColor": "#D1D1D1",
               "borderRadius": 4,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -641,7 +641,7 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 12,
             "marginBottom": 14,
           }
@@ -664,8 +664,8 @@ exports[`Query Copilot Feedback Modal snapshot test should not render dont show 
       >
         <CustomizedPrimaryButton
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "marginRight": 8,
               },
             }
@@ -689,8 +689,8 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
 <Modal
   isOpen={true}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "borderRadius": 8,
         "maxWidth": 600,
       },
@@ -702,7 +702,7 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
   >
     <Stack
       style={
-        Object {
+        {
           "padding": 24,
         }
       }
@@ -713,7 +713,7 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 20,
               "fontWeight": 600,
               "marginBottom": 20,
@@ -724,7 +724,7 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
@@ -733,7 +733,7 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "marginBottom": 14,
           }
@@ -749,8 +749,8 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
         required={true}
         rows={3}
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -764,13 +764,13 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
         readOnly={true}
         rows={3}
         styles={
-          Object {
-            "fieldGroup": Object {
+          {
+            "fieldGroup": {
               "backgroundColor": "#F3F2F1",
               "borderColor": "#D1D1D1",
               "borderRadius": 4,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -778,7 +778,7 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 12,
             "marginBottom": 14,
           }
@@ -800,11 +800,11 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
         label="Don't show me this next time"
         onChange={[Function]}
         styles={
-          Object {
-            "label": Object {
+          {
+            "label": {
               "paddingLeft": 0,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -816,8 +816,8 @@ exports[`Query Copilot Feedback Modal snapshot test should render dont show agai
       >
         <CustomizedPrimaryButton
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "marginRight": 8,
               },
             }
@@ -841,8 +841,8 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
 <Modal
   isOpen={false}
   styles={
-    Object {
-      "main": Object {
+    {
+      "main": {
         "borderRadius": 8,
         "maxWidth": 600,
       },
@@ -854,7 +854,7 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
   >
     <Stack
       style={
-        Object {
+        {
           "padding": 24,
         }
       }
@@ -865,7 +865,7 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
       >
         <Text
           style={
-            Object {
+            {
               "fontSize": 20,
               "fontWeight": 600,
               "marginBottom": 20,
@@ -876,7 +876,7 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
         </Text>
         <CustomizedIconButton
           iconProps={
-            Object {
+            {
               "iconName": "Cancel",
             }
           }
@@ -885,7 +885,7 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
       </Stack>
       <Text
         style={
-          Object {
+          {
             "fontSize": 14,
             "marginBottom": 14,
           }
@@ -901,8 +901,8 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
         required={true}
         rows={3}
         styles={
-          Object {
-            "root": Object {
+          {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -916,13 +916,13 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
         readOnly={true}
         rows={3}
         styles={
-          Object {
-            "fieldGroup": Object {
+          {
+            "fieldGroup": {
               "backgroundColor": "#F3F2F1",
               "borderColor": "#D1D1D1",
               "borderRadius": 4,
             },
-            "root": Object {
+            "root": {
               "marginBottom": 14,
             },
           }
@@ -930,7 +930,7 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
       />
       <Text
         style={
-          Object {
+          {
             "fontSize": 12,
             "marginBottom": 14,
           }
@@ -953,8 +953,8 @@ exports[`Query Copilot Feedback Modal snapshot test should submit submission 1`]
       >
         <CustomizedPrimaryButton
           styles={
-            Object {
-              "root": Object {
+            {
+              "root": {
                 "marginRight": 8,
               },
             }

@@ -1,39 +1,50 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
+import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
 
 test("Cassandra keyspace and table CRUD", async ({ page }) => {
-  const keyspaceId = generateDatabaseNameWithTimestamp();
-  const tableId = generateUniqueName("table");
+  const keyspaceId = generateUniqueName("db");
+  const tableId = "testtable"; // A unique table name isn't needed because the keyspace is unique
 
   const explorer = await DataExplorer.open(page, TestAccount.Cassandra);
 
-  await explorer.commandBarButton("New Table").click();
-  await explorer.whilePanelOpen("Add Table", async (panel, okButton) => {
-    await panel.getByPlaceholder("Type a new keyspace id").fill(keyspaceId);
-    await panel.getByPlaceholder("Enter table Id").fill(tableId);
-    await panel.getByLabel("Table max RU/s").fill("1000");
-    await okButton.click();
-  });
+  await explorer.globalCommandButton("New Table").click();
+  await explorer.whilePanelOpen(
+    "Add Table",
+    async (panel, okButton) => {
+      await panel.getByPlaceholder("Type a new keyspace id").fill(keyspaceId);
+      await panel.getByPlaceholder("Enter table Id").fill(tableId);
+      await panel.getByLabel("Table max RU/s").fill("1000");
+      await okButton.click();
+    },
+    { closeTimeout: 5 * 60 * 1000 },
+  );
 
-  const keyspaceNode = explorer.treeNode(`DATA/${keyspaceId}`);
-  await keyspaceNode.expand();
-  const tableNode = explorer.treeNode(`DATA/${keyspaceId}/${tableId}`);
+  const keyspaceNode = await explorer.waitForNode(keyspaceId);
+  const tableNode = await explorer.waitForContainerNode(keyspaceId, tableId);
 
   await tableNode.openContextMenu();
   await tableNode.contextMenuItem("Delete Table").click();
-  await explorer.whilePanelOpen("Delete Table", async (panel, okButton) => {
-    await panel.getByRole("textbox", { name: "Confirm by typing the table id" }).fill(tableId);
-    await okButton.click();
-  });
+  await explorer.whilePanelOpen(
+    "Delete Table",
+    async (panel, okButton) => {
+      await panel.getByRole("textbox", { name: "Confirm by typing the table id" }).fill(tableId);
+      await okButton.click();
+    },
+    { closeTimeout: 5 * 60 * 1000 },
+  );
   await expect(tableNode.element).not.toBeAttached();
 
   await keyspaceNode.openContextMenu();
   await keyspaceNode.contextMenuItem("Delete Keyspace").click();
-  await explorer.whilePanelOpen("Delete Keyspace", async (panel, okButton) => {
-    await panel.getByRole("textbox", { name: "Confirm by typing the Keyspace id" }).fill(keyspaceId);
-    await okButton.click();
-  });
+  await explorer.whilePanelOpen(
+    "Delete Keyspace",
+    async (panel, okButton) => {
+      await panel.getByRole("textbox", { name: "Confirm by typing the Keyspace id" }).fill(keyspaceId);
+      await okButton.click();
+    },
+    { closeTimeout: 5 * 60 * 1000 },
+  );
 
   await expect(keyspaceNode.element).not.toBeAttached();
 });

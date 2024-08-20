@@ -720,7 +720,7 @@ export function useMongoProxyEndpoint(api: string): boolean {
     MongoProxyEndpoints.Local,
     MongoProxyEndpoints.Mpac,
     MongoProxyEndpoints.Prod,
-    MongoProxyEndpoints.Fairfax,
+    // MongoProxyEndpoints.Fairfax,
   ];
   let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
   if (

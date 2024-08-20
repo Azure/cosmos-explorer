@@ -27,7 +27,7 @@ import {
 } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { updateUserContext, userContext } from "UserContext";
-import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
@@ -36,8 +36,7 @@ import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { AuthType } from "AuthType";
 import create, { UseStore } from "zustand";
-import { DatabaseAccountListKeysResult } from "@azure/arm-cosmosdb/esm/models";
-import { listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
@@ -171,14 +170,26 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         hasDataPlaneRbacSettingChanged: true,
       });
       const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-      if (!userContext.features.enableAadDataPlane) {
-        const keys: DatabaseAccountListKeysResult = await listKeys(subscriptionId, resourceGroup, account.name);
-
-        if (keys.primaryMasterKey) {
-          updateUserContext({ masterKey: keys.primaryMasterKey });
-
-          useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
+      if (!userContext.features.enableAadDataPlane && !userContext.masterKey) {
+        let keys;
+        try {
+          keys = await listKeys(subscriptionId, resourceGroup, account.name);
+          updateUserContext({
+            masterKey: keys.primaryMasterKey,
+          });
+        } catch (error) {
+          // if listKeys fail because of permissions issue, then make call to get ReadOnlyKeys
+          if (error.code === "AuthorizationFailed") {
+            keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account.name);
+            updateUserContext({
+              masterKey: keys.primaryReadonlyMasterKey,
+            });
+          } else {
+            logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+            throw error;
+          }
         }
+        useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
       }
     }
 
@@ -498,7 +509,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       onDismiss={() => setShowDataPlaneRBACWarning(false)}
                       dismissButtonAriaLabel="Close"
                     >
-                      Please click on &quot;Login for Entra ID RBAC&quot; prior to performing Entra ID RBAC operations
+                      Please click on &quot;Login for Entra ID RBAC&quot; button prior to performing Entra ID RBAC
+                      operations
                     </MessageBar>
                   )}
                   <ChoiceGroup

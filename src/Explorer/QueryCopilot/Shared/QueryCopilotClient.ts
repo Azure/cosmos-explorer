@@ -13,6 +13,7 @@ import {
 import { getErrorMessage, getErrorStack, handleError } from "Common/ErrorHandlingUtils";
 import { shouldEnableCrossPartitionKey } from "Common/HeadersUtility";
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
+import QueryError from "Common/QueryError";
 import { createUri } from "Common/UrlUtility";
 import { queryDocumentsPage } from "Common/dataAccess/queryDocumentsPage";
 import { configContext } from "ConfigContext";
@@ -354,7 +355,7 @@ export const QueryDocumentsPerPage = async (
     );
 
     useQueryCopilot.getState().setQueryResults(queryResults);
-    useQueryCopilot.getState().setErrorMessage("");
+    useQueryCopilot.getState().setErrors([]);
     useQueryCopilot.getState().setShowErrorMessageBar(false);
     traceSuccess(Action.ExecuteQueryGeneratedFromQueryCopilot, {
       correlationId: useQueryCopilot.getState().correlationId,
@@ -366,12 +367,13 @@ export const QueryDocumentsPerPage = async (
     const errorMessage = getErrorMessage(error);
     traceFailure(Action.ExecuteQueryGeneratedFromQueryCopilot, {
       correlationId: useQueryCopilot.getState().correlationId,
-      errorMessage: errorMessage,
+      errorMessage,
     });
     handleError(errorMessage, "executeQueryCopilotTab");
     useTabs.getState().setIsQueryErrorThrown(true);
     if (isCopilotActive) {
-      useQueryCopilot.getState().setErrorMessage(errorMessage);
+      const queryErrors = QueryError.tryParse(error);
+      useQueryCopilot.getState().setErrors(queryErrors);
       useQueryCopilot.getState().setShowErrorMessageBar(true);
     }
   } finally {

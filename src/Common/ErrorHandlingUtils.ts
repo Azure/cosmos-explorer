@@ -53,7 +53,8 @@ const replaceKnownError = (errorMessage: string): string => {
     return "Partition key paths must contain only valid characters and not contain a trailing slash or wildcard character.";
   } else if (
     errorMessage?.indexOf("The user aborted a request") >= 0 ||
-    errorMessage?.indexOf("The operation was aborted") >= 0
+    errorMessage?.indexOf("The operation was aborted") >= 0 ||
+    errorMessage === "signal is aborted without reason"
   ) {
     return "User aborted query.";
   }

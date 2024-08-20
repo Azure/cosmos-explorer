@@ -4,9 +4,9 @@ exports[`Copy button snapshot tests should render and click copy 1`] = `
 <CustomizedIconButton
   ariaLabel="Copy"
   iconProps={
-    Object {
-      "imageProps": Object {
-        "src": Object {},
+    {
+      "imageProps": {
+        "src": {},
       },
     }
   }

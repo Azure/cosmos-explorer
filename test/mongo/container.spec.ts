@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateUniqueName } from "../fx";
+import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
 
 (
   [
@@ -9,38 +9,49 @@ import { DataExplorer, TestAccount, generateDatabaseNameWithTimestamp, generateU
   ] as [string, TestAccount][]
 ).forEach(([apiVersionDescription, accountType]) => {
   test(`Mongo CRUD using ${apiVersionDescription}`, async ({ page }) => {
-    const databaseId = generateDatabaseNameWithTimestamp();
-    const collectionId = generateUniqueName("collection");
+    const databaseId = generateUniqueName("db");
+    const collectionId = "testcollection"; // A unique collection name isn't needed because the database is unique
 
     const explorer = await DataExplorer.open(page, accountType);
 
-    await explorer.commandBarButton("New Collection").click();
-    await explorer.whilePanelOpen("New Collection", async (panel, okButton) => {
-      await panel.getByPlaceholder("Type a new database id").fill(databaseId);
-      await panel.getByRole("textbox", { name: "Collection id, Example Collection1" }).fill(collectionId);
-      await panel.getByRole("textbox", { name: "Shard key" }).fill("pk");
-      await panel.getByLabel("Database max RU/s").fill("1000");
-      await okButton.click();
-    });
+    await explorer.globalCommandButton("New Collection").click();
+    await explorer.whilePanelOpen(
+      "New Collection",
+      async (panel, okButton) => {
+        await panel.getByPlaceholder("Type a new database id").fill(databaseId);
+        await panel.getByRole("textbox", { name: "Collection id, Example Collection1" }).fill(collectionId);
+        await panel.getByRole("textbox", { name: "Shard key" }).fill("pk");
+        await panel.getByLabel("Database max RU/s").fill("1000");
+        await okButton.click();
+      },
+      { closeTimeout: 5 * 60 * 1000 },
+    );
 
-    const databaseNode = explorer.treeNode(`DATA/${databaseId}`);
-    await databaseNode.expand();
-    const collectionNode = explorer.treeNode(`DATA/${databaseId}/${collectionId}`);
+    const databaseNode = await explorer.waitForNode(databaseId);
+    const collectionNode = await explorer.waitForContainerNode(databaseId, collectionId);
 
     await collectionNode.openContextMenu();
     await collectionNode.contextMenuItem("Delete Collection").click();
-    await explorer.whilePanelOpen("Delete Collection", async (panel, okButton) => {
-      await panel.getByRole("textbox", { name: "Confirm by typing the collection id" }).fill(collectionId);
-      await okButton.click();
-    });
+    await explorer.whilePanelOpen(
+      "Delete Collection",
+      async (panel, okButton) => {
+        await panel.getByRole("textbox", { name: "Confirm by typing the collection id" }).fill(collectionId);
+        await okButton.click();
+      },
+      { closeTimeout: 5 * 60 * 1000 },
+    );
     await expect(collectionNode.element).not.toBeAttached();
 
     await databaseNode.openContextMenu();
     await databaseNode.contextMenuItem("Delete Database").click();
-    await explorer.whilePanelOpen("Delete Database", async (panel, okButton) => {
-      await panel.getByRole("textbox", { name: "Confirm by typing the Database id" }).fill(databaseId);
-      await okButton.click();
-    });
+    await explorer.whilePanelOpen(
+      "Delete Database",
+      async (panel, okButton) => {
+        await panel.getByRole("textbox", { name: "Confirm by typing the Database id" }).fill(databaseId);
+        await okButton.click();
+      },
+      { closeTimeout: 5 * 60 * 1000 },
+    );
 
     await expect(databaseNode.element).not.toBeAttached();
   });
