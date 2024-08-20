@@ -13,6 +13,7 @@ import {
   Toggle,
   TooltipHost,
 } from "@fluentui/react";
+import { makeStyles } from "@fluentui/react-components";
 import { AuthType } from "AuthType";
 import * as Constants from "Common/Constants";
 import { SplitterDirection } from "Common/Splitter";
@@ -52,6 +53,13 @@ export interface DataPlaneRbacState {
 }
 
 type DataPlaneRbacStore = UseStore<Partial<DataPlaneRbacState>>;
+
+const useStyles = makeStyles({
+  bulletList: {
+    listStyleType: "disc",
+    paddingLeft: "20px",
+  },
+});
 
 export const useDataPlaneRbac: DataPlaneRbacStore = create(() => ({
   dataPlaneRbacEnabled: false,
@@ -136,6 +144,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const [copilotSampleDBEnabled, setCopilotSampleDBEnabled] = useState<boolean>(
     LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true",
   );
+
+  const styles = useStyles();
+
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
@@ -836,19 +847,27 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           <div className="settingsSectionPart">
             <DefaultButton
               onClick={() => {
-                useDialog
-                  .getState()
-                  .showOkCancelModalDialog(
-                    "Restore default settings",
-                    "This will delete any custom settings stored in your browser, like customized tab layout, table column preferences, and it will also erase your filter history.",
-                    "Reset",
-                    () => deleteAllStates(),
-                    "Cancel",
-                    undefined,
-                  );
+                useDialog.getState().showOkCancelModalDialog(
+                  "Clear History",
+                  undefined,
+                  "Are you sure you want to proceed?",
+                  () => deleteAllStates(),
+                  "Cancel",
+                  undefined,
+                  <>
+                    <span>
+                      This action will clear the all customizations for this account in this browser, including:
+                    </span>
+                    <ul className={styles.bulletList}>
+                      <li>Reset your customized tab layout, including the splitter positions</li>
+                      <li>Erase your table column preferences, including any custom columns</li>
+                      <li>Clear your filter history</li>
+                    </ul>
+                  </>,
+                );
               }}
             >
-              Restore default settings
+              Clear History
             </DefaultButton>
           </div>
         </div>
