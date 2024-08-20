@@ -64,7 +64,11 @@ export async function getMsalInstance() {
   return msalInstance;
 }
 
-export async function acquireTokenWithMsal(msalInstance: msal.IPublicClientApplication, request: msal.SilentRequest) {
+export async function acquireTokenWithMsal(
+  msalInstance: msal.IPublicClientApplication,
+  request: msal.SilentRequest,
+  silent: boolean = false,
+) {
   const tokenRequest = {
     account: msalInstance.getActiveAccount() || null,
     ...request,
@@ -74,7 +78,7 @@ export async function acquireTokenWithMsal(msalInstance: msal.IPublicClientAppli
     // attempt silent acquisition first
     return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
   } catch (silentError) {
-    if (silentError instanceof msal.InteractionRequiredAuthError) {
+    if (silentError instanceof msal.InteractionRequiredAuthError && silent === false) {
       try {
         // The error indicates that we need to acquire the token interactively.
         // This will display a pop-up to re-establish authorization. If user does not
