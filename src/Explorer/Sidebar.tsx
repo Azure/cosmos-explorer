@@ -334,7 +334,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
           </CosmosFluentProvider>
         </Allotment.Pane>
       )}
-      <Allotment.Pane minSize={800}>
+      <Allotment.Pane minSize={200}>
         <Tabs explorer={explorer} />
       </Allotment.Pane>
     </Allotment>
