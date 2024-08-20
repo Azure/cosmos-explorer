@@ -249,6 +249,12 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
     setLoading(false);
   }, [setLoading]);
 
+  const hasGlobalCommands = !(
+    configContext.platform === Platform.Fabric ||
+    userContext.apiType === "Postgres" ||
+    userContext.apiType === "VCoreMongo"
+  );
+
   return (
     <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
       {/* Collections Tree - Start */}
@@ -268,6 +274,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                     <div className={styles.floatingControls}>
                       <button
                         type="button"
+                        data-test="Sidebar/RefreshButton"
                         className={styles.floatingControlButton}
                         disabled={loading}
                         title="Refresh"
@@ -285,8 +292,11 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
                       </button>
                     </div>
                   </div>
-                  <div className={styles.expandedContent}>
-                    <GlobalCommands explorer={explorer} />
+                  <div
+                    className={styles.expandedContent}
+                    style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}
+                  >
+                    {hasGlobalCommands && <GlobalCommands explorer={explorer} />}
                     <ResourceTree explorer={explorer} />
                   </div>
                 </>

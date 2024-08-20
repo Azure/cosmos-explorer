@@ -74,6 +74,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
       aria-expanded={true}
       aria-label="console button collapsed"
       className="expandCollapseButton"
+      data-test="NotificationConsole/ExpandCollapseButton"
       role="button"
       tabIndex={0}
     >
@@ -109,6 +110,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
   >
     <div
       className="notificationConsoleContents"
+      data-test="NotificationConsole/Contents"
     >
       <div
         className="notificationConsoleControls"
@@ -245,6 +247,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
       aria-expanded={true}
       aria-label="console button collapsed"
       className="expandCollapseButton"
+      data-test="NotificationConsole/ExpandCollapseButton"
       role="button"
       tabIndex={0}
     >
@@ -280,6 +283,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
   >
     <div
       className="notificationConsoleContents"
+      data-test="NotificationConsole/Contents"
     >
       <div
         className="notificationConsoleControls"

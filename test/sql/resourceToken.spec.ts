@@ -19,7 +19,7 @@ test("SQL account using Resource token", async ({ page }) => {
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
   const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, accountName);
   const dbId = generateUniqueName("db");
-  const collectionId = generateUniqueName("col");
+  const collectionId = "testcollection";
   const client = new CosmosClient({
     endpoint: account.documentEndpoint!,
     key: keys.primaryMasterKey,
