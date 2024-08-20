@@ -40,7 +40,12 @@ import {
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { Node, PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { acquireTokenWithMsal, getAuthorizationHeader, getMsalInstance } from "../Utils/AuthorizationUtils";
+import {
+  acquireMsalTokenForAccount,
+  acquireTokenWithMsal,
+  getAuthorizationHeader,
+  getMsalInstance,
+} from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { applyExplorerBindings } from "../applyExplorerBindings";
@@ -574,6 +579,23 @@ async function configurePortal(): Promise<Explorer> {
                 "Explorer/configurePortal",
               );
               await fetchAndUpdateKeys(subscriptionId, resourceGroup, account.name);
+            } else {
+              Logger.logInfo(
+                `Trying to silently acquire MSAL token for ${userContext.apiType} account ${account.name}`,
+                "Explorer/configurePortal",
+              );
+              try {
+                const aadToken = await acquireMsalTokenForAccount(userContext.databaseAccount, true);
+                updateUserContext({
+                  aadToken: aadToken,
+                });
+              } catch (authError) {
+                Logger.logWarning(
+                  `Failed to silently acquire authorization token from MSAL: ${authError} for ${userContext.apiType} account ${account}`,
+                  "Explorer/configurePortal",
+                );
+                logConsoleError("Failed to silently acquire authorization token: " + authError);
+              }
             }
 
             updateUserContext({ dataPlaneRbacEnabled });
