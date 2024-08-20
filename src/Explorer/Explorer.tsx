@@ -9,7 +9,7 @@ import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCop
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { acquireTokenWithMsal, getMsalInstance } from "Utils/AuthorizationUtils";
+import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
 import { update } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -258,25 +258,8 @@ export default class Explorer {
 
   public async openLoginForEntraIDPopUp(): Promise<void> {
     if (userContext.databaseAccount.properties?.documentEndpoint) {
-      const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
-        /\/$/,
-        "/.default",
-      );
-      const msalInstance = await getMsalInstance();
-
       try {
-        const response = await msalInstance.loginPopup({
-          redirectUri: configContext.msalRedirectURI,
-          scopes: [],
-        });
-        localStorage.setItem("cachedTenantId", response.tenantId);
-        const cachedAccount = msalInstance.getAllAccounts()?.[0];
-        msalInstance.setActiveAccount(cachedAccount);
-        const aadToken = await acquireTokenWithMsal(msalInstance, {
-          forceRefresh: true,
-          scopes: [hrefEndpoint],
-          authority: `${configContext.AAD_ENDPOINT}${localStorage.getItem("cachedTenantId")}`,
-        });
+        const aadToken = await acquireMsalTokenForAccount(userContext.databaseAccount, false);
         updateUserContext({ aadToken: aadToken });
         useDataPlaneRbac.setState({ aadTokenUpdated: true });
       } catch (error) {

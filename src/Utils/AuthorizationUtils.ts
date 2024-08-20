@@ -4,6 +4,7 @@ import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
+import { DatabaseAccount } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
@@ -62,6 +63,50 @@ export async function getMsalInstance() {
 
   const msalInstance = new msal.PublicClientApplication(msalConfig);
   return msalInstance;
+}
+
+export async function acquireMsalTokenForAccount(account: DatabaseAccount, silent: boolean = false) {
+  if (userContext.databaseAccount.properties?.documentEndpoint === undefined) {
+    throw new Error("Database account has no document endpoint defined");
+  }
+  const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
+    /\/$/,
+    "/.default",
+  );
+  const msalInstance = await getMsalInstance();
+  // TODO: here we could filter the account with "cachedTenantId" from the local storage instead of taking the active/first one?
+  const msalAccount = msalInstance.getActiveAccount() ?? msalInstance.getAllAccounts()?.[0];
+
+  if (msalAccount === null) {
+    // If no account was found, we need to sign in.
+    // This will eventually throw InteractionRequiredAuthError if silent is true, we won't handle it here.
+    const loginRequest = {
+      prompt: silent ? "none" : "login",
+      scopes: [hrefEndpoint],
+    };
+    try {
+      const loginResponse = await msalInstance.loginPopup(loginRequest);
+      localStorage.setItem("cachedTenantId", loginResponse.tenantId);
+      return loginResponse.accessToken;
+    } catch (error) {
+      traceFailure(Action.SignInAad, {
+        request: JSON.stringify(loginRequest),
+        acquireTokenType: silent ? "silent" : "interactive",
+        errorMessage: JSON.stringify(error),
+      });
+      throw error;
+    }
+  } else {
+    msalInstance.setActiveAccount(msalAccount);
+  }
+
+  const tokenRequest = {
+    account: msalAccount || null,
+    forceRefresh: true,
+    scopes: [hrefEndpoint],
+    authority: `${configContext.AAD_ENDPOINT}${msalAccount.tenantId}`,
+  };
+  return acquireTokenWithMsal(msalInstance, tokenRequest, silent);
 }
 
 export async function acquireTokenWithMsal(
