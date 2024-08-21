@@ -93,6 +93,9 @@ export const createKeyFromPath = (path: StorePath): string => {
   let key = `/${path.componentName}`; // ComponentName is always there
   orderedPathSegments.forEach((segment) => {
     const segmentValue = path[segment as keyof StorePath];
+    if (segmentValue.includes("/")) {
+        throw new Error(`Invalid setting path segment: ${segment}`);
+    }
     key += `/${segmentValue !== undefined ? segmentValue : ""}`;
   });
   return key;
