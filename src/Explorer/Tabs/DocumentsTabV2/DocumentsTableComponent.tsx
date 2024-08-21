@@ -27,6 +27,7 @@ import {
   ColumnSizesMap,
   readSubComponentState,
   saveSubComponentState,
+  SubComponentName,
   WidthDefinition,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
@@ -84,7 +85,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 }: IDocumentsTableComponentProps) => {
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
     const columnIds = ["id"].concat(columnHeaders.partitionKeyHeaders);
-    const columnSizesMap: ColumnSizesMap = readSubComponentState("ColumnSizes", collection, {});
+    const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
     const columnSizesPx: ColumnSizesMap = {};
     columnIds.forEach((columnId) => {
       columnSizesPx[columnId] = (columnSizesMap && columnSizesMap[columnId]) || defaultSize;
@@ -104,7 +105,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         },
       };
 
-      saveSubComponentState("ColumnSizes", collection, newSizingOptions, true);
+      saveSubComponentState(SubComponentName.ColumnSizes, collection, newSizingOptions, true);
 
       return newSizingOptions;
     });

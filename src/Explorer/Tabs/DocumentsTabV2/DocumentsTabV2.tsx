@@ -21,6 +21,7 @@ import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
+  SubComponentName,
   TabDivider,
   readSubComponentState,
   saveSubComponentState,
@@ -566,7 +567,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // State
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
-    readSubComponentState("MainTabDivider", _collection, {
+    readSubComponentState(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
     }),
   );
@@ -581,7 +582,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // User's filter history
   const [lastFilterContents, setLastFilterContents] = useState<string[]>(() =>
-    readSubComponentState("FilterHistory", _collection, []),
+    readSubComponentState(SubComponentName.FilterHistory, _collection, []),
   );
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
@@ -1754,7 +1755,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
 
     setLastFilterContents(limitedLastFilterContents);
-    saveSubComponentState("FilterHistory", _collection, lastFilterContents);
+    saveSubComponentState(SubComponentName.FilterHistory, _collection, lastFilterContents);
   };
 
   const refreshDocumentsGrid = useCallback(
@@ -1881,7 +1882,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           <Allotment
             onDragEnd={(sizes: number[]) => {
               tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveSubComponentState("MainTabDivider", _collection, tabStateData);
+              saveSubComponentState(SubComponentName.MainTabDivider, _collection, tabStateData);
               setTabStateData(tabStateData);
             }}
           >

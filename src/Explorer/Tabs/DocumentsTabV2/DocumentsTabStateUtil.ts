@@ -7,7 +7,11 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 const componentName = "DocumentsTab";
-export type SubComponentName = "ColumnSizes" | "FilterHistory" | "MainTabDivider";
+export enum SubComponentName {
+  ColumnSizes = "ColumnSizes",
+  FilterHistory = "FilterHistory",
+  MainTabDivider = "MainTabDivider",
+}
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
 export type WidthDefinition = { idealWidth?: number; minWidth?: number };
