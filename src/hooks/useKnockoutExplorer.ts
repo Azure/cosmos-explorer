@@ -619,28 +619,7 @@ function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
   return messageOrigin === window.document.location.origin && message.type === MessageTypes.TelemetryInfo;
 }
 
-function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
-  if (
-    configContext.BACKEND_ENDPOINT &&
-    configContext.platform === Platform.Portal &&
-    process.env.NODE_ENV === "development"
-  ) {
-    inputs.extensionEndpoint = configContext.PROXY_PATH;
-  }
-
-  const authorizationToken = inputs.authorizationToken || "";
-  const databaseAccount = inputs.databaseAccount;
-
-  updateConfigContext({
-    BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
-    ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
-    MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
-    CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
-    PORTAL_BACKEND_ENDPOINT: inputs.portalBackendEndpoint,
-  });
-
-  const portalEnv = inputs.serverId as PortalEnv;
-
+function updateAADEndpoints(portalEnv: PortalEnv) {
   switch (portalEnv) {
     case "prod1":
     case "prod":
@@ -663,6 +642,29 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
       console.warn(`Unknown portal environment: ${portalEnv}`);
       break;
   }
+}
+
+function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
+  if (
+    configContext.BACKEND_ENDPOINT &&
+    configContext.platform === Platform.Portal &&
+    process.env.NODE_ENV === "development"
+  ) {
+    inputs.extensionEndpoint = configContext.PROXY_PATH;
+  }
+
+  const authorizationToken = inputs.authorizationToken || "";
+  const databaseAccount = inputs.databaseAccount;
+
+  updateConfigContext({
+    BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
+    ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+    MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
+    CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
+    PORTAL_BACKEND_ENDPOINT: inputs.portalBackendEndpoint,
+  });
+
+  updateAADEndpoints(inputs.serverId as PortalEnv);
   
   updateUserContext({
     authorizationToken,
