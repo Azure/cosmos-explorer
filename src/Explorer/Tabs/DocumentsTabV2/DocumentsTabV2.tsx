@@ -278,7 +278,7 @@ const createUploadButton = (container: Explorer): CommandButtonComponentProps =>
     iconAlt: label,
     onCommandClick: () => {
       const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-      selectedCollection && container.openUploadItemsPanePane();
+      selectedCollection && container.openUploadItemsPane();
     },
     commandButtonLabel: label,
     ariaLabel: label,
@@ -612,13 +612,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [partitionKeyPropertyHeaders],
   );
 
-  const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(() => {
+  const getInitialColumnSelection = () => {
     const columnsIds = ["id"];
     if (showPartitionKey(_collection, isPreferredApiMongoDB)) {
       columnsIds.push(...partitionKeyPropertyHeaders);
     }
     return columnsIds;
-  });
+  };
+
+  const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(getInitialColumnSelection);
 
   // new DocumentId() requires a DocumentTab which we mock with only the required properties
   const newDocumentId = useCallback(
@@ -1993,6 +1995,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       }
                       onColumnResize={onTableColumnResize}
                       onColumnSelectionChange={onColumnSelectionChange}
+                      defaultColumnSelection={getInitialColumnSelection()}
                     />
                   </div>
                 </div>

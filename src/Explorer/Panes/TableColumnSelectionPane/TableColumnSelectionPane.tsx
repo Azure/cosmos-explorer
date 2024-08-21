@@ -18,12 +18,14 @@ export interface TableColumnSelectionPaneProps {
   columnDefinitions: ColumnDefinition[];
   selectedColumnIds: string[];
   onSelectionChange: (newSelectedColumnIds: string[]) => void;
+  defaultSelection: string[];
 }
 
 export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> = ({
   columnDefinitions,
   selectedColumnIds,
   onSelectionChange,
+  defaultSelection,
 }: TableColumnSelectionPaneProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const originalSelectedColumnIds = React.useMemo(() => selectedColumnIds, []);
@@ -88,15 +90,20 @@ export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> =
             />
           </div>
 
-          {columnDefinitionList.map((columnDefinition) => (
-            <Checkbox
-              className="tableColumnSelectionCheckbox"
-              key={columnDefinition.id}
-              label={columnDefinition.label}
-              checked={selectedColumnIdsSet.has(columnDefinition.id)}
-              onChange={(_, checked) => onCheckedValueChange(columnDefinition.id, checked)}
-            />
-          ))}
+          <div style={{ flex: 1 }}>
+            {columnDefinitionList.map((columnDefinition) => (
+              <Checkbox
+                className="tableColumnSelectionCheckbox"
+                key={columnDefinition.id}
+                label={columnDefinition.label}
+                checked={selectedColumnIdsSet.has(columnDefinition.id)}
+                onChange={(_, checked) => onCheckedValueChange(columnDefinition.id, checked)}
+              />
+            ))}
+          </div>
+          <Button appearance="secondary" size="small" onClick={() => setNewSelectedColumnIds(defaultSelection)}>
+            Reset
+          </Button>
         </div>
         <div className="panelFooter" style={{ display: "flex", gap: theme.spacingHorizontalS }}>
           <Button appearance="primary" onClick={onSave}>

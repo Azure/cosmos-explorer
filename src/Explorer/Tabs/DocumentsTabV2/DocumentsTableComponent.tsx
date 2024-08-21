@@ -68,6 +68,7 @@ export interface IDocumentsTableComponentProps {
   isSelectionDisabled?: boolean;
   onColumnResize?: (columnId: string, width: number) => void;
   onColumnSelectionChange?: (newSelectedColumnIds: string[]) => void;
+  defaultColumnSelection?: string[];
 }
 
 interface TableRowData extends RowStateBase<DocumentsTableComponentItem> {
@@ -96,6 +97,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   isSelectionDisabled,
   onColumnResize: _onColumnResize,
   onColumnSelectionChange,
+  defaultColumnSelection,
 }: IDocumentsTableComponentProps) => {
   const styles = useDocumentsTabStyles();
 
@@ -392,11 +394,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     useSidePanel
       .getState()
       .openSidePanel(
-        "Save Query",
+        "Select columns",
         <TableColumnSelectionPane
           selectedColumnIds={selectedColumnIds}
           columnDefinitions={columnDefinitions}
           onSelectionChange={onColumnSelectionChange}
+          defaultSelection={defaultColumnSelection}
         />,
       );
   };
