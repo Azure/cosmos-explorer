@@ -624,17 +624,17 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
     case "prod1":
     case "prod":
       updateConfigContext({
-        AAD_ENDPOINT: Constants.AadEndpoints.Prod
+        AAD_ENDPOINT: Constants.AadEndpoints.Prod,
       });
       break;
     case "fairfax":
       updateConfigContext({
-        AAD_ENDPOINT: Constants.AadEndpoints.Fairfax
+        AAD_ENDPOINT: Constants.AadEndpoints.Fairfax,
       });
-      break;  
+      break;
     case "mooncake":
       updateConfigContext({
-        AAD_ENDPOINT: Constants.AadEndpoints.Mooncake
+        AAD_ENDPOINT: Constants.AadEndpoints.Mooncake,
       });
       break;
 
@@ -665,7 +665,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   });
 
   updateAADEndpoints(inputs.serverId as PortalEnv);
-  
+
   updateUserContext({
     authorizationToken,
     databaseAccount,
