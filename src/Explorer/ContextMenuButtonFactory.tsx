@@ -41,6 +41,10 @@ export interface DatabaseContextMenuButtonParams {
  * New resource tree (in ReactJS)
  */
 export const createDatabaseContextMenu = (container: Explorer, databaseId: string): TreeNodeMenuItem[] => {
+  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
+    return undefined;
+  }
+
   const items: TreeNodeMenuItem[] = [
     {
       iconSrc: AddCollectionIcon,

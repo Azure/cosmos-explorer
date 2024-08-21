@@ -1,6 +1,8 @@
 import {
   BrandVariants,
+  ComponentProps,
   FluentProvider,
+  FluentProviderSlots,
   Theme,
   createLightTheme,
   makeStyles,
@@ -10,16 +12,19 @@ import {
   webLightTheme,
 } from "@fluentui/react-components";
 import { Platform, configContext } from "ConfigContext";
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
 
 export const LayoutConstants = {
   rowHeight: 36,
 };
 
-export type CosmosFluentProviderProps = PropsWithChildren<{
-  className?: string;
-}>;
+// Our CosmosFluentProvider has the same props as a FluentProvider.
+export type CosmosFluentProviderProps = Omit<ComponentProps<FluentProviderSlots, "root">, "dir">;
+
+// PropsWithChildren<{
+//   className?: string;
+// }>;
 
 const useDefaultRootStyles = makeStyles({
   fluentProvider: {
@@ -32,15 +37,37 @@ const useDefaultRootStyles = makeStyles({
   },
 });
 
-export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ children, className }) => {
+const FluentProviderContext = React.createContext({
+  isInFluentProvider: false,
+});
+
+export const CosmosFluentProvider: React.FC<CosmosFluentProviderProps> = ({ children, className, ...props }) => {
+  // We use a React context to ensure that nested CosmosFluentProviders don't create nested FluentProviders.
+  // This helps during the transition from Fluent UI 8 to Fluent UI 9.
+  // As we convert components to Fluent UI 9, if we end up with nested FluentProviders, the inner FluentProvider will be a no-op.
+  const { isInFluentProvider } = React.useContext(FluentProviderContext);
   const styles = useDefaultRootStyles();
+
+  if (isInFluentProvider) {
+    // We're already in a fluent context, don't create another.
+    console.warn("Nested CosmosFluentProvider detected. This is likely a bug.");
+    return (
+      <div className={className} {...props}>
+        {children}
+      </div>
+    );
+  }
+
   return (
-    <FluentProvider
-      theme={getPlatformTheme(configContext.platform)}
-      className={mergeClasses(styles.fluentProvider, className)}
-    >
-      {children}
-    </FluentProvider>
+    <FluentProviderContext.Provider value={{ isInFluentProvider: true }}>
+      <FluentProvider
+        theme={getPlatformTheme(configContext.platform)}
+        className={mergeClasses(styles.fluentProvider, className)}
+        {...props}
+      >
+        {children}
+      </FluentProvider>
+    </FluentProviderContext.Provider>
   );
 };
 

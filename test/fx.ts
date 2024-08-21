@@ -2,13 +2,22 @@ import { AzureCliCredentials } from "@azure/ms-rest-nodeauth";
 import { expect, Frame, Locator, Page } from "@playwright/test";
 import crypto from "crypto";
 
-export function generateUniqueName(baseName = "", length = 4): string {
-  return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
+const RETRY_COUNT = 3;
+
+export interface TestNameOptions {
+  length?: number;
+  timestampped?: boolean;
+  prefixed?: boolean;
 }
 
-export function generateDatabaseNameWithTimestamp(baseName = "db", length = 1): string {
-  // We use '_' as the separator because it's supported across all the API types.
-  return `${baseName}${crypto.randomBytes(length).toString("hex")}_${Date.now()}`;
+export function generateUniqueName(baseName, options?: TestNameOptions): string {
+  const length = options?.length ?? 1;
+  const timestamp = options?.timestampped === undefined ? true : options.timestampped;
+  const prefixed = options?.prefixed === undefined ? true : options.prefixed;
+
+  const prefix = prefixed ? "t_" : "";
+  const suffix = timestamp ? `_${Date.now()}` : "";
+  return `${prefix}${baseName}${crypto.randomBytes(length).toString("hex")}${suffix}`;
 }
 
 export async function getAzureCLICredentials(): Promise<AzureCliCredentials> {
@@ -97,24 +106,131 @@ class TreeNode {
   }
 
   async expand(): Promise<void> {
-    // Sometimes, the expand button doesn't load at all, because the node didn't have children when it was initially loaded.
-    // Still, clicking the node will trigger loading and expansion. So if the node isn't expanded, we click it.
-
-    // The "aria-expanded" attribute is applied to the TreeItem. But we have the TreeItemLayout selected because the TreeItem contains the child tree as well.
-    // So, we need to find the TreeItem that contains this TreeItemLayout.
     const treeNodeContainer = this.frame.getByTestId(`TreeNodeContainer:${this.id}`);
+    const tree = this.frame.getByTestId(`Tree:${this.id}`);
 
-    if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
-      // Click the node, to trigger loading and expansion
-      await this.element.click();
+    // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+    const expandNode = async () => {
+      if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
+        // Click the node, to trigger loading and expansion
+        await this.element.click();
+      }
+
+      // Try three times to wait for the node to expand.
+      for (let i = 0; i < RETRY_COUNT; i++) {
+        try {
+          await tree.waitFor({ state: "visible" });
+          // The tree has expanded, let's get out of here
+          return true;
+        } catch {
+          // Just try again
+          if ((await treeNodeContainer.getAttribute("aria-expanded")) !== "true") {
+            // We might have collapsed the node, try expanding it again, then retry.
+            await this.element.click();
+          }
+        }
+      }
+      return false;
+    };
+
+    if (await expandNode()) {
+      return;
     }
-    await expect(treeNodeContainer).toHaveAttribute("aria-expanded", "true");
+
+    // The tree never expanded. OR, it may have expanded in between when we found the "ExpandIcon" and when we clicked it (it's happened before)
+    // So, let's try one more time to expand it.
+    if (!(await expandNode())) {
+      // The tree never expanded. This is a problem.
+      throw new Error(`Node ${this.id} did not expand after clicking it.`);
+    }
+
+    // We did it. It took a lot of weird messing around, but we expanded a tree node... I hope.
   }
 }
+
+export class Editor {
+  constructor(
+    public frame: Frame,
+    public locator: Locator,
+  ) {}
+
+  text(): Promise<string | null> {
+    return this.locator.evaluate((e) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const win = e.ownerDocument.defaultView as any;
+      if (win._monaco_getEditorContentForElement) {
+        return win._monaco_getEditorContentForElement(e);
+      }
+      return null;
+    });
+  }
+
+  async setText(text: string): Promise<void> {
+    // We trust that Monaco can handle the keyboard, and it's _extremely_ flaky to try and enter text using browser commands.
+    // So we use a hook we installed in 'window' to set the content of the editor.
+
+    // NOTE: This function is serialized and sent to the browser for execution
+    // So you can't use any variables from the outer scope, but we can send a string (via the second argument to evaluate)
+    await this.locator.evaluate((e, content) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const win = e.ownerDocument.defaultView as any;
+      if (win._monaco_setEditorContentForElement) {
+        win._monaco_setEditorContentForElement(e, content);
+      }
+    }, text);
+
+    expect(await this.text()).toEqual(text);
+  }
+}
+
+export class QueryTab {
+  resultsPane: Locator;
+  resultsView: Locator;
+  executeCTA: Locator;
+  errorList: Locator;
+  queryStatsList: Locator;
+  resultsEditor: Editor;
+  resultsTab: Locator;
+  queryStatsTab: Locator;
+  constructor(
+    public frame: Frame,
+    public tabId: string,
+    public tab: Locator,
+    public locator: Locator,
+  ) {
+    this.resultsPane = locator.getByTestId("QueryTab/ResultsPane");
+    this.resultsView = locator.getByTestId("QueryTab/ResultsPane/ResultsView");
+    this.executeCTA = locator.getByTestId("QueryTab/ResultsPane/ExecuteCTA");
+    this.errorList = locator.getByTestId("QueryTab/ResultsPane/ErrorList");
+    this.resultsEditor = new Editor(this.frame, this.resultsView.getByTestId("EditorReact/Host/Loaded"));
+    this.queryStatsList = locator.getByTestId("QueryTab/ResultsPane/ResultsView/QueryStatsList");
+    this.resultsTab = this.resultsView.getByTestId("QueryTab/ResultsPane/ResultsView/ResultsTab");
+    this.queryStatsTab = this.resultsView.getByTestId("QueryTab/ResultsPane/ResultsView/QueryStatsTab");
+  }
+
+  editor(): Editor {
+    const locator = this.locator.getByTestId("EditorReact/Host/Loaded");
+    return new Editor(this.frame, locator);
+  }
+}
+
+type PanelOpenOptions = {
+  closeTimeout?: number;
+};
 
 /** Helper class that provides locator methods for DataExplorer components, on top of a Frame */
 export class DataExplorer {
   constructor(public frame: Frame) {}
+
+  tab(tabId: string): Locator {
+    return this.frame.getByTestId(`Tab:${tabId}`);
+  }
+
+  queryTab(tabId: string): QueryTab {
+    const tab = this.tab(tabId);
+    const queryTab = tab.getByTestId("QueryTab");
+    return new QueryTab(this.frame, tabId, tab, queryTab);
+  }
 
   /** Select the primary global command button.
    *
@@ -134,18 +250,68 @@ export class DataExplorer {
     return this.frame.getByTestId(`Panel:${title}`);
   }
 
+  async waitForNode(treeNodeId: string): Promise<TreeNode> {
+    const node = this.treeNode(treeNodeId);
+
+    // Is the node already visible?
+    if (await node.element.isVisible()) {
+      return node;
+    }
+
+    // No, try refreshing the tree
+    const refreshButton = this.frame.getByTestId("Sidebar/RefreshButton");
+    await refreshButton.click();
+
+    // Try a few times to find the node
+    for (let i = 0; i < RETRY_COUNT; i++) {
+      try {
+        await node.element.waitFor();
+        return node;
+      } catch {
+        // Just try again
+      }
+    }
+
+    // We tried 3 times, but the node never appeared
+    throw new Error(`Node ${treeNodeId} not found and did not appear after refreshing.`);
+  }
+
+  async waitForContainerNode(databaseId: string, containerId: string): Promise<TreeNode> {
+    const databaseNode = await this.waitForNode(databaseId);
+
+    // The container node may be auto-expanded. Wait 5s for that to happen
+    try {
+      const containerNode = this.treeNode(`${databaseId}/${containerId}`);
+      await containerNode.element.waitFor({ state: "visible", timeout: 5 * 1000 });
+      return containerNode;
+    } catch {
+      // It didn't auto-expand, that's fine, we'll expand it ourselves
+    }
+
+    // Ok, expand the database node.
+    await databaseNode.expand();
+
+    return await this.waitForNode(`${databaseId}/${containerId}`);
+  }
+
   /** Select the tree node with the specified id */
   treeNode(id: string): TreeNode {
     return new TreeNode(this.frame.getByTestId(`TreeNode:${id}`), this.frame, id);
   }
 
   /** Waits for the panel with the specified title to be open, then runs the provided callback. After the callback completes, waits for the panel to close. */
-  async whilePanelOpen(title: string, action: (panel: Locator, okButton: Locator) => Promise<void>): Promise<void> {
+  async whilePanelOpen(
+    title: string,
+    action: (panel: Locator, okButton: Locator) => Promise<void>,
+    options?: PanelOpenOptions,
+  ): Promise<void> {
+    options ||= {};
+
     const panel = this.panel(title);
     await panel.waitFor();
     const okButton = panel.getByTestId("Panel/OkButton");
     await action(panel, okButton);
-    await panel.waitFor({ state: "detached" });
+    await panel.waitFor({ state: "detached", timeout: options.closeTimeout });
   }
 
   /** Waits for the Data Explorer app to load */
