@@ -639,6 +639,31 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     PORTAL_BACKEND_ENDPOINT: inputs.portalBackendEndpoint,
   });
 
+  const portalEnv = inputs.serverId as PortalEnv;
+
+  switch (portalEnv) {
+    case "prod1":
+    case "prod":
+      updateConfigContext({
+        AAD_ENDPOINT: Constants.AadEndpoints.Prod
+      });
+      break;
+    case "fairfax":
+      updateConfigContext({
+        AAD_ENDPOINT: Constants.AadEndpoints.Fairfax
+      });
+      break;  
+    case "mooncake":
+      updateConfigContext({
+        AAD_ENDPOINT: Constants.AadEndpoints.Mooncake
+      });
+      break;
+
+    default:
+      console.warn(`Unknown portal environment: ${portalEnv}`);
+      break;
+  }
+  
   updateUserContext({
     authorizationToken,
     databaseAccount,
