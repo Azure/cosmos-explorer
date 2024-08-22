@@ -38,9 +38,11 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         }
       }
     >
-      <Allotment>
+      <Allotment
+        onDragEnd={[Function]}
+      >
         <Allotment.Pane
-          minSize={175}
+          minSize={55}
           preferredSize="35%"
         >
           <div
@@ -77,6 +79,12 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
               className="___9o87uj0_0000000 ffefeo0"
             >
               <DocumentsTableComponent
+                collection={
+                  {
+                    "databaseId": "databaseId",
+                    "id": [Function],
+                  }
+                }
                 columnHeaders={
                   {
                     "idHeader": "id",
@@ -97,8 +105,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
           </div>
         </Allotment.Pane>
         <Allotment.Pane
-          minSize={300}
-          preferredSize="65%"
+          minSize={30}
         >
           <div
             style={

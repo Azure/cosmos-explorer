@@ -71,6 +71,8 @@ test("Query stats", async () => {
 });
 
 test("Query errors", async () => {
+  test.skip(true, "Disabled due to an issue with error reporting in the backend.");
+
   await queryEditor.locator.click();
   await queryEditor.setText("SELECT\n  glarb(c.id),\n  blarg(c.id)\nFROM c");
 

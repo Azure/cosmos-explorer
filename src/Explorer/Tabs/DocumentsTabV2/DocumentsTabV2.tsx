@@ -20,6 +20,12 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import {
+  SubComponentName,
+  TabDivider,
+  readSubComponentState,
+  saveSubComponentState,
+} from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
@@ -42,6 +48,7 @@ import * as Logger from "../../../Common/Logger";
 import * as MongoProxyClient from "../../../Common/MongoProxyClient";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { CollectionBase } from "../../../Contracts/ViewModels";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { extractPartitionKeyValues } from "../../../Utils/QueryUtils";
@@ -49,6 +56,8 @@ import DocumentId from "../../Tree/DocumentId";
 import ObjectId from "../../Tree/ObjectId";
 import TabsBase from "../TabsBase";
 import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
+
+const MAX_FILTER_HISTORY_COUNT = 100; // Datalist will become scrollable, so we can afford to keep more items than fit on the screen
 
 const loadMoreHeight = LayoutConstants.rowHeight;
 export const useDocumentsTabStyles = makeStyles({
@@ -473,6 +482,24 @@ export const buildQuery = (
   return QueryUtils.buildDocumentsQuery(filter, partitionKeyProperties, partitionKey);
 };
 
+/**
+ * Export to expose to unit tests
+ *
+ * Add array2 to array1 without duplicates
+ * @param array1
+ * @param array2
+ * @return array1 with array2 added without duplicates
+ */
+export const addStringsNoDuplicate = (array1: string[], array2: string[]): string[] => {
+  const result = [...array1];
+  array2.forEach((item) => {
+    if (!result.includes(item)) {
+      result.push(item);
+    }
+  });
+  return result;
+};
+
 // Export to expose to unit tests
 export interface IDocumentsTabComponentProps {
   isPreferredApiMongoDB: boolean;
@@ -486,6 +513,11 @@ export interface IDocumentsTabComponentProps {
   onIsExecutingChange: (isExecuting: boolean) => void;
   isTabActive: boolean;
 }
+
+const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collection.databaseId}-${collection.id()}`;
+
+const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
+const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
@@ -534,6 +566,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     ViewModels.DocumentExplorerState.noDocumentSelected,
   );
 
+  // State
+  const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
+    readSubComponentState(SubComponentName.MainTabDivider, _collection, {
+      leftPaneWidthPercent: 35,
+    }),
+  );
+
   const isQueryCopilotSampleContainer =
     _collection?.isSampleCollection &&
     _collection?.databaseId === QueryCopilotSampleDatabaseId &&
@@ -541,6 +580,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // For Mongo only
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
+
+  // User's filter history
+  const [lastFilterContents, setLastFilterContents] = useState<string[]>(() =>
+    readSubComponentState(SubComponentName.FilterHistory, _collection, []),
+  );
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
 
@@ -566,8 +610,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       }
     }
   }, [documentIds, clickedRowIndex, editorState]);
-
-  let lastFilterContents = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
 
   const applyFilterButton = {
     enabled: true,
@@ -883,7 +925,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   /**
    * Implementation using bulk delete NoSQL API
    */
-  let _deleteDocuments = useCallback(
+  const _deleteDocuments = useCallback(
     async (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
       onExecutionErrorChange(false);
       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocuments, {
@@ -894,11 +936,29 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
       // TODO: Once JS SDK Bug fix for bulk deleting legacy containers (whose systemKey==1) is released:
       // Remove the check for systemKey, remove call to deleteNoSqlDocument(). deleteNoSqlDocuments() should always be called.
-      return (
-        partitionKey.systemKey
-          ? deleteNoSqlDocument(_collection, toDeleteDocumentIds[0]).then(() => [toDeleteDocumentIds[0]])
-          : deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
-      )
+      const _deleteNoSqlDocuments = async (
+        collection: CollectionBase,
+        toDeleteDocumentIds: DocumentId[],
+      ): Promise<DocumentId[]> => {
+        return partitionKey.systemKey
+          ? deleteNoSqlDocument(collection, toDeleteDocumentIds[0]).then(() => [toDeleteDocumentIds[0]])
+          : deleteNoSqlDocuments(collection, toDeleteDocumentIds);
+      };
+
+      const deletePromise = !isPreferredApiMongoDB
+        ? _deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
+        : MongoProxyClient.deleteDocuments(
+            _collection.databaseId,
+            _collection as ViewModels.Collection,
+            toDeleteDocumentIds,
+          ).then(({ deletedCount, isAcknowledged }) => {
+            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+              return toDeleteDocumentIds;
+            }
+            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+          });
+
+      return deletePromise
         .then(
           (deletedIds) => {
             TelemetryProcessor.traceSuccess(
@@ -929,7 +989,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         )
         .finally(() => setIsExecuting(false));
     },
-    [_collection, onExecutionErrorChange, tabTitle],
+    [_collection, isPreferredApiMongoDB, onExecutionErrorChange, tabTitle],
   );
 
   const deleteDocuments = useCallback(
@@ -954,7 +1014,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           (error: Error) =>
             useDialog
               .getState()
-              .showOkModalDialog("Delete documents", `Document(s) deleted failed (${JSON.stringify(error)})`),
+              .showOkModalDialog("Delete documents", `Deleting document(s) failed (${error.message})`),
         )
         .finally(() => setIsExecuting(false));
     },
@@ -1220,7 +1280,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   const onFilterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
-      refreshDocumentsGrid(true);
+      onApplyFilterClick();
 
       // Suppress the default behavior of the key
       e.preventDefault();
@@ -1423,7 +1483,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       return partitionKey;
     };
 
-    lastFilterContents = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
     partitionKeyProperties = partitionKeyProperties?.map((partitionKeyProperty, i) => {
       if (partitionKeyProperty && ~partitionKeyProperty.indexOf(`"`)) {
         partitionKeyProperty = partitionKeyProperty.replace(/["]+/g, "");
@@ -1437,62 +1496,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
       return partitionKeyProperty;
     });
-
-    /**
-     * Mongo implementation
-     * TODO: update proxy to use mongo driver deleteMany
-     */
-    _deleteDocuments = (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
-      const promises = toDeleteDocumentIds.map((documentId) => _deleteDocument(documentId));
-      return Promise.all(promises);
-    };
-
-    const __deleteDocument = async (documentId: DocumentId): Promise<DocumentId> => {
-      await MongoProxyClient.deleteDocument(_collection.databaseId, _collection as ViewModels.Collection, documentId);
-      return documentId;
-    };
-
-    const _deleteDocument = useCallback(
-      (documentId: DocumentId): Promise<DocumentId> => {
-        onExecutionErrorChange(false);
-        const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
-          dataExplorerArea: Constants.Areas.Tab,
-          tabTitle,
-        });
-        setIsExecuting(true);
-        return __deleteDocument(documentId)
-          .then(
-            (deletedDocumentId) => {
-              TelemetryProcessor.traceSuccess(
-                Action.DeleteDocument,
-                {
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle,
-                },
-                startKey,
-              );
-              return deletedDocumentId;
-            },
-            (error) => {
-              onExecutionErrorChange(true);
-              console.error(error);
-              TelemetryProcessor.traceFailure(
-                Action.DeleteDocument,
-                {
-                  dataExplorerArea: Constants.Areas.Tab,
-                  tabTitle,
-                  error: getErrorMessage(error),
-                  errorStack: getErrorStack(error),
-                },
-                startKey,
-              );
-              return undefined;
-            },
-          )
-          .finally(() => setIsExecuting(false));
-      },
-      [__deleteDocument, onExecutionErrorChange, tabTitle],
-    );
 
     onSaveNewDocumentClick = useCallback((): Promise<unknown> => {
       const documentContent = JSON.parse(selectedDocumentContent);
@@ -1700,6 +1703,24 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   }
   // ***************** Mongo ***************************
 
+  const onApplyFilterClick = (): void => {
+    refreshDocumentsGrid(true);
+
+    // Remove duplicates, but keep order
+    if (lastFilterContents.includes(filterContent)) {
+      lastFilterContents.splice(lastFilterContents.indexOf(filterContent), 1);
+    }
+
+    // Save filter content to local storage
+    lastFilterContents.unshift(filterContent);
+
+    // Keep the list size under MAX_FILTER_HISTORY_COUNT. Drop last element if needed.
+    const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
+
+    setLastFilterContents(limitedLastFilterContents);
+    saveSubComponentState(SubComponentName.FilterHistory, _collection, lastFilterContents);
+  };
+
   const refreshDocumentsGrid = useCallback(
     (applyFilterButtonPressed: boolean): void => {
       // clear documents grid
@@ -1758,12 +1779,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               <div className={styles.filterRow}>
                 {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
                 <Input
-                  id="filterInput"
                   ref={filterInput}
                   type="text"
                   size="small"
-                  list="filtersList"
-                  className={styles.filterInput}
+                  list={`filtersList-${getUniqueId(_collection)}`}
+                  className={`filterInput ${styles.filterInput}`}
                   title="Type a query predicate or choose one from the list."
                   placeholder={
                     isPreferredApiMongoDB
@@ -1777,8 +1797,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   onBlur={() => setIsFilterFocused(false)}
                 />
 
-                <datalist id="filtersList">
-                  {lastFilterContents.map((filter) => (
+                <datalist id={`filtersList-${getUniqueId(_collection)}`}>
+                  {addStringsNoDuplicate(
+                    lastFilterContents,
+                    isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,
+                  ).map((filter) => (
                     <option key={filter} value={filter} />
                   ))}
                 </datalist>
@@ -1786,7 +1809,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 <Button
                   appearance="primary"
                   size="small"
-                  onClick={() => refreshDocumentsGrid(true)}
+                  onClick={onApplyFilterClick}
                   disabled={!applyFilterButton.enabled}
                   aria-label="Apply filter"
                   tabIndex={0}
@@ -1817,11 +1840,16 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             )}
           </>
         )}
-
         {/* <Split> doesn't like to be a flex child */}
         <div style={{ overflow: "hidden", height: "100%" }}>
-          <Allotment>
-            <Allotment.Pane preferredSize="35%" minSize={175}>
+          <Allotment
+            onDragEnd={(sizes: number[]) => {
+              tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
+              saveSubComponentState(SubComponentName.MainTabDivider, _collection, tabStateData);
+              setTabStateData(tabStateData);
+            }}
+          >
+            <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
               <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
                 <div className={styles.floatingControlsContainer}>
                   <div className={styles.floatingControls}>
@@ -1850,6 +1878,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       (partitionKey.systemKey && !isPreferredApiMongoDB) ||
                       (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
                     }
+                    collection={_collection}
                   />
                 </div>
                 {tableItems.length > 0 && (
@@ -1865,7 +1894,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 )}
               </div>
             </Allotment.Pane>
-            <Allotment.Pane preferredSize="65%" minSize={300}>
+            <Allotment.Pane minSize={30}>
               <div style={{ height: "100%", width: "100%" }}>
                 {isTabActive && selectedDocumentContent && selectedRows.size <= 1 && (
                   <EditorReact
