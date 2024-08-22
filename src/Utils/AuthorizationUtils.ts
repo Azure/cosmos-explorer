@@ -77,7 +77,7 @@ export async function acquireMsalTokenForAccount(account: DatabaseAccount, silen
   // TODO: here we could filter the account with "cachedTenantId" from the local storage instead of taking the active/first one?
   const msalAccount = msalInstance.getActiveAccount() ?? msalInstance.getAllAccounts()?.[0];
 
-  if (msalAccount === null) {
+  if (!msalAccount) {
     // If no account was found, we need to sign in.
     // This will eventually throw InteractionRequiredAuthError if silent is true, we won't handle it here.
     const loginRequest = {
@@ -86,7 +86,6 @@ export async function acquireMsalTokenForAccount(account: DatabaseAccount, silen
     };
     try {
       const loginResponse = await msalInstance.loginPopup(loginRequest);
-      localStorage.setItem("cachedTenantId", loginResponse.tenantId);
       return loginResponse.accessToken;
     } catch (error) {
       traceFailure(Action.SignInAad, {

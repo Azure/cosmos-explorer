@@ -586,9 +586,8 @@ async function configurePortal(): Promise<Explorer> {
               );
               try {
                 const aadToken = await acquireMsalTokenForAccount(userContext.databaseAccount, true);
-                updateUserContext({
-                  aadToken: aadToken,
-                });
+                updateUserContext({ aadToken: aadToken });
+                useDataPlaneRbac.setState({ aadTokenUpdated: true });
               } catch (authError) {
                 Logger.logWarning(
                   `Failed to silently acquire authorization token from MSAL: ${authError} for ${userContext.apiType} account ${account}`,
