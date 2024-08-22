@@ -1,6 +1,7 @@
 import {
   Checkbox,
   ChoiceGroup,
+  DefaultButton,
   IChoiceGroupOption,
   ISpinButtonStyles,
   IToggleStyles,
@@ -12,11 +13,15 @@ import {
   Toggle,
   TooltipHost,
 } from "@fluentui/react";
+import { makeStyles } from "@fluentui/react-components";
+import { AuthType } from "AuthType";
 import * as Constants from "Common/Constants";
 import { SplitterDirection } from "Common/Splitter";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { Platform, configContext } from "ConfigContext";
+import { useDialog } from "Explorer/Controls/Dialog";
 import { useDatabases } from "Explorer/useDatabases";
+import { deleteAllStates } from "Shared/AppStatePersistenceUtility";
 import {
   DefaultRUThreshold,
   LocalStorageUtility,
@@ -29,14 +34,13 @@ import * as StringUtility from "Shared/StringUtility";
 import { updateUserContext, userContext } from "UserContext";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
+import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
+import create, { UseStore } from "zustand";
 import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
-import { AuthType } from "AuthType";
-import create, { UseStore } from "zustand";
-import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
 
 export interface DataPlaneRbacState {
   dataPlaneRbacEnabled: boolean;
@@ -49,6 +53,13 @@ export interface DataPlaneRbacState {
 }
 
 type DataPlaneRbacStore = UseStore<Partial<DataPlaneRbacState>>;
+
+const useStyles = makeStyles({
+  bulletList: {
+    listStyleType: "disc",
+    paddingLeft: "20px",
+  },
+});
 
 export const useDataPlaneRbac: DataPlaneRbacStore = create(() => ({
   dataPlaneRbacEnabled: false,
@@ -133,6 +144,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const [copilotSampleDBEnabled, setCopilotSampleDBEnabled] = useState<boolean>(
     LocalStorageUtility.getEntryString(StorageKey.CopilotSampleDBEnabled) === "true",
   );
+
+  const styles = useStyles();
+
   const explorerVersion = configContext.gitSha;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
@@ -153,43 +167,45 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
 
-    LocalStorageUtility.setEntryString(StorageKey.DataPlaneRbacEnabled, enableDataPlaneRBACOption);
-    if (
-      enableDataPlaneRBACOption === Constants.RBACOptions.setTrueRBACOption ||
-      (enableDataPlaneRBACOption === Constants.RBACOptions.setAutomaticRBACOption &&
-        userContext.databaseAccount.properties.disableLocalAuth)
-    ) {
-      updateUserContext({
-        dataPlaneRbacEnabled: true,
-        hasDataPlaneRbacSettingChanged: true,
-      });
-      useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
-    } else {
-      updateUserContext({
-        dataPlaneRbacEnabled: false,
-        hasDataPlaneRbacSettingChanged: true,
-      });
-      const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
-      if (!userContext.features.enableAadDataPlane && !userContext.masterKey) {
-        let keys;
-        try {
-          keys = await listKeys(subscriptionId, resourceGroup, account.name);
-          updateUserContext({
-            masterKey: keys.primaryMasterKey,
-          });
-        } catch (error) {
-          // if listKeys fail because of permissions issue, then make call to get ReadOnlyKeys
-          if (error.code === "AuthorizationFailed") {
-            keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account.name);
+    if (configContext.platform !== Platform.Fabric) {
+      LocalStorageUtility.setEntryString(StorageKey.DataPlaneRbacEnabled, enableDataPlaneRBACOption);
+      if (
+        enableDataPlaneRBACOption === Constants.RBACOptions.setTrueRBACOption ||
+        (enableDataPlaneRBACOption === Constants.RBACOptions.setAutomaticRBACOption &&
+          userContext.databaseAccount.properties.disableLocalAuth)
+      ) {
+        updateUserContext({
+          dataPlaneRbacEnabled: true,
+          hasDataPlaneRbacSettingChanged: true,
+        });
+        useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
+      } else {
+        updateUserContext({
+          dataPlaneRbacEnabled: false,
+          hasDataPlaneRbacSettingChanged: true,
+        });
+        const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+        if (!userContext.features.enableAadDataPlane && !userContext.masterKey) {
+          let keys;
+          try {
+            keys = await listKeys(subscriptionId, resourceGroup, account.name);
             updateUserContext({
-              masterKey: keys.primaryReadonlyMasterKey,
+              masterKey: keys.primaryMasterKey,
             });
-          } else {
-            logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
-            throw error;
+          } catch (error) {
+            // if listKeys fail because of permissions issue, then make call to get ReadOnlyKeys
+            if (error.code === "AuthorizationFailed") {
+              keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account.name);
+              updateUserContext({
+                masterKey: keys.primaryReadonlyMasterKey,
+              });
+            } else {
+              logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+              throw error;
+            }
           }
+          useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
         }
-        useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
       }
     }
 
@@ -476,55 +492,57 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </div>
           </div>
         )}
-        {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && (
-          <>
-            <div className="settingsSection">
-              <div className="settingsSectionPart">
-                <fieldset>
-                  <legend id="enableDataPlaneRBACOptions" className="settingsSectionLabel legendLabel">
-                    Enable Entra ID RBAC
-                  </legend>
-                  <TooltipHost
-                    content={
-                      <>
-                        Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
-                        ID RBAC.
-                        <a
-                          href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {" "}
-                          Learn more{" "}
-                        </a>
-                      </>
-                    }
-                  >
-                    <Icon iconName="Info" ariaLabel="Info tooltip" className="panelInfoIcon" tabIndex={0} />
-                  </TooltipHost>
-                  {showDataPlaneRBACWarning && configContext.platform === Platform.Portal && (
-                    <MessageBar
-                      messageBarType={MessageBarType.warning}
-                      isMultiline={true}
-                      onDismiss={() => setShowDataPlaneRBACWarning(false)}
-                      dismissButtonAriaLabel="Close"
+        {userContext.apiType === "SQL" &&
+          userContext.authType === AuthType.AAD &&
+          configContext.platform !== Platform.Fabric && (
+            <>
+              <div className="settingsSection">
+                <div className="settingsSectionPart">
+                  <fieldset>
+                    <legend id="enableDataPlaneRBACOptions" className="settingsSectionLabel legendLabel">
+                      Enable Entra ID RBAC
+                    </legend>
+                    <TooltipHost
+                      content={
+                        <>
+                          Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable
+                          Entra ID RBAC.
+                          <a
+                            href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {" "}
+                            Learn more{" "}
+                          </a>
+                        </>
+                      }
                     >
-                      Please click on &quot;Login for Entra ID RBAC&quot; button prior to performing Entra ID RBAC
-                      operations
-                    </MessageBar>
-                  )}
-                  <ChoiceGroup
-                    ariaLabelledBy="enableDataPlaneRBACOptions"
-                    options={dataPlaneRBACOptionsList}
-                    styles={choiceButtonStyles}
-                    selectedKey={enableDataPlaneRBACOption}
-                    onChange={handleOnDataPlaneRBACOptionChange}
-                  />
-                </fieldset>
+                      <Icon iconName="Info" ariaLabel="Info tooltip" className="panelInfoIcon" tabIndex={0} />
+                    </TooltipHost>
+                    {showDataPlaneRBACWarning && configContext.platform === Platform.Portal && (
+                      <MessageBar
+                        messageBarType={MessageBarType.warning}
+                        isMultiline={true}
+                        onDismiss={() => setShowDataPlaneRBACWarning(false)}
+                        dismissButtonAriaLabel="Close"
+                      >
+                        Please click on &quot;Login for Entra ID RBAC&quot; button prior to performing Entra ID RBAC
+                        operations
+                      </MessageBar>
+                    )}
+                    <ChoiceGroup
+                      ariaLabelledBy="enableDataPlaneRBACOptions"
+                      options={dataPlaneRBACOptionsList}
+                      styles={choiceButtonStyles}
+                      selectedKey={enableDataPlaneRBACOption}
+                      onChange={handleOnDataPlaneRBACOptionChange}
+                    />
+                  </fieldset>
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
         {userContext.apiType === "SQL" && (
           <>
             <div className="settingsSection">
@@ -830,6 +848,34 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </div>
           </div>
         )}
+        <div className="settingsSection">
+          <div className="settingsSectionPart">
+            <DefaultButton
+              onClick={() => {
+                useDialog.getState().showOkCancelModalDialog(
+                  "Clear History",
+                  undefined,
+                  "Are you sure you want to proceed?",
+                  () => deleteAllStates(),
+                  "Cancel",
+                  undefined,
+                  <>
+                    <span>
+                      This action will clear the all customizations for this account in this browser, including:
+                    </span>
+                    <ul className={styles.bulletList}>
+                      <li>Reset your customized tab layout, including the splitter positions</li>
+                      <li>Erase your table column preferences, including any custom columns</li>
+                      <li>Clear your filter history</li>
+                    </ul>
+                  </>,
+                );
+              }}
+            >
+              Clear History
+            </DefaultButton>
+          </div>
+        </div>
         <div className="settingsSection">
           <div className="settingsSectionPart">
             <div className="settingsSectionLabel">Explorer Version</div>

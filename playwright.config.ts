@@ -12,7 +12,6 @@ export default defineConfig({
   reporter: process.env.CI ? "blob" : "html",
   timeout: 10 * 60 * 1000,
   use: {
-    actionTimeout: 5 * 60 * 1000,
     trace: "off",
     video: "off",
     screenshot: "on",
@@ -23,7 +22,8 @@ export default defineConfig({
   },
 
   expect: {
-    timeout: 5 * 60 * 1000,
+    // Many of our expectations take a little longer than the default 5 seconds.
+    timeout: 15 * 1000,
   },
 
   projects: [

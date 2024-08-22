@@ -24,7 +24,6 @@ export const setEntryBoolean = (key: StorageKey, value: boolean): void =>
 export const setEntryObject = (key: StorageKey, value: unknown): void => {
   localStorage.setItem(StorageKey[key], JSON.stringify(value));
 };
-
 export const getEntryObject = <T>(key: StorageKey): T | null => {
   const item = localStorage.getItem(StorageKey[key]);
   if (item) {

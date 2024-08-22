@@ -295,7 +295,7 @@ export default class Explorer {
   }
 
   public openNPSSurveyDialog(): void {
-    if (!Platform.Portal) {
+    if (!Platform.Portal || !["Postgres", "SQL", "Mongo"].includes(userContext.apiType)) {
       return;
     }
 

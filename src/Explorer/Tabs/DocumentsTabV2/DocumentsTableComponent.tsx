@@ -37,6 +37,13 @@ import {
 } from "@fluentui/react-icons";
 import { NormalizedEventKey } from "Common/Constants";
 import { TableColumnSelectionPane } from "Explorer/Panes/TableColumnSelectionPane/TableColumnSelectionPane";
+import {
+  ColumnSizesMap,
+  readSubComponentState,
+  saveSubComponentState,
+  SubComponentName,
+  WidthDefinition,
+} from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
@@ -44,6 +51,7 @@ import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/Keybo
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useCallback, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
+import * as ViewModels from "../../../Contracts/ViewModels";
 
 export type DocumentsTableComponentItem = {
   id: string;
@@ -53,7 +61,6 @@ export type ColumnDefinition = {
   id: string;
   label: string;
   isPartitionKey: boolean;
-  defaultWidthPx?: number;
 };
 export interface IDocumentsTableComponentProps {
   onRefreshTable: () => void;
@@ -66,7 +73,7 @@ export interface IDocumentsTableComponentProps {
   columnDefinitions: ColumnDefinition[];
   style?: React.CSSProperties;
   isSelectionDisabled?: boolean;
-  onColumnResize?: (columnId: string, width: number) => void;
+  collection: ViewModels.CollectionBase;
   onColumnSelectionChange?: (newSelectedColumnIds: string[]) => void;
   defaultColumnSelection?: string[];
 }
@@ -81,8 +88,6 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
   data: TableRowData[];
 }
 
-const DEFAULT_COLUMN_WIDTH_PX = 200;
-const MIN_COLUMN_WIDTH_PX = 20;
 const COLUMNS_MENU_NAME = "columnsMenu";
 
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
@@ -95,21 +100,26 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   selectedColumnIds,
   columnDefinitions,
   isSelectionDisabled,
-  onColumnResize: _onColumnResize,
+  collection,
   onColumnSelectionChange,
   defaultColumnSelection,
 }: IDocumentsTableComponentProps) => {
   const styles = useDocumentsTabStyles();
 
-  const initialSizingOptions: TableColumnSizingOptions = {};
-  columnDefinitions.forEach((column) => {
-    initialSizingOptions[column.id] = {
-      idealWidth: column.defaultWidthPx || DEFAULT_COLUMN_WIDTH_PX, // 0 is not a valid width
-      minWidth: MIN_COLUMN_WIDTH_PX,
-    };
+  const defaultSize: WidthDefinition = {
+    idealWidth: 200,
+    minWidth: 50,
+  };
+
+  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
+    const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
+    const columnSizesPx: ColumnSizesMap = {};
+    selectedColumnIds.forEach((columnId) => {
+      columnSizesPx[columnId] = (columnSizesMap && columnSizesMap[columnId]) || defaultSize;
+    });
+    return columnSizesPx;
   });
 
-  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(initialSizingOptions);
   const [sortState, setSortState] = React.useState<{
     sortDirection: "ascending" | "descending";
     sortColumn: TableColumnId | undefined;
@@ -118,19 +128,21 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     sortColumn: undefined,
   });
 
-  const onColumnResize = React.useCallback(
-    (_, { columnId, width }) => {
-      setColumnSizingOptions((state) => ({
+  const onColumnResize = React.useCallback((_, { columnId, width }) => {
+    setColumnSizingOptions((state) => {
+      const newSizingOptions = {
         ...state,
         [columnId]: {
           ...state[columnId],
           idealWidth: width,
         },
-      }));
-      _onColumnResize(columnId, width);
-    },
-    [_onColumnResize],
-  );
+      };
+
+      saveSubComponentState(SubComponentName.ColumnSizes, collection, newSizingOptions, true);
+
+      return newSizingOptions;
+    });
+  }, []);
 
   // const restoreFocusTargetAttribute = useRestoreFocusTarget();
 

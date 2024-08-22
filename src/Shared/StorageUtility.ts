@@ -31,6 +31,7 @@ export enum StorageKey {
   PriorityLevel,
   DocumentsTabPrefs,
   DefaultQueryResultsView,
+  AppState,
 }
 
 export const hasRUThresholdBeenConfigured = (): boolean => {

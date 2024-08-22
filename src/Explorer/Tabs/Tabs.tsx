@@ -57,7 +57,8 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const defaultMessageBarStyles: IMessageBarStyles = {
     root: {
       height: `${LayoutConstants.rowHeight}px`,
-      overflow: "auto",
+      overflow: "hidden",
+      flexDirection: "row",
     },
   };
 
@@ -298,11 +299,15 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
 
   if (tab) {
     if ("render" in tab) {
-      return <div {...attrs}>{tab.render()}</div>;
+      return (
+        <div data-test={`Tab:${tab.tabId}`} {...attrs}>
+          {tab.render()}
+        </div>
+      );
     }
   }
 
-  return <div {...attrs} ref={ref} data-bind="html:html" />;
+  return <div data-test={`Tab:${tab.tabId}`} {...attrs} ref={ref} data-bind="html:html" />;
 }
 
 const onKeyPressReactTab = (e: KeyboardEvent, tabKind: ReactTabKind): void => {

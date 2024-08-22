@@ -1,4 +1,5 @@
 import { MinimalQueryIterator } from "Common/IteratorUtilities";
+import QueryError from "Common/QueryError";
 import { QueryResults } from "Contracts/ViewModels";
 import { CopilotMessage, CopilotSchemaAllocationInfo } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { guid } from "Explorer/Tables/Utilities";
@@ -27,7 +28,7 @@ export interface QueryCopilotState {
   showSamplePrompts: boolean;
   queryIterator: MinimalQueryIterator | undefined;
   queryResults: QueryResults | undefined;
-  errorMessage: string;
+  errors: QueryError[];
   isSamplePromptsOpen: boolean;
   showPromptTeachingBubble: boolean;
   showDeletePopup: boolean;
@@ -70,7 +71,7 @@ export interface QueryCopilotState {
   setShowSamplePrompts: (showSamplePrompts: boolean) => void;
   setQueryIterator: (queryIterator: MinimalQueryIterator | undefined) => void;
   setQueryResults: (queryResults: QueryResults | undefined) => void;
-  setErrorMessage: (errorMessage: string) => void;
+  setErrors: (errors: QueryError[]) => void;
   setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => void;
   setShowPromptTeachingBubble: (showPromptTeachingBubble: boolean) => void;
   setShowDeletePopup: (showDeletePopup: boolean) => void;
@@ -117,7 +118,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   showSamplePrompts: false,
   queryIterator: undefined,
   queryResults: undefined,
-  errorMessage: "",
+  errors: [],
   isSamplePromptsOpen: false,
   showDeletePopup: false,
   showFeedbackBar: false,
@@ -170,7 +171,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
   setShowSamplePrompts: (showSamplePrompts: boolean) => set({ showSamplePrompts }),
   setQueryIterator: (queryIterator: MinimalQueryIterator | undefined) => set({ queryIterator }),
   setQueryResults: (queryResults: QueryResults | undefined) => set({ queryResults }),
-  setErrorMessage: (errorMessage: string) => set({ errorMessage }),
+  setErrors: (errors: QueryError[]) => set({ errors }),
   setIsSamplePromptsOpen: (isSamplePromptsOpen: boolean) => set({ isSamplePromptsOpen }),
   setShowDeletePopup: (showDeletePopup: boolean) => set({ showDeletePopup }),
   setShowFeedbackBar: (showFeedbackBar: boolean) => set({ showFeedbackBar }),
@@ -225,7 +226,7 @@ export const useQueryCopilot: QueryCopilotStore = create((set) => ({
       showSamplePrompts: false,
       queryIterator: undefined,
       queryResults: undefined,
-      errorMessage: "",
+      errors: [],
       isSamplePromptsOpen: false,
       showDeletePopup: false,
       showFeedbackBar: false,

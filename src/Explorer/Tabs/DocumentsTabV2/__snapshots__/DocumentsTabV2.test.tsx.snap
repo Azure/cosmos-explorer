@@ -38,9 +38,11 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
         }
       }
     >
-      <Allotment>
+      <Allotment
+        onDragEnd={[Function]}
+      >
         <Allotment.Pane
-          minSize={175}
+          minSize={55}
           preferredSize="35%"
         >
           <div
@@ -85,6 +87,12 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
                 }
               >
                 <DocumentsTableComponent
+                  collection={
+                    {
+                      "databaseId": "databaseId",
+                      "id": [Function],
+                    }
+                  }
                   columnDefinitions={
                     [
                       {
@@ -94,9 +102,13 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
                       },
                     ]
                   }
+                  defaultColumnSelection={
+                    [
+                      "id",
+                    ]
+                  }
                   isSelectionDisabled={true}
                   items={[]}
-                  onColumnResize={[Function]}
                   onColumnSelectionChange={[Function]}
                   onItemClicked={[Function]}
                   onRefreshTable={[Function]}
@@ -117,8 +129,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
           </div>
         </Allotment.Pane>
         <Allotment.Pane
-          minSize={300}
-          preferredSize="65%"
+          minSize={30}
         >
           <div
             style={
