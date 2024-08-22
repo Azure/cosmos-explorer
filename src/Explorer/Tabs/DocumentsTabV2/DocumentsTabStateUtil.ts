@@ -11,11 +11,13 @@ export enum SubComponentName {
   ColumnSizes = "ColumnSizes",
   FilterHistory = "FilterHistory",
   MainTabDivider = "MainTabDivider",
+  ColumnsSelection = "ColumnsSelection",
 }
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
 export type WidthDefinition = { idealWidth?: number; minWidth?: number };
 export type TabDivider = { leftPaneWidthPercent: number };
+export type ColumnsSelection = { selectedColumnIds: string[] };
 
 /**
  *

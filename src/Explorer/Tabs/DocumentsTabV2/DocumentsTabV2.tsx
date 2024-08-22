@@ -470,6 +470,15 @@ export const showPartitionKey = (collection: ViewModels.CollectionBase, isPrefer
 };
 
 // Export to expose to unit tests
+/**
+ * Build default query
+ * @param isMongo true if mongo api
+ * @param filter
+ * @param partitionKeyProperties optional for mongo
+ * @param partitionKey  optional for mongo
+ * @param additionalField
+ * @returns
+ */
 export const buildQuery = (
   isMongo: boolean,
   filter: string,
@@ -647,11 +656,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   );
 
   const getInitialColumnSelection = () => {
-    const columnsIds = ["id"];
+    const defaultColumnsIds = ["id"];
     if (showPartitionKey(_collection, isPreferredApiMongoDB)) {
-      columnsIds.push(...partitionKeyPropertyHeaders);
+      defaultColumnsIds.push(...partitionKeyPropertyHeaders);
     }
-    return columnsIds;
+
+    return readSubComponentState(SubComponentName.ColumnsSelection, _collection, defaultColumnsIds);
   };
 
   const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(getInitialColumnSelection);
@@ -987,15 +997,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       const deletePromise = !isPreferredApiMongoDB
         ? _deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
         : MongoProxyClient.deleteDocuments(
-          _collection.databaseId,
-          _collection as ViewModels.Collection,
-          toDeleteDocumentIds,
-        ).then(({ deletedCount, isAcknowledged }) => {
-          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-            return toDeleteDocumentIds;
-          }
-          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-        });
+            _collection.databaseId,
+            _collection as ViewModels.Collection,
+            toDeleteDocumentIds,
+          ).then(({ deletedCount, isAcknowledged }) => {
+            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+              return toDeleteDocumentIds;
+            }
+            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+          });
 
       return deletePromise
         .then(
@@ -1068,8 +1078,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         ? `the selected ${selectedRows.size} items`
         : "the selected item"
       : isPlural
-        ? `the selected ${selectedRows.size} documents`
-        : "the selected document";
+      ? `the selected ${selectedRows.size} documents`
+      : "the selected document";
     const msg = `Are you sure you want to delete ${documentName}?`;
 
     useDialog
@@ -1845,6 +1855,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
 
     setSelectedColumnIds(newSelectedColumnIds);
+
+    saveSubComponentState(SubComponentName.ColumnsSelection, _collection, newSelectedColumnIds);
   };
 
   const prevSelectedColumnIds = usePrevious({ selectedColumnIds, setSelectedColumnIds });

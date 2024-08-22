@@ -69,7 +69,7 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => { },
+      showOkModalDialog: () => {},
     })),
   },
 }));
@@ -92,11 +92,13 @@ async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P> | S
 describe("Documents tab (noSql API)", () => {
   describe("buildQuery", () => {
     it("should generate the right select query for SQL API", () => {
-      expect(buildQuery(false, "", ['pk'], {
-        paths: ['pk'],
-        kind: 'Hash',
-        version: 2,
-      })).toContain("select");
+      expect(
+        buildQuery(false, "", ["pk"], {
+          paths: ["pk"],
+          kind: "Hash",
+          version: 2,
+        }),
+      ).toContain("select");
     });
   });
 
