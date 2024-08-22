@@ -14,7 +14,7 @@ export enum SubComponentName {
 }
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
-export type WidthDefinition = { idealWidth?: number; minWidth?: number };
+export type WidthDefinition = { widthPx: number };
 export type TabDivider = { leftPaneWidthPercent: number };
 
 /**
