@@ -1,4 +1,8 @@
 import {
+  AuthError as msalAuthError,
+  BrowserAuthErrorMessage as msalBrowserAuthErrorMessage,
+} from "@azure/msal-browser";
+import {
   Checkbox,
   ChoiceGroup,
   DefaultButton,
@@ -6,8 +10,6 @@ import {
   ISpinButtonStyles,
   IToggleStyles,
   Icon,
-  MessageBar,
-  MessageBarType,
   Position,
   SpinButton,
   Toggle,
@@ -32,6 +34,7 @@ import {
 } from "Shared/StorageUtility";
 import * as StringUtility from "Shared/StringUtility";
 import { updateUserContext, userContext } from "UserContext";
+import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
@@ -84,7 +87,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled)
       : Constants.RBACOptions.setAutomaticRBACOption,
   );
-  const [showDataPlaneRBACWarning, setShowDataPlaneRBACWarning] = useState<boolean>(false);
 
   const [ruThresholdEnabled, setRUThresholdEnabled] = useState<boolean>(isRUThresholdEnabled());
   const [ruThreshold, setRUThreshold] = useState<number>(getRUThreshold());
@@ -179,6 +181,24 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           hasDataPlaneRbacSettingChanged: true,
         });
         useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
+        try {
+          const aadToken = await acquireMsalTokenForAccount(userContext.databaseAccount, true);
+          updateUserContext({ aadToken: aadToken });
+          useDataPlaneRbac.setState({ aadTokenUpdated: true });
+        } catch (authError) {
+          if (
+            authError instanceof msalAuthError &&
+            authError.errorCode === msalBrowserAuthErrorMessage.popUpWindowError.code
+          ) {
+            logConsoleError(
+              `We were unable to establish authorization for this account, due to pop-ups being disabled in the browser.\nPlease enable pop-ups for this site and click on "Login for Entra ID" button`,
+            );
+          } else {
+            logConsoleError(
+              `"Failed to acquire authorization token automatically. Please click on "Login for Entra ID" button to enable Entra ID RBAC operations`,
+            );
+          }
+        }
       } else {
         updateUserContext({
           dataPlaneRbacEnabled: false,
@@ -323,13 +343,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     option: IChoiceGroupOption,
   ): void => {
     setEnableDataPlaneRBACOption(option.key);
-
-    const shouldShowWarning =
-      (option.key === Constants.RBACOptions.setTrueRBACOption ||
-        (option.key === Constants.RBACOptions.setAutomaticRBACOption &&
-          userContext.databaseAccount.properties.disableLocalAuth === true)) &&
-      !useDataPlaneRbac.getState().aadTokenUpdated;
-    setShowDataPlaneRBACWarning(shouldShowWarning);
   };
 
   const handleOnRUThresholdToggleChange = (ev: React.MouseEvent<HTMLElement>, checked?: boolean): void => {
@@ -520,17 +533,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     >
                       <Icon iconName="Info" ariaLabel="Info tooltip" className="panelInfoIcon" tabIndex={0} />
                     </TooltipHost>
-                    {showDataPlaneRBACWarning && configContext.platform === Platform.Portal && (
-                      <MessageBar
-                        messageBarType={MessageBarType.warning}
-                        isMultiline={true}
-                        onDismiss={() => setShowDataPlaneRBACWarning(false)}
-                        dismissButtonAriaLabel="Close"
-                      >
-                        Please click on &quot;Login for Entra ID RBAC&quot; button prior to performing Entra ID RBAC
-                        operations
-                      </MessageBar>
-                    )}
                     <ChoiceGroup
                       ariaLabelledBy="enableDataPlaneRBACOptions"
                       options={dataPlaneRBACOptionsList}
