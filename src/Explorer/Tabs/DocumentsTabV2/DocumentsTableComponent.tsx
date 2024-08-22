@@ -28,7 +28,6 @@ import {
   readSubComponentState,
   saveSubComponentState,
   SubComponentName,
-  WidthDefinition,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
@@ -68,11 +67,10 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
   data: TableRowData[];
 }
 
-const defaultSize: WidthDefinition = {
+const defaultSize = {
   idealWidth: 200,
   minWidth: 50,
 };
-
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
   onSelectedRowsChange,
@@ -86,16 +84,28 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
     const columnIds = ["id"].concat(columnHeaders.partitionKeyHeaders);
     const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
-    const columnSizesPx: ColumnSizesMap = {};
+    const columnSizesPx: TableColumnSizingOptions = {};
     columnIds.forEach((columnId) => {
-      columnSizesPx[columnId] = (columnSizesMap && columnSizesMap[columnId]) || defaultSize;
+      if (
+        !columnSizesMap ||
+        !columnSizesMap[columnId] ||
+        columnSizesMap[columnId].widthPx === undefined ||
+        isNaN(columnSizesMap[columnId].widthPx)
+      ) {
+        columnSizesPx[columnId] = defaultSize;
+      } else {
+        columnSizesPx[columnId] = {
+          idealWidth: columnSizesMap[columnId].widthPx,
+          minWidth: 50,
+        };
+      }
     });
     return columnSizesPx;
   });
 
   const styles = useDocumentsTabStyles();
 
-  const onColumnResize = React.useCallback((_, { columnId, width }) => {
+  const onColumnResize = React.useCallback((_, { columnId, width }: { columnId: string; width: number }) => {
     setColumnSizingOptions((state) => {
       const newSizingOptions = {
         ...state,
@@ -105,7 +115,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         },
       };
 
-      saveSubComponentState(SubComponentName.ColumnSizes, collection, newSizingOptions, true);
+      const persistentSizes = Object.keys(newSizingOptions).reduce((acc, key) => {
+        acc[key] = {
+          widthPx: newSizingOptions[key].idealWidth,
+        };
+        return acc;
+      }, {} as ColumnSizesMap);
+
+      saveSubComponentState(SubComponentName.ColumnSizes, collection, persistentSizes, true);
 
       return newSizingOptions;
     });
