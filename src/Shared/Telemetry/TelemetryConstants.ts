@@ -139,6 +139,9 @@ export enum Action {
   QueryEdited,
   ExecuteQueryGeneratedFromQueryCopilot,
   DeleteDocuments,
+  ReadPersistedTabState,
+  SavePersistedTabState,
+  DeletePersistedTabState,
 }
 
 export const ActionModifiers = {

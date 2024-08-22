@@ -20,3 +20,14 @@ export const setEntryNumber = (key: StorageKey, value: number): void =>
 
 export const setEntryBoolean = (key: StorageKey, value: boolean): void =>
   localStorage.setItem(StorageKey[key], value.toString());
+
+export const setEntryObject = (key: StorageKey, value: unknown): void => {
+  localStorage.setItem(StorageKey[key], JSON.stringify(value));
+};
+export const getEntryObject = <T>(key: StorageKey): T | null => {
+  const item = localStorage.getItem(StorageKey[key]);
+  if (item) {
+    return JSON.parse(item) as T;
+  }
+  return null;
+};

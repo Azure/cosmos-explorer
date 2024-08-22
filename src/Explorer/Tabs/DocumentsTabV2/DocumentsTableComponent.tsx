@@ -1,4 +1,5 @@
 import {
+  createTableColumn,
   Menu,
   MenuItem,
   MenuList,
@@ -16,19 +17,26 @@ import {
   TableRow,
   TableRowId,
   TableSelectionCell,
-  createTableColumn,
   useArrowNavigationGroup,
   useTableColumnSizing_unstable,
   useTableFeatures,
   useTableSelection,
 } from "@fluentui/react-components";
 import { NormalizedEventKey } from "Common/Constants";
+import {
+  ColumnSizesMap,
+  readSubComponentState,
+  saveSubComponentState,
+  SubComponentName,
+  WidthDefinition,
+} from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
 import React, { useCallback, useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
+import * as ViewModels from "../../../Contracts/ViewModels";
 
 export type DocumentsTableComponentItem = {
   id: string;
@@ -47,6 +55,7 @@ export interface IDocumentsTableComponentProps {
   columnHeaders: ColumnHeaders;
   style?: React.CSSProperties;
   isSelectionDisabled?: boolean;
+  collection: ViewModels.CollectionBase;
 }
 
 interface TableRowData extends RowStateBase<DocumentsTableComponentItem> {
@@ -59,6 +68,11 @@ interface ReactWindowRenderFnProps extends ListChildComponentProps {
   data: TableRowData[];
 }
 
+const defaultSize: WidthDefinition = {
+  idealWidth: 200,
+  minWidth: 50,
+};
+
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   items,
   onSelectedRowsChange,
@@ -67,32 +81,34 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   size,
   columnHeaders,
   isSelectionDisabled,
+  collection,
 }: IDocumentsTableComponentProps) => {
-  const styles = useDocumentsTabStyles();
-
-  const initialSizingOptions: TableColumnSizingOptions = {
-    id: {
-      idealWidth: 280,
-      minWidth: 50,
-    },
-  };
-  columnHeaders.partitionKeyHeaders.forEach((pkHeader) => {
-    initialSizingOptions[pkHeader] = {
-      idealWidth: 200,
-      minWidth: 50,
-    };
+  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
+    const columnIds = ["id"].concat(columnHeaders.partitionKeyHeaders);
+    const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
+    const columnSizesPx: ColumnSizesMap = {};
+    columnIds.forEach((columnId) => {
+      columnSizesPx[columnId] = (columnSizesMap && columnSizesMap[columnId]) || defaultSize;
+    });
+    return columnSizesPx;
   });
 
-  const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(initialSizingOptions);
+  const styles = useDocumentsTabStyles();
 
   const onColumnResize = React.useCallback((_, { columnId, width }) => {
-    setColumnSizingOptions((state) => ({
-      ...state,
-      [columnId]: {
-        ...state[columnId],
-        idealWidth: width,
-      },
-    }));
+    setColumnSizingOptions((state) => {
+      const newSizingOptions = {
+        ...state,
+        [columnId]: {
+          ...state[columnId],
+          idealWidth: width,
+        },
+      };
+
+      saveSubComponentState(SubComponentName.ColumnSizes, collection, newSizingOptions, true);
+
+      return newSizingOptions;
+    });
   }, []);
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
