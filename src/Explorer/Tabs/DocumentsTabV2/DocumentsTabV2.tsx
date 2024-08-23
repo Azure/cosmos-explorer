@@ -1,10 +1,9 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { Button, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
-import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
+import { Dismiss16Filled } from "@fluentui/react-icons";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
-import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
 import {
   deleteDocument as deleteNoSqlDocument,
@@ -103,17 +102,6 @@ export const useDocumentsTabStyles = makeStyles({
     ":focus": {
       ...shorthands.outline("1px", "dotted"),
     },
-  },
-  floatingControlsContainer: {
-    position: "relative",
-  },
-  floatingControls: {
-    position: "absolute",
-    top: "6px",
-    right: 0,
-    float: "right",
-    backgroundColor: "white",
-    zIndex: 1,
   },
 });
 
@@ -2007,21 +1995,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           >
             <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
               <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
-                <div className={styles.floatingControlsContainer}>
-                  <div className={styles.floatingControls}>
-                    <Button
-                      appearance="transparent"
-                      aria-label="Refresh"
-                      size="small"
-                      icon={<ArrowClockwise16Filled />}
-                      style={{
-                        color: StyleConstants.AccentMedium,
-                      }}
-                      onClick={() => refreshDocumentsGrid(false)}
-                      onKeyDown={onRefreshKeyInput}
-                    />
-                  </div>
-                </div>
                 <div className={styles.tableContainer}>
                   <div
                     style={
@@ -2040,12 +2013,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       size={tableContainerSizePx}
                       selectedColumnIds={selectedColumnIds}
                       columnDefinitions={columnDefinitions}
-                      isSelectionDisabled={
+                      isRowSelectionDisabled={
                         configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly
                       }
                       onColumnSelectionChange={onColumnSelectionChange}
                       defaultColumnSelection={getInitialColumnSelection()}
                       collection={_collection}
+                      isColumnSelectionDisabled={isPreferredApiMongoDB}
                     />
                   </div>
                 </div>

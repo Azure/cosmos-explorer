@@ -25,7 +25,7 @@ describe("DocumentsTableComponent", () => {
       { id: ID_HEADER, label: "ID", isPartitionKey: false },
       { id: PARTITION_KEY_HEADER, label: "Partition Key", isPartitionKey: true },
     ],
-    isSelectionDisabled: false,
+    isRowSelectionDisabled: false,
     collection: {
       databaseId: "db",
       id: ((): string => "coll") as ko.Observable<string>,
@@ -44,7 +44,7 @@ describe("DocumentsTableComponent", () => {
 
   it("should not render selection column when isSelectionDisabled is true", () => {
     const props: IDocumentsTableComponentProps = createMockProps();
-    props.isSelectionDisabled = true;
+    props.isRowSelectionDisabled = true;
     const wrapper = mount(<DocumentsTableComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
