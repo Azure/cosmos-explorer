@@ -148,7 +148,7 @@ describe("Query Utils", () => {
       expect(expectedPartitionKeyValues).toContain(documentContent["Status"]);
     });
 
-    it("should extract three partition key values", () => {
+    it("should extract three partition key values even if one is empty", () => {
       const multiPartitionKeyDefinition: PartitionKeyDefinition = {
         kind: PartitionKeyKind.MultiHash,
         paths: ["/Country", "/Region", "/Category"],
@@ -162,6 +162,18 @@ describe("Query Utils", () => {
       expect(expectedPartitionKeyValues).toContain(documentContent["Country"]);
       expect(expectedPartitionKeyValues).toContain(documentContent["Region"]);
       expect(expectedPartitionKeyValues).toContain(documentContent["Category"]);
+    });
+
+    it("should extract no partition key values in the case nested partition key", () => {
+      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.Hash,
+        paths: ["/Location.type"],
+      };
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        singlePartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(0);
     });
   });
 });
