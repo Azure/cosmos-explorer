@@ -96,7 +96,7 @@ export const extractPartitionKeyValues = (
   const partitionKeyValues: PartitionKey[] = [];
   partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
     const partitionKeyPathWithoutSlash: string = partitionKeyPath.substring(1);
-    if (documentContent[partitionKeyPathWithoutSlash] != undefined) {
+    if (documentContent[partitionKeyPathWithoutSlash] !== undefined) {
       partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
     }
   });
