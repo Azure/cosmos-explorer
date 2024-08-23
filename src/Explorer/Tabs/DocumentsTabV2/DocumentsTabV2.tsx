@@ -1316,16 +1316,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     documentsIterator, // loadNextPage: disabled as it will trigger a circular dependency and infinite loop
   ]);
 
-  const onRefreshKeyInput: KeyboardEventHandler<HTMLButtonElement> = (event) => {
-    if (event.key === " " || event.key === "Enter") {
-      const focusElement = event.target as HTMLElement;
-      refreshDocumentsGrid(false);
-      focusElement && focusElement.focus();
-      event.stopPropagation();
-      event.preventDefault();
-    }
-  };
-
   const onLoadMoreKeyInput: KeyboardEventHandler<HTMLAnchorElement> = (event) => {
     if (event.key === " " || event.key === "Enter") {
       const focusElement = event.target as HTMLElement;
