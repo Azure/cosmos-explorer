@@ -238,7 +238,7 @@ exports[`Settings Pane should render Default properly 1`] = `
                 },
               ]
             }
-            selectedKey="vertical"
+            selectedKey="horizontal"
             styles={
               {
                 "flexContainer": [
