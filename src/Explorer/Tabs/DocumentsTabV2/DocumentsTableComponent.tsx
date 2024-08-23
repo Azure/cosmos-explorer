@@ -20,6 +20,7 @@ import {
   TableRow,
   TableRowId,
   TableSelectionCell,
+  tokens,
   useArrowNavigationGroup,
   useTableColumnSizing_unstable,
   useTableFeatures,
@@ -218,7 +219,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     aria-label="Select column"
                     size="small"
                     icon={<MoreHorizontalRegular />}
-                    style={{ position: "absolute", right: 0 }}
+                    style={{ position: "absolute", right: 0, backgroundColor: tokens.colorNeutralBackground1 }}
                   />
                 </MenuTrigger>
                 <MenuPopover>
