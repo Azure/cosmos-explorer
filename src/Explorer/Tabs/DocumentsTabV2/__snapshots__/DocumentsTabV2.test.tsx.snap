@@ -61,7 +61,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
                 style={
                   {
                     "height": "100%",
-                    "width": "calc(100% + -43px)",
+                    "width": "calc(100% + -13px)",
                   }
                 }
               >
