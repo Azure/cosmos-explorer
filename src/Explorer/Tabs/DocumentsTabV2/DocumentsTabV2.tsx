@@ -530,7 +530,7 @@ const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 type ExtendedDocumentId = DocumentId & { tableFields?: DocumentsTableComponentItem };
 
 // This is based on some heuristics
-const calculateOffset = (columnNumber: number): number => columnNumber * 16 - 59;
+const calculateOffset = (columnNumber: number): number => columnNumber * 16 - 29;
 
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
