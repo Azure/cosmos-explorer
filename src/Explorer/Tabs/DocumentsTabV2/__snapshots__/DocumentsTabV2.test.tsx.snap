@@ -55,27 +55,6 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
             }
           >
             <div
-              className="___77lcry0_0000000 f10pi13n"
-            >
-              <div
-                className="___1rwkz4r_0000000 f1euv43f f1l8gmrm f1e31b4d f150nix6 fy6ml6n f19g0ac"
-              >
-                <Button
-                  appearance="transparent"
-                  aria-label="Refresh"
-                  icon={<ArrowClockwise16Filled />}
-                  onClick={[Function]}
-                  onKeyDown={[Function]}
-                  size="small"
-                  style={
-                    {
-                      "color": undefined,
-                    }
-                  }
-                />
-              </div>
-            </div>
-            <div
               className="___9o87uj0_0000000 ffefeo0"
             >
               <div
@@ -107,7 +86,8 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
                       "id",
                     ]
                   }
-                  isSelectionDisabled={true}
+                  isColumnSelectionDisabled={false}
+                  isRowSelectionDisabled={true}
                   items={[]}
                   onColumnSelectionChange={[Function]}
                   onItemClicked={[Function]}
