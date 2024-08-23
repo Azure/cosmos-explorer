@@ -663,10 +663,22 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       defaultColumnsIds.push(...partitionKeyPropertyHeaders);
     }
 
-    return readSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, defaultColumnsIds);
+    return defaultColumnsIds;
   };
 
-  const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(getInitialColumnSelection);
+  const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(() => {
+    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+      SubComponentName.ColumnsSelection,
+      _collection,
+      undefined,
+    );
+
+    if (!persistedColumnsSelection) {
+      return getInitialColumnSelection();
+    }
+
+    return persistedColumnsSelection.selectedColumnIds;
+  });
 
   // new DocumentId() requires a DocumentTab which we mock with only the required properties
   const newDocumentId = useCallback(
@@ -1515,11 +1527,21 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   }, []);
 
   // Column definition is a map<id, ColumnDefinition> to garantee uniqueness
-  const [columnDefinitions, setColumnDefinitions] = useState<ColumnDefinition[]>(() =>
-    extractColumnDefinitionsFromDocument({
-      id: "id",
-    }),
-  );
+  const [columnDefinitions, setColumnDefinitions] = useState<ColumnDefinition[]>(() => {
+    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+      SubComponentName.ColumnsSelection,
+      _collection,
+      undefined,
+    );
+
+    if (!persistedColumnsSelection) {
+      return extractColumnDefinitionsFromDocument({
+        id: "id",
+      });
+    }
+
+    return persistedColumnsSelection.columnDefinitions;
+  });
 
   const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
     confirmDiscardingChange(() => {
@@ -1858,7 +1880,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     setSelectedColumnIds(newSelectedColumnIds);
 
-    saveSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, newSelectedColumnIds);
+    saveSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
+      selectedColumnIds: newSelectedColumnIds,
+      columnDefinitions,
+    });
   };
 
   const prevSelectedColumnIds = usePrevious({ selectedColumnIds, setSelectedColumnIds });

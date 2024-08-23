@@ -1,5 +1,6 @@
 // Definitions of State data
 
+import { ColumnDefinition } from "Explorer/Tabs/DocumentsTabV2/DocumentsTableComponent";
 import { deleteState, loadState, saveState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
 import { userContext } from "UserContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -19,7 +20,7 @@ export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
 export type FilterHistory = string[];
 export type WidthDefinition = { idealWidth?: number; minWidth?: number };
 export type TabDivider = { leftPaneWidthPercent: number };
-export type ColumnsSelection = string[];
+export type ColumnsSelection = { selectedColumnIds: string[]; columnDefinitions: ColumnDefinition[] };
 export type ColumnSort = { columnId: string; direction: "ascending" | "descending" };
 
 /**
