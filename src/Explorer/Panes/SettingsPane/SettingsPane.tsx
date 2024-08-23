@@ -271,7 +271,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     if (shouldShowGraphAutoVizOption) {
       logConsoleInfo(
-        `Graph result will be displayed as ${LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
+        `Graph result will be displayed as ${
+          LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
         }`,
       );
     }
@@ -486,7 +487,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     <div className="tabcontent">
                       <div className="settingsSectionLabel">
                         Query results per page
-                        <InfoTooltip className={styles.headerIcon}>Enter the number of query results that should be shown per page.</InfoTooltip>
+                        <InfoTooltip className={styles.headerIcon}>
+                          Enter the number of query results that should be shown per page.
+                        </InfoTooltip>
                       </div>
 
                       <SpinButton
@@ -518,8 +521,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   <TooltipHost
                     content={
                       <>
-                        Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable
-                        Entra ID RBAC.
+                        Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
+                        ID RBAC.
                         <a
                           href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
                           target="_blank"
@@ -531,7 +534,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       </>
                     }
                   >
-                    <Icon iconName="Info" ariaLabel="Info tooltip" className={`panelInfoIcon ${styles.headerIcon}`} tabIndex={0} />
+                    <Icon
+                      iconName="Info"
+                      ariaLabel="Info tooltip"
+                      className={`panelInfoIcon ${styles.headerIcon}`}
+                      tabIndex={0}
+                    />
                   </TooltipHost>
                 </AccordionHeader>
                 <AccordionPanel>
@@ -559,103 +567,111 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionItem>
             )}
 
-
-          {userContext.apiType === "SQL" && (<>
-            <AccordionItem value="3">
-              <AccordionHeader>
-                <div className={styles.header}>Query Timeout</div>
-                <InfoTooltip className={styles.headerIcon}>
-                  When a query reaches a specified time limit, a popup with an option to cancel the query will show
-                  unless automatic cancellation has been enabled
-                </InfoTooltip>
-              </AccordionHeader>
-              <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
-                  <Toggle
-                    styles={toggleStyles}
-                    label="Enable query timeout"
-                    onChange={handleOnQueryTimeoutToggleChange}
-                    defaultChecked={queryTimeoutEnabled}
-                  />
-                </div>
-                {queryTimeoutEnabled && (
+          {userContext.apiType === "SQL" && (
+            <>
+              <AccordionItem value="3">
+                <AccordionHeader>
+                  <div className={styles.header}>Query Timeout</div>
+                  <InfoTooltip className={styles.headerIcon}>
+                    When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                    unless automatic cancellation has been enabled
+                  </InfoTooltip>
+                </AccordionHeader>
+                <AccordionPanel>
                   <div className={styles.settingsSectionPart}>
-                    <SpinButton
-                      label="Query timeout (ms)"
-                      labelPosition={Position.top}
-                      defaultValue={(queryTimeout || 5000).toString()}
-                      min={100}
-                      step={1000}
-                      onChange={handleOnQueryTimeoutSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1000"
-                      decrementButtonAriaLabel="Decrease value by 1000"
-                      styles={spinButtonStyles}
-                    />
                     <Toggle
-                      label="Automatically cancel query after timeout"
                       styles={toggleStyles}
-                      onChange={handleOnAutomaticallyCancelQueryToggleChange}
-                      defaultChecked={automaticallyCancelQueryAfterTimeout}
+                      label="Enable query timeout"
+                      onChange={handleOnQueryTimeoutToggleChange}
+                      defaultChecked={queryTimeoutEnabled}
                     />
                   </div>
-                )}
-              </AccordionPanel>
-            </AccordionItem>
+                  {queryTimeoutEnabled && (
+                    <div className={styles.settingsSectionPart}>
+                      <SpinButton
+                        label="Query timeout (ms)"
+                        labelPosition={Position.top}
+                        defaultValue={(queryTimeout || 5000).toString()}
+                        min={100}
+                        step={1000}
+                        onChange={handleOnQueryTimeoutSpinButtonChange}
+                        incrementButtonAriaLabel="Increase value by 1000"
+                        decrementButtonAriaLabel="Decrease value by 1000"
+                        styles={spinButtonStyles}
+                      />
+                      <Toggle
+                        label="Automatically cancel query after timeout"
+                        styles={toggleStyles}
+                        onChange={handleOnAutomaticallyCancelQueryToggleChange}
+                        defaultChecked={automaticallyCancelQueryAfterTimeout}
+                      />
+                    </div>
+                  )}
+                </AccordionPanel>
+              </AccordionItem>
 
-            <AccordionItem value="4">
-              <AccordionHeader>
-                <div className={styles.header}>RU Threshold</div>
-                <InfoTooltip className={styles.headerIcon}>If a query exceeds a configured RU threshold, the query will be aborted.</InfoTooltip>
-              </AccordionHeader>
-              <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
-                  <Toggle
-                    styles={toggleStyles}
-                    label="Enable RU threshold"
-                    onChange={handleOnRUThresholdToggleChange}
-                    defaultChecked={ruThresholdEnabled}
-                  />
-                </div>
-                {ruThresholdEnabled && (
+              <AccordionItem value="4">
+                <AccordionHeader>
+                  <div className={styles.header}>RU Threshold</div>
+                  <InfoTooltip className={styles.headerIcon}>
+                    If a query exceeds a configured RU threshold, the query will be aborted.
+                  </InfoTooltip>
+                </AccordionHeader>
+                <AccordionPanel>
                   <div className={styles.settingsSectionPart}>
-                    <SpinButton
-                      label="RU Threshold (RU)"
-                      labelPosition={Position.top}
-                      defaultValue={(ruThreshold || DefaultRUThreshold).toString()}
-                      min={1}
-                      step={1000}
-                      onChange={handleOnRUThresholdSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1000"
-                      decrementButtonAriaLabel="Decrease value by 1000"
-                      styles={spinButtonStyles}
+                    <Toggle
+                      styles={toggleStyles}
+                      label="Enable RU threshold"
+                      onChange={handleOnRUThresholdToggleChange}
+                      defaultChecked={ruThresholdEnabled}
                     />
                   </div>
-                )}
-              </AccordionPanel>
-            </AccordionItem>
+                  {ruThresholdEnabled && (
+                    <div className={styles.settingsSectionPart}>
+                      <SpinButton
+                        label="RU Threshold (RU)"
+                        labelPosition={Position.top}
+                        defaultValue={(ruThreshold || DefaultRUThreshold).toString()}
+                        min={1}
+                        step={1000}
+                        onChange={handleOnRUThresholdSpinButtonChange}
+                        incrementButtonAriaLabel="Increase value by 1000"
+                        decrementButtonAriaLabel="Decrease value by 1000"
+                        styles={spinButtonStyles}
+                      />
+                    </div>
+                  )}
+                </AccordionPanel>
+              </AccordionItem>
 
-            <AccordionItem value="5">
-              <AccordionHeader><div className={styles.header}>Default Query Results View</div>
-                <InfoTooltip className={styles.headerIcon}>Select the default view to use when displaying query results.</InfoTooltip>
-              </AccordionHeader>
-              <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
-                  <ChoiceGroup
-                    ariaLabelledBy="defaultQueryResultsView"
-                    selectedKey={defaultQueryResultsView}
-                    options={defaultQueryResultsViewOptionList}
-                    styles={choiceButtonStyles}
-                    onChange={handleOnDefaultQueryResultsViewChange}
-                  />
-                </div>
-              </AccordionPanel>
-            </AccordionItem>
-
-          </>)}
+              <AccordionItem value="5">
+                <AccordionHeader>
+                  <div className={styles.header}>Default Query Results View</div>
+                  <InfoTooltip className={styles.headerIcon}>
+                    Select the default view to use when displaying query results.
+                  </InfoTooltip>
+                </AccordionHeader>
+                <AccordionPanel>
+                  <div className={styles.settingsSectionPart}>
+                    <ChoiceGroup
+                      ariaLabelledBy="defaultQueryResultsView"
+                      selectedKey={defaultQueryResultsView}
+                      options={defaultQueryResultsViewOptionList}
+                      styles={choiceButtonStyles}
+                      onChange={handleOnDefaultQueryResultsViewChange}
+                    />
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
+            </>
+          )}
 
           <AccordionItem value="6">
-            <AccordionHeader><div className={styles.header}> Retry Settings</div>
-              <InfoTooltip className={styles.headerIcon}>Retry policy associated with throttled requests during CosmosDB queries.</InfoTooltip>
+            <AccordionHeader>
+              <div className={styles.header}> Retry Settings</div>
+              <InfoTooltip className={styles.headerIcon}>
+                Retry policy associated with throttled requests during CosmosDB queries.
+              </InfoTooltip>
             </AccordionHeader>
             <AccordionPanel>
               <div className={styles.settingsSectionPart}>
@@ -663,7 +679,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
                     Max retry attempts
                   </legend>
-                  <InfoTooltip className={styles.headerIcon}>Max number of retries to be performed for a request. Default value 9.</InfoTooltip>
+                  <InfoTooltip className={styles.headerIcon}>
+                    Max number of retries to be performed for a request. Default value 9.
+                  </InfoTooltip>
                 </div>
                 <SpinButton
                   labelPosition={Position.top}
@@ -683,8 +701,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     Fixed retry interval (ms)
                   </legend>
                   <InfoTooltip className={styles.headerIcon}>
-                    Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part
-                    of the response. Default value is 0 milliseconds.
+                    Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as
+                    part of the response. Default value is 0 milliseconds.
                   </InfoTooltip>
                 </div>
                 <SpinButton
@@ -727,7 +745,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           </AccordionItem>
 
           <AccordionItem value="7">
-            <AccordionHeader><div className={styles.header}>Enable container pagination</div>
+            <AccordionHeader>
+              <div className={styles.header}>Enable container pagination</div>
               <InfoTooltip className={styles.headerIcon}>
                 Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
               </InfoTooltip>
@@ -749,7 +768,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
           {shouldShowCrossPartitionOption && (
             <AccordionItem value="8">
-              <AccordionHeader><div className={styles.header}>Enable cross-partition query</div>
+              <AccordionHeader>
+                <div className={styles.header}>Enable cross-partition query</div>
                 <InfoTooltip className={styles.headerIcon}>
                   Send more than one request while executing a query. More than one request is necessary if the query is
                   not scoped to single partition key value.
@@ -773,7 +793,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
           {shouldShowParallelismOption && (
             <AccordionItem value="9">
-              <AccordionHeader><div className={styles.header}>Max degree of parallelism</div>
+              <AccordionHeader>
+                <div className={styles.header}>Max degree of parallelism</div>
                 <InfoTooltip className={styles.headerIcon}>
                   Gets or sets the number of concurrent operations run client side during parallel query execution. A
                   positive property value limits the number of concurrent operations to the set value. If it is set to
@@ -789,8 +810,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     role="textbox"
                     id="max-degree"
                     value={"" + maxDegreeOfParallelism}
-                    onIncrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) + 1 || maxDegreeOfParallelism)}
-                    onDecrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) - 1 || maxDegreeOfParallelism)}
+                    onIncrement={(newValue) =>
+                      setMaxDegreeOfParallelism(parseInt(newValue) + 1 || maxDegreeOfParallelism)
+                    }
+                    onDecrement={(newValue) =>
+                      setMaxDegreeOfParallelism(parseInt(newValue) - 1 || maxDegreeOfParallelism)
+                    }
                     onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                     ariaLabel="Max degree of parallelism"
                   />
@@ -801,7 +826,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
           {shouldShowPriorityLevelOption && (
             <AccordionItem value="10">
-              <AccordionHeader><div className={styles.header}>Priority Level</div>
+              <AccordionHeader>
+                <div className={styles.header}>Priority Level</div>
                 <InfoTooltip className={styles.headerIcon}>
                   Sets the priority level for data-plane requests from Data Explorer when using Priority-Based
                   Execution. If &quot;None&quot; is selected, Data Explorer will not specify priority level, and the
@@ -824,7 +850,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
           {shouldShowGraphAutoVizOption && (
             <AccordionItem value="11">
-              <AccordionHeader><div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
+              <AccordionHeader>
+                <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
                 <InfoTooltip className={styles.headerIcon}>
                   Select Graph to automatically visualize the query results as a Graph or JSON to display the results as
                   JSON.
@@ -845,7 +872,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
           {shouldShowCopilotSampleDBOption && (
             <AccordionItem value="12">
-              <AccordionHeader><div className={styles.header}>Enable sample database</div>
+              <AccordionHeader>
+                <div className={styles.header}>Enable sample database</div>
                 <InfoTooltip className={styles.headerIcon}>
                   This is a sample database and collection with synthetic product data you can use to explore using
                   NoSQL queries and Query Advisor. This will appear as another database in the Data Explorer UI, and is
@@ -904,6 +932,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           </div>
         </div>
       </div>
-    </RightPaneForm >
+    </RightPaneForm>
   );
 };
