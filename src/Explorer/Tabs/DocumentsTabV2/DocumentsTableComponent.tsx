@@ -7,6 +7,7 @@ import {
   MenuPopover,
   MenuTrigger,
   TableRowData as RowStateBase,
+  SortDirection,
   Table,
   TableBody,
   TableCell,
@@ -39,6 +40,8 @@ import { NormalizedEventKey } from "Common/Constants";
 import { TableColumnSelectionPane } from "Explorer/Panes/TableColumnSelectionPane/TableColumnSelectionPane";
 import {
   ColumnSizesMap,
+  ColumnSort,
+  deleteSubComponentState,
   readSubComponentState,
   saveSubComponentState,
   SubComponentName,
@@ -112,7 +115,11 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   };
 
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
-    const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
+    const columnSizesMap: ColumnSizesMap = readSubComponentState<ColumnSizesMap>(
+      SubComponentName.ColumnSizes,
+      collection,
+      {},
+    );
     const columnSizesPx: ColumnSizesMap = {};
     selectedColumnIds.forEach((columnId) => {
       columnSizesPx[columnId] = (columnSizesMap && columnSizesMap[columnId]) || defaultSize;
@@ -123,9 +130,20 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   const [sortState, setSortState] = React.useState<{
     sortDirection: "ascending" | "descending";
     sortColumn: TableColumnId | undefined;
-  }>({
-    sortDirection: undefined,
-    sortColumn: undefined,
+  }>(() => {
+    const sort = readSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, undefined);
+
+    if (!sort) {
+      return {
+        sortDirection: undefined,
+        sortColumn: undefined,
+      };
+    }
+
+    return {
+      sortDirection: sort.direction,
+      sortColumn: sort.columnId,
+    };
   });
 
   const onColumnResize = React.useCallback((_, { columnId, width }) => {
@@ -138,13 +156,24 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         },
       };
 
-      saveSubComponentState(SubComponentName.ColumnSizes, collection, newSizingOptions, true);
+      saveSubComponentState<ColumnSizesMap>(SubComponentName.ColumnSizes, collection, newSizingOptions, true);
 
       return newSizingOptions;
     });
   }, []);
 
   // const restoreFocusTargetAttribute = useRestoreFocusTarget();
+
+  const onSortClick = (event: React.SyntheticEvent, columnId: string, direction: SortDirection) => {
+    setColumnSort(event, columnId, direction);
+
+    if (columnId === undefined || direction === undefined) {
+      deleteSubComponentState(SubComponentName.ColumnSort, collection);
+      return;
+    }
+
+    saveSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, { columnId, direction });
+  };
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
   const columns: TableColumnDefinition<DocumentsTableComponentItem>[] = useMemo(
@@ -184,17 +213,17 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     </MenuItem>
                     <MenuItem
                       icon={<TextSortAscendingRegular />}
-                      onClick={(e) => setColumnSort(e, column.id, "ascending")}
+                      onClick={(e) => onSortClick(e, column.id, "ascending")}
                     >
                       Sort ascending
                     </MenuItem>
                     <MenuItem
                       icon={<TextSortDescendingRegular />}
-                      onClick={(e) => setColumnSort(e, column.id, "descending")}
+                      onClick={(e) => onSortClick(e, column.id, "descending")}
                     >
                       Sort descending
                     </MenuItem>
-                    <MenuItem icon={<ArrowResetRegular />} onClick={(e) => setColumnSort(e, undefined, undefined)}>
+                    <MenuItem icon={<ArrowResetRegular />} onClick={(e) => onSortClick(e, undefined, undefined)}>
                       Reset sorting
                     </MenuItem>
                     <MenuItem key="editcolumns" icon={<EditRegular />} onClick={openColumnSelectionPane}>

@@ -21,6 +21,8 @@ import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
+  ColumnsSelection,
+  FilterHistory,
   SubComponentName,
   TabDivider,
   readSubComponentState,
@@ -591,7 +593,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // State
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
-    readSubComponentState(SubComponentName.MainTabDivider, _collection, {
+    readSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
     }),
   );
@@ -605,8 +607,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
 
   // User's filter history
-  const [lastFilterContents, setLastFilterContents] = useState<string[]>(() =>
-    readSubComponentState(SubComponentName.FilterHistory, _collection, []),
+  const [lastFilterContents, setLastFilterContents] = useState<FilterHistory>(() =>
+    readSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
   );
 
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
@@ -661,7 +663,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       defaultColumnsIds.push(...partitionKeyPropertyHeaders);
     }
 
-    return readSubComponentState(SubComponentName.ColumnsSelection, _collection, defaultColumnsIds);
+    return readSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, defaultColumnsIds);
   };
 
   const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(getInitialColumnSelection);
@@ -1815,7 +1817,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
 
     setLastFilterContents(limitedLastFilterContents);
-    saveSubComponentState(SubComponentName.FilterHistory, _collection, lastFilterContents);
+    saveSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
   };
 
   const refreshDocumentsGrid = useCallback(
@@ -1856,7 +1858,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     setSelectedColumnIds(newSelectedColumnIds);
 
-    saveSubComponentState(SubComponentName.ColumnsSelection, _collection, newSelectedColumnIds);
+    saveSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, newSelectedColumnIds);
   };
 
   const prevSelectedColumnIds = usePrevious({ selectedColumnIds, setSelectedColumnIds });
@@ -1974,7 +1976,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           <Allotment
             onDragEnd={(sizes: number[]) => {
               tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveSubComponentState(SubComponentName.MainTabDivider, _collection, tabStateData);
+              saveSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
               setTabStateData(tabStateData);
             }}
           >

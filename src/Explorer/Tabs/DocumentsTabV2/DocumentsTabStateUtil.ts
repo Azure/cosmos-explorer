@@ -12,12 +12,15 @@ export enum SubComponentName {
   FilterHistory = "FilterHistory",
   MainTabDivider = "MainTabDivider",
   ColumnsSelection = "ColumnsSelection",
+  ColumnSort = "ColumnSort",
 }
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
+export type FilterHistory = string[];
 export type WidthDefinition = { idealWidth?: number; minWidth?: number };
 export type TabDivider = { leftPaneWidthPercent: number };
-export type ColumnsSelection = { selectedColumnIds: string[] };
+export type ColumnsSelection = string[];
+export type ColumnSort = { columnId: string; direction: "ascending" | "descending" };
 
 /**
  *
