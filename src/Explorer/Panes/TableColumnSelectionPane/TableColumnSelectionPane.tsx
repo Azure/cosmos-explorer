@@ -95,7 +95,7 @@ export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> =
               <Checkbox
                 className="tableColumnSelectionCheckbox"
                 key={columnDefinition.id}
-                label={columnDefinition.label}
+                label={`${columnDefinition.label}${columnDefinition.isPartitionKey ? " (partition key)" : ""}`}
                 checked={selectedColumnIdsSet.has(columnDefinition.id)}
                 onChange={(_, checked) => onCheckedValueChange(columnDefinition.id, checked)}
               />
