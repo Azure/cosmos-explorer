@@ -1,7 +1,10 @@
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 // The component name whose state is being saved. Component name must not include special characters.
-export type ComponentName = "DocumentsTab";
+export enum AppStateComponentNames {
+  DocumentsTab = "DocumentsTab",
+  QueryCopilot = "QueryCopilot",
+}
 
 const SCHEMA_VERSION = 1;
 
@@ -15,7 +18,7 @@ export interface StateData {
 }
 
 type StorePath = {
-  componentName: string;
+  componentName: AppStateComponentNames;
   subComponentName?: string;
   globalAccountName?: string;
   databaseName?: string;
@@ -93,7 +96,7 @@ export const createKeyFromPath = (path: StorePath): string => {
   let key = `/${path.componentName}`; // ComponentName is always there
   orderedPathSegments.forEach((segment) => {
     const segmentValue = path[segment as keyof StorePath];
-    if (segmentValue.includes("/")) {
+    if (segmentValue?.includes("/")) {
       throw new Error(`Invalid setting path segment: ${segment}`);
     }
     key += `/${segmentValue !== undefined ? segmentValue : ""}`;
