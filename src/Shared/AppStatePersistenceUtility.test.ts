@@ -1,4 +1,11 @@
-import { createKeyFromPath, deleteState, loadState, MAX_ENTRY_NB, saveState } from "Shared/AppStatePersistenceUtility";
+import {
+  AppStateComponentNames,
+  createKeyFromPath,
+  deleteState,
+  loadState,
+  MAX_ENTRY_NB,
+  saveState,
+} from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 jest.mock("Shared/StorageUtility", () => ({
@@ -13,7 +20,7 @@ jest.mock("Shared/StorageUtility", () => ({
 
 describe("AppStatePersistenceUtility", () => {
   const storePath = {
-    componentName: "a",
+    componentName: AppStateComponentNames.DocumentsTab,
     subComponentName: "b",
     globalAccountName: "c",
     databaseName: "d",
