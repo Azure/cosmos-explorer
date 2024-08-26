@@ -77,6 +77,10 @@ const useStyles = makeStyles({
   settingsSectionPart: {
     paddingLeft: "15px",
   },
+  subHeader: {
+    marginRight: "5px",
+    fontSize: "12px",
+  },
 });
 
 export const useDataPlaneRbac: DataPlaneRbacStore = create(() => ({
@@ -677,7 +681,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionPanel>
               <div className={styles.settingsSectionPart}>
                 <div>
-                  <span className={styles.header}>Max retry attempts</span>
+                  <span className={styles.subHeader}>Max retry attempts</span>
                   <InfoTooltip className={styles.headerIcon}>
                     Max number of retries to be performed for a request. Default value 9.
                   </InfoTooltip>
@@ -696,7 +700,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   styles={spinButtonStyles}
                 />
                 <div>
-                  <span className={styles.header}>Fixed retry interval (ms)</span>
+                  <span className={styles.subHeader}>Fixed retry interval (ms)</span>
                   <InfoTooltip className={styles.headerIcon}>
                     Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as
                     part of the response. Default value is 0 milliseconds.
@@ -716,7 +720,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   styles={spinButtonStyles}
                 />
                 <div>
-                  <span className={styles.header}>Max wait time (s)</span>
+                  <span className={styles.subHeader}>Max wait time (s)</span>
                   <InfoTooltip className={styles.headerIcon}>
                     Max wait time in seconds to wait for a request while the retries are happening. Default value 30
                     seconds.

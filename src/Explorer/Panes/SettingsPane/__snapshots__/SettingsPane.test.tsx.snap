@@ -300,7 +300,7 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             <div>
               <span
-                className="___15c001r_0000000 fq02s40"
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
               >
                 Max retry attempts
               </span>
@@ -340,7 +340,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             />
             <div>
               <span
-                className="___15c001r_0000000 fq02s40"
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
               >
                 Fixed retry interval (ms)
               </span>
@@ -380,7 +380,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             />
             <div>
               <span
-                className="___15c001r_0000000 fq02s40"
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
               >
                 Max wait time (s)
               </span>
@@ -591,7 +591,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           >
             <div>
               <span
-                className="___15c001r_0000000 fq02s40"
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
               >
                 Max retry attempts
               </span>
@@ -631,7 +631,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
             />
             <div>
               <span
-                className="___15c001r_0000000 fq02s40"
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
               >
                 Fixed retry interval (ms)
               </span>
@@ -671,7 +671,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
             />
             <div>
               <span
-                className="___15c001r_0000000 fq02s40"
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
               >
                 Max wait time (s)
               </span>
