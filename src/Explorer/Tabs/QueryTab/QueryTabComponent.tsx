@@ -9,6 +9,7 @@ import { monaco } from "Explorer/LazyMonaco";
 import { QueryCopilotFeedbackModal } from "Explorer/QueryCopilot/Modal/QueryCopilotFeedbackModal";
 import { useCopilotStore } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
+import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
@@ -46,7 +47,6 @@ import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import * as StringUtility from "../../../Shared/StringUtility";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
@@ -209,13 +209,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
   private _queryCopilotActive(): boolean {
     if (this.props.copilotEnabled) {
-      const cachedCopilotToggleStatus: string = localStorage.getItem(
-        `${userContext.databaseAccount?.id}-queryCopilotToggleStatus`,
-      );
-      const copilotInitialActive: boolean = cachedCopilotToggleStatus
-        ? StringUtility.toBoolean(cachedCopilotToggleStatus)
-        : true;
-      return copilotInitialActive;
+      return readCopilotToggleStatus(userContext.databaseAccount);
     }
     return false;
   }
@@ -584,7 +578,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   private _toggleCopilot = (active: boolean) => {
     this.setState({ copilotActive: active });
     useQueryCopilot.getState().setCopilotEnabledforExecution(active);
-    localStorage.setItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`, active.toString());
+    saveCopilotToggleStatus(userContext.databaseAccount, active);
 
     TelemetryProcessor.traceSuccess(active ? Action.ActivateQueryCopilot : Action.DeactivateQueryCopilot, {
       databaseName: this.props.collection.databaseId,

@@ -28,7 +28,6 @@ import {
   SuggestedPrompt,
   getSampleDatabaseSuggestedPrompts,
   getSuggestedPrompts,
-  migratePromptHistory,
   readPromptHistory,
   savePromptHistory,
 } from "Explorer/QueryCopilot/QueryCopilotUtilities";
@@ -139,11 +138,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
-  const [histories, setHistories] = useState<string[]>(() => {
-    // One-time old data migration
-    migratePromptHistory(userContext.databaseAccount);
-    return readPromptHistory(userContext.databaseAccount);
-  });
+  const [histories, setHistories] = useState<string[]>(() => readPromptHistory(userContext.databaseAccount));
   const suggestedPrompts: SuggestedPrompt[] = isSampleCopilotActive
     ? getSampleDatabaseSuggestedPrompts()
     : getSuggestedPrompts();
