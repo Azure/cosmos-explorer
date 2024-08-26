@@ -72,6 +72,7 @@ const useStyles = makeStyles({
   },
   headerIcon: {
     paddingTop: "4px",
+    cursor: "pointer",
   },
   settingsSectionPart: {
     paddingLeft: "15px",
@@ -676,9 +677,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionPanel>
               <div className={styles.settingsSectionPart}>
                 <div>
-                  <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
-                    Max retry attempts
-                  </legend>
+                  <span className={styles.header}>Max retry attempts</span>
                   <InfoTooltip className={styles.headerIcon}>
                     Max number of retries to be performed for a request. Default value 9.
                   </InfoTooltip>
@@ -697,9 +696,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   styles={spinButtonStyles}
                 />
                 <div>
-                  <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
-                    Fixed retry interval (ms)
-                  </legend>
+                  <span className={styles.header}>Fixed retry interval (ms)</span>
                   <InfoTooltip className={styles.headerIcon}>
                     Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as
                     part of the response. Default value is 0 milliseconds.
@@ -719,9 +716,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   styles={spinButtonStyles}
                 />
                 <div>
-                  <legend id="queryRetryAttemptsLabel" className="settingsSectionLabel legendLabel">
-                    Max wait time (s)
-                  </legend>
+                  <span className={styles.header}>Max wait time (s)</span>
                   <InfoTooltip className={styles.headerIcon}>
                     Max wait time in seconds to wait for a request while the retries are happening. Default value 30
                     seconds.
