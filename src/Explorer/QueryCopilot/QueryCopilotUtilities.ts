@@ -161,6 +161,6 @@ export const saveCopilotToggleStatus = (databaseAccount: DatabaseAccount, status
       databaseName: undefined,
       containerName: undefined,
     },
-    status.toString(),
+    status,
   );
 };
