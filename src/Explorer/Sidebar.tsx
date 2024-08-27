@@ -86,7 +86,7 @@ const useSidebarStyles = makeStyles({
     },
   },
   globalCommandsMenuButton: {
-    display: "initial",
+    display: "inline-flex",
     "@container (min-width: 250px)": {
       display: "none",
     },
@@ -280,7 +280,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
       {/* Collections Tree - Start */}
       {hasSidebar && (
         // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
-        <Allotment.Pane minSize={24} preferredSize={300}>
+        <Allotment.Pane minSize={24} preferredSize={250}>
           <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
             <div className={styles.sidebarContainer}>
               {loading && (
