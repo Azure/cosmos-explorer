@@ -134,6 +134,7 @@ export class BackendApi {
   public static readonly GenerateToken: string = "GenerateToken";
   public static readonly PortalSettings: string = "PortalSettings";
   public static readonly AccountRestrictions: string = "AccountRestrictions";
+  public static readonly RuntimeProxy: string = "RuntimeProxy";
 }
 
 export class PortalBackendEndpoints {

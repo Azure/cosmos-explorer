@@ -164,7 +164,16 @@ export function useNewPortalBackendEndpoint(backendApi: string): boolean {
       PortalBackendEndpoints.Mpac,
       PortalBackendEndpoints.Prod,
     ],
-    [BackendApi.AccountRestrictions]: [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac],
+    [BackendApi.AccountRestrictions]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+    [BackendApi.RuntimeProxy]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
   };
 
   if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
