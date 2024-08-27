@@ -28,7 +28,7 @@ export const shouldShowScriptNodes = (): boolean => {
 };
 
 const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
-const TreeSettingsIcon = <SettingsRegular fontSize={16} />; 
+const TreeSettingsIcon = <SettingsRegular fontSize={16} />;
 const TreeCollectionIcon = <DocumentMultipleRegular fontSize={16} />;
 
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {

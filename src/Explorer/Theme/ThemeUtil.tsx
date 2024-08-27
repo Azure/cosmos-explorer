@@ -107,7 +107,7 @@ const sizeMappings: Record<LayoutSize, Partial<Theme> & CosmosThemeElements> = {
     layoutRowHeight: "32px",
     fontSizeBase300: "13px",
   },
-}
+};
 
 const cosmosTheme = {
   sidebarMinimumWidth: "200px",

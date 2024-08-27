@@ -348,7 +348,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
         >
           <List
             direction="ltr"
-            height={-36}
+            height={-32}
             itemCount={3}
             itemData={
               [
@@ -387,7 +387,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                 },
               ]
             }
-            itemSize={36}
+            itemSize={32}
             layout="vertical"
             overscanCount={2}
             style={
@@ -404,7 +404,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                 {
                   "WebkitOverflowScrolling": "touch",
                   "direction": "ltr",
-                  "height": -36,
+                  "height": -32,
                   "overflow": "auto",
                   "overflowY": "scroll",
                   "position": "relative",
@@ -416,7 +416,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
               <div
                 style={
                   {
-                    "height": 108,
+                    "height": 96,
                     "pointerEvents": undefined,
                     "width": "100%",
                   }
@@ -464,7 +464,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   key="0"
                   style={
                     {
-                      "height": 36,
+                      "height": 32,
                       "left": 0,
                       "position": "absolute",
                       "right": undefined,
@@ -482,7 +482,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     style={
                       {
                         "cursor": "pointer",
-                        "height": 36,
+                        "height": 32,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
@@ -500,7 +500,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       style={
                         {
                           "cursor": "pointer",
-                          "height": 36,
+                          "height": 32,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
@@ -653,11 +653,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   key="1"
                   style={
                     {
-                      "height": 36,
+                      "height": 32,
                       "left": 0,
                       "position": "absolute",
                       "right": undefined,
-                      "top": 36,
+                      "top": 32,
                       "width": "100%",
                     }
                   }
@@ -671,11 +671,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     style={
                       {
                         "cursor": "pointer",
-                        "height": 36,
+                        "height": 32,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
-                        "top": 36,
+                        "top": 32,
                         "userSelect": "none",
                         "width": "100%",
                       }
@@ -689,11 +689,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       style={
                         {
                           "cursor": "pointer",
-                          "height": 36,
+                          "height": 32,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
-                          "top": 36,
+                          "top": 32,
                           "userSelect": "none",
                           "width": "100%",
                         }
@@ -842,11 +842,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   key="2"
                   style={
                     {
-                      "height": 36,
+                      "height": 32,
                       "left": 0,
                       "position": "absolute",
                       "right": undefined,
-                      "top": 72,
+                      "top": 64,
                       "width": "100%",
                     }
                   }
@@ -860,11 +860,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                     style={
                       {
                         "cursor": "pointer",
-                        "height": 36,
+                        "height": 32,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
-                        "top": 72,
+                        "top": 64,
                         "userSelect": "none",
                         "width": "100%",
                       }
@@ -878,11 +878,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                       style={
                         {
                           "cursor": "pointer",
-                          "height": 36,
+                          "height": 32,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
-                          "top": 72,
+                          "top": 64,
                           "userSelect": "none",
                           "width": "100%",
                         }
@@ -1387,7 +1387,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
         >
           <List
             direction="ltr"
-            height={-36}
+            height={-32}
             itemCount={3}
             itemData={
               [
@@ -1426,7 +1426,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                 },
               ]
             }
-            itemSize={36}
+            itemSize={32}
             layout="vertical"
             overscanCount={2}
             style={
@@ -1443,7 +1443,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                 {
                   "WebkitOverflowScrolling": "touch",
                   "direction": "ltr",
-                  "height": -36,
+                  "height": -32,
                   "overflow": "auto",
                   "overflowY": "scroll",
                   "position": "relative",
@@ -1455,7 +1455,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
               <div
                 style={
                   {
-                    "height": 108,
+                    "height": 96,
                     "pointerEvents": undefined,
                     "width": "100%",
                   }
@@ -1503,7 +1503,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   key="0"
                   style={
                     {
-                      "height": 36,
+                      "height": 32,
                       "left": 0,
                       "position": "absolute",
                       "right": undefined,
@@ -1521,7 +1521,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     style={
                       {
                         "cursor": "pointer",
-                        "height": 36,
+                        "height": 32,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
@@ -1539,7 +1539,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       style={
                         {
                           "cursor": "pointer",
-                          "height": 36,
+                          "height": 32,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
@@ -1732,11 +1732,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   key="1"
                   style={
                     {
-                      "height": 36,
+                      "height": 32,
                       "left": 0,
                       "position": "absolute",
                       "right": undefined,
-                      "top": 36,
+                      "top": 32,
                       "width": "100%",
                     }
                   }
@@ -1750,11 +1750,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     style={
                       {
                         "cursor": "pointer",
-                        "height": 36,
+                        "height": 32,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
-                        "top": 36,
+                        "top": 32,
                         "userSelect": "none",
                         "width": "100%",
                       }
@@ -1768,11 +1768,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       style={
                         {
                           "cursor": "pointer",
-                          "height": 36,
+                          "height": 32,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
-                          "top": 36,
+                          "top": 32,
                           "userSelect": "none",
                           "width": "100%",
                         }
@@ -1961,11 +1961,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   key="2"
                   style={
                     {
-                      "height": 36,
+                      "height": 32,
                       "left": 0,
                       "position": "absolute",
                       "right": undefined,
-                      "top": 72,
+                      "top": 64,
                       "width": "100%",
                     }
                   }
@@ -1979,11 +1979,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                     style={
                       {
                         "cursor": "pointer",
-                        "height": 36,
+                        "height": 32,
                         "left": 0,
                         "position": "absolute",
                         "right": undefined,
-                        "top": 72,
+                        "top": 64,
                         "userSelect": "none",
                         "width": "100%",
                       }
@@ -1997,11 +1997,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                       style={
                         {
                           "cursor": "pointer",
-                          "height": 36,
+                          "height": 32,
                           "left": 0,
                           "position": "absolute",
                           "right": undefined,
-                          "top": 72,
+                          "top": 64,
                           "userSelect": "none",
                           "width": "100%",
                         }
