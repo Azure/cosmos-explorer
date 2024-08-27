@@ -149,15 +149,19 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   // We use the expandIcon slot to hold the node icon too.
   // We only show a node icon for leaf nodes, even if a branch node has an iconSrc.
+  const treeIcon = node.iconSrc === undefined ?
+    undefined
+  : typeof node.iconSrc === "string" ? (
+    <img src={node.iconSrc} className={treeStyles.nodeIcon} alt="" />
+  ) : (
+    node.iconSrc
+  );
+
   const expandIcon = isLoading ? (
     <Spinner size="extra-tiny" />
-  ) : !isBranch ? (
-    typeof node.iconSrc === "string" ? (
-      <img src={node.iconSrc} className={treeStyles.nodeIcon} alt="" />
-    ) : (
-      node.iconSrc
-    )
-  ) : openItems.includes(treeNodeId) ? (
+  ) : !isBranch ?
+      undefined
+  : openItems.includes(treeNodeId) ? (
     <ChevronDown20Regular data-test="TreeNode/CollapseIcon" />
   ) : (
     <ChevronRight20Regular data-text="TreeNode/ExpandIcon" />
@@ -174,7 +178,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       <TreeItemLayout
         className={mergeClasses(
           treeStyles.treeItemLayout,
-          expandIcon ? undefined : treeStyles.treeItemLayoutNoIcon,
+          //expandIcon ? undefined : treeStyles.treeItemLayoutNoIcon,
           shouldShowAsSelected && treeStyles.selectedItem,
           node.className && treeStyles[node.className],
         )}
@@ -200,6 +204,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
             ),
           }
         }
+        iconBefore={treeIcon}
         expandIcon={expandIcon}
       >
         <span className={treeStyles.nodeLabel}>{node.label}</span>

@@ -1,3 +1,4 @@
+import { DatabaseRegular, DocumentMultipleRegular, SettingsRegular } from "@fluentui/react-icons";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
@@ -7,6 +8,7 @@ import { useDatabases } from "Explorer/useDatabases";
 import { getItemName } from "Utils/APITypeUtils";
 import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { useTabs } from "hooks/useTabs";
+import React from "react";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import { Platform, configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
@@ -25,6 +27,10 @@ export const shouldShowScriptNodes = (): boolean => {
   );
 };
 
+const TreeDatabaseIcon = <DatabaseRegular fontSize={16} />;
+const TreeSettingsIcon = <SettingsRegular fontSize={16} />; 
+const TreeCollectionIcon = <DocumentMultipleRegular fontSize={16} />;
+
 export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: ViewModels.CollectionBase): TreeNode[] => {
   const updatedSampleTree: TreeNode = {
     label: sampleDataResourceTokenCollection.databaseId,
@@ -36,6 +42,7 @@ export const createSampleDataTreeNodes = (sampleDataResourceTokenCollection: Vie
         isExpanded: false,
         className: "collectionNode",
         contextMenu: ResourceTreeContextMenuButtonFactory.createSampleCollectionContextMenuButton(),
+        iconSrc: TreeCollectionIcon,
         onClick: () => {
           useSelectedNode.getState().setSelectedNode(sampleDataResourceTokenCollection);
           useCommandBar.getState().setContextButtons([]);
@@ -104,6 +111,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
     isExpanded: true,
     children,
     className: "collectionNode",
+    iconSrc: TreeCollectionIcon,
     onClick: () => {
       // Rewritten version of expandCollapseCollection
       useSelectedNode.getState().setSelectedNode(collection);
@@ -133,6 +141,7 @@ export const createDatabaseTreeNodes = (
         databaseNode.children.push({
           id: database.isSampleDB ? "sampleScaleSettings" : "",
           label: "Scale",
+          iconSrc: TreeSettingsIcon,
           isSelected: () =>
             useSelectedNode
               .getState()
@@ -169,6 +178,7 @@ export const createDatabaseTreeNodes = (
       children: [],
       isSelected: () => useSelectedNode.getState().isDataNodeSelected(database.id()),
       contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(container, database.id()),
+      iconSrc: TreeDatabaseIcon,
       onExpanded: async () => {
         useSelectedNode.getState().setSelectedNode(database);
         if (!databaseNode.children || databaseNode.children?.length === 0) {
@@ -219,6 +229,7 @@ export const buildCollectionNode = (
     children: children,
     className: "collectionNode",
     contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
+    iconSrc: TreeCollectionIcon,
     onClick: () => {
       useSelectedNode.getState().setSelectedNode(collection);
       collection.openTab();
