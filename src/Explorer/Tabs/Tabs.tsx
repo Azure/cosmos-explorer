@@ -99,6 +99,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
               fontWeight: "bold",
             },
           }}
+          dismissButtonAriaLabel="Close info"
         >
           {`To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove
           the limit, go to the Settings cog on the right and find "RU Threshold".`}
