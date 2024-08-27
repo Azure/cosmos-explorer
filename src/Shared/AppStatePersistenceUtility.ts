@@ -17,7 +17,8 @@ export interface StateData {
   data: unknown;
 }
 
-type StorePath = {
+// Export for testing purposes
+export type StorePath = {
   componentName: AppStateComponentNames;
   subComponentName?: string;
   globalAccountName?: string;
