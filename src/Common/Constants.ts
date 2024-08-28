@@ -184,6 +184,12 @@ export class CassandraProxyAPIs {
   public static readonly connectionStringSchemaApi: string = "api/connectionstring/cassandra/schema";
 }
 
+export class AadEndpoints {
+  public static readonly Prod: string = "https://login.microsoftonline.com/";
+  public static readonly Fairfax: string = "https://login.microsoftonline.us/";
+  public static readonly Mooncake: string = "https://login.partner.microsoftonline.cn/";
+}
+
 export class Queries {
   public static CustomPageOption: string = "custom";
   public static UnlimitedPageOption: string = "unlimited";
