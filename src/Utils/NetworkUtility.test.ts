@@ -16,7 +16,7 @@ describe("NetworkUtility tests", () => {
       PortalBackendEndpoints.Fairfax,
       PortalBackendEndpoints.Mooncake,
     ];
-    
+
     let warningMessageResult: string;
     const warningMessageFunc = (msg: string) => (warningMessageResult = msg);
 
