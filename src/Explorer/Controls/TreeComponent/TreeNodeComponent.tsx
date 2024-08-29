@@ -175,7 +175,6 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       <TreeItemLayout
         className={mergeClasses(
           treeStyles.treeItemLayout,
-          //expandIcon ? undefined : treeStyles.treeItemLayoutNoIcon,
           shouldShowAsSelected && treeStyles.selectedItem,
           node.className && treeStyles[node.className],
         )}
