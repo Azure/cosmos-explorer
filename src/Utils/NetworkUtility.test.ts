@@ -1,7 +1,8 @@
+import { PortalBackendEndpoints } from "Common/Constants";
 import { resetConfigContext, updateConfigContext } from "ConfigContext";
 import { DatabaseAccount, IpRule } from "Contracts/DataModels";
 import { updateUserContext } from "UserContext";
-import { PortalBackendIPs } from "Utils/EndpointUtils";
+import { PortalBackendOutboundIPs } from "Utils/EndpointUtils";
 import { getNetworkSettingsWarningMessage } from "./NetworkUtility";
 
 describe("NetworkUtility tests", () => {
@@ -10,9 +11,11 @@ describe("NetworkUtility tests", () => {
     const accessMessagePart = "Please allow access from Azure Portal to proceed";
     // validEnpoints are a subset of those from Utils/EndpointValidation/PortalBackendIPs
     const validEndpoints = [
-      "https://main.documentdb.ext.azure.com",
-      "https://main.documentdb.ext.azure.cn",
-      "https://main.documentdb.ext.azure.us",
+      ...PortalBackendEndpoints.Development,
+      ...PortalBackendEndpoints.Mpac,
+      ...PortalBackendEndpoints.Prod,
+      ...PortalBackendEndpoints.Fairfax,
+      ...PortalBackendEndpoints.Mooncake
     ];
 
     let warningMessageResult: string;
@@ -54,11 +57,12 @@ describe("NetworkUtility tests", () => {
 
     it(`should return no message when the appropriate ip rules are added to mongo/cassandra account per endpoint`, () => {
       validEndpoints.forEach(async (endpoint) => {
+        console.log(endpoint)
         updateUserContext({
           databaseAccount: {
             kind: "MongoDB",
             properties: {
-              ipRules: PortalBackendIPs[endpoint].map((ip: string) => ({ ipAddressOrRange: ip }) as IpRule),
+              ipRules: PortalBackendOutboundIPs[endpoint].map((ip: string) => ({ ipAddressOrRange: ip }) as IpRule),
               publicNetworkAccess: "Enabled",
             },
           } as DatabaseAccount,
