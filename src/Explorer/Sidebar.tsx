@@ -10,7 +10,7 @@ import {
   SplitButton,
   makeStyles,
   mergeClasses,
-  shorthands
+  shorthands,
 } from "@fluentui/react-components";
 import { Add16Regular, ArrowSync12Regular, ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
 import { Platform, configContext } from "ConfigContext";
