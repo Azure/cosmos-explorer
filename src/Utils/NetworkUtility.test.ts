@@ -16,14 +16,7 @@ describe("NetworkUtility tests", () => {
       PortalBackendEndpoints.Fairfax,
       PortalBackendEndpoints.Mooncake,
     ];
-    const mongoProxyEndpoints: string[] = [
-      MongoProxyEndpoints.Mpac,
-      MongoProxyEndpoints.Prod,
-      MongoProxyEndpoints.Fairfax,
-      MongoProxyEndpoints.Mooncake,
-    ];
-
-    console.log(portalBackendEndpoints);
+    
     let warningMessageResult: string;
     const warningMessageFunc = (msg: string) => (warningMessageResult = msg);
 
