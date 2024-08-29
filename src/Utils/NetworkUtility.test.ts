@@ -15,7 +15,7 @@ describe("NetworkUtility tests", () => {
       ...PortalBackendEndpoints.Mpac,
       ...PortalBackendEndpoints.Prod,
       ...PortalBackendEndpoints.Fairfax,
-      ...PortalBackendEndpoints.Mooncake
+      ...PortalBackendEndpoints.Mooncake,
     ];
 
     let warningMessageResult: string;
@@ -57,7 +57,7 @@ describe("NetworkUtility tests", () => {
 
     it(`should return no message when the appropriate ip rules are added to mongo/cassandra account per endpoint`, () => {
       validEndpoints.forEach(async (endpoint) => {
-        console.log(endpoint)
+        console.log(endpoint);
         updateUserContext({
           databaseAccount: {
             kind: "MongoDB",
