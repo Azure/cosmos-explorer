@@ -284,6 +284,7 @@ export class HttpStatusCodes {
   public static readonly Accepted: number = 202;
   public static readonly NoContent: number = 204;
   public static readonly NotModified: number = 304;
+  public static readonly BadRequest: number = 400;
   public static readonly Unauthorized: number = 401;
   public static readonly Forbidden: number = 403;
   public static readonly NotFound: number = 404;

@@ -35,7 +35,7 @@ export interface DialogState {
     textFieldProps?: TextFieldProps,
     primaryButtonDisabled?: boolean,
   ) => void;
-  showOkModalDialog: (title: string, subText: string) => void;
+  showOkModalDialog: (title: string, subText: string, linkProps?: LinkProps) => void;
 }
 
 export const useDialog: UseStore<DialogState> = create((set, get) => ({
@@ -83,7 +83,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
       textFieldProps,
       primaryButtonDisabled,
     }),
-  showOkModalDialog: (title: string, subText: string): void =>
+  showOkModalDialog: (title: string, subText: string, linkProps?: LinkProps): void =>
     get().openDialog({
       isModal: true,
       title,
@@ -94,6 +94,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
         get().closeDialog();
       },
       onSecondaryButtonClick: undefined,
+      linkProps,
     }),
 }));
 

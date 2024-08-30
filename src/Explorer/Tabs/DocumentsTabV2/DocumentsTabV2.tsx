@@ -687,9 +687,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           const newThrottled: DocumentId[] = [];
           const newFailed: DocumentId[] = [];
           deleteResult.forEach((result) => {
-            if (result.statusCode === 204) {
+            if (result.statusCode === Constants.HttpStatusCodes.NoContent) {
               newSuccessful.push(result.documentId);
-            } else if (result.statusCode === 429) {
+            } else if (result.statusCode === Constants.HttpStatusCodes.TooManyRequests) {
               newThrottled.push(result.documentId);
               retryAfterMilliseconds = Math.max(result.retryAfterMilliseconds, retryAfterMilliseconds);
             } else if (result.statusCode >= 400) {
@@ -1032,7 +1032,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     setSelectedDocumentContent(selectedDocumentContentBaseline);
   }, [initialDocumentContent, selectedDocumentContentBaseline, setSelectedDocumentContent]);
 
-  const _deleteNoSqlDocuments2 = (collection: CollectionBase, documentIds: DocumentId[]): Promise<DocumentId[]> =>
+  /**
+   * Trigger a useEffect() to bulk delete noSql documents
+   * @param collection
+   * @param documentIds
+   * @returns
+   */
+  const _bulkDeleteNoSqlDocuments = (collection: CollectionBase, documentIds: DocumentId[]): Promise<DocumentId[]> =>
     new Promise<DocumentId[]>((resolve, reject) => {
       setBulkDeleteOperation({
         onCompleted: resolve,
@@ -1078,24 +1084,27 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           });
           // ----------------------------------------------------------------------------------------------------
         } else {
-          deletePromise = _deleteNoSqlDocuments2(_collection, toDeleteDocumentIds);
+          deletePromise = _bulkDeleteNoSqlDocuments(_collection, toDeleteDocumentIds);
         }
       } else {
         deletePromise = MongoProxyClient.deleteDocuments(
           _collection.databaseId,
           _collection as ViewModels.Collection,
           toDeleteDocumentIds,
-        ).then(({ deletedCount, isAcknowledged }) => {
-          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-            useDialog
-              .getState()
-              .showOkModalDialog("Delete documents", `${deletedCount} document(s) successfully deleted.`);
-            return toDeleteDocumentIds;
-          }
+        )
+          .then(({ deletedCount, isAcknowledged }) => {
+            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+              useDialog
+                .getState()
+                .showOkModalDialog("Delete documents", `${deletedCount} document(s) successfully deleted.`);
+              return toDeleteDocumentIds;
+            }
 
-          // TODO Add warning if throttling happened
-          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-        });
+            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+          })
+          .catch((error) => {
+            throw error;
+          });
       }
 
       return deletePromise
@@ -1150,10 +1159,25 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             setSelectedRows(new Set());
             setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
           },
-          (error: Error) =>
-            useDialog
-              .getState()
-              .showOkModalDialog("Delete documents", `Deleting document(s) failed (${error.message})`),
+          (error: Error) => {
+            if (error instanceof MongoProxyClient.ThrottlingError) {
+              useDialog
+                .getState()
+                .showOkModalDialog(
+                  "Delete documents",
+                  `Deleting document(s) failed due to throttling error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.`,
+                  {
+                    linkText: "Learn More",
+                    linkUrl:
+                      "https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large?tabs=resource-specific",
+                  },
+                );
+            } else {
+              useDialog
+                .getState()
+                .showOkModalDialog("Delete documents", `Deleting document(s) failed (${error.message})`);
+            }
+          },
         )
         .finally(() => setIsExecuting(false));
     },
