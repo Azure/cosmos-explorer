@@ -464,6 +464,7 @@ describe("Documents tab (noSql API)", () => {
     });
 
     it("clicking Delete Document asks for confirmation", () => {
+      jest.useFakeTimers();
       const mockDeleteDocuments = deleteDocuments as jest.Mock;
       mockDeleteDocuments.mockClear();
 
@@ -474,6 +475,7 @@ describe("Documents tab (noSql API)", () => {
           .onCommandClick(undefined);
       });
 
+      jest.runAllTimers();
       expect(mockDeleteDocuments).toHaveBeenCalled();
     });
   });
