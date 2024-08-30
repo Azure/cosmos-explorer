@@ -1,5 +1,15 @@
 import { Item, ItemDefinition, PartitionKey, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
-import { Button, Input, TableRowId, makeStyles, shorthands } from "@fluentui/react-components";
+import {
+  Button,
+  Input,
+  Link,
+  MessageBar,
+  MessageBarBody,
+  MessageBarTitle,
+  TableRowId,
+  makeStyles,
+  shorthands,
+} from "@fluentui/react-components";
 import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
@@ -17,6 +27,7 @@ import { Platform, configContext } from "ConfigContext";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
+import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
@@ -111,6 +122,9 @@ export const useDocumentsTabStyles = makeStyles({
     float: "right",
     backgroundColor: "white",
     zIndex: 1,
+  },
+  deleteProgressContent: {
+    paddingTop: tokens.spacingVerticalL,
   },
 });
 
@@ -586,6 +600,23 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     readSubComponentState(SubComponentName.FilterHistory, _collection, []),
   );
 
+  // For progress bar for bulk delete (noSql)
+  const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = React.useState(false);
+  const [bulkDeleteProcess, setBulkDeleteProcess] = useState<{
+    pendingIds: DocumentId[];
+    successfulIds: DocumentId[];
+    throttledIds: DocumentId[];
+    failedIds: DocumentId[];
+    beforeExecuteMs: number; // Delay before executing delete. Used for retrying throttling after a specified delay
+  }>(undefined);
+  const [bulkDeleteOperation, setDeleteOperation] = useState<{
+    onCompleted: (documentIds: DocumentId[]) => void;
+    onFailed: (reason?: unknown) => void;
+    count: number;
+    collection: CollectionBase;
+  }>(undefined);
+  const [bulkDeleteMode, setBulkDeleteMode] = useState<"inProgress" | "completed" | "aborting" | "aborted">(undefined);
+
   const setKeyboardActions = useKeyboardActionGroup(KeyboardActionGroup.ACTIVE_TAB);
 
   useEffect(() => {
@@ -610,6 +641,177 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       }
     }
   }, [documentIds, clickedRowIndex, editorState]);
+
+  /**
+   * NoSql: Recursively delete all documents by retrying throttled requests (429).
+   * Updates the <ProgressModalDialog> component via the state variables. Checks if user has aborted the operation
+   * via the cancel button in the <ProgressModalDialog> in order to stop the recursion.
+   * Inputs are the deleteOperationInfo, bulkDeleteProcess state variables.
+   * The function is triggered when the bulkDeleteProcess state variable changes: it proceeds to delete the
+   * documents in the pendingIds and throttledIds array and updates the state variables accordingly, which triggers the function again.
+   * When done or failed, it calls the onCompleted or onFailed callbacks in the deleteOperationInfo.
+   *
+   */
+  useEffect(() => {
+    console.log(
+      "documentIdsPendingDelete has changed",
+      bulkDeleteProcess?.pendingIds?.length,
+      bulkDeleteProcess?.throttledIds?.length,
+      bulkDeleteMode,
+    );
+    if (!bulkDeleteOperation || !bulkDeleteProcess || !bulkDeleteMode) {
+      return;
+    }
+
+    if (bulkDeleteMode === "completed" || bulkDeleteMode === "aborted") {
+      return;
+    }
+
+    if (
+      (bulkDeleteProcess.pendingIds.length === 0 && bulkDeleteProcess.throttledIds.length === 0) ||
+      bulkDeleteMode === "aborting"
+    ) {
+      // Successfully deleted all documents or operation was aborted
+      console.log(
+        "deleteOperationInfo.onCompleted",
+        bulkDeleteProcess.successfulIds.length,
+        bulkDeleteProcess.failedIds.length,
+      );
+
+      bulkDeleteOperation.onCompleted(bulkDeleteProcess.successfulIds);
+      setBulkDeleteMode(bulkDeleteMode === "aborting" ? "aborted" : "completed");
+      return;
+    }
+
+    // Start deleting documents
+    const newPendingIds = bulkDeleteProcess.pendingIds.concat(bulkDeleteProcess.throttledIds);
+    const timeout = bulkDeleteProcess.beforeExecuteMs || 0;
+
+    setTimeout(() => {
+      console.log("calling deleteNoSqlDocuments", newPendingIds.length, timeout);
+      deleteNoSqlDocuments(bulkDeleteOperation.collection, [...newPendingIds])
+        .then((deleteResult) => {
+          let retryAfterMilliseconds = 0;
+          const newSuccessful: DocumentId[] = [];
+          const newThrottled: DocumentId[] = [];
+          const newFailed: DocumentId[] = [];
+          deleteResult.forEach((result) => {
+            if (result.statusCode === 204) {
+              newSuccessful.push(result.documentId);
+            } else if (result.statusCode === 429) {
+              newThrottled.push(result.documentId);
+              retryAfterMilliseconds = Math.max(result.retryAfterMilliseconds, retryAfterMilliseconds);
+            } else if (result.statusCode >= 400) {
+              newFailed.push(result.documentId);
+            }
+          });
+
+          setBulkDeleteProcess((prev) => ({
+            pendingIds: [],
+            successfulIds: prev.successfulIds.concat(newSuccessful),
+            throttledIds: newThrottled,
+            failedIds: prev.failedIds.concat(newFailed),
+            beforeExecuteMs: retryAfterMilliseconds,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error deleting documents", error);
+          setBulkDeleteProcess((prev) => ({
+            pendingIds: [],
+            throttledIds: [],
+            successfulIds: prev.successfulIds,
+            failedIds: prev.failedIds.concat(prev.pendingIds),
+            beforeExecuteMs: undefined,
+          }));
+          bulkDeleteOperation.onFailed(error);
+        });
+    }, timeout);
+
+    // console.log("calling deleteNoSqlDocuments", bulkDeleteProcess.pendingIds.length);
+    // deleteNoSqlDocuments(bulkDeleteOperation.collection, [...bulkDeleteProcess.pendingIds])
+    //   .then((deleteResult) => {
+    //     let retryAfterMilliseconds = 0;
+    //     const newSuccessful: DocumentId[] = [];
+    //     const newThrottled: DocumentId[] = [];
+    //     const newFailed: DocumentId[] = [];
+    //     deleteResult.forEach((result) => {
+    //       if (result.statusCode === 204) {
+    //         newSuccessful.push(result.documentId);
+    //       } else if (result.statusCode === 429) {
+    //         newThrottled.push(result.documentId);
+    //         retryAfterMilliseconds = Math.max(result.retryAfterMilliseconds, retryAfterMilliseconds);
+    //       } else {
+    //         newFailed.push(result.documentId);
+    //       }
+    //     });
+
+    //     setBulkDeleteProcess((prev) => ({
+    //       pendingIds: [],
+    //       successfulIds: prev.successfulIds.concat(newSuccessful),
+    //       throttledIds: prev.throttledIds.concat(newThrottled),
+    //       failedIds: prev.failedIds.concat(newFailed),
+    //       beforeExecuteMs: retryAfterMilliseconds
+    //     }));
+    //
+    // if (isDeleteDocumentsAborted) {
+    //   setBulkDeleteProcess((prev) => ({
+    //     pendingIds: [],
+    //     successfulIds: prev.successfulIds.concat(newSuccessful),
+    //     throttledIds: prev.throttledIds.concat(newThrottled),
+    //     failedIds: prev.failedIds.concat(newFailed),
+    //   }));
+    //   console.log("Delete operation was aborted");
+    //   return;
+    // }
+
+    // console.log("result: newPendingIdsToDelete", newThrottled.length);
+    // if (newThrottled.length > 0) {
+    //   // Retry the throttled requests
+    //   setTimeout(() => {
+    //     setBulkDeleteProcess((prev) => ({
+    //       pendingIds: newThrottled,
+    //       throttledIds: prev.throttledIds,
+    //       successfulIds: prev.successfulIds.concat(newSuccessful),
+    //       failedIds: prev.failedIds.concat(newFailed),
+    //     }));
+
+    //     console.log("Retrying delete operation after", maxRetryAfterMs, "ms");
+    //   }, 5_000 /*TODO: restore this before committing. maxRetryAfterMs*/);
+    // } else {
+    //   setBulkDeleteProcess((prev) => ({
+    //     pendingIds: [],
+    //     throttledIds: [],
+    //     successfulIds: prev.successfulIds.concat(newSuccessful),
+    //     failedIds: prev.failedIds.concat(newFailed),
+    //   }));
+    // }
+
+    // })
+    // .catch((error) => {
+    //   console.error("Error deleting documents", error);
+    //   setBulkDeleteProcess((prev) => ({
+    //     pendingIds: [],
+    //     throttledIds: [],
+    //     successfulIds: prev.successfulIds,
+    //     failedIds: prev.failedIds.concat(prev.pendingIds),
+    //   }));
+    //   bulkDeleteOperation.onFailed(error);
+    // });
+  }, [bulkDeleteOperation, bulkDeleteProcess, bulkDeleteMode]);
+
+  // const getDeleteProgressMode = (): "inProgress" | "completed" | "aborting" => {
+  //   const areDocumentsLeftToDelete =
+  //     bulkDeleteProcess.pendingIds.length > 0 || bulkDeleteProcess.throttledIds.length > 0;
+  //   if (isDeleteDocumentsAborting && areDocumentsLeftToDelete) {
+  //     return "aborting";
+  //   }
+
+  //   if (!areDocumentsLeftToDelete) {
+  //     return "completed";
+  //   }
+
+  //   return "inProgress";
+  // };
 
   const applyFilterButton = {
     enabled: true,
@@ -923,7 +1125,62 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   }, [initialDocumentContent, selectedDocumentContentBaseline, setSelectedDocumentContent]);
 
   /**
+   * NoSql: Recursively delete all documents by retrying throttled requests (429).
+   * This updates the <ProgressModalDialog> component via the state variables.
+   * @param collection
+   * @param documentIds
+   * @returns
+   */
+  const deleteNoSqlDocumentsRetry = (collection: CollectionBase, documentIds: DocumentId[]): Promise<DocumentId[]> => {
+    return deleteNoSqlDocuments(collection, documentIds).then((deleteResult) => {
+      // const succeededIds = deleteResult.filter((r) => r.statusCode === 204).map((r) => r.documentId);
+      // const throttledIds = deleteResult.filter((r) => r.statusCode === 429).map((r) => r.documentId);
+      // setSuccessfulDeletes((prev) => prev + succeededIds.length);
+
+      // if (throttledIds.length > 0) {
+      //   if (nbToDelete !== undefined) {
+      //     const maxRetryAfterMs = Math.max(...deleteResult.map((r) => r.retryAfterMilliseconds), 0);
+      //     return new Promise<DocumentId[]>((resolve, reject) => {
+      //       setTimeout(() => {
+      //         deleteNoSqlDocumentsRetry(collection, throttledIds).then((retryResult) => {
+      //           resolve([...succeededIds, ...retryResult]);
+      //         }, reject);
+      //       }, 5_000 /*TODO: restore this before committing. maxRetryAfterMs*/);
+      //     });
+      //   } else {
+      //     // Aborted
+      //     const failedDeletes = documentIds.length - succeededIds.length;
+      //     setFailedDeletes((prev) => prev + failedDeletes);
+      //   }
+      // }
+
+      return deleteResult.filter((r) => r.statusCode === 204).map((r) => r.documentId);
+    });
+  };
+
+  const _deleteNoSqlDocuments2 = (collection: CollectionBase, documentIds: DocumentId[]): Promise<DocumentId[]> =>
+    new Promise<DocumentId[]>((resolve, reject) => {
+      setDeleteOperation({
+        onCompleted: resolve,
+        onFailed: reject,
+        count: documentIds.length,
+        collection,
+      });
+      setBulkDeleteProcess({
+        pendingIds: [...documentIds],
+        throttledIds: [],
+        successfulIds: [],
+        failedIds: [],
+        beforeExecuteMs: 0,
+      });
+      setIsBulkDeleteDialogOpen(true);
+      setBulkDeleteMode("inProgress");
+    });
+
+  /**
    * Implementation using bulk delete NoSQL API
+   * @param list of document ids to delete
+   * @returns Promise of list of deleted document ids
    */
   const _deleteDocuments = useCallback(
     async (toDeleteDocumentIds: DocumentId[]): Promise<DocumentId[]> => {
@@ -934,29 +1191,38 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       });
       setIsExecuting(true);
 
-      // TODO: Once JS SDK Bug fix for bulk deleting legacy containers (whose systemKey==1) is released:
-      // Remove the check for systemKey, remove call to deleteNoSqlDocument(). deleteNoSqlDocuments() should always be called.
-      const _deleteNoSqlDocuments = async (
-        collection: CollectionBase,
-        toDeleteDocumentIds: DocumentId[],
-      ): Promise<DocumentId[]> => {
-        return partitionKey.systemKey
-          ? deleteNoSqlDocument(collection, toDeleteDocumentIds[0]).then(() => [toDeleteDocumentIds[0]])
-          : deleteNoSqlDocuments(collection, toDeleteDocumentIds);
-      };
-
-      const deletePromise = !isPreferredApiMongoDB
-        ? _deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
-        : MongoProxyClient.deleteDocuments(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds,
-          ).then(({ deletedCount, isAcknowledged }) => {
-            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-              return toDeleteDocumentIds;
-            }
-            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+      let deletePromise;
+      if (!isPreferredApiMongoDB) {
+        if (partitionKey.systemKey) {
+          // ----------------------------------------------------------------------------------------------------
+          // TODO: Once JS SDK Bug fix for bulk deleting legacy containers (whose systemKey==1) is released:
+          // Remove the check for systemKey, remove call to deleteNoSqlDocument(). deleteNoSqlDocuments() should
+          // always be called for NoSQL.
+          deletePromise = deleteNoSqlDocument(_collection, toDeleteDocumentIds[0]).then(() => {
+            useDialog.getState().showOkModalDialog("Delete document", "Document successfully deleted.");
+            return [toDeleteDocumentIds[0]];
           });
+          // ----------------------------------------------------------------------------------------------------
+        } else {
+          deletePromise = _deleteNoSqlDocuments2(_collection, toDeleteDocumentIds);
+        }
+      } else {
+        deletePromise = MongoProxyClient.deleteDocuments(
+          _collection.databaseId,
+          _collection as ViewModels.Collection,
+          toDeleteDocumentIds,
+        ).then(({ deletedCount, isAcknowledged }) => {
+          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+            useDialog
+              .getState()
+              .showOkModalDialog("Delete documents", `${deletedCount} document(s) successfully deleted.`);
+            return toDeleteDocumentIds;
+          }
+
+          // TODO Add warning if throttling happened
+          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+        });
+      }
 
       return deletePromise
         .then(
@@ -987,9 +1253,11 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             throw error;
           },
         )
-        .finally(() => setIsExecuting(false));
+        .finally(() => {
+          setIsExecuting(false);
+        });
     },
-    [_collection, isPreferredApiMongoDB, onExecutionErrorChange, tabTitle],
+    [_collection, isPreferredApiMongoDB, onExecutionErrorChange, tabTitle, partitionKey.systemKey],
   );
 
   const deleteDocuments = useCallback(
@@ -1007,9 +1275,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             setClickedRowIndex(undefined);
             setSelectedRows(new Set());
             setEditorState(ViewModels.DocumentExplorerState.noDocumentSelected);
-            useDialog
-              .getState()
-              .showOkModalDialog("Delete documents", `${deletedIds.length} document(s) successfully deleted.`);
           },
           (error: Error) =>
             useDialog
@@ -1916,6 +2181,54 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           </Allotment>
         </div>
       </div>
+      {bulkDeleteOperation && (
+        <ProgressModalDialog
+          isOpen={isBulkDeleteDialogOpen}
+          dismissText="Abort"
+          onDismiss={() => {
+            setIsBulkDeleteDialogOpen(false);
+            setDeleteOperation(undefined);
+          }}
+          onCancel={() => setBulkDeleteMode("aborting")}
+          title={`Deleting ${bulkDeleteOperation.count} document(s)`}
+          message={`Successfully deleted ${bulkDeleteProcess.successfulIds.length} document(s).`}
+          maxValue={bulkDeleteOperation.count}
+          value={bulkDeleteProcess.successfulIds.length}
+          mode={bulkDeleteMode}
+        >
+          <div className={styles.deleteProgressContent}>
+            {(bulkDeleteMode === "aborting" || bulkDeleteMode === "aborted") && (
+              <div style={{ paddingBottom: tokens.spacingVerticalL }}>Deleting document(s) was aborted.</div>
+            )}
+            {(bulkDeleteProcess.failedIds.length > 0 ||
+              (bulkDeleteProcess.throttledIds.length > 0 && bulkDeleteMode !== "inProgress")) && (
+              <MessageBar intent="error" style={{ marginBottom: tokens.spacingVerticalL }}>
+                <MessageBarBody>
+                  <MessageBarTitle>Error</MessageBarTitle>
+                  Failed to delete{" "}
+                  {bulkDeleteMode === "inProgress"
+                    ? bulkDeleteProcess.failedIds.length
+                    : bulkDeleteProcess.failedIds.length + bulkDeleteProcess.throttledIds.length}{" "}
+                  document(s).
+                </MessageBarBody>
+              </MessageBar>
+            )}
+            <MessageBar intent="warning">
+              <MessageBarBody>
+                <MessageBarTitle>Warning</MessageBarTitle>
+                Some delete requests failed due to a &quot;Request too large&quot; exception (429). Retrying now. To
+                prevent this in the future, consider increasing the throughput on your container or database.{" "}
+                <Link
+                  href="https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large?tabs=resource-specific"
+                  target="_blank"
+                >
+                  Learn More
+                </Link>
+              </MessageBarBody>
+            </MessageBar>
+          </div>
+        </ProgressModalDialog>
+      )}
     </CosmosFluentProvider>
   );
 };

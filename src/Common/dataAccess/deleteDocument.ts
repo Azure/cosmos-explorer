@@ -26,13 +26,23 @@ export const deleteDocument = async (collection: CollectionBase, documentId: Doc
   }
 };
 
+export interface IBulkDeleteResult {
+  documentId: DocumentId;
+  requestCharge: number;
+  statusCode: number;
+  retryAfterMilliseconds?: number;
+}
+
 /**
  * Bulk delete documents
  * @param collection
  * @param documentId
- * @returns array of ids that were successfully deleted
+ * @returns array of results and status codes
  */
-export const deleteDocuments = async (collection: CollectionBase, documentIds: DocumentId[]): Promise<DocumentId[]> => {
+export const deleteDocuments = async (
+  collection: CollectionBase,
+  documentIds: DocumentId[],
+): Promise<IBulkDeleteResult[]> => {
   const nbDocuments = documentIds.length;
   const clearMessage = logConsoleProgress(`Deleting ${documentIds.length} ${getEntityName(true)}`);
   try {
@@ -56,8 +66,11 @@ export const deleteDocuments = async (collection: CollectionBase, documentIds: D
         operationType: BulkOperationType.Delete,
       }));
 
-      const promise = v2Container.items.bulk(operations).then((bulkResult) => {
-        return documentIdsChunk.filter((_, index) => bulkResult[index].statusCode === 204);
+      const promise = v2Container.items.bulk(operations).then((bulkResults) => {
+        return bulkResults.map((bulkResult, index) => {
+          const documentId = documentIdsChunk[index];
+          return { ...bulkResult, documentId };
+        });
       });
       promiseArray.push(promise);
     }
@@ -67,7 +80,7 @@ export const deleteDocuments = async (collection: CollectionBase, documentIds: D
     logConsoleInfo(
       `Successfully deleted ${getEntityName(flatAllResult.length > 1)}: ${flatAllResult.length} out of ${nbDocuments}`,
     );
-    // TODO: handle case result.length != nbDocuments
+
     return flatAllResult;
   } catch (error) {
     handleError(
