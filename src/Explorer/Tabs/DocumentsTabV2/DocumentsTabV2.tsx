@@ -1167,7 +1167,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 .getState()
                 .showOkModalDialog(
                   "Delete documents",
-                  `Deleting document(s) failed due to throttling error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.`,
+                  `Some documents failed to delete due to throttling error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.`,
                   {
                     linkText: "Learn More",
                     linkUrl: THROTTLING_DOC_URL,
