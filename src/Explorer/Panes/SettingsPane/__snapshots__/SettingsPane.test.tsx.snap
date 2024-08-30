@@ -474,7 +474,9 @@ exports[`Settings Pane should render Default properly 1`] = `
         <StyledSpinButton
           ariaLabel="Max degree of parallelism"
           className="textfontclr"
+          decrementButtonAriaLabel="Decrease value by 1"
           id="max-degree"
+          incrementButtonAriaLabel="Increase value by 1"
           min={-1}
           onDecrement={[Function]}
           onIncrement={[Function]}

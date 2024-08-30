@@ -777,6 +777,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 onDecrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) - 1 || maxDegreeOfParallelism)}
                 onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                 ariaLabel="Max degree of parallelism"
+                incrementButtonAriaLabel="Increase value by 1"
+                decrementButtonAriaLabel="Decrease value by 1"
               />
             </div>
           </div>
