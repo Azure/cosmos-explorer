@@ -69,6 +69,8 @@ import TabsBase from "../TabsBase";
 import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
 
 const MAX_FILTER_HISTORY_COUNT = 100; // Datalist will become scrollable, so we can afford to keep more items than fit on the screen
+const THROTTLING_DOC_URL =
+  "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large";
 
 const loadMoreHeight = LayoutConstants.rowHeight;
 export const useDocumentsTabStyles = makeStyles({
@@ -1168,8 +1170,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                   `Deleting document(s) failed due to throttling error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.`,
                   {
                     linkText: "Learn More",
-                    linkUrl:
-                      "https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large?tabs=resource-specific",
+                    linkUrl: THROTTLING_DOC_URL,
                   },
                 );
             } else {
@@ -2116,10 +2117,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 <MessageBarTitle>Warning</MessageBarTitle>
                 Some delete requests failed due to a &quot;Request too large&quot; exception (429). Retrying now. To
                 prevent this in the future, consider increasing the throughput on your container or database.{" "}
-                <Link
-                  href="https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large?tabs=resource-specific"
-                  target="_blank"
-                >
+                <Link href={THROTTLING_DOC_URL} target="_blank">
                   Learn More
                 </Link>
               </MessageBarBody>
