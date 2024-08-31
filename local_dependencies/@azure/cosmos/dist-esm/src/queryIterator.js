@@ -224,10 +224,11 @@ export class QueryIterator {
         }
         const queryPlan = queryPlanResponse.result;
         const queryInfo = queryPlan.queryInfo;
-        this.nonStreamingOrderBy = queryInfo.hasNonStreamingOrderBy ? true : false;
-        if (queryInfo.aggregates.length > 0 && queryInfo.hasSelectValue === false) {
+        //this.nonStreamingOrderBy = queryInfo.hasNonStreamingOrderBy ? true : false;
+        this.nonStreamingOrderBy = false;
+        /*if (queryInfo.aggregates.length > 0 && queryInfo.hasSelectValue === false) {
             throw new Error("Aggregate queries must use the VALUE keyword");
-        }
+        } */
         this.queryExecutionContext = new PipelinedQueryExecutionContext(this.clientContext, this.resourceLink, this.query, this.options, queryPlan);
     }
     async fetchQueryPlan(diagnosticNode) {

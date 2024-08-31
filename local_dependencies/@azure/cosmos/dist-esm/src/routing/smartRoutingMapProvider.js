@@ -57,9 +57,10 @@ export class SmartRoutingMapProvider {
      */
     async getOverlappingRanges(collectionLink, sortedRanges, diagnosticNode) {
         // validate if the list is non- overlapping and sorted                             TODO: any PartitionKeyRanges
-        if (!SmartRoutingMapProvider._isSortedAndNonOverlapping(sortedRanges)) {
+        /*if (!SmartRoutingMapProvider._isSortedAndNonOverlapping(sortedRanges)) {
             throw new Error("the list of ranges is not a non-overlapping sorted ranges");
-        }
+        }*/
+        sortedRanges = [];
         let partitionKeyRanges = []; // TODO: any ParitionKeyRanges
         if (sortedRanges.length === 0) {
             return partitionKeyRanges;

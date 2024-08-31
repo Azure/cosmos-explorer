@@ -1,10 +1,7 @@
 import { Constants } from "../common";
 import { RUCapPerOperationExceededErrorCode } from "../request/RUCapPerOperationExceededError";
-import { GroupByEndpointComponent } from "./EndpointComponent/GroupByEndpointComponent";
-import { GroupByValueEndpointComponent } from "./EndpointComponent/GroupByValueEndpointComponent";
 import { NonStreamingOrderByDistinctEndpointComponent } from "./EndpointComponent/NonStreamingOrderByDistinctEndpointComponent";
 import { NonStreamingOrderByEndpointComponent } from "./EndpointComponent/NonStreamingOrderByEndpointComponent";
-import { OffsetLimitEndpointComponent } from "./EndpointComponent/OffsetLimitEndpointComponent";
 import { OrderByEndpointComponent } from "./EndpointComponent/OrderByEndpointComponent";
 import { OrderedDistinctEndpointComponent } from "./EndpointComponent/OrderedDistinctEndpointComponent";
 import { UnorderedDistinctEndpointComponent } from "./EndpointComponent/UnorderedDistinctEndpointComponent";
@@ -27,13 +24,16 @@ export class PipelinedQueryExecutionContext {
             this.pageSize = PipelinedQueryExecutionContext.DEFAULT_PAGE_SIZE;
         }
         // Pick between Nonstreaming and streaming endpoints
-        this.nonStreamingOrderBy = partitionedQueryExecutionInfo.queryInfo.hasNonStreamingOrderBy;
+        // this.nonStreamingOrderBy = partitionedQueryExecutionInfo.queryInfo.hasNonStreamingOrderBy;
+        this.nonStreamingOrderBy = false;
         // Pick between parallel vs order by execution context
-        const sortOrders = partitionedQueryExecutionInfo.queryInfo.orderBy;
+        // const sortOrders = partitionedQueryExecutionInfo.queryInfo.orderBy;
+        const sortOrders = [];
         // TODO: Currently we don't get any field from backend to determine streaming queries
         if (this.nonStreamingOrderBy) {
             this.vectorSearchBufferSize = this.calculateVectorSearchBufferSize(partitionedQueryExecutionInfo.queryInfo, options);
-            const distinctType = partitionedQueryExecutionInfo.queryInfo.distinctType;
+            //const distinctType = partitionedQueryExecutionInfo.queryInfo.distinctType;
+            const distinctType = "None";
             const context = new ParallelQueryExecutionContext(this.clientContext, this.collectionLink, this.query, this.options, this.partitionedQueryExecutionInfo);
             if (distinctType === "None") {
                 this.endpoint = new NonStreamingOrderByEndpointComponent(context, sortOrders, this.vectorSearchBufferSize, partitionedQueryExecutionInfo.queryInfo.offset);
@@ -51,7 +51,7 @@ export class PipelinedQueryExecutionContext {
             else {
                 this.endpoint = new ParallelQueryExecutionContext(this.clientContext, this.collectionLink, this.query, this.options, this.partitionedQueryExecutionInfo);
             }
-            if (Object.keys(partitionedQueryExecutionInfo.queryInfo.groupByAliasToAggregateType).length >
+            /*if (Object.keys(partitionedQueryExecutionInfo.queryInfo.groupByAliasToAggregateType).length >
                 0 ||
                 partitionedQueryExecutionInfo.queryInfo.aggregates.length > 0 ||
                 partitionedQueryExecutionInfo.queryInfo.groupByExpressions.length > 0) {
@@ -61,20 +61,21 @@ export class PipelinedQueryExecutionContext {
                 else {
                     this.endpoint = new GroupByEndpointComponent(this.endpoint, partitionedQueryExecutionInfo.queryInfo);
                 }
-            }
+            }*/
             // If top then add that to the pipeline. TOP N is effectively OFFSET 0 LIMIT N
-            const top = partitionedQueryExecutionInfo.queryInfo.top;
+            /*const top = partitionedQueryExecutionInfo.queryInfo.top;
             if (typeof top === "number") {
                 this.endpoint = new OffsetLimitEndpointComponent(this.endpoint, 0, top);
-            }
+            }*/
             // If offset+limit then add that to the pipeline
-            const limit = partitionedQueryExecutionInfo.queryInfo.limit;
+            /*const limit = partitionedQueryExecutionInfo.queryInfo.limit;
             const offset = partitionedQueryExecutionInfo.queryInfo.offset;
             if (typeof limit === "number" && typeof offset === "number") {
                 this.endpoint = new OffsetLimitEndpointComponent(this.endpoint, offset, limit);
-            }
+            }*/
             // If distinct then add that to the pipeline
-            const distinctType = partitionedQueryExecutionInfo.queryInfo.distinctType;
+            // const distinctType = partitionedQueryExecutionInfo.queryInfo.distinctType;
+            const distinctType = "None";
             if (distinctType === "Ordered") {
                 this.endpoint = new OrderedDistinctEndpointComponent(this.endpoint);
             }

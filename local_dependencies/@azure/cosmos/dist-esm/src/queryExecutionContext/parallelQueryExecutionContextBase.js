@@ -1,18 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-import PriorityQueue from "priorityqueuejs";
 import { createClientLogger } from "@azure/logger";
+import PriorityQueue from "priorityqueuejs";
+import semaphore from "semaphore";
 import { StatusCodes, SubStatusCodes } from "../common";
-import { QueryRange } from "../routing/QueryRange";
-import { SmartRoutingMapProvider } from "../routing/smartRoutingMapProvider";
-import { DocumentProducer } from "./documentProducer";
-import { getInitialHeader, mergeHeaders } from "./headerUtils";
-import { DiagnosticNodeInternal, DiagnosticNodeType } from "../diagnostics/DiagnosticNodeInternal";
-import { addDignosticChild } from "../utils/diagnostics";
 import { MetadataLookUpType } from "../CosmosDiagnostics";
 import { CosmosDbDiagnosticLevel } from "../diagnostics/CosmosDbDiagnosticLevel";
+import { DiagnosticNodeInternal, DiagnosticNodeType } from "../diagnostics/DiagnosticNodeInternal";
 import { RUCapPerOperationExceededErrorCode, } from "../request/RUCapPerOperationExceededError";
-import semaphore from "semaphore";
+import { QueryRange } from "../routing/QueryRange";
+import { SmartRoutingMapProvider } from "../routing/smartRoutingMapProvider";
+import { addDignosticChild } from "../utils/diagnostics";
+import { DocumentProducer } from "./documentProducer";
+import { getInitialHeader, mergeHeaders } from "./headerUtils";
 /** @hidden */
 const logger = createClientLogger("parallelQueryExecutionContextBase");
 /** @hidden */
@@ -58,7 +58,8 @@ export class ParallelQueryExecutionContextBase {
         this.err = undefined;
         this.state = ParallelQueryExecutionContextBase.STATES.started;
         this.routingProvider = new SmartRoutingMapProvider(this.clientContext);
-        this.sortOrders = this.partitionedQueryExecutionInfo.queryInfo.orderBy;
+        //this.sortOrders = this.partitionedQueryExecutionInfo.queryInfo.orderBy;
+        this.sortOrders = [];
         this.requestContinuation = options ? options.continuationToken || options.continuation : null;
         // response headers of undergoing operation
         this.respHeaders = getInitialHeader();
@@ -81,7 +82,9 @@ export class ParallelQueryExecutionContextBase {
     async _onTargetPartitionRanges() {
         // invokes the callback when the target partition ranges are ready
         const parsedRanges = this.partitionedQueryExecutionInfo.queryRanges;
-        const queryRanges = parsedRanges.map((item) => QueryRange.parseFromDict(item));
+        //const queryRanges = parsedRanges.map((item) => QueryRange.parseFromDict(item));
+        //hard coding the partition key ranges to be the parsedRanges
+        const queryRanges = parsedRanges;
         return this.routingProvider.getOverlappingRanges(this.collectionLink, queryRanges, this.getDiagnosticNode());
     }
     /**
