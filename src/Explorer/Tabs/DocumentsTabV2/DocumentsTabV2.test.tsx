@@ -1,7 +1,9 @@
 import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
+import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
+import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import {
   ButtonsDependencies,
@@ -68,8 +70,8 @@ jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
 jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
-      showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => {},
+      showOkCancelModalDialog: jest.fn((title: string, subText: string, okLabel: string, onOk: () => void) => onOk()),
+      showOkModalDialog: () => { },
     })),
   },
 }));
@@ -78,6 +80,10 @@ jest.mock("Common/dataAccess/deleteDocument", () => ({
   deleteDocuments: jest.fn((collection: ViewModels.CollectionBase, documentIds: DocumentId[]) =>
     Promise.resolve(documentIds),
   ),
+}));
+
+jest.mock("Explorer/Controls/ProgressModalDialog", () => ({
+  ProgressModalDialog: jest.fn(() => <></>),
 }));
 
 async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P> | ShallowWrapper<P>, amount = 0) {
@@ -463,8 +469,40 @@ describe("Documents tab (noSql API)", () => {
       expect(useCommandBar.getState().contextButtons.find((button) => button.id === DISCARD_BUTTON_ID)).toBeDefined();
     });
 
-    it("clicking Delete Document asks for confirmation", () => {
-      jest.useFakeTimers();
+    it("clicking Delete Document asks for confirmation", async () => {
+      act(() => {
+        useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
+          .onCommandClick(undefined);
+
+        const calls = (useDialog.getState().showOkCancelModalDialog as jest.Mock).mock.calls;
+        console.log(calls);
+      });
+
+      expect(useDialog.getState().showOkCancelModalDialog).toHaveBeenCalled();
+    });
+
+    it("clicking Delete Document for NoSql shows progress dialog", () => {
+      act(() => {
+        useCommandBar
+          .getState()
+          .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
+          .onCommandClick(undefined);
+      });
+
+      expect(ProgressModalDialog).toHaveBeenCalled();
+    });
+
+    it("clicking Delete Document eventually calls delete client api", () => {
+      // const setState = jest.fn();
+      // jest
+      //   .spyOn(React, 'useState')
+      //   .mockImplementationOnce(initState => [initState, setState]);
+
+      // const originalSetTimeout = global.setTimeout;
+      // global.setTimeout = jest.fn(cb => cb());
+      // jest.useFakeTimers();
       const mockDeleteDocuments = deleteDocuments as jest.Mock;
       mockDeleteDocuments.mockClear();
 
@@ -475,9 +513,11 @@ describe("Documents tab (noSql API)", () => {
           .onCommandClick(undefined);
       });
 
-      jest.runAllTimers();
       expect(mockDeleteDocuments).toHaveBeenCalled();
+
+      // global.setTimeout = originalSetTimeout;
     });
+
   });
 });
 
