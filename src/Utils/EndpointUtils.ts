@@ -131,7 +131,7 @@ export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
   [CassandraProxyEndpoints.Mooncake]: ["40.73.99.146", "143.64.62.47"],
 };
 
-export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localhost:10443"];
+export const allowedEmulatorEndpoints: ReadonlyArray<string> = ["https://localhost:8081"];
 
 export const allowedMongoBackendEndpoints: ReadonlyArray<string> = ["https://localhost:1234"];
 

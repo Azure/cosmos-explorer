@@ -1,0 +1,136 @@
+{
+  "name": "@azure/cosmos",
+  "version": "4.0.1-beta.3",
+  "description": "Microsoft Azure Cosmos DB Service Node.js SDK for NOSQL API",
+  "sdk-type": "client",
+  "keywords": [
+    "cosmosdb",
+    "cosmos db",
+    "documentdb",
+    "document database",
+    "azure",
+    "nosql",
+    "database",
+    "cloud",
+    "azure"
+  ],
+  "author": "Microsoft Corporation",
+  "main": "./dist/index.js",
+  "module": "./dist-esm/src/index.js",
+  "react-native": "./dist-esm/src/index.js",
+  "browser": {
+    "./dist-esm/src/request/defaultAgent.js": "./dist-esm/src/request/defaultAgent.browser.js",
+    "./dist-esm/src/utils/atob.js": "./dist-esm/src/utils/atob.browser.js",
+    "./dist-esm/src/utils/digest.js": "./dist-esm/src/utils/digest.browser.js",
+    "./dist-esm/src/utils/hmac.js": "./dist-esm/src/utils/hmac.browser.js"
+  },
+  "files": [
+    "changelog.md",
+    "dist/",
+    "dist-esm/src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "homepage": "https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/cosmosdb/cosmos/README.md",
+  "sideEffects": false,
+  "//metadata": {
+    "constantPaths": [
+      {
+        "path": "src/common/constants.ts",
+        "prefix": "SDKVersion"
+      }
+    ]
+  },
+  "types": "./dist/types/latest/cosmos.d.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "audit": "node ../../../common/scripts/rush-audit.js && rimraf node_modules package-lock.json && npm i --package-lock-only 2>&1 && npm audit",
+    "build:samples": "echo Obsolete.",
+    "check:src:strict": "tsc --pretty --project tsconfig.strict.json",
+    "build:src": "echo Using TypeScript && tsc --version && tsc -b --pretty",
+    "build:test": "tsc",
+    "build": "npm run clean && npm run extract-api && npm run bundle",
+    "bundle": "dev-tool run bundle",
+    "bundle-types": "node bundle-types.js",
+    "check-format": "dev-tool run vendored prettier --list-different --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"samples-dev/**/*.ts\" \"test/**/*.ts\" \"*.{js,json}\"",
+    "clean": "rimraf dist dist-esm temp types *.tgz *.html *.log *.tsbuildinfo test/**/*.{js,js.map,d.ts}",
+    "execute:samples": "dev-tool samples run samples-dev",
+    "extract-api": "npm run check:src:strict && npm run build:src && api-extractor run --local",
+    "format": "dev-tool run vendored prettier --write --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"samples-dev/**/*.ts\" \"test/**/*.ts\" \"*.{js,json}\"",
+    "integration-test:browser": "echo skipped",
+    "integration-test:node": "cross-env NODE_OPTIONS='--dns-result-order=ipv4first' mocha -r test/mocha.env.ts -r ts-node/register -r esm -r dotenv/config -r ./test/public/common/setup.ts --reporter ../../../common/tools/mocha-multi-reporter.js \"./test/internal/**/*.spec.ts\" \"./test/public/**/*.spec.ts\"  --timeout 100000",
+    "integration-test": "npm run integration-test:node && npm run integration-test:browser",
+    "lint:fix": "eslint package.json api-extractor.json src test --ext .ts --fix --fix-type [problem,suggestion]",
+    "lint": "eslint package.json api-extractor.json src test --ext .ts",
+    "pack": "npm pack 2>&1",
+    "test:browser": "npm run unit-test:browser && npm run integration-test:browser",
+    "test:node": "npm run build:test && npm run unit-test:node && npm run integration-test:node",
+    "test-consumer": "rimraf consumer-test/node_modules consumer-test/package-lock.json && node consumer-test.js 2>&1",
+    "test": "npm run unit-test && npm run integration-test",
+    "test:signoff": "npm run integration-test:node -- --fgrep \"nosignoff\" --invert",
+    "unit-test:browser": "echo skipped",
+    "unit-test:node": "echo skipped",
+    "unit-test": "npm run unit-test:node && npm run unit-test:browser"
+  },
+  "repository": "github:Azure/azure-sdk-for-js",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Azure/azure-sdk-for-js/issues"
+  },
+  "tsdoc": {
+    "tsdocFlavor": "AEDoc"
+  },
+  "dependencies": {
+    "@azure/core-auth": "^1.3.0",
+    "@azure/core-rest-pipeline": "^1.2.0",
+    "@azure/core-tracing": "^1.0.0",
+    "debug": "^4.1.1",
+    "fast-json-stable-stringify": "^2.1.0",
+    "jsbi": "^3.1.3",
+    "node-abort-controller": "^3.0.0",
+    "priorityqueuejs": "^2.0.0",
+    "semaphore": "^1.0.5",
+    "tslib": "^2.2.0",
+    "universal-user-agent": "^6.0.0",
+    "uuid": "^8.3.0",
+    "@azure/abort-controller": "^1.0.0"
+  },
+  "//sampleConfiguration": {
+    "skip": [
+      "AADAuth.ts",
+      "AlterQueryThroughput.ts",
+      "Bulk.ts",
+      "BulkUpdateWithSproc.ts",
+      "ChangeFeed.ts",
+      "ContainerManagement.ts",
+      "ItemManagement.ts",
+      "IndexManagement.ts",
+      "DatabaseManagement.ts",
+      "QueryThroughput.ts",
+      "SasTokenAuth.ts",
+      "ServerSideScripts.ts",
+      "handleError.ts",
+      "ChangeFeedIteratorEntireContainer.ts",
+      "ChangeFeedIteratorEpkRange.ts",
+      "ChangeFeedPartitionKey.ts",
+      "ChangeFeedHierarchicalPartitionKey.ts",
+      "Diagnostics.ts",
+      "HierarchicalPartitioning.ts"
+    ],
+    "productName": "Azure Cosmos DB",
+    "productSlugs": [
+      "azure-cosmos-db"
+    ],
+    "requiredResources": {
+      "Azure Cosmos DB account": "https://docs.microsoft.com/azure/cosmos-db/how-to-manage-database-account#create-an-account"
+    },
+    "extraFiles": {
+      "./samples-dev/Data/Families.json": [
+        "typescript/src/Data/Families.json",
+        "javascript/Data/Families.json"
+      ]
+    }
+  }
+}

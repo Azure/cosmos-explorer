@@ -1,0 +1,1 @@
+{"version":3,"file":"nonStreamingOrderByResponse.d.ts","sourceRoot":"","sources":["../../../src/queryExecutionContext/nonStreamingOrderByResponse.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAChD,OAAO,EAAE,yBAAyB,EAAE,MAAM,6BAA6B,CAAC;AAExE,MAAM,WAAW,2BAA2B;IAC1C,MAAM,EAAE,yBAAyB,CAAC;IAClC,OAAO,EAAE,aAAa,CAAC;CACxB"}
