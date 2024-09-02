@@ -50,6 +50,7 @@ import {
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
+import { userContext } from "UserContext";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useCallback, useMemo } from "react";
@@ -227,51 +228,55 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     <MenuItem key="refresh" icon={<ArrowClockwise16Regular />} onClick={onRefreshTable}>
                       Refresh
                     </MenuItem>
-                    <MenuItem
-                      icon={<TextSortAscendingRegular />}
-                      onClick={(e) => onSortClick(e, column.id, "ascending")}
-                    >
-                      Sort ascending
-                    </MenuItem>
-                    <MenuItem
-                      icon={<TextSortDescendingRegular />}
-                      onClick={(e) => onSortClick(e, column.id, "descending")}
-                    >
-                      Sort descending
-                    </MenuItem>
-                    <MenuItem icon={<ArrowResetRegular />} onClick={(e) => onSortClick(e, undefined, undefined)}>
-                      Reset sorting
-                    </MenuItem>
-                    {!isColumnSelectionDisabled && (
-                      <MenuItem key="editcolumns" icon={<EditRegular />} onClick={openColumnSelectionPane}>
-                        Edit columns
-                      </MenuItem>
-                    )}
-                    <MenuDivider />
-                    <MenuItem
-                      key="keyboardresize"
-                      icon={<TableResizeColumnRegular />}
-                      onClick={columnSizing.enableKeyboardMode(column.id)}
-                    >
-                      Resize with left/right arrow keys
-                    </MenuItem>
-                    {!isColumnSelectionDisabled && (
-                      <MenuItem
-                        key="remove"
-                        icon={<DeleteRegular />}
-                        onClick={() => {
-                          // Remove column id from selectedColumnIds
-                          const index = selectedColumnIds.indexOf(column.id);
-                          if (index === -1) {
-                            return;
-                          }
-                          const newSelectedColumnIds = [...selectedColumnIds];
-                          newSelectedColumnIds.splice(index, 1);
-                          onColumnSelectionChange(newSelectedColumnIds);
-                        }}
-                      >
-                        Remove column
-                      </MenuItem>
+                    {userContext.features.enableDocumentsTableColumnSelection && (
+                      <>
+                        <MenuItem
+                          icon={<TextSortAscendingRegular />}
+                          onClick={(e) => onSortClick(e, column.id, "ascending")}
+                        >
+                          Sort ascending
+                        </MenuItem>
+                        <MenuItem
+                          icon={<TextSortDescendingRegular />}
+                          onClick={(e) => onSortClick(e, column.id, "descending")}
+                        >
+                          Sort descending
+                        </MenuItem>
+                        <MenuItem icon={<ArrowResetRegular />} onClick={(e) => onSortClick(e, undefined, undefined)}>
+                          Reset sorting
+                        </MenuItem>
+                        {!isColumnSelectionDisabled && (
+                          <MenuItem key="editcolumns" icon={<EditRegular />} onClick={openColumnSelectionPane}>
+                            Edit columns
+                          </MenuItem>
+                        )}
+                        <MenuDivider />
+                        <MenuItem
+                          key="keyboardresize"
+                          icon={<TableResizeColumnRegular />}
+                          onClick={columnSizing.enableKeyboardMode(column.id)}
+                        >
+                          Resize with left/right arrow keys
+                        </MenuItem>
+                        {!isColumnSelectionDisabled && (
+                          <MenuItem
+                            key="remove"
+                            icon={<DeleteRegular />}
+                            onClick={() => {
+                              // Remove column id from selectedColumnIds
+                              const index = selectedColumnIds.indexOf(column.id);
+                              if (index === -1) {
+                                return;
+                              }
+                              const newSelectedColumnIds = [...selectedColumnIds];
+                              newSelectedColumnIds.splice(index, 1);
+                              onColumnSelectionChange(newSelectedColumnIds);
+                            }}
+                          >
+                            Remove column
+                          </MenuItem>
+                        )}
+                      </>
                     )}
                   </MenuList>
                 </MenuPopover>
