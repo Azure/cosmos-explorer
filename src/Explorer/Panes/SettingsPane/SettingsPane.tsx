@@ -5,13 +5,11 @@ import {
   IChoiceGroupOption,
   ISpinButtonStyles,
   IToggleStyles,
-  Icon,
   MessageBar,
   MessageBarType,
   Position,
   SpinButton,
   Toggle,
-  TooltipHost,
 } from "@fluentui/react";
 import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, makeStyles } from "@fluentui/react-components";
 import { AuthType } from "AuthType";
@@ -74,8 +72,12 @@ const useStyles = makeStyles({
     paddingTop: "4px",
     cursor: "pointer",
   },
-  settingsSectionPart: {
+  settingsSectionContainer: {
     paddingLeft: "15px",
+  },
+  settingsSectionDescription: {
+    paddingBottom: "10px",
+    fontSize: "12px",
   },
   subHeader: {
     marginRight: "5px",
@@ -472,13 +474,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionItem value="1">
               <AccordionHeader>
                 <div className={styles.header}>Page Options</div>
-                <InfoTooltip className={styles.headerIcon}>
-                  Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many
-                  query results per page.
-                </InfoTooltip>
               </AccordionHeader>
               <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as
+                    many query results per page.
+                  </div>
                   <ChoiceGroup
                     ariaLabelledBy="pageOptions"
                     selectedKey={pageOption}
@@ -487,11 +489,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     onChange={handleOnPageOptionChange}
                   />
                 </div>
-                <div className={`tabs ${styles.settingsSectionPart}`}>
+                <div className={`tabs ${styles.settingsSectionContainer}`}>
                   {isCustomPageOptionSelected() && (
                     <div className="tabcontent">
-                      <div className="settingsSectionLabel">
-                        Query results per page
+                      <div className={styles.settingsSectionDescription}>
+                        Query results per page{" "}
                         <InfoTooltip className={styles.headerIcon}>
                           Enter the number of query results that should be shown per page.
                         </InfoTooltip>
@@ -523,32 +525,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               <AccordionItem value="2">
                 <AccordionHeader>
                   <div className={styles.header}>Enable Entra ID RBAC</div>
-                  <TooltipHost
-                    content={
-                      <>
-                        Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
-                        ID RBAC.
-                        <a
-                          href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {" "}
-                          Learn more{" "}
-                        </a>
-                      </>
-                    }
-                  >
-                    <Icon
-                      iconName="Info"
-                      ariaLabel="Info tooltip"
-                      className={`panelInfoIcon ${styles.headerIcon}`}
-                      tabIndex={0}
-                    />
-                  </TooltipHost>
                 </AccordionHeader>
                 <AccordionPanel>
-                  <div className={styles.settingsSectionPart}>
+                  <div className={styles.settingsSectionContainer}>
                     {showDataPlaneRBACWarning && configContext.platform === Platform.Portal && (
                       <MessageBar
                         messageBarType={MessageBarType.warning}
@@ -560,6 +539,18 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                         operations
                       </MessageBar>
                     )}
+                    <div className={styles.settingsSectionDescription}>
+                      Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
+                      ID RBAC.
+                      <a
+                        href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {" "}
+                        Learn more{" "}
+                      </a>
+                    </div>
                     <ChoiceGroup
                       ariaLabelledBy="enableDataPlaneRBACOptions"
                       options={dataPlaneRBACOptionsList}
@@ -577,13 +568,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               <AccordionItem value="3">
                 <AccordionHeader>
                   <div className={styles.header}>Query Timeout</div>
-                  <InfoTooltip className={styles.headerIcon}>
-                    When a query reaches a specified time limit, a popup with an option to cancel the query will show
-                    unless automatic cancellation has been enabled
-                  </InfoTooltip>
                 </AccordionHeader>
                 <AccordionPanel>
-                  <div className={styles.settingsSectionPart}>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      When a query reaches a specified time limit, a popup with an option to cancel the query will show
+                      unless automatic cancellation has been enabled.
+                    </div>
                     <Toggle
                       styles={toggleStyles}
                       label="Enable query timeout"
@@ -592,7 +583,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     />
                   </div>
                   {queryTimeoutEnabled && (
-                    <div className={styles.settingsSectionPart}>
+                    <div className={styles.settingsSectionContainer}>
                       <SpinButton
                         label="Query timeout (ms)"
                         labelPosition={Position.top}
@@ -618,12 +609,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               <AccordionItem value="4">
                 <AccordionHeader>
                   <div className={styles.header}>RU Threshold</div>
-                  <InfoTooltip className={styles.headerIcon}>
-                    If a query exceeds a configured RU threshold, the query will be aborted.
-                  </InfoTooltip>
                 </AccordionHeader>
                 <AccordionPanel>
-                  <div className={styles.settingsSectionPart}>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      If a query exceeds a configured RU threshold, the query will be aborted.
+                    </div>
                     <Toggle
                       styles={toggleStyles}
                       label="Enable RU threshold"
@@ -632,7 +623,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     />
                   </div>
                   {ruThresholdEnabled && (
-                    <div className={styles.settingsSectionPart}>
+                    <div className={styles.settingsSectionContainer}>
                       <SpinButton
                         label="RU Threshold (RU)"
                         labelPosition={Position.top}
@@ -652,12 +643,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               <AccordionItem value="5">
                 <AccordionHeader>
                   <div className={styles.header}>Default Query Results View</div>
-                  <InfoTooltip className={styles.headerIcon}>
-                    Select the default view to use when displaying query results.
-                  </InfoTooltip>
                 </AccordionHeader>
                 <AccordionPanel>
-                  <div className={styles.settingsSectionPart}>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      Select the default view to use when displaying query results.
+                    </div>
                     <ChoiceGroup
                       ariaLabelledBy="defaultQueryResultsView"
                       selectedKey={defaultQueryResultsView}
@@ -673,13 +664,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
           <AccordionItem value="6">
             <AccordionHeader>
-              <div className={styles.header}> Retry Settings</div>
-              <InfoTooltip className={styles.headerIcon}>
-                Retry policy associated with throttled requests during CosmosDB queries.
-              </InfoTooltip>
+              <div className={styles.header}>Retry Settings</div>
             </AccordionHeader>
             <AccordionPanel>
-              <div className={styles.settingsSectionPart}>
+              <div className={styles.settingsSectionContainer}>
+                <div className={styles.settingsSectionDescription}>
+                  Retry policy associated with throttled requests during CosmosDB queries.
+                </div>
                 <div>
                   <span className={styles.subHeader}>Max retry attempts</span>
                   <InfoTooltip className={styles.headerIcon}>
@@ -746,12 +737,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           <AccordionItem value="7">
             <AccordionHeader>
               <div className={styles.header}>Enable container pagination</div>
-              <InfoTooltip className={styles.headerIcon}>
-                Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
-              </InfoTooltip>
             </AccordionHeader>
             <AccordionPanel>
-              <div className={styles.settingsSectionPart}>
+              <div className={styles.settingsSectionContainer}>
+                <div className={styles.settingsSectionDescription}>
+                  Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+                </div>
                 <Checkbox
                   styles={{
                     label: { padding: 0 },
@@ -760,6 +751,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   ariaLabel="Enable container pagination"
                   checked={containerPaginationEnabled}
                   onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
+                  label="Enable container pagination"
                 />
               </div>
             </AccordionPanel>
@@ -769,13 +761,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionItem value="8">
               <AccordionHeader>
                 <div className={styles.header}>Enable cross-partition query</div>
-                <InfoTooltip className={styles.headerIcon}>
-                  Send more than one request while executing a query. More than one request is necessary if the query is
-                  not scoped to single partition key value.
-                </InfoTooltip>
               </AccordionHeader>
               <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Send more than one request while executing a query. More than one request is necessary if the query
+                    is not scoped to single partition key value.
+                  </div>
                   <Checkbox
                     styles={{
                       label: { padding: 0 },
@@ -784,6 +776,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     ariaLabel="Enable cross partition query"
                     checked={crossPartitionQueryEnabled}
                     onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
+                    label="Enable cross-partition query"
                   />
                 </div>
               </AccordionPanel>
@@ -794,14 +787,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionItem value="9">
               <AccordionHeader>
                 <div className={styles.header}>Max degree of parallelism</div>
-                <InfoTooltip className={styles.headerIcon}>
-                  Gets or sets the number of concurrent operations run client side during parallel query execution. A
-                  positive property value limits the number of concurrent operations to the set value. If it is set to
-                  less than 0, the system automatically decides the number of concurrent operations to run.
-                </InfoTooltip>
               </AccordionHeader>
               <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Gets or sets the number of concurrent operations run client side during parallel query execution. A
+                    positive property value limits the number of concurrent operations to the set value. If it is set to
+                    less than 0, the system automatically decides the number of concurrent operations to run.
+                  </div>
                   <SpinButton
                     min={-1}
                     step={1}
@@ -817,6 +810,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     }
                     onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                     ariaLabel="Max degree of parallelism"
+                    label="Max degree of parallelism"
                   />
                 </div>
               </AccordionPanel>
@@ -827,14 +821,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionItem value="10">
               <AccordionHeader>
                 <div className={styles.header}>Priority Level</div>
-                <InfoTooltip className={styles.headerIcon}>
-                  Sets the priority level for data-plane requests from Data Explorer when using Priority-Based
-                  Execution. If &quot;None&quot; is selected, Data Explorer will not specify priority level, and the
-                  server-side default priority level will be used.
-                </InfoTooltip>
               </AccordionHeader>
               <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Sets the priority level for data-plane requests from Data Explorer when using Priority-Based
+                    Execution. If &quot;None&quot; is selected, Data Explorer will not specify priority level, and the
+                    server-side default priority level will be used.
+                  </div>
                   <ChoiceGroup
                     ariaLabelledBy="priorityLevel"
                     selectedKey={priorityLevel}
@@ -851,13 +845,13 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionItem value="11">
               <AccordionHeader>
                 <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
-                <InfoTooltip className={styles.headerIcon}>
-                  Select Graph to automatically visualize the query results as a Graph or JSON to display the results as
-                  JSON.
-                </InfoTooltip>
               </AccordionHeader>
               <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Select Graph to automatically visualize the query results as a Graph or JSON to display the results
+                    as JSON.
+                  </div>
                   <ChoiceGroup
                     selectedKey={graphAutoVizDisabled}
                     options={graphAutoOptionList}
@@ -873,14 +867,14 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             <AccordionItem value="12">
               <AccordionHeader>
                 <div className={styles.header}>Enable sample database</div>
-                <InfoTooltip className={styles.headerIcon}>
-                  This is a sample database and collection with synthetic product data you can use to explore using
-                  NoSQL queries and Query Advisor. This will appear as another database in the Data Explorer UI, and is
-                  created by, and maintained by Microsoft at no cost to you.
-                </InfoTooltip>
               </AccordionHeader>
               <AccordionPanel>
-                <div className={styles.settingsSectionPart}>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    This is a sample database and collection with synthetic product data you can use to explore using
+                    NoSQL queries and Query Advisor. This will appear as another database in the Data Explorer UI, and
+                    is created by, and maintained by Microsoft at no cost to you.
+                  </div>
                   <Checkbox
                     styles={{
                       label: { padding: 0 },
@@ -889,6 +883,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     ariaLabel="Enable sample db for Query Advisor"
                     checked={copilotSampleDBEnabled}
                     onChange={handleSampleDatabaseChange}
+                    label="Enable sample database"
                   />
                 </div>
               </AccordionPanel>
