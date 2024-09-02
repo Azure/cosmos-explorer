@@ -25,10 +25,14 @@ interface ProgressModalDialogProps {
    * inProgress: Show cancel button
    * completed: Show close button
    * aborting: Show cancel button, but disabled
+   * aborted: Show close button
    */
   mode?: "inProgress" | "completed" | "aborting" | "aborted";
 }
 
+/**
+ * React component that renders a modal dialog with a progress bar.
+ */
 export const ProgressModalDialog: React.FC<ProgressModalDialogProps> = ({
   isOpen,
   title,

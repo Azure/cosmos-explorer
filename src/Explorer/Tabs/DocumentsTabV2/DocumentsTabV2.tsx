@@ -647,14 +647,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   /**
    * Recursively delete all documents by retrying throttled requests (429).
    * This only works for NoSQL, because the bulk response includes status for each delete document request.
-   * Recursion is implemented using React useEffect (as opposed to setTimeout for example), because it has to
-   * update the <ProgressModalDialog> or check if the user is aborting the operation via state React variables.
+   * Recursion is implemented using React useEffect (as opposed to recursively calling setTimeout), because it
+   * has to update the <ProgressModalDialog> or check if the user is aborting the operation via state React
+   * variables.
    *
    * Inputs are the bulkDeleteOperation, bulkDeleteProcess and bulkDeleteMode state variables.
-   * When the bulkDeleteProcess changes, the functions checks if the process was aborted or completed, which will
-   * resolve the promise.
-   * Otherwise, it will attempt to delete documents on the pending and throttled ids.
-   * Once delete is completed, the function updates bulkDeleteProcess with the results, which will trigger
+   * When the bulkDeleteProcess changes, the function in the useEffect is triggered and checks if the process
+   * was aborted or completed, which will resolve the promise.
+   * Otherwise, it will attempt to delete documents of the pending and throttled ids arrays.
+   * Once deletion is completed, the function updates bulkDeleteProcess with the results, which will trigger
    * the function to be called again.
    */
   useEffect(() => {
