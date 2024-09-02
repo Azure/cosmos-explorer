@@ -1,4 +1,5 @@
 import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
+import { waitFor } from "@testing-library/react";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
@@ -67,12 +68,14 @@ jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
   EditorReact: (props: EditorReactProps) => <>{props.content}</>,
 }));
 
+const mockDialogState = {
+  showOkCancelModalDialog: jest.fn((title: string, subText: string, okLabel: string, onOk: () => void) => onOk()),
+  showOkModalDialog: () => { },
+};
+
 jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
-    getState: jest.fn(() => ({
-      showOkCancelModalDialog: jest.fn((title: string, subText: string, okLabel: string, onOk: () => void) => onOk()),
-      showOkModalDialog: () => {},
-    })),
+    getState: jest.fn(() => mockDialogState),
   },
 }));
 
@@ -470,14 +473,11 @@ describe("Documents tab (noSql API)", () => {
     });
 
     it("clicking Delete Document asks for confirmation", async () => {
-      act(() => {
-        useCommandBar
+      act(async () => {
+        await useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
           .onCommandClick(undefined);
-
-        const calls = (useDialog.getState().showOkCancelModalDialog as jest.Mock).mock.calls;
-        console.log(calls);
       });
 
       expect(useDialog.getState().showOkCancelModalDialog).toHaveBeenCalled();
@@ -495,14 +495,6 @@ describe("Documents tab (noSql API)", () => {
     });
 
     it("clicking Delete Document eventually calls delete client api", () => {
-      // const setState = jest.fn();
-      // jest
-      //   .spyOn(React, 'useState')
-      //   .mockImplementationOnce(initState => [initState, setState]);
-
-      // const originalSetTimeout = global.setTimeout;
-      // global.setTimeout = jest.fn(cb => cb());
-      // jest.useFakeTimers();
       const mockDeleteDocuments = deleteDocuments as jest.Mock;
       mockDeleteDocuments.mockClear();
 
@@ -513,9 +505,8 @@ describe("Documents tab (noSql API)", () => {
           .onCommandClick(undefined);
       });
 
-      expect(mockDeleteDocuments).toHaveBeenCalled();
-
-      // global.setTimeout = originalSetTimeout;
+      // The implementation uses setTimeout, so wait for it to finish
+      waitFor(() => expect(mockDeleteDocuments).toHaveBeenCalled());
     });
   });
 });
