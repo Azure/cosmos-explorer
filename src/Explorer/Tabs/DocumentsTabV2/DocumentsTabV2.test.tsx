@@ -71,7 +71,7 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: jest.fn((title: string, subText: string, okLabel: string, onOk: () => void) => onOk()),
-      showOkModalDialog: () => { },
+      showOkModalDialog: () => {},
     })),
   },
 }));
@@ -517,7 +517,6 @@ describe("Documents tab (noSql API)", () => {
 
       // global.setTimeout = originalSetTimeout;
     });
-
   });
 });
 
