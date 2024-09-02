@@ -22,16 +22,16 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             Page Options
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
+            </div>
             <StyledChoiceGroup
               ariaLabelledBy="pageOptions"
               onChange={[Function]}
@@ -80,9 +80,10 @@ exports[`Settings Pane should render Default properly 1`] = `
               className="tabcontent"
             >
               <div
-                className="settingsSectionLabel"
+                className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
               >
                 Query results per page
+                 
                 <InfoTooltip
                   className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
                 >
@@ -114,16 +115,16 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             Query Timeout
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            When a query reaches a specified time limit, a popup with an option to cancel the query will show unless automatic cancellation has been enabled
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              When a query reaches a specified time limit, a popup with an option to cancel the query will show unless automatic cancellation has been enabled.
+            </div>
             <StyledToggleBase
               defaultChecked={false}
               label="Enable query timeout"
@@ -155,16 +156,16 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             RU Threshold
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            If a query exceeds a configured RU threshold, the query will be aborted.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              If a query exceeds a configured RU threshold, the query will be aborted.
+            </div>
             <StyledToggleBase
               defaultChecked={true}
               label="Enable RU threshold"
@@ -226,16 +227,16 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             Default Query Results View
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Select the default view to use when displaying query results.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Select the default view to use when displaying query results.
+            </div>
             <StyledChoiceGroup
               ariaLabelledBy="defaultQueryResultsView"
               onChange={[Function]}
@@ -286,18 +287,18 @@ exports[`Settings Pane should render Default properly 1`] = `
           <div
             className="___15c001r_0000000 fq02s40"
           >
-             Retry Settings
+            Retry Settings
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Retry policy associated with throttled requests during CosmosDB queries.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Retry policy associated with throttled requests during CosmosDB queries.
+            </div>
             <div>
               <span
                 className="___zls1px0_0000000 fq02s40 f1ugzwwg"
@@ -430,20 +431,21 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             Enable container pagination
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+            </div>
             <StyledCheckboxBase
               ariaLabel="Enable container pagination"
               checked={false}
               className="padding"
+              label="Enable container pagination"
               onChange={[Function]}
               styles={
                 {
@@ -465,20 +467,21 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             Enable cross-partition query
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
+            </div>
             <StyledCheckboxBase
               ariaLabel="Enable cross partition query"
               checked={false}
               className="padding"
+              label="Enable cross-partition query"
               onChange={[Function]}
               styles={
                 {
@@ -500,20 +503,21 @@ exports[`Settings Pane should render Default properly 1`] = `
           >
             Max degree of parallelism
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
+            </div>
             <StyledSpinButton
               ariaLabel="Max degree of parallelism"
               className="textfontclr"
               id="max-degree"
+              label="Max degree of parallelism"
               min={-1}
               onDecrement={[Function]}
               onIncrement={[Function]}
@@ -577,18 +581,18 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           <div
             className="___15c001r_0000000 fq02s40"
           >
-             Retry Settings
+            Retry Settings
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Retry policy associated with throttled requests during CosmosDB queries.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Retry policy associated with throttled requests during CosmosDB queries.
+            </div>
             <div>
               <span
                 className="___zls1px0_0000000 fq02s40 f1ugzwwg"
@@ -721,20 +725,21 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           >
             Enable container pagination
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+            </div>
             <StyledCheckboxBase
               ariaLabel="Enable container pagination"
               checked={false}
               className="padding"
+              label="Enable container pagination"
               onChange={[Function]}
               styles={
                 {
@@ -756,16 +761,16 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           >
             Display Gremlin query results as: 
           </div>
-          <InfoTooltip
-            className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
-          >
-            Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
-          </InfoTooltip>
         </AccordionHeader>
         <AccordionPanel>
           <div
             className="___1dfa554_0000000 fo7qwa0"
           >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
+            </div>
             <StyledChoiceGroup
               aria-label="Graph Auto-visualization"
               onChange={[Function]}
