@@ -114,7 +114,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private clearMostRecent = (): void => {
-    MostRecentActivity.mostRecentActivity.clear(userContext.databaseAccount?.id);
+    MostRecentActivity.clear(userContext.databaseAccount?.name);
     this.setState({});
   };
 
@@ -498,7 +498,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((activity) => {
+    return MostRecentActivity.getItems(userContext.databaseAccount?.name).map((activity) => {
       switch (activity.type) {
         default: {
           const unknownActivity: never = activity;

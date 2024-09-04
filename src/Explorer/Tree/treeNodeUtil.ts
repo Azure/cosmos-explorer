@@ -1,4 +1,5 @@
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
 import Trigger from "Explorer/Tree/Trigger";
@@ -15,7 +16,6 @@ import { userContext } from "../../UserContext";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
-import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -91,7 +91,7 @@ export const createResourceTokenTreeNodes = (collection: ViewModels.CollectionBa
     onClick: () => {
       collection.onDocumentDBDocumentsClick();
       // push to most recent
-      mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
+      collectionWasOpened(userContext.databaseAccount?.name, collection);
     },
     isSelected: () =>
       useSelectedNode
@@ -223,7 +223,7 @@ export const buildCollectionNode = (
       useSelectedNode.getState().setSelectedNode(collection);
       collection.openTab();
       // push to most recent
-      mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
+      collectionWasOpened(userContext.databaseAccount?.name, collection);
     },
     onExpanded: async () => {
       // Rewritten version of expandCollapseCollection
@@ -271,7 +271,7 @@ const buildCollectionNodeChildren = (
     onClick: () => {
       collection.openTab();
       // push to most recent
-      mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
+      collectionWasOpened(userContext.databaseAccount?.name, collection);
     },
     isSelected: () =>
       useSelectedNode

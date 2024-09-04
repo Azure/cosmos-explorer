@@ -1,6 +1,6 @@
+import { AppStateComponentNames, deleteState, loadState, saveState } from "Shared/AppStatePersistenceUtility";
 import { CollectionBase } from "../../Contracts/ViewModels";
-import { StorageKey, LocalStorageUtility } from "../../Shared/StorageUtility";
-import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 
 export enum Type {
   OpenCollection,
@@ -21,158 +21,148 @@ export interface OpenCollectionItem {
 
 type Item = OpenNotebookItem | OpenCollectionItem;
 
-// Update schemaVersion if you are going to change this interface
-interface StoredData {
-  schemaVersion: string;
-  itemsMap: { [accountId: string]: Item[] }; // FIFO
-}
+const itemsMaxNumber: number = 5;
 
 /**
- * Stores most recent activity
+ * Migrate old data to new AppState
  */
-class MostRecentActivity {
-  private static readonly schemaVersion: string = "2";
-  private static itemsMaxNumber: number = 5;
-  private storedData: StoredData;
-  constructor() {
-    // Retrieve from local storage
-    if (LocalStorageUtility.hasItem(StorageKey.MostRecentActivity)) {
-      const rawData = LocalStorageUtility.getEntryString(StorageKey.MostRecentActivity);
-
-      if (!rawData) {
-        this.storedData = MostRecentActivity.createEmptyData();
-      } else {
-        try {
-          this.storedData = JSON.parse(rawData);
-        } catch (e) {
-          console.error("Unable to parse stored most recent activity. Use empty data:", rawData);
-          this.storedData = MostRecentActivity.createEmptyData();
-        }
-
-        // If version doesn't match or schema broke, nuke it!
-        if (
-          !this.storedData.hasOwnProperty("schemaVersion") ||
-          this.storedData["schemaVersion"] !== MostRecentActivity.schemaVersion
-        ) {
-          LocalStorageUtility.removeEntry(StorageKey.MostRecentActivity);
-          this.storedData = MostRecentActivity.createEmptyData();
-        }
+const migrateOldData = () => {
+  if (LocalStorageUtility.hasItem(StorageKey.MostRecentActivity)) {
+    const oldDataSchemaVersion: string = "2";
+    const rawData = LocalStorageUtility.getEntryString(StorageKey.MostRecentActivity);
+    if (rawData) {
+      const oldData = JSON.parse(rawData);
+      if (oldData.schemaVersion === oldDataSchemaVersion) {
+        const itemsMap: Record<string, Item[]> = oldData.itemsMap;
+        Object.keys(itemsMap).forEach((accountId: string) => {
+          const accountName = accountId.split("/").pop();
+          if (accountName) {
+            saveState(
+              {
+                componentName: AppStateComponentNames.MostRecentActivity,
+                globalAccountName: accountName,
+              },
+              itemsMap[accountId],
+            );
+          }
+        });
       }
-    } else {
-      this.storedData = MostRecentActivity.createEmptyData();
     }
 
-    for (let p in this.storedData.itemsMap) {
-      this.cleanupItems(p);
+    // Remove old data
+    LocalStorageUtility.removeEntry(StorageKey.MostRecentActivity);
+  }
+};
+
+const addItem = (accountName: string, newItem: Item): void => {
+  // When debugging, accountId is "undefined": most recent activity cannot be saved by account. Uncomment to disable.
+  // if (!accountId) {
+  //   return;
+  // }
+
+  const items =
+    (loadState({
+      componentName: AppStateComponentNames.MostRecentActivity,
+      globalAccountName: accountName,
+    }) as Item[]) || [];
+
+  // Remove duplicate
+  removeDuplicate(newItem, items);
+
+  items.unshift(newItem);
+  cleanupItems(items, accountName);
+  saveState(
+    {
+      componentName: AppStateComponentNames.MostRecentActivity,
+      globalAccountName: accountName,
+    },
+    items,
+  );
+};
+
+export const getItems = (accountName: string): Item[] => {
+  if (!accountName) {
+    return [];
+  }
+
+  return (
+    (loadState({
+      componentName: AppStateComponentNames.MostRecentActivity,
+      globalAccountName: accountName,
+    }) as Item[]) || []
+  );
+};
+
+export const collectionWasOpened = (
+  accountName: string,
+  { id, databaseId }: Pick<CollectionBase, "id" | "databaseId">,
+) => {
+  if (accountName === undefined) {
+    return;
+  }
+
+  const collectionId = id();
+  addItem(accountName, {
+    type: Type.OpenCollection,
+    databaseId,
+    collectionId,
+  });
+};
+
+export const clear = (accountName: string): void => {
+  if (!accountName) {
+    return;
+  }
+
+  deleteState({
+    componentName: AppStateComponentNames.MostRecentActivity,
+    globalAccountName: accountName,
+  });
+};
+
+/**
+ * Find items by doing strict comparison and remove from array if duplicate is found.
+ * Modifies the array.
+ * @param item
+ * @param itemsArray
+ */
+const removeDuplicate = (item: Item, itemsArray: Item[]): void => {
+  if (!itemsArray) {
+    return;
+  }
+
+  let index = -1;
+  for (let i = 0; i < itemsArray.length; i++) {
+    const currentItem = itemsArray[i];
+    if (JSON.stringify(currentItem) === JSON.stringify(item)) {
+      index = i;
+      break;
     }
-    this.saveToLocalStorage();
   }
 
-  private static createEmptyData(): StoredData {
-    return {
-      schemaVersion: MostRecentActivity.schemaVersion,
-      itemsMap: {},
-    };
+  if (index !== -1) {
+    itemsArray.splice(index, 1);
+  }
+};
+
+/**
+ * Remove unknown types
+ * Limit items to max number
+ * Modifies the array.
+ */
+const cleanupItems = (items: Item[], accountName: string): Item[] => {
+  if (accountName === undefined) {
+    return [];
   }
 
-  private static isEmpty(object: any) {
-    return Object.keys(object).length === 0 && object.constructor === Object;
-  }
-
-  private saveToLocalStorage() {
-    if (MostRecentActivity.isEmpty(this.storedData.itemsMap)) {
-      if (LocalStorageUtility.hasItem(StorageKey.MostRecentActivity)) {
-        LocalStorageUtility.removeEntry(StorageKey.MostRecentActivity);
-      }
-      // Don't save if empty
-      return;
-    }
-
-    LocalStorageUtility.setEntryString(StorageKey.MostRecentActivity, JSON.stringify(this.storedData));
-  }
-
-  private addItem(accountId: string, newItem: Item): void {
-    // When debugging, accountId is "undefined": most recent activity cannot be saved by account. Uncomment to disable.
-    // if (!accountId) {
-    //   return;
-    // }
-
-    // Remove duplicate
-    MostRecentActivity.removeDuplicate(newItem, this.storedData.itemsMap[accountId]);
-
-    this.storedData.itemsMap[accountId] = this.storedData.itemsMap[accountId] || [];
-    this.storedData.itemsMap[accountId].unshift(newItem);
-    this.cleanupItems(accountId);
-    this.saveToLocalStorage();
-  }
-
-  public getItems(accountId: string): Item[] {
-    return this.storedData.itemsMap[accountId] || [];
-  }
-
-  public collectionWasOpened(accountId: string, { id, databaseId }: Pick<CollectionBase, "id" | "databaseId">) {
-    const collectionId = id();
-    this.addItem(accountId, {
-      type: Type.OpenCollection,
-      databaseId,
-      collectionId,
+  const itemsArray = items.filter((item) => item.type in Type).slice(0, itemsMaxNumber);
+  if (itemsArray.length === 0) {
+    deleteState({
+      componentName: AppStateComponentNames.MostRecentActivity,
+      globalAccountName: accountName,
     });
   }
+  return itemsArray;
+};
 
-  public notebookWasItemOpened(accountId: string, { name, path }: Pick<NotebookContentItem, "name" | "path">) {
-    this.addItem(accountId, {
-      type: Type.OpenNotebook,
-      name,
-      path,
-    });
-  }
-
-  public clear(accountId: string): void {
-    delete this.storedData.itemsMap[accountId];
-    this.saveToLocalStorage();
-  }
-
-  /**
-   * Find items by doing strict comparison and remove from array if duplicate is found
-   * @param item
-   */
-  private static removeDuplicate(item: Item, itemsArray: Item[]): void {
-    if (!itemsArray) {
-      return;
-    }
-
-    let index = -1;
-    for (let i = 0; i < itemsArray.length; i++) {
-      const currentItem = itemsArray[i];
-      if (JSON.stringify(currentItem) === JSON.stringify(item)) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index !== -1) {
-      itemsArray.splice(index, 1);
-    }
-  }
-
-  /**
-   * Remove unknown types
-   * Limit items to max number
-   */
-  private cleanupItems(accountId: string): void {
-    if (!this.storedData.itemsMap.hasOwnProperty(accountId)) {
-      return;
-    }
-
-    const itemsArray = this.storedData.itemsMap[accountId]
-      .filter((item) => item.type in Type)
-      .slice(0, MostRecentActivity.itemsMaxNumber);
-    if (itemsArray.length === 0) {
-      delete this.storedData.itemsMap[accountId];
-    } else {
-      this.storedData.itemsMap[accountId] = itemsArray;
-    }
-  }
-}
-
-export const mostRecentActivity = new MostRecentActivity();
+migrateOldData();

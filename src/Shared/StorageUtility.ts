@@ -24,7 +24,7 @@ export enum StorageKey {
   MaxDegreeOfParellism,
   IsGraphAutoVizDisabled,
   TenantId,
-  MostRecentActivity,
+  MostRecentActivity, // deprecated
   SetPartitionKeyUndefined,
   GalleryCalloutDismissed,
   VisitedAccounts,
