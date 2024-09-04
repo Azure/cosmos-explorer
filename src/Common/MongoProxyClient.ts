@@ -723,16 +723,8 @@ export function useMongoProxyEndpoint(api: string): boolean {
     MongoProxyEndpoints.Fairfax,
     MongoProxyEndpoints.Mooncake,
   ];
-  let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-  if (
-    configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local &&
-    userContext.databaseAccount.properties.ipRules?.length > 0
-  ) {
-    canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
-  }
 
   return (
-    canAccessMongoProxy &&
     configContext.NEW_MONGO_APIS?.includes(api) &&
     activeMongoProxyEndpoints.includes(configContext.MONGO_PROXY_ENDPOINT)
   );
