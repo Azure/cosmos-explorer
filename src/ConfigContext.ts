@@ -87,7 +87,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/.*\\.analysis-df\\.net$`,
     `^https:\\/\\/.*\\.analysis-df\\.windows\\.net$`,
     `^https:\\/\\/.*\\.azure-test\\.net$`,
-    `^https:\\/\\/cosmos-explorer-preview\\.azurewebsites\\.net`,
+    `^https:\\/\\/cosmos-explorer-preview\\.azurewebsites\\.net$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
@@ -256,3 +256,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
