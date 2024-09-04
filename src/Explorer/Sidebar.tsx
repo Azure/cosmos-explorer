@@ -25,7 +25,6 @@ import { userContext } from "UserContext";
 import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
-import { debounce } from "lodash";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 const useSidebarStyles = makeStyles({
@@ -219,22 +218,18 @@ interface SidebarProps {
   explorer: Explorer;
 }
 
-const CollapseThreshold = 140;
-
 export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   const styles = useSidebarStyles();
   const [expanded, setExpanded] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
-  const [expandedSize, setExpandedSize] = React.useState(300);
   const hasSidebar = userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo";
   const allotment = useRef<AllotmentHandle>(null);
 
   const expand = useCallback(() => {
     if (!expanded) {
-      allotment.current.resize([expandedSize, Infinity]);
       setExpanded(true);
     }
-  }, [expanded, expandedSize, setExpanded]);
+  }, [expanded, setExpanded]);
 
   const collapse = useCallback(() => {
     if (expanded) {
@@ -243,31 +238,11 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
     }
   }, [expanded, setExpanded]);
 
-  const onChange = debounce((sizes: number[]) => {
-    if (expanded && sizes[0] <= CollapseThreshold) {
-      collapse();
-    } else if (!expanded && sizes[0] > CollapseThreshold) {
-      expand();
-    }
-  }, 10);
-
-  const onDragEnd = useCallback(
-    (sizes: number[]) => {
-      if (expanded) {
-        // Remember the last size we had when expanded
-        setExpandedSize(sizes[0]);
-      } else {
-        allotment.current.resize([24, Infinity]);
-      }
-    },
-    [expanded, setExpandedSize],
-  );
-
   const onRefreshClick = useCallback(async () => {
     setLoading(true);
     await explorer.onRefreshResourcesClick();
     setLoading(false);
-  }, [setLoading]);
+  }, [explorer, setLoading]);
 
   const hasGlobalCommands = !(
     configContext.platform === Platform.Fabric ||
@@ -276,7 +251,7 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   );
 
   return (
-    <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
+    <Allotment ref={allotment} className="resourceTreeAndTabs">
       {/* Collections Tree - Start */}
       {hasSidebar && (
         // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
