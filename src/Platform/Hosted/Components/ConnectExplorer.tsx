@@ -52,7 +52,7 @@ export const isAccountRestrictedForConnectionStringLogin = async (connectionStri
   const headers = new Headers();
   headers.append(HttpHeaders.connectionString, connectionString);
 
-  const backendEndpoint: string = useNewPortalBackendEndpoint(BackendApi.PortalSettings)
+  const backendEndpoint: string = useNewPortalBackendEndpoint(BackendApi.AccountRestrictions)
     ? configContext.PORTAL_BACKEND_ENDPOINT
     : configContext.BACKEND_ENDPOINT;
 

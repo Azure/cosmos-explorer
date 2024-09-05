@@ -523,7 +523,10 @@ export interface IDocumentsTabComponentProps {
 
 const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collection.databaseId}-${collection.id()}`;
 
-const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
+const getDefaultSqlFilters = (partitionKeys: string[]) =>
+  ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC', "ORDER BY c._ts ASC"].concat(
+    partitionKeys.map((partitionKey) => `WHERE c.${partitionKey} = "foo"`),
+  );
 const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 
 // Extend DocumentId to include fields displayed in the table
@@ -1934,7 +1937,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 <datalist id={`filtersList-${getUniqueId(_collection)}`}>
                   {addStringsNoDuplicate(
                     lastFilterContents,
-                    isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,
+                    isPreferredApiMongoDB ? defaultMongoFilters : getDefaultSqlFilters(partitionKeyProperties),
                   ).map((filter) => (
                     <option key={filter} value={filter} />
                   ))}

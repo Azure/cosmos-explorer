@@ -3,15 +3,16 @@ import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizatio
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
 import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { AuthType } from "../AuthType";
-import { PriorityLevel } from "../Common/Constants";
+import { BackendApi, PriorityLevel } from "../Common/Constants";
+import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
-import * as Logger from "../Common/Logger";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -120,6 +121,37 @@ export const endpoint = () => {
 };
 
 export async function getTokenFromAuthService(
+  verb: string,
+  resourceType: string,
+  resourceId?: string,
+): Promise<AuthorizationToken> {
+  if (!useNewPortalBackendEndpoint(BackendApi.RuntimeProxy)) {
+    return getTokenFromAuthService_ToBeDeprecated(verb, resourceType, resourceId);
+  }
+
+  try {
+    const host: string = configContext.PORTAL_BACKEND_ENDPOINT;
+    const response: Response = await _global.fetch(host + "/api/connectionstring/runtimeproxy/authorizationtokens", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-ms-encrypted-auth-token": userContext.accessToken,
+      },
+      body: JSON.stringify({
+        verb,
+        resourceType,
+        resourceId,
+      }),
+    });
+    const result: AuthorizationToken = await response.json();
+    return result;
+  } catch (error) {
+    logConsoleError(`Failed to get authorization headers for ${resourceType}: ${getErrorMessage(error)}`);
+    return Promise.reject(error);
+  }
+}
+
+export async function getTokenFromAuthService_ToBeDeprecated(
   verb: string,
   resourceType: string,
   resourceId?: string,
