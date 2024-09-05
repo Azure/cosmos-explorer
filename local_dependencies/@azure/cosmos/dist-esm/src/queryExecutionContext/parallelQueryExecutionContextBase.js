@@ -58,8 +58,7 @@ export class ParallelQueryExecutionContextBase {
         this.err = undefined;
         this.state = ParallelQueryExecutionContextBase.STATES.started;
         this.routingProvider = new SmartRoutingMapProvider(this.clientContext);
-        //this.sortOrders = this.partitionedQueryExecutionInfo.queryInfo.orderBy;
-        this.sortOrders = [];
+        this.sortOrders = this.partitionedQueryExecutionInfo.queryInfo.orderBy;
         this.requestContinuation = options ? options.continuationToken || options.continuation : null;
         // response headers of undergoing operation
         this.respHeaders = getInitialHeader();
@@ -82,9 +81,7 @@ export class ParallelQueryExecutionContextBase {
     async _onTargetPartitionRanges() {
         // invokes the callback when the target partition ranges are ready
         const parsedRanges = this.partitionedQueryExecutionInfo.queryRanges;
-        //const queryRanges = parsedRanges.map((item) => QueryRange.parseFromDict(item));
-        //hard coding the partition key ranges to be the parsedRanges
-        const queryRanges = parsedRanges;
+        const queryRanges = parsedRanges.map((item) => QueryRange.parseFromDict(item));
         return this.routingProvider.getOverlappingRanges(this.collectionLink, queryRanges, this.getDiagnosticNode());
     }
     /**
