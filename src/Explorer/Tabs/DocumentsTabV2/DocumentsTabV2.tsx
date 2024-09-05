@@ -69,8 +69,9 @@ import TabsBase from "../TabsBase";
 import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
 
 const MAX_FILTER_HISTORY_COUNT = 100; // Datalist will become scrollable, so we can afford to keep more items than fit on the screen
-const THROTTLING_DOC_URL =
-  "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large";
+const NO_SQL_THROTTLING_DOC_URL =
+  "https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large";
+const MONGO_THROTTLING_DOC_URL = "https://learn.microsoft.com/azure/cosmos-db/mongodb/prevent-rate-limiting-errors";
 
 const loadMoreHeight = LayoutConstants.rowHeight;
 export const useDocumentsTabStyles = makeStyles({
@@ -1168,10 +1169,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 .getState()
                 .showOkModalDialog(
                   "Delete documents",
-                  `Some documents failed to delete due to throttling error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.`,
+                  `Some documents failed to delete due to a rate limiting error. Please try again later. To prevent this in the future, consider increasing the throughput on your container or database.`,
                   {
                     linkText: "Learn More",
-                    linkUrl: THROTTLING_DOC_URL,
+                    linkUrl: MONGO_THROTTLING_DOC_URL,
                   },
                 );
             } else {
@@ -1916,6 +1917,26 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [createIterator, filterContent],
   );
 
+  /**
+   * While retrying, display: retrying now.
+   * If completed and all documents were deleted, display: all documents deleted.
+   * @returns 429 warning message
+   */
+  const get429WarningMessageNoSql = (): string => {
+    let message = 'Some delete requests failed due to a "Request too large" exception (429)';
+
+    if (bulkDeleteOperation.count === bulkDeleteProcess.successfulIds.length) {
+      message += ", but were successfully retried.";
+    } else if (bulkDeleteMode === "inProgress" || bulkDeleteMode === "aborting") {
+      message += "(429). Retrying now.";
+    } else {
+      message += ".";
+    }
+
+    return (message +=
+      " To prevent this in the future, consider increasing the throughput on your container or database.");
+  };
+
   return (
     <CosmosFluentProvider className={styles.container}>
       <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
@@ -2116,9 +2137,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             <MessageBar intent="warning">
               <MessageBarBody>
                 <MessageBarTitle>Warning</MessageBarTitle>
-                Some delete requests failed due to a &quot;Request too large&quot; exception (429). Retrying now. To
-                prevent this in the future, consider increasing the throughput on your container or database.{" "}
-                <Link href={THROTTLING_DOC_URL} target="_blank">
+                {get429WarningMessageNoSql()}{" "}
+                <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
                   Learn More
                 </Link>
               </MessageBarBody>
