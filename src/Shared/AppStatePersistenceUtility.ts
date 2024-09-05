@@ -87,16 +87,10 @@ const orderedPathSegments: (keyof StorePath)[] = [
  * @param path
  */
 export const createKeyFromPath = (path: StorePath): string => {
-  if (path.componentName.includes("/")) {
-    throw new Error(`Invalid component name: ${path.componentName}`);
-  }
-  let key = `/${path.componentName}`; // ComponentName is always there
+  let key = `/${encodeURIComponent(path.componentName)}`; // ComponentName is always there
   orderedPathSegments.forEach((segment) => {
     const segmentValue = path[segment as keyof StorePath];
-    if (segmentValue.includes("/")) {
-      throw new Error(`Invalid setting path segment: ${segment}`);
-    }
-    key += `/${segmentValue !== undefined ? segmentValue : ""}`;
+    key += `/${segmentValue !== undefined ? encodeURIComponent(segmentValue) : ""}`;
   });
   return key;
 };
