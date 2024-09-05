@@ -1,7 +1,7 @@
 import { IMessageBarStyles, Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
-import { Platform, configContext } from "ConfigContext";
+import { Platform, configContext, updateConfigContext } from "ConfigContext";
 import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
@@ -397,6 +397,12 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
         ipAddressesFromIPRules.includes(mongoProxyOutboundIP),
       );
 
+      if (ipRulesIncludeMongoProxy) {
+        updateConfigContext({
+          MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
+        });
+      }
+
       return !ipRulesIncludeMongoProxy;
     } else if (userContext.apiType === "Cassandra") {
       const isProdOrMpacCassandraProxyEndpoint: boolean = [
@@ -414,6 +420,12 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
       const ipRulesIncludeCassandraProxy: boolean = cassandraProxyOutboundIPs.every(
         (cassandraProxyOutboundIP: string) => ipAddressesFromIPRules.includes(cassandraProxyOutboundIP),
       );
+
+      if (ipRulesIncludeCassandraProxy) {
+        updateConfigContext({
+          CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
+        });
+      }
 
       return !ipRulesIncludeCassandraProxy;
     }
