@@ -640,6 +640,31 @@ function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
   return messageOrigin === window.document.location.origin && message.type === MessageTypes.TelemetryInfo;
 }
 
+function updateAADEndpoints(portalEnv: PortalEnv) {
+  switch (portalEnv) {
+    case "prod1":
+    case "prod":
+      updateConfigContext({
+        AAD_ENDPOINT: Constants.AadEndpoints.Prod,
+      });
+      break;
+    case "fairfax":
+      updateConfigContext({
+        AAD_ENDPOINT: Constants.AadEndpoints.Fairfax,
+      });
+      break;
+    case "mooncake":
+      updateConfigContext({
+        AAD_ENDPOINT: Constants.AadEndpoints.Mooncake,
+      });
+      break;
+
+    default:
+      console.warn(`Unknown portal environment: ${portalEnv}`);
+      break;
+  }
+}
+
 function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   if (
     configContext.BACKEND_ENDPOINT &&
@@ -659,6 +684,8 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
     PORTAL_BACKEND_ENDPOINT: inputs.portalBackendEndpoint,
   });
+
+  updateAADEndpoints(inputs.serverId as PortalEnv);
 
   updateUserContext({
     authorizationToken,

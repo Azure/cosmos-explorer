@@ -30,6 +30,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -69,6 +72,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -92,6 +98,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -102,6 +111,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
   {
     "children": [
       {
+        "iconSrc": <SettingsRegular
+          fontSize={16}
+        />,
         "id": "",
         "isSelected": [Function],
         "label": "Scale",
@@ -133,6 +145,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -156,6 +171,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -246,6 +264,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -274,6 +295,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Ca
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -345,6 +369,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -415,6 +442,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -438,6 +468,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -448,6 +481,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
   {
     "children": [
       {
+        "iconSrc": <SettingsRegular
+          fontSize={16}
+        />,
         "id": "",
         "isSelected": [Function],
         "label": "Scale",
@@ -510,6 +546,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -533,6 +572,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -654,6 +696,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -682,6 +727,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the Mo
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -706,6 +754,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -724,6 +775,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -747,6 +801,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -766,6 +823,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -789,6 +849,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -808,6 +871,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "onClick": [Function],
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -836,6 +902,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -976,6 +1045,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -1076,6 +1148,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -1099,6 +1174,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -1109,6 +1187,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
   {
     "children": [
       {
+        "iconSrc": <SettingsRegular
+          fontSize={16}
+        />,
         "id": "",
         "isSelected": [Function],
         "label": "Scale",
@@ -1201,6 +1282,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -1224,6 +1308,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -1375,6 +1462,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -1403,6 +1493,9 @@ exports[`createDatabaseTreeNodes generates the correct tree structure for the SQ
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -1543,6 +1636,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "standardCollection",
@@ -1638,6 +1734,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "conflictsCollection",
@@ -1661,6 +1760,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "standardDb",
@@ -1671,6 +1773,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
   {
     "children": [
       {
+        "iconSrc": <SettingsRegular
+          fontSize={16}
+        />,
         "id": "",
         "isSelected": [Function],
         "label": "Scale",
@@ -1763,6 +1868,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "sampleItemsCollection",
@@ -1786,6 +1894,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "sharedDatabase",
@@ -1937,6 +2048,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
             "styleClass": "deleteCollectionMenuItem",
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": true,
         "isSelected": [Function],
         "label": "schemaCollection",
@@ -1965,6 +2079,9 @@ exports[`createDatabaseTreeNodes using NoSQL API on Hosted Platform creates expe
         "styleClass": "deleteDatabaseMenuItem",
       },
     ],
+    "iconSrc": <DatabaseRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "giganticDatabase",
@@ -1986,6 +2103,9 @@ exports[`createResourceTokenTreeNodes creates the expected tree nodes 1`] = `
       },
     ],
     "className": "collectionNode",
+    "iconSrc": <DocumentMultipleRegular
+      fontSize={16}
+    />,
     "isExpanded": true,
     "isSelected": [Function],
     "label": "testCollection",
@@ -2021,6 +2141,9 @@ exports[`createSampleDataTreeNodes creates the expected tree nodes 1`] = `
             "onClick": [Function],
           },
         ],
+        "iconSrc": <DocumentMultipleRegular
+          fontSize={16}
+        />,
         "isExpanded": false,
         "isSelected": [Function],
         "label": "testCollection",

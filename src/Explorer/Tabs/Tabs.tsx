@@ -100,8 +100,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             },
           }}
         >
-          {`To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove
-          the limit, go to the Settings cog on the right and find "RU Threshold".`}
+          {`Data Explorer has a 5,000 RU default limit. To adjust the limit, go to the Settings page and find "RU Threshold".`}
           <Link
             className="underlinedLink"
             href="https://review.learn.microsoft.com/en-us/azure/cosmos-db/data-explorer?branch=main#configure-request-unit-threshold"
