@@ -21,19 +21,15 @@ describe("DocumentsTableComponent", () => {
       height: 0,
       width: 0,
     },
-    columnDefinitions: [
-      { id: ID_HEADER, label: "ID", isPartitionKey: false },
-      { id: PARTITION_KEY_HEADER, label: "Partition Key", isPartitionKey: true },
-    ],
-    isRowSelectionDisabled: false,
+    columnHeaders: {
+      idHeader: ID_HEADER,
+      partitionKeyHeaders: [PARTITION_KEY_HEADER],
+    },
+    isSelectionDisabled: false,
     collection: {
       databaseId: "db",
       id: ((): string => "coll") as ko.Observable<string>,
     } as ViewModels.CollectionBase,
-    onRefreshTable: (): void => {
-      throw new Error("Function not implemented.");
-    },
-    selectedColumnIds: [],
   });
 
   it("should render documents and partition keys in header", () => {
@@ -44,7 +40,7 @@ describe("DocumentsTableComponent", () => {
 
   it("should not render selection column when isSelectionDisabled is true", () => {
     const props: IDocumentsTableComponentProps = createMockProps();
-    props.isRowSelectionDisabled = true;
+    props.isSelectionDisabled = true;
     const wrapper = mount(<DocumentsTableComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
   });

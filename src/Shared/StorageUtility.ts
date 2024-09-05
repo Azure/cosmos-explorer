@@ -29,7 +29,6 @@ export enum StorageKey {
   GalleryCalloutDismissed,
   VisitedAccounts,
   PriorityLevel,
-  DocumentsTabPrefs,
   DefaultQueryResultsView,
   AppState,
 }

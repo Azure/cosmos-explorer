@@ -55,56 +55,52 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
             }
           >
             <div
-              className="___9o87uj0_0000000 ffefeo0"
+              className="___77lcry0_0000000 f10pi13n"
             >
               <div
-                style={
-                  {
-                    "height": "100%",
-                    "width": "calc(100% + -13px)",
-                  }
-                }
+                className="___1rwkz4r_0000000 f1euv43f f1l8gmrm f1e31b4d f150nix6 fy6ml6n f19g0ac"
               >
-                <DocumentsTableComponent
-                  collection={
+                <Button
+                  appearance="transparent"
+                  aria-label="Refresh"
+                  icon={<ArrowClockwise16Filled />}
+                  onClick={[Function]}
+                  onKeyDown={[Function]}
+                  size="small"
+                  style={
                     {
-                      "databaseId": "databaseId",
-                      "id": [Function],
-                    }
-                  }
-                  columnDefinitions={
-                    [
-                      {
-                        "id": "id",
-                        "isPartitionKey": false,
-                        "label": "id",
-                      },
-                    ]
-                  }
-                  defaultColumnSelection={
-                    [
-                      "id",
-                    ]
-                  }
-                  isColumnSelectionDisabled={false}
-                  isRowSelectionDisabled={true}
-                  items={[]}
-                  onColumnSelectionChange={[Function]}
-                  onItemClicked={[Function]}
-                  onRefreshTable={[Function]}
-                  onSelectedRowsChange={[Function]}
-                  selectedColumnIds={
-                    [
-                      "id",
-                    ]
-                  }
-                  selectedRows={
-                    Set {
-                      0,
+                      "color": undefined,
                     }
                   }
                 />
               </div>
+            </div>
+            <div
+              className="___9o87uj0_0000000 ffefeo0"
+            >
+              <DocumentsTableComponent
+                collection={
+                  {
+                    "databaseId": "databaseId",
+                    "id": [Function],
+                  }
+                }
+                columnHeaders={
+                  {
+                    "idHeader": "id",
+                    "partitionKeyHeaders": [],
+                  }
+                }
+                isSelectionDisabled={true}
+                items={[]}
+                onItemClicked={[Function]}
+                onSelectedRowsChange={[Function]}
+                selectedRows={
+                  Set {
+                    0,
+                  }
+                }
+              />
             </div>
           </div>
         </Allotment.Pane>
