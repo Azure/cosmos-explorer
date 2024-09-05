@@ -2,28 +2,18 @@ import { PartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 
-export const defaultQueryFields = ["id", "_self", "_rid", "_ts"];
-
 export function buildDocumentsQuery(
   filter: string,
   partitionKeyProperties: string[],
   partitionKey: DataModels.PartitionKey,
-  additionalField: string[] = [],
 ): string {
-  const fieldSet = new Set<string>(defaultQueryFields);
-  additionalField.forEach((prop) => fieldSet.add(prop));
-
-  const objectListSpec = [...fieldSet]
-    .filter((f) => !partitionKeyProperties.includes(f))
-    .map((prop) => `c.${prop}`)
-    .join(",");
   let query =
     partitionKeyProperties && partitionKeyProperties.length > 0
-      ? `select ${objectListSpec}, [${buildDocumentsQueryPartitionProjections(
+      ? `select c.id, c._self, c._rid, c._ts, [${buildDocumentsQueryPartitionProjections(
           "c",
           partitionKey,
         )}] as _partitionKeyValue from c`
-      : `select ${objectListSpec} from c`;
+      : `select c.id, c._self, c._rid, c._ts from c`;
 
   if (filter) {
     query += " " + filter;

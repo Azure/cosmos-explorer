@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 /**
  * Utility class to help with selection.
  * This emulates File Explorer selection behavior.
@@ -91,13 +89,4 @@ export const selectionHelper = (
       };
     }
   }
-};
-
-// To get previous values of a state in useEffect
-export const usePrevious = <T>(value: T): T | undefined => {
-  const ref = useRef<T>();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
 };
