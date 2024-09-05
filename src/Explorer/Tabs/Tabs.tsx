@@ -1,7 +1,7 @@
 import { IMessageBarStyles, Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
-import { Platform, configContext, updateConfigContext } from "ConfigContext";
+import { Platform, configContext } from "ConfigContext";
 import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
@@ -118,7 +118,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             setShowMongoAndCassandraProxiesNetworkSettingsWarningState(false);
           }}
         >
-          {`We are moving our middleware to new infrastructure. To avoid future issues with Data Explorer access, please
+          {`We have migrated our middleware to new infrastructure. To avoid issues with Data Explorer access, please
           re-enable "Allow access from Azure Portal" on the Networking blade for your account.`}
         </MessageBar>
       )}
@@ -397,12 +397,6 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
         ipAddressesFromIPRules.includes(mongoProxyOutboundIP),
       );
 
-      if (ipRulesIncludeMongoProxy) {
-        updateConfigContext({
-          MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
-        });
-      }
-
       return !ipRulesIncludeMongoProxy;
     } else if (userContext.apiType === "Cassandra") {
       const isProdOrMpacCassandraProxyEndpoint: boolean = [
@@ -420,12 +414,6 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
       const ipRulesIncludeCassandraProxy: boolean = cassandraProxyOutboundIPs.every(
         (cassandraProxyOutboundIP: string) => ipAddressesFromIPRules.includes(cassandraProxyOutboundIP),
       );
-
-      if (ipRulesIncludeCassandraProxy) {
-        updateConfigContext({
-          CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
-        });
-      }
 
       return !ipRulesIncludeCassandraProxy;
     }
