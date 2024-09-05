@@ -8,15 +8,21 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
       "id": [Function],
     }
   }
-  columnHeaders={
-    {
-      "idHeader": "id",
-      "partitionKeyHeaders": [
-        "partitionKey",
-      ],
-    }
+  columnDefinitions={
+    [
+      {
+        "id": "id",
+        "isPartitionKey": false,
+        "label": "ID",
+      },
+      {
+        "id": "partitionKey",
+        "isPartitionKey": true,
+        "label": "Partition Key",
+      },
+    ]
   }
-  isSelectionDisabled={true}
+  isRowSelectionDisabled={true}
   items={
     [
       {
@@ -34,7 +40,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
     ]
   }
   onItemClicked={[Function]}
+  onRefreshTable={[Function]}
   onSelectedRowsChange={[Function]}
+  selectedColumnIds={[]}
   selectedRows={Set {}}
   size={
     {
@@ -49,6 +57,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
     noNativeElements={true}
     role="grid"
     size="small"
+    sortable={true}
     style={
       {
         "minWidth": "fit-content",
@@ -87,257 +96,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                   "width": -15,
                 }
               }
-            >
-              <Menu
-                key="id"
-                openOnContext={true}
-              >
-                <ContextSelector.Provider
-                  value={
-                    {
-                      "checkedValues": {},
-                      "hasCheckmarks": false,
-                      "hasIcons": false,
-                      "inline": false,
-                      "isSubmenu": false,
-                      "menuPopoverRef": {
-                        "current": null,
-                      },
-                      "mountNode": null,
-                      "onCheckedValueChange": [Function],
-                      "open": false,
-                      "openOnContext": true,
-                      "openOnHover": false,
-                      "persistOnItemClick": false,
-                      "setOpen": [Function],
-                      "triggerId": "menu17",
-                      "triggerRef": {
-                        "current": <div
-                          class="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                          data-tabster="{"restorer":{"type":1}}"
-                          id="menu17"
-                          role="columnheader"
-                          style="width: 50px; min-width: 50px; max-width: 50px;"
-                        >
-                          <div
-                            class="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                            role="presentation"
-                          >
-                            id
-                          </div>
-                          <span
-                            class="fui-TableHeaderCell__aside"
-                          >
-                            <div
-                              aria-hidden="true"
-                              aria-label="Resize column"
-                              aria-valuetext="50 pixels"
-                              class="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                              role="separator"
-                            />
-                          </span>
-                        </div>,
-                      },
-                    }
-                  }
-                >
-                  <MenuTrigger
-                    key=".0"
-                  >
-                    <TableHeaderCell
-                      aside={
-                        <TableResizeHandle
-                          aria-hidden={true}
-                          aria-label="Resize column"
-                          aria-valuetext="50 pixels"
-                          data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                          onBlur={[Function]}
-                          onKeyDown={[Function]}
-                          onMouseDown={[Function]}
-                          onTouchStart={[Function]}
-                          role="separator"
-                        />
-                      }
-                      className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                      data-tabster="{"restorer":{"type":1}}"
-                      id="menu17"
-                      key="id"
-                      onContextMenu={[Function]}
-                      onMouseEnter={[Function]}
-                      onMouseLeave={[Function]}
-                      onMouseMove={[Function]}
-                      style={
-                        {
-                          "maxWidth": 50,
-                          "minWidth": 50,
-                          "width": 50,
-                        }
-                      }
-                    >
-                      <div
-                        className="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                        data-tabster="{"restorer":{"type":1}}"
-                        id="menu17"
-                        onContextMenu={[Function]}
-                        onMouseEnter={[Function]}
-                        onMouseLeave={[Function]}
-                        onMouseMove={[Function]}
-                        role="columnheader"
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                      >
-                        <div
-                          className="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                          onClick={[Function]}
-                          onKeyDown={[Function]}
-                          onKeyUp={[Function]}
-                          role="presentation"
-                        >
-                          id
-                        </div>
-                        <span
-                          className="fui-TableHeaderCell__aside"
-                        >
-                          <TableResizeHandle
-                            aria-hidden={true}
-                            aria-label="Resize column"
-                            aria-valuetext="50 pixels"
-                            data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                            onBlur={[Function]}
-                            onKeyDown={[Function]}
-                            onMouseDown={[Function]}
-                            onTouchStart={[Function]}
-                            role="separator"
-                          >
-                            <div
-                              aria-hidden={true}
-                              aria-label="Resize column"
-                              aria-valuetext="50 pixels"
-                              className="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                              onBlur={[Function]}
-                              onClick={[Function]}
-                              onKeyDown={[Function]}
-                              onMouseDown={[Function]}
-                              onTouchStart={[Function]}
-                              role="separator"
-                            />
-                          </TableResizeHandle>
-                        </span>
-                      </div>
-                    </TableHeaderCell>
-                  </MenuTrigger>
-                </ContextSelector.Provider>
-              </Menu>
-              <Menu
-                key="partitionKey"
-                openOnContext={true}
-              >
-                <ContextSelector.Provider
-                  value={
-                    {
-                      "checkedValues": {},
-                      "hasCheckmarks": false,
-                      "hasIcons": false,
-                      "inline": false,
-                      "isSubmenu": false,
-                      "menuPopoverRef": {
-                        "current": null,
-                      },
-                      "mountNode": null,
-                      "onCheckedValueChange": [Function],
-                      "open": false,
-                      "openOnContext": true,
-                      "openOnHover": false,
-                      "persistOnItemClick": false,
-                      "setOpen": [Function],
-                      "triggerId": "menu18",
-                      "triggerRef": {
-                        "current": <div
-                          class="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                          data-tabster="{"restorer":{"type":1}}"
-                          id="menu18"
-                          role="columnheader"
-                          style="width: 50px; min-width: 50px; max-width: 50px;"
-                        >
-                          <div
-                            class="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                            role="presentation"
-                          >
-                            <span
-                              title="partitionKey"
-                            >
-                              partitionKey
-                            </span>
-                          </div>
-                        </div>,
-                      },
-                    }
-                  }
-                >
-                  <MenuTrigger
-                    key=".0"
-                  >
-                    <TableHeaderCell
-                      aside={null}
-                      className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                      data-tabster="{"restorer":{"type":1}}"
-                      id="menu18"
-                      key="partitionKey"
-                      onContextMenu={[Function]}
-                      onMouseEnter={[Function]}
-                      onMouseLeave={[Function]}
-                      onMouseMove={[Function]}
-                      style={
-                        {
-                          "maxWidth": 50,
-                          "minWidth": 50,
-                          "width": 50,
-                        }
-                      }
-                    >
-                      <div
-                        className="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                        data-tabster="{"restorer":{"type":1}}"
-                        id="menu18"
-                        onContextMenu={[Function]}
-                        onMouseEnter={[Function]}
-                        onMouseLeave={[Function]}
-                        onMouseMove={[Function]}
-                        role="columnheader"
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                      >
-                        <div
-                          className="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                          onClick={[Function]}
-                          onKeyDown={[Function]}
-                          onKeyUp={[Function]}
-                          role="presentation"
-                        >
-                          <span
-                            title="partitionKey"
-                          >
-                            partitionKey
-                          </span>
-                        </div>
-                      </div>
-                    </TableHeaderCell>
-                  </MenuTrigger>
-                </ContextSelector.Provider>
-              </Menu>
-            </div>
+            />
           </TableRow>
         </div>
       </TableHeader>
@@ -509,106 +268,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           "width": "100%",
                         }
                       }
-                    >
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="id"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={0}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={0}
-                        >
-                          <TableCellLayout
-                            title="1"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="1"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  1
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="partitionKey"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={-1}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={-1}
-                        >
-                          <TableCellLayout
-                            title="pk1"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="pk1"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  pk1
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                    </div>
+                    />
                   </TableRow>
                 </RenderRow>
                 <RenderRow
@@ -698,106 +358,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           "width": "100%",
                         }
                       }
-                    >
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="id"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={0}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={0}
-                        >
-                          <TableCellLayout
-                            title="2"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="2"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  2
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="partitionKey"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={-1}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={-1}
-                        >
-                          <TableCellLayout
-                            title="pk2"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="pk2"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  pk2
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                    </div>
+                    />
                   </TableRow>
                 </RenderRow>
                 <RenderRow
@@ -887,106 +448,7 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
                           "width": "100%",
                         }
                       }
-                    >
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="id"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={0}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={0}
-                        >
-                          <TableCellLayout
-                            title="3"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="3"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  3
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="partitionKey"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={-1}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={-1}
-                        >
-                          <TableCellLayout
-                            title="pk3"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="pk3"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  pk3
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                    </div>
+                    />
                   </TableRow>
                 </RenderRow>
               </div>
@@ -1007,15 +469,21 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
       "id": [Function],
     }
   }
-  columnHeaders={
-    {
-      "idHeader": "id",
-      "partitionKeyHeaders": [
-        "partitionKey",
-      ],
-    }
+  columnDefinitions={
+    [
+      {
+        "id": "id",
+        "isPartitionKey": false,
+        "label": "ID",
+      },
+      {
+        "id": "partitionKey",
+        "isPartitionKey": true,
+        "label": "Partition Key",
+      },
+    ]
   }
-  isSelectionDisabled={false}
+  isRowSelectionDisabled={false}
   items={
     [
       {
@@ -1033,7 +501,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
     ]
   }
   onItemClicked={[Function]}
+  onRefreshTable={[Function]}
   onSelectedRowsChange={[Function]}
+  selectedColumnIds={[]}
   selectedRows={Set {}}
   size={
     {
@@ -1048,6 +518,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
     noNativeElements={true}
     role="grid"
     size="small"
+    sortable={true}
     style={
       {
         "minWidth": "fit-content",
@@ -1094,6 +565,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   }
                 }
                 checked={false}
+                key="selectcell"
                 onClick={[Function]}
                 onKeyDown={[Function]}
               >
@@ -1127,255 +599,6 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                   </Checkbox>
                 </div>
               </TableSelectionCell>
-              <Menu
-                key="id"
-                openOnContext={true}
-              >
-                <ContextSelector.Provider
-                  value={
-                    {
-                      "checkedValues": {},
-                      "hasCheckmarks": false,
-                      "hasIcons": false,
-                      "inline": false,
-                      "isSubmenu": false,
-                      "menuPopoverRef": {
-                        "current": null,
-                      },
-                      "mountNode": null,
-                      "onCheckedValueChange": [Function],
-                      "open": false,
-                      "openOnContext": true,
-                      "openOnHover": false,
-                      "persistOnItemClick": false,
-                      "setOpen": [Function],
-                      "triggerId": "menu3",
-                      "triggerRef": {
-                        "current": <div
-                          class="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                          data-tabster="{"restorer":{"type":1}}"
-                          id="menu3"
-                          role="columnheader"
-                          style="width: 50px; min-width: 50px; max-width: 50px;"
-                        >
-                          <div
-                            class="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                            role="presentation"
-                          >
-                            id
-                          </div>
-                          <span
-                            class="fui-TableHeaderCell__aside"
-                          >
-                            <div
-                              aria-hidden="true"
-                              aria-label="Resize column"
-                              aria-valuetext="50 pixels"
-                              class="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                              role="separator"
-                            />
-                          </span>
-                        </div>,
-                      },
-                    }
-                  }
-                >
-                  <MenuTrigger
-                    key=".0"
-                  >
-                    <TableHeaderCell
-                      aside={
-                        <TableResizeHandle
-                          aria-hidden={true}
-                          aria-label="Resize column"
-                          aria-valuetext="50 pixels"
-                          data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                          onBlur={[Function]}
-                          onKeyDown={[Function]}
-                          onMouseDown={[Function]}
-                          onTouchStart={[Function]}
-                          role="separator"
-                        />
-                      }
-                      className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                      data-tabster="{"restorer":{"type":1}}"
-                      id="menu3"
-                      key="id"
-                      onContextMenu={[Function]}
-                      onMouseEnter={[Function]}
-                      onMouseLeave={[Function]}
-                      onMouseMove={[Function]}
-                      style={
-                        {
-                          "maxWidth": 50,
-                          "minWidth": 50,
-                          "width": 50,
-                        }
-                      }
-                    >
-                      <div
-                        className="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                        data-tabster="{"restorer":{"type":1}}"
-                        id="menu3"
-                        onContextMenu={[Function]}
-                        onMouseEnter={[Function]}
-                        onMouseLeave={[Function]}
-                        onMouseMove={[Function]}
-                        role="columnheader"
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                      >
-                        <div
-                          className="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                          onClick={[Function]}
-                          onKeyDown={[Function]}
-                          onKeyUp={[Function]}
-                          role="presentation"
-                        >
-                          id
-                        </div>
-                        <span
-                          className="fui-TableHeaderCell__aside"
-                        >
-                          <TableResizeHandle
-                            aria-hidden={true}
-                            aria-label="Resize column"
-                            aria-valuetext="50 pixels"
-                            data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                            onBlur={[Function]}
-                            onKeyDown={[Function]}
-                            onMouseDown={[Function]}
-                            onTouchStart={[Function]}
-                            role="separator"
-                          >
-                            <div
-                              aria-hidden={true}
-                              aria-label="Resize column"
-                              aria-valuetext="50 pixels"
-                              className="fui-TableResizeHandle ___bbwxdo0_f5j3is0 f1euv43f f1e31b4d f15twtuk f1yab3r1 fjw5fx7 fg06o1j fc3en1c fk73vx1 f13u1uyl fezquic f19g0ac f1tkae59 ftqa4ok f15pjodv ftgrb5f f2df6js fshsryb f11ef69 f12lb1dx fu4ulse fw2wsqs f1swzn7y"
-                              data-tabster="{"focusable":{"ignoreKeydown":{"ArrowLeft":true,"ArrowRight":true}}}"
-                              onBlur={[Function]}
-                              onClick={[Function]}
-                              onKeyDown={[Function]}
-                              onMouseDown={[Function]}
-                              onTouchStart={[Function]}
-                              role="separator"
-                            />
-                          </TableResizeHandle>
-                        </span>
-                      </div>
-                    </TableHeaderCell>
-                  </MenuTrigger>
-                </ContextSelector.Provider>
-              </Menu>
-              <Menu
-                key="partitionKey"
-                openOnContext={true}
-              >
-                <ContextSelector.Provider
-                  value={
-                    {
-                      "checkedValues": {},
-                      "hasCheckmarks": false,
-                      "hasIcons": false,
-                      "inline": false,
-                      "isSubmenu": false,
-                      "menuPopoverRef": {
-                        "current": null,
-                      },
-                      "mountNode": null,
-                      "onCheckedValueChange": [Function],
-                      "open": false,
-                      "openOnContext": true,
-                      "openOnHover": false,
-                      "persistOnItemClick": false,
-                      "setOpen": [Function],
-                      "triggerId": "menu4",
-                      "triggerRef": {
-                        "current": <div
-                          class="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                          data-tabster="{"restorer":{"type":1}}"
-                          id="menu4"
-                          role="columnheader"
-                          style="width: 50px; min-width: 50px; max-width: 50px;"
-                        >
-                          <div
-                            class="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                            role="presentation"
-                          >
-                            <span
-                              title="partitionKey"
-                            >
-                              partitionKey
-                            </span>
-                          </div>
-                        </div>,
-                      },
-                    }
-                  }
-                >
-                  <MenuTrigger
-                    key=".0"
-                  >
-                    <TableHeaderCell
-                      aside={null}
-                      className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                      data-tabster="{"restorer":{"type":1}}"
-                      id="menu4"
-                      key="partitionKey"
-                      onContextMenu={[Function]}
-                      onMouseEnter={[Function]}
-                      onMouseLeave={[Function]}
-                      onMouseMove={[Function]}
-                      style={
-                        {
-                          "maxWidth": 50,
-                          "minWidth": 50,
-                          "width": 50,
-                        }
-                      }
-                    >
-                      <div
-                        className="fui-TableHeaderCell ___tygr690_1tp3egy figsok6 f3gpkru f14ym4q2 f1euou18 f10pi13n f22iagw f1izfyrr f10tiqix finvdd3 fjik90z fw35ms5"
-                        data-tabster="{"restorer":{"type":1}}"
-                        id="menu4"
-                        onContextMenu={[Function]}
-                        onMouseEnter={[Function]}
-                        onMouseLeave={[Function]}
-                        onMouseMove={[Function]}
-                        role="columnheader"
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                      >
-                        <div
-                          className="fui-TableHeaderCell__button ___1g9gf5i_12fejcs fq6nmtn f1e4lqlz f1u2r49w f1ym3bx4 f1mo0ibp fjoy568 fytdu2e f1gl81tg f1mk8lai f3bhgqh fgusgyc f10pi13n fly5x3f f22iagw f1l02sjl f122n59 fkln5zr f1nxs5xn f1izfyrr f1s6fcnf"
-                          onClick={[Function]}
-                          onKeyDown={[Function]}
-                          onKeyUp={[Function]}
-                          role="presentation"
-                        >
-                          <span
-                            title="partitionKey"
-                          >
-                            partitionKey
-                          </span>
-                        </div>
-                      </div>
-                    </TableHeaderCell>
-                  </MenuTrigger>
-                </ContextSelector.Provider>
-              </Menu>
             </div>
           </TableRow>
         </div>
@@ -1577,7 +800,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                                 aria-label="Select row"
                                 checked={false}
                                 className="fui-Checkbox__input ruo9svu ___qlal8r0_1xrlghj f1vgc2s3"
-                                id="checkbox-12"
+                                id="checkbox-10"
                                 onChange={[Function]}
                                 type="checkbox"
                               />
@@ -1589,104 +812,6 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           </Checkbox>
                         </div>
                       </TableSelectionCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="id"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={0}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={0}
-                        >
-                          <TableCellLayout
-                            title="1"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="1"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  1
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="partitionKey"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={-1}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={-1}
-                        >
-                          <TableCellLayout
-                            title="pk1"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="pk1"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  pk1
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
                     </div>
                   </TableRow>
                 </RenderRow>
@@ -1806,7 +931,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                                 aria-label="Select row"
                                 checked={false}
                                 className="fui-Checkbox__input ruo9svu ___qlal8r0_1xrlghj f1vgc2s3"
-                                id="checkbox-14"
+                                id="checkbox-12"
                                 onChange={[Function]}
                                 type="checkbox"
                               />
@@ -1818,104 +943,6 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           </Checkbox>
                         </div>
                       </TableSelectionCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="id"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={0}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={0}
-                        >
-                          <TableCellLayout
-                            title="2"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="2"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  2
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="partitionKey"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={-1}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={-1}
-                        >
-                          <TableCellLayout
-                            title="pk2"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="pk2"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  pk2
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
                     </div>
                   </TableRow>
                 </RenderRow>
@@ -2035,7 +1062,7 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                                 aria-label="Select row"
                                 checked={false}
                                 className="fui-Checkbox__input ruo9svu ___qlal8r0_1xrlghj f1vgc2s3"
-                                id="checkbox-16"
+                                id="checkbox-14"
                                 onChange={[Function]}
                                 type="checkbox"
                               />
@@ -2047,104 +1074,6 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
                           </Checkbox>
                         </div>
                       </TableSelectionCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="id"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={0}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={0}
-                        >
-                          <TableCellLayout
-                            title="3"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="3"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  3
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className="___16q6g07_0000000 finvdd3 fjik90z fw35ms5"
-                        key="partitionKey"
-                        onClick={[Function]}
-                        onKeyPress={[Function]}
-                        style={
-                          {
-                            "maxWidth": 50,
-                            "minWidth": 50,
-                            "width": 50,
-                          }
-                        }
-                        tabIndex={-1}
-                      >
-                        <div
-                          className="fui-TableCell ___h9qj4u0_1sv9uyx f10pi13n f3gpkru f1dxfoyt f2krc9w f22iagw f10tiqix f122n59 f1izfyrr fcep9tg finvdd3 fjik90z fw35ms5"
-                          onClick={[Function]}
-                          onKeyPress={[Function]}
-                          role="cell"
-                          style={
-                            {
-                              "maxWidth": 50,
-                              "minWidth": 50,
-                              "width": 50,
-                            }
-                          }
-                          tabIndex={-1}
-                        >
-                          <TableCellLayout
-                            title="pk3"
-                            truncate={true}
-                          >
-                            <div
-                              className="fui-TableCellLayout ___kiicrx0_10633w0 f22iagw f122n59 faqewft f1izfyrr f1p9o1ba"
-                              title="pk3"
-                            >
-                              <div
-                                className="fui-TableCellLayout__content ___1vq3ijp_1wyv0tp f22iagw f1vx9l62 f1p9o1ba"
-                              >
-                                <span
-                                  className="fui-TableCellLayout__main ___1q6a9l3_1koyf1t f1p9o1ba fz5stix f1cmbuwj"
-                                >
-                                  pk3
-                                </span>
-                              </div>
-                            </div>
-                          </TableCellLayout>
-                        </div>
-                      </TableCell>
                     </div>
                   </TableRow>
                 </RenderRow>
