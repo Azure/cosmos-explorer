@@ -12,7 +12,11 @@ import {
   subscriptionId,
 } from "../fx";
 
-test("SQL account using Resource token", async ({ page }) => {
+// This test is currently failing because of issues with resource token auth in the backend.
+// Marking it as 'fail' means that it will still be run, but Playwright's reporting will be inverted (failing tests will be marked as passing and vice versa).
+// This allows us to detect when it starts working again, as the test will fail again.
+// At that point, we can remove the 'fail' marker and continue running the test as normal.
+test.fail("SQL account using Resource token", async ({ page }) => {
   const credentials = await getAzureCLICredentials();
   const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
@@ -34,9 +38,7 @@ test("SQL account using Resource token", async ({ page }) => {
   });
   await expect(containerPermission).toBeDefined();
 
-  const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${
-    database.id
-  };CollectionId=${container.id};${containerPermission!._token}`;
+  const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission!._token}`;
 
   await page.goto("https://localhost:1234/hostedExplorer.html");
   const switchConnectionLink = page.getByTestId("Link:SwitchConnectionType");
