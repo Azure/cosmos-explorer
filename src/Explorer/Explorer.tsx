@@ -1119,7 +1119,7 @@ export default class Explorer {
     }
   }
 
-  public openUploadItemsPanePane(): void {
+  public openUploadItemsPane(): void {
     useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
   }
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
