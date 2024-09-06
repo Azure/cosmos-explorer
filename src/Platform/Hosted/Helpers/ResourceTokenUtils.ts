@@ -30,7 +30,7 @@ export function parseResourceTokenConnectionString(connectionString: string): Pa
     }
   });
 
-  if (resourceToken.endsWith(";")) {
+  if (resourceToken && resourceToken.endsWith(";")) {
     resourceToken = resourceToken.substring(0, resourceToken.length - 1);
   }
 
