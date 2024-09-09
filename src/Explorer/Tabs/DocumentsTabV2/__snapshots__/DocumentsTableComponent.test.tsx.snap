@@ -75,9 +75,11 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
         }
       }
     >
-      <TableHeader>
+      <TableHeader
+        className="___1gzszts_0000000 f22iagw"
+      >
         <div
-          className="fui-TableHeader ___oeyxrt0_1baslyg ftgm304"
+          className="fui-TableHeader ___1gzszts_39qb7g0 f22iagw"
           role="rowgroup"
         >
           <TableRow
@@ -98,6 +100,9 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
               }
             />
           </TableRow>
+          <div
+            className="___1ndi7nn_0000000 f64fuq3 f1ppkcfa"
+          />
         </div>
       </TableHeader>
       <TableBody>
@@ -536,9 +541,11 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
         }
       }
     >
-      <TableHeader>
+      <TableHeader
+        className="___1gzszts_0000000 f22iagw"
+      >
         <div
-          className="fui-TableHeader ___oeyxrt0_1baslyg ftgm304"
+          className="fui-TableHeader ___1gzszts_39qb7g0 f22iagw"
           role="rowgroup"
         >
           <TableRow
@@ -601,6 +608,9 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
               </TableSelectionCell>
             </div>
           </TableRow>
+          <div
+            className="___1ndi7nn_0000000 f64fuq3 f1ppkcfa"
+          />
         </div>
       </TableHeader>
       <TableBody>
