@@ -11,12 +11,13 @@ export function buildDocumentsQuery(
   additionalField: string[] = [],
 ): string {
   const fieldSet = new Set<string>(defaultQueryFields);
-  additionalField.forEach((prop) => fieldSet.add(prop));
+  additionalField.forEach((prop) => {
+    if (!partitionKeyProperties.includes(prop)) {
+      fieldSet.add(prop);
+    }
+  });
 
-  const objectListSpec = [...fieldSet]
-    .filter((f) => !partitionKeyProperties.includes(f))
-    .map((prop) => `c.${prop}`)
-    .join(",");
+  const objectListSpec = [...fieldSet].map((prop) => `c.${prop}`).join(",");
   let query =
     partitionKeyProperties && partitionKeyProperties.length > 0
       ? `select ${objectListSpec}, [${buildDocumentsQueryPartitionProjections(
