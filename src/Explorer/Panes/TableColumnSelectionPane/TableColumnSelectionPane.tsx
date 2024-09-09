@@ -61,7 +61,15 @@ export const TableColumnSelectionPane: React.FC<TableColumnSelectionPaneProps> =
     if (checked) {
       selectedColumnIdsSet.add(id);
     } else {
-      if (selectedColumnIdsSet.size === 1 && selectedColumnIdsSet.has(id)) {
+      /* selectedColumnIds may contain ids that are not in columnDefinitions, because the selected
+       * ids may have been loaded from persistence, but don't exist in the current retrieved documents.
+       */
+
+      if (
+        Array.from(selectedColumnIdsSet).filter((id) => columnDefinitions.find((def) => def.id === id) !== undefined)
+          .length === 1 &&
+        selectedColumnIdsSet.has(id)
+      ) {
         // Don't allow unchecking the last column
         return;
       }
