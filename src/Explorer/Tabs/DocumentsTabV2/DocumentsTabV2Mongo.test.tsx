@@ -50,6 +50,7 @@ jest.mock("Common/MongoProxyClient", () => ({
     }),
   ),
   deleteDocuments: jest.fn(() => Promise.resolve()),
+  useMongoProxyEndpoint: jest.fn(() => true),
 }));
 
 jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
@@ -60,7 +61,7 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => {},
+      showOkModalDialog: () => { },
     })),
   },
 }));
