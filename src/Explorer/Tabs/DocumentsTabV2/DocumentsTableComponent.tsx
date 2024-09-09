@@ -251,32 +251,32 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                           </MenuItem>
                         )}
                         <MenuDivider />
-                        <MenuItem
-                          key="keyboardresize"
-                          icon={<TableResizeColumnRegular />}
-                          onClick={columnSizing.enableKeyboardMode(column.id)}
-                        >
-                          Resize with left/right arrow keys
-                        </MenuItem>
-                        {!isColumnSelectionDisabled && (
-                          <MenuItem
-                            key="remove"
-                            icon={<DeleteRegular />}
-                            onClick={() => {
-                              // Remove column id from selectedColumnIds
-                              const index = selectedColumnIds.indexOf(column.id);
-                              if (index === -1) {
-                                return;
-                              }
-                              const newSelectedColumnIds = [...selectedColumnIds];
-                              newSelectedColumnIds.splice(index, 1);
-                              onColumnSelectionChange(newSelectedColumnIds);
-                            }}
-                          >
-                            Remove column
-                          </MenuItem>
-                        )}
                       </>
+                    )}
+                    <MenuItem
+                      key="keyboardresize"
+                      icon={<TableResizeColumnRegular />}
+                      onClick={columnSizing.enableKeyboardMode(column.id)}
+                    >
+                      Resize with left/right arrow keys
+                    </MenuItem>
+                    {userContext.features.enableDocumentsTableColumnSelection && !isColumnSelectionDisabled && (
+                      <MenuItem
+                        key="remove"
+                        icon={<DeleteRegular />}
+                        onClick={() => {
+                          // Remove column id from selectedColumnIds
+                          const index = selectedColumnIds.indexOf(column.id);
+                          if (index === -1) {
+                            return;
+                          }
+                          const newSelectedColumnIds = [...selectedColumnIds];
+                          newSelectedColumnIds.splice(index, 1);
+                          onColumnSelectionChange(newSelectedColumnIds);
+                        }}
+                      >
+                        Remove column
+                      </MenuItem>
                     )}
                   </MenuList>
                 </MenuPopover>
