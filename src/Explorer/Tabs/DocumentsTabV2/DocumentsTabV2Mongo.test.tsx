@@ -50,6 +50,7 @@ jest.mock("Common/MongoProxyClient", () => ({
     }),
   ),
   deleteDocuments: jest.fn(() => Promise.resolve()),
+  useMongoProxyEndpoint: jest.fn(() => true),
 }));
 
 jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
