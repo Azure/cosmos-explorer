@@ -942,24 +942,34 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       const _deleteNoSqlDocuments = async (
         collection: CollectionBase,
         toDeleteDocumentIds: DocumentId[],
-      ): Promise<DocumentId[]> => {
-        return partitionKey.systemKey
+      ): Promise<DocumentId[]> =>
+        partitionKey.systemKey
           ? deleteNoSqlDocument(collection, toDeleteDocumentIds[0]).then(() => [toDeleteDocumentIds[0]])
           : deleteNoSqlDocuments(collection, toDeleteDocumentIds);
-      };
+
+      // TODO: Once new mongo proxy is available for all users, remove the call for MongoProxyClient.deleteDocument().
+      // MongoProxyClient.deleteDocuments() should be called for all users.
+      const _deleteMongoDocuments = async (
+        databaseId: string,
+        collection: ViewModels.Collection,
+        documentIds: DocumentId[],
+      ) =>
+        isMongoBulkDeleteDisabled
+          ? MongoProxyClient.deleteDocument(databaseId, collection, documentIds[0]).then(() => [toDeleteDocumentIds[0]])
+          : MongoProxyClient.deleteDocuments(databaseId, collection, documentIds).then(
+              ({ deletedCount, isAcknowledged }) => {
+                if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+                  return toDeleteDocumentIds;
+                }
+                throw new Error(
+                  `Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`,
+                );
+              },
+            );
 
       const deletePromise = !isPreferredApiMongoDB
         ? _deleteNoSqlDocuments(_collection, toDeleteDocumentIds)
-        : MongoProxyClient.deleteDocuments(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds,
-          ).then(({ deletedCount, isAcknowledged }) => {
-            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-              return toDeleteDocumentIds;
-            }
-            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-          });
+        : _deleteMongoDocuments(_collection.databaseId, _collection as ViewModels.Collection, toDeleteDocumentIds);
 
       return deletePromise
         .then(
@@ -1754,6 +1764,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [createIterator, filterContent],
   );
 
+  // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
+  // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
+  const isMongoBulkDeleteDisabled = MongoProxyClient.useMongoProxyEndpoint("bulkdelete");
+  const isBulkDeleteDisabled =
+    (partitionKey.systemKey && !isPreferredApiMongoDB) || (isPreferredApiMongoDB && isMongoBulkDeleteDisabled);
+  //  -------------------------------------------------------
+
   return (
     <CosmosFluentProvider className={styles.container}>
       <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
@@ -1878,7 +1895,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     size={tableContainerSizePx}
                     columnHeaders={columnHeaders}
                     isSelectionDisabled={
-                      (partitionKey.systemKey && !isPreferredApiMongoDB) ||
+                      isBulkDeleteDisabled ||
                       (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
                     }
                     collection={_collection}
