@@ -91,6 +91,13 @@ export const useDocumentsTabStyles = makeStyles({
   tableCell: {
     ...cosmosShorthands.borderLeft(),
   },
+  tableHeader: {
+    display: "flex",
+  },
+  tableHeaderFiller: {
+    width: "20px",
+    boxShadow: `0px -1px ${tokens.colorNeutralStroke2} inset`,
+  },
   loadMore: {
     ...cosmosShorthands.borderTop(),
     display: "grid",
@@ -533,7 +540,7 @@ const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 type ExtendedDocumentId = DocumentId & { tableFields?: DocumentsTableComponentItem };
 
 // This is based on some heuristics
-const calculateOffset = (columnNumber: number): number => columnNumber * 16 - 29;
+const calculateOffset = (columnNumber: number): number => columnNumber * 16 - 27;
 
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
@@ -2014,7 +2021,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                       } /* Fix to make table not resize beyond parent's width */
                     }
                   >
-                    <div className={styles.tableContainer}></div>
                     <DocumentsTableComponent
                       onRefreshTable={() => refreshDocumentsGrid(false)}
                       items={tableItems}
