@@ -2,7 +2,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 // The component name whose state is being saved. Component name must not include special characters.
 export type ComponentName = "DocumentsTab";
-
+export const PATH_SEPARATOR = "/"; // export for testing purposes
 const SCHEMA_VERSION = 1;
 
 // Export for testing purposes
@@ -87,10 +87,10 @@ const orderedPathSegments: (keyof StorePath)[] = [
  * @param path
  */
 export const createKeyFromPath = (path: StorePath): string => {
-  let key = `/${encodeURIComponent(path.componentName)}`; // ComponentName is always there
+  let key = `${PATH_SEPARATOR}${encodeURIComponent(path.componentName)}`; // ComponentName is always there
   orderedPathSegments.forEach((segment) => {
     const segmentValue = path[segment as keyof StorePath];
-    key += `/${segmentValue !== undefined ? encodeURIComponent(segmentValue) : ""}`;
+    key += `${PATH_SEPARATOR}${segmentValue !== undefined ? encodeURIComponent(segmentValue) : ""}`;
   });
   return key;
 };
