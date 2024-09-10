@@ -1182,7 +1182,7 @@ export default class Explorer {
     if (
       userContext.apiType !== "SQL" ||
       !userContext.subscriptionId ||
-      [Environment.Development, Environment.Mpac, Environment.Prod].indexOf(getEnvironment()) === -1
+      ![Environment.Development, Environment.Mpac, Environment.Prod].includes(getEnvironment())
     ) {
       return;
     }
