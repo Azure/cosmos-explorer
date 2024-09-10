@@ -10,9 +10,10 @@ import {
   TableColumnDefinition,
   TableColumnSizingOptions,
   createTableColumn,
-  tokens,
+  mergeClasses,
+  tokens
 } from "@fluentui/react-components";
-import { ErrorCircleFilled, MoreHorizontalRegular, WarningFilled } from "@fluentui/react-icons";
+import { ErrorCircleFilled, MoreHorizontalRegular, QuestionRegular, WarningFilled } from "@fluentui/react-icons";
 import QueryError, { QueryErrorSeverity, compareSeverity } from "Common/QueryError";
 import { useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import { useNotificationConsole } from "hooks/useNotificationConsole";
@@ -34,34 +35,48 @@ export const ErrorList: React.FC<{ errors: QueryError[] }> = ({ errors }) => {
     createTableColumn<QueryError>({
       columnId: "code",
       compare: (item1, item2) => item1.code.localeCompare(item2.code),
-      renderHeaderCell: () => null,
-      renderCell: (item) => item.code,
+      renderHeaderCell: () => "Code",
+      renderCell: (item) => <div className={styles.errorListTableCell}>{item.code}</div>, //<div className={styles.errorListTableCell}>{item.code}</div>
     }),
     createTableColumn<QueryError>({
       columnId: "severity",
       compare: (item1, item2) => compareSeverity(item1.severity, item2.severity),
-      renderHeaderCell: () => null,
-      renderCell: (item) => <TableCellLayout media={severityIcons[item.severity]}>{item.severity}</TableCellLayout>,
+      renderHeaderCell: () => "Severity",
+      renderCell: (item) => <TableCellLayout className={styles.errorListTableCell} media={severityIcons[item.severity]}>{item.severity}</TableCellLayout>,
     }),
     createTableColumn<QueryError>({
       columnId: "location",
       compare: (item1, item2) => item1.location?.start?.offset - item2.location?.start?.offset,
       renderHeaderCell: () => "Location",
       renderCell: (item) =>
-        item.location
-          ? item.location.start.lineNumber
-            ? `Line ${item.location.start.lineNumber}`
-            : "<unknown>"
-          : "<no location>",
+        <div className={styles.errorListTableCell}>
+          {item.location
+            ? item.location.start.lineNumber
+              ? `Line ${item.location.start.lineNumber}`
+              : "<unknown>"
+            : "<no location>"}
+        </div>,
     }),
     createTableColumn<QueryError>({
       columnId: "message",
       compare: (item1, item2) => item1.message.localeCompare(item2.message),
       renderHeaderCell: () => "Message",
       renderCell: (item) => (
-        <div className={styles.errorListMessageCell}>
-          <div className={styles.errorListMessage}>{item.message}</div>
+        <div className={mergeClasses(styles.errorListTableCell, styles.errorListMessageCell)}>
+          <div className={styles.errorListMessage} title={item.message}>
+            {item.message}
+          </div>
           <div>
+            {item.helpLink &&
+              <Button
+                as="a"
+                aria-label="Help"
+                appearance="subtle"
+                icon={<QuestionRegular />}
+                href={item.helpLink}
+                target="_blank"
+              />
+            }
             <Button
               aria-label="Details"
               appearance="subtle"
@@ -76,9 +91,9 @@ export const ErrorList: React.FC<{ errors: QueryError[] }> = ({ errors }) => {
 
   const columnSizingOptions: TableColumnSizingOptions = {
     code: {
-      minWidth: 75,
-      idealWidth: 75,
-      defaultWidth: 75,
+      minWidth: 90,
+      idealWidth: 90,
+      defaultWidth: 90,
     },
     severity: {
       minWidth: 100,
