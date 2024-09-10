@@ -1,5 +1,5 @@
-import { getErrorMessage } from "Common/ErrorHandlingUtils";
 import { monaco } from "Explorer/LazyMonaco";
+import { getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 
 export enum QueryErrorSeverity {
   Error = "Error",
@@ -10,7 +10,7 @@ export class QueryErrorLocation {
   constructor(
     public start: ErrorPosition,
     public end: ErrorPosition,
-  ) {}
+  ) { }
 }
 
 export class ErrorPosition {
@@ -18,7 +18,7 @@ export class ErrorPosition {
     public offset: number,
     public lineNumber?: number,
     public column?: number,
-  ) {}
+  ) { }
 }
 
 // Maps severities to numbers for sorting.
@@ -97,13 +97,43 @@ export const createMonacoMarkersForQueryErrors = (errors: QueryError[]) => {
     .filter((marker) => !!marker);
 };
 
+export interface ErrorEnrichment {
+  title?: string;
+  message: string;
+  learnMoreUrl?: string;
+}
+
+const REPLACEMENT_MESSAGES: Record<string, (original: string) => string> = {
+  "OPERATION_RU_LIMIT_EXCEEDED": (original) => {
+    if (ruThresholdEnabled()) {
+      const threshold = getRUThreshold();
+      return `Query exceeded the Request Unit (RU) limit of ${threshold} RUs. You can change this limit in Data Explorer settings.`;
+    }
+    return original;
+  }
+};
+
+const HELP_LINKS: Record<string, string> = {
+  "OPERATION_RU_LIMIT_EXCEEDED": "https://learn.microsoft.com/en-us/azure/cosmos-db/data-explorer#configure-request-unit-threshold",
+}
+
 export default class QueryError {
+  message: string;
+  helpLink?: string;
+
   constructor(
-    public message: string,
+    message: string,
     public severity: QueryErrorSeverity,
     public code?: string,
     public location?: QueryErrorLocation,
-  ) {}
+    helpLink?: string,
+  ) {
+    // Automatically replace the message with a more Data Explorer-specific message if we have for this error code.
+    this.message = REPLACEMENT_MESSAGES[code] ? REPLACEMENT_MESSAGES[code](message) : message;
+
+    // Automatically set the help link if we have one for this error code.
+    this.helpLink = helpLink ?? HELP_LINKS[code];
+  }
 
   getMonacoSeverity(): monaco.MarkerSeverity {
     // It's very difficult to use the monaco.MarkerSeverity enum from here, so we'll just use the numbers directly.
@@ -135,7 +165,7 @@ export default class QueryError {
       return errors;
     }
 
-    const errorMessage = getErrorMessage(error as string | Error);
+    const errorMessage = error as string;
 
     // Map some well known messages to richer errors
     const knownError = knownErrors[errorMessage];
@@ -160,7 +190,7 @@ export default class QueryError {
     }
 
     const severity =
-      "severity" in error && typeof error.severity === "string" ? (error.severity as QueryErrorSeverity) : undefined;
+      "severity" in error && typeof error.severity === "string" ? (error.severity as QueryErrorSeverity) : QueryErrorSeverity.Error;
     const location =
       "location" in error && typeof error.location === "object"
         ? locationResolver(error.location as { start: number; end: number })
@@ -173,16 +203,15 @@ export default class QueryError {
     error: unknown,
     locationResolver: (location: { start: number; end: number }) => QueryErrorLocation,
   ): QueryError[] | null {
-    if (typeof error === "object" && "message" in error) {
-      error = error.message;
-    }
-
-    if (typeof error !== "string") {
+    let message: string | undefined;
+    if (typeof error === "object" && "message" in error && typeof error.message === "string") {
+      message = error.message;
+    } else {
+      // Unsupported error format.
       return null;
     }
 
     // Assign to a new variable because of a TypeScript flow typing quirk, see below.
-    let message = error;
     if (message.startsWith("Message: ")) {
       // Reassigning this to 'error' restores the original type of 'error', which is 'unknown'.
       // So we use a separate variable to avoid this.
@@ -196,12 +225,15 @@ export default class QueryError {
     try {
       parsed = JSON.parse(message);
     } catch (e) {
-      // Not a query error.
-      return null;
+      // The message doesn't contain a nested error.
+      return [QueryError.read(error, locationResolver)];
     }
 
-    if (typeof parsed === "object" && "errors" in parsed && Array.isArray(parsed.errors)) {
-      return parsed.errors.map((e) => QueryError.read(e, locationResolver)).filter((e) => e !== null);
+    if (typeof parsed === "object") {
+      if ("errors" in parsed && Array.isArray(parsed.errors)) {
+        return parsed.errors.map((e) => QueryError.read(e, locationResolver)).filter((e) => e !== null);
+      }
+      return [QueryError.read(parsed, locationResolver)];
     }
     return null;
   }
