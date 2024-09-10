@@ -3,9 +3,9 @@ import { CollectionTabKind } from "Contracts/ViewModels";
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import {
-  IQueryTabComponentProps,
-  QueryTabComponent,
-  QueryTabCopilotComponent,
+    IQueryTabComponentProps,
+    QueryTabComponent,
+    QueryTabCopilotComponent,
 } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import { updateUserContext, userContext } from "UserContext";
@@ -32,7 +32,7 @@ describe("QueryTabComponent", () => {
       },
     });
     const propsMock: Readonly<IQueryTabComponentProps> = {
-      collection: { databaseId: "CopilotSampleDb" },
+      collection: { databaseId: "CopilotSampleDB" },
       onTabAccessor: () => jest.fn(),
       isExecutionError: false,
       tabId: "mockTabId",
