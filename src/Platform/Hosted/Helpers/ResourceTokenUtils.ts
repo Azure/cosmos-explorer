@@ -30,6 +30,10 @@ export function parseResourceTokenConnectionString(connectionString: string): Pa
     }
   });
 
+  if (resourceToken && resourceToken.endsWith(";")) {
+    resourceToken = resourceToken.substring(0, resourceToken.length - 1);
+  }
+
   return {
     accountEndpoint,
     collectionId,
