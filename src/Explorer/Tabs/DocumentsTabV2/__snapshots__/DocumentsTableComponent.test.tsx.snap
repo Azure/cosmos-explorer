@@ -57,7 +57,6 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
     noNativeElements={true}
     role="grid"
     size="small"
-    sortable={true}
     style={
       {
         "minWidth": "fit-content",
@@ -523,7 +522,6 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
     noNativeElements={true}
     role="grid"
     size="small"
-    sortable={true}
     style={
       {
         "minWidth": "fit-content",

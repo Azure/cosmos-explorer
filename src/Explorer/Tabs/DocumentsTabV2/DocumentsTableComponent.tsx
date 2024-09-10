@@ -471,7 +471,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   };
 
   return (
-    <Table noNativeElements sortable {...tableProps}>
+    <Table noNativeElements {...tableProps}>
       <TableHeader className={styles.tableHeader}>
         <TableRow className={styles.tableRow} style={{ width: size ? size.width - 15 : "100%" }}>
           {!isSelectionDisabled && (
