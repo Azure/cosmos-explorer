@@ -696,8 +696,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             } else if (result.statusCode === Constants.HttpStatusCodes.TooManyRequests) {
               newThrottled.push(result.documentId);
               retryAfterMilliseconds = Math.max(result.retryAfterMilliseconds, retryAfterMilliseconds);
+              logConsoleError(
+                `Failed to delete document ${result.documentId.id} due to "Request too large" (429) error. Retrying...`,
+              );
             } else if (result.statusCode >= 400) {
               newFailed.push(result.documentId);
+              logConsoleError(
+                `Failed to delete document ${result.documentId.id} with status code ${result.statusCode}`,
+              );
             }
           });
 
@@ -1928,7 +1934,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     if (bulkDeleteOperation.count === bulkDeleteProcess.successfulIds.length) {
       message += ", but were successfully retried.";
     } else if (bulkDeleteMode === "inProgress" || bulkDeleteMode === "aborting") {
-      message += "(429). Retrying now.";
+      message += ". Retrying now.";
     } else {
       message += ".";
     }
