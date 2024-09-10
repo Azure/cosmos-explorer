@@ -53,11 +53,11 @@ export interface ConfigContext {
   NEW_BACKEND_APIS?: BackendApi[];
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT?: string;
-  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   NEW_MONGO_APIS?: string[];
+  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   CASSANDRA_PROXY_ENDPOINT?: string;
-  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: boolean;
   NEW_CASSANDRA_APIS?: string[];
+  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: boolean;
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -87,7 +87,7 @@ let configContext: Readonly<ConfigContext> = {
     `^https:\\/\\/.*\\.analysis-df\\.net$`,
     `^https:\\/\\/.*\\.analysis-df\\.windows\\.net$`,
     `^https:\\/\\/.*\\.azure-test\\.net$`,
-    `^https:\\/\\/cosmos-explorer-preview\\.azurewebsites\\.net`,
+    `^https:\\/\\/cosmos-explorer-preview\\.azurewebsites\\.net$`,
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",

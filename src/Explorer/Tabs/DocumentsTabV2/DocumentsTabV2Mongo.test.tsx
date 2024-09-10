@@ -51,6 +51,7 @@ jest.mock("Common/MongoProxyClient", () => ({
   ),
   deleteDocuments: jest.fn(() => Promise.resolve({ deleteCount: 0, isAcknowledged: true })),
   ThrottlingError: Error,
+  useMongoProxyEndpoint: jest.fn(() => true),
 }));
 
 jest.mock("Explorer/Controls/Editor/EditorReact", () => ({

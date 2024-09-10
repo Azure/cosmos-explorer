@@ -533,7 +533,10 @@ export interface IDocumentsTabComponentProps {
 
 const getUniqueId = (collection: ViewModels.CollectionBase): string => `${collection.databaseId}-${collection.id()}`;
 
-const defaultSqlFilters = ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC'];
+const getDefaultSqlFilters = (partitionKeys: string[]) =>
+  ['WHERE c.id = "foo"', "ORDER BY c._ts DESC", 'WHERE c.id = "foo" ORDER BY c._ts DESC', "ORDER BY c._ts ASC"].concat(
+    partitionKeys.map((partitionKey) => `WHERE c.${partitionKey} = "foo"`),
+  );
 const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 
 // Export to expose to unit tests
@@ -1097,24 +1100,33 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           deletePromise = _bulkDeleteNoSqlDocuments(_collection, toDeleteDocumentIds);
         }
       } else {
-        deletePromise = MongoProxyClient.deleteDocuments(
+        // TODO: Once new mongo proxy is available for all users, remove the call for MongoProxyClient.deleteDocument().
+        // MongoProxyClient.deleteDocuments() should be called for all users.
+        const _deleteMongoDocuments = async (
+          databaseId: string,
+          collection: ViewModels.Collection,
+          documentIds: DocumentId[],
+        ) =>
+          isMongoBulkDeleteDisabled
+            ? MongoProxyClient.deleteDocument(databaseId, collection, documentIds[0]).then(() => [
+                toDeleteDocumentIds[0],
+              ])
+            : MongoProxyClient.deleteDocuments(databaseId, collection, documentIds).then(
+                ({ deletedCount, isAcknowledged }) => {
+                  if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+                    return toDeleteDocumentIds;
+                  }
+                  throw new Error(
+                    `Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`,
+                  );
+                },
+              );
+
+        deletePromise = _deleteMongoDocuments(
           _collection.databaseId,
           _collection as ViewModels.Collection,
           toDeleteDocumentIds,
-        )
-          .then(({ deletedCount, isAcknowledged }) => {
-            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-              useDialog
-                .getState()
-                .showOkModalDialog("Delete documents", `${deletedCount} document(s) successfully deleted.`);
-              return toDeleteDocumentIds;
-            }
-
-            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-          })
-          .catch((error) => {
-            throw error;
-          });
+        );
       }
 
       return deletePromise
@@ -1942,6 +1954,12 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return (message +=
       " To prevent this in the future, consider increasing the throughput on your container or database.");
   };
+  // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
+  // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
+  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint("bulkdelete");
+  const isBulkDeleteDisabled =
+    (partitionKey.systemKey && !isPreferredApiMongoDB) || (isPreferredApiMongoDB && isMongoBulkDeleteDisabled);
+  //  -------------------------------------------------------
 
   return (
     <CosmosFluentProvider className={styles.container}>
@@ -1992,7 +2010,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 <datalist id={`filtersList-${getUniqueId(_collection)}`}>
                   {addStringsNoDuplicate(
                     lastFilterContents,
-                    isPreferredApiMongoDB ? defaultMongoFilters : defaultSqlFilters,
+                    isPreferredApiMongoDB ? defaultMongoFilters : getDefaultSqlFilters(partitionKeyProperties),
                   ).map((filter) => (
                     <option key={filter} value={filter} />
                   ))}
@@ -2067,7 +2085,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     size={tableContainerSizePx}
                     columnHeaders={columnHeaders}
                     isSelectionDisabled={
-                      (partitionKey.systemKey && !isPreferredApiMongoDB) ||
+                      isBulkDeleteDisabled ||
                       (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
                     }
                     collection={_collection}
