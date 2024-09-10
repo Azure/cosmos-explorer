@@ -43,7 +43,7 @@ describe("QueryError.tryParse", () => {
     };
 
     const result = QueryError.tryParse(outerError, testErrorLocationResolver);
-    expect(result).toEqual([new QueryError("Your query is bad, and you should feel bad", QueryErrorSeverity.Error)]);
+    expect(result).toEqual([new QueryError("Your query is bad, and you should feel bad", QueryErrorSeverity.Error, "BadRequest")]);
   });
 
   // Imitate the value coming from the backend, which has the syntax errors serialized as JSON in the message.
