@@ -154,7 +154,7 @@ exports[`Settings Pane should render Default properly 1`] = `
           <div
             className="___15c001r_0000000 fq02s40"
           >
-            RU Threshold
+            RU Limit
           </div>
         </AccordionHeader>
         <AccordionPanel>
@@ -164,11 +164,11 @@ exports[`Settings Pane should render Default properly 1`] = `
             <div
               className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
             >
-              If a query exceeds a configured RU threshold, the query will be aborted.
+              If a query exceeds a configured RU limit, the query will be aborted.
             </div>
             <StyledToggleBase
               defaultChecked={true}
-              label="Enable RU threshold"
+              label="Enable RU limit"
               onChange={[Function]}
               styles={
                 {
@@ -193,7 +193,7 @@ exports[`Settings Pane should render Default properly 1`] = `
               decrementButtonAriaLabel="Decrease value by 1000"
               defaultValue="5000"
               incrementButtonAriaLabel="Increase value by 1000"
-              label="RU Threshold (RU)"
+              label="RU Limit (RU)"
               labelPosition={0}
               min={1}
               onChange={[Function]}

@@ -608,16 +608,16 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
               <AccordionItem value="4">
                 <AccordionHeader>
-                  <div className={styles.header}>RU Threshold</div>
+                  <div className={styles.header}>RU Limit</div>
                 </AccordionHeader>
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      If a query exceeds a configured RU threshold, the query will be aborted.
+                      If a query exceeds a configured RU limit, the query will be aborted.
                     </div>
                     <Toggle
                       styles={toggleStyles}
-                      label="Enable RU threshold"
+                      label="Enable RU limit"
                       onChange={handleOnRUThresholdToggleChange}
                       defaultChecked={ruThresholdEnabled}
                     />
@@ -625,7 +625,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   {ruThresholdEnabled && (
                     <div className={styles.settingsSectionContainer}>
                       <SpinButton
-                        label="RU Threshold (RU)"
+                        label="RU Limit (RU)"
                         labelPosition={Position.top}
                         defaultValue={(ruThreshold || DefaultRUThreshold).toString()}
                         min={1}
