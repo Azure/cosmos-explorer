@@ -86,6 +86,11 @@ export const useQueryTabStyles = makeStyles({
   errorListMessage: {
     flexGrow: 1,
     textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
     overflow: "hidden",
+  },
+  errorListMessageActions: {
+    display: "flex",
+    flexDirection: "row",
   },
 });
