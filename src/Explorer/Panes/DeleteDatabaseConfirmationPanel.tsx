@@ -124,7 +124,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     message:
       "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
   };
-  const confirmDatabase = `Confirm by typing the ${getDatabaseName()} id`;
+  const confirmDatabase = `Confirm by typing the ${getDatabaseName()} name`;
   const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${getDatabaseName()}?`;
   return (
     <RightPaneForm {...props}>
@@ -132,7 +132,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
           <span className="mandatoryStar">* </span>
-          <Text variant="small">Confirm by typing the {getDatabaseName()} id</Text>
+          <Text variant="small">{confirmDatabase}</Text>
           <TextField
             id="confirmDatabaseId"
             data-test="Input:confirmDatabaseId"
