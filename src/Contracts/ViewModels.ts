@@ -98,7 +98,6 @@ export interface Database extends TreeNode {
   openAddCollection(database: Database, event: MouseEvent): void;
   onSettingsClick: () => void;
   loadOffer(): Promise<void>;
-  getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
 }
 
 export interface CollectionBase extends TreeNode {
@@ -191,8 +190,6 @@ export interface Collection extends CollectionBase {
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
   uploadFiles(fileList: FileList): Promise<{ data: UploadDetailsRecord[] }>;
-
-  getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
 }
 
 /**
