@@ -11,7 +11,7 @@ describe("parseResourceTokenConnectionString", () => {
       collectionId: "fakeCollectionId",
       databaseId: "fakeDatabaseId",
       partitionKey: undefined,
-      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;",
+      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken",
     });
   });
 
@@ -25,7 +25,7 @@ describe("parseResourceTokenConnectionString", () => {
       collectionId: "fakeCollectionId",
       databaseId: "fakeDatabaseId",
       partitionKey: "fakePartitionKey",
-      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;",
+      resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken",
     });
   });
 });
