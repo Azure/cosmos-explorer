@@ -10,7 +10,7 @@ import {
   TableColumnDefinition,
   TableColumnSizingOptions,
   createTableColumn,
-  tokens
+  tokens,
 } from "@fluentui/react-components";
 import { ErrorCircleFilled, MoreHorizontalRegular, QuestionRegular, WarningFilled } from "@fluentui/react-icons";
 import QueryError, { QueryErrorSeverity, compareSeverity } from "Common/QueryError";
@@ -41,20 +41,25 @@ export const ErrorList: React.FC<{ errors: QueryError[] }> = ({ errors }) => {
       columnId: "severity",
       compare: (item1, item2) => compareSeverity(item1.severity, item2.severity),
       renderHeaderCell: () => "Severity",
-      renderCell: (item) => <TableCellLayout truncate media={severityIcons[item.severity]}>{item.severity}</TableCellLayout>,
+      renderCell: (item) => (
+        <TableCellLayout truncate media={severityIcons[item.severity]}>
+          {item.severity}
+        </TableCellLayout>
+      ),
     }),
     createTableColumn<QueryError>({
       columnId: "location",
       compare: (item1, item2) => item1.location?.start?.offset - item2.location?.start?.offset,
       renderHeaderCell: () => "Location",
-      renderCell: (item) =>
+      renderCell: (item) => (
         <TableCellLayout truncate>
           {item.location
             ? item.location.start.lineNumber
               ? `Line ${item.location.start.lineNumber}`
               : "<unknown>"
             : "<no location>"}
-        </TableCellLayout>,
+        </TableCellLayout>
+      ),
     }),
     createTableColumn<QueryError>({
       columnId: "message",
@@ -66,7 +71,7 @@ export const ErrorList: React.FC<{ errors: QueryError[] }> = ({ errors }) => {
             {item.message}
           </div>
           <div className={styles.errorListMessageActions}>
-            {item.helpLink &&
+            {item.helpLink && (
               <Button
                 as="a"
                 aria-label="Help"
@@ -75,7 +80,7 @@ export const ErrorList: React.FC<{ errors: QueryError[] }> = ({ errors }) => {
                 href={item.helpLink}
                 target="_blank"
               />
-            }
+            )}
             <Button
               aria-label="Details"
               appearance="subtle"

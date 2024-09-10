@@ -10,7 +10,7 @@ export class QueryErrorLocation {
   constructor(
     public start: ErrorPosition,
     public end: ErrorPosition,
-  ) { }
+  ) {}
 }
 
 export class ErrorPosition {
@@ -18,7 +18,7 @@ export class ErrorPosition {
     public offset: number,
     public lineNumber?: number,
     public column?: number,
-  ) { }
+  ) {}
 }
 
 // Maps severities to numbers for sorting.
@@ -104,18 +104,19 @@ export interface ErrorEnrichment {
 }
 
 const REPLACEMENT_MESSAGES: Record<string, (original: string) => string> = {
-  "OPERATION_RU_LIMIT_EXCEEDED": (original) => {
+  OPERATION_RU_LIMIT_EXCEEDED: (original) => {
     if (ruThresholdEnabled()) {
       const threshold = getRUThreshold();
       return `Query exceeded the Request Unit (RU) limit of ${threshold} RUs. You can change this limit in Data Explorer settings.`;
     }
     return original;
-  }
+  },
 };
 
 const HELP_LINKS: Record<string, string> = {
-  "OPERATION_RU_LIMIT_EXCEEDED": "https://learn.microsoft.com/en-us/azure/cosmos-db/data-explorer#configure-request-unit-threshold",
-}
+  OPERATION_RU_LIMIT_EXCEEDED:
+    "https://learn.microsoft.com/en-us/azure/cosmos-db/data-explorer#configure-request-unit-threshold",
+};
 
 export default class QueryError {
   message: string;
@@ -190,7 +191,9 @@ export default class QueryError {
     }
 
     const severity =
-      "severity" in error && typeof error.severity === "string" ? (error.severity as QueryErrorSeverity) : QueryErrorSeverity.Error;
+      "severity" in error && typeof error.severity === "string"
+        ? (error.severity as QueryErrorSeverity)
+        : QueryErrorSeverity.Error;
     const location =
       "location" in error && typeof error.location === "object"
         ? locationResolver(error.location as { start: number; end: number })
