@@ -1,20 +1,15 @@
+import { MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import { resetConfigContext, updateConfigContext } from "ConfigContext";
 import { DatabaseAccount, IpRule } from "Contracts/DataModels";
 import { updateUserContext } from "UserContext";
-import { PortalBackendIPs } from "Utils/EndpointUtils";
+import { MongoProxyOutboundIPs, PortalBackendIPs, PortalBackendOutboundIPs } from "Utils/EndpointUtils";
 import { getNetworkSettingsWarningMessage } from "./NetworkUtility";
 
 describe("NetworkUtility tests", () => {
   describe("getNetworkSettingsWarningMessage", () => {
+    const legacyBackendEndpoint: string = "https://main.documentdb.ext.azure.com";
     const publicAccessMessagePart = "Please enable public access to proceed";
     const accessMessagePart = "Please allow access from Azure Portal to proceed";
-    // validEnpoints are a subset of those from Utils/EndpointValidation/PortalBackendIPs
-    const validEndpoints = [
-      "https://main.documentdb.ext.azure.com",
-      "https://main.documentdb.ext.azure.cn",
-      "https://main.documentdb.ext.azure.us",
-    ];
-
     let warningMessageResult: string;
     const warningMessageFunc = (msg: string) => (warningMessageResult = msg);
 
@@ -52,52 +47,59 @@ describe("NetworkUtility tests", () => {
       expect(warningMessageResult).toContain(publicAccessMessagePart);
     });
 
-    it(`should return no message when the appropriate ip rules are added to mongo/cassandra account per endpoint`, () => {
-      validEndpoints.forEach(async (endpoint) => {
-        updateUserContext({
-          databaseAccount: {
-            kind: "MongoDB",
-            properties: {
-              ipRules: PortalBackendIPs[endpoint].map((ip: string) => ({ ipAddressOrRange: ip }) as IpRule),
-              publicNetworkAccess: "Enabled",
-            },
-          } as DatabaseAccount,
-        });
-
-        updateConfigContext({
-          BACKEND_ENDPOINT: endpoint,
-        });
-
-        let asyncWarningMessageResult: string;
-        const asyncWarningMessageFunc = (msg: string) => (asyncWarningMessageResult = msg);
-
-        await getNetworkSettingsWarningMessage(asyncWarningMessageFunc);
-        expect(asyncWarningMessageResult).toBeUndefined();
+    it(`should return no message when the appropriate ip rules are added to mongo/cassandra account per endpoint`, async () => {
+      const portalBackendOutboundIPsWithLegacyIPs: string[] = [
+        ...PortalBackendOutboundIPs[PortalBackendEndpoints.Mpac],
+        ...PortalBackendOutboundIPs[PortalBackendEndpoints.Prod],
+        ...MongoProxyOutboundIPs[MongoProxyEndpoints.Mpac],
+        ...MongoProxyOutboundIPs[MongoProxyEndpoints.Prod],
+        ...PortalBackendIPs["https://main.documentdb.ext.azure.com"],
+      ];
+      updateUserContext({
+        databaseAccount: {
+          kind: "MongoDB",
+          properties: {
+            ipRules: portalBackendOutboundIPsWithLegacyIPs.map((ip: string) => ({ ipAddressOrRange: ip }) as IpRule),
+            publicNetworkAccess: "Enabled",
+          },
+        } as DatabaseAccount,
       });
+
+      updateConfigContext({
+        BACKEND_ENDPOINT: legacyBackendEndpoint,
+        PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
+        MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
+      });
+
+      let asyncWarningMessageResult: string;
+      const asyncWarningMessageFunc = (msg: string) => (asyncWarningMessageResult = msg);
+
+      await getNetworkSettingsWarningMessage(asyncWarningMessageFunc);
+      expect(asyncWarningMessageResult).toBeUndefined();
     });
 
-    it("should return accessMessage when incorrent ip rule is added to mongo/cassandra account per endpoint", () => {
-      validEndpoints.forEach(async (endpoint) => {
-        updateUserContext({
-          databaseAccount: {
-            kind: "MongoDB",
-            properties: {
-              ipRules: [{ ipAddressOrRange: "1.1.1.1" }],
-              publicNetworkAccess: "Enabled",
-            },
-          } as DatabaseAccount,
-        });
-
-        updateConfigContext({
-          BACKEND_ENDPOINT: endpoint,
-        });
-
-        let asyncWarningMessageResult: string;
-        const asyncWarningMessageFunc = (msg: string) => (asyncWarningMessageResult = msg);
-
-        await getNetworkSettingsWarningMessage(asyncWarningMessageFunc);
-        expect(asyncWarningMessageResult).toContain(accessMessagePart);
+    it("should return accessMessage when incorrent ip rule is added to mongo/cassandra account per endpoint", async () => {
+      updateUserContext({
+        databaseAccount: {
+          kind: "MongoDB",
+          properties: {
+            ipRules: [{ ipAddressOrRange: "1.1.1.1" }],
+            publicNetworkAccess: "Enabled",
+          },
+        } as DatabaseAccount,
       });
+
+      updateConfigContext({
+        BACKEND_ENDPOINT: legacyBackendEndpoint,
+        PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
+        MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
+      });
+
+      let asyncWarningMessageResult: string;
+      const asyncWarningMessageFunc = (msg: string) => (asyncWarningMessageResult = msg);
+
+      await getNetworkSettingsWarningMessage(asyncWarningMessageFunc);
+      expect(asyncWarningMessageResult).toContain(accessMessagePart);
     });
 
     // Postgres and vcore mongo account checks basically pass through to CheckFirewallRules so those

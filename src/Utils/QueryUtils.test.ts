@@ -4,7 +4,7 @@ import * as sinon from "sinon";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
-import { extractPartitionKeyValues } from "./QueryUtils";
+import { defaultQueryFields, extractPartitionKeyValues } from "./QueryUtils";
 
 describe("Query Utils", () => {
   const generatePartitionKeyForPath = (path: string): DataModels.PartitionKey => {
@@ -53,6 +53,20 @@ describe("Query Utils", () => {
       const partitionProjection: string = QueryUtils.buildDocumentsQueryPartitionProjections("c", partitionKey);
 
       expect(partitionProjection).toContain('c["\\\\\\"a\\\\\\""]');
+    });
+
+    it("should always include the default fields", () => {
+      const query: string = QueryUtils.buildDocumentsQuery("", [], generatePartitionKeyForPath("/a"), []);
+
+      defaultQueryFields.forEach((field) => {
+        expect(query).toContain(`c.${field}`);
+      });
+    });
+
+    it("should always include the default fields even if they are themselves partition key fields", () => {
+      const query: string = QueryUtils.buildDocumentsQuery("", ["id"], generatePartitionKeyForPath("/id"), ["id"]);
+
+      expect(query).toContain("c.id");
     });
   });
 
@@ -146,6 +160,34 @@ describe("Query Utils", () => {
       expect(partitionKeyValues.length).toBe(2);
       expect(expectedPartitionKeyValues).toContain(documentContent["Type"]);
       expect(expectedPartitionKeyValues).toContain(documentContent["Status"]);
+    });
+
+    it("should extract three partition key values even if one is empty", () => {
+      const multiPartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Country", "/Region", "/Category"],
+      };
+      const expectedPartitionKeyValues: string[] = ["United States", "US-Washington", ""];
+      const partitioinKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        multiPartitionKeyDefinition,
+      );
+      expect(partitioinKeyValues.length).toBe(3);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Country"]);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Region"]);
+      expect(expectedPartitionKeyValues).toContain(documentContent["Category"]);
+    });
+
+    it("should extract no partition key values in the case nested partition key", () => {
+      const singlePartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.Hash,
+        paths: ["/Location.type"],
+      };
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        singlePartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(0);
     });
   });
 });

@@ -753,7 +753,10 @@ export class CassandraAPIDataClient extends TableDataClient {
       CassandraProxyEndpoints.Development,
       CassandraProxyEndpoints.Mpac,
       CassandraProxyEndpoints.Prod,
+      CassandraProxyEndpoints.Fairfax,
+      CassandraProxyEndpoints.Mooncake,
     ];
+
     let canAccessCassandraProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
     if (
       configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development &&
@@ -761,7 +764,6 @@ export class CassandraAPIDataClient extends TableDataClient {
     ) {
       canAccessCassandraProxy = canAccessCassandraProxy && configContext.CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED;
     }
-
     return (
       canAccessCassandraProxy &&
       configContext.NEW_CASSANDRA_APIS?.includes(api) &&

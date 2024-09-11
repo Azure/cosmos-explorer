@@ -52,7 +52,11 @@ export const defaultAllowedArmEndpoints: ReadonlyArray<string> = [
   "https://management.chinacloudapi.cn",
 ];
 
-export const allowedAadEndpoints: ReadonlyArray<string> = ["https://login.microsoftonline.com/"];
+export const allowedAadEndpoints: ReadonlyArray<string> = [
+  "https://login.microsoftonline.com/",
+  "https://login.microsoftonline.us/",
+  "https://login.partner.microsoftonline.cn/",
+];
 
 export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
   "https://main.documentdb.ext.azure.com",
@@ -72,6 +76,13 @@ export const PortalBackendIPs: { [key: string]: string[] } = {
   // Add ussec and usnat when endpoint address is known:
   //ussec: ["29.26.26.67", "29.26.26.66"],
   //usnat: ["7.28.202.68"],
+};
+
+export const PortalBackendOutboundIPs: { [key: string]: string[] } = {
+  [PortalBackendEndpoints.Mpac]: ["13.91.105.215", "4.210.172.107"],
+  [PortalBackendEndpoints.Prod]: ["13.88.56.148", "40.91.218.243"],
+  [PortalBackendEndpoints.Fairfax]: ["52.247.163.6", "52.244.134.181"],
+  [PortalBackendEndpoints.Mooncake]: ["163.228.137.6", "143.64.170.142"],
 };
 
 export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
@@ -164,7 +175,28 @@ export function useNewPortalBackendEndpoint(backendApi: string): boolean {
       PortalBackendEndpoints.Mpac,
       PortalBackendEndpoints.Prod,
     ],
-    [BackendApi.AccountRestrictions]: [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac],
+    [BackendApi.AccountRestrictions]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+    [BackendApi.RuntimeProxy]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+    [BackendApi.DisallowedLocations]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+      PortalBackendEndpoints.Fairfax,
+      PortalBackendEndpoints.Mooncake,
+    ],
+    [BackendApi.SampleData]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
   };
 
   if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {

@@ -29,6 +29,7 @@ export enum StorageKey {
   GalleryCalloutDismissed,
   VisitedAccounts,
   PriorityLevel,
+  DocumentsTabPrefs,
   DefaultQueryResultsView,
   AppState,
 }
@@ -57,10 +58,10 @@ export const getRUThreshold = (): number => {
 
 export const getDefaultQueryResultsView = (): SplitterDirection => {
   const defaultQueryResultsViewRaw = LocalStorageUtility.getEntryString(StorageKey.DefaultQueryResultsView);
-  if (defaultQueryResultsViewRaw === SplitterDirection.Horizontal) {
-    return SplitterDirection.Horizontal;
+  if (defaultQueryResultsViewRaw === SplitterDirection.Vertical) {
+    return SplitterDirection.Vertical;
   }
-  return SplitterDirection.Vertical;
+  return SplitterDirection.Horizontal;
 };
 
 export const DefaultRUThreshold = 5000;

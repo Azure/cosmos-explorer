@@ -134,6 +134,9 @@ export class BackendApi {
   public static readonly GenerateToken: string = "GenerateToken";
   public static readonly PortalSettings: string = "PortalSettings";
   public static readonly AccountRestrictions: string = "AccountRestrictions";
+  public static readonly RuntimeProxy: string = "RuntimeProxy";
+  public static readonly DisallowedLocations: string = "DisallowedLocations";
+  public static readonly SampleData: string = "SampleData";
 }
 
 export class PortalBackendEndpoints {
@@ -181,6 +184,12 @@ export class CassandraProxyAPIs {
   public static readonly connectionStringKeysApi: string = "api/connectionstring/cassandra/keys";
   public static readonly schemaApi: string = "api/cassandra/schema";
   public static readonly connectionStringSchemaApi: string = "api/connectionstring/cassandra/schema";
+}
+
+export class AadEndpoints {
+  public static readonly Prod: string = "https://login.microsoftonline.com/";
+  public static readonly Fairfax: string = "https://login.microsoftonline.us/";
+  public static readonly Mooncake: string = "https://login.partner.microsoftonline.cn/";
 }
 
 export class Queries {
@@ -495,7 +504,7 @@ export class PriorityLevel {
   public static readonly Default = "low";
 }
 
-export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
+export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
 export const QueryCopilotSampleContainerSchema = {

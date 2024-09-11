@@ -1,5 +1,6 @@
 // Definitions of State data
 
+import { ColumnDefinition } from "Explorer/Tabs/DocumentsTabV2/DocumentsTableComponent";
 import {
   AppStateComponentNames,
   deleteState,
@@ -18,11 +19,16 @@ export enum SubComponentName {
   ColumnSizes = "ColumnSizes",
   FilterHistory = "FilterHistory",
   MainTabDivider = "MainTabDivider",
+  ColumnsSelection = "ColumnsSelection",
+  ColumnSort = "ColumnSort",
 }
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
+export type FilterHistory = string[];
 export type WidthDefinition = { widthPx: number };
 export type TabDivider = { leftPaneWidthPercent: number };
+export type ColumnsSelection = { selectedColumnIds: string[]; columnDefinitions: ColumnDefinition[] };
+export type ColumnSort = { columnId: string; direction: "ascending" | "descending" };
 
 /**
  *
