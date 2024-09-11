@@ -32,7 +32,7 @@ describe("QueryTabComponent", () => {
       },
     });
     const propsMock: Readonly<IQueryTabComponentProps> = {
-      collection: { databaseId: "CopilotSampleDb" },
+      collection: { databaseId: "CopilotSampleDB" },
       onTabAccessor: () => jest.fn(),
       isExecutionError: false,
       tabId: "mockTabId",

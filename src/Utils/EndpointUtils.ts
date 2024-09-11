@@ -192,6 +192,11 @@ export function useNewPortalBackendEndpoint(backendApi: string): boolean {
       PortalBackendEndpoints.Fairfax,
       PortalBackendEndpoints.Mooncake,
     ],
+    [BackendApi.SampleData]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
   };
 
   if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {

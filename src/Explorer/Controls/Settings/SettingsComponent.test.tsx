@@ -134,7 +134,6 @@ describe("SettingsComponent", () => {
       readSettings: undefined,
       onSettingsClick: undefined,
       loadOffer: undefined,
-      getPendingThroughputSplitNotification: undefined,
     } as ViewModels.Database;
     newCollection.getDatabase = () => newDatabase;
     newCollection.offer = ko.observable(undefined);

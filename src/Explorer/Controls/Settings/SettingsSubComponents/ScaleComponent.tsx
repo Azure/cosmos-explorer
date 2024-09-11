@@ -10,7 +10,6 @@ import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
 import { isRunningOnNationalCloud } from "../../../../Utils/CloudUtils";
 import {
   getTextFieldStyles,
-  getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
   subComponentStackProps,
   throughputUnit,
@@ -34,7 +33,6 @@ export interface ScaleComponentProps {
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
-  initialNotification: DataModels.Notification;
   throughputError?: string;
 }
 
@@ -102,10 +100,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getInitialNotificationElement = (): JSX.Element => {
-    if (this.props.initialNotification) {
-      return this.getLongDelayMessage();
-    }
-
     if (this.offer?.offerReplacePending) {
       const throughput = this.offer.manualThroughput || this.offer.autoscaleMaxThroughput;
       return getThroughputApplyShortDelayMessage(
@@ -118,26 +112,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     }
 
     return undefined;
-  };
-
-  public getLongDelayMessage = (): JSX.Element => {
-    const matches: string[] = this.props.initialNotification?.description.match(
-      `Throughput update for (.*) ${throughputUnit}`,
-    );
-
-    const throughput = this.props.throughputBaseline;
-    const targetThroughput: number = matches.length > 1 && Number(matches[1]);
-    if (targetThroughput) {
-      return getThroughputApplyLongDelayMessage(
-        this.props.wasAutopilotOriginallySet,
-        throughput,
-        throughputUnit,
-        this.databaseId,
-        this.collectionId,
-        targetThroughput,
-      );
-    }
-    return <></>;
   };
 
   private getThroughputInputComponent = (): JSX.Element => (
