@@ -10,11 +10,10 @@ import {
   makeStyles,
   shorthands,
 } from "@fluentui/react-components";
-import { ArrowClockwise16Filled, Dismiss16Filled } from "@fluentui/react-icons";
+import { Dismiss16Filled } from "@fluentui/react-icons";
 import { KeyCodes, QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import MongoUtility from "Common/MongoUtility";
-import { StyleConstants } from "Common/StyleConstants";
 import { createDocument } from "Common/dataAccess/createDocument";
 import {
   deleteDocument as deleteNoSqlDocument,
@@ -32,11 +31,14 @@ import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { querySampleDocuments, readSampleDocument } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
+  ColumnsSelection,
+  FilterHistory,
   SubComponentName,
   TabDivider,
   readSubComponentState,
   saveSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
+import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
@@ -62,11 +64,11 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { CollectionBase } from "../../../Contracts/ViewModels";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as QueryUtils from "../../../Utils/QueryUtils";
-import { extractPartitionKeyValues } from "../../../Utils/QueryUtils";
+import { defaultQueryFields, extractPartitionKeyValues } from "../../../Utils/QueryUtils";
 import DocumentId from "../../Tree/DocumentId";
 import ObjectId from "../../Tree/ObjectId";
 import TabsBase from "../TabsBase";
-import { DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
+import { ColumnDefinition, DocumentsTableComponent, DocumentsTableComponentItem } from "./DocumentsTableComponent";
 
 const MAX_FILTER_HISTORY_COUNT = 100; // Datalist will become scrollable, so we can afford to keep more items than fit on the screen
 const NO_SQL_THROTTLING_DOC_URL =
@@ -102,6 +104,13 @@ export const useDocumentsTabStyles = makeStyles({
   },
   tableCell: {
     ...cosmosShorthands.borderLeft(),
+  },
+  tableHeader: {
+    display: "flex",
+  },
+  tableHeaderFiller: {
+    width: "20px",
+    boxShadow: `0px -1px ${tokens.colorNeutralStroke2} inset`,
   },
   loadMore: {
     ...cosmosShorthands.borderTop(),
@@ -298,7 +307,7 @@ const createUploadButton = (container: Explorer): CommandButtonComponentProps =>
     iconAlt: label,
     onCommandClick: () => {
       const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-      selectedCollection && container.openUploadItemsPanePane();
+      selectedCollection && container.openUploadItemsPane();
     },
     commandButtonLabel: label,
     ariaLabel: label,
@@ -486,17 +495,33 @@ export const showPartitionKey = (collection: ViewModels.CollectionBase, isPrefer
 };
 
 // Export to expose to unit tests
+/**
+ * Build default query
+ * @param isMongo true if mongo api
+ * @param filter
+ * @param partitionKeyProperties optional for mongo
+ * @param partitionKey  optional for mongo
+ * @param additionalField
+ * @returns
+ */
 export const buildQuery = (
   isMongo: boolean,
   filter: string,
   partitionKeyProperties?: string[],
   partitionKey?: DataModels.PartitionKey,
+  additionalField?: string[],
 ): string => {
   if (isMongo) {
     return filter || "{}";
   }
 
-  return QueryUtils.buildDocumentsQuery(filter, partitionKeyProperties, partitionKey);
+  // Filter out fields starting with "/" (partition keys)
+  return QueryUtils.buildDocumentsQuery(
+    filter,
+    partitionKeyProperties,
+    partitionKey,
+    additionalField?.filter((f) => !f.startsWith("/")) || [],
+  );
 };
 
 /**
@@ -539,6 +564,12 @@ const getDefaultSqlFilters = (partitionKeys: string[]) =>
   );
 const defaultMongoFilters = ['{"id":"foo"}', "{ qty: { $gte: 20 } }"];
 
+// Extend DocumentId to include fields displayed in the table
+type ExtendedDocumentId = DocumentId & { tableFields?: DocumentsTableComponentItem };
+
+// This is based on some heuristics
+const calculateOffset = (columnNumber: number): number => columnNumber * 16 - 27;
+
 // Export to expose to unit tests
 export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabComponentProps> = ({
   isPreferredApiMongoDB,
@@ -557,7 +588,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [isFilterFocused, setIsFilterFocused] = useState<boolean>(false);
   const [appliedFilter, setAppliedFilter] = useState<string>("");
   const [filterContent, setFilterContent] = useState<string>("");
-  const [documentIds, setDocumentIds] = useState<DocumentId[]>([]);
+  const [documentIds, setDocumentIds] = useState<ExtendedDocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const filterInput = useRef<HTMLInputElement>(null);
   const styles = useDocumentsTabStyles();
@@ -588,7 +619,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // State
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
-    readSubComponentState(SubComponentName.MainTabDivider, _collection, {
+    readSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
     }),
   );
@@ -602,8 +633,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   const [continuationToken, setContinuationToken] = useState<string>(undefined);
 
   // User's filter history
-  const [lastFilterContents, setLastFilterContents] = useState<string[]>(() =>
-    readSubComponentState(SubComponentName.FilterHistory, _collection, []),
+  const [lastFilterContents, setLastFilterContents] = useState<FilterHistory>(() =>
+    readSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
   );
 
   // For progress bar for bulk delete (noSql)
@@ -760,10 +791,37 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     [partitionKeyPropertyHeaders],
   );
 
+  const getInitialColumnSelection = () => {
+    const defaultColumnsIds = ["id"];
+    if (showPartitionKey(_collection, isPreferredApiMongoDB)) {
+      defaultColumnsIds.push(...partitionKeyPropertyHeaders);
+    }
+
+    return defaultColumnsIds;
+  };
+
+  const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(() => {
+    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+      SubComponentName.ColumnsSelection,
+      _collection,
+      undefined,
+    );
+
+    if (!persistedColumnsSelection) {
+      return getInitialColumnSelection();
+    }
+
+    return persistedColumnsSelection.selectedColumnIds;
+  });
+
   // new DocumentId() requires a DocumentTab which we mock with only the required properties
   const newDocumentId = useCallback(
-    (rawDocument: DataModels.DocumentId, partitionKeyProperties: string[], partitionKeyValue: string[]) =>
-      new DocumentId(
+    (
+      rawDocument: DataModels.DocumentId,
+      partitionKeyProperties: string[],
+      partitionKeyValue: string[],
+    ): ExtendedDocumentId => {
+      const extendedDocumentId = new DocumentId(
         {
           partitionKey,
           partitionKeyProperties,
@@ -773,7 +831,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         },
         rawDocument,
         partitionKeyValue,
-      ),
+      ) as ExtendedDocumentId;
+      extendedDocumentId.tableFields = { ...rawDocument };
+      return extendedDocumentId;
+    },
     [partitionKey],
   );
 
@@ -935,6 +996,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
           setDocumentIds(ids);
           setEditorState(ViewModels.DocumentExplorerState.existingDocumentNoEdits);
+
+          // Update column choices
+          setColumnDefinitionsFromDocument(savedDocument);
+
           TelemetryProcessor.traceSuccess(
             Action.CreateDocument,
             {
@@ -1017,6 +1082,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             },
             startKey,
           );
+
+          // Update column choices
+          selectedDocumentId.tableFields = { ...documentContent };
+          setColumnDefinitionsFromDocument(documentContent);
         },
         (error) => {
           onExecutionErrorChange(true);
@@ -1273,7 +1342,13 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const _queryAbortController = new AbortController();
     setQueryAbortController(_queryAbortController);
     const filter: string = filterContent.trim();
-    const query: string = buildQuery(isPreferredApiMongoDB, filter, partitionKeyProperties, partitionKey);
+    const query: string = buildQuery(
+      isPreferredApiMongoDB,
+      filter,
+      partitionKeyProperties,
+      partitionKey,
+      selectedColumnIds,
+    );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const options: any = {};
     // TODO: Property 'enableCrossPartitionQuery' does not exist on type 'FeedOptions'.
@@ -1296,6 +1371,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     resourceTokenPartitionKey,
     isQueryCopilotSampleContainer,
     _collection,
+    selectedColumnIds,
   ]);
 
   const onHideFilterClick = (): void => {
@@ -1441,16 +1517,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     documentsIterator, // loadNextPage: disabled as it will trigger a circular dependency and infinite loop
   ]);
 
-  const onRefreshKeyInput: KeyboardEventHandler<HTMLButtonElement> = (event) => {
-    if (event.key === " " || event.key === "Enter") {
-      const focusElement = event.target as HTMLElement;
-      refreshDocumentsGrid(false);
-      focusElement && focusElement.focus();
-      event.stopPropagation();
-      event.preventDefault();
-    }
-  };
-
   const onLoadMoreKeyInput: KeyboardEventHandler<HTMLAnchorElement> = (event) => {
     if (event.key === " " || event.key === "Enter") {
       const focusElement = event.target as HTMLElement;
@@ -1482,9 +1548,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // Table config here
   const tableItems: DocumentsTableComponentItem[] = documentIds.map((documentId) => {
-    const item: Record<string, string> & { id: string } = {
-      id: documentId.id(),
-    };
+    const item: DocumentsTableComponentItem = documentId.tableFields || { id: documentId.id() };
 
     if (partitionKeyPropertyHeaders && documentId.stringPartitionKeyValues) {
       for (let i = 0; i < partitionKeyPropertyHeaders.length; i++) {
@@ -1494,6 +1558,44 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     return item;
   });
+
+  const extractColumnDefinitionsFromDocument = (document: unknown): ColumnDefinition[] => {
+    let columnDefinitions: ColumnDefinition[] = Object.keys(document)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .filter((key) => typeof (document as any)[key] === "string" || typeof (document as any)[key] === "number") // Only allow safe types for displayable React children
+      .map((key) =>
+        key === "id"
+          ? { id: key, label: isPreferredApiMongoDB ? "_id" : "id", isPartitionKey: false }
+          : { id: key, label: key, isPartitionKey: false },
+      );
+
+    if (showPartitionKey(_collection, isPreferredApiMongoDB)) {
+      columnDefinitions.push(
+        ...partitionKeyPropertyHeaders.map((key) => ({ id: key, label: key, isPartitionKey: true })),
+      );
+
+      // Remove properties that are the partition keys, since they are already included
+      columnDefinitions = columnDefinitions.filter(
+        (columnDefinition) => !partitionKeyProperties.includes(columnDefinition.id),
+      );
+    }
+
+    return columnDefinitions;
+  };
+
+  /**
+   * Extract column definitions from document and add to the definitions
+   * @param document
+   */
+  const setColumnDefinitionsFromDocument = (document: unknown): void => {
+    const currentIds = new Set(columnDefinitions.map((columnDefinition) => columnDefinition.id));
+    extractColumnDefinitionsFromDocument(document).forEach((columnDefinition) => {
+      if (!currentIds.has(columnDefinition.id)) {
+        columnDefinitions.push(columnDefinition);
+      }
+    });
+    setColumnDefinitions([...columnDefinitions]);
+  };
 
   /**
    * replicate logic of selectedDocument.click();
@@ -1510,6 +1612,9 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     (_isQueryCopilotSampleContainer ? readSampleDocument(documentId) : readDocument(_collection, documentId)).then(
       (content) => {
         initDocumentEditor(documentId, content);
+
+        // Update columns
+        setColumnDefinitionsFromDocument(content);
       },
     );
 
@@ -1600,10 +1705,22 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return () => resizeObserver.disconnect(); // clean up
   }, []);
 
-  const columnHeaders = {
-    idHeader: isPreferredApiMongoDB ? "_id" : "id",
-    partitionKeyHeaders: (showPartitionKey(_collection, isPreferredApiMongoDB) && partitionKeyPropertyHeaders) || [],
-  };
+  // Column definition is a map<id, ColumnDefinition> to garantee uniqueness
+  const [columnDefinitions, setColumnDefinitions] = useState<ColumnDefinition[]>(() => {
+    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+      SubComponentName.ColumnsSelection,
+      _collection,
+      undefined,
+    );
+
+    if (!persistedColumnsSelection) {
+      return extractColumnDefinitionsFromDocument({
+        id: "id",
+      });
+    }
+
+    return persistedColumnsSelection.columnDefinitions;
+  });
 
   const onSelectedRowsChange = (selectedRows: Set<TableRowId>) => {
     confirmDiscardingChange(() => {
@@ -1835,7 +1952,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       setIsExecuting(true);
       onExecutionErrorChange(false);
       const filter: string = filterContent.trim();
-      const query: string = buildQuery(isPreferredApiMongoDB, filter);
+      const query: string = buildQuery(isPreferredApiMongoDB, filter, selectedColumnIds);
 
       return MongoProxyClient.queryDocuments(
         _collection.databaseId,
@@ -1901,7 +2018,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
 
     setLastFilterContents(limitedLastFilterContents);
-    saveSubComponentState(SubComponentName.FilterHistory, _collection, lastFilterContents);
+    saveSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
   };
 
   const refreshDocumentsGrid = useCallback(
@@ -1953,6 +2070,42 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return (message +=
       " To prevent this in the future, consider increasing the throughput on your container or database.");
   };
+
+  const onColumnSelectionChange = (newSelectedColumnIds: string[]): void => {
+    // Do not allow to unselecting all columns
+    if (newSelectedColumnIds.length === 0) {
+      return;
+    }
+
+    setSelectedColumnIds(newSelectedColumnIds);
+
+    saveSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
+      selectedColumnIds: newSelectedColumnIds,
+      columnDefinitions,
+    });
+  };
+
+  const prevSelectedColumnIds = usePrevious({ selectedColumnIds, setSelectedColumnIds });
+
+  useEffect(() => {
+    // If we are adding a field, let's refresh to include the field in the query
+    let addedField = false;
+    for (const field of selectedColumnIds) {
+      if (
+        !defaultQueryFields.includes(field) &&
+        prevSelectedColumnIds &&
+        !prevSelectedColumnIds.selectedColumnIds.includes(field)
+      ) {
+        addedField = true;
+        break;
+      }
+    }
+
+    if (addedField) {
+      refreshDocumentsGrid(false);
+    }
+  }, [prevSelectedColumnIds, refreshDocumentsGrid, selectedColumnIds]);
+
   // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
   // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
   const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint("bulkdelete");
@@ -2054,41 +2207,40 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           <Allotment
             onDragEnd={(sizes: number[]) => {
               tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveSubComponentState(SubComponentName.MainTabDivider, _collection, tabStateData);
+              saveSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
               setTabStateData(tabStateData);
             }}
           >
             <Allotment.Pane preferredSize={`${tabStateData.leftPaneWidthPercent}%`} minSize={55}>
               <div style={{ height: "100%", width: "100%", overflow: "hidden" }} ref={tableContainerRef}>
-                <div className={styles.floatingControlsContainer}>
-                  <div className={styles.floatingControls}>
-                    <Button
-                      appearance="transparent"
-                      aria-label="Refresh"
-                      size="small"
-                      icon={<ArrowClockwise16Filled />}
-                      style={{
-                        color: StyleConstants.AccentMedium,
-                      }}
-                      onClick={() => refreshDocumentsGrid(false)}
-                      onKeyDown={onRefreshKeyInput}
+                <div className={styles.tableContainer}>
+                  <div
+                    style={
+                      {
+                        height: "100%",
+                        width: `calc(100% + ${calculateOffset(selectedColumnIds.length)}px)`,
+                      } /* Fix to make table not resize beyond parent's width */
+                    }
+                  >
+                    <DocumentsTableComponent
+                      onRefreshTable={() => refreshDocumentsGrid(false)}
+                      items={tableItems}
+                      onItemClicked={(index) => onDocumentClicked(index, documentIds)}
+                      onSelectedRowsChange={onSelectedRowsChange}
+                      selectedRows={selectedRows}
+                      size={tableContainerSizePx}
+                      selectedColumnIds={selectedColumnIds}
+                      columnDefinitions={columnDefinitions}
+                      isRowSelectionDisabled={
+                        isBulkDeleteDisabled ||
+                        (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
+                      }
+                      onColumnSelectionChange={onColumnSelectionChange}
+                      defaultColumnSelection={getInitialColumnSelection()}
+                      collection={_collection}
+                      isColumnSelectionDisabled={isPreferredApiMongoDB}
                     />
                   </div>
-                </div>
-                <div className={styles.tableContainer}>
-                  <DocumentsTableComponent
-                    items={tableItems}
-                    onItemClicked={(index) => onDocumentClicked(index, documentIds)}
-                    onSelectedRowsChange={onSelectedRowsChange}
-                    selectedRows={selectedRows}
-                    size={tableContainerSizePx}
-                    columnHeaders={columnHeaders}
-                    isSelectionDisabled={
-                      isBulkDeleteDisabled ||
-                      (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly)
-                    }
-                    collection={_collection}
-                  />
                 </div>
                 {tableItems.length > 0 && (
                   <a

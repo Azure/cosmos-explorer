@@ -136,6 +136,7 @@ export class BackendApi {
   public static readonly AccountRestrictions: string = "AccountRestrictions";
   public static readonly RuntimeProxy: string = "RuntimeProxy";
   public static readonly DisallowedLocations: string = "DisallowedLocations";
+  public static readonly SampleData: string = "SampleData";
 }
 
 export class PortalBackendEndpoints {
@@ -504,7 +505,7 @@ export class PriorityLevel {
   public static readonly Default = "low";
 }
 
-export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
+export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
 export const QueryCopilotSampleContainerSchema = {
