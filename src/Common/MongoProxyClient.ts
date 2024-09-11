@@ -738,6 +738,12 @@ export function useMongoProxyEndpoint(api: string): boolean {
   );
 }
 
+export class ThrottlingError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
 // TODO: This function throws most of the time except on Forbidden which is a bit strange
 // It causes problems for TypeScript understanding the types
 async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
@@ -747,6 +753,14 @@ async function errorHandling(response: Response, action: string, params: unknown
   if (response.status === HttpStatusCodes.Forbidden) {
     sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
     return;
+  } else if (
+    response.status === HttpStatusCodes.BadRequest &&
+    errorMessage.includes("Error=16500") &&
+    errorMessage.includes("RetryAfterMs=")
+  ) {
+    // If throttling is happening, Cosmos DB will return a 400 with a body of:
+    // A write operation resulted in an error. Error=16500, RetryAfterMs=4, Details='Batch write error.
+    throw new ThrottlingError(errorMessage);
   }
   throw new Error(errorMessage);
 }

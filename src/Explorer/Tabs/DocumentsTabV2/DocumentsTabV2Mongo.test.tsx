@@ -49,7 +49,8 @@ jest.mock("Common/MongoProxyClient", () => ({
       id: "id1",
     }),
   ),
-  deleteDocuments: jest.fn(() => Promise.resolve()),
+  deleteDocuments: jest.fn(() => Promise.resolve({ deleteCount: 0, isAcknowledged: true })),
+  ThrottlingError: Error,
   useMongoProxyEndpoint: jest.fn(() => true),
 }));
 
@@ -179,7 +180,7 @@ describe("Documents tab (Mongo API)", () => {
       expect(useCommandBar.getState().contextButtons.find((button) => button.id === DISCARD_BUTTON_ID)).toBeDefined();
     });
 
-    it("clicking Delete Document asks for confirmation", () => {
+    it("clicking Delete Document eventually calls delete client api", () => {
       const mockDeleteDocuments = deleteDocuments as jest.Mock;
       mockDeleteDocuments.mockClear();
 
