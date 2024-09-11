@@ -43,7 +43,6 @@ export const deleteDocuments = async (
   collection: CollectionBase,
   documentIds: DocumentId[],
 ): Promise<IBulkDeleteResult[]> => {
-  const nbDocuments = documentIds.length;
   const clearMessage = logConsoleProgress(`Deleting ${documentIds.length} ${getEntityName(true)}`);
   try {
     const v2Container = await client().database(collection.databaseId).container(collection.id());
@@ -77,10 +76,6 @@ export const deleteDocuments = async (
 
     const allResult = await Promise.all(promiseArray);
     const flatAllResult = Array.prototype.concat.apply([], allResult);
-    logConsoleInfo(
-      `Successfully deleted ${getEntityName(flatAllResult.length > 1)}: ${flatAllResult.length} out of ${nbDocuments}`,
-    );
-
     return flatAllResult;
   } catch (error) {
     handleError(

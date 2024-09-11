@@ -44,7 +44,7 @@ import { QueryConstants } from "Shared/Constants";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
-import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { Allotment } from "allotment";
 import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "react-string-format";
@@ -699,9 +699,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             } else if (result.statusCode === Constants.HttpStatusCodes.TooManyRequests) {
               newThrottled.push(result.documentId);
               retryAfterMilliseconds = Math.max(result.retryAfterMilliseconds, retryAfterMilliseconds);
-              logConsoleError(
-                `Failed to delete document ${result.documentId.id} due to "Request too large" (429) error. Retrying...`,
-              );
             } else if (result.statusCode >= 400) {
               newFailed.push(result.documentId);
               logConsoleError(
@@ -709,6 +706,14 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
               );
             }
           });
+
+          logConsoleInfo(`Successfully deleted ${newSuccessful.length} document(s)`);
+
+          if (newThrottled.length > 0) {
+            logConsoleError(
+              `Failed to delete ${newThrottled.length} document(s) due to "Request too large" (429) error. Retrying...`,
+            );
+          }
 
           // Update result of the bulk delete: method is called again, because the state variables changed
           // it will decide at the next call what to do
