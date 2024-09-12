@@ -1,4 +1,5 @@
 import {
+  AppStateComponentNames,
   createKeyFromPath,
   deleteState,
   loadState,
@@ -20,7 +21,7 @@ jest.mock("Shared/StorageUtility", () => ({
 
 describe("AppStatePersistenceUtility", () => {
   const storePath = {
-    componentName: "a",
+    componentName: AppStateComponentNames.DocumentsTab,
     subComponentName: "b",
     globalAccountName: "c",
     databaseName: "d",
@@ -176,10 +177,10 @@ describe("AppStatePersistenceUtility", () => {
 
     it("should handle components that include special characters", () => {
       const storePath = {
-        componentName: "a/b/c",
+        componentName: AppStateComponentNames.DocumentsTab,
         subComponentName: 'd"e"f',
-        globalAccountName: "g:h",
-        databaseName: "i{j",
+        globalAccountName: "g:hi{j",
+        databaseName: "a/b/c",
         containerName: "https://blahblah.document.azure.com:443/",
       };
       const key = createKeyFromPath(storePath);
@@ -190,10 +191,9 @@ describe("AppStatePersistenceUtility", () => {
       const expectSubstringsInValue = (value: string, subStrings: string[]): boolean =>
         subStrings.every((subString) => value.includes(subString));
 
-      expect(expectSubstringsInValue(segments[1], ["a", "b", "c"])).toBe(true);
       expect(expectSubstringsInValue(segments[2], ["d", "e", "f"])).toBe(true);
-      expect(expectSubstringsInValue(segments[3], ["g", "h"])).toBe(true);
-      expect(expectSubstringsInValue(segments[4], ["i", "j"])).toBe(true);
+      expect(expectSubstringsInValue(segments[3], ["g", "hi", "j"])).toBe(true);
+      expect(expectSubstringsInValue(segments[4], ["a", "b", "c"])).toBe(true);
       expect(expectSubstringsInValue(segments[5], ["https", "blahblah", "document", "com", "443"])).toBe(true);
     });
   });
