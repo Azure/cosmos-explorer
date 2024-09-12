@@ -1,13 +1,19 @@
 // Definitions of State data
 
 import { ColumnDefinition } from "Explorer/Tabs/DocumentsTabV2/DocumentsTableComponent";
-import { deleteState, loadState, saveState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
+import {
+  AppStateComponentNames,
+  deleteState,
+  loadState,
+  saveState,
+  saveStateDebounced,
+} from "Shared/AppStatePersistenceUtility";
 import { userContext } from "UserContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-const componentName = "DocumentsTab";
+const componentName = AppStateComponentNames.DocumentsTab;
 export enum SubComponentName {
   ColumnSizes = "ColumnSizes",
   FilterHistory = "FilterHistory",
