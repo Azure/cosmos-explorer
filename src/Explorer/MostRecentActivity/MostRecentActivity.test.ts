@@ -1,4 +1,4 @@
-import { clear, collectionWasOpened, getItems } from "Explorer/MostRecentActivity/MostRecentActivity";
+import { clear, collectionWasOpened, getItems, Type } from "Explorer/MostRecentActivity/MostRecentActivity";
 import { observable } from "knockout";
 
 describe("MostRecentActivity", () => {
@@ -23,6 +23,27 @@ describe("MostRecentActivity", () => {
     const activity = getItems(accountName);
     expect(activity).toEqual([
       expect.objectContaining({
+        collectionId,
+        databaseId,
+      }),
+    ]);
+  });
+
+  it("Does not store duplicate entries", () => {
+    const collectionId = "some collection";
+    const databaseId = "some database";
+    const collection = {
+      id: observable(collectionId),
+      databaseId,
+    };
+
+    collectionWasOpened(accountName, collection);
+    collectionWasOpened(accountName, collection);
+
+    const activity = getItems(accountName);
+    expect(activity).toEqual([
+      expect.objectContaining({
+        type: Type.OpenCollection,
         collectionId,
         databaseId,
       }),

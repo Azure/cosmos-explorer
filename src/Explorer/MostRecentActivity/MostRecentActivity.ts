@@ -3,8 +3,8 @@ import { CollectionBase } from "../../Contracts/ViewModels";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 
 export enum Type {
-  OpenCollection,
-  OpenNotebook,
+  OpenCollection = "OpenCollection",
+  OpenNotebook = "OpenNotebook",
 }
 
 export interface OpenNotebookItem {
@@ -60,17 +60,17 @@ const addItem = (accountName: string, newItem: Item): void => {
   //   return;
   // }
 
-  const items =
+  let items =
     (loadState({
       componentName: AppStateComponentNames.MostRecentActivity,
       globalAccountName: accountName,
     }) as Item[]) || [];
 
   // Remove duplicate
-  removeDuplicate(newItem, items);
+  items = removeDuplicate(newItem, items);
 
   items.unshift(newItem);
-  cleanupItems(items, accountName);
+  items = cleanupItems(items, accountName);
   saveState(
     {
       componentName: AppStateComponentNames.MostRecentActivity,
@@ -120,29 +120,48 @@ export const clear = (accountName: string): void => {
   });
 };
 
+// Sort object by key
+const sortObjectKeys = (unordered: Record<string, unknown>): Record<string, unknown> => {
+  return Object.keys(unordered)
+    .sort()
+    .reduce((obj: Record<string, unknown>, key: string) => {
+      obj[key] = unordered[key];
+      return obj;
+    }, {});
+};
+
 /**
  * Find items by doing strict comparison and remove from array if duplicate is found.
  * Modifies the array.
  * @param item
  * @param itemsArray
+ * @returns new array
  */
-const removeDuplicate = (item: Item, itemsArray: Item[]): void => {
+const removeDuplicate = (item: Item, itemsArray: Item[]): Item[] => {
   if (!itemsArray) {
-    return;
+    return itemsArray;
   }
 
+  const result: Item[] = [...itemsArray];
+
   let index = -1;
-  for (let i = 0; i < itemsArray.length; i++) {
-    const currentItem = itemsArray[i];
-    if (JSON.stringify(currentItem) === JSON.stringify(item)) {
+  for (let i = 0; i < result.length; i++) {
+    const currentItem = result[i];
+
+    if (
+      JSON.stringify(sortObjectKeys(currentItem as unknown as Record<string, unknown>)) ===
+      JSON.stringify(sortObjectKeys(item as unknown as Record<string, unknown>))
+    ) {
       index = i;
       break;
     }
   }
 
   if (index !== -1) {
-    itemsArray.splice(index, 1);
+    result.splice(index, 1);
   }
+
+  return result;
 };
 
 /**
