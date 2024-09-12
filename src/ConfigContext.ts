@@ -117,7 +117,7 @@ let configContext: Readonly<ConfigContext> = {
     "deleteDocument",
     "createCollectionWithProxy",
     "legacyMongoShell",
-    "bulkdelete",
+    // "bulkdelete",
   ],
   MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
@@ -256,3 +256,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
