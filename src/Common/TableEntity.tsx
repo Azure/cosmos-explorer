@@ -34,10 +34,10 @@ export interface TableEntityProps {
   isPropertyTypeDisable: boolean;
   entityTimeValue: string;
   isEntityValueDisable?: boolean;
-  onDeleteEntity?: () => void;
-  onEditEntity?: () => void;
+  onDeleteEntity: () => void;
+  onEditEntity: () => void;
   onEntityPropertyChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
-  onEntityTypeChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void;
+  onEntityTypeChange: (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption<any> | undefined) => void;
   onEntityValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
   onSelectDate: (date: Date | null | undefined) => void;
   onEntityTimeValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
