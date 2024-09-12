@@ -72,6 +72,11 @@ export const useQueryTabStyles = makeStyles({
   metricsGridButtons: {
     ...cosmosShorthands.borderTop(),
   },
+  errorListTableCell: {
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+  },
   errorListMessageCell: {
     display: "flex",
     flexDirection: "row",
@@ -80,5 +85,12 @@ export const useQueryTabStyles = makeStyles({
   },
   errorListMessage: {
     flexGrow: 1,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+  },
+  errorListMessageActions: {
+    display: "flex",
+    flexDirection: "row",
   },
 });
