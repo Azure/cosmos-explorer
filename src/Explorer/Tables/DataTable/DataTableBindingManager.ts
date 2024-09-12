@@ -193,6 +193,9 @@ function getServerData(sSource: any, aoData: any, fnCallback: any, oSettings: an
  * from UI elements.
  */
 function bindClientId(nRow: Node, aData: Entities.ITableEntity) {
+  if (aData.PartitionKey && aData.PartitionKey._) {
+    $(nRow).attr(Constants.htmlAttributeNames.dataTablePartitionKeyAttr, aData.PartitionKey._);
+  }
   $(nRow).attr(Constants.htmlAttributeNames.dataTableRowKeyAttr, aData.RowKey._);
   return nRow;
 }
@@ -205,6 +208,10 @@ function selectionChanged(element: any, valueAccessor: any, allBindings: any, vi
   selected &&
     selected.forEach((b: Entities.ITableEntity) => {
       var sel = DataTableOperations.getRowSelector([
+        {
+          key: Constants.htmlAttributeNames.dataTablePartitionKeyAttr,
+          value: b.PartitionKey && b.PartitionKey._ && b.PartitionKey._.toString(),
+        },
         {
           key: Constants.htmlAttributeNames.dataTableRowKeyAttr,
           value: b.RowKey && b.RowKey._ && b.RowKey._.toString(),
@@ -370,8 +377,9 @@ function updateSelectionStatus(oSettings: any): void {
     for (var i = 0; i < $dataTableRows.length; i++) {
       var $row: JQuery = $dataTableRows.eq(i);
       var rowKey: string = $row.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr);
+      var partitionKey: string = $row.attr(Constants.htmlAttributeNames.dataTablePartitionKeyAttr);
       var table = tableEntityListViewModelMap[oSettings.ajax].tableViewModel;
-      if (table.isItemSelected(table.getTableEntityKeys(rowKey))) {
+      if (table.isItemSelected(table.getTableEntityKeys(rowKey, partitionKey))) {
         $row.attr("tabindex", "0");
       }
     }
