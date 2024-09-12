@@ -16,7 +16,7 @@ import React from "react";
 import { appThemeFabricTealBrandRamp } from "../../Platform/Fabric/FabricTheme";
 
 export const LayoutConstants = {
-  rowHeight: 36,
+  rowHeight: 32,
 };
 
 // Our CosmosFluentProvider has the same props as a FluentProvider.
@@ -91,15 +91,30 @@ const appThemePortalBrandRamp: BrandVariants = {
   160: "#CDD8EF",
 };
 
-const cosmosThemeElements = {
-  layoutRowHeight: `${LayoutConstants.rowHeight}px`,
+export enum LayoutSize {
+  Compact,
+  // TODO: Cozy and Roomy layouts.
+}
+
+interface CosmosThemeElements {
+  layoutRowHeight: string;
+}
+
+export type CosmosTheme = Theme & CosmosThemeElements;
+
+const sizeMappings: Record<LayoutSize, Partial<Theme> & CosmosThemeElements> = {
+  [LayoutSize.Compact]: {
+    layoutRowHeight: "32px",
+    fontSizeBase300: "13px",
+  },
+};
+
+const cosmosTheme = {
   sidebarMinimumWidth: "200px",
   sidebarInitialWidth: "300px",
 };
 
-export type CosmosTheme = Theme & typeof cosmosThemeElements;
-
-export const tokens = themeToTokensObject({ ...webLightTheme, ...cosmosThemeElements });
+export const tokens = themeToTokensObject({ ...webLightTheme, ...cosmosTheme, ...sizeMappings[LayoutSize.Compact] });
 
 export const cosmosShorthands = {
   border: () => shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
@@ -117,6 +132,7 @@ export function getPlatformTheme(platform: Platform): CosmosTheme {
 
   return {
     ...baseTheme,
-    ...cosmosThemeElements,
+    ...cosmosTheme,
+    ...sizeMappings[LayoutSize.Compact], // TODO: Allow for different layout sizes.
   };
 }

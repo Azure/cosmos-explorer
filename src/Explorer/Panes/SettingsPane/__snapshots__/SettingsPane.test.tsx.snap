@@ -8,483 +8,528 @@ exports[`Settings Pane should render Default properly 1`] = `
   submitButtonText="Apply"
 >
   <div
-    className="paneMainContent"
+    className="paneMainContent ___133e6fg_0000000 f22iagw f1vx9l62 f1l02sjl"
   >
-    <div
-      className="settingsSection"
+    <Accordion
+      className="___1uf6361_0000000 fz7g6wx"
     >
-      <div
-        className="settingsSectionPart"
+      <AccordionItem
+        value="1"
       >
-        <fieldset>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="pageOptions"
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
           >
             Page Options
-          </legend>
-          <InfoTooltip>
-            Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
-          </InfoTooltip>
-          <StyledChoiceGroup
-            ariaLabelledBy="pageOptions"
-            onChange={[Function]}
-            options={
-              [
-                {
-                  "key": "custom",
-                  "text": "Custom",
-                },
-                {
-                  "key": "unlimited",
-                  "text": "Unlimited",
-                },
-              ]
-            }
-            selectedKey="custom"
-            styles={
-              {
-                "flexContainer": [
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
+            </div>
+            <StyledChoiceGroup
+              ariaLabelledBy="pageOptions"
+              onChange={[Function]}
+              options={
+                [
                   {
-                    "selectors": {
-                      ".ms-ChoiceField": {
-                        "marginTop": 0,
-                      },
-                      ".ms-ChoiceField-wrapper label": {
-                        "fontSize": 12,
-                        "paddingTop": 0,
-                      },
-                      ".ms-ChoiceFieldGroup root-133": {
-                        "clear": "both",
+                    "key": "custom",
+                    "text": "Custom",
+                  },
+                  {
+                    "key": "unlimited",
+                    "text": "Unlimited",
+                  },
+                ]
+              }
+              selectedKey="custom"
+              styles={
+                {
+                  "flexContainer": [
+                    {
+                      "selectors": {
+                        ".ms-ChoiceField": {
+                          "marginTop": 0,
+                        },
+                        ".ms-ChoiceField-wrapper label": {
+                          "fontSize": 12,
+                          "paddingTop": 0,
+                        },
+                        ".ms-ChoiceFieldGroup root-133": {
+                          "clear": "both",
+                        },
                       },
                     },
+                  ],
+                  "root": {
+                    "clear": "both",
                   },
-                ],
-                "root": {
-                  "clear": "both",
-                },
+                }
               }
-            }
-          />
-        </fieldset>
-      </div>
-      <div
-        className="tabs settingsSectionPart"
-      >
-        <div
-          className="tabcontent"
-        >
-          <div
-            className="settingsSectionLabel"
-          >
-            Query results per page
-            <InfoTooltip>
-              Enter the number of query results that should be shown per page.
-            </InfoTooltip>
+            />
           </div>
-          <StyledSpinButton
-            ariaLabel="Custom query items per page"
-            className="textfontclr"
-            decrementButtonAriaLabel="Decrease value by 1"
-            incrementButtonAriaLabel="Increase value by 1"
-            min={1}
-            onDecrement={[Function]}
-            onIncrement={[Function]}
-            onValidate={[Function]}
-            step={1}
-            value="0"
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart"
-      >
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="ruThresholdLabel"
+          <div
+            className="tabs ___1dfa554_0000000 fo7qwa0"
           >
-            RU Threshold
-          </legend>
-          <InfoTooltip>
-            If a query exceeds a configured RU threshold, the query will be aborted.
-          </InfoTooltip>
-        </div>
-        <div>
-          <StyledToggleBase
-            defaultChecked={true}
-            label="Enable RU threshold"
-            onChange={[Function]}
-            styles={
-              {
-                "container": {},
-                "label": {
-                  "display": "block",
-                  "fontSize": 12,
-                  "fontWeight": 400,
-                },
-                "pill": {},
-                "root": {},
-                "text": {},
-                "thumb": {},
-              }
-            }
-          />
-        </div>
-        <div>
-          <StyledSpinButton
-            decrementButtonAriaLabel="Decrease value by 1000"
-            defaultValue="5000"
-            incrementButtonAriaLabel="Increase value by 1000"
-            label="RU Threshold (RU)"
-            labelPosition={0}
-            min={1}
-            onChange={[Function]}
-            step={1000}
-            styles={
-              {
-                "arrowButtonsContainer": {},
-                "icon": {},
-                "input": {},
-                "label": {
-                  "fontSize": 12,
-                  "fontWeight": 400,
-                },
-                "labelWrapper": {},
-                "root": {
-                  "paddingBottom": 10,
-                },
-                "spinButtonWrapper": {},
-              }
-            }
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart"
+            <div
+              className="tabcontent"
+            >
+              <div
+                className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+              >
+                Query results per page
+                 
+                <InfoTooltip
+                  className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+                >
+                  Enter the number of query results that should be shown per page.
+                </InfoTooltip>
+              </div>
+              <StyledSpinButton
+                ariaLabel="Custom query items per page"
+                className="textfontclr"
+                decrementButtonAriaLabel="Decrease value by 1"
+                incrementButtonAriaLabel="Increase value by 1"
+                min={1}
+                onDecrement={[Function]}
+                onIncrement={[Function]}
+                onValidate={[Function]}
+                step={1}
+                value="0"
+              />
+            </div>
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="3"
       >
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="queryTimeoutLabel"
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
           >
             Query Timeout
-          </legend>
-          <InfoTooltip>
-            When a query reaches a specified time limit, a popup with an option to cancel the query will show unless automatic cancellation has been enabled
-          </InfoTooltip>
-        </div>
-        <div>
-          <StyledToggleBase
-            defaultChecked={false}
-            label="Enable query timeout"
-            onChange={[Function]}
-            styles={
-              {
-                "container": {},
-                "label": {
-                  "display": "block",
-                  "fontSize": 12,
-                  "fontWeight": 400,
-                },
-                "pill": {},
-                "root": {},
-                "text": {},
-                "thumb": {},
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              When a query reaches a specified time limit, a popup with an option to cancel the query will show unless automatic cancellation has been enabled.
+            </div>
+            <StyledToggleBase
+              defaultChecked={false}
+              label="Enable query timeout"
+              onChange={[Function]}
+              styles={
+                {
+                  "container": {},
+                  "label": {
+                    "display": "block",
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "pill": {},
+                  "root": {},
+                  "text": {},
+                  "thumb": {},
+                }
               }
-            }
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart"
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="4"
       >
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="defaultQueryResultsView"
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            RU Threshold
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              If a query exceeds a configured RU threshold, the query will be aborted.
+            </div>
+            <StyledToggleBase
+              defaultChecked={true}
+              label="Enable RU threshold"
+              onChange={[Function]}
+              styles={
+                {
+                  "container": {},
+                  "label": {
+                    "display": "block",
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "pill": {},
+                  "root": {},
+                  "text": {},
+                  "thumb": {},
+                }
+              }
+            />
+          </div>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <StyledSpinButton
+              decrementButtonAriaLabel="Decrease value by 1000"
+              defaultValue="5000"
+              incrementButtonAriaLabel="Increase value by 1000"
+              label="RU Threshold (RU)"
+              labelPosition={0}
+              min={1}
+              onChange={[Function]}
+              step={1000}
+              styles={
+                {
+                  "arrowButtonsContainer": {},
+                  "icon": {},
+                  "input": {},
+                  "label": {
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {},
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {},
+                }
+              }
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="5"
+      >
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
           >
             Default Query Results View
-          </legend>
-          <InfoTooltip>
-            Select the default view to use when displaying query results.
-          </InfoTooltip>
-        </div>
-        <div>
-          <StyledChoiceGroup
-            ariaLabelledBy="defaultQueryResultsView"
-            onChange={[Function]}
-            options={
-              [
-                {
-                  "key": "vertical",
-                  "text": "Vertical",
-                },
-                {
-                  "key": "horizontal",
-                  "text": "Horizontal",
-                },
-              ]
-            }
-            selectedKey="horizontal"
-            styles={
-              {
-                "flexContainer": [
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Select the default view to use when displaying query results.
+            </div>
+            <StyledChoiceGroup
+              ariaLabelledBy="defaultQueryResultsView"
+              onChange={[Function]}
+              options={
+                [
                   {
-                    "selectors": {
-                      ".ms-ChoiceField": {
-                        "marginTop": 0,
-                      },
-                      ".ms-ChoiceField-wrapper label": {
-                        "fontSize": 12,
-                        "paddingTop": 0,
-                      },
-                      ".ms-ChoiceFieldGroup root-133": {
-                        "clear": "both",
+                    "key": "vertical",
+                    "text": "Vertical",
+                  },
+                  {
+                    "key": "horizontal",
+                    "text": "Horizontal",
+                  },
+                ]
+              }
+              selectedKey="horizontal"
+              styles={
+                {
+                  "flexContainer": [
+                    {
+                      "selectors": {
+                        ".ms-ChoiceField": {
+                          "marginTop": 0,
+                        },
+                        ".ms-ChoiceField-wrapper label": {
+                          "fontSize": 12,
+                          "paddingTop": 0,
+                        },
+                        ".ms-ChoiceFieldGroup root-133": {
+                          "clear": "both",
+                        },
                       },
                     },
+                  ],
+                  "root": {
+                    "clear": "both",
                   },
-                ],
-                "root": {
-                  "clear": "both",
-                },
+                }
               }
-            }
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart"
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="6"
       >
-        <div
-          className="settingsSectionLabel"
-        >
-          Retry Settings
-          <InfoTooltip>
-            Retry policy associated with throttled requests during CosmosDB queries.
-          </InfoTooltip>
-        </div>
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="queryRetryAttemptsLabel"
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
           >
-            Max retry attempts
-          </legend>
-          <InfoTooltip>
-            Max number of retries to be performed for a request. Default value 9.
-          </InfoTooltip>
-        </div>
-        <StyledSpinButton
-          decrementButtonAriaLabel="Decrease value by 1"
-          incrementButtonAriaLabel="Increase value by 1"
-          labelPosition={0}
-          min={1}
-          onChange={[Function]}
-          onDecrement={[Function]}
-          onIncrement={[Function]}
-          onValidate={[Function]}
-          step={1}
-          styles={
-            {
-              "arrowButtonsContainer": {},
-              "icon": {},
-              "input": {},
-              "label": {
-                "fontSize": 12,
-                "fontWeight": 400,
-              },
-              "labelWrapper": {},
-              "root": {
-                "paddingBottom": 10,
-              },
-              "spinButtonWrapper": {},
-            }
-          }
-          value="9"
-        />
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="queryRetryAttemptsLabel"
+            Retry Settings
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
           >
-            Fixed retry interval (ms)
-          </legend>
-          <InfoTooltip>
-            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
-          </InfoTooltip>
-        </div>
-        <StyledSpinButton
-          decrementButtonAriaLabel="Decrease value by 1000"
-          incrementButtonAriaLabel="Increase value by 1000"
-          labelPosition={0}
-          min={1000}
-          onChange={[Function]}
-          onDecrement={[Function]}
-          onIncrement={[Function]}
-          onValidate={[Function]}
-          step={1000}
-          styles={
-            {
-              "arrowButtonsContainer": {},
-              "icon": {},
-              "input": {},
-              "label": {
-                "fontSize": 12,
-                "fontWeight": 400,
-              },
-              "labelWrapper": {},
-              "root": {
-                "paddingBottom": 10,
-              },
-              "spinButtonWrapper": {},
-            }
-          }
-          value="0"
-        />
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="queryRetryAttemptsLabel"
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Retry policy associated with throttled requests during CosmosDB queries.
+            </div>
+            <div>
+              <span
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
+              >
+                Max retry attempts
+              </span>
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                Max number of retries to be performed for a request. Default value 9.
+              </InfoTooltip>
+            </div>
+            <StyledSpinButton
+              decrementButtonAriaLabel="Decrease value by 1"
+              incrementButtonAriaLabel="Increase value by 1"
+              labelPosition={0}
+              min={1}
+              onChange={[Function]}
+              onDecrement={[Function]}
+              onIncrement={[Function]}
+              onValidate={[Function]}
+              step={1}
+              styles={
+                {
+                  "arrowButtonsContainer": {},
+                  "icon": {},
+                  "input": {},
+                  "label": {
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {},
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {},
+                }
+              }
+              value="9"
+            />
+            <div>
+              <span
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
+              >
+                Fixed retry interval (ms)
+              </span>
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
+              </InfoTooltip>
+            </div>
+            <StyledSpinButton
+              decrementButtonAriaLabel="Decrease value by 1000"
+              incrementButtonAriaLabel="Increase value by 1000"
+              labelPosition={0}
+              min={1000}
+              onChange={[Function]}
+              onDecrement={[Function]}
+              onIncrement={[Function]}
+              onValidate={[Function]}
+              step={1000}
+              styles={
+                {
+                  "arrowButtonsContainer": {},
+                  "icon": {},
+                  "input": {},
+                  "label": {
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {},
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {},
+                }
+              }
+              value="0"
+            />
+            <div>
+              <span
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
+              >
+                Max wait time (s)
+              </span>
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
+              </InfoTooltip>
+            </div>
+            <StyledSpinButton
+              decrementButtonAriaLabel="Decrease value by 1"
+              incrementButtonAriaLabel="Increase value by 1"
+              labelPosition={0}
+              min={1}
+              onChange={[Function]}
+              onDecrement={[Function]}
+              onIncrement={[Function]}
+              onValidate={[Function]}
+              step={1}
+              styles={
+                {
+                  "arrowButtonsContainer": {},
+                  "icon": {},
+                  "input": {},
+                  "label": {
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {},
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {},
+                }
+              }
+              value="30"
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="7"
+      >
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
           >
-            Max wait time (s)
-          </legend>
-          <InfoTooltip>
-            Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
-          </InfoTooltip>
-        </div>
-        <StyledSpinButton
-          decrementButtonAriaLabel="Decrease value by 1"
-          incrementButtonAriaLabel="Increase value by 1"
-          labelPosition={0}
-          min={1}
-          onChange={[Function]}
-          onDecrement={[Function]}
-          onIncrement={[Function]}
-          onValidate={[Function]}
-          step={1}
-          styles={
-            {
-              "arrowButtonsContainer": {},
-              "icon": {},
-              "input": {},
-              "label": {
-                "fontSize": 12,
-                "fontWeight": 400,
-              },
-              "labelWrapper": {},
-              "root": {
-                "paddingBottom": 10,
-              },
-              "spinButtonWrapper": {},
-            }
-          }
-          value="30"
-        />
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart settingsSectionInlineCheckbox"
+            Enable container pagination
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+            </div>
+            <StyledCheckboxBase
+              ariaLabel="Enable container pagination"
+              checked={false}
+              className="padding"
+              label="Enable container pagination"
+              onChange={[Function]}
+              styles={
+                {
+                  "label": {
+                    "padding": 0,
+                  },
+                }
+              }
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="8"
       >
-        <div
-          className="settingsSectionLabel"
-        >
-          Enable container pagination
-          <InfoTooltip>
-            Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
-          </InfoTooltip>
-        </div>
-        <StyledCheckboxBase
-          ariaLabel="Enable container pagination"
-          checked={false}
-          className="padding"
-          onChange={[Function]}
-          styles={
-            {
-              "label": {
-                "padding": 0,
-              },
-            }
-          }
-        />
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart settingsSectionInlineCheckbox"
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            Enable cross-partition query
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
+            </div>
+            <StyledCheckboxBase
+              ariaLabel="Enable cross partition query"
+              checked={false}
+              className="padding"
+              label="Enable cross-partition query"
+              onChange={[Function]}
+              styles={
+                {
+                  "label": {
+                    "padding": 0,
+                  },
+                }
+              }
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="9"
       >
-        <div
-          className="settingsSectionLabel"
-        >
-          Enable cross-partition query
-          <InfoTooltip>
-            Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
-          </InfoTooltip>
-        </div>
-        <StyledCheckboxBase
-          ariaLabel="Enable cross partition query"
-          checked={false}
-          className="padding"
-          onChange={[Function]}
-          styles={
-            {
-              "label": {
-                "padding": 0,
-              },
-            }
-          }
-        />
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart"
-      >
-        <div
-          className="settingsSectionLabel"
-        >
-          Max degree of parallelism
-          <InfoTooltip>
-            Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
-          </InfoTooltip>
-        </div>
-        <StyledSpinButton
-          ariaLabel="Max degree of parallelism"
-          className="textfontclr"
-          id="max-degree"
-          min={-1}
-          onDecrement={[Function]}
-          onIncrement={[Function]}
-          onValidate={[Function]}
-          role="textbox"
-          step={1}
-          value="6"
-        />
-      </div>
-    </div>
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            Max degree of parallelism
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
+            </div>
+            <StyledSpinButton
+              ariaLabel="Max degree of parallelism"
+              className="textfontclr"
+              id="max-degree"
+              label="Max degree of parallelism"
+              min={-1}
+              onDecrement={[Function]}
+              onIncrement={[Function]}
+              onValidate={[Function]}
+              role="textbox"
+              step={1}
+              value="6"
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
     <div
       className="settingsSection"
     >
@@ -524,203 +569,229 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
   submitButtonText="Apply"
 >
   <div
-    className="paneMainContent"
+    className="paneMainContent ___133e6fg_0000000 f22iagw f1vx9l62 f1l02sjl"
   >
-    <div
-      className="settingsSection"
+    <Accordion
+      className="___1uf6361_0000000 fz7g6wx"
     >
-      <div
-        className="settingsSectionPart"
+      <AccordionItem
+        value="6"
       >
-        <div
-          className="settingsSectionLabel"
-        >
-          Retry Settings
-          <InfoTooltip>
-            Retry policy associated with throttled requests during CosmosDB queries.
-          </InfoTooltip>
-        </div>
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="queryRetryAttemptsLabel"
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
           >
-            Max retry attempts
-          </legend>
-          <InfoTooltip>
-            Max number of retries to be performed for a request. Default value 9.
-          </InfoTooltip>
-        </div>
-        <StyledSpinButton
-          decrementButtonAriaLabel="Decrease value by 1"
-          incrementButtonAriaLabel="Increase value by 1"
-          labelPosition={0}
-          min={1}
-          onChange={[Function]}
-          onDecrement={[Function]}
-          onIncrement={[Function]}
-          onValidate={[Function]}
-          step={1}
-          styles={
-            {
-              "arrowButtonsContainer": {},
-              "icon": {},
-              "input": {},
-              "label": {
-                "fontSize": 12,
-                "fontWeight": 400,
-              },
-              "labelWrapper": {},
-              "root": {
-                "paddingBottom": 10,
-              },
-              "spinButtonWrapper": {},
-            }
-          }
-          value="9"
-        />
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="queryRetryAttemptsLabel"
+            Retry Settings
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
           >
-            Fixed retry interval (ms)
-          </legend>
-          <InfoTooltip>
-            Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
-          </InfoTooltip>
-        </div>
-        <StyledSpinButton
-          decrementButtonAriaLabel="Decrease value by 1000"
-          incrementButtonAriaLabel="Increase value by 1000"
-          labelPosition={0}
-          min={1000}
-          onChange={[Function]}
-          onDecrement={[Function]}
-          onIncrement={[Function]}
-          onValidate={[Function]}
-          step={1000}
-          styles={
-            {
-              "arrowButtonsContainer": {},
-              "icon": {},
-              "input": {},
-              "label": {
-                "fontSize": 12,
-                "fontWeight": 400,
-              },
-              "labelWrapper": {},
-              "root": {
-                "paddingBottom": 10,
-              },
-              "spinButtonWrapper": {},
-            }
-          }
-          value="0"
-        />
-        <div>
-          <legend
-            className="settingsSectionLabel legendLabel"
-            id="queryRetryAttemptsLabel"
-          >
-            Max wait time (s)
-          </legend>
-          <InfoTooltip>
-            Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
-          </InfoTooltip>
-        </div>
-        <StyledSpinButton
-          decrementButtonAriaLabel="Decrease value by 1"
-          incrementButtonAriaLabel="Increase value by 1"
-          labelPosition={0}
-          min={1}
-          onChange={[Function]}
-          onDecrement={[Function]}
-          onIncrement={[Function]}
-          onValidate={[Function]}
-          step={1}
-          styles={
-            {
-              "arrowButtonsContainer": {},
-              "icon": {},
-              "input": {},
-              "label": {
-                "fontSize": 12,
-                "fontWeight": 400,
-              },
-              "labelWrapper": {},
-              "root": {
-                "paddingBottom": 10,
-              },
-              "spinButtonWrapper": {},
-            }
-          }
-          value="30"
-        />
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart settingsSectionInlineCheckbox"
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Retry policy associated with throttled requests during CosmosDB queries.
+            </div>
+            <div>
+              <span
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
+              >
+                Max retry attempts
+              </span>
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                Max number of retries to be performed for a request. Default value 9.
+              </InfoTooltip>
+            </div>
+            <StyledSpinButton
+              decrementButtonAriaLabel="Decrease value by 1"
+              incrementButtonAriaLabel="Increase value by 1"
+              labelPosition={0}
+              min={1}
+              onChange={[Function]}
+              onDecrement={[Function]}
+              onIncrement={[Function]}
+              onValidate={[Function]}
+              step={1}
+              styles={
+                {
+                  "arrowButtonsContainer": {},
+                  "icon": {},
+                  "input": {},
+                  "label": {
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {},
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {},
+                }
+              }
+              value="9"
+            />
+            <div>
+              <span
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
+              >
+                Fixed retry interval (ms)
+              </span>
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned as part of the response. Default value is 0 milliseconds.
+              </InfoTooltip>
+            </div>
+            <StyledSpinButton
+              decrementButtonAriaLabel="Decrease value by 1000"
+              incrementButtonAriaLabel="Increase value by 1000"
+              labelPosition={0}
+              min={1000}
+              onChange={[Function]}
+              onDecrement={[Function]}
+              onIncrement={[Function]}
+              onValidate={[Function]}
+              step={1000}
+              styles={
+                {
+                  "arrowButtonsContainer": {},
+                  "icon": {},
+                  "input": {},
+                  "label": {
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {},
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {},
+                }
+              }
+              value="0"
+            />
+            <div>
+              <span
+                className="___zls1px0_0000000 fq02s40 f1ugzwwg"
+              >
+                Max wait time (s)
+              </span>
+              <InfoTooltip
+                className="___vtc5hy0_0000000 f10ra9hq f1k6fduh"
+              >
+                Max wait time in seconds to wait for a request while the retries are happening. Default value 30 seconds.
+              </InfoTooltip>
+            </div>
+            <StyledSpinButton
+              decrementButtonAriaLabel="Decrease value by 1"
+              incrementButtonAriaLabel="Increase value by 1"
+              labelPosition={0}
+              min={1}
+              onChange={[Function]}
+              onDecrement={[Function]}
+              onIncrement={[Function]}
+              onValidate={[Function]}
+              step={1}
+              styles={
+                {
+                  "arrowButtonsContainer": {},
+                  "icon": {},
+                  "input": {},
+                  "label": {
+                    "fontSize": 12,
+                    "fontWeight": 400,
+                  },
+                  "labelWrapper": {},
+                  "root": {
+                    "paddingBottom": 10,
+                  },
+                  "spinButtonWrapper": {},
+                }
+              }
+              value="30"
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="7"
       >
-        <div
-          className="settingsSectionLabel"
-        >
-          Enable container pagination
-          <InfoTooltip>
-            Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
-          </InfoTooltip>
-        </div>
-        <StyledCheckboxBase
-          ariaLabel="Enable container pagination"
-          checked={false}
-          className="padding"
-          onChange={[Function]}
-          styles={
-            {
-              "label": {
-                "padding": 0,
-              },
-            }
-          }
-        />
-      </div>
-    </div>
-    <div
-      className="settingsSection"
-    >
-      <div
-        className="settingsSectionPart"
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            Enable container pagination
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+            </div>
+            <StyledCheckboxBase
+              ariaLabel="Enable container pagination"
+              checked={false}
+              className="padding"
+              label="Enable container pagination"
+              onChange={[Function]}
+              styles={
+                {
+                  "label": {
+                    "padding": 0,
+                  },
+                }
+              }
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem
+        value="11"
       >
-        <div
-          className="settingsSectionLabel"
-        >
-          Display Gremlin query results as: 
-          <InfoTooltip>
-            Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
-          </InfoTooltip>
-        </div>
-        <StyledChoiceGroup
-          aria-label="Graph Auto-visualization"
-          onChange={[Function]}
-          options={
-            [
-              {
-                "key": "false",
-                "text": "Graph",
-              },
-              {
-                "key": "true",
-                "text": "JSON",
-              },
-            ]
-          }
-          selectedKey="false"
-        />
-      </div>
-    </div>
+        <AccordionHeader>
+          <div
+            className="___15c001r_0000000 fq02s40"
+          >
+            Display Gremlin query results as: 
+          </div>
+        </AccordionHeader>
+        <AccordionPanel>
+          <div
+            className="___1dfa554_0000000 fo7qwa0"
+          >
+            <div
+              className="___10gar1i_0000000 f1fow5ox f1ugzwwg"
+            >
+              Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
+            </div>
+            <StyledChoiceGroup
+              aria-label="Graph Auto-visualization"
+              onChange={[Function]}
+              options={
+                [
+                  {
+                    "key": "false",
+                    "text": "Graph",
+                  },
+                  {
+                    "key": "true",
+                    "text": "JSON",
+                  },
+                ]
+              }
+              selectedKey="false"
+            />
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
     <div
       className="settingsSection"
     >
