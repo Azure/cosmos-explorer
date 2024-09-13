@@ -1,7 +1,11 @@
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 // The component name whose state is being saved. Component name must not include special characters.
-export type ComponentName = "DocumentsTab";
+export enum AppStateComponentNames {
+  DocumentsTab = "DocumentsTab",
+  QueryCopilot = "QueryCopilot",
+}
+
 export const PATH_SEPARATOR = "/"; // export for testing purposes
 const SCHEMA_VERSION = 1;
 
@@ -14,8 +18,9 @@ export interface StateData {
   data: unknown;
 }
 
-type StorePath = {
-  componentName: string;
+// Export for testing purposes
+export type StorePath = {
+  componentName: AppStateComponentNames;
   subComponentName?: string;
   globalAccountName?: string;
   databaseName?: string;

@@ -28,6 +28,8 @@ import {
   SuggestedPrompt,
   getSampleDatabaseSuggestedPrompts,
   getSuggestedPrompts,
+  readPromptHistory,
+  savePromptHistory,
 } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { SubmitFeedback, allocatePhoenixContainer } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { GenerateSQLQueryResponse, QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
@@ -136,9 +138,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   };
 
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
-  const cachedHistoriesString = localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotHistories`);
-  const cachedHistories = cachedHistoriesString?.split("|");
-  const [histories, setHistories] = useState<string[]>(cachedHistories || []);
+  const [histories, setHistories] = useState<string[]>(() => readPromptHistory(userContext.databaseAccount));
   const suggestedPrompts: SuggestedPrompt[] = isSampleCopilotActive
     ? getSampleDatabaseSuggestedPrompts()
     : getSuggestedPrompts();
@@ -172,7 +172,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     const newHistories = [formattedUserPrompt, ...updatedHistories.slice(0, 2)];
 
     setHistories(newHistories);
-    localStorage.setItem(`${userContext.databaseAccount.id}-queryCopilotHistories`, newHistories.join("|"));
+    savePromptHistory(userContext.databaseAccount, newHistories);
   };
 
   const resetMessageStates = (): void => {
