@@ -36,4 +36,5 @@ export interface ITableQuery {
 
 export interface ITableEntityIdentity {
   RowKey: string;
+  PartitionKey?: string;
 }

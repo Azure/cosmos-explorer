@@ -5,8 +5,6 @@ import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import * as Logger from "../../Common/Logger";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import { bulkCreateDocument } from "../../Common/dataAccess/bulkCreateDocument";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
@@ -1018,41 +1016,6 @@ export default class Collection implements ViewModels.Collection {
     event.originalEvent.stopPropagation();
     event.originalEvent.preventDefault();
     this.uploadFiles(event.originalEvent.dataTransfer.files);
-  }
-
-  public async getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
-    if (!this.container) {
-      return undefined;
-    }
-
-    try {
-      const notifications: DataModels.Notification[] = await fetchPortalNotifications();
-      if (!notifications || notifications.length === 0) {
-        return undefined;
-      }
-
-      return _.find(notifications, (notification: DataModels.Notification) => {
-        const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
-        return (
-          notification.kind === "message" &&
-          notification.collectionName === this.id() &&
-          notification.description &&
-          throughputUpdateRegExp.test(notification.description)
-        );
-      });
-    } catch (error) {
-      Logger.logError(
-        JSON.stringify({
-          error: getErrorMessage(error),
-          accountName: userContext?.databaseAccount,
-          databaseName: this.databaseId,
-          collectionName: this.id(),
-        }),
-        "Settings tree node",
-      );
-
-      return undefined;
-    }
   }
 
   public async uploadFiles(files: FileList): Promise<{ data: UploadDetailsRecord[] }> {

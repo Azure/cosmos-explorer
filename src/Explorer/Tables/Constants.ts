@@ -155,6 +155,7 @@ export const htmlAttributeNames = {
   dataTableContentTypeAttr: "contentType_attr",
   dataTableSnapshotAttr: "snapshot_attr",
   dataTableRowKeyAttr: "rowKey_attr",
+  dataTablePartitionKeyAttr: "partKey_attr",
   dataTableMessageIdAttr: "messageId_attr",
   dataTableHeaderIndex: "data-column-index",
 };

@@ -1,7 +1,7 @@
-import { IMessageBarStyles, Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { IMessageBarStyles, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
-import { Platform, configContext, updateConfigContext } from "ConfigContext";
+import { configContext, updateConfigContext } from "ConfigContext";
 import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
@@ -16,7 +16,6 @@ import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
-import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
 import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -37,9 +36,6 @@ interface TabsProps {
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
-  const [showRUThresholdMessageBar, setShowRUThresholdMessageBar] = useState<boolean>(
-    userContext.apiType === "SQL" && configContext.platform !== Platform.Fabric && !hasRUThresholdBeenConfigured(),
-  );
   const [
     showMongoAndCassandraProxiesNetworkSettingsWarningState,
     setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
@@ -87,30 +83,6 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           {networkSettingsWarning}
         </MessageBar>
       )}
-      {showRUThresholdMessageBar && (
-        <MessageBar
-          messageBarType={MessageBarType.info}
-          onDismiss={() => {
-            setShowRUThresholdMessageBar(false);
-          }}
-          styles={{
-            ...defaultMessageBarStyles,
-            innerText: {
-              fontWeight: "bold",
-            },
-          }}
-        >
-          {`To prevent queries from using excessive RUs, Data Explorer has a 5,000 RU default limit. To modify or remove
-          the limit, go to the Settings cog on the right and find "RU Threshold".`}
-          <Link
-            className="underlinedLink"
-            href="https://review.learn.microsoft.com/en-us/azure/cosmos-db/data-explorer?branch=main#configure-request-unit-threshold"
-            target="_blank"
-          >
-            Learn More
-          </Link>
-        </MessageBar>
-      )}
       {showMongoAndCassandraProxiesNetworkSettingsWarningState && (
         <MessageBar
           messageBarType={MessageBarType.warning}
@@ -119,7 +91,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
             setShowMongoAndCassandraProxiesNetworkSettingsWarningState(false);
           }}
         >
-          {`We are moving our middleware to new infrastructure. To avoid future issues with Data Explorer access, please
+          {`We have migrated our middleware to new infrastructure. To avoid issues with Data Explorer access, please
           re-enable "Allow access from Azure Portal" on the Networking blade for your account.`}
         </MessageBar>
       )}

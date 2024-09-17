@@ -6,6 +6,7 @@ import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
+import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { OnExecuteQueryClick } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotProps } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { QueryCopilotResults } from "Explorer/QueryCopilot/Shared/QueryCopilotResults";
@@ -18,18 +19,13 @@ import SplitterLayout from "react-splitter-layout";
 import QueryCommandIcon from "../../../images/CopilotCommand.svg";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
-import * as StringUtility from "../../Shared/StringUtility";
 
 export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: QueryCopilotProps): JSX.Element => {
   const { query, setQuery, selectedQuery, setSelectedQuery, isGeneratingQuery } = useQueryCopilot();
 
-  const cachedCopilotToggleStatus: string = localStorage.getItem(
-    `${userContext.databaseAccount?.id}-queryCopilotToggleStatus`,
+  const [copilotActive, setCopilotActive] = useState<boolean>(() =>
+    readCopilotToggleStatus(userContext.databaseAccount),
   );
-  const copilotInitialActive: boolean = cachedCopilotToggleStatus
-    ? StringUtility.toBoolean(cachedCopilotToggleStatus)
-    : true;
-  const [copilotActive, setCopilotActive] = useState<boolean>(copilotInitialActive);
   const [tabActive, setTabActive] = useState<boolean>(true);
 
   const getCommandbarButtons = (): CommandButtonComponentProps[] => {
@@ -88,7 +84,7 @@ export const QueryCopilotTab: React.FC<QueryCopilotProps> = ({ explorer }: Query
 
   const toggleCopilot = (toggle: boolean) => {
     setCopilotActive(toggle);
-    localStorage.setItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`, toggle.toString());
+    saveCopilotToggleStatus(userContext.databaseAccount, toggle);
   };
 
   return (

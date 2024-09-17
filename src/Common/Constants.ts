@@ -134,6 +134,9 @@ export class BackendApi {
   public static readonly GenerateToken: string = "GenerateToken";
   public static readonly PortalSettings: string = "PortalSettings";
   public static readonly AccountRestrictions: string = "AccountRestrictions";
+  public static readonly RuntimeProxy: string = "RuntimeProxy";
+  public static readonly DisallowedLocations: string = "DisallowedLocations";
+  public static readonly SampleData: string = "SampleData";
 }
 
 export class PortalBackendEndpoints {
@@ -290,6 +293,7 @@ export class HttpStatusCodes {
   public static readonly Accepted: number = 202;
   public static readonly NoContent: number = 204;
   public static readonly NotModified: number = 304;
+  public static readonly BadRequest: number = 400;
   public static readonly Unauthorized: number = 401;
   public static readonly Forbidden: number = 403;
   public static readonly NotFound: number = 404;
@@ -501,7 +505,7 @@ export class PriorityLevel {
   public static readonly Default = "low";
 }
 
-export const QueryCopilotSampleDatabaseId = "CopilotSampleDb";
+export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
 export const QueryCopilotSampleContainerSchema = {

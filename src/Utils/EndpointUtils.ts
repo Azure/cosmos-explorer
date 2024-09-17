@@ -78,6 +78,13 @@ export const PortalBackendIPs: { [key: string]: string[] } = {
   //usnat: ["7.28.202.68"],
 };
 
+export const PortalBackendOutboundIPs: { [key: string]: string[] } = {
+  [PortalBackendEndpoints.Mpac]: ["13.91.105.215", "4.210.172.107"],
+  [PortalBackendEndpoints.Prod]: ["13.88.56.148", "40.91.218.243"],
+  [PortalBackendEndpoints.Fairfax]: ["52.247.163.6", "52.244.134.181"],
+  [PortalBackendEndpoints.Mooncake]: ["163.228.137.6", "143.64.170.142"],
+};
+
 export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
   [MongoProxyEndpoints.Mpac]: ["20.245.81.54", "40.118.23.126"],
   [MongoProxyEndpoints.Prod]: ["40.80.152.199", "13.95.130.121"],
@@ -168,7 +175,28 @@ export function useNewPortalBackendEndpoint(backendApi: string): boolean {
       PortalBackendEndpoints.Mpac,
       PortalBackendEndpoints.Prod,
     ],
-    [BackendApi.AccountRestrictions]: [PortalBackendEndpoints.Development, PortalBackendEndpoints.Mpac],
+    [BackendApi.AccountRestrictions]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+    [BackendApi.RuntimeProxy]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
+    [BackendApi.DisallowedLocations]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+      PortalBackendEndpoints.Fairfax,
+      PortalBackendEndpoints.Mooncake,
+    ],
+    [BackendApi.SampleData]: [
+      PortalBackendEndpoints.Development,
+      PortalBackendEndpoints.Mpac,
+      PortalBackendEndpoints.Prod,
+    ],
   };
 
   if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {

@@ -10,11 +10,18 @@ exports[`TreeNodeComponent does not render children if the node is loading 1`] =
 >
   <TreeItemLayout
     actions={false}
-    className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
     expandIcon={
       <ChevronRight20Regular
         data-text="TreeNode/ExpandIcon"
+      />
+    }
+    iconBefore={
+      <img
+        alt=""
+        className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+        src="rootIcon"
       />
     }
   >
@@ -156,7 +163,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
             "itemType": "branch",
             "layoutRef": {
               "current": <div
-                class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                 data-test="TreeNode:root"
               >
                 <div
@@ -178,6 +185,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       fill="currentColor"
                     />
                   </svg>
+                </div>
+                <div
+                  aria-hidden="true"
+                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                >
+                  <img
+                    alt=""
+                    class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                    src="rootIcon"
+                  />
                 </div>
                 <div
                   class="fui-TreeItemLayout__main rklbe47"
@@ -208,7 +225,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                 tabindex="-1"
               >
                 <div
-                  class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                  class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                   data-test="TreeNode:root"
                 >
                   <div
@@ -232,6 +249,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     </svg>
                   </div>
                   <div
+                    aria-hidden="true"
+                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                  >
+                    <img
+                      alt=""
+                      class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                      src="rootIcon"
+                    />
+                  </div>
+                  <div
                     class="fui-TreeItemLayout__main rklbe47"
                   >
                     <span
@@ -242,7 +269,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                   </div>
                 </div>
                 <div
-                  class="fui-Tree rnv2ez3 ___jy13a00_lpffjy0 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+                  class="fui-Tree rnv2ez3 ___17a32do_7zrvj80 f1acs6jw f11qra4b fepn2xe f1nbblvp f19d5ny4 fzz4f4n"
                   data-test="Tree:root"
                   role="tree"
                 >
@@ -256,7 +283,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     tabindex="0"
                   >
                     <div
-                      class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                      class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                       data-test="TreeNode:root/child1Label"
                     >
                       <div
@@ -280,6 +307,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         </svg>
                       </div>
                       <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                      >
+                        <img
+                          alt=""
+                          class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                          src="child1Icon"
+                        />
+                      </div>
+                      <div
                         class="fui-TreeItemLayout__main rklbe47"
                       >
                         <span
@@ -300,7 +337,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     tabindex="-1"
                   >
                     <div
-                      class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                      class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                       data-test="TreeNode:root/child2LoadingLabel"
                     >
                       <div
@@ -324,6 +361,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                         </svg>
                       </div>
                       <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                      >
+                        <img
+                          alt=""
+                          class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                          src="child2LoadingIcon"
+                        />
+                      </div>
+                      <div
                         class="fui-TreeItemLayout__main rklbe47"
                       >
                         <span
@@ -343,7 +390,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                     tabindex="-1"
                   >
                     <div
-                      class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vrg09j fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                      class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_vz3p260 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                       data-test="TreeNode:root/child3ExpandingLabel"
                     >
                       <div
@@ -362,6 +409,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             />
                           </span>
                         </div>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                      >
+                        <img
+                          alt=""
+                          class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                          src="child3ExpandingIcon"
+                        />
                       </div>
                       <div
                         class="fui-TreeItemLayout__main rklbe47"
@@ -383,16 +440,23 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
       >
         <TreeItemLayout
           actions={false}
-          className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+          className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
           data-test="TreeNode:root"
           expandIcon={
             <ChevronRight20Regular
               data-text="TreeNode/ExpandIcon"
             />
           }
+          iconBefore={
+            <img
+              alt=""
+              className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+              src="rootIcon"
+            />
+          }
         >
           <div
-            className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+            className="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
             data-test="TreeNode:root"
           >
             <div
@@ -420,6 +484,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               </ChevronRight20Regular>
             </div>
             <div
+              aria-hidden={true}
+              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+            >
+              <img
+                alt=""
+                className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                src="rootIcon"
+              />
+            </div>
+            <div
               className="fui-TreeItemLayout__main rklbe47"
             >
               <span
@@ -431,7 +505,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
           </div>
         </TreeItemLayout>
         <Tree
-          className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+          className="___17a32do_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp f19d5ny4 fzz4f4n"
           data-test="Tree:root"
         >
           <TreeProvider
@@ -499,7 +573,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
               }
             >
               <div
-                className="fui-Tree rnv2ez3 ___jy13a00_lpffjy0 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+                className="fui-Tree rnv2ez3 ___17a32do_7zrvj80 f1acs6jw f11qra4b fepn2xe f1nbblvp f19d5ny4 fzz4f4n"
                 data-test="Tree:root"
                 role="tree"
               >
@@ -587,7 +661,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "itemType": "branch",
                             "layoutRef": {
                               "current": <div
-                                class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                                class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                                 data-test="TreeNode:root/child1Label"
                               >
                                 <div
@@ -609,6 +683,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                       fill="currentColor"
                                     />
                                   </svg>
+                                </div>
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                >
+                                  <img
+                                    alt=""
+                                    class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                    src="child1Icon"
+                                  />
                                 </div>
                                 <div
                                   class="fui-TreeItemLayout__main rklbe47"
@@ -639,7 +723,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                                  class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                                   data-test="TreeNode:root/child1Label"
                                 >
                                   <div
@@ -663,6 +747,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     </svg>
                                   </div>
                                   <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                  >
+                                    <img
+                                      alt=""
+                                      class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                      src="child1Icon"
+                                    />
+                                  </div>
+                                  <div
                                     class="fui-TreeItemLayout__main rklbe47"
                                   >
                                     <span
@@ -680,16 +774,23 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       >
                         <TreeItemLayout
                           actions={false}
-                          className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+                          className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                           data-test="TreeNode:root/child1Label"
                           expandIcon={
                             <ChevronRight20Regular
                               data-text="TreeNode/ExpandIcon"
                             />
                           }
+                          iconBefore={
+                            <img
+                              alt=""
+                              className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                              src="child1Icon"
+                            />
+                          }
                         >
                           <div
-                            className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                            className="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                             data-test="TreeNode:root/child1Label"
                           >
                             <div
@@ -717,6 +818,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                               </ChevronRight20Regular>
                             </div>
                             <div
+                              aria-hidden={true}
+                              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                            >
+                              <img
+                                alt=""
+                                className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                src="child1Icon"
+                              />
+                            </div>
+                            <div
                               className="fui-TreeItemLayout__main rklbe47"
                             >
                               <span
@@ -728,7 +839,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                           </div>
                         </TreeItemLayout>
                         <Tree
-                          className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+                          className="___17a32do_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp f19d5ny4 fzz4f4n"
                           data-test="Tree:root/child1Label"
                         >
                           <TreeProvider
@@ -821,7 +932,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "itemType": "branch",
                             "layoutRef": {
                               "current": <div
-                                class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                                class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                                 data-test="TreeNode:root/child2LoadingLabel"
                               >
                                 <div
@@ -843,6 +954,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                       fill="currentColor"
                                     />
                                   </svg>
+                                </div>
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                >
+                                  <img
+                                    alt=""
+                                    class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                    src="child2LoadingIcon"
+                                  />
                                 </div>
                                 <div
                                   class="fui-TreeItemLayout__main rklbe47"
@@ -873,7 +994,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 tabindex="-1"
                               >
                                 <div
-                                  class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                                  class="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                                   data-test="TreeNode:root/child2LoadingLabel"
                                 >
                                   <div
@@ -897,6 +1018,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     </svg>
                                   </div>
                                   <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                  >
+                                    <img
+                                      alt=""
+                                      class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                      src="child2LoadingIcon"
+                                    />
+                                  </div>
+                                  <div
                                     class="fui-TreeItemLayout__main rklbe47"
                                   >
                                     <span
@@ -914,16 +1045,23 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       >
                         <TreeItemLayout
                           actions={false}
-                          className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+                          className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                           data-test="TreeNode:root/child2LoadingLabel"
                           expandIcon={
                             <ChevronRight20Regular
                               data-text="TreeNode/ExpandIcon"
                             />
                           }
+                          iconBefore={
+                            <img
+                              alt=""
+                              className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                              src="child2LoadingIcon"
+                            />
+                          }
                         >
                           <div
-                            className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vtp8mg fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                            className="fui-TreeItemLayout r1bx0xiv ___9uolwu0_9b0r4g0 fk6fouc fkhj508 figsok6 f1i3iumi fo100m9 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                             data-test="TreeNode:root/child2LoadingLabel"
                           >
                             <div
@@ -949,6 +1087,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                   />
                                 </svg>
                               </ChevronRight20Regular>
+                            </div>
+                            <div
+                              aria-hidden={true}
+                              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                            >
+                              <img
+                                alt=""
+                                className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                src="child2LoadingIcon"
+                              />
                             </div>
                             <div
                               className="fui-TreeItemLayout__main rklbe47"
@@ -1039,7 +1187,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                             "itemType": "leaf",
                             "layoutRef": {
                               "current": <div
-                                class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vrg09j fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                                class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_vz3p260 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                                 data-test="TreeNode:root/child3ExpandingLabel"
                               >
                                 <div
@@ -1058,6 +1206,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                       />
                                     </span>
                                   </div>
+                                </div>
+                                <div
+                                  aria-hidden="true"
+                                  class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                >
+                                  <img
+                                    alt=""
+                                    class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                    src="child3ExpandingIcon"
+                                  />
                                 </div>
                                 <div
                                   class="fui-TreeItemLayout__main rklbe47"
@@ -1087,7 +1245,7 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                 tabindex="-1"
                               >
                                 <div
-                                  class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vrg09j fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                                  class="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_vz3p260 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                                   data-test="TreeNode:root/child3ExpandingLabel"
                                 >
                                   <div
@@ -1108,6 +1266,16 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                                     </div>
                                   </div>
                                   <div
+                                    aria-hidden="true"
+                                    class="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
+                                  >
+                                    <img
+                                      alt=""
+                                      class="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+                                      src="child3ExpandingIcon"
+                                    />
+                                  </div>
+                                  <div
                                     class="fui-TreeItemLayout__main rklbe47"
                                   >
                                     <span
@@ -1125,9 +1293,9 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                       >
                         <TreeItemLayout
                           actions={false}
-                          className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+                          className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                           data-test="TreeNode:root/child3ExpandingLabel"
-                          expandIcon={
+                          iconBefore={
                             <img
                               alt=""
                               className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
@@ -1136,12 +1304,12 @@ exports[`TreeNodeComponent fully renders a tree 1`] = `
                           }
                         >
                           <div
-                            className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_1vrg09j fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
+                            className="fui-TreeItemLayout r1bx0xiv ___dxcrnh0_vz3p260 fk6fouc fkhj508 figsok6 f1i3iumi f1k1erfc fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
                             data-test="TreeNode:root/child3ExpandingLabel"
                           >
                             <div
                               aria-hidden={true}
-                              className="fui-TreeItemLayout__expandIcon rh4pu5o"
+                              className="fui-TreeItemLayout__iconBefore rphzgg1 ___1lqnc2u_1hdcey2 f7x41pl"
                             >
                               <img
                                 alt=""
@@ -1184,9 +1352,9 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
 >
   <TreeItemLayout
     actions={false}
-    className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={
+    iconBefore={
       <img
         alt=""
         className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
@@ -1213,11 +1381,18 @@ exports[`TreeNodeComponent renders a loading spinner if the node is loading: loa
 >
   <TreeItemLayout
     actions={false}
-    className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
     expandIcon={
       <Spinner
         size="extra-tiny"
+      />
+    }
+    iconBefore={
+      <img
+        alt=""
+        className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+        src="rootIcon"
       />
     }
   >
@@ -1240,11 +1415,18 @@ exports[`TreeNodeComponent renders a node as expandable if it has empty, but def
 >
   <TreeItemLayout
     actions={false}
-    className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
     expandIcon={
       <ChevronRight20Regular
         data-text="TreeNode/ExpandIcon"
+      />
+    }
+    iconBefore={
+      <img
+        alt=""
+        className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+        src="rootIcon"
       />
     }
   >
@@ -1313,9 +1495,9 @@ exports[`TreeNodeComponent renders a node with a menu 1`] = `
             "className": "___1r8p62d_0000000 f1xg1ack f1e31b4d",
           }
         }
-        className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+        className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
         data-test="TreeNode:root"
-        expandIcon={
+        iconBefore={
           <img
             alt=""
             className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
@@ -1363,9 +1545,9 @@ exports[`TreeNodeComponent renders a single node 1`] = `
 >
   <TreeItemLayout
     actions={false}
-    className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={
+    iconBefore={
       <img
         alt=""
         className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
@@ -1392,9 +1574,9 @@ exports[`TreeNodeComponent renders an icon if the node has one 1`] = `
 >
   <TreeItemLayout
     actions={false}
-    className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={
+    iconBefore={
       <img
         alt=""
         className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
@@ -1421,11 +1603,18 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
 >
   <TreeItemLayout
     actions={false}
-    className="___kqkdor0_ihxn0o0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1nfm20t f1do9gdl"
+    className="___rq9vxg0_1ykn2d2 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1nfm20t f1do9gdl"
     data-test="TreeNode:root"
     expandIcon={
       <ChevronRight20Regular
         data-text="TreeNode/ExpandIcon"
+      />
+    }
+    iconBefore={
+      <img
+        alt=""
+        className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+        src="rootIcon"
       />
     }
   >
@@ -1436,7 +1625,7 @@ exports[`TreeNodeComponent renders selected parent node as selected if no descen
     </span>
   </TreeItemLayout>
   <Tree
-    className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+    className="___17a32do_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp f19d5ny4 fzz4f4n"
     data-test="Tree:root"
   >
     <TreeNodeComponent
@@ -1497,11 +1686,18 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
 >
   <TreeItemLayout
     actions={false}
-    className="___1kqyw53_iy2icj0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1do9gdl"
+    className="___z7owk70_14ep1pe fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1do9gdl"
     data-test="TreeNode:root"
     expandIcon={
       <ChevronRight20Regular
         data-text="TreeNode/ExpandIcon"
+      />
+    }
+    iconBefore={
+      <img
+        alt=""
+        className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"
+        src="rootIcon"
       />
     }
   >
@@ -1512,7 +1708,7 @@ exports[`TreeNodeComponent renders selected parent node as unselected if any des
     </span>
   </TreeItemLayout>
   <Tree
-    className="___jy13a00_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp fhxm7u5 fzz4f4n"
+    className="___17a32do_0000000 f1acs6jw f11qra4b fepn2xe f1nbblvp f19d5ny4 fzz4f4n"
     data-test="Tree:root"
   >
     <TreeNodeComponent
@@ -1574,9 +1770,9 @@ exports[`TreeNodeComponent renders single selected leaf node as selected 1`] = `
 >
   <TreeItemLayout
     actions={false}
-    className="___kqkdor0_ihxn0o0 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1k1erfc f1n8cmsf f1ktbui8 f1nfm20t f1do9gdl"
+    className="___rq9vxg0_1ykn2d2 fkhj508 fbv8p0b f1f09k3d fg706s2 frpde29 f1n8cmsf f1ktbui8 f1nfm20t f1do9gdl"
     data-test="TreeNode:root"
-    expandIcon={
+    iconBefore={
       <img
         alt=""
         className="___i3nbrx0_0000000 f1do9gdl fbv8p0b"

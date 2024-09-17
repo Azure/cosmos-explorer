@@ -1,6 +1,7 @@
 import * as msal from "@azure/msal-browser";
 import { Link } from "@fluentui/react/lib/Link";
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
+import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
 import { MessageTypes } from "Contracts/ExplorerContracts";
@@ -1119,7 +1120,7 @@ export default class Explorer {
     }
   }
 
-  public openUploadItemsPanePane(): void {
+  public openUploadItemsPane(): void {
     useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
   }
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
@@ -1178,7 +1179,11 @@ export default class Explorer {
   }
 
   public async configureCopilot(): Promise<void> {
-    if (userContext.apiType !== "SQL" || !userContext.subscriptionId) {
+    if (
+      userContext.apiType !== "SQL" ||
+      !userContext.subscriptionId ||
+      ![Environment.Development, Environment.Mpac, Environment.Prod].includes(getEnvironment())
+    ) {
       return;
     }
     const copilotEnabledPromise = getCopilotEnabled();
