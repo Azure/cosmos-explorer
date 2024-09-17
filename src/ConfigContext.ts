@@ -54,10 +54,8 @@ export interface ConfigContext {
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT: string;
   NEW_MONGO_APIS?: string[];
-  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
   CASSANDRA_PROXY_ENDPOINT: string;
   NEW_CASSANDRA_APIS?: string[];
-  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: boolean;
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -119,10 +117,8 @@ let configContext: Readonly<ConfigContext> = {
     "legacyMongoShell",
     // "bulkdelete",
   ],
-  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
-  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
 };
@@ -256,3 +252,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
