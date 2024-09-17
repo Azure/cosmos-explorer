@@ -135,6 +135,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onEntityValueChange={onEntityValueChange}
           onSelectDate={onSelectDate}
           onEntityTimeValueChange={onEntityTimeValueChange}
+          entityProperty={entityProperty}
         />
         {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
