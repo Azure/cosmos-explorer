@@ -1025,7 +1025,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           );
         },
       )
-      .then(() => setSelectedRows(new Set([documentIds.length - 1])))
+      .then(() => {
+        setSelectedRows(new Set([documentIds.length - 1]));
+        setClickedRowIndex(documentIds.length - 1);
+      })
       .finally(() => setIsExecuting(false));
   }, [
     onExecutionErrorChange,
