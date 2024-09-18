@@ -124,7 +124,7 @@ export const extractPartitionKeyValues = (
     const pathSegments: string[] = partitionKeyPath.substring(1).split("/");
     const value = getValueForPath(documentContent, pathSegments);
 
-    if (value) {
+    if (value !== undefined) {
       partitionKeyValues.push(value);
     }
   });
