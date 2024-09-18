@@ -4,7 +4,7 @@ import * as sinon from "sinon";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
-import { defaultQueryFields, extractPartitionKeyValues } from "./QueryUtils";
+import { defaultQueryFields, extractPartitionKeyValues, getValueForPath } from "./QueryUtils";
 
 describe("Query Utils", () => {
   const generatePartitionKeyForPath = (path: string): DataModels.PartitionKey => {
@@ -108,6 +108,49 @@ describe("Query Utils", () => {
       await QueryUtils.queryPagesUntilContentPresent(0, queryStub);
       expect(queryStub.callCount).toBe(1);
       expect(queryStub.getCall(0).args[0]).toBe(0);
+    });
+  });
+
+  describe("getValueForPath", () => {
+    const documentContent = {
+      "Volcano Name": "Adams",
+      Country: "United States",
+      Region: "US-Washington",
+      Location: {
+        type: "Point",
+        coordinates: [-121.49, 46.206],
+      },
+      Elevation: 3742,
+      Type: "Stratovolcano",
+      Category: "",
+      Status: "Tephrochronology",
+      "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
+      id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
+      _rid: "xzo0AJRYUxUFAAAAAAAAAA==",
+      _self: "dbs/xzo0AA==/colls/xzo0AJRYUxU=/docs/xzo0AJRYUxUFAAAAAAAAAA==/",
+      _etag: '"ce00fa43-0000-0100-0000-652840440000"',
+      _attachments: "attachments/",
+      _ts: 1697136708,
+    };
+    it("should return the correct value for a simple path", () => {
+      const pathSegments = ["Volcano Name"];
+      expect(getValueForPath(documentContent, pathSegments)).toBe("Adams");
+    });
+    it("should return the correct value for a nested path", () => {
+      const pathSegments = ["Location", "coordinates"];
+      expect(getValueForPath(documentContent, pathSegments)).toEqual([-121.49, 46.206]);
+    });
+    it("should return undefined for a non-existing path", () => {
+      const pathSegments = ["NonExistent", "Path"];
+      expect(getValueForPath(documentContent, pathSegments)).toBeUndefined();
+    });
+    it("should return undefined for an invalid path", () => {
+      const pathSegments = ["Location", "InvalidKey"];
+      expect(getValueForPath(documentContent, pathSegments)).toBeUndefined();
+    });
+    it("should return the root object if pathSegments is empty", () => {
+      const pathSegments: string[] = [];
+      expect(getValueForPath(documentContent, pathSegments)).toBeUndefined();
     });
   });
 

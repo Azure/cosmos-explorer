@@ -97,6 +97,10 @@ export const queryPagesUntilContentPresent = async (
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const getValueForPath = (content: any, pathSegments: string[]): any => {
+  if (pathSegments.length === 0) {
+    return undefined;
+  }
+
   let currentValue = content;
 
   for (const segment of pathSegments) {
