@@ -189,5 +189,18 @@ describe("Query Utils", () => {
       );
       expect(partitionKeyValues.length).toBe(0);
     });
+
+    it("should extract all partition key values for hierarchical and nested partition keys", () => {
+      const mixedPartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Country", "/Location/type"],
+      };
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        mixedPartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(2);
+      expect(partitionKeyValues).toEqual(["United States", "Point"]);
+    });
   });
 });
