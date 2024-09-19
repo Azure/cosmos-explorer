@@ -128,8 +128,14 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     this.sqlQuery = ko.observable<string>("SELECT * FROM c");
   }
 
-  public getTableEntityKeys(rowKey: string): Entities.IProperty[] {
-    return [{ key: Constants.EntityKeyNames.RowKey, value: rowKey }];
+  public getTableEntityKeys(rowKey: string, partitionKey: string): Entities.IProperty[] {
+    const properties: Entities.IProperty[] = [{ key: Constants.EntityKeyNames.RowKey, value: rowKey }];
+
+    if (partitionKey) {
+      properties.push({ key: Constants.EntityKeyNames.PartitionKey, value: partitionKey });
+    }
+
+    return properties;
   }
 
   public reloadTable(useSetting: boolean = true, resetHeaders: boolean = true): DataTables.Api<Element> {
@@ -261,7 +267,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     }
     var oldEntityIndex: number = _.findIndex(
       this.cache.data,
-      (data: Entities.ITableEntity) => data.RowKey._ === entity.RowKey._,
+      (data: Entities.ITableEntity) =>
+        data.RowKey._ === entity.RowKey._ && data.PartitionKey._ === entity.PartitionKey._,
     );
 
     this.cache.data.splice(oldEntityIndex, 1, entity);
@@ -285,7 +292,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       entities.forEach((entity: Entities.ITableEntity) => {
         var cachedIndex: number = _.findIndex(
           this.cache.data,
-          (e: Entities.ITableEntity) => e.RowKey._ === entity.RowKey._,
+          (e: Entities.ITableEntity) => e.RowKey._ === entity.RowKey._ && e.PartitionKey._ === entity.PartitionKey._,
         );
         if (cachedIndex >= 0) {
           this.cache.data.splice(cachedIndex, 1);
@@ -390,6 +397,16 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   protected matchesKeys(item: Entities.ITableEntity, itemKeys: Entities.IProperty[]): boolean {
     return itemKeys.every((property: Entities.IProperty) => {
       return this.stringCompare(item[property.key]._, property.value);
+    });
+  }
+
+  // Override as Tables can have the same Row key in different Partition keys
+  /**
+   * @override
+   */
+  public getItemFromCurrentPage(itemKeys: Entities.IProperty[]): Entities.ITableEntity {
+    return _.find(this.items(), (item: Entities.ITableEntity) => {
+      return this.matchesKeys(item, itemKeys);
     });
   }
 

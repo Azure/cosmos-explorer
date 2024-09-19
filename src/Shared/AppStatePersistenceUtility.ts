@@ -4,6 +4,7 @@ import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 export enum AppStateComponentNames {
   DocumentsTab = "DocumentsTab",
   MostRecentActivity = "MostRecentActivity",
+  QueryCopilot = "QueryCopilot",
 }
 
 export const PATH_SEPARATOR = "/"; // export for testing purposes
@@ -18,7 +19,8 @@ export interface StateData {
   data: unknown;
 }
 
-type StorePath = {
+// Export for testing purposes
+export type StorePath = {
   componentName: AppStateComponentNames;
   subComponentName?: string;
   globalAccountName?: string;

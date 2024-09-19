@@ -1,7 +1,7 @@
-import { IMessageBarStyles, Link, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { IMessageBarStyles, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
-import { Platform, configContext, updateConfigContext } from "ConfigContext";
+import { configContext } from "ConfigContext";
 import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
@@ -16,7 +16,6 @@ import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
-import { hasRUThresholdBeenConfigured } from "Shared/StorageUtility";
 import { userContext } from "UserContext";
 import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -37,9 +36,6 @@ interface TabsProps {
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
-  const [showRUThresholdMessageBar, setShowRUThresholdMessageBar] = useState<boolean>(
-    userContext.apiType === "SQL" && configContext.platform !== Platform.Fabric && !hasRUThresholdBeenConfigured(),
-  );
   const [
     showMongoAndCassandraProxiesNetworkSettingsWarningState,
     setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
@@ -85,30 +81,6 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
         >
           {networkSettingsWarning}
-        </MessageBar>
-      )}
-      {showRUThresholdMessageBar && (
-        <MessageBar
-          messageBarType={MessageBarType.info}
-          onDismiss={() => {
-            setShowRUThresholdMessageBar(false);
-          }}
-          styles={{
-            ...defaultMessageBarStyles,
-            innerText: {
-              fontWeight: "bold",
-            },
-          }}
-          dismissButtonAriaLabel="Close info"
-        >
-          {`Data Explorer has a 5,000 RU default limit. To adjust the limit, go to the Settings page and find "RU Threshold".`}
-          <Link
-            className="underlinedLink"
-            href="https://review.learn.microsoft.com/en-us/azure/cosmos-db/data-explorer?branch=main#configure-request-unit-threshold"
-            target="_blank"
-          >
-            Learn More
-          </Link>
         </MessageBar>
       )}
       {showMongoAndCassandraProxiesNetworkSettingsWarningState && (
@@ -398,12 +370,6 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
         ipAddressesFromIPRules.includes(mongoProxyOutboundIP),
       );
 
-      if (ipRulesIncludeMongoProxy) {
-        updateConfigContext({
-          MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
-        });
-      }
-
       return !ipRulesIncludeMongoProxy;
     } else if (userContext.apiType === "Cassandra") {
       const isProdOrMpacCassandraProxyEndpoint: boolean = [
@@ -421,12 +387,6 @@ const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
       const ipRulesIncludeCassandraProxy: boolean = cassandraProxyOutboundIPs.every(
         (cassandraProxyOutboundIP: string) => ipAddressesFromIPRules.includes(cassandraProxyOutboundIP),
       );
-
-      if (ipRulesIncludeCassandraProxy) {
-        updateConfigContext({
-          CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: true,
-        });
-      }
 
       return !ipRulesIncludeCassandraProxy;
     }

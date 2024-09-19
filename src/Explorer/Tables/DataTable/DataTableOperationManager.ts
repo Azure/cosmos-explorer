@@ -56,7 +56,10 @@ export default class DataTableOperationManager {
       // Simply select the first item in this case.
       var lastSelectedItemIndex = lastSelectedItem
         ? this._tableEntityListViewModel.getItemIndexFromCurrentPage(
-            this._tableEntityListViewModel.getTableEntityKeys(lastSelectedItem.RowKey._),
+            this._tableEntityListViewModel.getTableEntityKeys(
+              lastSelectedItem.RowKey._,
+              lastSelectedItem.PartitionKey && lastSelectedItem.PartitionKey._,
+            ),
           )
         : -1;
       var nextIndex: number = isUpArrowKey ? lastSelectedItemIndex - 1 : lastSelectedItemIndex + 1;
@@ -147,13 +150,14 @@ export default class DataTableOperationManager {
   private getEntityIdentity($elem: JQuery<Element>): Entities.ITableEntityIdentity {
     return {
       RowKey: $elem.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr),
+      PartitionKey: $elem.attr(Constants.htmlAttributeNames.dataTablePartitionKeyAttr),
     };
   }
 
   private updateLastSelectedItem($elem: JQuery<Element>, isShiftSelect: boolean) {
     var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
     var entity = this._tableEntityListViewModel.getItemFromCurrentPage(
-      this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
+      this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.PartitionKey, entityIdentity.RowKey),
     );
 
     this._tableEntityListViewModel.lastSelectedItem = entity;
@@ -168,7 +172,7 @@ export default class DataTableOperationManager {
       var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
 
       this._tableEntityListViewModel.clearSelection();
-      this.addToSelection(entityIdentity.RowKey);
+      this.addToSelection(entityIdentity.RowKey, entityIdentity.PartitionKey);
     }
   }
 
@@ -190,11 +194,11 @@ export default class DataTableOperationManager {
 
       if (
         !this._tableEntityListViewModel.isItemSelected(
-          this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
+          this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.PartitionKey, entityIdentity.RowKey),
         )
       ) {
         // Adding item not previously in selection
-        this.addToSelection(entityIdentity.RowKey);
+        this.addToSelection(entityIdentity.RowKey, entityIdentity.PartitionKey);
       } else {
         koSelected.remove((item: Entities.ITableEntity) => item.RowKey._ === entityIdentity.RowKey);
       }
@@ -212,10 +216,10 @@ export default class DataTableOperationManager {
     if (anchorItem) {
       var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
       var elementIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
-        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
+        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.PartitionKey, entityIdentity.RowKey),
       );
       var anchorIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
-        this._tableEntityListViewModel.getTableEntityKeys(anchorItem.RowKey._),
+        this._tableEntityListViewModel.getTableEntityKeys(anchorItem.PartitionKey._, anchorItem.RowKey._),
       );
 
       var startIndex = Math.min(elementIndex, anchorIndex);
@@ -234,24 +238,25 @@ export default class DataTableOperationManager {
 
     if (
       !this._tableEntityListViewModel.isItemSelected(
-        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey),
+        this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.PartitionKey, entityIdentity.RowKey),
       )
     ) {
       if (this._tableEntityListViewModel.selected().length) {
         this._tableEntityListViewModel.clearSelection();
       }
-      this.addToSelection(entityIdentity.RowKey);
+      this.addToSelection(entityIdentity.RowKey, entityIdentity.PartitionKey);
     }
   }
 
-  private addToSelection(rowKey: string) {
+  private addToSelection(rowKey: string, partitionKey?: string) {
     var selectedEntity: Entities.ITableEntity = this._tableEntityListViewModel.getItemFromCurrentPage(
-      this._tableEntityListViewModel.getTableEntityKeys(rowKey),
+      this._tableEntityListViewModel.getTableEntityKeys(rowKey, partitionKey),
     );
 
     if (selectedEntity != null) {
       this._tableEntityListViewModel.selected.push(selectedEntity);
     }
+    console.log(this._tableEntityListViewModel.selected().length);
   }
 
   // Selecting first row if the selection is empty.
@@ -269,7 +274,7 @@ export default class DataTableOperationManager {
       // Clear last selection: lastSelectedItem and lastSelectedAnchorItem
       this._tableEntityListViewModel.clearLastSelected();
 
-      this.addToSelection(firstEntity.RowKey._);
+      this.addToSelection(firstEntity.RowKey._, firstEntity.PartitionKey && firstEntity.PartitionKey._);
 
       // Update last selection
       this._tableEntityListViewModel.lastSelectedItem = firstEntity;

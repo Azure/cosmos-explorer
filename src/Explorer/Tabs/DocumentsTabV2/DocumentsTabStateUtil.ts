@@ -14,6 +14,7 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 const componentName = AppStateComponentNames.DocumentsTab;
+
 export enum SubComponentName {
   ColumnSizes = "ColumnSizes",
   FilterHistory = "FilterHistory",
