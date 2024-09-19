@@ -96,6 +96,24 @@ export const queryPagesUntilContentPresent = async (
 };
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+export const getValueForPath = (content: any, pathSegments: string[]): any => {
+  if (pathSegments.length === 0) {
+    return undefined;
+  }
+
+  let currentValue = content;
+
+  for (const segment of pathSegments) {
+    if (!currentValue || currentValue[segment] === undefined) {
+      return undefined;
+    }
+    currentValue = currentValue[segment];
+  }
+
+  return currentValue;
+};
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export const extractPartitionKeyValues = (
   documentContent: any,
   partitionKeyDefinition: PartitionKeyDefinition,
@@ -105,11 +123,15 @@ export const extractPartitionKeyValues = (
   }
 
   const partitionKeyValues: PartitionKey[] = [];
+
   partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
-    const partitionKeyPathWithoutSlash: string = partitionKeyPath.substring(1);
-    if (documentContent[partitionKeyPathWithoutSlash] !== undefined) {
-      partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
+    const pathSegments: string[] = partitionKeyPath.substring(1).split("/");
+    const value = getValueForPath(documentContent, pathSegments);
+
+    if (value !== undefined) {
+      partitionKeyValues.push(value);
     }
   });
+
   return partitionKeyValues;
 };
