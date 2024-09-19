@@ -6,6 +6,27 @@ import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
 import { defaultQueryFields, extractPartitionKeyValues, getValueForPath } from "./QueryUtils";
 
+const documentContent = {
+  "Volcano Name": "Adams",
+  Country: "United States",
+  Region: "US-Washington",
+  Location: {
+    type: "Point",
+    coordinates: [-121.49, 46.206],
+  },
+  Elevation: 3742,
+  Type: "Stratovolcano",
+  Category: "",
+  Status: "Tephrochronology",
+  "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
+  id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
+  _rid: "xzo0AJRYUxUFAAAAAAAAAA==",
+  _self: "dbs/xzo0AA==/colls/xzo0AJRYUxU=/docs/xzo0AJRYUxUFAAAAAAAAAA==/",
+  _etag: '"ce00fa43-0000-0100-0000-652840440000"',
+  _attachments: "attachments/",
+  _ts: 1697136708,
+};
+
 describe("Query Utils", () => {
   const generatePartitionKeyForPath = (path: string): DataModels.PartitionKey => {
     return {
@@ -112,26 +133,6 @@ describe("Query Utils", () => {
   });
 
   describe("getValueForPath", () => {
-    const documentContent = {
-      "Volcano Name": "Adams",
-      Country: "United States",
-      Region: "US-Washington",
-      Location: {
-        type: "Point",
-        coordinates: [-121.49, 46.206],
-      },
-      Elevation: 3742,
-      Type: "Stratovolcano",
-      Category: "",
-      Status: "Tephrochronology",
-      "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
-      id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
-      _rid: "xzo0AJRYUxUFAAAAAAAAAA==",
-      _self: "dbs/xzo0AA==/colls/xzo0AJRYUxU=/docs/xzo0AJRYUxUFAAAAAAAAAA==/",
-      _etag: '"ce00fa43-0000-0100-0000-652840440000"',
-      _attachments: "attachments/",
-      _ts: 1697136708,
-    };
     it("should return the correct value for a simple path", () => {
       const pathSegments = ["Volcano Name"];
       expect(getValueForPath(documentContent, pathSegments)).toBe("Adams");
@@ -155,27 +156,6 @@ describe("Query Utils", () => {
   });
 
   describe("extractPartitionKey", () => {
-    const documentContent = {
-      "Volcano Name": "Adams",
-      Country: "United States",
-      Region: "US-Washington",
-      Location: {
-        type: "Point",
-        coordinates: [-121.49, 46.206],
-      },
-      Elevation: 3742,
-      Type: "Stratovolcano",
-      Category: "",
-      Status: "Tephrochronology",
-      "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
-      id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
-      _rid: "xzo0AJRYUxUFAAAAAAAAAA==",
-      _self: "dbs/xzo0AA==/colls/xzo0AJRYUxU=/docs/xzo0AJRYUxUFAAAAAAAAAA==/",
-      _etag: '"ce00fa43-0000-0100-0000-652840440000"',
-      _attachments: "attachments/",
-      _ts: 1697136708,
-    };
-
     it("should extract single partition key value", () => {
       const singlePartitionKeyDefinition: PartitionKeyDefinition = {
         kind: PartitionKeyKind.Hash,
