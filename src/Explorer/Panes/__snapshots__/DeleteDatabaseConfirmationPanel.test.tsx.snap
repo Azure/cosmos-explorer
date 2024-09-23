@@ -361,13 +361,11 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             <span
               className="css-113"
             >
-              Confirm by typing the 
-              Database
-               id
+              Confirm by typing the Database id (name)
             </span>
           </Text>
           <StyledTextFieldBase
-            ariaLabel="Confirm by typing the Database id"
+            ariaLabel="Confirm by typing the Database id (name)"
             autoFocus={true}
             data-test="Input:confirmDatabaseId"
             id="confirmDatabaseId"
@@ -382,7 +380,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             }
           >
             <TextFieldBase
-              ariaLabel="Confirm by typing the Database id"
+              ariaLabel="Confirm by typing the Database id (name)"
               autoFocus={true}
               data-test="Input:confirmDatabaseId"
               deferredValidationTime={200}
@@ -677,7 +675,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                   >
                     <input
                       aria-invalid={false}
-                      aria-label="Confirm by typing the Database id"
+                      aria-label="Confirm by typing the Database id (name)"
                       autoFocus={true}
                       className="ms-TextField-field field-117"
                       data-test="Input:confirmDatabaseId"
