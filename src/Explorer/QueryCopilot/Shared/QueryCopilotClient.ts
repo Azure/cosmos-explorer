@@ -26,7 +26,7 @@ import {
 import { AuthorizationTokenHeaderMetadata, QueryResults } from "Contracts/ViewModels";
 import { useDialog } from "Explorer/Controls/Dialog";
 import Explorer from "Explorer/Explorer";
-import { querySampleDocuments } from "Explorer/QueryCopilot/QueryCopilotUtilities";
+import { querySampleDocuments, readCopilotToggleStatus } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import { FeedbackParams, GenerateSQLQueryResponse } from "Explorer/QueryCopilot/Shared/QueryCopilotInterfaces";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "Shared/Telemetry/TelemetryProcessor";
@@ -36,7 +36,6 @@ import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { queryPagesUntilContentPresent } from "Utils/QueryUtils";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
 import { useTabs } from "hooks/useTabs";
-import * as StringUtility from "../../../Shared/StringUtility";
 
 async function fetchWithTimeout(
   url: string,
@@ -361,9 +360,7 @@ export const QueryDocumentsPerPage = async (
       correlationId: useQueryCopilot.getState().correlationId,
     });
   } catch (error) {
-    const isCopilotActive = StringUtility.toBoolean(
-      localStorage.getItem(`${userContext.databaseAccount?.id}-queryCopilotToggleStatus`),
-    );
+    const isCopilotActive = readCopilotToggleStatus(userContext.databaseAccount);
     const errorMessage = getErrorMessage(error);
     traceFailure(Action.ExecuteQueryGeneratedFromQueryCopilot, {
       correlationId: useQueryCopilot.getState().correlationId,

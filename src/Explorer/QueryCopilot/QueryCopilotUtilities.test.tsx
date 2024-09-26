@@ -90,7 +90,7 @@ describe("QueryCopilotUtilities", () => {
 
       // Mock the items.query method to return the mockResult
       (
-        sampleDataClient().database("CopilotSampleDb").container("SampleContainer").items.query as jest.Mock
+        sampleDataClient().database("CopilotSampleDB").container("SampleContainer").items.query as jest.Mock
       ).mockReturnValue(mockResult);
 
       const result = querySampleDocuments(query, options);
@@ -119,10 +119,10 @@ describe("QueryCopilotUtilities", () => {
       const result = await readSampleDocument(documentId);
 
       expect(sampleDataClient).toHaveBeenCalled();
-      expect(sampleDataClient().database).toHaveBeenCalledWith("CopilotSampleDb");
-      expect(sampleDataClient().database("CopilotSampleDb").container).toHaveBeenCalledWith("SampleContainer");
+      expect(sampleDataClient().database).toHaveBeenCalledWith("CopilotSampleDB");
+      expect(sampleDataClient().database("CopilotSampleDB").container).toHaveBeenCalledWith("SampleContainer");
       expect(
-        sampleDataClient().database("CopilotSampleDb").container("SampleContainer").item("DocumentId", undefined).read,
+        sampleDataClient().database("CopilotSampleDB").container("SampleContainer").item("DocumentId", undefined).read,
       ).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -144,10 +144,10 @@ describe("QueryCopilotUtilities", () => {
       await expect(readSampleDocument(documentId)).rejects.toStrictEqual(errorMock);
 
       expect(sampleDataClient).toHaveBeenCalled();
-      expect(sampleDataClient().database).toHaveBeenCalledWith("CopilotSampleDb");
-      expect(sampleDataClient().database("CopilotSampleDb").container).toHaveBeenCalledWith("SampleContainer");
+      expect(sampleDataClient().database).toHaveBeenCalledWith("CopilotSampleDB");
+      expect(sampleDataClient().database("CopilotSampleDB").container).toHaveBeenCalledWith("SampleContainer");
       expect(
-        sampleDataClient().database("CopilotSampleDb").container("SampleContainer").item("DocumentId", undefined).read,
+        sampleDataClient().database("CopilotSampleDB").container("SampleContainer").item("DocumentId", undefined).read,
       ).toHaveBeenCalled();
       expect(handleError).toHaveBeenCalledWith(errorMock, "ReadDocument", expect.any(String));
     });

@@ -1,8 +1,13 @@
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 
 // The component name whose state is being saved. Component name must not include special characters.
-export type ComponentName = "DocumentsTab";
+export enum AppStateComponentNames {
+  DocumentsTab = "DocumentsTab",
+  MostRecentActivity = "MostRecentActivity",
+  QueryCopilot = "QueryCopilot",
+}
 
+export const PATH_SEPARATOR = "/"; // export for testing purposes
 const SCHEMA_VERSION = 1;
 
 // Export for testing purposes
@@ -14,8 +19,9 @@ export interface StateData {
   data: unknown;
 }
 
-type StorePath = {
-  componentName: string;
+// Export for testing purposes
+export type StorePath = {
+  componentName: AppStateComponentNames;
   subComponentName?: string;
   globalAccountName?: string;
   databaseName?: string;
@@ -29,6 +35,7 @@ export const loadState = (path: StorePath): unknown => {
   const key = createKeyFromPath(path);
   return appState[key]?.data;
 };
+
 export const saveState = (path: StorePath, state: unknown): void => {
   // Retrieve state object
   const appState =
@@ -60,6 +67,10 @@ export const deleteState = (path: StorePath): void => {
   LocalStorageUtility.setEntryObject(StorageKey.AppState, appState);
 };
 
+export const hasState = (path: StorePath): boolean => {
+  return loadState(path) !== undefined;
+};
+
 // This is for high-frequency state changes
 let timeoutId: NodeJS.Timeout | undefined;
 export const saveStateDebounced = (path: StorePath, state: unknown, debounceDelayMs = 1000): void => {
@@ -87,16 +98,10 @@ const orderedPathSegments: (keyof StorePath)[] = [
  * @param path
  */
 export const createKeyFromPath = (path: StorePath): string => {
-  if (path.componentName.includes("/")) {
-    throw new Error(`Invalid component name: ${path.componentName}`);
-  }
-  let key = `/${path.componentName}`; // ComponentName is always there
+  let key = `${PATH_SEPARATOR}${encodeURIComponent(path.componentName)}`; // ComponentName is always there
   orderedPathSegments.forEach((segment) => {
     const segmentValue = path[segment as keyof StorePath];
-    if (segmentValue.includes("/")) {
-      throw new Error(`Invalid setting path segment: ${segment}`);
-    }
-    key += `/${segmentValue !== undefined ? segmentValue : ""}`;
+    key += `${PATH_SEPARATOR}${segmentValue !== undefined ? encodeURIComponent(segmentValue) : ""}`;
   });
   return key;
 };

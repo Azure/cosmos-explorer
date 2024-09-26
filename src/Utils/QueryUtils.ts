@@ -2,18 +2,29 @@ import { PartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 
+export const defaultQueryFields = ["id", "_self", "_rid", "_ts"];
+
 export function buildDocumentsQuery(
   filter: string,
   partitionKeyProperties: string[],
   partitionKey: DataModels.PartitionKey,
+  additionalField: string[] = [],
 ): string {
+  const fieldSet = new Set<string>(defaultQueryFields);
+  additionalField.forEach((prop) => {
+    if (!partitionKeyProperties.includes(prop)) {
+      fieldSet.add(prop);
+    }
+  });
+
+  const objectListSpec = [...fieldSet].map((prop) => `c.${prop}`).join(",");
   let query =
     partitionKeyProperties && partitionKeyProperties.length > 0
-      ? `select c.id, c._self, c._rid, c._ts, [${buildDocumentsQueryPartitionProjections(
+      ? `select ${objectListSpec}, [${buildDocumentsQueryPartitionProjections(
           "c",
           partitionKey,
         )}] as _partitionKeyValue from c`
-      : `select c.id, c._self, c._rid, c._ts from c`;
+      : `select ${objectListSpec} from c`;
 
   if (filter) {
     query += " " + filter;
@@ -85,6 +96,24 @@ export const queryPagesUntilContentPresent = async (
 };
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+export const getValueForPath = (content: any, pathSegments: string[]): any => {
+  if (pathSegments.length === 0) {
+    return undefined;
+  }
+
+  let currentValue = content;
+
+  for (const segment of pathSegments) {
+    if (!currentValue || currentValue[segment] === undefined) {
+      return undefined;
+    }
+    currentValue = currentValue[segment];
+  }
+
+  return currentValue;
+};
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export const extractPartitionKeyValues = (
   documentContent: any,
   partitionKeyDefinition: PartitionKeyDefinition,
@@ -94,11 +123,15 @@ export const extractPartitionKeyValues = (
   }
 
   const partitionKeyValues: PartitionKey[] = [];
+
   partitionKeyDefinition.paths.forEach((partitionKeyPath: string) => {
-    const partitionKeyPathWithoutSlash: string = partitionKeyPath.substring(1);
-    if (documentContent[partitionKeyPathWithoutSlash] !== undefined) {
-      partitionKeyValues.push(documentContent[partitionKeyPathWithoutSlash]);
+    const pathSegments: string[] = partitionKeyPath.substring(1).split("/");
+    const value = getValueForPath(documentContent, pathSegments);
+
+    if (value !== undefined) {
+      partitionKeyValues.push(value);
     }
   });
+
   return partitionKeyValues;
 };

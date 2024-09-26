@@ -171,7 +171,7 @@ export const QueryCopilotCarousel: React.FC<QueryCopilotCarouselProps> = ({
               the query builder.
             </Text>
             <Text style={{ fontSize: 13, fontWeight: 600, marginTop: 24 }}>Database Id</Text>
-            <Text style={{ fontSize: 13 }}>CopilotSampleDb</Text>
+            <Text style={{ fontSize: 13 }}>CopilotSampleDB</Text>
             <Text style={{ fontSize: 13, fontWeight: 600, marginTop: 16 }}>Database throughput (autoscale)</Text>
             <Text style={{ fontSize: 13 }}>Autoscale</Text>
             <Text style={{ fontSize: 13, fontWeight: 600, marginTop: 16 }}>Database Max RU/s</Text>

@@ -4,7 +4,28 @@ import * as sinon from "sinon";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
-import { extractPartitionKeyValues } from "./QueryUtils";
+import { defaultQueryFields, extractPartitionKeyValues, getValueForPath } from "./QueryUtils";
+
+const documentContent = {
+  "Volcano Name": "Adams",
+  Country: "United States",
+  Region: "US-Washington",
+  Location: {
+    type: "Point",
+    coordinates: [-121.49, 46.206],
+  },
+  Elevation: 3742,
+  Type: "Stratovolcano",
+  Category: "",
+  Status: "Tephrochronology",
+  "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
+  id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
+  _rid: "xzo0AJRYUxUFAAAAAAAAAA==",
+  _self: "dbs/xzo0AA==/colls/xzo0AJRYUxU=/docs/xzo0AJRYUxUFAAAAAAAAAA==/",
+  _etag: '"ce00fa43-0000-0100-0000-652840440000"',
+  _attachments: "attachments/",
+  _ts: 1697136708,
+};
 
 describe("Query Utils", () => {
   const generatePartitionKeyForPath = (path: string): DataModels.PartitionKey => {
@@ -54,6 +75,20 @@ describe("Query Utils", () => {
 
       expect(partitionProjection).toContain('c["\\\\\\"a\\\\\\""]');
     });
+
+    it("should always include the default fields", () => {
+      const query: string = QueryUtils.buildDocumentsQuery("", [], generatePartitionKeyForPath("/a"), []);
+
+      defaultQueryFields.forEach((field) => {
+        expect(query).toContain(`c.${field}`);
+      });
+    });
+
+    it("should always include the default fields even if they are themselves partition key fields", () => {
+      const query: string = QueryUtils.buildDocumentsQuery("", ["id"], generatePartitionKeyForPath("/id"), ["id"]);
+
+      expect(query).toContain("c.id");
+    });
   });
 
   describe("queryPagesUntilContentPresent()", () => {
@@ -97,28 +132,30 @@ describe("Query Utils", () => {
     });
   });
 
-  describe("extractPartitionKey", () => {
-    const documentContent = {
-      "Volcano Name": "Adams",
-      Country: "United States",
-      Region: "US-Washington",
-      Location: {
-        type: "Point",
-        coordinates: [-121.49, 46.206],
-      },
-      Elevation: 3742,
-      Type: "Stratovolcano",
-      Category: "",
-      Status: "Tephrochronology",
-      "Last Known Eruption": "Last known eruption from A.D. 1-1499, inclusive",
-      id: "9e3c494e-8367-3f50-1f56-8c6fcb961363",
-      _rid: "xzo0AJRYUxUFAAAAAAAAAA==",
-      _self: "dbs/xzo0AA==/colls/xzo0AJRYUxU=/docs/xzo0AJRYUxUFAAAAAAAAAA==/",
-      _etag: '"ce00fa43-0000-0100-0000-652840440000"',
-      _attachments: "attachments/",
-      _ts: 1697136708,
-    };
+  describe("getValueForPath", () => {
+    it("should return the correct value for a simple path", () => {
+      const pathSegments = ["Volcano Name"];
+      expect(getValueForPath(documentContent, pathSegments)).toBe("Adams");
+    });
+    it("should return the correct value for a nested path", () => {
+      const pathSegments = ["Location", "coordinates"];
+      expect(getValueForPath(documentContent, pathSegments)).toEqual([-121.49, 46.206]);
+    });
+    it("should return undefined for a non-existing path", () => {
+      const pathSegments = ["NonExistent", "Path"];
+      expect(getValueForPath(documentContent, pathSegments)).toBeUndefined();
+    });
+    it("should return undefined for an invalid path", () => {
+      const pathSegments = ["Location", "InvalidKey"];
+      expect(getValueForPath(documentContent, pathSegments)).toBeUndefined();
+    });
+    it("should return the root object if pathSegments is empty", () => {
+      const pathSegments: string[] = [];
+      expect(getValueForPath(documentContent, pathSegments)).toBeUndefined();
+    });
+  });
 
+  describe("extractPartitionKey", () => {
     it("should extract single partition key value", () => {
       const singlePartitionKeyDefinition: PartitionKeyDefinition = {
         kind: PartitionKeyKind.Hash,
@@ -174,6 +211,19 @@ describe("Query Utils", () => {
         singlePartitionKeyDefinition,
       );
       expect(partitionKeyValues.length).toBe(0);
+    });
+
+    it("should extract all partition key values for hierarchical and nested partition keys", () => {
+      const mixedPartitionKeyDefinition: PartitionKeyDefinition = {
+        kind: PartitionKeyKind.MultiHash,
+        paths: ["/Country", "/Location/type"],
+      };
+      const partitionKeyValues: PartitionKey[] = extractPartitionKeyValues(
+        documentContent,
+        mixedPartitionKeyDefinition,
+      );
+      expect(partitionKeyValues.length).toBe(2);
+      expect(partitionKeyValues).toEqual(["United States", "Point"]);
     });
   });
 });

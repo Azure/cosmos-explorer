@@ -4,8 +4,11 @@ import { handleError } from "Common/ErrorHandlingUtils";
 import { sampleDataClient } from "Common/SampleDataClient";
 import { getPartitionKeyValue } from "Common/dataAccess/getPartitionKeyValue";
 import { getCommonQueryOptions } from "Common/dataAccess/queryDocuments";
+import { DatabaseAccount } from "Contracts/DataModels";
 import DocumentId from "Explorer/Tree/DocumentId";
+import { AppStateComponentNames, loadState, saveState } from "Shared/AppStatePersistenceUtility";
 import { logConsoleProgress } from "Utils/NotificationConsoleUtils";
+import * as StringUtility from "../../Shared/StringUtility";
 
 export interface SuggestedPrompt {
   id: number;
@@ -53,4 +56,111 @@ export const getSuggestedPrompts = (): SuggestedPrompt[] => {
     { id: 2, text: 'Count all the items in my data as "numItems"' },
     { id: 3, text: "Find the oldest item added to my collection" },
   ];
+};
+
+// Prompt history persistence
+export enum CopilotSubComponentNames {
+  promptHistory = "PromptHistory",
+  toggleStatus = "ToggleStatus",
+}
+
+const getLegacyHistoryKey = (databaseAccount: DatabaseAccount): string =>
+  `${databaseAccount?.id}-queryCopilotHistories`;
+const getLegacyToggleStatusKey = (databaseAccount: DatabaseAccount): string =>
+  `${databaseAccount?.id}-queryCopilotToggleStatus`;
+
+// Migration only needs to run once
+let hasMigrated = false;
+// Migrate old prompt history to new format
+export const migrateCopilotPersistence = (databaseAccount: DatabaseAccount): void => {
+  if (hasMigrated) {
+    return;
+  }
+
+  let key = getLegacyHistoryKey(databaseAccount);
+  let item = localStorage.getItem(key);
+  if (item !== undefined && item !== null) {
+    const historyItems = item.split("|");
+    saveState(
+      {
+        componentName: AppStateComponentNames.QueryCopilot,
+        subComponentName: CopilotSubComponentNames.promptHistory,
+        globalAccountName: databaseAccount.name,
+        databaseName: undefined,
+        containerName: undefined,
+      },
+      historyItems,
+    );
+
+    localStorage.removeItem(key);
+  }
+
+  key = getLegacyToggleStatusKey(databaseAccount);
+  item = localStorage.getItem(key);
+  if (item !== undefined && item !== null) {
+    saveState(
+      {
+        componentName: AppStateComponentNames.QueryCopilot,
+        subComponentName: CopilotSubComponentNames.toggleStatus,
+        globalAccountName: databaseAccount.name,
+        databaseName: undefined,
+        containerName: undefined,
+      },
+      StringUtility.toBoolean(item),
+    );
+
+    localStorage.removeItem(key);
+  }
+
+  hasMigrated = true;
+};
+
+export const readPromptHistory = (databaseAccount: DatabaseAccount): string[] => {
+  migrateCopilotPersistence(databaseAccount);
+  return (
+    (loadState({
+      componentName: AppStateComponentNames.QueryCopilot,
+      subComponentName: CopilotSubComponentNames.promptHistory,
+      globalAccountName: databaseAccount.name,
+      databaseName: undefined,
+      containerName: undefined,
+    }) as string[]) || []
+  );
+};
+
+export const savePromptHistory = (databaseAccount: DatabaseAccount, historyItems: string[]): void => {
+  saveState(
+    {
+      componentName: AppStateComponentNames.QueryCopilot,
+      subComponentName: CopilotSubComponentNames.promptHistory,
+      globalAccountName: databaseAccount.name,
+      databaseName: undefined,
+      containerName: undefined,
+    },
+    historyItems,
+  );
+};
+
+export const readCopilotToggleStatus = (databaseAccount: DatabaseAccount): boolean => {
+  migrateCopilotPersistence(databaseAccount);
+  return !!loadState({
+    componentName: AppStateComponentNames.QueryCopilot,
+    subComponentName: CopilotSubComponentNames.toggleStatus,
+    globalAccountName: databaseAccount.name,
+    databaseName: undefined,
+    containerName: undefined,
+  }) as boolean;
+};
+
+export const saveCopilotToggleStatus = (databaseAccount: DatabaseAccount, status: boolean): void => {
+  saveState(
+    {
+      componentName: AppStateComponentNames.QueryCopilot,
+      subComponentName: CopilotSubComponentNames.toggleStatus,
+      globalAccountName: databaseAccount.name,
+      databaseName: undefined,
+      containerName: undefined,
+    },
+    status,
+  );
 };

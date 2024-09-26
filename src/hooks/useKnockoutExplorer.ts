@@ -8,6 +8,7 @@ import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -781,11 +782,17 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
     return;
   }
 
-  const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
-    ? `/api/tokens/sampledataconnection/v2`
-    : `/api/tokens/sampledataconnection`;
+  let url: string;
+  if (useNewPortalBackendEndpoint(Constants.BackendApi.SampleData)) {
+    url = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
+  } else {
+    const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
+      ? `/api/tokens/sampledataconnection/v2`
+      : `/api/tokens/sampledataconnection`;
 
-  const url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
+    url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
+  }
+
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 

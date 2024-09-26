@@ -26,7 +26,7 @@ import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
 import { debounce } from "lodash";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const useSidebarStyles = makeStyles({
   sidebar: {
@@ -113,6 +113,12 @@ interface GlobalCommand {
 
 const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   const styles = useSidebarStyles();
+
+  // Since we have two buttons in the DOM (one for small screens and one for larger screens), we wrap the entire thing in a div.
+  // However, that messes with the Menu positioning, so we need to get a reference to the 'div' to pass to the Menu.
+  // We can't use a ref though, because it would be set after the Menu is rendered, so we use a state value to force a re-render.
+  const [globalCommandButton, setGlobalCommandButton] = useState<HTMLElement | null>(null);
+
   const actions = useMemo<GlobalCommand[]>(() => {
     if (
       configContext.platform === Platform.Fabric ||
@@ -182,10 +188,10 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
           {primaryAction.label}
         </Button>
       ) : (
-        <Menu positioning="below-end">
+        <Menu positioning={{ target: globalCommandButton, position: "below", align: "end" }}>
           <MenuTrigger disableButtonEnhancement>
             {(triggerProps: MenuButtonProps) => (
-              <>
+              <div ref={setGlobalCommandButton}>
                 <SplitButton
                   menuButton={{ ...triggerProps, "aria-label": "More commands" }}
                   primaryActionButton={{ onClick: onPrimaryActionClick }}
@@ -197,7 +203,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
                 <MenuButton {...triggerProps} icon={primaryAction.icon} className={styles.globalCommandsMenuButton}>
                   New...
                 </MenuButton>
-              </>
+              </div>
             )}
           </MenuTrigger>
           <MenuPopover>

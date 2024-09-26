@@ -49,14 +49,12 @@ export interface ConfigContext {
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
   BACKEND_ENDPOINT?: string;
-  PORTAL_BACKEND_ENDPOINT?: string;
+  PORTAL_BACKEND_ENDPOINT: string;
   NEW_BACKEND_APIS?: BackendApi[];
   MONGO_BACKEND_ENDPOINT?: string;
-  MONGO_PROXY_ENDPOINT?: string;
-  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED?: boolean;
+  MONGO_PROXY_ENDPOINT: string;
   NEW_MONGO_APIS?: string[];
-  CASSANDRA_PROXY_ENDPOINT?: string;
-  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: boolean;
+  CASSANDRA_PROXY_ENDPOINT: string;
   NEW_CASSANDRA_APIS?: string[];
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
@@ -117,12 +115,10 @@ let configContext: Readonly<ConfigContext> = {
     "deleteDocument",
     "createCollectionWithProxy",
     "legacyMongoShell",
-    "bulkdelete",
+    // "bulkdelete",
   ],
-  MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
-  CASSANDRA_PROXY_OUTBOUND_IPS_ALLOWLISTED: false,
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
 };

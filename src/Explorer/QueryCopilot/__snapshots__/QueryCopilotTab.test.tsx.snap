@@ -17,38 +17,6 @@ exports[`Query copilot tab snapshot test should render with initial input 1`] = 
       }
     }
   >
-    <QueryCopilotPromptbar
-      containerId="SampleContainer"
-      databaseId="CopilotSampleDb"
-      explorer={
-        Explorer {
-          "_isInitializingNotebooks": false,
-          "isFixedCollectionWithSharedThroughputSupported": [Function],
-          "isTabsContentExpanded": [Function],
-          "onRefreshDatabasesKeyPress": [Function],
-          "onRefreshResourcesClick": [Function],
-          "phoenixClient": PhoenixClient {
-            "armResourceId": undefined,
-            "retryOptions": {
-              "maxTimeout": 5000,
-              "minTimeout": 5000,
-              "retries": 3,
-            },
-          },
-          "provideFeedbackEmail": [Function],
-          "queriesClient": QueriesClient {
-            "container": [Circular],
-          },
-          "refreshNotebookList": [Function],
-          "resourceTree": ResourceTreeAdapter {
-            "container": [Circular],
-            "copyNotebook": [Function],
-            "parameters": [Function],
-          },
-        }
-      }
-      toggleCopilot={[Function]}
-    />
     <Stack
       className="tabPaneContentContainer"
     >

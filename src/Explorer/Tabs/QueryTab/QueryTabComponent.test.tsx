@@ -2,12 +2,14 @@ import { fireEvent, render } from "@testing-library/react";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
+import { CopilotSubComponentNames } from "Explorer/QueryCopilot/QueryCopilotUtilities";
 import {
   IQueryTabComponentProps,
   QueryTabComponent,
   QueryTabCopilotComponent,
 } from "Explorer/Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "Explorer/Tabs/TabsBase";
+import { AppStateComponentNames, StorePath } from "Shared/AppStatePersistenceUtility";
 import { updateUserContext, userContext } from "UserContext";
 import { mount } from "enzyme";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -15,6 +17,24 @@ import { useTabs } from "hooks/useTabs";
 import React from "react";
 
 jest.mock("Explorer/Controls/Editor/EditorReact");
+
+const loadState = (path: StorePath) => {
+  if (
+    path.componentName === AppStateComponentNames.QueryCopilot &&
+    path.subComponentName === CopilotSubComponentNames.toggleStatus
+  ) {
+    return true;
+  } else {
+    return undefined;
+  }
+};
+
+jest.mock("Shared/AppStatePersistenceUtility", () => ({
+  loadState,
+  AppStateComponentNames: {
+    QueryCopilot: "QueryCopilot",
+  },
+}));
 
 describe("QueryTabComponent", () => {
   const mockStore = useQueryCopilot.getState();
@@ -32,7 +52,7 @@ describe("QueryTabComponent", () => {
       },
     });
     const propsMock: Readonly<IQueryTabComponentProps> = {
-      collection: { databaseId: "CopilotSampleDb" },
+      collection: { databaseId: "CopilotSampleDB" },
       onTabAccessor: () => jest.fn(),
       isExecutionError: false,
       tabId: "mockTabId",
@@ -50,6 +70,17 @@ describe("QueryTabComponent", () => {
   });
 
   it("copilot should be enabled by default when tab is active", () => {
+    updateUserContext({
+      databaseAccount: {
+        name: "name",
+        properties: undefined,
+        id: "",
+        location: "",
+        type: "",
+        kind: "",
+      },
+    });
+
     useQueryCopilot.getState().setCopilotEnabled(true);
     useQueryCopilot.getState().setCopilotUserDBEnabled(true);
     const activeTab = new TabsBase({

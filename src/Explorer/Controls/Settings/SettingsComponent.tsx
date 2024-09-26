@@ -130,7 +130,6 @@ export interface SettingsComponentState {
   conflictResolutionPolicyProcedureBaseline: string;
   isConflictResolutionDirty: boolean;
 
-  initialNotification: DataModels.Notification;
   selectedTab: SettingsV2TabTypes;
 }
 
@@ -229,7 +228,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       conflictResolutionPolicyProcedureBaseline: undefined,
       isConflictResolutionDirty: false,
 
-      initialNotification: undefined,
       selectedTab: SettingsV2TabTypes.ScaleTab,
     };
 
@@ -1052,7 +1050,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
       onScaleSaveableChange: this.onScaleSaveableChange,
       onScaleDiscardableChange: this.onScaleDiscardableChange,
-      initialNotification: this.props.settingsTab.pendingNotification(),
       throughputError: this.state.throughputError,
     };
 

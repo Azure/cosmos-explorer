@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Install packages once, to prime the node_modules directory.
+npm ci

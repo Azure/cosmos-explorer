@@ -1,21 +1,34 @@
 // Definitions of State data
 
-import { deleteState, loadState, saveState, saveStateDebounced } from "Shared/AppStatePersistenceUtility";
+import { ColumnDefinition } from "Explorer/Tabs/DocumentsTabV2/DocumentsTableComponent";
+import {
+  AppStateComponentNames,
+  deleteState,
+  loadState,
+  saveState,
+  saveStateDebounced,
+} from "Shared/AppStatePersistenceUtility";
 import { userContext } from "UserContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-const componentName = "DocumentsTab";
+const componentName = AppStateComponentNames.DocumentsTab;
+
 export enum SubComponentName {
   ColumnSizes = "ColumnSizes",
   FilterHistory = "FilterHistory",
   MainTabDivider = "MainTabDivider",
+  ColumnsSelection = "ColumnsSelection",
+  ColumnSort = "ColumnSort",
 }
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };
+export type FilterHistory = string[];
 export type WidthDefinition = { widthPx: number };
 export type TabDivider = { leftPaneWidthPercent: number };
+export type ColumnsSelection = { selectedColumnIds: string[]; columnDefinitions: ColumnDefinition[] };
+export type ColumnSort = { columnId: string; direction: "ascending" | "descending" };
 
 /**
  *

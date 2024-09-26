@@ -723,19 +723,17 @@ export function useMongoProxyEndpoint(api: string): boolean {
     MongoProxyEndpoints.Fairfax,
     MongoProxyEndpoints.Mooncake,
   ];
-  let canAccessMongoProxy: boolean = userContext.databaseAccount.properties.publicNetworkAccess === "Enabled";
-  if (
-    configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local &&
-    userContext.databaseAccount.properties.ipRules?.length > 0
-  ) {
-    canAccessMongoProxy = canAccessMongoProxy && configContext.MONGO_PROXY_OUTBOUND_IPS_ALLOWLISTED;
-  }
 
   return (
-    canAccessMongoProxy &&
     configContext.NEW_MONGO_APIS?.includes(api) &&
     activeMongoProxyEndpoints.includes(configContext.MONGO_PROXY_ENDPOINT)
   );
+}
+
+export class ThrottlingError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
 }
 
 // TODO: This function throws most of the time except on Forbidden which is a bit strange
@@ -747,6 +745,14 @@ async function errorHandling(response: Response, action: string, params: unknown
   if (response.status === HttpStatusCodes.Forbidden) {
     sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
     return;
+  } else if (
+    response.status === HttpStatusCodes.BadRequest &&
+    errorMessage.includes("Error=16500") &&
+    errorMessage.includes("RetryAfterMs=")
+  ) {
+    // If throttling is happening, Cosmos DB will return a 400 with a body of:
+    // A write operation resulted in an error. Error=16500, RetryAfterMs=4, Details='Batch write error.
+    throw new ThrottlingError(errorMessage);
   }
   throw new Error(errorMessage);
 }
