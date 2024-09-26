@@ -15,10 +15,12 @@ export const useSidePanel: UseStore<SidePanelState> = create((set) => ({
   openSidePanel: (headerText, panelContent, panelWidth = "440px") =>
     set((state) => ({ ...state, headerText, panelContent, panelWidth, isOpen: true })),
   closeSidePanel: () => {
-    set((state) => ({ ...state, isOpen: false }));
     const lastFocusedElement = useSidePanel.getState().getRef;
-    setTimeout(() => {
+    set((state) => ({ ...state, isOpen: false }));
+    const timeoutId = setTimeout(() => {
       lastFocusedElement?.current?.focus();
+      set({ getRef: undefined });
     }, 300);
+    return () => clearTimeout(timeoutId);
   },
 }));
