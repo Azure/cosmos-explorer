@@ -1,4 +1,5 @@
 import { Checkbox, Stack, Text, TextField } from "@fluentui/react";
+import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
@@ -48,7 +49,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
   const databaseLevelThroughputTooltipText = `Provisioned throughput at the ${databaseLabel} level will be shared across all ${collectionsLabel} within the ${databaseLabel}.`;
   const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(
-    subscriptionType !== SubscriptionType.EA && !isServerlessAccount(),
+    getNewDatabaseSharedThroughputDefault(),
   );
   const [formErrors, setFormErrors] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);

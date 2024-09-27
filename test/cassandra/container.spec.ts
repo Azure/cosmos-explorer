@@ -14,7 +14,6 @@ test("Cassandra keyspace and table CRUD", async ({ page }) => {
     async (panel, okButton) => {
       await panel.getByPlaceholder("Type a new keyspace id").fill(keyspaceId);
       await panel.getByPlaceholder("Enter table Id").fill(tableId);
-      await panel.getByLabel("Table max RU/s").fill("1000");
       await okButton.click();
     },
     { closeTimeout: 5 * 60 * 1000 },
