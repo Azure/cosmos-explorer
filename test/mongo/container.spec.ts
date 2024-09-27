@@ -21,7 +21,6 @@ import { DataExplorer, TestAccount, generateUniqueName } from "../fx";
         await panel.getByPlaceholder("Type a new database id").fill(databaseId);
         await panel.getByRole("textbox", { name: "Collection id, Example Collection1" }).fill(collectionId);
         await panel.getByRole("textbox", { name: "Shard key" }).fill("pk");
-        await panel.getByLabel("Database max RU/s").fill("1000");
         await okButton.click();
       },
       { closeTimeout: 5 * 60 * 1000 },

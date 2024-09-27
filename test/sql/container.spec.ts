@@ -15,7 +15,6 @@ test("SQL database and container CRUD", async ({ page }) => {
       await panel.getByPlaceholder("Type a new database id").fill(databaseId);
       await panel.getByRole("textbox", { name: "Container id, Example Container1" }).fill(containerId);
       await panel.getByRole("textbox", { name: "Partition key" }).fill("/pk");
-      await panel.getByLabel("Database max RU/s").fill("1000");
       await okButton.click();
     },
     { closeTimeout: 5 * 60 * 1000 },
