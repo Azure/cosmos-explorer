@@ -40,15 +40,15 @@ export enum TestAccount {
 }
 
 export const defaultAccounts: Record<TestAccount, string> = {
-  [TestAccount.Tables]: "portal-tables-runner",
-  [TestAccount.Cassandra]: "portal-cassandra-runner",
-  [TestAccount.Gremlin]: "portal-gremlin-runner",
-  [TestAccount.Mongo]: "portal-mongo-runner",
-  [TestAccount.Mongo32]: "portal-mongo32-runner",
-  [TestAccount.SQL]: "portal-sql-runner-west-us",
+  [TestAccount.Tables]: "github-e2etests-tables",
+  [TestAccount.Cassandra]: "github-e2etests-cassandra",
+  [TestAccount.Gremlin]: "github-e2etests-gremlin",
+  [TestAccount.Mongo]: "github-e2etests-mongo",
+  [TestAccount.Mongo32]: "github-e2etests-mongo32",
+  [TestAccount.SQL]: "github-e2etests-sql",
 };
 
-export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "runners";
+export const resourceGroupName = process.env.DE_TEST_RESOURCE_GROUP ?? "de-e2e-tests";
 export const subscriptionId = process.env.DE_TEST_SUBSCRIPTION_ID ?? "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 
 function tryGetStandardName(accountType: TestAccount) {

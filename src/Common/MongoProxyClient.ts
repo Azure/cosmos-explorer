@@ -561,7 +561,10 @@ export function deleteDocuments(
   const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
 
-  const rids = documentIds.map((documentId) => documentId.id());
+  const rids: string[] = documentIds.map((documentId) => {
+    const idComponents = documentId.self.split("/");
+    return idComponents[5];
+  });
 
   const params = {
     databaseID: databaseId,

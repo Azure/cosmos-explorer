@@ -116,7 +116,7 @@ let configContext: Readonly<ConfigContext> = {
     "deleteDocument",
     "createCollectionWithProxy",
     "legacyMongoShell",
-    // "bulkdelete",
+    "bulkdelete",
   ],
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
