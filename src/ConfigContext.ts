@@ -53,7 +53,6 @@ export interface ConfigContext {
   NEW_BACKEND_APIS?: BackendApi[];
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT: string;
-  NEW_MONGO_APIS?: string[];
   CASSANDRA_PROXY_ENDPOINT: string;
   NEW_CASSANDRA_APIS?: string[];
   PROXY_PATH?: string;
@@ -107,17 +106,6 @@ let configContext: Readonly<ConfigContext> = {
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
-  NEW_MONGO_APIS: [
-    "resourcelist",
-    "queryDocuments",
-    "createDocument",
-    "readDocument",
-    "updateDocument",
-    "deleteDocument",
-    "createCollectionWithProxy",
-    "legacyMongoShell",
-    "bulkdelete",
-  ],
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
   NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
   isTerminalEnabled: false,
@@ -253,3 +241,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+

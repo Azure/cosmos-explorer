@@ -575,7 +575,7 @@ export function deleteDocuments(
     resourceGroup: userContext.resourceGroup,
     databaseAccountName: databaseAccount.name,
   };
-  const endpoint = getFeatureEndpointOrDefault("bulkdelete");
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.BulkDelete);
 
   return window
     .fetch(`${endpoint}/bulkdelete`, {
