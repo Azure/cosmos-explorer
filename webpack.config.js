@@ -301,7 +301,7 @@ module.exports = function (_env = {}, argv = {}) {
       },
       proxy: {
         "/api": {
-          target: "https://main.documentdb.ext.azure.com",
+          target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
           changeOrigin: true,
           logLevel: "debug",
           bypass: (req, res) => {
@@ -312,7 +312,7 @@ module.exports = function (_env = {}, argv = {}) {
           },
         },
         "/proxy": {
-          target: "https://main.documentdb.ext.azure.com",
+          target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
           changeOrigin: true,
           secure: false,
           logLevel: "debug",

@@ -1,4 +1,5 @@
-import { Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
+import { PortalBackendEndpoints } from "Common/Constants";
+import { configContext, Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { updateUserContext } from "../UserContext";
 import { endpoint, getTokenFromAuthService, requestPlugin } from "./CosmosClient";
 
@@ -20,11 +21,11 @@ describe("getTokenFromAuthService", () => {
 
   it("builds the correct URL in production", () => {
     updateConfigContext({
-      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+      BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
-      "https://main.documentdb.ext.azure.com/api/guest/runtimeproxy/authorizationTokens",
+      `${configContext.PORTAL_BACKEND_ENDPOINT}/api/connectionstring/runtimeproxy/authorizationtokens`,
       expect.any(Object),
     );
   });
@@ -35,7 +36,7 @@ describe("getTokenFromAuthService", () => {
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
-      "https://localhost:1234/api/guest/runtimeproxy/authorizationTokens",
+      `${configContext.PORTAL_BACKEND_ENDPOINT}/api/connectionstring/runtimeproxy/authorizationtokens`,
       expect.any(Object),
     );
   });
