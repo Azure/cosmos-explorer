@@ -155,6 +155,18 @@ export class MongoProxyEndpoints {
   public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
 }
 
+export class MongoProxyApi {
+  public static readonly ResourceList: string = "ResourceList";
+  public static readonly QueryDocuments: string = "QueryDocuments";
+  public static readonly CreateDocument: string = "CreateDocumen";
+  public static readonly ReadDocument: string = "ReadDocument";
+  public static readonly UpdateDocument: string = "UpdateDocument";
+  public static readonly DeleteDocument: string = "DeleteDocument";
+  public static readonly CreateCollectionWithProxy: string = "CreateCollectionWithProxy";
+  public static readonly LegacyMongoShell: string = "LegacyMongoShell";
+  public static readonly BulkDelete: string = "BulkDelete";
+}
+
 export class CassandraProxyEndpoints {
   public static readonly Development: string = "https://localhost:7240";
   public static readonly Mpac: string = "https://cdb-ms-mpac-cp.cosmos.azure.com";

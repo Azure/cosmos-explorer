@@ -1,4 +1,5 @@
-import { Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
+import { PortalBackendEndpoints } from "Common/Constants";
+import { configContext, Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { updateUserContext } from "../UserContext";
 import { endpoint, getTokenFromAuthService, requestPlugin } from "./CosmosClient";
 
@@ -20,22 +21,22 @@ describe("getTokenFromAuthService", () => {
 
   it("builds the correct URL in production", () => {
     updateConfigContext({
-      BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+      PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
-      "https://main.documentdb.ext.azure.com/api/guest/runtimeproxy/authorizationTokens",
+      `${configContext.PORTAL_BACKEND_ENDPOINT}/api/connectionstring/runtimeproxy/authorizationtokens`,
       expect.any(Object),
     );
   });
 
   it("builds the correct URL in dev", () => {
     updateConfigContext({
-      BACKEND_ENDPOINT: "https://localhost:1234",
+      PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Development,
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
-      "https://localhost:1234/api/guest/runtimeproxy/authorizationTokens",
+      `${configContext.PORTAL_BACKEND_ENDPOINT}/api/connectionstring/runtimeproxy/authorizationtokens`,
       expect.any(Object),
     );
   });
@@ -78,7 +79,7 @@ describe("requestPlugin", () => {
       const next = jest.fn();
       updateConfigContext({
         platform: Platform.Hosted,
-        BACKEND_ENDPOINT: "https://localhost:1234",
+        PORTAL_BACKEND_ENDPOINT: "https://localhost:1234",
         PROXY_PATH: "/proxy",
       });
       const headers = {};

@@ -2,12 +2,11 @@ import { MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import { resetConfigContext, updateConfigContext } from "ConfigContext";
 import { DatabaseAccount, IpRule } from "Contracts/DataModels";
 import { updateUserContext } from "UserContext";
-import { MongoProxyOutboundIPs, PortalBackendIPs, PortalBackendOutboundIPs } from "Utils/EndpointUtils";
+import { MongoProxyOutboundIPs, PortalBackendOutboundIPs } from "Utils/EndpointUtils";
 import { getNetworkSettingsWarningMessage } from "./NetworkUtility";
 
 describe("NetworkUtility tests", () => {
   describe("getNetworkSettingsWarningMessage", () => {
-    const legacyBackendEndpoint: string = "https://main.documentdb.ext.azure.com";
     const publicAccessMessagePart = "Please enable public access to proceed";
     const accessMessagePart = "Please allow access from Azure Portal to proceed";
     let warningMessageResult: string;
@@ -48,25 +47,23 @@ describe("NetworkUtility tests", () => {
     });
 
     it(`should return no message when the appropriate ip rules are added to mongo/cassandra account per endpoint`, async () => {
-      const portalBackendOutboundIPsWithLegacyIPs: string[] = [
+      const portalBackendOutboundIPs: string[] = [
         ...PortalBackendOutboundIPs[PortalBackendEndpoints.Mpac],
         ...PortalBackendOutboundIPs[PortalBackendEndpoints.Prod],
         ...MongoProxyOutboundIPs[MongoProxyEndpoints.Mpac],
         ...MongoProxyOutboundIPs[MongoProxyEndpoints.Prod],
-        ...PortalBackendIPs["https://main.documentdb.ext.azure.com"],
       ];
       updateUserContext({
         databaseAccount: {
           kind: "MongoDB",
           properties: {
-            ipRules: portalBackendOutboundIPsWithLegacyIPs.map((ip: string) => ({ ipAddressOrRange: ip }) as IpRule),
+            ipRules: portalBackendOutboundIPs.map((ip: string) => ({ ipAddressOrRange: ip }) as IpRule),
             publicNetworkAccess: "Enabled",
           },
         } as DatabaseAccount,
       });
 
       updateConfigContext({
-        BACKEND_ENDPOINT: legacyBackendEndpoint,
         PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
       });
@@ -90,7 +87,6 @@ describe("NetworkUtility tests", () => {
       });
 
       updateConfigContext({
-        BACKEND_ENDPOINT: legacyBackendEndpoint,
         PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Mpac,
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Mpac,
       });

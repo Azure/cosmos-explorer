@@ -14,7 +14,7 @@ import DocumentId from "../Explorer/Tree/DocumentId";
 import { hasFlag } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
-import { ApiType, ContentType, HttpHeaders, HttpStatusCodes, MongoProxyEndpoints } from "./Constants";
+import { ApiType, ContentType, HttpHeaders, HttpStatusCodes, MongoProxyApi, MongoProxyEndpoints } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
 
@@ -67,7 +67,7 @@ export function queryDocuments(
   query: string,
   continuationToken?: string,
 ): Promise<QueryResponse> {
-  if (!useMongoProxyEndpoint("resourcelist") || !useMongoProxyEndpoint("queryDocuments")) {
+  if (!useMongoProxyEndpoint(MongoProxyApi.ResourceList) || !useMongoProxyEndpoint(MongoProxyApi.QueryDocuments)) {
     return queryDocuments_ToBeDeprecated(databaseId, collection, isResourceList, query, continuationToken);
   }
 
@@ -89,7 +89,7 @@ export function queryDocuments(
     query,
   };
 
-  const endpoint = getFeatureEndpointOrDefault("resourcelist") || "";
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.ResourceList) || "";
 
   const headers = {
     ...defaultHeaders,
@@ -194,7 +194,7 @@ export function readDocument(
   collection: Collection,
   documentId: DocumentId,
 ): Promise<DataModels.DocumentId> {
-  if (!useMongoProxyEndpoint("readDocument")) {
+  if (!useMongoProxyEndpoint(MongoProxyApi.ReadDocument)) {
     return readDocument_ToBeDeprecated(databaseId, collection, documentId);
   }
   const { databaseAccount } = userContext;
@@ -217,7 +217,7 @@ export function readDocument(
         : "",
   };
 
-  const endpoint = getFeatureEndpointOrDefault("readDocument");
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.ReadDocument);
 
   return window
     .fetch(endpoint, {
@@ -289,7 +289,7 @@ export function createDocument(
   partitionKeyProperty: string,
   documentContent: unknown,
 ): Promise<DataModels.DocumentId> {
-  if (!useMongoProxyEndpoint("createDocument")) {
+  if (!useMongoProxyEndpoint(MongoProxyApi.CreateDocument)) {
     return createDocument_ToBeDeprecated(databaseId, collection, partitionKeyProperty, documentContent);
   }
   const { databaseAccount } = userContext;
@@ -308,7 +308,7 @@ export function createDocument(
     documentContent: JSON.stringify(documentContent),
   };
 
-  const endpoint = getFeatureEndpointOrDefault("createDocument");
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.CreateDocument);
 
   return window
     .fetch(`${endpoint}/createDocument`, {
@@ -373,7 +373,7 @@ export function updateDocument(
   documentId: DocumentId,
   documentContent: string,
 ): Promise<DataModels.DocumentId> {
-  if (!useMongoProxyEndpoint("updateDocument")) {
+  if (!useMongoProxyEndpoint(MongoProxyApi.UpdateDocument)) {
     return updateDocument_ToBeDeprecated(databaseId, collection, documentId, documentContent);
   }
   const { databaseAccount } = userContext;
@@ -396,7 +396,7 @@ export function updateDocument(
         : "",
     documentContent,
   };
-  const endpoint = getFeatureEndpointOrDefault("updateDocument");
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.UpdateDocument);
 
   return window
     .fetch(endpoint, {
@@ -464,7 +464,7 @@ export function updateDocument_ToBeDeprecated(
 }
 
 export function deleteDocument(databaseId: string, collection: Collection, documentId: DocumentId): Promise<void> {
-  if (!useMongoProxyEndpoint("deleteDocument")) {
+  if (!useMongoProxyEndpoint(MongoProxyApi.DeleteDocument)) {
     return deleteDocument_ToBeDeprecated(databaseId, collection, documentId);
   }
   const { databaseAccount } = userContext;
@@ -486,7 +486,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         ? documentId.partitionKeyProperties?.[0]
         : "",
   };
-  const endpoint = getFeatureEndpointOrDefault("deleteDocument");
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.DeleteDocument);
 
   return window
     .fetch(endpoint, {
@@ -575,7 +575,7 @@ export function deleteDocuments(
     resourceGroup: userContext.resourceGroup,
     databaseAccountName: databaseAccount.name,
   };
-  const endpoint = getFeatureEndpointOrDefault("bulkdelete");
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.BulkDelete);
 
   return window
     .fetch(`${endpoint}/bulkdelete`, {
@@ -599,7 +599,7 @@ export function deleteDocuments(
 export function createMongoCollectionWithProxy(
   params: DataModels.CreateCollectionParams,
 ): Promise<DataModels.Collection> {
-  if (!useMongoProxyEndpoint("createCollectionWithProxy")) {
+  if (!useMongoProxyEndpoint(MongoProxyApi.CreateCollectionWithProxy)) {
     return createMongoCollectionWithProxy_ToBeDeprecated(params);
   }
   const { databaseAccount } = userContext;
@@ -622,7 +622,7 @@ export function createMongoCollectionWithProxy(
     isSharded: !!shardKey,
   };
 
-  const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");
+  const endpoint = getFeatureEndpointOrDefault(MongoProxyApi.CreateCollectionWithProxy);
 
   return window
     .fetch(`${endpoint}/createCollection`, {
@@ -718,19 +718,78 @@ export function getEndpoint(endpoint: string): string {
   return url;
 }
 
-export function useMongoProxyEndpoint(api: string): boolean {
-  const activeMongoProxyEndpoints: string[] = [
-    MongoProxyEndpoints.Local,
-    MongoProxyEndpoints.Mpac,
-    MongoProxyEndpoints.Prod,
-    MongoProxyEndpoints.Fairfax,
-    MongoProxyEndpoints.Mooncake,
-  ];
+export function useMongoProxyEndpoint(mongoProxyApi: string): boolean {
+  const mongoProxyEnvironmentMap: { [key: string]: string[] } = {
+    [MongoProxyApi.ResourceList]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.QueryDocuments]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.CreateDocument]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.ReadDocument]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.UpdateDocument]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.DeleteDocument]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.CreateCollectionWithProxy]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.LegacyMongoShell]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+    [MongoProxyApi.BulkDelete]: [
+      MongoProxyEndpoints.Local,
+      MongoProxyEndpoints.Mpac,
+      MongoProxyEndpoints.Prod,
+      MongoProxyEndpoints.Fairfax,
+      MongoProxyEndpoints.Mooncake,
+    ],
+  };
 
-  return (
-    configContext.NEW_MONGO_APIS?.includes(api) &&
-    activeMongoProxyEndpoints.includes(configContext.MONGO_PROXY_ENDPOINT)
-  );
+  if (!mongoProxyEnvironmentMap[mongoProxyApi] || !configContext.MONGO_PROXY_ENDPOINT) {
+    return false;
+  }
+
+  return mongoProxyEnvironmentMap[mongoProxyApi].includes(configContext.MONGO_PROXY_ENDPOINT);
 }
 
 export class ThrottlingError extends Error {

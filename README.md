@@ -18,7 +18,7 @@ Run `npm start` to start the development server and automatically rebuild on cha
 ### Hosted Development (https://cosmos.azure.com)
 
 - Visit: `https://localhost:1234/hostedExplorer.html`
-- The default webpack dev server configuration will proxy requests to the production portal backend: `https://main.documentdb.ext.azure.com`. This will allow you to use production connection strings on your local machine.
+- The default webpack dev server configuration will proxy requests to the production portal backend: `https://cdb-ms-mpac-pbe.cosmos.azure.com`. This will allow you to use production connection strings on your local machine.
 
 ### Emulator Development
 

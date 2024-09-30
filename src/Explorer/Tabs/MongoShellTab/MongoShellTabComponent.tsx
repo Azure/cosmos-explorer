@@ -55,7 +55,7 @@ export default class MongoShellTabComponent extends Component<
   constructor(props: IMongoShellTabComponentProps) {
     super(props);
     this._logTraces = new Map();
-    this._useMongoProxyEndpoint = useMongoProxyEndpoint("legacyMongoShell");
+    this._useMongoProxyEndpoint = useMongoProxyEndpoint(Constants.MongoProxyApi.LegacyMongoShell);
 
     this.state = {
       url: getMongoShellUrl(this._useMongoProxyEndpoint),

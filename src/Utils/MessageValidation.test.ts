@@ -13,9 +13,9 @@ describe("isInvalidParentFrameOrigin", () => {
     ${"https://subdomain.portal.azure.com"}                             | ${false}
     ${"https://subdomain.portal.azure.us"}                              | ${false}
     ${"https://subdomain.portal.azure.cn"}                              | ${false}
-    ${"https://main.documentdb.ext.azure.com"}                          | ${false}
-    ${"https://main.documentdb.ext.azure.us"}                           | ${false}
-    ${"https://main.documentdb.ext.azure.cn"}                           | ${false}
+    ${"https://cdb-ms-prod-pbe.cosmos.azure.com"}                       | ${false}
+    ${"https://cdb-ff-prod-pbe.cosmos.azure.us"}                        | ${false}
+    ${"https://cdb-mc-prod-pbe.cosmos.azure.cn"}                        | ${false}
     ${"https://cosmos-db-dataexplorer-germanycentral.azurewebsites.de"} | ${false}
     ${"https://main.documentdb.ext.microsoftazure.de"}                  | ${false}
     ${"https://random.domain"}                                          | ${true}
