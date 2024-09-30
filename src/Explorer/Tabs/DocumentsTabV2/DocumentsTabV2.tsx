@@ -2115,7 +2115,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
   // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
-  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint("bulkdelete");
+  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint(Constants.MongoProxyApi.BulkDelete);
   const isBulkDeleteDisabled =
     (partitionKey.systemKey && !isPreferredApiMongoDB) || (isPreferredApiMongoDB && isMongoBulkDeleteDisabled);
   //  -------------------------------------------------------

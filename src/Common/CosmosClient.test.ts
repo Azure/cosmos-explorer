@@ -21,7 +21,7 @@ describe("getTokenFromAuthService", () => {
 
   it("builds the correct URL in production", () => {
     updateConfigContext({
-      BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
+      PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
@@ -32,7 +32,7 @@ describe("getTokenFromAuthService", () => {
 
   it("builds the correct URL in dev", () => {
     updateConfigContext({
-      BACKEND_ENDPOINT: "https://localhost:1234",
+      PORTAL_BACKEND_ENDPOINT: "https://localhost:1234",
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
@@ -79,7 +79,7 @@ describe("requestPlugin", () => {
       const next = jest.fn();
       updateConfigContext({
         platform: Platform.Hosted,
-        BACKEND_ENDPOINT: "https://localhost:1234",
+        PORTAL_BACKEND_ENDPOINT: "https://localhost:1234",
         PROXY_PATH: "/proxy",
       });
       const headers = {};

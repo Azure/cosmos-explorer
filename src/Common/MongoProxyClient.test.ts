@@ -251,7 +251,7 @@ describe("MongoProxyClient", () => {
         authType: AuthType.EncryptedToken,
       });
       const endpoint = getEndpoint(configContext.MONGO_PROXY_ENDPOINT);
-      expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/connectionstring/mongo`);
+      expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/connectionstring/mongo/explorer`);
     });
   });
 
@@ -262,7 +262,7 @@ describe("MongoProxyClient", () => {
         MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
       });
       const params = new URLSearchParams({
-        "feature.mongoProxyEndpoint": MongoProxyEndpoints.Local,
+        "feature.mongoProxyEndpoint": MongoProxyEndpoints.Prod,
         "feature.mongoProxyAPIs": "readDocument|createDocument",
       });
       const features = extractFeatures(params);
@@ -278,7 +278,7 @@ describe("MongoProxyClient", () => {
     });
 
     it("returns a production endpoint", () => {
-      const endpoint = getFeatureEndpointOrDefault("deleteDocument");
+      const endpoint = getFeatureEndpointOrDefault("DeleteDocument");
       expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`);
     });
   });

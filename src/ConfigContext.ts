@@ -76,6 +76,7 @@ let configContext: Readonly<ConfigContext> = {
   allowedParentFrameOrigins: [
     `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
+    `^https:\\/\\/cdb-(ms|ff|mc)-prod-pbe\\.cosmos\\.azure\\.(com|us|cn)$`,
     `^https:\\/\\/[\\.\\w]*portal\\.microsoftazure\\.de$`,
     `^https:\\/\\/[\\.\\w]*ext\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*\\.ext\\.microsoftazure\\.de$`,
