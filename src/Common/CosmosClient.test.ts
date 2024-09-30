@@ -32,7 +32,7 @@ describe("getTokenFromAuthService", () => {
 
   it("builds the correct URL in dev", () => {
     updateConfigContext({
-      PORTAL_BACKEND_ENDPOINT: "https://localhost:1234",
+      PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Development,
     });
     getTokenFromAuthService("GET", "dbs", "foo");
     expect(window.fetch).toHaveBeenCalledWith(
