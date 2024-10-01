@@ -8,7 +8,6 @@ import {
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
-  allowedCassandraProxyEndpoints,
   allowedEmulatorEndpoints,
   allowedGraphEndpoints,
   allowedHostedExplorerEndpoints,
@@ -18,6 +17,7 @@ import {
   allowedMsalRedirectEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
+  defaultAllowedCassandraProxyEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
 
@@ -32,6 +32,7 @@ export interface ConfigContext {
   platform: Platform;
   allowedArmEndpoints: ReadonlyArray<string>;
   allowedBackendEndpoints: ReadonlyArray<string>;
+  allowedCassandraProxyEndpoints: ReadonlyArray<string>;
   allowedParentFrameOrigins: ReadonlyArray<string>;
   gitSha?: string;
   proxyPath?: string;
@@ -72,6 +73,7 @@ let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedArmEndpoints: defaultAllowedArmEndpoints,
   allowedBackendEndpoints: defaultAllowedBackendEndpoints,
+  allowedCassandraProxyEndpoints: defaultAllowedCassandraProxyEndpoints,
   allowedParentFrameOrigins: [
     `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
@@ -161,7 +163,12 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.MONGO_BACKEND_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.CASSANDRA_PROXY_ENDPOINT, allowedCassandraProxyEndpoints)) {
+  if (
+    !validateEndpoint(
+      newContext.CASSANDRA_PROXY_ENDPOINT,
+      configContext.allowedCassandraProxyEndpoints || defaultAllowedCassandraProxyEndpoints,
+    )
+  ) {
     delete newContext.CASSANDRA_PROXY_ENDPOINT;
   }
 

@@ -108,7 +108,7 @@ export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = 
   "https://localhost:12901",
 ];
 
-export const allowedCassandraProxyEndpoints: ReadonlyArray<string> = [
+export const defaultAllowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Development,
   CassandraProxyEndpoints.Mpac,
   CassandraProxyEndpoints.Prod,
