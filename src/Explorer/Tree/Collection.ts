@@ -1,4 +1,5 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DocumentsTabV2 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import * as ko from "knockout";
@@ -23,7 +24,6 @@ import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { useTabs } from "../../hooks/useTabs";
 import Explorer from "../Explorer";
-import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import GraphTab from "../Tabs/GraphTab";

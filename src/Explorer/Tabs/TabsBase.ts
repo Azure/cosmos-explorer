@@ -1,3 +1,4 @@
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { KeyboardActionGroup, clearKeyboardActionGroup } from "KeyboardShortcuts";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
@@ -9,7 +10,6 @@ import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { useTabs } from "../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
-import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import { useSelectedNode } from "../useSelectedNode";
 // TODO: Use specific actions for logging telemetry data

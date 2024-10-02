@@ -1,5 +1,6 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { Pivot, PivotItem } from "@fluentui/react";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { KeyboardAction } from "KeyboardShortcuts";
 import React from "react";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
@@ -15,7 +16,6 @@ import { useTabs } from "../../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
-import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import StoredProcedure from "../../Tree/StoredProcedure";
 import { useSelectedNode } from "../../useSelectedNode";
 import ScriptTabBase from "../ScriptTabBase";

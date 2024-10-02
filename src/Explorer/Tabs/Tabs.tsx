@@ -6,7 +6,8 @@ import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
+import { CommandBarV2 } from "Explorer/Menus/CommandBarV2/CommandBarV2";
 import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
@@ -106,6 +107,7 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
         </ul>
       </div>
       <div className="tabPanesContainer">
+        {userContext.features.commandBarV2 && <CommandBarV2 explorer={explorer} />}
         {activeReactTab !== undefined && getReactTabContent(activeReactTab, explorer)}
         {openedTabs.map((tab) => (
           <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />

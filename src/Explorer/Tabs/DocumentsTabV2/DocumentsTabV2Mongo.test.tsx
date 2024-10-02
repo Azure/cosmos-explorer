@@ -1,7 +1,7 @@
 import { deleteDocuments } from "Common/MongoProxyClient";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import {
   DELETE_BUTTON_ID,
   DISCARD_BUTTON_ID,
@@ -163,7 +163,7 @@ describe("Documents tab (Mongo API)", () => {
         useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
       expect(wrapper.findWhere((node) => node.text().includes("replace_with_new_document_id")).exists()).toBeTruthy();
     });
@@ -173,7 +173,7 @@ describe("Documents tab (Mongo API)", () => {
         useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
 
       expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeDefined();
@@ -188,7 +188,7 @@ describe("Documents tab (Mongo API)", () => {
         useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
 
       expect(mockDeleteDocuments).toHaveBeenCalled();

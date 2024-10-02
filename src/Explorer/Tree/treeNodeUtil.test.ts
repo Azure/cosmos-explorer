@@ -2,7 +2,7 @@ import { CapabilityNames } from "Common/Constants";
 import { Platform, updateConfigContext } from "ConfigContext";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import Explorer from "Explorer/Explorer";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { DeleteDatabaseConfirmationPanel } from "Explorer/Panes/DeleteDatabaseConfirmationPanel";
 import TabsBase from "Explorer/Tabs/TabsBase";

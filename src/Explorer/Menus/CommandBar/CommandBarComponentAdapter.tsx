@@ -4,83 +4,51 @@
  * and update any knockout observables passed from the parent.
  */
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
+import {
+  createPlatformButtons,
+  createStaticCommandBarButtons,
+} from "Explorer/Menus/CommandBar/CommandBarComponentButtonFactory";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import { KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
-import { userContext } from "UserContext";
 import * as React from "react";
-import create, { UseStore } from "zustand";
 import { ConnectionStatusType, PoolIdType } from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/StyleConstants";
 import { Platform, configContext } from "../../../ConfigContext";
-import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
-import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 import * as CommandBarUtil from "./CommandBarUtil";
 
 interface Props {
   container: Explorer;
 }
 
-export interface CommandBarStore {
-  contextButtons: CommandButtonComponentProps[];
-  setContextButtons: (contextButtons: CommandButtonComponentProps[]) => void;
-  isHidden: boolean;
-  setIsHidden: (isHidden: boolean) => void;
-}
-
-export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
-  contextButtons: [],
-  setContextButtons: (contextButtons: CommandButtonComponentProps[]) => set((state) => ({ ...state, contextButtons })),
-  isHidden: false,
-  setIsHidden: (isHidden: boolean) => set((state) => ({ ...state, isHidden })),
-}));
-
 export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const selectedNodeState = useSelectedNode();
-  const buttons = useCommandBar((state) => state.contextButtons);
+  const contextButtons = useCommandBar((state) => state.contextButtons);
   const isHidden = useCommandBar((state) => state.isHidden);
   const backgroundColor = StyleConstants.BaseLight;
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.COMMAND_BAR);
+  const staticButtons = createStaticCommandBarButtons(selectedNodeState);
+  const platformButtons = createPlatformButtons();
 
-  if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
-    const buttons =
-      userContext.apiType === "Postgres"
-        ? CommandBarComponentButtonFactory.createPostgreButtons(container)
-        : CommandBarComponentButtonFactory.createVCoreMongoButtons(container);
-    return (
-      <div className="commandBarContainer" style={{ display: isHidden ? "none" : "initial" }}>
-        <FluentCommandBar
-          ariaLabel="Use left and right arrow keys to navigate between commands"
-          items={CommandBarUtil.convertButton(buttons, backgroundColor)}
-          styles={{
-            root: { backgroundColor: backgroundColor },
-          }}
-          overflowButtonProps={{ ariaLabel: "More commands" }}
-        />
-      </div>
-    );
-  }
-
-  const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
-  const contextButtons = (buttons || []).concat(
-    CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState),
-  );
-  const controlButtons = CommandBarComponentButtonFactory.createControlCommandBarButtons(container);
-
-  const uiFabricStaticButtons = CommandBarUtil.convertButton(staticButtons, backgroundColor);
-  if (buttons && buttons.length > 0) {
+  const uiFabricStaticButtons = CommandBarUtil.convertButton(staticButtons, backgroundColor, container);
+  if (contextButtons?.length > 0) {
     uiFabricStaticButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
   }
 
-  const uiFabricTabsButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(contextButtons, backgroundColor);
+  const uiFabricTabsButtons: ICommandBarItemProps[] = CommandBarUtil.convertButton(
+    contextButtons || [],
+    backgroundColor,
+    container,
+  );
 
   if (uiFabricTabsButtons.length > 0) {
     uiFabricStaticButtons.push(CommandBarUtil.createDivider("commandBarDivider"));
   }
 
-  const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, backgroundColor);
-  uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
+  const uiFabricPlatformButtons = CommandBarUtil.convertButton(platformButtons || [], backgroundColor, container);
+  uiFabricPlatformButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
   const connectionInfo = useNotebook((state) => state.connectionInfo);
 
@@ -88,7 +56,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
     (useNotebook.getState().isPhoenixNotebooks || useNotebook.getState().isPhoenixFeatures) &&
     connectionInfo?.status !== ConnectionStatusType.Connect
   ) {
-    uiFabricControlButtons.unshift(
+    uiFabricPlatformButtons.unshift(
       CommandBarUtil.createConnectionStatus(container, PoolIdType.DefaultPoolId, "connectionStatus"),
     );
   }
@@ -107,8 +75,8 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
           },
         };
 
-  const allButtons = staticButtons.concat(contextButtons).concat(controlButtons);
-  const keyboardHandlers = CommandBarUtil.createKeyboardHandlers(allButtons);
+  const allButtons = staticButtons.concat(contextButtons).concat(platformButtons);
+  const keyboardHandlers = CommandBarUtil.createKeyboardHandlers(allButtons, container);
   setKeyboardHandlers(keyboardHandlers);
 
   return (
@@ -116,7 +84,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
       <FluentCommandBar
         ariaLabel="Use left and right arrow keys to navigate between commands"
         items={uiFabricStaticButtons.concat(uiFabricTabsButtons)}
-        farItems={uiFabricControlButtons}
+        farItems={uiFabricPlatformButtons}
         styles={rootStyle}
         overflowButtonProps={{ ariaLabel: "More commands" }}
       />

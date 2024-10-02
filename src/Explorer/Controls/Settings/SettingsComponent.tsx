@@ -7,6 +7,7 @@ import {
   ContainerVectorPolicyComponent,
   ContainerVectorPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerVectorPolicyComponent";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { useDatabases } from "Explorer/useDatabases";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
@@ -32,7 +33,6 @@ import {
   PartitionKeyComponent,
   PartitionKeyComponentProps,
 } from "../../Controls/Settings/SettingsSubComponents/PartitionKeyComponent";
-import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";

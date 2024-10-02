@@ -1,8 +1,10 @@
 import { ICommandBarItemProps } from "@fluentui/react";
+import Explorer from "Explorer/Explorer";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import * as CommandBarUtil from "./CommandBarUtil";
 
 describe("CommandBarUtil tests", () => {
+  const mockExplorer = {} as Explorer;
   const createButton = (): CommandButtonComponentProps => {
     return {
       iconSrc: "icon",
@@ -22,7 +24,7 @@ describe("CommandBarUtil tests", () => {
     const btn = createButton();
     const backgroundColor = "backgroundColor";
 
-    const converteds = CommandBarUtil.convertButton([btn], backgroundColor);
+    const converteds = CommandBarUtil.convertButton([btn], backgroundColor, mockExplorer);
     expect(converteds.length).toBe(1);
     const converted = converteds[0];
     expect(converted.split).toBe(undefined);
@@ -46,7 +48,7 @@ describe("CommandBarUtil tests", () => {
       btn.children.push(child);
     }
 
-    const converteds = CommandBarUtil.convertButton([btn], "backgroundColor");
+    const converteds = CommandBarUtil.convertButton([btn], "backgroundColor", mockExplorer);
     expect(converteds.length).toBe(1);
     const converted = converteds[0];
     expect(converted.split).toBe(true);
@@ -62,7 +64,7 @@ describe("CommandBarUtil tests", () => {
       btns.push(createButton());
     }
 
-    const converteds = CommandBarUtil.convertButton(btns, "backgroundColor");
+    const converteds = CommandBarUtil.convertButton(btns, "backgroundColor", mockExplorer);
     const uniqueKeys = converteds
       .map((btn: ICommandBarItemProps) => btn.key)
       .filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
@@ -74,10 +76,10 @@ describe("CommandBarUtil tests", () => {
     const backgroundColor = "backgroundColor";
 
     btn.commandButtonLabel = undefined;
-    let converted = CommandBarUtil.convertButton([btn], backgroundColor)[0];
+    let converted = CommandBarUtil.convertButton([btn], backgroundColor, mockExplorer)[0];
     expect(converted.text).toEqual(btn.tooltipText);
 
-    converted = CommandBarUtil.convertButton([btn], backgroundColor)[0];
+    converted = CommandBarUtil.convertButton([btn], backgroundColor, mockExplorer)[0];
     delete btn.commandButtonLabel;
     expect(converted.text).toEqual(btn.tooltipText);
   });

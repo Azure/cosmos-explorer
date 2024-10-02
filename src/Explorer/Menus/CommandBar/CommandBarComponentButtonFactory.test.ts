@@ -3,15 +3,12 @@ import { AuthType } from "../../../AuthType";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { CollectionBase } from "../../../Contracts/ViewModels";
 import { updateUserContext } from "../../../UserContext";
-import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 
 describe("CommandBarComponentButtonFactory tests", () => {
-  let mockExplorer: Explorer;
-
   afterEach(() => useSelectedNode.getState().setSelectedNode(undefined));
 
   describe("Enable Azure Synapse Link Button", () => {
@@ -19,7 +16,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
-      mockExplorer = {} as Explorer;
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -30,7 +26,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Button should be visible", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
@@ -46,7 +42,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
         } as DatabaseAccount,
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
@@ -62,7 +58,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
         } as DatabaseAccount,
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(selectedNodeState);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel,
       );
@@ -75,7 +71,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
-      mockExplorer = {} as Explorer;
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -108,7 +103,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
@@ -118,13 +113,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
         portalEnv: "mooncake",
       });
 
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
 
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
     });
@@ -134,12 +129,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     const openPostgresShellButtonLabel = "Open PSQL shell";
     const openVCoreMongoShellButtonLabel = "Open MongoDB (vCore) shell";
 
-    beforeAll(() => {
-      mockExplorer = {} as Explorer;
-    });
-
     it("creates Postgres shell button", () => {
-      const buttons = CommandBarComponentButtonFactory.createPostgreButtons(mockExplorer);
+      const buttons = CommandBarComponentButtonFactory.createPostgreButtons();
       const openPostgresShellButton = buttons.find(
         (button) => button.commandButtonLabel === openPostgresShellButtonLabel,
       );
@@ -147,7 +138,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("creates vCore Mongo shell button", () => {
-      const buttons = CommandBarComponentButtonFactory.createVCoreMongoButtons(mockExplorer);
+      const buttons = CommandBarComponentButtonFactory.createVCoreMongoButtons();
       const openVCoreMongoShellButton = buttons.find(
         (button) => button.commandButtonLabel === openVCoreMongoShellButtonLabel,
       );
@@ -162,8 +153,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     const selectedNodeState = useSelectedNode.getState();
 
     beforeAll(() => {
-      mockExplorer = {} as Explorer;
-
       updateUserContext({
         authType: AuthType.ResourceToken,
       });
@@ -175,7 +164,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
           kind: "DocumentDB",
         } as DatabaseAccount,
       });
-      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(selectedNodeState);
       expect(buttons.length).toBe(2);
       expect(buttons[0].commandButtonLabel).toBe("New SQL Query");
       expect(buttons[0].disabled).toBe(false);

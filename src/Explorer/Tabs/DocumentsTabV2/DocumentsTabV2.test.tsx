@@ -5,7 +5,7 @@ import { Platform, updateConfigContext } from "ConfigContext";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import {
   ButtonsDependencies,
   DELETE_BUTTON_ID,
@@ -461,7 +461,7 @@ describe("Documents tab (noSql API)", () => {
         useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
       expect(wrapper.findWhere((node) => node.text().includes("replace_with_new_document_id")).exists()).toBeTruthy();
     });
@@ -471,7 +471,7 @@ describe("Documents tab (noSql API)", () => {
         useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === NEW_DOCUMENT_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
 
       expect(useCommandBar.getState().contextButtons.find((button) => button.id === SAVE_BUTTON_ID)).toBeDefined();
@@ -483,7 +483,7 @@ describe("Documents tab (noSql API)", () => {
         await useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
 
       expect(useDialog.getState().showOkCancelModalDialog).toHaveBeenCalled();
@@ -494,7 +494,7 @@ describe("Documents tab (noSql API)", () => {
         useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
 
       expect(ProgressModalDialog).toHaveBeenCalled();
@@ -508,7 +508,7 @@ describe("Documents tab (noSql API)", () => {
         useCommandBar
           .getState()
           .contextButtons.find((button) => button.id === DELETE_BUTTON_ID)
-          .onCommandClick(undefined);
+          .onCommandClick(undefined, undefined);
       });
 
       // The implementation uses setTimeout, so wait for it to finish
