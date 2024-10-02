@@ -10,6 +10,7 @@ export interface TableEntityProps {
   isEntityValueDisable?: boolean;
   entityTimeValue: string;
   entityValueType: string;
+  entityProperty: string;
   onEntityValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
   onSelectDate: (date: Date | null | undefined) => void;
   onEntityTimeValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
@@ -26,6 +27,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
   onSelectDate,
   isEntityValueDisable,
   onEntityTimeValueChange,
+  entityProperty,
 }: TableEntityProps): JSX.Element => {
   if (isEntityTypeDate) {
     return (
@@ -51,15 +53,20 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
   }
 
   return (
-    <TextField
-      label={entityValueLabel && entityValueLabel}
-      className="addEntityTextField"
-      disabled={isEntityValueDisable}
-      type={entityValueType}
-      placeholder={entityValuePlaceholder}
-      value={typeof entityValue === "string" ? entityValue : ""}
-      onChange={onEntityValueChange}
-      ariaLabel={attributeValueLabel}
-    />
+    <>
+      <span id={entityProperty} className="screenReaderOnly">
+        Edit Property {entityProperty} {attributeValueLabel}
+      </span>
+      <TextField
+        label={entityValueLabel && entityValueLabel}
+        className="addEntityTextField"
+        disabled={isEntityValueDisable}
+        type={entityValueType}
+        placeholder={entityValuePlaceholder}
+        value={typeof entityValue === "string" ? entityValue : ""}
+        onChange={onEntityValueChange}
+        aria-labelledby={entityProperty}
+      />
+    </>
   );
 };

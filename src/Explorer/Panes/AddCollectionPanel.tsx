@@ -17,10 +17,10 @@ import {
 } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { createCollection } from "Common/dataAccess/createCollection";
+import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
-import { SubscriptionType } from "Contracts/SubscriptionType";
 import { AddVectorEmbeddingPolicyForm } from "Explorer/Panes/VectorSearchPanel/AddVectorEmbeddingPolicyForm";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -125,7 +125,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       createNewDatabase:
         userContext.apiType !== "Tables" && configContext.platform !== Platform.Fabric && !this.props.databaseId,
       newDatabaseId: props.isQuickstart ? this.getSampleDBName() : "",
-      isSharedThroughputChecked: this.getSharedThroughputDefault(),
+      isSharedThroughputChecked: getNewDatabaseSharedThroughputDefault(),
       selectedDatabaseId:
         userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : this.props.databaseId,
       collectionId: props.isQuickstart ? `Sample${getCollectionName()}` : "",
@@ -1136,10 +1136,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   private isFreeTierAccount(): boolean {
     return userContext.databaseAccount?.properties?.enableFreeTier;
-  }
-
-  private getSharedThroughputDefault(): boolean {
-    return userContext.subscriptionType !== SubscriptionType.EA && !isServerlessAccount();
   }
 
   private getFreeTierIndexingText(): string {

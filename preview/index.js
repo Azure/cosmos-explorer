@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000;
 const fetch = require("node-fetch");
 
 const api = createProxyMiddleware("/api", {
-  target: "https://main.documentdb.ext.azure.com",
+  target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
   changeOrigin: true,
   logLevel: "debug",
   bypass: (req, res) => {
@@ -16,7 +16,7 @@ const api = createProxyMiddleware("/api", {
 });
 
 const proxy = createProxyMiddleware("/proxy", {
-  target: "https://main.documentdb.ext.azure.com",
+  target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
   changeOrigin: true,
   secure: false,
   logLevel: "debug",

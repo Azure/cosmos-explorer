@@ -2,12 +2,7 @@ import { CassandraProxyEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } 
 import { configContext } from "ConfigContext";
 import { checkFirewallRules } from "Explorer/Tabs/Shared/CheckFirewallRules";
 import { userContext } from "UserContext";
-import {
-  CassandraProxyOutboundIPs,
-  MongoProxyOutboundIPs,
-  PortalBackendIPs,
-  PortalBackendOutboundIPs,
-} from "Utils/EndpointUtils";
+import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendOutboundIPs } from "Utils/EndpointUtils";
 
 export const getNetworkSettingsWarningMessage = async (
   setStateFunc: (warningMessage: string) => void,
@@ -61,7 +56,7 @@ export const getNetworkSettingsWarningMessage = async (
             ...PortalBackendOutboundIPs[PortalBackendEndpoints.Prod],
           ]
         : PortalBackendOutboundIPs[configContext.PORTAL_BACKEND_ENDPOINT];
-      let portalIPs: string[] = [...portalBackendOutboundIPs, ...PortalBackendIPs[configContext.BACKEND_ENDPOINT]];
+      let portalIPs: string[] = [...portalBackendOutboundIPs];
 
       if (userContext.apiType === "Mongo") {
         const isProdOrMpacMongoProxyEndpoint: boolean = [MongoProxyEndpoints.Mpac, MongoProxyEndpoints.Prod].includes(

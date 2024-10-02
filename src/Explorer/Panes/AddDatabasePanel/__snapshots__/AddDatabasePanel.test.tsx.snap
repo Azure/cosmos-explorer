@@ -65,7 +65,7 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
         horizontal={true}
       >
         <StyledCheckboxBase
-          checked={true}
+          checked={false}
           label="Provision throughput"
           onChange={[Function]}
           styles={
@@ -90,14 +90,6 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
         </InfoTooltip>
       </Stack>
     </Stack>
-    <ThroughputInput
-      isDatabase={true}
-      isSharded={true}
-      onCostAcknowledgeChange={[Function]}
-      setIsAutoscale={[Function]}
-      setIsThroughputCapExceeded={[Function]}
-      setThroughputValue={[Function]}
-    />
   </div>
 </RightPaneForm>
 `;

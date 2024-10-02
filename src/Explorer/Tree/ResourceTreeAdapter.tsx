@@ -1,4 +1,5 @@
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import { shouldShowScriptNodes } from "Explorer/Tree/treeNodeUtil";
 import { getItemName } from "Utils/APITypeUtils";
 import * as ko from "knockout";
@@ -28,7 +29,6 @@ import { useDialog } from "../Controls/Dialog";
 import { LegacyTreeComponent, LegacyTreeNode } from "../Controls/TreeComponent/LegacyTreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
-import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import { useNotebook } from "../Notebook/useNotebook";
@@ -229,7 +229,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
+        collectionWasOpened(userContext.databaseAccount?.name, collection);
       },
       isSelected: () =>
         useSelectedNode

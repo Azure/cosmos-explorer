@@ -645,6 +645,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     throttledIds: DocumentId[];
     failedIds: DocumentId[];
     beforeExecuteMs: number; // Delay before executing delete. Used for retrying throttling after a specified delay
+    hasBeenThrottled: boolean; // Keep track if the operation has been throttled at least once
   }>(undefined);
   const [bulkDeleteOperation, setBulkDeleteOperation] = useState<{
     onCompleted: (documentIds: DocumentId[]) => void;
@@ -754,6 +755,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             throttledIds: newThrottled,
             failedIds: prev.failedIds.concat(newFailed),
             beforeExecuteMs: retryAfterMilliseconds,
+            hasBeenThrottled: prev.hasBeenThrottled || newThrottled.length > 0,
           }));
         })
         .catch((error) => {
@@ -764,6 +766,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             successfulIds: prev.successfulIds,
             failedIds: prev.failedIds.concat(prev.pendingIds),
             beforeExecuteMs: undefined,
+            hasBeenThrottled: prev.hasBeenThrottled,
           }));
           bulkDeleteOperation.onFailed(error);
         });
@@ -1025,7 +1028,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           );
         },
       )
-      .then(() => setSelectedRows(new Set([documentIds.length - 1])))
+      .then(() => {
+        setSelectedRows(new Set([documentIds.length - 1]));
+        setClickedRowIndex(documentIds.length - 1);
+      })
       .finally(() => setIsExecuting(false));
   }, [
     onExecutionErrorChange,
@@ -1139,6 +1145,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         successfulIds: [],
         failedIds: [],
         beforeExecuteMs: 0,
+        hasBeenThrottled: false,
       });
       setIsBulkDeleteDialogOpen(true);
       setBulkDeleteMode("inProgress");
@@ -2108,7 +2115,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
   // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
-  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint("bulkdelete");
+  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint(Constants.MongoProxyApi.BulkDelete);
   const isBulkDeleteDisabled =
     (partitionKey.systemKey && !isPreferredApiMongoDB) || (isPreferredApiMongoDB && isMongoBulkDeleteDisabled);
   //  -------------------------------------------------------
@@ -2309,15 +2316,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 </MessageBarBody>
               </MessageBar>
             )}
-            <MessageBar intent="warning">
-              <MessageBarBody>
-                <MessageBarTitle>Warning</MessageBarTitle>
-                {get429WarningMessageNoSql()}{" "}
-                <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
-                  Learn More
-                </Link>
-              </MessageBarBody>
-            </MessageBar>
+            {bulkDeleteProcess.hasBeenThrottled && (
+              <MessageBar intent="warning">
+                <MessageBarBody>
+                  <MessageBarTitle>Warning</MessageBarTitle>
+                  {get429WarningMessageNoSql()}{" "}
+                  <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
+                    Learn More
+                  </Link>
+                </MessageBarBody>
+              </MessageBar>
+            )}
           </div>
         </ProgressModalDialog>
       )}

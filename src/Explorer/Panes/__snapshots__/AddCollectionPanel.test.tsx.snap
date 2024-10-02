@@ -106,7 +106,7 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
           horizontal={true}
         >
           <StyledCheckboxBase
-            checked={true}
+            checked={false}
             label="Share throughput across containers"
             onChange={[Function]}
             styles={
@@ -137,14 +137,6 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
             />
           </StyledTooltipHostBase>
         </Stack>
-        <ThroughputInput
-          isDatabase={true}
-          isSharded={true}
-          onCostAcknowledgeChange={[Function]}
-          setIsAutoscale={[Function]}
-          setIsThroughputCapExceeded={[Function]}
-          setThroughputValue={[Function]}
-        />
       </Stack>
       <Separator
         className="panelSeparator"
@@ -263,6 +255,14 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
         </CustomizedDefaultButton>
       </Stack>
     </Stack>
+    <ThroughputInput
+      isDatabase={false}
+      isSharded={true}
+      onCostAcknowledgeChange={[Function]}
+      setIsAutoscale={[Function]}
+      setIsThroughputCapExceeded={[Function]}
+      setThroughputValue={[Function]}
+    />
     <Stack>
       <Stack
         horizontal={true}

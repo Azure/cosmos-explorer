@@ -38,6 +38,7 @@ import {
   TextSortDescendingRegular,
 } from "@fluentui/react-icons";
 import { NormalizedEventKey } from "Common/Constants";
+import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { TableColumnSelectionPane } from "Explorer/Panes/TableColumnSelectionPane/TableColumnSelectionPane";
 import {
   ColumnSizesMap,
@@ -50,7 +51,6 @@ import {
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
 import { selectionHelper } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
-import { userContext } from "UserContext";
 import { isEnvironmentCtrlPressed, isEnvironmentShiftPressed } from "Utils/KeyboardUtils";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { useCallback, useMemo } from "react";
@@ -228,7 +228,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     <MenuItem key="refresh" icon={<ArrowClockwise16Regular />} onClick={onRefreshTable}>
                       Refresh
                     </MenuItem>
-                    {userContext.features.enableDocumentsTableColumnSelection && (
+                    {[Environment.Development, Environment.Mpac].includes(getEnvironment()) && (
                       <>
                         <MenuItem
                           icon={<TextSortAscendingRegular />}
@@ -260,24 +260,25 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
                     >
                       Resize with left/right arrow keys
                     </MenuItem>
-                    {userContext.features.enableDocumentsTableColumnSelection && !isColumnSelectionDisabled && (
-                      <MenuItem
-                        key="remove"
-                        icon={<DeleteRegular />}
-                        onClick={() => {
-                          // Remove column id from selectedColumnIds
-                          const index = selectedColumnIds.indexOf(column.id);
-                          if (index === -1) {
-                            return;
-                          }
-                          const newSelectedColumnIds = [...selectedColumnIds];
-                          newSelectedColumnIds.splice(index, 1);
-                          onColumnSelectionChange(newSelectedColumnIds);
-                        }}
-                      >
-                        Remove column
-                      </MenuItem>
-                    )}
+                    {[Environment.Development, Environment.Mpac].includes(getEnvironment()) &&
+                      !isColumnSelectionDisabled && (
+                        <MenuItem
+                          key="remove"
+                          icon={<DeleteRegular />}
+                          onClick={() => {
+                            // Remove column id from selectedColumnIds
+                            const index = selectedColumnIds.indexOf(column.id);
+                            if (index === -1) {
+                              return;
+                            }
+                            const newSelectedColumnIds = [...selectedColumnIds];
+                            newSelectedColumnIds.splice(index, 1);
+                            onColumnSelectionChange(newSelectedColumnIds);
+                          }}
+                        >
+                          Remove column
+                        </MenuItem>
+                      )}
                   </MenuList>
                 </MenuPopover>
               </Menu>
