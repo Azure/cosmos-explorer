@@ -13,11 +13,11 @@ import {
   allowedHostedExplorerEndpoints,
   allowedJunoOrigins,
   allowedMongoBackendEndpoints,
-  allowedMongoProxyEndpoints,
   allowedMsalRedirectEndpoints,
   defaultAllowedArmEndpoints,
   defaultAllowedBackendEndpoints,
   defaultAllowedCassandraProxyEndpoints,
+  defaultAllowedMongoProxyEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
 
@@ -33,6 +33,7 @@ export interface ConfigContext {
   allowedArmEndpoints: ReadonlyArray<string>;
   allowedBackendEndpoints: ReadonlyArray<string>;
   allowedCassandraProxyEndpoints: ReadonlyArray<string>;
+  allowedMongoProxyEndpoints: ReadonlyArray<string>;
   allowedParentFrameOrigins: ReadonlyArray<string>;
   gitSha?: string;
   proxyPath?: string;
@@ -74,6 +75,7 @@ let configContext: Readonly<ConfigContext> = {
   allowedArmEndpoints: defaultAllowedArmEndpoints,
   allowedBackendEndpoints: defaultAllowedBackendEndpoints,
   allowedCassandraProxyEndpoints: defaultAllowedCassandraProxyEndpoints,
+  allowedMongoProxyEndpoints: defaultAllowedMongoProxyEndpoints,
   allowedParentFrameOrigins: [
     `^https:\\/\\/cosmos\\.azure\\.(com|cn|us)$`,
     `^https:\\/\\/[\\.\\w]*portal\\.azure\\.(com|cn|us)$`,
@@ -155,7 +157,12 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
     delete newContext.BACKEND_ENDPOINT;
   }
 
-  if (!validateEndpoint(newContext.MONGO_PROXY_ENDPOINT, allowedMongoProxyEndpoints)) {
+  if (
+    !validateEndpoint(
+      newContext.MONGO_PROXY_ENDPOINT,
+      configContext.allowedMongoProxyEndpoints || defaultAllowedMongoProxyEndpoints,
+    )
+  ) {
     delete newContext.MONGO_PROXY_ENDPOINT;
   }
 

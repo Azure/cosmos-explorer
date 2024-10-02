@@ -92,7 +92,7 @@ export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
   [MongoProxyEndpoints.Mooncake]: ["52.131.240.99", "143.64.61.130"],
 };
 
-export const allowedMongoProxyEndpoints: ReadonlyArray<string> = [
+export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
   MongoProxyEndpoints.Local,
   MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
