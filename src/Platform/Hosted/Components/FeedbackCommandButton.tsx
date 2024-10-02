@@ -5,7 +5,6 @@ const onClick = () => {
   window.open("https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20Hosted%20Data%20Explorer%20Feedback");
 };
 
-
 export const FeedbackCommandButton: React.FunctionComponent = () => {
   return (
     <div className="feedbackConnectSettingIcons">
