@@ -524,7 +524,7 @@ async function configurePortal(): Promise<Explorer> {
 
         if (!shouldProcessMessage(event)) {
           return;
-        }
+        }    
 
         // Check for init message
         const message: PortalMessage = event.data?.data;
@@ -551,7 +551,7 @@ async function configurePortal(): Promise<Explorer> {
                 `Local storage RBAC setting for ${userContext.apiType} account ${account.name} is ${isDataPlaneRbacSetting}`,
                 "Explorer/configurePortal",
               );
-
+              
               if (isDataPlaneRbacSetting === Constants.RBACOptions.setAutomaticRBACOption) {
                 dataPlaneRbacEnabled = account.properties.disableLocalAuth;
               } else {
@@ -672,6 +672,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     databaseAccount,
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,
+    tenantId: inputs.tenantId,
     subscriptionType: inputs.subscriptionType,
     quotaId: inputs.quotaId,
     portalEnv: inputs.serverId as PortalEnv,

@@ -266,20 +266,15 @@ export default class Explorer {
       const msalInstance = await getMsalInstance();
 
       try {
-        const response = await msalInstance.loginPopup({
-          redirectUri: configContext.msalRedirectURI,
-          scopes: [],
-        });
-        localStorage.setItem("cachedTenantId", response.tenantId);
         const cachedAccount = msalInstance.getAllAccounts()?.[0];
         msalInstance.setActiveAccount(cachedAccount);
         const aadToken = await acquireTokenWithMsal(msalInstance, {
           forceRefresh: true,
           scopes: [hrefEndpoint],
-          authority: `${configContext.AAD_ENDPOINT}${localStorage.getItem("cachedTenantId")}`,
+          authority: `${configContext.AAD_ENDPOINT}${userContext.tenantId}`,
         });
         updateUserContext({ aadToken: aadToken });
-        useDataPlaneRbac.setState({ aadTokenUpdated: true });
+        useDataPlaneRbac.setState({ aadTokenUpdated: true });        
       } catch (error) {
         if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
           logConsoleError(
