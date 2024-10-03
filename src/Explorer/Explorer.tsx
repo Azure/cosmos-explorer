@@ -274,7 +274,7 @@ export default class Explorer {
           authority: `${configContext.AAD_ENDPOINT}${userContext.tenantId}`,
         });
         updateUserContext({ aadToken: aadToken });
-        useDataPlaneRbac.setState({ aadTokenUpdated: true });        
+        useDataPlaneRbac.setState({ aadTokenUpdated: true });
       } catch (error) {
         if (error instanceof msal.AuthError && error.errorCode === msal.BrowserAuthErrorMessage.popUpWindowError.code) {
           logConsoleError(
