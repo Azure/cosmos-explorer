@@ -1,7 +1,7 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
 import {
-  allowedMongoProxyEndpoints,
   allowedMongoProxyEndpoints_ToBeDeprecated,
+  defaultAllowedMongoProxyEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
 import queryString from "querystring";
@@ -689,15 +689,16 @@ export function createMongoCollectionWithProxy_ToBeDeprecated(
 }
 export function getFeatureEndpointOrDefault(feature: string): string {
   let endpoint;
+  const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
+    ...defaultAllowedMongoProxyEndpoints,
+    ...allowedMongoProxyEndpoints_ToBeDeprecated,
+  ];
   if (useMongoProxyEndpoint(feature)) {
     endpoint = configContext.MONGO_PROXY_ENDPOINT;
   } else {
     endpoint =
       hasFlag(userContext.features.mongoProxyAPIs, feature) &&
-      validateEndpoint(userContext.features.mongoProxyEndpoint, [
-        ...allowedMongoProxyEndpoints,
-        ...allowedMongoProxyEndpoints_ToBeDeprecated,
-      ])
+      validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints)
         ? userContext.features.mongoProxyEndpoint
         : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
   }
