@@ -91,7 +91,8 @@ export async function acquireMsalTokenForAccount(
     // This will eventually throw InteractionRequiredAuthError if silent is true, we won't handle it here.
     const loginRequest = {
       scopes: [hrefEndpoint],
-      loginHint: user_hint,
+      loginHint: user_hint ?? userContext.userName,
+      authority: userContext.tenantId ? `${configContext.AAD_ENDPOINT}${userContext.tenantId}` : undefined,
     };
     try {
       if (silent) {
@@ -132,7 +133,8 @@ export async function acquireMsalTokenForAccount(
     account: msalAccount || null,
     forceRefresh: true,
     scopes: [hrefEndpoint],
-    authority: `${configContext.AAD_ENDPOINT}${msalAccount.tenantId}`,
+    loginHint: user_hint ?? userContext.userName,
+    authority: `${configContext.AAD_ENDPOINT}${userContext.tenantId ?? msalAccount.tenantId}`,
   };
   return acquireTokenWithMsal(msalInstance, tokenRequest, silent);
 }

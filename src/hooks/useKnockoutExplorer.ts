@@ -694,6 +694,8 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     resourceGroup: inputs.resourceGroup,
     subscriptionId: inputs.subscriptionId,
     subscriptionType: inputs.subscriptionType,
+    tenantId: inputs.tenantId,
+    userName: inputs.userName,
     quotaId: inputs.quotaId,
     portalEnv: inputs.serverId as PortalEnv,
     hasWriteAccess: inputs.hasWriteAccess ?? true,

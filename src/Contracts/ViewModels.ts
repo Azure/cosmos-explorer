@@ -382,6 +382,8 @@ export interface DataExplorerInputsFrame {
   databaseAccount: any;
   subscriptionId?: string;
   resourceGroup?: string;
+  tenantId?: string;
+  userName?: string;
   masterKey?: string;
   hasWriteAccess?: boolean;
   authorizationToken?: string;
