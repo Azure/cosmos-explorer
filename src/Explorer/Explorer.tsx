@@ -1137,7 +1137,6 @@ export default class Explorer {
         : this.refreshAllDatabases();
     }
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
-
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled =
       configContext.platform !== Platform.Fabric &&
