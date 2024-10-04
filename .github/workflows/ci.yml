@@ -111,9 +111,9 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
       - name: Upload build to preview blob storage
-        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name jadepreview --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --overwrite true
+        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name jadepreview --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --overwrite true --auth-mode login
       - name: Upload preview config to blob storage
-        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name jadepreview --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --overwrite true
+        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name jadepreview --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --overwrite true --auth-mode login
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
