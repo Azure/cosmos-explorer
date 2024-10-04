@@ -1,11 +1,12 @@
 import * as msal from "@azure/msal-browser";
-import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
+import { DatabaseAccount } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
-import { traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
+import { trace, traceFailure } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
@@ -64,7 +65,83 @@ export async function getMsalInstance() {
   return msalInstance;
 }
 
-export async function acquireTokenWithMsal(msalInstance: msal.IPublicClientApplication, request: msal.SilentRequest) {
+export async function acquireMsalTokenForAccount(
+  account: DatabaseAccount,
+  silent: boolean = false,
+  user_hint?: string,
+) {
+  if (userContext.databaseAccount.properties?.documentEndpoint === undefined) {
+    throw new Error("Database account has no document endpoint defined");
+  }
+  const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
+    /\/+$/,
+    "/.default",
+  );
+  const msalInstance = await getMsalInstance();
+  const knownAccounts = msalInstance.getAllAccounts();
+  // If user_hint is provided, we will try to use it to find the account.
+  // If no account is found, we will use the current active account or first account in the list.
+  const msalAccount =
+    knownAccounts?.filter((account) => account.username === user_hint)[0] ??
+    msalInstance.getActiveAccount() ??
+    knownAccounts?.[0];
+
+  if (!msalAccount) {
+    // If no account was found, we need to sign in.
+    // This will eventually throw InteractionRequiredAuthError if silent is true, we won't handle it here.
+    const loginRequest = {
+      scopes: [hrefEndpoint],
+      loginHint: user_hint,
+    };
+    try {
+      if (silent) {
+        // We can try to use SSO between different apps to avoid showing a popup.
+        // With a hint provided, this should work in most cases.
+        // See https://learn.microsoft.com/en-us/entra/identity-platform/msal-js-sso#sso-between-different-apps
+        try {
+          const loginResponse = await msalInstance.ssoSilent(loginRequest);
+          return loginResponse.accessToken;
+        } catch (silentError) {
+          trace(Action.SignInAad, ActionModifiers.Mark, {
+            request: JSON.stringify(loginRequest),
+            acquireTokenType: silent ? "silent" : "interactive",
+            errorMessage: JSON.stringify(silentError),
+          });
+        }
+      }
+      // If silent acquisition failed, we need to show a popup.
+      // Passing prompt: "none" will still show a popup but not perform a full sign-in.
+      // This will only work if the user has already signed in and the session is still valid.
+      // See https://learn.microsoft.com/en-us/entra/identity-platform/msal-js-prompt-behavior#interactive-requests-with-promptnone
+      // The hint will be used to pre-fill the username field in the popup if silent is false.
+      const loginResponse = await msalInstance.loginPopup({ prompt: silent ? "none" : "login", ...loginRequest });
+      return loginResponse.accessToken;
+    } catch (error) {
+      traceFailure(Action.SignInAad, {
+        request: JSON.stringify(loginRequest),
+        acquireTokenType: silent ? "silent" : "interactive",
+        errorMessage: JSON.stringify(error),
+      });
+      throw error;
+    }
+  } else {
+    msalInstance.setActiveAccount(msalAccount);
+  }
+
+  const tokenRequest = {
+    account: msalAccount || null,
+    forceRefresh: true,
+    scopes: [hrefEndpoint],
+    authority: `${configContext.AAD_ENDPOINT}${msalAccount.tenantId}`,
+  };
+  return acquireTokenWithMsal(msalInstance, tokenRequest, silent);
+}
+
+export async function acquireTokenWithMsal(
+  msalInstance: msal.IPublicClientApplication,
+  request: msal.SilentRequest,
+  silent: boolean = false,
+) {
   const tokenRequest = {
     account: msalInstance.getActiveAccount() || null,
     ...request,
@@ -74,7 +151,7 @@ export async function acquireTokenWithMsal(msalInstance: msal.IPublicClientAppli
     // attempt silent acquisition first
     return (await msalInstance.acquireTokenSilent(tokenRequest)).accessToken;
   } catch (silentError) {
-    if (silentError instanceof msal.InteractionRequiredAuthError) {
+    if (silentError instanceof msal.InteractionRequiredAuthError && silent === false) {
       try {
         // The error indicates that we need to acquire the token interactively.
         // This will display a pop-up to re-establish authorization. If user does not
