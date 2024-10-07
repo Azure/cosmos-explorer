@@ -368,11 +368,11 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
 
   @Values({
     description: {
-      textTKey: "MaterializedViewsBuilderDescription",
+      textTKey: "GlobalsecondaryindexesBuilderDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://aka.ms/cosmos-db-materializedviews",
-        textTKey: "LearnAboutMaterializedViews",
+        href: "https://aka.ms/cosmos-db-globalsecondaryindexes",
+        textTKey: "LearnAboutGlobalSecondaryIndexes",
       },
     },
   })
@@ -380,7 +380,7 @@ export default class MaterializedViewsBuilder extends SelfServeBaseClass {
 
   @OnChange(onEnableMaterializedViewsBuilderChange)
   @Values({
-    labelTKey: "MaterializedViewsBuilder",
+    labelTKey: "GlobalSecondaryIndexesBuilder",
     trueLabelTKey: "Provisioned",
     falseLabelTKey: "Deprovisioned",
   })

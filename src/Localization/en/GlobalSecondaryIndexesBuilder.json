@@ -1,5 +1,5 @@
 {
-    "MaterializedViewsBuilderDescription": "Provision a Materializedviews builder cluster for your Azure Cosmos DB account. Materializedviews builder is compute in your account that performs read operations on source collection for any updates and applies them on materialized views as per the materializedview definition.",
+    "GlobalsecondaryindexesBuilderDescription": "Provision a Globalsecondaryindexes builder cluster for your Azure Cosmos DB account. Globalsecondaryindexes builder is compute in your account that performs read operations on source collection for any updates and updates the global secondary indexes as per the globalsecondaryindexes definition.",
     "MaterializedViewsBuilder": "Materializedviews Builder",
     "Provisioned": "Provisioned",
     "Deprovisioned": "Deprovisioned",
