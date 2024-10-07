@@ -77,8 +77,8 @@ const onNumberOfInstancesChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-          textTKey: "MaterializedviewsBuilderPricing",
+          href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -117,8 +117,8 @@ const onEnableMaterializedViewsBuilderChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-          textTKey: "MaterializedviewsBuilderPricing",
+          href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+          textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
         },
       } as Description,
       hidden: false,
@@ -194,8 +194,8 @@ const NumberOfInstancesDropdownInfo: Info = {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-    textTKey: "MaterializedviewsBuilderPricing",
+    href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
 };
 
