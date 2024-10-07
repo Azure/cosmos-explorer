@@ -29,12 +29,14 @@ import {
   updateMaterializedViewsBuilderResource,
 } from "./MaterializedViewsBuilder.rp";
 
+import { userContext } from "../../UserContext";
+
 const costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
-    href: "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
-    textTKey: "MaterializedviewsBuilderPricing",
+    href: userContext.apiType === "SQL" ? "https://aka.ms/cosmos-db-globalsecondaryindexesbuilder-pricing" : "https://aka.ms/cosmos-db-materializedviewsbuilder-pricing",
+    textTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesBuilderPricing" : "MaterializedviewsBuilderPricing",
   },
 };
 
