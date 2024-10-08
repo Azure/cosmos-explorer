@@ -6,9 +6,9 @@ import { RefreshResult } from "../SelfServeTypes";
 import MaterializedViewsBuilder from "./MaterializedViewsBuilder";
 import {
   FetchPricesResponse,
+  MaterializedViewsBuilderServiceResource,
   PriceMapAndCurrencyCode,
   RegionsResponse,
-  MaterializedViewsBuilderServiceResource,
   UpdateMaterializedViewsBuilderRequestParameters,
 } from "./MaterializedViewsBuilderTypes";
 
@@ -123,11 +123,11 @@ export const refreshMaterializedViewsBuilderProvisioning = async (): Promise<Ref
     if (response.properties.status === ResourceStatus.Running.toString()) {
       return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
     } else if (response.properties.status === ResourceStatus.Creating.toString()) {
-      return { isUpdateInProgress: true, updateInProgressMessageTKey: "CreateMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesCreateMessage" : "CreateMessage"};
     } else if (response.properties.status === ResourceStatus.Deleting.toString()) {
-      return { isUpdateInProgress: true, updateInProgressMessageTKey: "DeleteMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesDeleteMessage" : "DeleteMessage"};
     } else {
-      return { isUpdateInProgress: true, updateInProgressMessageTKey: "UpdateMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessageTKey: userContext.apiType === "SQL" ? "GlobalsecondaryindexesUpdateMessage" : "UpdateMessage"};
     }
   } catch {
     //TODO differentiate between different failures
