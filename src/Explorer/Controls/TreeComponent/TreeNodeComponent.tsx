@@ -23,7 +23,7 @@ import { useCallback } from "react";
 
 export interface TreeNodeMenuItem {
   label: string;
-  onClick: () => void;
+  onClick: (value?: React.RefObject<HTMLElement>) => void;
   iconSrc?: string;
   isDisabled?: boolean;
   styleClass?: string;
@@ -74,6 +74,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
   openItems,
 }: TreeNodeComponentProps): JSX.Element => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const contextMenuRef = React.useRef<HTMLButtonElement>(null);
   const treeStyles = useTreeStyles();
 
   const getSortedChildren = (treeNode: TreeNode): TreeNode[] => {
@@ -141,7 +142,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
       data-test={`TreeNode/ContextMenuItem:${menuItem.label}`}
       disabled={menuItem.isDisabled}
       key={menuItem.label}
-      onClick={menuItem.onClick}
+      onClick={() => menuItem.onClick(contextMenuRef)}
     >
       {menuItem.label}
     </MenuItem>
@@ -190,6 +191,7 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
                     className={mergeClasses(treeStyles.actionsButton, shouldShowAsSelected && treeStyles.selectedItem)}
                     data-test="TreeNode/ContextMenuTrigger"
                     appearance="subtle"
+                    ref={contextMenuRef}
                     icon={<MoreHorizontal20Regular />}
                   />
                 </MenuTrigger>
