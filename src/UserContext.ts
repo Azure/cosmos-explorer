@@ -74,6 +74,7 @@ export interface UserContext {
   readonly authType?: AuthType;
   readonly masterKey?: string;
   readonly subscriptionId?: string;
+  readonly tenantId?: string;
   readonly resourceGroup?: string;
   readonly databaseAccount?: DatabaseAccount;
   readonly endpoint?: string;
