@@ -192,6 +192,12 @@ module.exports = function (_env = {}, argv = {}) {
     new EnvironmentPlugin(envVars),
   ];
 
+  if(process.env.EXPLORER_CONFIG_PATH) {
+    plugins.push(new CopyWebpackPlugin({
+      patterns: [{ from: process.env.EXPLORER_CONFIG_PATH, to: "config.json" }]
+    }));
+  }
+
   if (argv.analyze) {
     plugins.push(new BundleAnalyzerPlugin());
   }
