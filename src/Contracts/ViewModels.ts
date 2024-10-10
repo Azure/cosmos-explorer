@@ -383,6 +383,8 @@ export interface DataExplorerInputsFrame {
   subscriptionId?: string;
   tenantId?: string;
   resourceGroup?: string;
+  tenantId?: string;
+  userName?: string;
   masterKey?: string;
   hasWriteAccess?: boolean;
   authorizationToken?: string;
