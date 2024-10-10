@@ -695,7 +695,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     subscriptionId: inputs.subscriptionId,
     tenantId: inputs.tenantId,
     subscriptionType: inputs.subscriptionType,
-    tenantId: inputs.tenantId,
     userName: inputs.userName,
     quotaId: inputs.quotaId,
     portalEnv: inputs.serverId as PortalEnv,
