@@ -381,6 +381,7 @@ export enum TerminalKind {
 export interface DataExplorerInputsFrame {
   databaseAccount: any;
   subscriptionId?: string;
+  tenantId?: string;
   resourceGroup?: string;
   masterKey?: string;
   hasWriteAccess?: boolean;
