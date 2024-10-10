@@ -26,6 +26,8 @@ const SUBSCRIPTION_ID = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const RESOURCE_GROUP = "de-e2e-tests";
 const AZURE_CLIENT_SECRET = process.env.AZURE_CLIENT_SECRET || process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET; // TODO Remove. Exists for backwards compat with old .env files. Prefer AZURE_CLIENT_SECRET
 
+const ishttps = process.env.GATEWAY_TLS_ENABLED !== "false"; // false -> false, true -> true, default -> true
+
 if (!AZURE_CLIENT_SECRET) {
   console.warn("AZURE_CLIENT_SECRET is not set. testExplorer.html will not work.");
 }
@@ -274,7 +276,7 @@ module.exports = function (_env = {}, argv = {}) {
       // disableHostCheck: true,
       liveReload: !isCI,
       server: {
-        type: "https",
+        type: ishttps ? "https" : "http",
       },
       host: "0.0.0.0",
       port: envVars.PORT,
