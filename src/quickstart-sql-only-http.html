@@ -1,0 +1,287 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0" />
+
+    <title>Azure Cosmos DB Emulator</title>
+  </head>
+
+  <body>
+    <div id="divQuickStart">
+      <div class="Introlines">
+        <p class="Introline1">Congratulations! Your Azure Cosmos DB emulator is running.</p>
+        <p class="Introline2">Now, let's connect a sample app to it.</p>
+        <div id="divQuickStartConnections">
+          <p class="Introline2">URI</p>
+          <input type="text" class="codeblock" readonly="readonly" value="http://localhost:8081" />
+          <p class="Introline2">Primary Key</p>
+          <input
+            type="text"
+            class="codeblock"
+            readonly="readonly"
+            value="C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
+          />
+          <p class="Introline2">Primary Connection String</p>
+          <input
+            type="text"
+            class="codeblock"
+            readonly="readonly"
+            value="AccountEndpoint=http://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
+          />
+        </div>
+        <p class="Introline3"><b>Choose a platform</b></p>
+      </div>
+      <div class="container-fluid">
+        <ul class="nav nav-tabs qslevel">
+          <li class="active">
+            <a data-toggle="tab" href="#net"><img class="qsmenuicons" src="/dotnet.png" alt=".NET platform" />.NET</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#corenet"
+              ><img class="qsmenuicons" src="/dotnet.png" alt=".NET Core platform" />.NET Core</a
+            >
+          </li>
+          <li>
+            <a data-toggle="tab" href="#Java"><img class="qsmenuicons" src="/java.png" alt="Java platform" />Java</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#NodeJs"
+              ><img class="qsmenuicons" src="/nodejs.png" alt="Node.js platform" />Node.js</a
+            >
+          </li>
+          <li>
+            <a data-toggle="tab" href="#Python"
+              ><img class="qsmenuicons" src="/python.png" alt="Python platform" />Python</a
+            >
+          </li>
+        </ul>
+        <div class="tab-content tab-content-override">
+          <div id="net" class="tab-pane fade in active">
+            <div class="netApp">
+              <div class="numbersize numbersizePadding">1</div>
+              <div class="numberheading">
+                Open and run a sample .NET app
+                <p>
+                  We created a sample .NET app connected to your Azure Cosmos DB Emulator instance. Download, extract,
+                  build and run the app.
+                </p>
+                <a href="quickstart/DocumentDB-Quickstart-DotNet.zip"
+                  ><button class="btncreatecoll">Download</button></a
+                >
+              </div>
+            </div>
+
+            <div class="netApp">
+              <div class="numbersize">2</div>
+              <div class="numberheading">
+                Learn more about Azure Cosmos DB
+                <ul>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/samples/dotnet"
+                      >Code Samples</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/docs">Documentation</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/pricing">Pricing</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/capacity-planner"
+                      >Capacity Planner</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/stackoverflow">Forum</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div id="corenet" class="tab-pane fade">
+            <div class="netApp">
+              <div class="numbersize numbersizePadding">1</div>
+              <div class="numberheading">
+                Open and run a sample .NET Core app
+                <p>
+                  We created a sample .NET Core app connected to your Azure Cosmos DB Emulator instance. Download,
+                  extract, build and run the app.
+                </p>
+                <a href="quickstart/DocumentDB-Quickstart-DotNetCore.zip"
+                  ><button class="btncreatecoll">Download</button></a
+                >
+              </div>
+            </div>
+
+            <div class="netApp">
+              <div class="numbersize">2</div>
+              <div class="numberheading">
+                Learn more about Azure Cosmos DB.
+                <ul>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/samples/dotnet"
+                      >Code Samples</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/docs">Documentation</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/pricing">Pricing</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/capacity-planner"
+                      >Capacity Planner</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/stackoverflow">Forum</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="Java" class="tab-pane fade">
+            <div class="step1">
+              <div class="numbersize numbersizePadding">1</div>
+              <div class="numberheading">
+                Open and run a sample Java app
+                <p>
+                  We created a sample Java app connected to your Azure Cosmos DB Emulator instance. Download, extract,
+                  build and run the app.
+                </p>
+                <a href="quickstart/DocumentDB-Quickstart-Java.zip"><button class="btncreatecoll">Download</button></a>
+                <p>
+                  Follow instructions in the readme.md to setup prerequisites needed to run Java web apps, if you
+                  haven’t already.
+                </p>
+              </div>
+            </div>
+
+            <div class="step1">
+              <div class="numbersize">2</div>
+              <div class="numberheading">
+                Learn more about Azure Cosmos DB.
+                <ul>
+                  <!--<li><a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/samples/java">Code Samples</a></li>-->
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/docs">Documentation</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/pricing">Pricing</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/capacity-planner"
+                      >Capacity Planner</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/stackoverflow">Forum</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="NodeJs" class="tab-pane fade">
+            <div class="step1">
+              <div class="numbersize numbersizePadding">1</div>
+              <div class="numberheading">
+                Open and run a sample Node.js app
+                <p>
+                  We created a sample Node.js app connected to your Azure Cosmos DB Emulator instance. Download,
+                  extract, build and run the app.
+                </p>
+                <a href="quickstart/DocumentDB-Quickstart-NodeJs.zip"
+                  ><button class="btncreatecoll">Download</button></a
+                >
+                <p>
+                  Run <strong>npm install</strong> and <strong>npm start</strong>, and navigate to
+                  <a href="http://localhost:3000" _targe="blank">http://localhost:3000</a>.
+                </p>
+              </div>
+            </div>
+
+            <div class="step1">
+              <div class="numbersize">2</div>
+              <div class="numberheading">
+                Learn more about Azure Cosmos DB.
+                <ul>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/samples/nodejs"
+                      >Code Samples</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/docs">Documentation</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/pricing">Pricing</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/capacity-planner"
+                      >Capacity Planner</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/stackoverflow">Forum</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="Python" class="tab-pane fade">
+            <div class="pythonApp">
+              <div class="numbersize numbersizePadding">1</div>
+              <div class="numberheading">
+                Create a new Python app.
+                <p>
+                  Follow this
+                  <a href="https://aka.ms/cosmos-db-emulator/tutorial/python" target="_blank">tutorial</a>
+                  to create a new Python app connected to Azure Cosmos DB.
+                </p>
+              </div>
+            </div>
+
+            <div class="pythonApp">
+              <div class="numbersize">2</div>
+              <div class="numberheading">
+                Learn more about Azure Cosmos DB.
+                <ul>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/samples/python"
+                      >Code Samples</a
+                    >
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/docs">Documentation</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/pricing">Pricing</a>
+                  </li>
+                  <li>
+                    <a target="_blank" class="atags" href="https://aka.ms/cosmos-db-emulator/capacity-planner"
+                      >Capacity planner</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      target="_blank"
+                      class="atags"
+                      href="https://social.msdn.microsoft.com/forums/azure/home?forum=AzureDocumentDB"
+                      >Forum</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

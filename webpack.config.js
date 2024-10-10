@@ -133,9 +133,15 @@ module.exports = function (_env = {}, argv = {}) {
       template: "src/Terminal/index.html",
       chunks: ["terminal"],
     }),
+    //todo - dynamically include apis
+    ishttps ? 
     new HtmlWebpackPlugin({
       filename: "quickstart.html",
-      template: "src/quickstart.html",
+      template: "src/quickstart-sql-only.html",
+      chunks: ["quickstart"],
+    }) : new HtmlWebpackPlugin({
+      filename: "quickstart.html",
+      template: "src/quickstart-sql-only-http.html",
       chunks: ["quickstart"],
     }),
     new HtmlWebpackPlugin({
