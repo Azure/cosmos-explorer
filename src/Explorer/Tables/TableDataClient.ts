@@ -1,4 +1,9 @@
 import { FeedOptions } from "@azure/cosmos";
+import {
+  allowedCassandraProxyEndpoints_ToBeDeprecated,
+  defaultAllowedCassandraProxyEndpoints,
+  validateEndpoint,
+} from "Utils/EndpointUtils";
 import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
@@ -757,9 +762,14 @@ export class CassandraAPIDataClient extends TableDataClient {
       CassandraProxyEndpoints.Mooncake,
     ];
 
+    const allowedCassandraProxyEndpoints = configContext.allowedCassandraProxyEndpoints || [
+      ...defaultAllowedCassandraProxyEndpoints,
+      ...allowedCassandraProxyEndpoints_ToBeDeprecated,
+    ];
+
     return (
       configContext.NEW_CASSANDRA_APIS?.includes(api) &&
-      activeCassandraProxyEndpoints.includes(configContext.CASSANDRA_PROXY_ENDPOINT)
+      validateEndpoint(configContext.MONGO_PROXY_ENDPOINT, allowedCassandraProxyEndpoints)
     );
   }
 }
