@@ -790,11 +790,7 @@ export function useMongoProxyEndpoint(mongoProxyApi: string): boolean {
     return false;
   }
 
-  const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
-    ...defaultAllowedMongoProxyEndpoints,
-    ...allowedMongoProxyEndpoints_ToBeDeprecated,
-  ];
-  return validateEndpoint(configContext.MONGO_PROXY_ENDPOINT, allowedMongoProxyEndpoints);
+  return true;
 }
 
 export class ThrottlingError extends Error {
