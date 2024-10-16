@@ -689,13 +689,13 @@ export function createMongoCollectionWithProxy_ToBeDeprecated(
 }
 export function getFeatureEndpointOrDefault(feature: string): string {
   let endpoint;
-  const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
-    ...defaultAllowedMongoProxyEndpoints,
-    ...allowedMongoProxyEndpoints_ToBeDeprecated,
-  ];
   if (useMongoProxyEndpoint(feature)) {
     endpoint = configContext.MONGO_PROXY_ENDPOINT;
   } else {
+    const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
+      ...defaultAllowedMongoProxyEndpoints,
+      ...allowedMongoProxyEndpoints_ToBeDeprecated,
+    ];
     endpoint =
       hasFlag(userContext.features.mongoProxyAPIs, feature) &&
       validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints)
@@ -790,7 +790,12 @@ export function useMongoProxyEndpoint(mongoProxyApi: string): boolean {
     return false;
   }
 
-  return mongoProxyEnvironmentMap[mongoProxyApi].includes(configContext.MONGO_PROXY_ENDPOINT);
+  //return mongoProxyEnvironmentMap[mongoProxyApi].includes(configContext.MONGO_PROXY_ENDPOINT);
+  const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
+    ...defaultAllowedMongoProxyEndpoints,
+    ...allowedMongoProxyEndpoints_ToBeDeprecated,
+  ];
+  return validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints);
 }
 
 export class ThrottlingError extends Error {
