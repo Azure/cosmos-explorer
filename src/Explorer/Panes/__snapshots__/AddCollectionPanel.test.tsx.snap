@@ -309,40 +309,23 @@ exports[`AddCollectionPanel should render Default properly 1`] = `
     <Stack
       className="panelGroupSpacing"
     >
-      <Stack
-        horizontal={true}
+      <Text
+        className="panelTextBold"
+        variant="small"
       >
         <Text
-          className="panelTextBold"
           variant="small"
         >
-          Analytical store
+          Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.
+           
+          <StyledLinkBase
+            href="https://aka.ms/analytical-store-overview"
+            target="_blank"
+          >
+            Learn more
+          </StyledLinkBase>
         </Text>
-        <StyledTooltipHostBase
-          content={
-            <Text
-              variant="small"
-            >
-              Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads.
-               
-              <StyledLinkBase
-                href="https://aka.ms/analytical-store-overview"
-                target="_blank"
-              >
-                Learn more
-              </StyledLinkBase>
-            </Text>
-          }
-          directionalHint={4}
-        >
-          <Icon
-            ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads."
-            className="panelInfoIcon"
-            iconName="Info"
-            tabIndex={0}
-          />
-        </StyledTooltipHostBase>
-      </Stack>
+      </Text>
       <Stack
         horizontal={true}
         verticalAlign="center"
