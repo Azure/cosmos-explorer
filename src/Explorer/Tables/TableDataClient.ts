@@ -1,5 +1,4 @@
 import { FeedOptions } from "@azure/cosmos";
-import { getEnvironment } from "Common/EnvironmentUtility";
 import * as ko from "knockout";
 import Q from "q";
 import { AuthType } from "../../AuthType";
@@ -758,7 +757,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       CassandraProxyEndpoints.Mooncake,
     ];
 
-    if (getEnvironment() === undefined && configContext.globallyEnabledCassandraAPIs.includes(api)) {
+    if (configContext.globallyEnabledCassandraAPIs.includes(api)) {
       return true;
     }
 

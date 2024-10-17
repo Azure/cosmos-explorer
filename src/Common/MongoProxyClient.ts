@@ -1,11 +1,10 @@
 import { Constants as CosmosSDKConstants } from "@azure/cosmos";
-import { getEnvironment } from "Common/EnvironmentUtility";
-import queryString from "querystring";
 import {
   allowedMongoProxyEndpoints_ToBeDeprecated,
   defaultAllowedMongoProxyEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
+import queryString from "querystring";
 import { AuthType } from "../AuthType";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
@@ -791,7 +790,7 @@ export function useMongoProxyEndpoint(mongoProxyApi: string): boolean {
     return false;
   }
 
-  if (getEnvironment() === undefined && configContext.globallyEnabledMongoAPIs.includes(mongoProxyApi)) {
+  if (configContext.globallyEnabledMongoAPIs.includes(mongoProxyApi)) {
     return true;
   }
 
