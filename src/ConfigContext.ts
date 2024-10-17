@@ -2,7 +2,6 @@ import {
   BackendApi,
   CassandraProxyEndpoints,
   JunoEndpoints,
-  MongoProxyApi,
   MongoProxyEndpoints,
   PortalBackendEndpoints,
 } from "Common/Constants";
@@ -117,8 +116,8 @@ let configContext: Readonly<ConfigContext> = {
   NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
-  globallyEnabledCassandraAPIs: ["postQuery"],
-  globallyEnabledMongoAPIs: [MongoProxyApi.ResourceList],
+  globallyEnabledCassandraAPIs: [],
+  globallyEnabledMongoAPIs: [],
 };
 
 export function resetConfigContext(): void {
