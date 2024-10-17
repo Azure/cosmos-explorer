@@ -689,13 +689,13 @@ export function createMongoCollectionWithProxy_ToBeDeprecated(
 }
 export function getFeatureEndpointOrDefault(feature: string): string {
   let endpoint;
-  const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
-    ...defaultAllowedMongoProxyEndpoints,
-    ...allowedMongoProxyEndpoints_ToBeDeprecated,
-  ];
   if (useMongoProxyEndpoint(feature)) {
     endpoint = configContext.MONGO_PROXY_ENDPOINT;
   } else {
+    const allowedMongoProxyEndpoints = configContext.allowedMongoProxyEndpoints || [
+      ...defaultAllowedMongoProxyEndpoints,
+      ...allowedMongoProxyEndpoints_ToBeDeprecated,
+    ];
     endpoint =
       hasFlag(userContext.features.mongoProxyAPIs, feature) &&
       validateEndpoint(userContext.features.mongoProxyEndpoint, allowedMongoProxyEndpoints)
@@ -788,6 +788,10 @@ export function useMongoProxyEndpoint(mongoProxyApi: string): boolean {
 
   if (!mongoProxyEnvironmentMap[mongoProxyApi] || !configContext.MONGO_PROXY_ENDPOINT) {
     return false;
+  }
+
+  if (configContext.globallyEnabledMongoAPIs.includes(mongoProxyApi)) {
+    return true;
   }
 
   return mongoProxyEnvironmentMap[mongoProxyApi].includes(configContext.MONGO_PROXY_ENDPOINT);
