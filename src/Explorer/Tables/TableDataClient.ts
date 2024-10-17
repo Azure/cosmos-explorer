@@ -757,6 +757,11 @@ export class CassandraAPIDataClient extends TableDataClient {
       CassandraProxyEndpoints.Mooncake,
     ];
 
+    const globallyEnabledCassandraProxyApis = ["postQuery"];
+    if (globallyEnabledCassandraProxyApis.includes(api)) {
+      return true;
+    }
+
     return (
       configContext.NEW_CASSANDRA_APIS?.includes(api) &&
       activeCassandraProxyEndpoints.includes(configContext.CASSANDRA_PROXY_ENDPOINT)
