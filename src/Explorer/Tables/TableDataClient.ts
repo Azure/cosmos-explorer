@@ -757,6 +757,9 @@ export class CassandraAPIDataClient extends TableDataClient {
       CassandraProxyEndpoints.Mooncake,
     ];
 
-    return configContext.NEW_CASSANDRA_APIS?.includes(api);
+    return (
+      configContext.NEW_CASSANDRA_APIS?.includes(api) &&
+      activeCassandraProxyEndpoints.includes(configContext.CASSANDRA_PROXY_ENDPOINT)
+    );
   }
 }
