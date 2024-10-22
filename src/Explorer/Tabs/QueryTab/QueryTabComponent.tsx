@@ -13,6 +13,11 @@ import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/Query
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
+import {
+  SubComponentName,
+  readQueryTabSubComponentState,
+  saveQueryTabSubComponentState,
+} from "Explorer/Tabs/QueryTab/QueryTabStateUtil";
 import { QueryTabStyles, useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -118,6 +123,7 @@ interface IQueryTabStates {
   queryResultsView: SplitterDirection;
   errors?: QueryError[];
   modelMarkers?: monaco.editor.IMarkerData[];
+  queryViewSizePercent: number;
 }
 
 export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
@@ -165,7 +171,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
     this.state = {
       toggleState: ToggleState.Result,
-      sqlQueryEditorContent: props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c",
+      sqlQueryEditorContent: this._getDefaultQueryEditorContent(props),
       selectedContent: "",
       queryResults: undefined,
       errors: [],
@@ -176,7 +182,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       cancelQueryTimeoutID: undefined,
       copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
-      queryResultsView: getDefaultQueryResultsView(),
+      queryResultsView: this._getDefaultQUeryResultsViewDirection(props),
+      queryViewSizePercent: this._getQueryViewSizePercent(props),
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -205,6 +212,25 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       onSaveClickEvent: this.getCurrentEditorQuery.bind(this),
       onCloseClickEvent: this.onCloseClick.bind(this),
     });
+  }
+
+  private _getQueryViewSizePercent(props: QueryTabComponentImplProps): number {
+    return readQueryTabSubComponentState<number>(SubComponentName.QueryViewSizePercent, props.collection, 50);
+  }
+
+  private _getDefaultQUeryResultsViewDirection(props: QueryTabComponentImplProps): SplitterDirection {
+    const defaultQueryResultsView = getDefaultQueryResultsView();
+    return readQueryTabSubComponentState<SplitterDirection>(
+      SubComponentName.SplitterDirection,
+      props.collection,
+      defaultQueryResultsView,
+    );
+  }
+
+  private _getDefaultQueryEditorContent(props: QueryTabComponentImplProps): string {
+    const defaultText = props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c";
+    // Retrieve from app state if available
+    return readQueryTabSubComponentState<string>(SubComponentName.QueryText, props.collection, defaultText);
   }
 
   private _queryCopilotActive(): boolean {
@@ -569,6 +595,13 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   private _setViewLayout(direction: SplitterDirection): void {
     this.setState({ queryResultsView: direction });
 
+    // Store to local storage
+    saveQueryTabSubComponentState<SplitterDirection>(
+      SubComponentName.SplitterDirection,
+      this.props.collection,
+      direction,
+    );
+
     // We'll need to refresh the context buttons to update the selected state of the view buttons
     setTimeout(() => {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
@@ -623,6 +656,8 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     this.saveQueryButton.enabled = newContent.length > 0;
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
+
+    saveQueryTabSubComponentState<string>(SubComponentName.QueryText, this.props.collection, newContent, true);
   }
 
   public onSelectedContent(selectedContent: string, selection: monaco.Selection): void {
@@ -704,8 +739,21 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
             ></QueryCopilotPromptbar>
           )}
           {/* Set 'key' to the value of vertical to force re-rendering when vertical changes, to work around https://github.com/johnwalley/allotment/issues/457 */}
-          <Allotment key={vertical.toString()} vertical={vertical}>
-            <Allotment.Pane data-test="QueryTab/EditorPane">
+          <Allotment
+            key={vertical.toString()}
+            vertical={vertical}
+            onDragEnd={(sizes: number[]) => {
+              const queryViewSizePercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
+              saveQueryTabSubComponentState<number>(
+                SubComponentName.QueryViewSizePercent,
+                this.props.collection,
+                queryViewSizePercent,
+                true,
+              );
+              this.setState({ queryViewSizePercent });
+            }}
+          >
+            <Allotment.Pane data-test="QueryTab/EditorPane" preferredSize={`${this.state.queryViewSizePercent}%`}>
               <EditorReact
                 ref={this.queryEditor}
                 className={this.props.styles.queryEditor}
