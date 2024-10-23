@@ -610,7 +610,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   // Table user clicked on this row
   const [clickedRowIndex, setClickedRowIndex] = useState<number>(RESET_INDEX);
   // Table multiple selection
-  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
+  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>());
 
   // Command buttons
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
@@ -2232,7 +2232,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     <DocumentsTableComponent
                       onRefreshTable={() => refreshDocumentsGrid(false)}
                       items={tableItems}
-                      onItemClicked={(index) => onDocumentClicked(index, documentIds)}
                       onSelectedRowsChange={onSelectedRowsChange}
                       selectedRows={selectedRows}
                       size={tableContainerSizePx}

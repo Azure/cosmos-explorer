@@ -68,7 +68,6 @@ export type ColumnDefinition = {
 export interface IDocumentsTableComponentProps {
   onRefreshTable: () => void;
   items: DocumentsTableComponentItem[];
-  onItemClicked: (index: number) => void;
   onSelectedRowsChange: (selectedItemsIndices: Set<TableRowId>) => void;
   selectedRows: Set<TableRowId>;
   size: { height: number; width: number };
@@ -98,6 +97,7 @@ const defaultSize = {
   idealWidth: 200,
   minWidth: 50,
 };
+
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   onRefreshTable,
   items,
@@ -291,10 +291,10 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 
   const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(INITIAL_SELECTED_ROW_INDEX);
   const onTableCellClicked = useCallback(
-    (e: React.MouseEvent, index: number) => {
+    (e: React.MouseEvent, index: number, rowId: TableRowId) => {
       if (isSelectionDisabled) {
         // Only allow click
-        onSelectedRowsChange(new Set<TableRowId>([index]));
+        onSelectedRowsChange(new Set<TableRowId>([rowId]));
         setSelectionStartIndex(index);
         return;
       }
@@ -306,7 +306,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         isEnvironmentCtrlPressed(e),
         selectionStartIndex,
       );
-      onSelectedRowsChange(result.selection);
+
+      // Convert index to row id
+      const selectedRowIds = new Set<TableRowId>();
+      result.selection.forEach((index) => {
+        selectedRowIds.add(rows[index].rowId);
+      });
+      onSelectedRowsChange(selectedRowIds);
+
       if (result.selectionStartIndex !== undefined) {
         setSelectionStartIndex(result.selectionStartIndex);
       }
@@ -320,16 +327,20 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
    * - a key is down and the cell is clicked by the mouse
    */
   const onIdClicked = useCallback(
-    (e: React.KeyboardEvent<Element>, index: number) => {
+    (e: React.KeyboardEvent<Element>, rowId: TableRowId) => {
       if (e.key === NormalizedEventKey.Enter || e.key === NormalizedEventKey.Space) {
-        onSelectedRowsChange(new Set<TableRowId>([index]));
+        onSelectedRowsChange(new Set<TableRowId>([rowId]));
       }
     },
     [onSelectedRowsChange],
   );
 
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
-    const { item, selected, appearance, onClick, onKeyDown } = data[index];
+    // WARNING: because the table sorts the data, 'index' is not the same as 'rowId'
+    // The rowId is the index of the item in the original array,
+    // while the index is the index of the item in the sorted array
+    const { item, selected, appearance, onClick, onKeyDown, rowId } = data[index];
+
     return (
       <TableRow
         aria-rowindex={index + 2}
@@ -359,8 +370,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             key={column.columnId}
             className={styles.tableCell}
             // When clicking on a cell with shift/ctrl key, onKeyDown is called instead of onClick.
-            onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index)}
-            onKeyPress={(e: React.KeyboardEvent<Element>) => onIdClicked(e, index)}
+            onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index, rowId)}
+            onKeyPress={(e: React.KeyboardEvent<Element>) => onIdClicked(e, rowId)}
             {...columnSizing.getTableCellProps(column.columnId)}
             tabIndex={column.columnId === "id" ? 0 : -1}
           >
