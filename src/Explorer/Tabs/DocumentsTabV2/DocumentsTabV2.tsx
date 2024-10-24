@@ -663,23 +663,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
   }, [isFilterFocused]);
 
-  // Clicked row must be defined
-  useEffect(() => {
-    if (documentIds.length > 0) {
-      let currentClickedRowIndex = clickedRowIndex;
-      if (
-        (currentClickedRowIndex === RESET_INDEX &&
-          editorState === ViewModels.DocumentExplorerState.noDocumentSelected) ||
-        currentClickedRowIndex > documentIds.length - 1
-      ) {
-        // reset clicked row or the current clicked row is out of bounds
-        currentClickedRowIndex = INITIAL_SELECTED_ROW_INDEX;
-        setSelectedRows(new Set([INITIAL_SELECTED_ROW_INDEX]));
-        onDocumentClicked(currentClickedRowIndex, documentIds);
-      }
-    }
-  }, [documentIds, clickedRowIndex, editorState]);
-
   /**
    * Recursively delete all documents by retrying throttled requests (429).
    * This only works for NoSQL, because the bulk response includes status for each delete document request.

@@ -115,6 +115,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 }: IDocumentsTableComponentProps) => {
   const styles = useDocumentsTabStyles();
 
+  const sortedRowsRef = React.useRef(null);
+
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
     const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
     const columnSizesPx: TableColumnSizingOptions = {};
@@ -291,7 +293,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 
   const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(INITIAL_SELECTED_ROW_INDEX);
   const onTableCellClicked = useCallback(
-    (e: React.MouseEvent, index: number, rowId: TableRowId) => {
+    (e: React.MouseEvent | undefined, index: number, rowId: TableRowId) => {
       if (isSelectionDisabled) {
         // Only allow click
         onSelectedRowsChange(new Set<TableRowId>([rowId]));
@@ -299,18 +301,31 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         return;
       }
 
+      // The selection helper computes in the index space (what's visible to the user in the table, ie the sorted array).
+      // selectedRows is in the rowId space (the index of the original unsorted array), so it must be converted to the index space.
+      const selectedRowsIndex = new Set<number>();
+      selectedRows.forEach((rowId) => {
+        const index = sortedRowsRef.current.findIndex((row: TableRowData) => row.rowId === rowId);
+        if (index !== -1) {
+          selectedRowsIndex.add(index);
+        } else {
+          // This should never happen
+          console.error(`Row with rowId ${rowId} not found in sorted rows`);
+        }
+      });
+
       const result = selectionHelper(
-        selectedRows as Set<number>,
+        selectedRowsIndex,
         index,
-        isEnvironmentShiftPressed(e),
-        isEnvironmentCtrlPressed(e),
+        e && isEnvironmentShiftPressed(e),
+        e && isEnvironmentCtrlPressed(e),
         selectionStartIndex,
       );
 
-      // Convert index to row id
+      // Convert selectionHelper result from index space back to rowId space
       const selectedRowIds = new Set<TableRowId>();
       result.selection.forEach((index) => {
-        selectedRowIds.add(rows[index].rowId);
+        selectedRowIds.add(sortedRowsRef.current[index].rowId);
       });
       onSelectedRowsChange(selectedRowIds);
 
@@ -430,6 +445,26 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       };
     }),
   );
+
+  // Store the sorted rows in a ref which won't trigger a re-render (as opposed to a state)
+  sortedRowsRef.current = rows;
+
+  // If there are no selected rows, auto select the first row
+  const [autoSelectFirstDoc, setAutoSelectFirstDoc] = React.useState<boolean>(true);
+  React.useEffect(() => {
+    if (autoSelectFirstDoc && sortedRowsRef.current?.length > 0 && selectedRows.size === 0) {
+      setAutoSelectFirstDoc(false);
+
+      setTimeout(() => {
+        if (!autoSelectFirstDoc) {
+          return;
+        }
+
+        const DOC_INDEX_TO_SELECT = 0;
+        onTableCellClicked(undefined, DOC_INDEX_TO_SELECT, sortedRowsRef.current[DOC_INDEX_TO_SELECT].rowId);
+      });
+    }
+  }, [selectedRows, onTableCellClicked, autoSelectFirstDoc]);
 
   const toggleAllKeydown = React.useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
