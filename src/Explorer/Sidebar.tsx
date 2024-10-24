@@ -282,67 +282,69 @@ export const SidebarContainer: React.FC<SidebarProps> = ({ explorer }) => {
   );
 
   return (
-    <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
-      {/* Collections Tree - Start */}
-      {hasSidebar && (
-        // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
-        <Allotment.Pane minSize={24} preferredSize={250}>
-          <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
-            <div className={styles.sidebarContainer}>
-              {loading && (
-                // The Fluent UI progress bar has some issues in reduced-motion environments so we use a simple CSS animation here.
-                // https://github.com/microsoft/fluentui/issues/29076
-                <div className={styles.loadingProgressBar} title="Refreshing tree..." />
-              )}
-              {expanded ? (
-                <>
-                  <div className={styles.floatingControlsContainer}>
-                    <div className={styles.floatingControls}>
-                      <button
-                        type="button"
-                        data-test="Sidebar/RefreshButton"
-                        className={styles.floatingControlButton}
-                        disabled={loading}
-                        title="Refresh"
-                        onClick={onRefreshClick}
-                      >
-                        <ArrowSync12Regular />
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.floatingControlButton}
-                        title="Collapse sidebar"
-                        onClick={() => collapse()}
-                      >
-                        <ChevronLeft12Regular />
-                      </button>
+    <div className="sidebarContainer">
+      <Allotment ref={allotment} onChange={onChange} onDragEnd={onDragEnd} className="resourceTreeAndTabs">
+        {/* Collections Tree - Start */}
+        {hasSidebar && (
+          // When collapsed, we force the pane to 24 pixels wide and make it non-resizable.
+          <Allotment.Pane minSize={24} preferredSize={250}>
+            <CosmosFluentProvider className={mergeClasses(styles.sidebar)}>
+              <div className={styles.sidebarContainer}>
+                {loading && (
+                  // The Fluent UI progress bar has some issues in reduced-motion environments so we use a simple CSS animation here.
+                  // https://github.com/microsoft/fluentui/issues/29076
+                  <div className={styles.loadingProgressBar} title="Refreshing tree..." />
+                )}
+                {expanded ? (
+                  <>
+                    <div className={styles.floatingControlsContainer}>
+                      <div className={styles.floatingControls}>
+                        <button
+                          type="button"
+                          data-test="Sidebar/RefreshButton"
+                          className={styles.floatingControlButton}
+                          disabled={loading}
+                          title="Refresh"
+                          onClick={onRefreshClick}
+                        >
+                          <ArrowSync12Regular />
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.floatingControlButton}
+                          title="Collapse sidebar"
+                          onClick={() => collapse()}
+                        >
+                          <ChevronLeft12Regular />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    className={styles.expandedContent}
-                    style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}
+                    <div
+                      className={styles.expandedContent}
+                      style={!hasGlobalCommands ? { gridTemplateRows: "1fr" } : undefined}
+                    >
+                      {hasGlobalCommands && <GlobalCommands explorer={explorer} />}
+                      <ResourceTree explorer={explorer} />
+                    </div>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.floatingControlButton}
+                    title="Expand sidebar"
+                    onClick={() => expand()}
                   >
-                    {hasGlobalCommands && <GlobalCommands explorer={explorer} />}
-                    <ResourceTree explorer={explorer} />
-                  </div>
-                </>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.floatingControlButton}
-                  title="Expand sidebar"
-                  onClick={() => expand()}
-                >
-                  <ChevronRight12Regular />
-                </button>
-              )}
-            </div>
-          </CosmosFluentProvider>
+                    <ChevronRight12Regular />
+                  </button>
+                )}
+              </div>
+            </CosmosFluentProvider>
+          </Allotment.Pane>
+        )}
+        <Allotment.Pane minSize={200}>
+          <Tabs explorer={explorer} />
         </Allotment.Pane>
-      )}
-      <Allotment.Pane minSize={200}>
-        <Tabs explorer={explorer} />
-      </Allotment.Pane>
-    </Allotment>
+      </Allotment>
+    </div>
   );
 };
