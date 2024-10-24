@@ -39,7 +39,6 @@ exports[`DocumentsTableComponent should not render selection column when isSelec
       },
     ]
   }
-  onItemClicked={[Function]}
   onRefreshTable={[Function]}
   onSelectedRowsChange={[Function]}
   selectedColumnIds={[]}
@@ -504,7 +503,6 @@ exports[`DocumentsTableComponent should render documents and partition keys in h
       },
     ]
   }
-  onItemClicked={[Function]}
   onRefreshTable={[Function]}
   onSelectedRowsChange={[Function]}
   selectedColumnIds={[]}

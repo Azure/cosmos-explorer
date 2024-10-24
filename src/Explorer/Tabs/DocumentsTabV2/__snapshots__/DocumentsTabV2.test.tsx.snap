@@ -90,7 +90,6 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
                   isRowSelectionDisabled={true}
                   items={[]}
                   onColumnSelectionChange={[Function]}
-                  onItemClicked={[Function]}
                   onRefreshTable={[Function]}
                   onSelectedRowsChange={[Function]}
                   selectedColumnIds={
@@ -98,11 +97,7 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
                       "id",
                     ]
                   }
-                  selectedRows={
-                    Set {
-                      0,
-                    }
-                  }
+                  selectedRows={Set {}}
                 />
               </div>
             </div>
