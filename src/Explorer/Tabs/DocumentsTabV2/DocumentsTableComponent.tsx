@@ -454,15 +454,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
   React.useEffect(() => {
     if (autoSelectFirstDoc && sortedRowsRef.current?.length > 0 && selectedRows.size === 0) {
       setAutoSelectFirstDoc(false);
-
-      setTimeout(() => {
-        if (!autoSelectFirstDoc) {
-          return;
-        }
-
-        const DOC_INDEX_TO_SELECT = 0;
-        onTableCellClicked(undefined, DOC_INDEX_TO_SELECT, sortedRowsRef.current[DOC_INDEX_TO_SELECT].rowId);
-      });
+      const DOC_INDEX_TO_SELECT = 0;
+      onTableCellClicked(undefined, DOC_INDEX_TO_SELECT, sortedRowsRef.current[DOC_INDEX_TO_SELECT].rowId);
     }
   }, [selectedRows, onTableCellClicked, autoSelectFirstDoc]);
 
