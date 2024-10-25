@@ -610,7 +610,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   // Table user clicked on this row
   const [clickedRowIndex, setClickedRowIndex] = useState<number>(RESET_INDEX);
   // Table multiple selection
-  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>([0]));
+  const [selectedRows, setSelectedRows] = React.useState<Set<TableRowId>>(() => new Set<TableRowId>());
 
   // Command buttons
   const [editorState, setEditorState] = useState<ViewModels.DocumentExplorerState>(
@@ -662,23 +662,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
       filterInput.current?.focus();
     }
   }, [isFilterFocused]);
-
-  // Clicked row must be defined
-  useEffect(() => {
-    if (documentIds.length > 0) {
-      let currentClickedRowIndex = clickedRowIndex;
-      if (
-        (currentClickedRowIndex === RESET_INDEX &&
-          editorState === ViewModels.DocumentExplorerState.noDocumentSelected) ||
-        currentClickedRowIndex > documentIds.length - 1
-      ) {
-        // reset clicked row or the current clicked row is out of bounds
-        currentClickedRowIndex = INITIAL_SELECTED_ROW_INDEX;
-        setSelectedRows(new Set([INITIAL_SELECTED_ROW_INDEX]));
-        onDocumentClicked(currentClickedRowIndex, documentIds);
-      }
-    }
-  }, [documentIds, clickedRowIndex, editorState]);
 
   /**
    * Recursively delete all documents by retrying throttled requests (429).
@@ -2232,7 +2215,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                     <DocumentsTableComponent
                       onRefreshTable={() => refreshDocumentsGrid(false)}
                       items={tableItems}
-                      onItemClicked={(index) => onDocumentClicked(index, documentIds)}
                       onSelectedRowsChange={onSelectedRowsChange}
                       selectedRows={selectedRows}
                       size={tableContainerSizePx}

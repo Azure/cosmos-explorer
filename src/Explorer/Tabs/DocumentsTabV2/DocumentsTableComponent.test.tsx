@@ -14,7 +14,6 @@ describe("DocumentsTableComponent", () => {
       { [ID_HEADER]: "2", [PARTITION_KEY_HEADER]: "pk2" },
       { [ID_HEADER]: "3", [PARTITION_KEY_HEADER]: "pk3" },
     ],
-    onItemClicked: (): void => {},
     onSelectedRowsChange: (): void => {},
     selectedRows: new Set<TableRowId>(),
     size: {
