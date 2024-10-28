@@ -19,8 +19,6 @@ import { NormalizedEventKey } from "Common/Constants";
 import { tokens } from "Explorer/Theme/ThemeUtil";
 import React, { FC, useEffect, useRef } from "react";
 
-const theme = getTheme();
-
 const useStyles = makeStyles({
   container: {
     padding: 0,
@@ -40,7 +38,6 @@ const useStyles = makeStyles({
     width: "100%",
     fontSize: tokens.fontSizeBase300,
     fontWeight: 600,
-    color: theme.palette.themePrimary,
     padding: `${tokens.spacingVerticalM} 0 0 ${tokens.spacingVerticalM}`,
   },
   dropdownStack: {
@@ -109,6 +106,7 @@ export const InputDataList: FC<InputDataListProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const positioningRef = React.useRef<PositioningImperativeRef>(null);
   const [isInputFocused, setIsInputFocused] = React.useState(autofocus);
+  const theme = getTheme();
 
   useEffect(() => {
     if (inputRef.current) {
@@ -197,7 +195,7 @@ export const InputDataList: FC<InputDataListProps> = ({
         <PopoverSurface className={styles.container}>
           {dropdownOptions.map((section, sectionIndex) => (
             <div key={section.label}>
-              <div className={styles.dropdownHeader}>{section.label}</div>
+              <div className={styles.dropdownHeader} style={{ color: theme.palette.themePrimary }}>{section.label}</div>
               <div className={styles.dropdownStack}>
                 {section.options.map((option, index) => (
                   <Button
