@@ -79,9 +79,13 @@ export const QueryCopilotFeedbackModal = ({
             readOnly
           />
           <Text style={{ fontSize: 12, marginBottom: 14 }}>
-            By pressing submit, your feedback will be used to improve Microsoft products and services. Please see the{" "}
+            Microsoft will process the feedback you submit pursuant to your organization’s instructions in order to
+            improve your and your organization’s experience with this product. If you have any questions about the use
+            of feedback data, please contact your tenant administrator. Processing of feedback data is governed by the
+            Microsoft Products and Services Data Protection Addendum between your organization and Microsoft, and the
+            feedback you submit is considered Personal Data under that addendum. Please see the{" "}
             {
-              <Link href="https://privacy.microsoft.com/privacystatement" target="_blank">
+              <Link href="https://go.microsoft.com/fwlink/?LinkId=521839" target="_blank">
                 Privacy statement
               </Link>
             }{" "}
