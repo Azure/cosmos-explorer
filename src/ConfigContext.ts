@@ -11,6 +11,7 @@ import {
   defaultAllowedArmEndpoints,
   defaultAllowedCassandraProxyEndpoints,
   defaultAllowedMongoProxyEndpoints,
+  defaultAllowedPortalBackendEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
 
@@ -24,6 +25,7 @@ export enum Platform {
 export interface ConfigContext {
   platform: Platform;
   allowedArmEndpoints: ReadonlyArray<string>;
+  allowedPortalBackendEndpoints: ReadonlyArray<string>;
   allowedCassandraProxyEndpoints: ReadonlyArray<string>;
   allowedMongoProxyEndpoints: ReadonlyArray<string>;
   allowedParentFrameOrigins: ReadonlyArray<string>;
@@ -64,6 +66,7 @@ export interface ConfigContext {
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedArmEndpoints: defaultAllowedArmEndpoints,
+  allowedPortalBackendEndpoints: defaultAllowedPortalBackendEndpoints,
   allowedCassandraProxyEndpoints: defaultAllowedCassandraProxyEndpoints,
   allowedMongoProxyEndpoints: defaultAllowedMongoProxyEndpoints,
   allowedParentFrameOrigins: [
@@ -136,6 +139,15 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
   if (!validateEndpoint(newContext.ARCADIA_ENDPOINT, allowedArcadiaEndpoints)) {
     delete newContext.ARCADIA_ENDPOINT;
+  }
+
+  if (
+    !validateEndpoint(
+      newContext.PORTAL_BACKEND_ENDPOINT,
+      configContext.allowedPortalBackendEndpoints || defaultAllowedPortalBackendEndpoints,
+    )
+  ) {
+    delete newContext.PORTAL_BACKEND_ENDPOINT;
   }
 
   if (
@@ -236,3 +248,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+

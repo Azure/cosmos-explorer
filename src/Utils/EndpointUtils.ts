@@ -65,8 +65,16 @@ export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
   [MongoProxyEndpoints.Mooncake]: ["52.131.240.99", "143.64.61.130"],
 };
 
+export const defaultAllowedPortalBackendEndpoints: ReadonlyArray<string> = [
+  PortalBackendEndpoints.Development,
+  PortalBackendEndpoints.Mpac,
+  PortalBackendEndpoints.Prod,
+  PortalBackendEndpoints.Fairfax,
+  PortalBackendEndpoints.Mooncake,
+];
+
 export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
-  MongoProxyEndpoints.Local,
+  MongoProxyEndpoints.Development,
   MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
   MongoProxyEndpoints.Fairfax,
