@@ -80,6 +80,7 @@ export interface UserContext {
   readonly endpoint?: string;
   readonly aadToken?: string;
   readonly accessToken?: string;
+  readonly armToken?: string;
   readonly authorizationToken?: string;
   readonly resourceToken?: string;
   readonly subscriptionType?: SubscriptionType;

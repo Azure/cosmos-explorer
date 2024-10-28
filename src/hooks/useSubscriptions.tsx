@@ -3,6 +3,7 @@ import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph
 import useSWR from "swr";
 import { configContext } from "../ConfigContext";
 import { Subscription } from "../Contracts/DataModels";
+import { acquireTokenWithMsal, getMsalInstance } from "Utils/AuthorizationUtils";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 interface SubscriptionListResult {
@@ -92,3 +93,5 @@ export function useSubscriptions(armToken: string): Subscription[] | undefined {
   );
   return data;
 }
+
+

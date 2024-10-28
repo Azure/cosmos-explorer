@@ -5,6 +5,7 @@ import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
 import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
+import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
@@ -17,6 +18,7 @@ import { useEffect, useState } from "react";
 import { AuthType } from "../AuthType";
 import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
+import * as Logger from "../Common/Logger";
 import * as Logger from "../Common/Logger";
 import { handleCachedDataMessage, sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { Platform, configContext, updateConfigContext } from "../ConfigContext";
@@ -48,6 +50,7 @@ import {
   getMsalInstance,
 } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
+import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 
@@ -463,13 +466,34 @@ function configureEmulator(): Explorer {
 export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
   Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
   let keys;
+export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
+  Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
+  let keys;
   try {
+    keys = await listKeys(subscriptionId, resourceGroup, account);
     keys = await listKeys(subscriptionId, resourceGroup, account);
     Logger.logInfo(`Keys fetched for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
     updateUserContext({
       masterKey: keys.primaryMasterKey,
     });
   } catch (error) {
+    if (error.code === "AuthorizationFailed") {
+      keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account);
+      Logger.logInfo(
+        `Read only Keys fetched for ${userContext.apiType} account ${account}`,
+        "Explorer/fetchAndUpdateKeys",
+      );
+      updateUserContext({
+        masterKey: keys.primaryReadonlyMasterKey,
+      });
+    } else {
+      logConsoleError(`Error occurred fetching keys for the account." ${error.message}`);
+      Logger.logError(
+        `Error during fetching keys or updating user context: ${error} for ${userContext.apiType} account ${account}`,
+        "Explorer/fetchAndUpdateKeys",
+      );
+      throw error;
+    }
     if (error.code === "AuthorizationFailed") {
       keys = await getReadOnlyKeys(subscriptionId, resourceGroup, account);
       Logger.logInfo(

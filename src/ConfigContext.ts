@@ -5,6 +5,7 @@ import {
   MongoProxyEndpoints,
   PortalBackendEndpoints,
 } from "Common/Constants";
+import { userContext } from "UserContext";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
@@ -38,6 +39,7 @@ export interface ConfigContext {
   gitSha?: string;
   proxyPath?: string;
   AAD_ENDPOINT: string;
+  ENVIRONMENT: string;
   ARM_AUTH_AREA: string;
   ARM_ENDPOINT: string;
   EMULATOR_ENDPOINT?: string;
@@ -93,7 +95,7 @@ let configContext: Readonly<ConfigContext> = {
   ], // Webpack injects this at build time
   gitSha: process.env.GIT_SHA,
   hostedExplorerURL: "https://cosmos.azure.com/",
-  AAD_ENDPOINT: "https://login.microsoftonline.com/",
+  AAD_ENDPOINT: "",
   ARM_AUTH_AREA: "https://management.azure.com/",
   ARM_ENDPOINT: "https://management.azure.com/",
   ARM_API_VERSION: "2016-06-01",
