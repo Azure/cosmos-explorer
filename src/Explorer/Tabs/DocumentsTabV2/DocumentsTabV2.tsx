@@ -1164,27 +1164,16 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           deletePromise = _bulkDeleteNoSqlDocuments(_collection, toDeleteDocumentIds);
         }
       } else {
-        if (isMongoBulkDeleteDisabled) {
-          // TODO: Once new mongo proxy is available for all users, remove the call for MongoProxyClient.deleteDocument().
-          // MongoProxyClient.deleteDocuments() should be called for all users.
-          deletePromise = MongoProxyClient.deleteDocument(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds[0],
-          ).then(() => [toDeleteDocumentIds[0]]);
-          // ----------------------------------------------------------------------------------------------------
-        } else {
-          deletePromise = MongoProxyClient.deleteDocuments(
-            _collection.databaseId,
-            _collection as ViewModels.Collection,
-            toDeleteDocumentIds,
-          ).then(({ deletedCount, isAcknowledged }) => {
-            if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
-              return toDeleteDocumentIds;
-            }
-            throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
-          });
-        }
+        deletePromise = MongoProxyClient.deleteDocuments(
+          _collection.databaseId,
+          _collection as ViewModels.Collection,
+          toDeleteDocumentIds,
+        ).then(({ deletedCount, isAcknowledged }) => {
+          if (deletedCount === toDeleteDocumentIds.length && isAcknowledged) {
+            return toDeleteDocumentIds;
+          }
+          throw new Error(`Delete failed with deletedCount: ${deletedCount} and isAcknowledged: ${isAcknowledged}`);
+        });
       }
 
       return deletePromise
@@ -2096,11 +2085,8 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     }
   }, [prevSelectedColumnIds, refreshDocumentsGrid, selectedColumnIds]);
 
-  // TODO: remove isMongoBulkDeleteDisabled when new mongo proxy is enabled for all users
   // TODO: remove partitionKey.systemKey when JS SDK bug is fixed
-  const isMongoBulkDeleteDisabled = !MongoProxyClient.useMongoProxyEndpoint(Constants.MongoProxyApi.BulkDelete);
-  const isBulkDeleteDisabled =
-    (partitionKey.systemKey && !isPreferredApiMongoDB) || (isPreferredApiMongoDB && isMongoBulkDeleteDisabled);
+  const isBulkDeleteDisabled = partitionKey.systemKey && !isPreferredApiMongoDB;
   //  -------------------------------------------------------
 
   return (

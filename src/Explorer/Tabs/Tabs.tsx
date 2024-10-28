@@ -1,8 +1,5 @@
 import { IMessageBarStyles, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
-import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
 import { sendMessage } from "Common/MessageHandler";
-import { configContext } from "ConfigContext";
-import { IpRule } from "Contracts/DataModels";
 import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
@@ -17,7 +14,6 @@ import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
 import { userContext } from "UserContext";
-import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
 import ko from "knockout";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -36,10 +32,6 @@ interface TabsProps {
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
   const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
-  const [
-    showMongoAndCassandraProxiesNetworkSettingsWarningState,
-    setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
-  ] = useState<boolean>(showMongoAndCassandraProxiesNetworkSettingsWarning());
 
   const setKeyboardHandlers = useKeyboardActionGroup(KeyboardActionGroup.TABS);
   useEffect(() => {
@@ -81,18 +73,6 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
           messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
         >
           {networkSettingsWarning}
-        </MessageBar>
-      )}
-      {showMongoAndCassandraProxiesNetworkSettingsWarningState && (
-        <MessageBar
-          messageBarType={MessageBarType.warning}
-          styles={defaultMessageBarStyles}
-          onDismiss={() => {
-            setShowMongoAndCassandraProxiesNetworkSettingsWarningState(false);
-          }}
-        >
-          {`We have migrated our middleware to new infrastructure. To avoid issues with Data Explorer access, please
-          re-enable "Allow access from Azure Portal" on the Networking blade for your account.`}
         </MessageBar>
       )}
       <div className="nav-tabs-margin">
@@ -338,58 +318,4 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
     default:
       throw Error(`Unsupported tab kind ${ReactTabKind[activeReactTab]}`);
   }
-};
-
-const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
-  const ipRules: IpRule[] = userContext.databaseAccount?.properties?.ipRules;
-  if (
-    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local) ||
-      (userContext.apiType === "Cassandra" &&
-        configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development)) &&
-    ipRules?.length
-  ) {
-    const legacyPortalBackendIPs: string[] = PortalBackendIPs[configContext.BACKEND_ENDPOINT];
-    const ipAddressesFromIPRules: string[] = ipRules.map((ipRule) => ipRule.ipAddressOrRange);
-    const ipRulesIncludeLegacyPortalBackend: boolean = legacyPortalBackendIPs.every((legacyPortalBackendIP: string) =>
-      ipAddressesFromIPRules.includes(legacyPortalBackendIP),
-    );
-    if (!ipRulesIncludeLegacyPortalBackend) {
-      return false;
-    }
-
-    if (userContext.apiType === "Mongo") {
-      const isProdOrMpacMongoProxyEndpoint: boolean = [MongoProxyEndpoints.Mpac, MongoProxyEndpoints.Prod].includes(
-        configContext.MONGO_PROXY_ENDPOINT,
-      );
-
-      const mongoProxyOutboundIPs: string[] = isProdOrMpacMongoProxyEndpoint
-        ? [...MongoProxyOutboundIPs[MongoProxyEndpoints.Mpac], ...MongoProxyOutboundIPs[MongoProxyEndpoints.Prod]]
-        : MongoProxyOutboundIPs[configContext.MONGO_PROXY_ENDPOINT];
-
-      const ipRulesIncludeMongoProxy: boolean = mongoProxyOutboundIPs.every((mongoProxyOutboundIP: string) =>
-        ipAddressesFromIPRules.includes(mongoProxyOutboundIP),
-      );
-
-      return !ipRulesIncludeMongoProxy;
-    } else if (userContext.apiType === "Cassandra") {
-      const isProdOrMpacCassandraProxyEndpoint: boolean = [
-        CassandraProxyEndpoints.Mpac,
-        CassandraProxyEndpoints.Prod,
-      ].includes(configContext.CASSANDRA_PROXY_ENDPOINT);
-
-      const cassandraProxyOutboundIPs: string[] = isProdOrMpacCassandraProxyEndpoint
-        ? [
-            ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Mpac],
-            ...CassandraProxyOutboundIPs[CassandraProxyEndpoints.Prod],
-          ]
-        : CassandraProxyOutboundIPs[configContext.CASSANDRA_PROXY_ENDPOINT];
-
-      const ipRulesIncludeCassandraProxy: boolean = cassandraProxyOutboundIPs.every(
-        (cassandraProxyOutboundIP: string) => ipAddressesFromIPRules.includes(cassandraProxyOutboundIP),
-      );
-
-      return !ipRulesIncludeCassandraProxy;
-    }
-  }
-  return false;
 };

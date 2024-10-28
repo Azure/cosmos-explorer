@@ -295,12 +295,12 @@ describe("MongoProxyClient", () => {
     });
 
     it("returns a local endpoint", () => {
-      const endpoint = getFeatureEndpointOrDefault("readDocument");
+      const endpoint = getFeatureEndpointOrDefault();
       expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`);
     });
 
     it("returns a production endpoint", () => {
-      const endpoint = getFeatureEndpointOrDefault("DeleteDocument");
+      const endpoint = getFeatureEndpointOrDefault();
       expect(endpoint).toEqual(`${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`);
     });
   });
