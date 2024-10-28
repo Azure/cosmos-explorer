@@ -13,6 +13,8 @@ import {
   PopoverSurface,
   PositioningImperativeRef,
 } from "@fluentui/react-components";
+import { DismissRegular } from "@fluentui/react-icons";
+import { NormalizedEventKey } from "Common/Constants";
 import { tokens } from "Explorer/Theme/ThemeUtil";
 import React, { FC, useEffect, useRef } from "react";
 
@@ -22,6 +24,10 @@ const useStyles = makeStyles({
   },
   input: {
     flexGrow: 1,
+    paddingRight: 0,
+  },
+  inputButton: {
+    border: 0,
   },
   dropdownHeader: {
     width: "100%",
@@ -110,7 +116,11 @@ export const InputDataList: FC<InputDataListProps> = ({
   }, [isInputFocused]);
 
   const handleOpenChange: PopoverProps["onOpenChange"] = (e, data) => {
-    console.log("handleOpenChange", showDropdown, isInputFocused, data.open);
+    if (isInputFocused && !data.open) {
+      // Don't close if input is focused and we're opening the dropdown (which will steal the focus)
+      return;
+    }
+
     setShowDropdown(data.open || false);
     if (data.open) {
       setIsInputFocused(true);
@@ -128,24 +138,50 @@ export const InputDataList: FC<InputDataListProps> = ({
         title={title}
         placeholder={placeholder}
         value={value}
-        autoFocus={true}
-        onKeyDown={onKeyDown}
-        onChange={(e) => onChange(e.target.value)}
+        autoFocus
+        onKeyDown={(e) => {
+          if (e.key === NormalizedEventKey.Escape) {
+            setShowDropdown(false);
+          } else if (e.key === NormalizedEventKey.DownArrow) {
+            setShowDropdown(true);
+          }
+          onKeyDown(e);
+        }}
+        onChange={(e) => {
+          const newValue = e.target.value;
+          // Don't show dropdown if there is already a value in the input field (when user is typing)
+          setShowDropdown(!(newValue.length > 0));
+          onChange(newValue);
+        }}
         onClick={(e) => {
           e.stopPropagation();
         }}
         onFocus={() => {
-          console.log("onFocus", showDropdown, isInputFocused);
-          // setIsInputFocused(true);
-          setShowDropdown(true);
-        }}
-      />
+          // Don't show dropdown if there is already a value in the input field
+          // or isInputFocused is undefined which means component is mounting
+          setShowDropdown(!(value.length > 0) && isInputFocused !== undefined);
 
+          setIsInputFocused(true);
+        }}
+        onBlur={() => {
+          setIsInputFocused(false);
+        }}
+        contentAfter={
+          <Button
+            className={styles.inputButton}
+            size="small"
+            icon={<DismissRegular />}
+            onClick={() => {
+              onChange("");
+              setIsInputFocused(true);
+            }}
+          />
+        }
+      />
       <Popover
         inline
         unstable_disableAutoFocus
         // trapFocus
-
         open={showDropdown}
         onOpenChange={handleOpenChange}
         positioning={{ positioningRef, position: "below", align: "start", offset: 4 }}
@@ -164,6 +200,7 @@ export const InputDataList: FC<InputDataListProps> = ({
                     onClick={() => {
                       onChange(option);
                       setShowDropdown(false);
+                      setIsInputFocused(true);
                     }}
                   >
                     {option}

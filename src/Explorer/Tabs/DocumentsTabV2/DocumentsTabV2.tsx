@@ -1471,7 +1471,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const onFilterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === "Enter") {
+    if (e.key === Constants.NormalizedEventKey.Enter) {
       onApplyFilterClick();
 
       // Suppress the default behavior of the key
