@@ -2,6 +2,7 @@
 // The options are displayed in a dropdown list when the user clicks on the input field.
 // The user can then select an option from the list. The selected option is then displayed in the input field.
 
+import { getTheme } from "@fluentui/react";
 import {
   Button,
   Divider,
@@ -17,6 +18,8 @@ import { DismissRegular } from "@fluentui/react-icons";
 import { NormalizedEventKey } from "Common/Constants";
 import { tokens } from "Explorer/Theme/ThemeUtil";
 import React, { FC, useEffect, useRef } from "react";
+
+const theme = getTheme();
 
 const useStyles = makeStyles({
   container: {
@@ -37,7 +40,7 @@ const useStyles = makeStyles({
     width: "100%",
     fontSize: tokens.fontSizeBase300,
     fontWeight: 600,
-    color: "#0078D4",
+    color: theme.palette.themePrimary,
     padding: `${tokens.spacingVerticalM} 0 0 ${tokens.spacingVerticalM}`,
   },
   dropdownStack: {
@@ -138,6 +141,7 @@ export const InputDataList: FC<InputDataListProps> = ({
         ref={inputRef}
         type="text"
         size="small"
+        autoComplete="off"
         className={`filterInput ${styles.input}`}
         title={title}
         placeholder={placeholder}
