@@ -25,6 +25,10 @@ const useStyles = makeStyles({
   input: {
     flexGrow: 1,
     paddingRight: 0,
+    outline: "none",
+    "& input:focus": {
+      outline: "none" // Undo body :focus dashed outline
+    }
   },
   inputButton: {
     border: 0,
