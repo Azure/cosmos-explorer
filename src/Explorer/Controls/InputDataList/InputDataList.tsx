@@ -174,6 +174,7 @@ export const InputDataList: FC<InputDataListProps> = ({
         }}
         contentAfter={
           <Button
+            aria-label="Clear filter"
             className={styles.inputButton}
             size="small"
             icon={<DismissRegular />}
