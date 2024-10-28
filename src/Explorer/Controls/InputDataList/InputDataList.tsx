@@ -27,8 +27,8 @@ const useStyles = makeStyles({
     paddingRight: 0,
     outline: "none",
     "& input:focus": {
-      outline: "none" // Undo body :focus dashed outline
-    }
+      outline: "none", // Undo body :focus dashed outline
+    },
   },
   inputButton: {
     border: 0,
@@ -191,11 +191,11 @@ export const InputDataList: FC<InputDataListProps> = ({
         positioning={{ positioningRef, position: "below", align: "start", offset: 4 }}
       >
         <PopoverSurface className={styles.container}>
-          {dropdownOptions.map((section) => (
+          {dropdownOptions.map((section, sectionIndex) => (
             <div key={section.label}>
               <div className={styles.dropdownHeader}>{section.label}</div>
               <div className={styles.dropdownStack}>
-                {section.options.map((option) => (
+                {section.options.map((option, index) => (
                   <Button
                     key={option}
                     appearance="transparent"
@@ -206,6 +206,12 @@ export const InputDataList: FC<InputDataListProps> = ({
                       setShowDropdown(false);
                       setIsInputFocused(true);
                     }}
+                    onBlur={() =>
+                      !bottomLink &&
+                      sectionIndex === dropdownOptions.length - 1 &&
+                      index === section.options.length - 1 &&
+                      setShowDropdown(false)
+                    }
                   >
                     {option}
                   </Button>
@@ -217,7 +223,7 @@ export const InputDataList: FC<InputDataListProps> = ({
             <>
               <Divider />
               <div className={styles.bottomSection}>
-                <Link href={bottomLink.url} target="_blank">
+                <Link href={bottomLink.url} target="_blank" onBlur={() => setShowDropdown(false)}>
                   {bottomLink.text}
                 </Link>
               </div>
