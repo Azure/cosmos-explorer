@@ -2069,10 +2069,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         <div className={styles.filterRow}>
           {!isPreferredApiMongoDB && <span> SELECT * FROM c </span>}
           <InputDataList
-            // dropdownOptions={addStringsNoDuplicate(
-            //   lastFilterContents,
-            //   isPreferredApiMongoDB ? defaultMongoFilters : getDefaultSqlFilters(partitionKeyProperties),
-            // ).map((option) => ({ label: option, value: option }))}
             dropdownOptions={getFilterChoices()}
             placeholder={
               isPreferredApiMongoDB
@@ -2083,7 +2079,6 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             value={filterContent}
             onChange={(value) => setFilterContent(value)}
             onKeyDown={onFilterKeyDown}
-            // onApplyFilterClick={onApplyFilterClick}
             bottomLink={{ text: "Learn more", url: DATA_EXPLORER_DOC_URL }}
           />
           <Button
