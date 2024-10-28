@@ -196,7 +196,9 @@ export const InputDataList: FC<InputDataListProps> = ({
         <PopoverSurface className={styles.container}>
           {dropdownOptions.map((section, sectionIndex) => (
             <div key={section.label}>
-              <div className={styles.dropdownHeader} style={{ color: theme.palette.themePrimary }}>{section.label}</div>
+              <div className={styles.dropdownHeader} style={{ color: theme.palette.themePrimary }}>
+                {section.label}
+              </div>
               <div className={styles.dropdownStack}>
                 {section.options.map((option, index) => (
                   <Button
