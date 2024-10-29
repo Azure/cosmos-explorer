@@ -105,6 +105,11 @@ export interface SettingsComponentState {
   isSubSettingsSaveable: boolean;
   isSubSettingsDiscardable: boolean;
 
+  vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
+  vectorEmbeddingPolicyBaseline: DataModels.VectorEmbeddingPolicy;
+  shouldDiscardVectorEmbeddingPolicy: boolean;
+  isVectorEmbeddingPolicyDirty: boolean;
+
   indexingPolicyContent: DataModels.IndexingPolicy;
   indexingPolicyContentBaseline: DataModels.IndexingPolicy;
   shouldDiscardIndexingPolicy: boolean;
@@ -202,6 +207,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       changeFeedPolicyBaseline: undefined,
       isSubSettingsSaveable: false,
       isSubSettingsDiscardable: false,
+
+      vectorEmbeddingPolicy: undefined,
+      vectorEmbeddingPolicyBaseline: undefined,
+      shouldDiscardVectorEmbeddingPolicy: false,
+      isVectorEmbeddingPolicyDirty: false,
 
       indexingPolicyContent: undefined,
       indexingPolicyContentBaseline: undefined,
@@ -307,6 +317,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return (
       this.state.isScaleSaveable ||
       this.state.isSubSettingsSaveable ||
+      this.state.isVectorEmbeddingPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
@@ -318,6 +329,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return (
       this.state.isScaleDiscardable ||
       this.state.isSubSettingsDiscardable ||
+      this.state.isVectorEmbeddingPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
@@ -405,6 +417,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       timeToLiveSeconds: this.state.timeToLiveSecondsBaseline,
       displayedTtlSeconds: this.state.displayedTtlSecondsBaseline,
       geospatialConfigType: this.state.geospatialConfigTypeBaseline,
+      vectorEmbeddingPolicy: this.state.vectorEmbeddingPolicyBaseline,
       indexingPolicyContent: this.state.indexingPolicyContentBaseline,
       indexesToAdd: [],
       indexesToDrop: [],
@@ -416,11 +429,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       changeFeedPolicy: this.state.changeFeedPolicyBaseline,
       autoPilotThroughput: this.state.autoPilotThroughputBaseline,
       isAutoPilotSelected: this.state.wasAutopilotOriginallySet,
+      shouldDiscardVectorEmbeddingPolicy: true,
       shouldDiscardIndexingPolicy: true,
       isScaleSaveable: false,
       isScaleDiscardable: false,
       isSubSettingsSaveable: false,
       isSubSettingsDiscardable: false,
+      isVectorEmbeddingPolicyDirty: false,
       isIndexingPolicyDirty: false,
       isMongoIndexingPolicySaveable: false,
       isMongoIndexingPolicyDiscardable: false,
@@ -448,8 +463,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onScaleDiscardableChange = (isScaleDiscardable: boolean): void =>
     this.setState({ isScaleDiscardable: isScaleDiscardable });
 
+  private onVectorEmbeddingPolicyChange = (newVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy): void =>
+    this.setState({ vectorEmbeddingPolicy: newVectorEmbeddingPolicy });
+
   private onIndexingPolicyContentChange = (newIndexingPolicy: DataModels.IndexingPolicy): void =>
     this.setState({ indexingPolicyContent: newIndexingPolicy });
+
+  private resetShouldDiscardVectorEmbeddingPolicy = (): void => this.setState({ shouldDiscardVectorEmbeddingPolicy: false });
 
   private resetShouldDiscardIndexingPolicy = (): void => this.setState({ shouldDiscardIndexingPolicy: false });
 
@@ -537,6 +557,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onSubSettingsDiscardableChange = (isSubSettingsDiscardable: boolean): void =>
     this.setState({ isSubSettingsDiscardable: isSubSettingsDiscardable });
+
+  private onVectorEmbeddingPolicyDirtyChange = (isVectorEmbeddingPolicyDirty: boolean): void =>
+    this.setState({ isVectorEmbeddingPolicyDirty: isVectorEmbeddingPolicyDirty });
 
   private onIndexingPolicyDirtyChange = (isIndexingPolicyDirty: boolean): void =>
     this.setState({ isIndexingPolicyDirty: isIndexingPolicyDirty });
@@ -691,6 +714,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const changeFeedPolicy = this.collection.rawDataModel?.changeFeedPolicy
       ? ChangeFeedPolicyState.On
       : ChangeFeedPolicyState.Off;
+    const vectorEmbeddingPolicy = this.collection.vectorEmbeddingPolicy();
     const indexingPolicyContent = this.collection.indexingPolicy();
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
@@ -724,6 +748,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       analyticalStorageTtlSelectionBaseline: analyticalStorageTtlSelection,
       analyticalStorageTtlSeconds: analyticalStorageTtlSeconds,
       analyticalStorageTtlSecondsBaseline: analyticalStorageTtlSeconds,
+      vectorEmbeddingPolicy: vectorEmbeddingPolicy,
+      vectorEmbeddingPolicyBaseline: vectorEmbeddingPolicy,
       indexingPolicyContent: indexingPolicyContent,
       indexingPolicyContentBaseline: indexingPolicyContent,
       conflictResolutionPolicyMode: conflictResolutionPolicyMode,
@@ -775,9 +801,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.autoscaleMaxThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
   };
@@ -788,9 +813,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.manualThroughput) * numberOfRegions;
     if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + throughputDelta
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + throughputDelta
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });
   };
@@ -854,6 +878,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     if (
       this.state.isSubSettingsSaveable ||
+      this.state.isVectorEmbeddingPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty
@@ -875,13 +900,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       const wasIndexingPolicyModified = this.state.isIndexingPolicyDirty;
       newCollection.defaultTtl = defaultTtl;
 
+      newCollection.vectorEmbeddingPolicy = this.state.vectorEmbeddingPolicy;
+
       newCollection.indexingPolicy = this.state.indexingPolicyContent;
 
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
           ? {
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
-            }
+            retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
+          }
           : undefined;
 
       newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
@@ -921,6 +948,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.setState({
         isSubSettingsSaveable: false,
         isSubSettingsDiscardable: false,
+        isVectorEmbeddingPolicyDirty: false,
         isIndexingPolicyDirty: false,
         isConflictResolutionDirty: false,
         isComputedPropertiesDirty: false,
@@ -1091,6 +1119,15 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onSubSettingsDiscardableChange: this.onSubSettingsDiscardableChange,
     };
 
+    const containerVectorPolicyProps: ContainerVectorPolicyComponentProps = {
+      vectorEmbeddingPolicy: this.state.vectorEmbeddingPolicy,
+      vectorEmbeddingPolicyBaseline: this.state.vectorEmbeddingPolicyBaseline,
+      onVectorEmbeddingPolicyChange: this.onVectorEmbeddingPolicyChange,
+      onVectorEmbeddingPolicyDirtyChange: this.onVectorEmbeddingPolicyDirtyChange,
+      shouldDiscardVectorEmbeddingPolicy: this.state.shouldDiscardVectorEmbeddingPolicy,
+      resetShouldDiscardVectorEmbeddingPolicyChange: this.resetShouldDiscardVectorEmbeddingPolicy,
+    };
+
     const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
       shouldDiscardIndexingPolicy: this.state.shouldDiscardIndexingPolicy,
       resetShouldDiscardIndexingPolicy: this.resetShouldDiscardIndexingPolicy,
@@ -1146,10 +1183,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       database: useDatabases.getState().findDatabaseWithId(this.collection.databaseId),
       collection: this.collection,
       explorer: this.props.settingsTab.getContainer(),
-    };
-
-    const containerVectorPolicyProps: ContainerVectorPolicyComponentProps = {
-      vectorEmbeddingPolicy: this.collection.rawDataModel?.vectorEmbeddingPolicy,
     };
 
     const tabs: SettingsV2TabInfo[] = [];

@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { RenderResult, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import React from "react";
-import { AddVectorEmbeddingPolicyForm } from "./AddVectorEmbeddingPolicyForm";
+import { VectorEmbeddingPoliciesComponent } from "./VectorEmbeddingPoliciesComponent";
 
 const mockVectorEmbedding: VectorEmbedding[] = [
   { path: "/vector1", dataType: "float32", distanceFunction: "euclidean", dimensions: 0 },
@@ -17,9 +17,9 @@ describe("AddVectorEmbeddingPolicyForm", () => {
 
   beforeEach(() => {
     component = render(
-      <AddVectorEmbeddingPolicyForm
-        vectorEmbedding={mockVectorEmbedding}
-        vectorIndex={mockVectorIndex}
+      <VectorEmbeddingPoliciesComponent
+        vectorEmbeddings={mockVectorEmbedding}
+        vectorIndexes={mockVectorIndex}
         onVectorEmbeddingChange={mockOnVectorEmbeddingChange}
       />,
     );

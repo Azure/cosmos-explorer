@@ -5,10 +5,9 @@ import {
   IStyleFunctionOrObject,
   ITextFieldStyleProps,
   ITextFieldStyles,
-  IconButton,
   Label,
   Stack,
-  TextField,
+  TextField
 } from "@fluentui/react";
 import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
@@ -16,18 +15,20 @@ import {
   getDataTypeOptions,
   getDistanceFunctionOptions,
   getIndexTypeOptions,
-} from "Explorer/Panes/VectorSearchPanel/VectorSearchUtils";
+} from "Explorer/Controls/VectorSearch/VectorSearchUtils";
 import React, { FunctionComponent, useState } from "react";
 
-export interface IAddVectorEmbeddingPolicyFormProps {
-  vectorEmbedding: VectorEmbedding[];
-  vectorIndex: VectorIndex[];
+export interface IVectorEmbeddingPoliciesComponentProps {
+  vectorEmbeddings: VectorEmbedding[];
   onVectorEmbeddingChange: (
     vectorEmbeddings: VectorEmbedding[],
     vectorIndexingPolicies: VectorIndex[],
     validationPassed: boolean,
   ) => void;
-}
+  vectorIndexes?: VectorIndex[];
+  discardChanges?: boolean;
+  onChangesDiscarded?: () => void;
+};
 
 export interface VectorEmbeddingPolicyData {
   path: string;
@@ -66,10 +67,12 @@ const dropdownStyles = {
   },
 };
 
-export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbeddingPolicyFormProps> = ({
-  vectorEmbedding,
-  vectorIndex,
+export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddingPoliciesComponentProps> = ({
+  vectorEmbeddings,
+  vectorIndexes,
   onVectorEmbeddingChange,
+  discardChanges,
+  onChangesDiscarded,
 }): JSX.Element => {
   const onVectorEmbeddingPathError = (path: string, index?: number): string => {
     let error = "";
@@ -99,10 +102,12 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
     return error;
   };
 
-  const initializeData = (vectorEmbedding: VectorEmbedding[], vectorIndex: VectorIndex[]) => {
+  const initializeData = (vectorEmbeddings: VectorEmbedding[], vectorIndexes: VectorIndex[]) => {
     const mergedData: VectorEmbeddingPolicyData[] = [];
-    vectorEmbedding.forEach((embedding) => {
-      const matchingIndex = vectorIndex.find((index) => index.path === embedding.path);
+    vectorEmbeddings.forEach((embedding) => {
+      const matchingIndex = displayIndexes
+        ? vectorIndexes.find((index) => index.path === embedding.path)
+        : undefined;
       mergedData.push({
         ...embedding,
         indexType: matchingIndex?.type || "none",
@@ -113,22 +118,30 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
     return mergedData;
   };
 
+  const [displayIndexes] = useState<boolean>(!!vectorIndexes);
   const [vectorEmbeddingPolicyData, setVectorEmbeddingPolicyData] = useState<VectorEmbeddingPolicyData[]>(
-    initializeData(vectorEmbedding, vectorIndex),
+    initializeData(vectorEmbeddings, vectorIndexes)
   );
 
   React.useEffect(() => {
     propagateData();
   }, [vectorEmbeddingPolicyData]);
 
+  React.useEffect(() => {
+    if (discardChanges) {
+      setVectorEmbeddingPolicyData(initializeData(vectorEmbeddings, vectorIndexes));
+      onChangesDiscarded();
+    }
+  }, [discardChanges]);
+
   const propagateData = () => {
     const vectorEmbeddings: VectorEmbedding[] = vectorEmbeddingPolicyData.map((policy: VectorEmbeddingPolicyData) => ({
+      path: policy.path,
       dataType: policy.dataType,
       dimensions: policy.dimensions,
       distanceFunction: policy.distanceFunction,
-      path: policy.path,
     }));
-    const vectorIndexingPolicies: VectorIndex[] = vectorEmbeddingPolicyData
+    const vectorIndexes: VectorIndex[] = vectorEmbeddingPolicyData
       .filter((policy: VectorEmbeddingPolicyData) => policy.indexType !== "none")
       .map(
         (policy) =>
@@ -140,7 +153,7 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
     const validationPassed = vectorEmbeddingPolicyData.every(
       (policy: VectorEmbeddingPolicyData) => policy.pathError === "" && policy.dimensionsError === "",
     );
-    onVectorEmbeddingChange(vectorEmbeddings, vectorIndexingPolicies, validationPassed);
+    onVectorEmbeddingChange(vectorEmbeddings, vectorIndexes, validationPassed);
   };
 
   const onVectorEmbeddingPathChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,9 +220,14 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
 
   return (
     <Stack tokens={{ childrenGap: 4 }}>
-      {vectorEmbeddingPolicyData.length > 0 &&
+      {vectorEmbeddingPolicyData && vectorEmbeddingPolicyData.length > 0 &&
         vectorEmbeddingPolicyData.map((vectorEmbeddingPolicy: VectorEmbeddingPolicyData, index: number) => (
-          <CollapsibleSectionComponent key={index} isExpandedByDefault={true} title={`Vector embedding ${index + 1}`}>
+          <CollapsibleSectionComponent
+            key={index}
+            isExpandedByDefault={true}
+            title={`Vector embedding ${index + 1}`}
+            showDelete={true}
+            onDelete={() => onDelete(index)}>
             <Stack horizontal tokens={{ childrenGap: 4 }}>
               <Stack
                 styles={{
@@ -270,25 +288,27 @@ export const AddVectorEmbeddingPolicyForm: FunctionComponent<IAddVectorEmbedding
                     errorMessage={vectorEmbeddingPolicy.dimensionsError}
                   />
                 </Stack>
-                <Stack>
-                  <Label styles={{ root: { fontSize: 12 } }}>Index type</Label>
-                  <Dropdown
-                    required={true}
-                    styles={dropdownStyles}
-                    options={getIndexTypeOptions()}
-                    selectedKey={vectorEmbeddingPolicy.indexType}
-                    onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
-                      onVectorEmbeddingIndexTypeChange(index, option)
-                    }
-                  ></Dropdown>
-                </Stack>
+                {displayIndexes && (
+                  <Stack>
+                    <Label styles={{ root: { fontSize: 12 } }}>Index type</Label>
+                    <Dropdown
+                      required={true}
+                      styles={dropdownStyles}
+                      options={getIndexTypeOptions()}
+                      selectedKey={vectorEmbeddingPolicy.indexType}
+                      onChange={(_event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) =>
+                        onVectorEmbeddingIndexTypeChange(index, option)
+                      }
+                    ></Dropdown>
+                  </Stack>
+                )}
               </Stack>
-              <IconButton
+              {/*CTODO: delete this if not needed <IconButton
                 id={`delete-vector-policy-${index + 1}`}
                 iconProps={{ iconName: "Delete" }}
                 style={{ height: 27, margin: "auto" }}
                 onClick={() => onDelete(index)}
-              />
+              /> */}
             </Stack>
           </CollapsibleSectionComponent>
         ))}
