@@ -711,31 +711,31 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
             <span role="alert" className="screenReaderOnly" aria-label={getAriaLabel()} />
           )}
           {isGeneratingQuery && (
-              <ProgressIndicator
-                label="Thinking..."
-                ariaLabel={getAriaLabel()}
-                barHeight={4}
-                styles={{
-                  root: {
-                    fontSize: 12,
-                    width: "100%",
-                    bottom: 0,
-                  },
-                  itemName: {
-                    padding: "0px 8px",
-                  },
-                  itemProgress: {
-                    borderBottomLeftRadius: 8,
-                    borderBottomRightRadius: 8,
-                    padding: 0,
-                  },
-                  progressBar: {
-                    backgroundImage:
-                      "linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgb(24, 90, 189) 35%, rgb(71, 207, 250) 70%, rgb(180, 124, 248) 92%, rgba(0, 0, 0, 0))",
-                    animationDuration: "5s",
-                  },
-                }}
-              />
+            <ProgressIndicator
+              label="Thinking..."
+              ariaLabel={getAriaLabel()}
+              barHeight={4}
+              styles={{
+                root: {
+                  fontSize: 12,
+                  width: "100%",
+                  bottom: 0,
+                },
+                itemName: {
+                  padding: "0px 8px",
+                },
+                itemProgress: {
+                  borderBottomLeftRadius: 8,
+                  borderBottomRightRadius: 8,
+                  padding: 0,
+                },
+                progressBar: {
+                  backgroundImage:
+                    "linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgb(24, 90, 189) 35%, rgb(71, 207, 250) 70%, rgb(180, 124, 248) 92%, rgba(0, 0, 0, 0))",
+                  animationDuration: "5s",
+                },
+              }}
+            />
           )}
         </Stack>
         <IconButton
