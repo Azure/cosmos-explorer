@@ -14,7 +14,7 @@ import {
   PopoverSurface,
   PositioningImperativeRef,
 } from "@fluentui/react-components";
-import { DismissRegular } from "@fluentui/react-icons";
+import { ArrowDownRegular, DismissRegular } from "@fluentui/react-icons";
 import { NormalizedEventKey } from "Common/Constants";
 import { tokens } from "Explorer/Theme/ThemeUtil";
 import React, { FC, useEffect, useRef } from "react";
@@ -106,7 +106,10 @@ export const InputDataList: FC<InputDataListProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const positioningRef = React.useRef<PositioningImperativeRef>(null);
   const [isInputFocused, setIsInputFocused] = React.useState(autofocus);
+  const [autofocusFirstDropdownItem, setAutofocusFirstDropdownItem] = React.useState(false);
+
   const theme = getTheme();
+  const itemRefs = useRef([]);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -120,6 +123,14 @@ export const InputDataList: FC<InputDataListProps> = ({
     }
   }, [isInputFocused]);
 
+  useEffect(() => {
+    if (autofocusFirstDropdownItem && showDropdown) {
+      // Autofocus on first item if input isn't focused
+      itemRefs.current[0]?.focus();
+      setAutofocusFirstDropdownItem(false);
+    }
+  }, [autofocusFirstDropdownItem, showDropdown]);
+
   const handleOpenChange: PopoverProps["onOpenChange"] = (e, data) => {
     if (isInputFocused && !data.open) {
       // Don't close if input is focused and we're opening the dropdown (which will steal the focus)
@@ -131,6 +142,52 @@ export const InputDataList: FC<InputDataListProps> = ({
       setIsInputFocused(true);
     }
   };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === NormalizedEventKey.Escape) {
+      setShowDropdown(false);
+    } else if (e.key === NormalizedEventKey.DownArrow) {
+      setShowDropdown(true);
+      setAutofocusFirstDropdownItem(true);
+    }
+    onKeyDown(e);
+  };
+
+  const handleDownDropdownItemKeyDown = (
+    e: React.KeyboardEvent<HTMLButtonElement | HTMLAnchorElement>,
+    index: number,
+  ) => {
+    if (e.key === NormalizedEventKey.Enter) {
+      e.currentTarget.click();
+    } else if (e.key === NormalizedEventKey.Escape) {
+      setShowDropdown(false);
+      inputRef.current?.focus();
+    } else if (e.key === NormalizedEventKey.DownArrow) {
+      if (index + 1 < itemRefs.current.length) {
+        itemRefs.current[index + 1].focus();
+      } else {
+        setIsInputFocused(true);
+      }
+    } else if (e.key === NormalizedEventKey.UpArrow) {
+      if (index - 1 >= 0) {
+        itemRefs.current[index - 1].focus();
+      } else {
+        // Last item, focus back to input
+        setIsInputFocused(true);
+      }
+    }
+  };
+
+  // Flatten dropdownOptions to better manage refs and focus
+  let flatIndex = 0;
+  const indexMap = new Map<string, number>();
+  for (let sectionIndex = 0; sectionIndex < dropdownOptions.length; sectionIndex++) {
+    const section = dropdownOptions[sectionIndex];
+    for (let optionIndex = 0; optionIndex < section.options.length; optionIndex++) {
+      indexMap.set(`${sectionIndex}-${optionIndex}`, flatIndex);
+      flatIndex++;
+    }
+  }
 
   return (
     <>
@@ -145,14 +202,7 @@ export const InputDataList: FC<InputDataListProps> = ({
         placeholder={placeholder}
         value={value}
         autoFocus
-        onKeyDown={(e) => {
-          if (e.key === NormalizedEventKey.Escape) {
-            setShowDropdown(false);
-          } else if (e.key === NormalizedEventKey.DownArrow) {
-            setShowDropdown(true);
-          }
-          onKeyDown(e);
-        }}
+        onKeyDown={handleInputKeyDown}
         onChange={(e) => {
           const newValue = e.target.value;
           // Don't show dropdown if there is already a value in the input field (when user is typing)
@@ -173,16 +223,29 @@ export const InputDataList: FC<InputDataListProps> = ({
           setIsInputFocused(false);
         }}
         contentAfter={
-          <Button
-            aria-label="Clear filter"
-            className={styles.inputButton}
-            size="small"
-            icon={<DismissRegular />}
-            onClick={() => {
-              onChange("");
-              setIsInputFocused(true);
-            }}
-          />
+          value.length > 0 ? (
+            <Button
+              aria-label="Clear filter"
+              className={styles.inputButton}
+              size="small"
+              icon={<DismissRegular />}
+              onClick={() => {
+                onChange("");
+                setIsInputFocused(true);
+              }}
+            />
+          ) : (
+            <Button
+              aria-label="Open dropdown"
+              className={styles.inputButton}
+              size="small"
+              icon={<ArrowDownRegular />}
+              onClick={() => {
+                setShowDropdown(true);
+                setAutofocusFirstDropdownItem(true);
+              }}
+            />
+          )
         }
       />
       <Popover
@@ -203,6 +266,7 @@ export const InputDataList: FC<InputDataListProps> = ({
                 {section.options.map((option, index) => (
                   <Button
                     key={option}
+                    ref={(el) => (itemRefs.current[indexMap.get(`${sectionIndex}-${index}`)] = el)}
                     appearance="transparent"
                     shape="square"
                     className={styles.dropdownOption}
@@ -217,6 +281,9 @@ export const InputDataList: FC<InputDataListProps> = ({
                       index === section.options.length - 1 &&
                       setShowDropdown(false)
                     }
+                    onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) =>
+                      handleDownDropdownItemKeyDown(e, indexMap.get(`${sectionIndex}-${index}`))
+                    }
                   >
                     {option}
                   </Button>
@@ -228,7 +295,13 @@ export const InputDataList: FC<InputDataListProps> = ({
             <>
               <Divider />
               <div className={styles.bottomSection}>
-                <Link href={bottomLink.url} target="_blank" onBlur={() => setShowDropdown(false)}>
+                <Link
+                  ref={(el) => (itemRefs.current[flatIndex] = el)}
+                  href={bottomLink.url}
+                  target="_blank"
+                  onBlur={() => setShowDropdown(false)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLAnchorElement>) => handleDownDropdownItemKeyDown(e, flatIndex)}
+                >
                   {bottomLink.text}
                 </Link>
               </div>
