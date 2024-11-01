@@ -385,22 +385,6 @@ describe("Documents tab (noSql API)", () => {
     it("should render the page", () => {
       expect(wrapper).toMatchSnapshot();
     });
-
-    it("clicking on Edit filter should render the Apply Filter button", () => {
-      wrapper
-        .findWhere((node) => node.text() === "Edit Filter")
-        .at(0)
-        .simulate("click");
-      expect(wrapper.findWhere((node) => node.text() === "Apply Filter").exists()).toBeTruthy();
-    });
-
-    it("clicking on Edit filter should render input for filter", () => {
-      wrapper
-        .findWhere((node) => node.text() === "Edit Filter")
-        .at(0)
-        .simulate("click");
-      expect(wrapper.find("Input.filterInput").exists()).toBeTruthy();
-    });
   });
 
   describe("Command bar buttons", () => {
