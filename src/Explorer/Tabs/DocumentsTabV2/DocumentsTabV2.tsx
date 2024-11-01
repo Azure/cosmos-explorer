@@ -35,8 +35,8 @@ import {
   FilterHistory,
   SubComponentName,
   TabDivider,
-  readSubComponentState,
-  saveSubComponentState,
+  readDocumentsTabSubComponentState,
+  saveDocumentsTabSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
@@ -619,7 +619,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // State
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
-    readSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
+    readDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
     }),
   );
@@ -634,7 +634,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // User's filter history
   const [lastFilterContents, setLastFilterContents] = useState<FilterHistory>(() =>
-    readSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
+    readDocumentsTabSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
   );
 
   // For progress bar for bulk delete (noSql)
@@ -804,7 +804,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(() => {
-    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+    const persistedColumnsSelection = readDocumentsTabSubComponentState<ColumnsSelection>(
       SubComponentName.ColumnsSelection,
       _collection,
       undefined,
@@ -1714,7 +1714,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // Column definition is a map<id, ColumnDefinition> to garantee uniqueness
   const [columnDefinitions, setColumnDefinitions] = useState<ColumnDefinition[]>(() => {
-    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+    const persistedColumnsSelection = readDocumentsTabSubComponentState<ColumnsSelection>(
       SubComponentName.ColumnsSelection,
       _collection,
       undefined,
@@ -2025,7 +2025,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
 
     setLastFilterContents(limitedLastFilterContents);
-    saveSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
+    saveDocumentsTabSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
   };
 
   const refreshDocumentsGrid = useCallback(
@@ -2086,7 +2086,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     setSelectedColumnIds(newSelectedColumnIds);
 
-    saveSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
+    saveDocumentsTabSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
       selectedColumnIds: newSelectedColumnIds,
       columnDefinitions,
     });
@@ -2214,7 +2214,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
           <Allotment
             onDragEnd={(sizes: number[]) => {
               tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
+              saveDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
               setTabStateData(tabStateData);
             }}
           >
@@ -2316,17 +2316,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 </MessageBarBody>
               </MessageBar>
             )}
-            {bulkDeleteProcess.hasBeenThrottled && (
-              <MessageBar intent="warning">
-                <MessageBarBody>
-                  <MessageBarTitle>Warning</MessageBarTitle>
-                  {get429WarningMessageNoSql()}{" "}
-                  <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
-                    Learn More
-                  </Link>
-                </MessageBarBody>
-              </MessageBar>
-            )}
+            <MessageBar intent="warning">
+              <MessageBarBody>
+                <MessageBarTitle>Warning</MessageBarTitle>
+                {get429WarningMessageNoSql()}{" "}
+                <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
+                  Learn More
+                </Link>
+              </MessageBarBody>
+            </MessageBar>
           </div>
         </ProgressModalDialog>
       )}

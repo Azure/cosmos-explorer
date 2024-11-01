@@ -1,10 +1,15 @@
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import { userContext } from "UserContext";
+import * as ViewModels from "../Contracts/ViewModels";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 
 // The component name whose state is being saved. Component name must not include special characters.
 export enum AppStateComponentNames {
   DocumentsTab = "DocumentsTab",
   MostRecentActivity = "MostRecentActivity",
   QueryCopilot = "QueryCopilot",
+  QueryTab = "QueryTab",
 }
 
 export const PATH_SEPARATOR = "/"; // export for testing purposes
@@ -72,12 +77,18 @@ export const hasState = (path: StorePath): boolean => {
 };
 
 // This is for high-frequency state changes
-let timeoutId: NodeJS.Timeout | undefined;
+// Keep track of timeouts per path
+const pathToTimeoutIdMap = new Map<string, NodeJS.Timeout>();
 export const saveStateDebounced = (path: StorePath, state: unknown, debounceDelayMs = 1000): void => {
+  const key = createKeyFromPath(path);
+  const timeoutId = pathToTimeoutIdMap.get(key);
   if (timeoutId) {
     clearTimeout(timeoutId);
   }
-  timeoutId = setTimeout(() => saveState(path, state), debounceDelayMs);
+  pathToTimeoutIdMap.set(
+    key,
+    setTimeout(() => saveState(path, state), debounceDelayMs),
+  );
 };
 
 interface ApplicationState {
@@ -111,4 +122,94 @@ export const createKeyFromPath = (path: StorePath): string => {
  */
 export const deleteAllStates = (): void => {
   LocalStorageUtility.removeEntry(StorageKey.AppState);
+};
+
+// Convenience functions
+
+/**
+ *
+ * @param subComponentName
+ * @param collection
+ * @param defaultValue Will be returned if persisted state is not found
+ * @returns
+ */
+export const readSubComponentState = <T>(
+  componentName: AppStateComponentNames,
+  subComponentName: string,
+  collection: ViewModels.CollectionBase,
+  defaultValue: T,
+): T => {
+  const globalAccountName = userContext.databaseAccount?.name;
+  if (!globalAccountName) {
+    const message = "Database account name not found in userContext";
+    console.error(message);
+    TelemetryProcessor.traceFailure(Action.ReadPersistedTabState, { message, componentName });
+    return defaultValue;
+  }
+
+  const state = loadState({
+    componentName: componentName,
+    subComponentName,
+    globalAccountName,
+    databaseName: collection.databaseId,
+    containerName: collection.id(),
+  }) as T;
+
+  return state || defaultValue;
+};
+
+/**
+ *
+ * @param subComponentName
+ * @param collection
+ * @param state State to save
+ * @param debounce true for high-frequency calls (e.g mouse drag events)
+ */
+export const saveSubComponentState = <T>(
+  componentName: AppStateComponentNames,
+  subComponentName: string,
+  collection: ViewModels.CollectionBase,
+  state: T,
+  debounce?: boolean,
+): void => {
+  const globalAccountName = userContext.databaseAccount?.name;
+  if (!globalAccountName) {
+    const message = "Database account name not found in userContext";
+    console.error(message);
+    TelemetryProcessor.traceFailure(Action.SavePersistedTabState, { message, componentName });
+    return;
+  }
+
+  (debounce ? saveStateDebounced : saveState)(
+    {
+      componentName: componentName,
+      subComponentName,
+      globalAccountName,
+      databaseName: collection.databaseId,
+      containerName: collection.id(),
+    },
+    state,
+  );
+};
+
+export const deleteSubComponentState = (
+  componentName: AppStateComponentNames,
+  subComponentName: string,
+  collection: ViewModels.CollectionBase,
+) => {
+  const globalAccountName = userContext.databaseAccount?.name;
+  if (!globalAccountName) {
+    const message = "Database account name not found in userContext";
+    console.error(message);
+    TelemetryProcessor.traceFailure(Action.DeletePersistedTabState, { message, componentName });
+    return;
+  }
+
+  deleteState({
+    componentName: componentName,
+    subComponentName,
+    globalAccountName,
+    databaseName: collection.databaseId,
+    containerName: collection.id(),
+  });
 };
