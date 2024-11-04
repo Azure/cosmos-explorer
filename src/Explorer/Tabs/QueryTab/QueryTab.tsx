@@ -39,6 +39,8 @@ export class NewQueryTab extends TabsBase {
       tabsBaseInstance: this,
       queryText: options.queryText,
       partitionKey: this.partitionKey,
+      stringsplitterDirection: options.stringsplitterDirection,
+      queryViewSizePercent: options.queryViewSizePercent,
       container: this.props.container,
       onTabAccessor: (instance: ITabAccessor): void => {
         this.iTabAccessor = instance;

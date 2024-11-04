@@ -1,86 +1,65 @@
 // Definitions of State data
 
+import { ActionType, OpenQueryTab, TabKind } from "Contracts/ActionContracts";
 import {
   AppStateComponentNames,
-  deleteSubComponentState,
   readSubComponentState,
   saveSubComponentState,
 } from "Shared/AppStatePersistenceUtility";
 import * as ViewModels from "../../../Contracts/ViewModels";
 
-export enum SubComponentName {
-  SplitterDirection = "SplitterDirection",
-  QueryViewSizePercent = "QueryViewSizePercent",
-  QueryText = "QueryText",
-}
+export const OPEN_TABS_SUBCOMPONENT_NAME = "OpenTabs";
 
-export type QueryViewSizePercent = number;
-export type QueryTexts = string[];
-
-// Wrap the ...SubComponentState functions for type safety
-export const readQueryTabSubComponentState = <T>(
-  subComponentName: SubComponentName,
+export const saveQueryTabState = (
   collection: ViewModels.CollectionBase,
-  defaultValue: T,
-): T => readSubComponentState<T>(AppStateComponentNames.QueryTab, subComponentName, collection, defaultValue);
+  state: {
+    queryText: string;
+    splitterDirection: "vertical" | "horizontal";
+    queryViewSizePercent: number;
+  },
+  tabIndex: number,
+): void => {
+  const openTabsState = readSubComponentState<OpenQueryTab[]>(
+    AppStateComponentNames.DataExplorerAction,
+    OPEN_TABS_SUBCOMPONENT_NAME,
+    undefined,
+    [],
+  );
 
-export const saveQueryTabSubComponentState = <T>(
-  subComponentName: SubComponentName,
-  collection: ViewModels.CollectionBase,
-  state: T,
-  debounce?: boolean,
-): void => saveSubComponentState<T>(AppStateComponentNames.QueryTab, subComponentName, collection, state, debounce);
+  openTabsState[tabIndex] = {
+    actionType: ActionType.OpenCollectionTab,
+    tabKind: TabKind.SQLQuery,
+    databaseResourceId: collection.databaseId,
+    collectionResourceId: collection.id(),
+    query: {
+      text: state.queryText,
+    },
+    splitterDirection: state.splitterDirection,
+    queryViewSizePercent: state.queryViewSizePercent,
+  };
 
-export const deleteQueryTabSubComponentState = (
-  subComponentName: SubComponentName,
-  collection: ViewModels.CollectionBase,
-) => deleteSubComponentState(AppStateComponentNames.QueryTab, subComponentName, collection);
+  saveSubComponentState<OpenQueryTab[]>(
+    AppStateComponentNames.DataExplorerAction,
+    OPEN_TABS_SUBCOMPONENT_NAME,
+    undefined,
+    openTabsState,
+  );
+};
 
-/**
- * For a given databaseId-collectionId tuple:
- * Query tab texts are persisted in a form of an array of strings.
- * Each tab's index in the array is determined by the order they are open.
- * If a tab is closed, the array is updated to reflect the new order.
- *
- * We use a map to separate the arrays per databaseId-collectionId tuple.
- * We use a Set for the array to ensure uniqueness of tabId (the set also maintains order of insertion).
- */
-export class OpenTabIndexRetriever {
-  private openTabsMap: Map<string, Set<string>>;
+export const deleteQueryTabState = (tabIndex: number): void => {
+  const openTabsState = readSubComponentState<OpenQueryTab[]>(
+    AppStateComponentNames.DataExplorerAction,
+    OPEN_TABS_SUBCOMPONENT_NAME,
+    undefined,
+    [],
+  );
 
-  constructor() {
-    this.openTabsMap = new Map<string, Set<string>>();
-  }
+  openTabsState.splice(tabIndex, 1);
 
-  public getOpenTabIndex(databaseId: string, collectionId: string, tabId: string): number {
-    const key = `${databaseId}-${collectionId}`;
-    const openTabs = this.openTabsMap.get(key);
-    if (!openTabs) {
-      return -1;
-    }
-
-    const openTabArray = Array.from(openTabs);
-    return openTabArray.indexOf(tabId);
-  }
-
-  public setOpenTabIndex(databaseId: string, collectionId: string, tabId: string): void {
-    const key = `${databaseId}-${collectionId}`;
-    let openTabs = this.openTabsMap.get(key);
-    if (!openTabs) {
-      openTabs = new Set<string>();
-      this.openTabsMap.set(key, openTabs);
-    }
-
-    openTabs.add(tabId);
-  }
-
-  public removeOpenTabIndex(databaseId: string, collectionId: string, tabId: string): void {
-    const key = `${databaseId}-${collectionId}`;
-    const openTabs = this.openTabsMap.get(key);
-    if (!openTabs) {
-      return;
-    }
-
-    openTabs.delete(tabId);
-  }
-}
+  saveSubComponentState<OpenQueryTab[]>(
+    AppStateComponentNames.DataExplorerAction,
+    OPEN_TABS_SUBCOMPONENT_NAME,
+    undefined,
+    openTabsState,
+  );
+};

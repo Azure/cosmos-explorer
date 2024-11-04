@@ -9,7 +9,7 @@ export enum AppStateComponentNames {
   DocumentsTab = "DocumentsTab",
   MostRecentActivity = "MostRecentActivity",
   QueryCopilot = "QueryCopilot",
-  QueryTab = "QueryTab",
+  DataExplorerAction = "DataExplorerAction",
 }
 
 export const PATH_SEPARATOR = "/"; // export for testing purposes
@@ -136,7 +136,7 @@ export const deleteAllStates = (): void => {
 export const readSubComponentState = <T>(
   componentName: AppStateComponentNames,
   subComponentName: string,
-  collection: ViewModels.CollectionBase,
+  collection: ViewModels.CollectionBase | undefined,
   defaultValue: T,
 ): T => {
   const globalAccountName = userContext.databaseAccount?.name;
@@ -151,8 +151,8 @@ export const readSubComponentState = <T>(
     componentName: componentName,
     subComponentName,
     globalAccountName,
-    databaseName: collection.databaseId,
-    containerName: collection.id(),
+    databaseName: collection ? collection.databaseId : "",
+    containerName: collection ? collection.id() : "",
   }) as T;
 
   return state || defaultValue;
@@ -168,7 +168,7 @@ export const readSubComponentState = <T>(
 export const saveSubComponentState = <T>(
   componentName: AppStateComponentNames,
   subComponentName: string,
-  collection: ViewModels.CollectionBase,
+  collection: ViewModels.CollectionBase | undefined,
   state: T,
   debounce?: boolean,
 ): void => {
@@ -185,8 +185,8 @@ export const saveSubComponentState = <T>(
       componentName: componentName,
       subComponentName,
       globalAccountName,
-      databaseName: collection.databaseId,
-      containerName: collection.id(),
+      databaseName: collection ? collection.databaseId : "",
+      containerName: collection ? collection.id() : "",
     },
     state,
   );

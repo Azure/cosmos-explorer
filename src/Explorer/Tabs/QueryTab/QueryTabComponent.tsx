@@ -13,26 +13,13 @@ import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/Query
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
-import {
-  OpenTabIndexRetriever,
-  QueryTexts,
-  SubComponentName,
-  deleteQueryTabSubComponentState,
-  readQueryTabSubComponentState,
-  saveQueryTabSubComponentState,
-} from "Explorer/Tabs/QueryTab/QueryTabStateUtil";
+import { deleteQueryTabState, saveQueryTabState } from "Explorer/Tabs/QueryTab/QueryTabStateUtil";
 import { QueryTabStyles, useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
-import {
-  LocalStorageUtility,
-  StorageKey,
-  getDefaultQueryResultsView,
-  getRUThreshold,
-  ruThresholdEnabled,
-} from "Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { Allotment } from "allotment";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
@@ -107,6 +94,8 @@ export interface IQueryTabComponentProps {
   copilotEnabled?: boolean;
   isSampleCopilotActive?: boolean;
   copilotStore?: Partial<QueryCopilotState>;
+  stringsplitterDirection?: "horizontal" | "vertical";
+  queryViewSizePercent?: number;
 }
 
 interface IQueryTabStates {
@@ -132,6 +121,8 @@ interface IQueryTabStates {
 export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
   const copilotStore = useCopilotStore();
+  const tabIndex = useTabs.getState().openedTabs.findIndex((tab) => tab.tabId === props.tabId);
+
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
     ...props,
@@ -140,24 +131,25 @@ export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any =>
       (useQueryCopilot().copilotUserDBEnabled || (isSampleCopilotActive && !!userContext.sampleDataConnectionInfo)),
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
+    tabIndex,
   };
   return <QueryTabComponentImpl styles={styles} {...queryTabProps}></QueryTabComponentImpl>;
 };
 
 export const QueryTabComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
-  return <QueryTabComponentImpl styles={styles} {...props}></QueryTabComponentImpl>;
+  const tabIndex = useTabs.getState().openedTabs.findIndex((tab) => tab.tabId === props.tabId);
+
+  return <QueryTabComponentImpl styles={styles} {...{ ...props, tabIndex }}></QueryTabComponentImpl>;
 };
 
 type QueryTabComponentImplProps = IQueryTabComponentProps & {
   styles: QueryTabStyles;
+  tabIndex: number;
 };
 
 // Inner (legacy) class component. We only use this component via one of the two functional components above (since we need to use the `useQueryTabStyles` hook).
 class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, IQueryTabStates> {
-  // This is a static data structure to keep track which index in persistence is for which tabId
-  private static openTabIndexRetriever = new OpenTabIndexRetriever();
-
   private static readonly DEBOUNCE_DELAY_MS = 1000;
 
   public queryEditorId: string;
@@ -175,17 +167,11 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
   constructor(props: QueryTabComponentImplProps) {
     super(props);
-    QueryTabComponentImpl.openTabIndexRetriever.setOpenTabIndex(
-      props.collection.databaseId,
-      props.collection.id(),
-      props.tabId,
-    );
-
     this.queryEditor = createRef<EditorReact>();
 
     this.state = {
       toggleState: ToggleState.Result,
-      sqlQueryEditorContent: this._getDefaultQueryEditorContent(props),
+      sqlQueryEditorContent: props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c",
       selectedContent: "",
       queryResults: undefined,
       errors: [],
@@ -196,8 +182,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       cancelQueryTimeoutID: undefined,
       copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
-      queryResultsView: this._getDefaultQUeryResultsViewDirection(props),
-      queryViewSizePercent: this._getQueryViewSizePercent(props),
+      queryResultsView:
+        props.stringsplitterDirection === "horizontal" ? SplitterDirection.Horizontal : SplitterDirection.Vertical,
+      queryViewSizePercent: props.queryViewSizePercent,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -226,62 +213,32 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       onSaveClickEvent: this.getCurrentEditorQuery.bind(this),
       onCloseClickEvent: this.onCloseClick.bind(this),
     });
+
+    // Update persistence
+    this.saveQueryTabStateDebounced();
+    // DO THIS IN useTabs.activateNewTab() INSTEAD
   }
 
   /**
    * Helper function to save the query text in the query tab state
    * Since it reads and writes to the same state, it is debounced
-   * @param collection
-   * @param queryText
-   * @param queryTabIndex
    */
-  private saveQueryTextDebounced = (queryText: string) => {
+  private saveQueryTabStateDebounced = () => {
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }
     this.timeoutId = setTimeout(async () => {
-      const queryTexts = readQueryTabSubComponentState<QueryTexts>(
-        SubComponentName.QueryText,
+      saveQueryTabState(
         this.props.collection,
-        [],
+        {
+          queryText: this.state.sqlQueryEditorContent,
+          splitterDirection: this.state.queryResultsView,
+          queryViewSizePercent: this.state.queryViewSizePercent,
+        },
+        this.props.tabIndex,
       );
-
-      const queryTextsIndex = QueryTabComponentImpl.openTabIndexRetriever.getOpenTabIndex(
-        this.props.collection.databaseId,
-        this.props.collection.id(),
-        this.props.tabId,
-      );
-
-      queryTexts[queryTextsIndex] = queryText;
-      saveQueryTabSubComponentState<QueryTexts>(SubComponentName.QueryText, this.props.collection, queryTexts);
     }, QueryTabComponentImpl.DEBOUNCE_DELAY_MS);
   };
-
-  private _getQueryViewSizePercent(props: QueryTabComponentImplProps): number {
-    return readQueryTabSubComponentState<number>(SubComponentName.QueryViewSizePercent, props.collection, 50);
-  }
-
-  private _getDefaultQUeryResultsViewDirection(props: QueryTabComponentImplProps): SplitterDirection {
-    const defaultQueryResultsView = getDefaultQueryResultsView();
-    return readQueryTabSubComponentState<SplitterDirection>(
-      SubComponentName.SplitterDirection,
-      props.collection,
-      defaultQueryResultsView,
-    );
-  }
-
-  private _getDefaultQueryEditorContent(props: QueryTabComponentImplProps): string {
-    const defaultText = props.isPreferredApiMongoDB ? "{}" : props.queryText || "SELECT * FROM c";
-    // Retrieve from app state if available
-    const queryTexts = readQueryTabSubComponentState<QueryTexts>(SubComponentName.QueryText, props.collection, []);
-    const queryTextsIndex = QueryTabComponentImpl.openTabIndexRetriever.getOpenTabIndex(
-      this.props.collection.databaseId,
-      this.props.collection.id(),
-      this.props.tabId,
-    );
-
-    return queryTexts[queryTextsIndex] || defaultText;
-  }
 
   private _queryCopilotActive(): boolean {
     if (this.props.copilotEnabled) {
@@ -406,9 +363,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
-            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-            abortSignal: this.queryAbortController.signal,
-          } as unknown as FeedOptions);
+          enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+          abortSignal: this.queryAbortController.signal,
+        } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -643,14 +600,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     };
   }
   private _setViewLayout(direction: SplitterDirection): void {
-    this.setState({ queryResultsView: direction });
-
-    // Store to local storage
-    saveQueryTabSubComponentState<SplitterDirection>(
-      SubComponentName.SplitterDirection,
-      this.props.collection,
-      direction,
-    );
+    this.setState({ queryResultsView: direction }, () => this.saveQueryTabStateDebounced());
 
     // We'll need to refresh the context buttons to update the selected state of the view buttons
     setTimeout(() => {
@@ -682,13 +632,16 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     if (this.state.copilotActive) {
       this.props.copilotStore?.setQuery(newContent);
     }
-    this.setState({
-      sqlQueryEditorContent: newContent,
-      queryCopilotGeneratedQuery: "",
+    this.setState(
+      {
+        sqlQueryEditorContent: newContent,
+        queryCopilotGeneratedQuery: "",
 
-      // Clear the markers when the user edits the document.
-      modelMarkers: [],
-    });
+        // Clear the markers when the user edits the document.
+        modelMarkers: [],
+      },
+      () => this.saveQueryTabStateDebounced(),
+    );
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
         this.executeQueryButton = {
@@ -706,8 +659,6 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     this.saveQueryButton.enabled = newContent.length > 0;
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
-
-    this.saveQueryTextDebounced(newContent);
   }
 
   public onSelectedContent(selectedContent: string, selection: monaco.Selection): void {
@@ -775,28 +726,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     document.removeEventListener("keydown", this.handleCopilotKeyDown);
 
     // Remove persistence
-    const queryTextsIndex = QueryTabComponentImpl.openTabIndexRetriever.getOpenTabIndex(
-      this.props.collection.databaseId,
-      this.props.collection.id(),
-      this.props.tabId,
-    );
-    const queryTexts = readQueryTabSubComponentState<QueryTexts>(SubComponentName.QueryText, this.props.collection, []);
-
-    if (queryTexts.length === 0 || queryTextsIndex >= queryTexts.length) {
-      return;
-    }
-
-    queryTexts.splice(queryTextsIndex, 1);
-    QueryTabComponentImpl.openTabIndexRetriever.removeOpenTabIndex(
-      this.props.collection.databaseId,
-      this.props.collection.id(),
-      this.props.tabId,
-    );
-    if (queryTexts.length === 0) {
-      deleteQueryTabSubComponentState(SubComponentName.QueryText, this.props.collection);
-    } else {
-      saveQueryTabSubComponentState<QueryTexts>(SubComponentName.QueryText, this.props.collection, queryTexts);
-    }
+    deleteQueryTabState(this.props.tabIndex);
   }
 
   private getEditorAndQueryResult(): JSX.Element {
@@ -818,13 +748,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
             vertical={vertical}
             onDragEnd={(sizes: number[]) => {
               const queryViewSizePercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-              saveQueryTabSubComponentState<number>(
-                SubComponentName.QueryViewSizePercent,
-                this.props.collection,
-                queryViewSizePercent,
-                true,
-              );
-              this.setState({ queryViewSizePercent });
+              this.setState({ queryViewSizePercent }, () => this.saveQueryTabStateDebounced());
             }}
           >
             <Allotment.Pane data-test="QueryTab/EditorPane" preferredSize={`${this.state.queryViewSizePercent}%`}>

@@ -121,10 +121,13 @@ function openCollectionTab(
             action.tabKind === ActionContracts.TabKind.SQLQuery ||
             action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SQLQuery]
           ) {
+            const openQueryTabAction = action as ActionContracts.OpenQueryTab;
             collection.onNewQueryClick(
               collection,
               undefined,
-              generateQueryText(action as ActionContracts.OpenQueryTab, collection.partitionKeyProperties),
+              generateQueryText(openQueryTabAction, collection.partitionKeyProperties),
+              openQueryTabAction.splitterDirection,
+              openQueryTabAction.queryViewSizePercent,
             );
             break;
           }

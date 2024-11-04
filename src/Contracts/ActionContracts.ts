@@ -51,6 +51,8 @@ export interface OpenCollectionTab extends OpenTab {
  */
 export interface OpenQueryTab extends OpenCollectionTab {
   query: QueryInfo;
+  splitterDirection?: "vertical" | "horizontal";
+  queryViewSizePercent?: number;
 }
 
 /**

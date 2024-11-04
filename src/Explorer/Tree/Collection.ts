@@ -626,7 +626,13 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    stringsplitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
@@ -649,6 +655,8 @@ export default class Collection implements ViewModels.Collection {
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
+          stringsplitterDirection,
+          queryViewSizePercent,
         },
         { container: this.container },
       ),
