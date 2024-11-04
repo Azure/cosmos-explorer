@@ -1,3 +1,4 @@
+import { ActionType, OpenCollectionTab, TabKind } from "Contracts/ActionContracts";
 import React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { SettingsComponent } from "../Controls/Settings/SettingsComponent";
@@ -10,6 +11,18 @@ export class SettingsTabV2 extends TabsBase {
 }
 
 export class CollectionSettingsTabV2 extends SettingsTabV2 {
+  protected persistedState: OpenCollectionTab;
+
+  constructor(options: ViewModels.TabOptions) {
+    super(options);
+    this.persistedState = {
+      actionType: ActionType.OpenCollectionTab,
+      tabKind: TabKind.ScaleSettings,
+      databaseResourceId: options.collection.databaseId,
+      collectionResourceId: options.collection.id(),
+    };
+  }
+
   public onActivate(): void {
     super.onActivate();
     this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.CollectionSettingsV2);
