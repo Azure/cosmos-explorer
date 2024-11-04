@@ -158,7 +158,7 @@ export class MongoProxyEndpoints {
 export class MongoProxyApi {
   public static readonly ResourceList: string = "ResourceList";
   public static readonly QueryDocuments: string = "QueryDocuments";
-  public static readonly CreateDocument: string = "CreateDocumen";
+  public static readonly CreateDocument: string = "CreateDocument";
   public static readonly ReadDocument: string = "ReadDocument";
   public static readonly UpdateDocument: string = "UpdateDocument";
   public static readonly DeleteDocument: string = "DeleteDocument";

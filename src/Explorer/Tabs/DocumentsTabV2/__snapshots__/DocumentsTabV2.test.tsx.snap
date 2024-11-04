@@ -17,111 +17,124 @@ exports[`Documents tab (noSql API) when rendered should render the page 1`] = `
       className="___11ktxfv_0000000 f1o614cb fy9rknc f22iagw fsnqrgy f1f5gg8d fjodcmx f122n59 f1f09k3d fg706s2 frpde29"
     >
       <span>
-        SELECT * FROM c
+         SELECT * FROM c 
       </span>
-      <span
-        className="___r7kt3y0_0000000 fqerorx"
+      <InputDataList
+        bottomLink={
+          {
+            "text": "Learn more",
+            "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/data-explorer",
+          }
+        }
+        dropdownOptions={
+          [
+            {
+              "label": "Default filters",
+              "options": [
+                "WHERE c.id = "foo"",
+                "ORDER BY c._ts DESC",
+                "WHERE c.id = "foo" ORDER BY c._ts DESC",
+                "ORDER BY c._ts ASC",
+                "WHERE c.foo = "foo"",
+              ],
+            },
+          ]
+        }
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        placeholder="Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents."
+        title="Type a query predicate or choose one from the list."
+        value=""
       />
       <Button
         appearance="primary"
+        aria-label="Apply filter"
+        disabled={false}
         onClick={[Function]}
         size="small"
+        tabIndex={0}
       >
-        Edit Filter
+        Apply Filter
       </Button>
     </div>
-    <div
-      style={
-        {
-          "height": "100%",
-          "overflow": "hidden",
-        }
-      }
+    <Allotment
+      onDragEnd={[Function]}
     >
-      <Allotment
-        onDragEnd={[Function]}
+      <Allotment.Pane
+        minSize={55}
+        preferredSize="35%"
       >
-        <Allotment.Pane
-          minSize={55}
-          preferredSize="35%"
+        <div
+          style={
+            {
+              "height": "100%",
+              "overflow": "hidden",
+              "width": "100%",
+            }
+          }
         >
           <div
-            style={
-              {
-                "height": "100%",
-                "overflow": "hidden",
-                "width": "100%",
-              }
-            }
+            className="___9o87uj0_0000000 ffefeo0"
           >
             <div
-              className="___9o87uj0_0000000 ffefeo0"
+              style={
+                {
+                  "height": "100%",
+                  "width": "calc(100% + -11px)",
+                }
+              }
             >
-              <div
-                style={
+              <DocumentsTableComponent
+                collection={
                   {
-                    "height": "100%",
-                    "width": "calc(100% + -11px)",
+                    "databaseId": "databaseId",
+                    "id": [Function],
                   }
                 }
-              >
-                <DocumentsTableComponent
-                  collection={
+                columnDefinitions={
+                  [
                     {
-                      "databaseId": "databaseId",
-                      "id": [Function],
-                    }
-                  }
-                  columnDefinitions={
-                    [
-                      {
-                        "id": "id",
-                        "isPartitionKey": false,
-                        "label": "id",
-                      },
-                    ]
-                  }
-                  defaultColumnSelection={
-                    [
-                      "id",
-                    ]
-                  }
-                  isColumnSelectionDisabled={false}
-                  isRowSelectionDisabled={true}
-                  items={[]}
-                  onColumnSelectionChange={[Function]}
-                  onItemClicked={[Function]}
-                  onRefreshTable={[Function]}
-                  onSelectedRowsChange={[Function]}
-                  selectedColumnIds={
-                    [
-                      "id",
-                    ]
-                  }
-                  selectedRows={
-                    Set {
-                      0,
-                    }
-                  }
-                />
-              </div>
+                      "id": "id",
+                      "isPartitionKey": false,
+                      "label": "id",
+                    },
+                  ]
+                }
+                defaultColumnSelection={
+                  [
+                    "id",
+                  ]
+                }
+                isColumnSelectionDisabled={false}
+                isRowSelectionDisabled={true}
+                items={[]}
+                onColumnSelectionChange={[Function]}
+                onRefreshTable={[Function]}
+                onSelectedRowsChange={[Function]}
+                selectedColumnIds={
+                  [
+                    "id",
+                  ]
+                }
+                selectedRows={Set {}}
+              />
             </div>
           </div>
-        </Allotment.Pane>
-        <Allotment.Pane
-          minSize={30}
-        >
-          <div
-            style={
-              {
-                "height": "100%",
-                "width": "100%",
-              }
+        </div>
+      </Allotment.Pane>
+      <Allotment.Pane
+        minSize={30}
+      >
+        <div
+          style={
+            {
+              "height": "100%",
+              "width": "100%",
             }
-          />
-        </Allotment.Pane>
-      </Allotment>
-    </div>
+          }
+        />
+      </Allotment.Pane>
+    </Allotment>
   </div>
 </CosmosFluentProvider>
 `;
