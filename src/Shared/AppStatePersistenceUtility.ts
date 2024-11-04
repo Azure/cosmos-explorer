@@ -12,6 +12,9 @@ export enum AppStateComponentNames {
   DataExplorerAction = "DataExplorerAction",
 }
 
+// Subcomponent for DataExplorerAction
+export const OPEN_TABS_SUBCOMPONENT_NAME = "OpenTabs";
+
 export const PATH_SEPARATOR = "/"; // export for testing purposes
 const SCHEMA_VERSION = 1;
 

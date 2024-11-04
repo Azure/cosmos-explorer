@@ -13,7 +13,6 @@ import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/Query
 import { OnExecuteQueryClick, QueryDocumentsPerPage } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { QueryCopilotSidebar } from "Explorer/QueryCopilot/V2/Sidebar/QueryCopilotSidebar";
 import { QueryResultSection } from "Explorer/Tabs/QueryTab/QueryResultSection";
-import { deleteQueryTabState, saveQueryTabState } from "Explorer/Tabs/QueryTab/QueryTabStateUtil";
 import { QueryTabStyles, useQueryTabStyles } from "Explorer/Tabs/QueryTab/Styles";
 import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -96,6 +95,11 @@ export interface IQueryTabComponentProps {
   copilotStore?: Partial<QueryCopilotState>;
   stringsplitterDirection?: "horizontal" | "vertical";
   queryViewSizePercent?: number;
+  onUpdatePersistedState: (state: {
+    queryText: string;
+    splitterDirection: "vertical" | "horizontal";
+    queryViewSizePercent: number;
+  }) => void;
 }
 
 interface IQueryTabStates {
@@ -183,7 +187,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
       queryResultsView:
-        props.stringsplitterDirection === "horizontal" ? SplitterDirection.Horizontal : SplitterDirection.Vertical,
+        props.stringsplitterDirection === "vertical" ? SplitterDirection.Vertical : SplitterDirection.Horizontal,
       queryViewSizePercent: props.queryViewSizePercent,
     };
     this.isCloseClicked = false;
@@ -213,10 +217,6 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       onSaveClickEvent: this.getCurrentEditorQuery.bind(this),
       onCloseClickEvent: this.onCloseClick.bind(this),
     });
-
-    // Update persistence
-    this.saveQueryTabStateDebounced();
-    // DO THIS IN useTabs.activateNewTab() INSTEAD
   }
 
   /**
@@ -228,15 +228,11 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       clearTimeout(this.timeoutId);
     }
     this.timeoutId = setTimeout(async () => {
-      saveQueryTabState(
-        this.props.collection,
-        {
-          queryText: this.state.sqlQueryEditorContent,
-          splitterDirection: this.state.queryResultsView,
-          queryViewSizePercent: this.state.queryViewSizePercent,
-        },
-        this.props.tabIndex,
-      );
+      this.props.onUpdatePersistedState({
+        queryText: this.state.sqlQueryEditorContent,
+        splitterDirection: this.state.queryResultsView,
+        queryViewSizePercent: this.state.queryViewSizePercent,
+      });
     }, QueryTabComponentImpl.DEBOUNCE_DELAY_MS);
   };
 
@@ -363,9 +359,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       this._iterator = this.props.isPreferredApiMongoDB
         ? queryIterator(this.props.collection.databaseId, this.props.viewModelcollection, query)
         : queryDocuments(this.props.collection.databaseId, this.props.collection.id(), query, {
-          enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
-          abortSignal: this.queryAbortController.signal,
-        } as unknown as FeedOptions);
+            enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+            abortSignal: this.queryAbortController.signal,
+          } as unknown as FeedOptions);
     }
 
     await this._queryDocumentsPage(firstItemIndex);
@@ -724,9 +720,6 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
 
   componentWillUnmount(): void {
     document.removeEventListener("keydown", this.handleCopilotKeyDown);
-
-    // Remove persistence
-    deleteQueryTabState(this.props.tabIndex);
   }
 
   private getEditorAndQueryResult(): JSX.Element {

@@ -23,6 +23,7 @@ import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
 import { Platform, configContext } from "ConfigContext";
+import { ActionType, OpenCollectionTab, TabKind } from "Contracts/ActionContracts";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
@@ -146,6 +147,8 @@ export class DocumentsTabV2 extends TabsBase {
   private title: string;
   private resourceTokenPartitionKey: string;
 
+  protected persistedState: OpenCollectionTab;
+
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
 
@@ -153,6 +156,13 @@ export class DocumentsTabV2 extends TabsBase {
     this.title = options.title;
     this.partitionKey = options.partitionKey;
     this.resourceTokenPartitionKey = options.resourceTokenPartitionKey;
+
+    this.persistedState = {
+      actionType: ActionType.OpenCollectionTab,
+      tabKind: options.isPreferredApiMongoDB ? TabKind.MongoDocuments : TabKind.SQLDocuments,
+      databaseResourceId: options.collection.databaseId,
+      collectionResourceId: options.collection.id(),
+    };
   }
 
   public render(): JSX.Element {

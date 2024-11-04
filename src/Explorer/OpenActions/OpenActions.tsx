@@ -133,6 +133,21 @@ function openCollectionTab(
           }
 
           if (
+            action.tabKind === ActionContracts.TabKind.MongoQuery ||
+            action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.MongoQuery]
+          ) {
+            const openQueryTabAction = action as ActionContracts.OpenQueryTab;
+            collection.onNewMongoQueryClick(
+              collection,
+              undefined,
+              generateQueryText(openQueryTabAction, collection.partitionKeyProperties),
+              openQueryTabAction.splitterDirection,
+              openQueryTabAction.queryViewSizePercent,
+            );
+            break;
+          }
+
+          if (
             action.tabKind === ActionContracts.TabKind.ScaleSettings ||
             action.tabKind === ActionContracts.TabKind[ActionContracts.TabKind.ScaleSettings]
           ) {

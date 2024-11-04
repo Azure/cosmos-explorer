@@ -9,10 +9,13 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { handleOpenAction } from "Explorer/OpenActions/OpenActions";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
-import { OPEN_TABS_SUBCOMPONENT_NAME } from "Explorer/Tabs/QueryTab/QueryTabStateUtil";
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
-import { AppStateComponentNames, readSubComponentState } from "Shared/AppStatePersistenceUtility";
+import {
+  AppStateComponentNames,
+  OPEN_TABS_SUBCOMPONENT_NAME,
+  readSubComponentState,
+} from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
@@ -1212,7 +1215,7 @@ export default class Explorer {
   }
 
   private restoreOpenTabs() {
-    const openTabsState = readSubComponentState<DataExplorerAction[]>(
+    const openTabsState = readSubComponentState<(DataExplorerAction | undefined)[]>(
       AppStateComponentNames.DataExplorerAction,
       OPEN_TABS_SUBCOMPONENT_NAME,
       undefined,

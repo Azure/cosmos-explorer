@@ -663,7 +663,13 @@ export default class Collection implements ViewModels.Collection {
     );
   }
 
-  public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewMongoQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    stringsplitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
 
@@ -685,6 +691,9 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         partitionKey: collection.partitionKey,
         onLoadStartKey: startKey,
+        queryText,
+        stringsplitterDirection,
+        queryViewSizePercent,
       },
       {
         container: this.container,

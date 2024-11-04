@@ -155,7 +155,13 @@ export interface Collection extends CollectionBase {
   onSettingsClick: () => Promise<void>;
 
   onNewGraphClick(): void;
-  onNewMongoQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
+  onNewMongoQueryClick(
+    source: any,
+    event?: MouseEvent,
+    queryText?: string,
+    stringsplitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ): void;
   onNewMongoShellClick(): void;
   onNewStoredProcedureClick(source: Collection, event?: MouseEvent): void;
   onNewUserDefinedFunctionClick(source: Collection, event?: MouseEvent): void;

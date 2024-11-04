@@ -1,4 +1,5 @@
 import { sendMessage } from "Common/MessageHandler";
+import { ActionType, OpenQueryTab, TabKind } from "Contracts/ActionContracts";
 import { MessageTypes } from "Contracts/MessageTypes";
 import { CopilotProvider } from "Explorer/QueryCopilot/QueryCopilotContext";
 import { userContext } from "UserContext";
@@ -26,6 +27,8 @@ export class NewQueryTab extends TabsBase {
   public iQueryTabComponentProps: IQueryTabComponentProps;
   public iTabAccessor: ITabAccessor;
 
+  protected persistedState: OpenQueryTab;
+
   constructor(
     options: QueryTabOptions,
     private props: IQueryTabProps,
@@ -46,7 +49,34 @@ export class NewQueryTab extends TabsBase {
         this.iTabAccessor = instance;
       },
       isPreferredApiMongoDB: false,
+      onUpdatePersistedState: (state: {
+        queryText: string;
+        splitterDirection: string;
+        queryViewSizePercent: number;
+      }): void => {
+        this.persistedState = {
+          actionType: ActionType.OpenCollectionTab,
+          tabKind: TabKind.SQLQuery,
+          databaseResourceId: options.collection.databaseId,
+          collectionResourceId: options.collection.id(),
+          query: {
+            text: state.queryText,
+          },
+          splitterDirection: state.splitterDirection as "vertical" | "horizontal",
+          queryViewSizePercent: state.queryViewSizePercent,
+        };
+        if (this.triggerPersistState) {
+          this.triggerPersistState();
+        }
+      },
     };
+
+    // set initial state
+    this.iQueryTabComponentProps.onUpdatePersistedState({
+      queryText: options.queryText,
+      splitterDirection: options.stringsplitterDirection,
+      queryViewSizePercent: options.queryViewSizePercent,
+    });
   }
 
   public render(): JSX.Element {

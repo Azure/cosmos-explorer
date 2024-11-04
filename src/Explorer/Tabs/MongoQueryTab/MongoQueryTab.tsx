@@ -1,3 +1,4 @@
+import { ActionType, TabKind } from "Contracts/ActionContracts";
 import React from "react";
 import MongoUtility from "../../../Common/MongoUtility";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -20,7 +21,7 @@ export class NewMongoQueryTab extends NewQueryTab {
     private mongoQueryTabProps: IMongoQueryTabProps,
   ) {
     super(options, mongoQueryTabProps);
-    this.queryText = "";
+    this.queryText = options.queryText ?? "";
     this.iMongoQueryTabComponentProps = {
       collection: options.collection,
       isExecutionError: this.isExecutionError(),
@@ -28,6 +29,8 @@ export class NewMongoQueryTab extends NewQueryTab {
       tabsBaseInstance: this,
       queryText: this.queryText,
       partitionKey: this.partitionKey,
+      stringsplitterDirection: options.stringsplitterDirection,
+      queryViewSizePercent: options.queryViewSizePercent,
       container: this.mongoQueryTabProps.container,
       onTabAccessor: (instance: ITabAccessor): void => {
         this.iTabAccessor = instance;
@@ -35,6 +38,26 @@ export class NewMongoQueryTab extends NewQueryTab {
       isPreferredApiMongoDB: true,
       monacoEditorSetting: "plaintext",
       viewModelcollection: this.mongoQueryTabProps.viewModelcollection,
+      onUpdatePersistedState: (state: {
+        queryText: string;
+        splitterDirection: string;
+        queryViewSizePercent: number;
+      }): void => {
+        this.persistedState = {
+          actionType: ActionType.OpenCollectionTab,
+          tabKind: TabKind.SQLQuery,
+          databaseResourceId: options.collection.databaseId,
+          collectionResourceId: options.collection.id(),
+          query: {
+            text: state.queryText,
+          },
+          splitterDirection: state.splitterDirection as "vertical" | "horizontal",
+          queryViewSizePercent: state.queryViewSizePercent,
+        };
+        if (this.triggerPersistState) {
+          this.triggerPersistState();
+        }
+      },
     };
   }
 
