@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { StorageKey } from "../../src/Shared/StorageUtility";
 import { DataExplorer, Editor, QueryTab, TestAccount } from "../fx";
 import { TestContainerContext, TestItem, createTestSQLContainer } from "../testData";
 
@@ -13,6 +14,9 @@ test.beforeAll("Create Test Database", async () => {
 });
 
 test.beforeEach("Open new query tab", async ({ page }) => {
+  // Clear previous settings
+  localStorage.removeItem(StorageKey[StorageKey.AppState]);
+
   // Open a query tab
   explorer = await DataExplorer.open(page, TestAccount.SQL);
 
