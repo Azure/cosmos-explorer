@@ -125,7 +125,6 @@ interface IQueryTabStates {
 export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
   const copilotStore = useCopilotStore();
-  const tabIndex = useTabs.getState().openedTabs.findIndex((tab) => tab.tabId === props.tabId);
 
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
@@ -135,21 +134,17 @@ export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any =>
       (useQueryCopilot().copilotUserDBEnabled || (isSampleCopilotActive && !!userContext.sampleDataConnectionInfo)),
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
-    tabIndex,
   };
-  return <QueryTabComponentImpl styles={styles} {...queryTabProps}></QueryTabComponentImpl>;
+  return <QueryTabComponentImpl styles={styles} {...queryTabProps} />;
 };
 
 export const QueryTabComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
-  const tabIndex = useTabs.getState().openedTabs.findIndex((tab) => tab.tabId === props.tabId);
-
-  return <QueryTabComponentImpl styles={styles} {...{ ...props, tabIndex }}></QueryTabComponentImpl>;
+  return <QueryTabComponentImpl styles={styles} {...{ ...props }} />;
 };
 
 type QueryTabComponentImplProps = IQueryTabComponentProps & {
   styles: QueryTabStyles;
-  tabIndex: number;
 };
 
 // Inner (legacy) class component. We only use this component via one of the two functional components above (since we need to use the `useQueryTabStyles` hook).
