@@ -2226,15 +2226,17 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
                 </MessageBarBody>
               </MessageBar>
             )}
-            <MessageBar intent="warning">
-              <MessageBarBody>
-                <MessageBarTitle>Warning</MessageBarTitle>
-                {get429WarningMessageNoSql()}{" "}
-                <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
-                  Learn More
-                </Link>
-              </MessageBarBody>
-            </MessageBar>
+            {bulkDeleteProcess.hasBeenThrottled && (
+              <MessageBar intent="warning">
+                <MessageBarBody>
+                  <MessageBarTitle>Warning</MessageBarTitle>
+                  {get429WarningMessageNoSql()}{" "}
+                  <Link href={NO_SQL_THROTTLING_DOC_URL} target="_blank">
+                    Learn More
+                  </Link>
+                </MessageBarBody>
+              </MessageBar>
+            )}
           </div>
         </ProgressModalDialog>
       )}
