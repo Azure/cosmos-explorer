@@ -15,7 +15,7 @@ test.beforeAll("Create Test Database", async () => {
 
 test.beforeEach("Open new query tab", async ({ page }) => {
   // Clear previous settings
-  localStorage.removeItem(StorageKey[StorageKey.AppState]);
+  window.localStorage.removeItem(StorageKey[StorageKey.AppState]);
 
   // Open a query tab
   explorer = await DataExplorer.open(page, TestAccount.SQL);
