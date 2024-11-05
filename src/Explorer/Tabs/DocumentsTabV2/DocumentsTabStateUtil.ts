@@ -15,6 +15,7 @@ export enum SubComponentName {
   MainTabDivider = "MainTabDivider",
   ColumnsSelection = "ColumnsSelection",
   ColumnSort = "ColumnSort",
+  CurrentFilter = "CurrentFilter",
 }
 
 export type ColumnSizesMap = { [columnId: string]: WidthDefinition };

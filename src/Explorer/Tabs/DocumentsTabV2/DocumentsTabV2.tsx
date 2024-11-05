@@ -35,6 +35,7 @@ import {
   FilterHistory,
   SubComponentName,
   TabDivider,
+  deleteDocumentsTabSubComponentState,
   readDocumentsTabSubComponentState,
   saveDocumentsTabSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
@@ -585,7 +586,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   onIsExecutingChange,
   isTabActive,
 }): JSX.Element => {
-  const [filterContent, setFilterContent] = useState<string>("");
+  const [filterContent, setFilterContent] = useState<string>(() =>
+    readDocumentsTabSubComponentState<string>(SubComponentName.CurrentFilter, _collection, ""),
+  );
+
   const [documentIds, setDocumentIds] = useState<ExtendedDocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const styles = useDocumentsTabStyles();
@@ -818,7 +822,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   useEffect(() => {
     setKeyboardActions({
       [KeyboardAction.CLEAR_SEARCH]: () => {
-        setFilterContent("");
+        updateFilterContent("");
         refreshDocumentsGrid(true);
         return true;
       },
@@ -2073,6 +2077,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return options;
   };
 
+  const updateFilterContent = (filter: string): void => {
+    if (filter === "" || filter === undefined) {
+      deleteDocumentsTabSubComponentState(SubComponentName.CurrentFilter, _collection);
+    } else {
+      saveDocumentsTabSubComponentState<string>(SubComponentName.CurrentFilter, _collection, filter, true);
+    }
+    setFilterContent(filter);
+  };
+
   return (
     <CosmosFluentProvider className={styles.container}>
       <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
@@ -2087,7 +2100,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             }
             title="Type a query predicate or choose one from the list."
             value={filterContent}
-            onChange={(value) => setFilterContent(value)}
+            onChange={updateFilterContent}
             onKeyDown={onFilterKeyDown}
             bottomLink={{ text: "Learn more", url: DATA_EXPLORER_DOC_URL }}
           />
