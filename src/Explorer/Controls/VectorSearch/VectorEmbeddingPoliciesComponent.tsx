@@ -132,10 +132,11 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     return error;
   };
 
-  //TODO: no restrictions yet due to this field being removed for now. Replace with validation code when field is reinstated
-  const onDiskANNShardKeyError = (_shardKey: string): string => {
-    return "";
-  };
+  //TODO: no restrictions yet due to this field being removed for now.
+  // Uncomment and replace with validation code when field is reinstated
+  // const onDiskANNShardKeyError = (shardKey: string): string => {
+  //   return "";
+  // };
 
   const initializeData = (vectorEmbeddings: VectorEmbedding[], vectorIndexes: VectorIndex[]) => {
     const mergedData: VectorEmbeddingPolicyData[] = [];
