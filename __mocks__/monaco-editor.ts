@@ -1,4 +1,4 @@
 export const editor = {
-  create: () => {},
-  setTheme: () => {}
+  create: () => { },
+  setTheme: () => { }
 };
