@@ -119,7 +119,7 @@ export interface CollectionBase extends TreeNode {
     source: any,
     event?: MouseEvent,
     queryText?: string,
-    stringsplitterDirection?: "horizontal" | "vertical",
+    splitterDirection?: "horizontal" | "vertical",
     queryViewSizePercent?: number,
   ): void;
   expandCollection(): void;
@@ -159,7 +159,7 @@ export interface Collection extends CollectionBase {
     source: any,
     event?: MouseEvent,
     queryText?: string,
-    stringsplitterDirection?: "horizontal" | "vertical",
+    splitterDirection?: "horizontal" | "vertical",
     queryViewSizePercent?: number,
   ): void;
   onNewMongoShellClick(): void;
@@ -321,7 +321,7 @@ export interface QueryTabOptions extends TabOptions {
   partitionKey?: DataModels.PartitionKey;
   queryText?: string;
   resourceTokenPartitionKey?: string;
-  stringsplitterDirection?: "horizontal" | "vertical";
+  splitterDirection?: "horizontal" | "vertical";
   queryViewSizePercent?: number;
 }
 

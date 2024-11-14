@@ -29,7 +29,7 @@ export class NewMongoQueryTab extends NewQueryTab {
       tabsBaseInstance: this,
       queryText: this.queryText,
       partitionKey: this.partitionKey,
-      stringsplitterDirection: options.stringsplitterDirection,
+      splitterDirection: options.splitterDirection,
       queryViewSizePercent: options.queryViewSizePercent,
       container: this.mongoQueryTabProps.container,
       onTabAccessor: (instance: ITabAccessor): void => {

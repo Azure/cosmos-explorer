@@ -630,7 +630,7 @@ export default class Collection implements ViewModels.Collection {
     source: any,
     event: MouseEvent,
     queryText?: string,
-    stringsplitterDirection?: "horizontal" | "vertical",
+    splitterDirection?: "horizontal" | "vertical",
     queryViewSizePercent?: number,
   ) {
     const collection: ViewModels.Collection = source.collection || source;
@@ -655,7 +655,7 @@ export default class Collection implements ViewModels.Collection {
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
-          stringsplitterDirection,
+          splitterDirection,
           queryViewSizePercent,
         },
         { container: this.container },
@@ -667,7 +667,7 @@ export default class Collection implements ViewModels.Collection {
     source: any,
     event: MouseEvent,
     queryText?: string,
-    stringsplitterDirection?: "horizontal" | "vertical",
+    splitterDirection?: "horizontal" | "vertical",
     queryViewSizePercent?: number,
   ) {
     const collection: ViewModels.Collection = source.collection || source;
@@ -692,7 +692,7 @@ export default class Collection implements ViewModels.Collection {
         partitionKey: collection.partitionKey,
         onLoadStartKey: startKey,
         queryText,
-        stringsplitterDirection,
+        splitterDirection,
         queryViewSizePercent,
       },
       {

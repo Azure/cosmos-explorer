@@ -93,7 +93,7 @@ export interface IQueryTabComponentProps {
   copilotEnabled?: boolean;
   isSampleCopilotActive?: boolean;
   copilotStore?: Partial<QueryCopilotState>;
-  stringsplitterDirection?: "horizontal" | "vertical";
+  splitterDirection?: "horizontal" | "vertical";
   queryViewSizePercent?: number;
   onUpdatePersistedState: (state: {
     queryText: string;
@@ -182,7 +182,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
       queryResultsView:
-        props.stringsplitterDirection === "vertical" ? SplitterDirection.Vertical : SplitterDirection.Horizontal,
+        props.splitterDirection === "vertical" ? SplitterDirection.Vertical : SplitterDirection.Horizontal,
       queryViewSizePercent: props.queryViewSizePercent,
     };
     this.isCloseClicked = false;
