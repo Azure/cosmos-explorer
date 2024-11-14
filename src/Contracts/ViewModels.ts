@@ -127,6 +127,7 @@ export interface Collection extends CollectionBase {
   schema?: DataModels.ISchema;
   requestSchema?: () => void;
   vectorEmbeddingPolicy: ko.Observable<DataModels.VectorEmbeddingPolicy>;
+  fullTextPolicy: ko.Observable<DataModels.FullTextPolicy>;
   indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   usageSizeInKB: ko.Observable<number>;

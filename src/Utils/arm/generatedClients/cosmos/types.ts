@@ -1237,6 +1237,7 @@ export interface SqlContainerResource {
   id: string;
 
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+  fullTextPolicy?: FullTextPolicy;
 
   /* The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container */
   indexingPolicy?: IndexingPolicy;
@@ -1281,6 +1282,28 @@ export interface VectorEmbedding {
   distanceFunction?: string;
 }
 
+export interface FullTextPolicy {
+  /**
+   * The default language for the full text .
+   */
+  defaultLanguage: string;
+  /**
+   * The paths to be indexed for full text search.
+   */
+  fullTextPaths: FullTextPath[];
+}
+
+export interface FullTextPath {
+  /**
+   * The path to be indexed for full text search.
+   */
+  path: string;
+  /**
+   * The language for the full text path.
+   */
+  language: string;
+}
+
 /* Cosmos DB indexing policy */
 export interface IndexingPolicy {
   /* Indicates if the indexing policy is automatic */
@@ -1301,11 +1324,18 @@ export interface IndexingPolicy {
   spatialIndexes?: SpatialSpec[];
 
   vectorIndexes?: VectorIndex[];
+
+  fullTextIndexes?: FullTextIndex[];
 }
 
 export interface VectorIndex {
   path?: string;
   type?: string;
+}
+
+export interface FullTextIndex {
+  /** The path in the JSON document to index. */
+  path: string;
 }
 
 /* undocumented */

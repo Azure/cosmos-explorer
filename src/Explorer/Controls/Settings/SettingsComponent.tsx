@@ -4,9 +4,9 @@ import {
   ComputedPropertiesComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ComputedPropertiesComponent";
 import {
-  ContainerVectorPolicyComponent,
-  ContainerVectorPolicyComponentProps,
-} from "Explorer/Controls/Settings/SettingsSubComponents/ContainerVectorPolicyComponent";
+  ContainerPolicyComponent,
+  ContainerPolicyComponentProps,
+} from "Explorer/Controls/Settings/SettingsSubComponents/ContainerPolicyComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
@@ -107,8 +107,10 @@ export interface SettingsComponentState {
 
   vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
   vectorEmbeddingPolicyBaseline: DataModels.VectorEmbeddingPolicy;
-  shouldDiscardVectorEmbeddingPolicy: boolean;
-  isVectorEmbeddingPolicyDirty: boolean;
+  fullTextPolicy: DataModels.FullTextPolicy;
+  fullTextPolicyBaseline: DataModels.FullTextPolicy;
+  shouldDiscardContainerPolicies: boolean;
+  isContainerPolicyDirty: boolean;
 
   indexingPolicyContent: DataModels.IndexingPolicy;
   indexingPolicyContentBaseline: DataModels.IndexingPolicy;
@@ -210,8 +212,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       vectorEmbeddingPolicy: undefined,
       vectorEmbeddingPolicyBaseline: undefined,
-      shouldDiscardVectorEmbeddingPolicy: false,
-      isVectorEmbeddingPolicyDirty: false,
+      fullTextPolicy: undefined,
+      fullTextPolicyBaseline: undefined,
+      shouldDiscardContainerPolicies: false,
+      isContainerPolicyDirty: false,
 
       indexingPolicyContent: undefined,
       indexingPolicyContentBaseline: undefined,
@@ -317,7 +321,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return (
       this.state.isScaleSaveable ||
       this.state.isSubSettingsSaveable ||
-      this.state.isVectorEmbeddingPolicyDirty ||
+      this.state.isContainerPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
@@ -329,7 +333,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return (
       this.state.isScaleDiscardable ||
       this.state.isSubSettingsDiscardable ||
-      this.state.isVectorEmbeddingPolicyDirty ||
+      this.state.isContainerPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
@@ -418,6 +422,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       displayedTtlSeconds: this.state.displayedTtlSecondsBaseline,
       geospatialConfigType: this.state.geospatialConfigTypeBaseline,
       vectorEmbeddingPolicy: this.state.vectorEmbeddingPolicyBaseline,
+      fullTextPolicy: this.state.fullTextPolicyBaseline,
       indexingPolicyContent: this.state.indexingPolicyContentBaseline,
       indexesToAdd: [],
       indexesToDrop: [],
@@ -429,13 +434,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       changeFeedPolicy: this.state.changeFeedPolicyBaseline,
       autoPilotThroughput: this.state.autoPilotThroughputBaseline,
       isAutoPilotSelected: this.state.wasAutopilotOriginallySet,
-      shouldDiscardVectorEmbeddingPolicy: true,
+      shouldDiscardContainerPolicies: true,
       shouldDiscardIndexingPolicy: true,
       isScaleSaveable: false,
       isScaleDiscardable: false,
       isSubSettingsSaveable: false,
       isSubSettingsDiscardable: false,
-      isVectorEmbeddingPolicyDirty: false,
+      isContainerPolicyDirty: false,
       isIndexingPolicyDirty: false,
       isMongoIndexingPolicySaveable: false,
       isMongoIndexingPolicyDiscardable: false,
@@ -466,10 +471,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onVectorEmbeddingPolicyChange = (newVectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy): void =>
     this.setState({ vectorEmbeddingPolicy: newVectorEmbeddingPolicy });
 
+  private onFullTextPolicyChange = (newFullTextPolicy: DataModels.FullTextPolicy): void =>
+    this.setState({ fullTextPolicy: newFullTextPolicy });
+
   private onIndexingPolicyContentChange = (newIndexingPolicy: DataModels.IndexingPolicy): void =>
     this.setState({ indexingPolicyContent: newIndexingPolicy });
 
-  private resetShouldDiscardVectorEmbeddingPolicy = (): void => this.setState({ shouldDiscardVectorEmbeddingPolicy: false });
+  private resetShouldDiscardContainerPolicies = (): void => this.setState({ shouldDiscardContainerPolicies: false });
 
   private resetShouldDiscardIndexingPolicy = (): void => this.setState({ shouldDiscardIndexingPolicy: false });
 
@@ -559,7 +567,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ isSubSettingsDiscardable: isSubSettingsDiscardable });
 
   private onVectorEmbeddingPolicyDirtyChange = (isVectorEmbeddingPolicyDirty: boolean): void =>
-    this.setState({ isVectorEmbeddingPolicyDirty: isVectorEmbeddingPolicyDirty });
+    this.setState({ isContainerPolicyDirty: isVectorEmbeddingPolicyDirty });
+
+  private onFullTextPolicyDirtyChange = (isFullTextPolicyDirty: boolean): void =>
+    this.setState({ isContainerPolicyDirty: isFullTextPolicyDirty });
 
   private onIndexingPolicyDirtyChange = (isIndexingPolicyDirty: boolean): void =>
     this.setState({ isIndexingPolicyDirty: isIndexingPolicyDirty });
@@ -715,6 +726,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       ? ChangeFeedPolicyState.On
       : ChangeFeedPolicyState.Off;
     const vectorEmbeddingPolicy = this.collection.vectorEmbeddingPolicy();
+    const fullTextPolicy = this.collection.fullTextPolicy();
     const indexingPolicyContent = this.collection.indexingPolicy();
     const conflictResolutionPolicy: DataModels.ConflictResolutionPolicy =
       this.collection.conflictResolutionPolicy && this.collection.conflictResolutionPolicy();
@@ -750,6 +762,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       analyticalStorageTtlSecondsBaseline: analyticalStorageTtlSeconds,
       vectorEmbeddingPolicy: vectorEmbeddingPolicy,
       vectorEmbeddingPolicyBaseline: vectorEmbeddingPolicy,
+      fullTextPolicy: fullTextPolicy,
+      fullTextPolicyBaseline: fullTextPolicy,
       indexingPolicyContent: indexingPolicyContent,
       indexingPolicyContentBaseline: indexingPolicyContent,
       conflictResolutionPolicyMode: conflictResolutionPolicyMode,
@@ -878,7 +892,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     if (
       this.state.isSubSettingsSaveable ||
-      this.state.isVectorEmbeddingPolicyDirty ||
+      this.state.isContainerPolicyDirty ||
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty
@@ -903,6 +917,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.vectorEmbeddingPolicy = this.state.vectorEmbeddingPolicy;
 
       newCollection.indexingPolicy = this.state.indexingPolicyContent;
+
+      const fullTextPolicy: DataModels.FullTextPolicy = this.state.fullTextPolicy;
+      newCollection.indexingPolicy.fullTextIndexes.forEach(
+        (fullTextIndex: DataModels.FullTextIndex, index: number) => {
+          let fullTextPath: DataModels.FullTextPath = fullTextPolicy.fullTextPaths[index];
+          if (fullTextPath) {
+            fullTextPath.path = fullTextIndex.path;
+          }
+        });
+      newCollection.fullTextPolicy = fullTextPolicy;
 
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
@@ -940,6 +964,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
       this.collection.geospatialConfig(updatedCollection.geospatialConfig);
       this.collection.computedProperties(updatedCollection.computedProperties);
+      this.collection.vectorEmbeddingPolicy(updatedCollection.vectorEmbeddingPolicy);
+      this.collection.fullTextPolicy(updatedCollection.fullTextPolicy);
 
       if (wasIndexingPolicyModified) {
         await this.refreshIndexTransformationProgress();
@@ -948,7 +974,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.setState({
         isSubSettingsSaveable: false,
         isSubSettingsDiscardable: false,
-        isVectorEmbeddingPolicyDirty: false,
+        isContainerPolicyDirty: false,
         isIndexingPolicyDirty: false,
         isConflictResolutionDirty: false,
         isComputedPropertiesDirty: false,
@@ -1119,13 +1145,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onSubSettingsDiscardableChange: this.onSubSettingsDiscardableChange,
     };
 
-    const containerVectorPolicyProps: ContainerVectorPolicyComponentProps = {
+    const containerVectorPolicyProps: ContainerPolicyComponentProps = {
       vectorEmbeddingPolicy: this.state.vectorEmbeddingPolicy,
       vectorEmbeddingPolicyBaseline: this.state.vectorEmbeddingPolicyBaseline,
       onVectorEmbeddingPolicyChange: this.onVectorEmbeddingPolicyChange,
       onVectorEmbeddingPolicyDirtyChange: this.onVectorEmbeddingPolicyDirtyChange,
-      shouldDiscardVectorEmbeddingPolicy: this.state.shouldDiscardVectorEmbeddingPolicy,
-      resetShouldDiscardVectorEmbeddingPolicyChange: this.resetShouldDiscardVectorEmbeddingPolicy,
+      fullTextPolicy: this.state.fullTextPolicy,
+      fullTextPolicyBaseline: this.state.fullTextPolicyBaseline,
+      onFullTextPolicyChange: this.onFullTextPolicyChange,
+      onFullTextPolicyDirtyChange: this.onFullTextPolicyDirtyChange,
+      shouldDiscardContainerPolicies: this.state.shouldDiscardContainerPolicies,
+      resetShouldDiscardContainerPolicyChange: this.resetShouldDiscardContainerPolicies,
     };
 
     const indexingPolicyComponentProps: IndexingPolicyComponentProps = {
@@ -1201,7 +1231,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.isVectorSearchEnabled) {
       tabs.push({
         tab: SettingsV2TabTypes.ContainerVectorPolicyTab,
-        content: <ContainerVectorPolicyComponent {...containerVectorPolicyProps} />,
+        content: <ContainerPolicyComponent {...containerVectorPolicyProps} />,
       });
     }
 

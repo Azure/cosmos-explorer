@@ -11,6 +11,7 @@ export interface CollapsibleSectionProps {
   tooltipContent?: string | JSX.Element | JSX.Element[];
   showDelete?: boolean;
   onDelete?: () => void;
+  disabled?: boolean;
 }
 
 export interface CollapsibleSectionState {
@@ -74,10 +75,14 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
           {this.props.showDelete && (
             <Stack.Item style={{ marginLeft: "auto" }}>
               <IconButton
+                disabled={this.props.disabled}
                 id={`delete-${this.props.title}`}
                 iconProps={{ iconName: "Delete" }}
                 style={{ height: 27, marginRight: "20px" }}
-                onClick={this.props.onDelete}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  this.props.onDelete();
+                }}
               />
             </Stack.Item>
           )}

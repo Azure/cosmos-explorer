@@ -28,6 +28,7 @@ export interface IVectorEmbeddingPoliciesComponentProps {
   vectorIndexes?: VectorIndex[];
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
+  disabled?: boolean;
 };
 
 export interface VectorEmbeddingPolicyData {
@@ -38,9 +39,21 @@ export interface VectorEmbeddingPolicyData {
   indexType: VectorIndex["type"] | "none";
   pathError: string;
   dimensionsError: string;
+  diskANNShardKey?: string;
+  diskANNShardKeyError?: string;
+  indexingSearchListSize?: number;
+  indexingSearchListSizeError?: string;
+  quantizationByteSize?: number;
+  quantizationByteSizeError?: string;
 }
 
 type VectorEmbeddingPolicyProperty = "dataType" | "distanceFunction" | "indexType";
+
+const labelStyles = {
+  root: {
+    fontSize: 12,
+  }
+}
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
   fieldGroup: {
@@ -73,11 +86,12 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   onVectorEmbeddingChange,
   discardChanges,
   onChangesDiscarded,
+  disabled,
 }): JSX.Element => {
   const onVectorEmbeddingPathError = (path: string, index?: number): string => {
     let error = "";
     if (!path) {
-      error = "Vector embedding path should not be empty";
+      error = "Path should not be empty";
     }
     if (
       index >= 0 &&
@@ -86,7 +100,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
           dataIndex !== index && vectorEmbedding.path === path,
       )
     ) {
-      error = "Vector embedding path is already defined";
+      error = "Path is already defined";
     }
     return error;
   };
@@ -94,13 +108,35 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
   const onVectorEmbeddingDimensionError = (dimension: number, indexType: VectorIndex["type"] | "none"): string => {
     let error = "";
     if (dimension <= 0 || dimension > 4096) {
-      error = "Vector embedding dimension must be greater than 0 and less than or equal 4096";
+      error = "Dimension must be greater than 0 and less than or equal 4096";
     }
     if (indexType === "flat" && dimension > 505) {
       error = "Maximum allowed dimension for flat index is 505";
     }
     return error;
   };
+
+  const onQuantizationByteSizeError = (size: number): string => {
+    let error = "";
+    if (size < 1 || size > 512) {
+      error = "Quantization byte size must be greater than 0 and less than or equal to 512";
+    }
+    return error;
+  }
+
+  const onIndexingSearchListSizeError = (size: number): string => {
+    let error = "";
+    if (size < 25 || size > 500) {
+      error = "Indexing search list size must be greater than or equal to 25 and less than or equal to 500";
+    }
+    return error;
+  }
+
+  const onDiskANNShardKeyError = (shardKey: string): string => {
+    let error = "";
+    //TODO: no restrictions yet due to this field being removed for now. Replace with validation code when field is reinstated
+    return error;
+  }
 
   const initializeData = (vectorEmbeddings: VectorEmbedding[], vectorIndexes: VectorIndex[]) => {
     const mergedData: VectorEmbeddingPolicyData[] = [];
@@ -111,6 +147,8 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       mergedData.push({
         ...embedding,
         indexType: matchingIndex?.type || "none",
+        indexingSearchListSize: matchingIndex?.indexingSearchListSize || undefined,
+        quantizationByteSize: matchingIndex?.quantizationByteSize || undefined,
         pathError: onVectorEmbeddingPathError(embedding.path),
         dimensionsError: onVectorEmbeddingDimensionError(embedding.dimensions, matchingIndex?.type || "none"),
       });
@@ -148,6 +186,8 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
           ({
             path: policy.path,
             type: policy.indexType,
+            indexingSearchListSize: policy.indexingSearchListSize,
+            quantizationByteSize: policy.quantizationByteSize,
           }) as VectorIndex,
       );
     const validationPassed = vectorEmbeddingPolicyData.every(
@@ -185,8 +225,42 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
     vectorEmbeddings[index].indexType = option.key as never;
     const error = onVectorEmbeddingDimensionError(vectorEmbedding.dimensions, vectorEmbedding.indexType);
     vectorEmbeddings[index].dimensionsError = error;
+    if (vectorEmbedding.indexType === "diskANN") {
+      vectorEmbedding.indexingSearchListSize = 100;
+    } else {
+      vectorEmbedding.indexingSearchListSize = undefined;
+    }
     setVectorEmbeddingPolicyData(vectorEmbeddings);
   };
+
+  const onQuantizationByteSizeChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value.trim()) || 0;
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    vectorEmbeddings[index].quantizationByteSize = value;
+    vectorEmbeddings[index].quantizationByteSizeError = onQuantizationByteSizeError(value);
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
+  }
+
+  const onIndexingSearchListSizeChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value.trim()) || 0;
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    vectorEmbeddings[index].indexingSearchListSize = value;
+    vectorEmbeddings[index].indexingSearchListSizeError = onIndexingSearchListSizeError(value);
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
+  }
+
+  const onDiskANNShardKeyChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.trim();
+    const vectorEmbeddings = [...vectorEmbeddingPolicyData];
+    if (!vectorEmbeddings[index]?.diskANNShardKey && !value.startsWith("/")) {
+      vectorEmbeddings[index].diskANNShardKey = "/" + value;
+    } else {
+      vectorEmbeddings[index].diskANNShardKey = value;
+    }
+    const error = onDiskANNShardKeyError(value);
+    vectorEmbeddings[index].diskANNShardKeyError = error;
+    setVectorEmbeddingPolicyData(vectorEmbeddings);
+  }
 
   const onVectorEmbeddingPolicyChange = (
     index: number,
@@ -223,6 +297,7 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
       {vectorEmbeddingPolicyData && vectorEmbeddingPolicyData.length > 0 &&
         vectorEmbeddingPolicyData.map((vectorEmbeddingPolicy: VectorEmbeddingPolicyData, index: number) => (
           <CollapsibleSectionComponent
+            disabled={disabled}
             key={index}
             isExpandedByDefault={true}
             title={`Vector embedding ${index + 1}`}
@@ -240,8 +315,9 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 }}
               >
                 <Stack>
-                  <Label styles={{ root: { fontSize: 12 } }}>Path</Label>
+                  <Label disabled={disabled} styles={labelStyles}>Path</Label>
                   <TextField
+                    disabled={disabled}
                     id={`vector-policy-path-${index + 1}`}
                     required={true}
                     placeholder="/vector1"
@@ -252,8 +328,9 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   />
                 </Stack>
                 <Stack>
-                  <Label styles={{ root: { fontSize: 12 } }}>Data type</Label>
+                  <Label disabled={disabled} styles={labelStyles}>Data type</Label>
                   <Dropdown
+                    disabled={disabled}
                     required={true}
                     styles={dropdownStyles}
                     options={getDataTypeOptions()}
@@ -264,8 +341,9 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   ></Dropdown>
                 </Stack>
                 <Stack>
-                  <Label styles={{ root: { fontSize: 12 } }}>Distance function</Label>
+                  <Label disabled={disabled} styles={labelStyles}>Distance function</Label>
                   <Dropdown
+                    disabled={disabled}
                     required={true}
                     styles={dropdownStyles}
                     options={getDistanceFunctionOptions()}
@@ -276,8 +354,9 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                   ></Dropdown>
                 </Stack>
                 <Stack>
-                  <Label styles={{ root: { fontSize: 12 } }}>Dimensions</Label>
+                  <Label disabled={disabled} styles={labelStyles}>Dimensions</Label>
                   <TextField
+                    disabled={disabled}
                     id={`vector-policy-dimension-${index + 1}`}
                     required={true}
                     styles={textFieldStyles}
@@ -290,8 +369,9 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                 </Stack>
                 {displayIndexes && (
                   <Stack>
-                    <Label styles={{ root: { fontSize: 12 } }}>Index type</Label>
+                    <Label disabled={disabled} styles={labelStyles}>Index type</Label>
                     <Dropdown
+                      disabled={disabled}
                       required={true}
                       styles={dropdownStyles}
                       options={getIndexTypeOptions()}
@@ -300,19 +380,78 @@ export const VectorEmbeddingPoliciesComponent: FunctionComponent<IVectorEmbeddin
                         onVectorEmbeddingIndexTypeChange(index, option)
                       }
                     ></Dropdown>
+                    <Stack
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <Label
+                        disabled={
+                          disabled ||
+                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
+                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                        }
+                        styles={labelStyles}
+                      >Quantization byte size</Label>
+                      <TextField
+                        disabled={
+                          disabled ||
+                          (vectorEmbeddingPolicy.indexType !== "quantizedFlat" &&
+                            vectorEmbeddingPolicy.indexType !== "diskANN")
+                        }
+                        id={`vector-policy-quantizationByteSize-${index + 1}`}
+                        styles={textFieldStyles}
+                        value={String(vectorEmbeddingPolicy.quantizationByteSize || "")}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                          onQuantizationByteSizeChange(index, event)
+                        }
+                      />
+                    </Stack>
+                    <Stack
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <Label
+                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
+                        styles={labelStyles}
+                      >Indexing search list size</Label>
+                      <TextField
+                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
+                        id={`vector-policy-indexingSearchListSize-${index + 1}`}
+                        styles={textFieldStyles}
+                        value={String(vectorEmbeddingPolicy.indexingSearchListSize || "")}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                          onIndexingSearchListSizeChange(index, event)
+                        }
+                      />
+                    </Stack>
+                    {/* DiskANNShardKey was removed for Ignite due to backend problems. Leaving this here as it will be reinstated immediately after Ignite
+                    <Stack
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <Label
+                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
+                        styles={labelStyles}
+                      >DiskANN shard key</Label>
+                      <TextField
+                        disabled={disabled || vectorEmbeddingPolicy.indexType !== "diskANN"}
+                        id={`vector-policy-diskANNShardKey-${index + 1}`}
+                        styles={textFieldStyles}
+                        value={String(vectorEmbeddingPolicy.diskANNShardKey || "")}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                          onDiskANNShardKeyChange(index, event)
+                        }
+                      />
+                    </Stack>
+                    */}
                   </Stack>
                 )}
               </Stack>
-              {/*CTODO: delete this if not needed <IconButton
-                id={`delete-vector-policy-${index + 1}`}
-                iconProps={{ iconName: "Delete" }}
-                style={{ height: 27, margin: "auto" }}
-                onClick={() => onDelete(index)}
-              /> */}
             </Stack>
           </CollapsibleSectionComponent>
         ))}
-      <DefaultButton id={`add-vector-policy`} styles={{ root: { maxWidth: 170, fontSize: 12 } }} onClick={onAdd}>
+      <DefaultButton
+        disabled={disabled}
+        id={`add-vector-policy`}
+        styles={{ root: { maxWidth: 170, fontSize: 12 } }}
+        onClick={onAdd}>
         Add vector embedding
       </DefaultButton>
     </Stack>

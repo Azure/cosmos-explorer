@@ -21,6 +21,7 @@ import { getNewDatabaseSharedThroughputDefault } from "Common/DatabaseUtility";
 import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
 import { configContext, Platform } from "ConfigContext";
 import * as DataModels from "Contracts/DataModels";
+import { FullTextPoliciesComponent, getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
 import { useSidePanel } from "hooks/useSidePanel";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -109,6 +110,9 @@ export interface AddCollectionPanelState {
   vectorIndexingPolicy: DataModels.VectorIndex[];
   vectorEmbeddingPolicy: DataModels.VectorEmbedding[];
   vectorPolicyValidated: boolean;
+  fullTextPolicy: DataModels.FullTextPolicy;
+  fullTextIndexes: DataModels.FullTextIndex[];
+  fullTextPolicyValidated: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -147,6 +151,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       vectorEmbeddingPolicy: [],
       vectorIndexingPolicy: [],
       vectorPolicyValidated: true,
+      fullTextPolicy: { defaultLanguage: getFullTextLanguageOptions()[0].key as never, fullTextPaths: [] },
+      fullTextIndexes: [],
+      fullTextPolicyValidated: true,
     };
   }
 
@@ -904,6 +911,31 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   </Stack>
                 </Stack>
               </CollapsibleSectionComponent>
+              {/*CTODO: hide behind EnableNoSQLFullTextSearch capability when it becomes available */}
+              <CollapsibleSectionComponent
+                title="Container Full Text Search Policy"
+                isExpandedByDefault={false}
+                onExpand={() => {
+                  this.scrollToSection("collapsibleFullTextPolicySectionContent");
+                }}
+                tooltipContent={this.getContainerFullTextPolicyTooltipContent()}
+              >
+                <Stack id="collapsibleFullTextPolicySectionContent" styles={{ root: { position: "relative" } }}>
+                  <Stack styles={{ root: { paddingLeft: 40 } }}>
+                    <FullTextPoliciesComponent
+                      fullTextPolicy={this.state.fullTextPolicy}
+                      onFullTextPathChange={(
+                        fullTextPolicy: DataModels.FullTextPolicy,
+                        fullTextIndexes: DataModels.FullTextIndex[],
+                        fullTextPolicyValidated: boolean,
+                      ) => {
+                        this.setState({ fullTextPolicy, fullTextIndexes, fullTextPolicyValidated });
+                      }}
+                      displayIndexFields={true}
+                    />
+                  </Stack>
+                </Stack>
+              </CollapsibleSectionComponent>
             </Stack>
           )}
           {userContext.apiType !== "Tables" && (
@@ -1210,6 +1242,18 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     );
   }
 
+  private getContainerFullTextPolicyTooltipContent(): JSX.Element {
+    return (
+      <Text variant="small">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua.{" "}
+        <Link target="_blank" href="">
+          Learn more
+        </Link>
+      </Text>
+    );
+  }
+
   private shouldShowCollectionThroughputInput(): boolean {
     if (isServerlessAccount()) {
       return false;
@@ -1329,9 +1373,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    if (this.shouldShowVectorSearchParameters() && !this.state.vectorPolicyValidated) {
-      this.setState({ errorMessage: "Please fix errors in container vector policy" });
-      return false;
+    if (this.shouldShowVectorSearchParameters()) {
+      if (!this.state.vectorPolicyValidated) {
+        this.setState({ errorMessage: "Please fix errors in container vector policy" });
+        return false;
+      }
+
+      if (!this.state.fullTextPolicyValidated) {
+        this.setState({ errorMessage: "Please fix errors in container full text search polilcy" });
+        return false;
+      }
     }
 
     return true;
@@ -1420,6 +1471,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       vectorEmbeddingPolicy = {
         vectorEmbeddings: this.state.vectorEmbeddingPolicy,
       };
+
+      //CTODO: gate behind EnableNoSQLFullTextSearch when the capability is available
+      indexingPolicy.fullTextIndexes = this.state.fullTextIndexes;
     }
 
     const telemetryData = {
@@ -1481,6 +1535,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       uniqueKeyPolicy,
       createMongoWildcardIndex: this.state.createMongoWildCardIndex,
       vectorEmbeddingPolicy,
+      fullTextPolicy: this.state.fullTextPolicy,
     };
 
     this.setState({ isExecuting: true });
