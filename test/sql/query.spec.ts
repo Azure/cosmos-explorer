@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-import { StorageKey } from "../../src/Shared/StorageUtility";
 import { DataExplorer, Editor, QueryTab, TestAccount } from "../fx";
 import { TestContainerContext, TestItem, createTestSQLContainer } from "../testData";
 
@@ -16,9 +15,6 @@ test.beforeAll("Create Test Database", async () => {
 test.beforeEach("Open new query tab", async ({ page }) => {
   // Open a query tab
   explorer = await DataExplorer.open(page, TestAccount.SQL);
-
-  // Clear previous settings
-  page.evaluate(() => localStorage.removeItem(StorageKey[StorageKey.AppState]));
 
   // Container nodes should be visible. The explorer auto-expands database nodes when they are first loaded.
   const containerNode = await explorer.waitForContainerNode(context.database.id, context.container.id);

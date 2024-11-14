@@ -1,4 +1,5 @@
 // TODO convert this file to an action registry in order to have actions and their handlers be more tightly coupled.
+import { configContext, Platform } from "ConfigContext";
 import { useDatabases } from "Explorer/useDatabases";
 import React from "react";
 import { ActionContracts } from "../../Contracts/ExplorerContracts";
@@ -53,6 +54,19 @@ function openCollectionTab(
     for (let i = initialDatabaseIndex; i < databases.length; i++) {
       const database: ViewModels.Database = databases[i];
       if (!!action.databaseResourceId && database.id() !== action.databaseResourceId) {
+        continue;
+      }
+
+      if (
+        configContext.platform === Platform.Fabric &&
+        !(
+          // whitelist the tab kinds that are allowed to be opened in Fabric
+          (
+            action.tabKind === ActionContracts.TabKind.SQLDocuments ||
+            action.tabKind === ActionContracts.TabKind.SQLQuery
+          )
+        )
+      ) {
         continue;
       }
 

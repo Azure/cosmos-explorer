@@ -1166,7 +1166,10 @@ export default class Explorer {
     }
 
     await this.refreshSampleData();
-    this.restoreOpenTabs();
+
+    if (userContext.features.restoreTabs) {
+      this.restoreOpenTabs();
+    }
   }
 
   public async configureCopilot(): Promise<void> {
