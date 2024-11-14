@@ -739,7 +739,12 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
               this.setState({ queryViewSizePercent }, () => this.saveQueryTabStateDebounced());
             }}
           >
-            <Allotment.Pane data-test="QueryTab/EditorPane" preferredSize={`${this.state.queryViewSizePercent}%`}>
+            <Allotment.Pane
+              data-test="QueryTab/EditorPane"
+              preferredSize={
+                this.state.queryViewSizePercent !== undefined ? `${this.state.queryViewSizePercent}%` : undefined
+              }
+            >
               <EditorReact
                 ref={this.queryEditor}
                 className={this.props.styles.queryEditor}
