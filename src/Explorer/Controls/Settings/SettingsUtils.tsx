@@ -5,13 +5,13 @@ import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 
 const zeroValue = 0;
 export type isDirtyTypes =
-  boolean |
-  string |
-  number |
-  DataModels.IndexingPolicy |
-  DataModels.ComputedProperties |
-  DataModels.VectorEmbedding[] |
-  DataModels.FullTextPolicy;
+  | boolean
+  | string
+  | number
+  | DataModels.IndexingPolicy
+  | DataModels.ComputedProperties
+  | DataModels.VectorEmbedding[]
+  | DataModels.FullTextPolicy;
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
@@ -255,12 +255,13 @@ export const getPartitionKeyPlaceHolder = (apiType: string, index?: number): str
     case "Gremlin":
       return "e.g., /address";
     case "SQL":
-      return `${index === undefined
-        ? "Required - first partition key e.g., /TenantId"
-        : index === 0
+      return `${
+        index === undefined
+          ? "Required - first partition key e.g., /TenantId"
+          : index === 0
           ? "second partition key e.g., /UserId"
           : "third partition key e.g., /SessionId"
-        }`;
+      }`;
     default:
       return "e.g., /address/zipCode";
   }

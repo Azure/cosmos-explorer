@@ -76,7 +76,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
             <Stack.Item style={{ marginLeft: "auto" }}>
               <IconButton
                 disabled={this.props.disabled}
-                id={`delete-${this.props.title}`}
+                id={`delete-${this.props.title.split(" ").join("-")}`}
                 iconProps={{ iconName: "Delete" }}
                 style={{ height: 27, marginRight: "20px" }}
                 onClick={(event) => {

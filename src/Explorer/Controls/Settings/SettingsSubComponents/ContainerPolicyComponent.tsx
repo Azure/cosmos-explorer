@@ -1,6 +1,9 @@
 import { DefaultButton, Pivot, PivotItem, Stack } from "@fluentui/react";
 import { FullTextPolicy, VectorEmbedding, VectorEmbeddingPolicy } from "Contracts/DataModels";
-import { FullTextPoliciesComponent, getFullTextLanguageOptions } from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
+import {
+  FullTextPoliciesComponent,
+  getFullTextLanguageOptions,
+} from "Explorer/Controls/FullTextSeach/FullTextPoliciesComponent";
 import { titleAndInputStackProps } from "Explorer/Controls/Settings/SettingsRenderUtils";
 import { ContainerPolicyTabTypes, isDirty } from "Explorer/Controls/Settings/SettingsUtils";
 import { VectorEmbeddingPoliciesComponent } from "Explorer/Controls/VectorSearch/VectorEmbeddingPoliciesComponent";
@@ -32,14 +35,15 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
   shouldDiscardContainerPolicies,
   resetShouldDiscardContainerPolicyChange,
 }) => {
-  const [selectedTab, setSelectedTab] = React.useState<ContainerPolicyTabTypes>(ContainerPolicyTabTypes.VectorPolicyTab);
+  const [selectedTab, setSelectedTab] = React.useState<ContainerPolicyTabTypes>(
+    ContainerPolicyTabTypes.VectorPolicyTab,
+  );
   const [vectorEmbeddings, setVectorEmbeddings] = React.useState<VectorEmbedding[]>();
   const [vectorEmbeddingsBaseline, setVectorEmbeddingsBaseline] = React.useState<VectorEmbedding[]>();
   const [discardVectorChanges, setDiscardVectorChanges] = React.useState<boolean>(false);
   const [fullTextSearchPolicy, setFullTextSearchPolicy] = React.useState<FullTextPolicy>();
   const [fullTextSearchPolicyBaseline, setFullTextSearchPolicyBaseline] = React.useState<FullTextPolicy>();
   const [discardFullTextChanges, setDiscardFullTextChanges] = React.useState<boolean>(false);
-
 
   React.useEffect(() => {
     setVectorEmbeddings(vectorEmbeddingPolicy.vectorEmbeddings);
@@ -49,7 +53,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
   React.useEffect(() => {
     setFullTextSearchPolicy(fullTextPolicy);
     setFullTextSearchPolicyBaseline(fullTextPolicyBaseline);
-  }, [fullTextPolicy, fullTextPolicyBaseline])
+  }, [fullTextPolicy, fullTextPolicyBaseline]);
 
   React.useEffect(() => {
     if (shouldDiscardContainerPolicies) {
@@ -77,15 +81,15 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
     } else {
       resetShouldDiscardContainerPolicyChange();
     }
-  }
+  };
 
   const onVectorChangesDiscarded = (): void => {
     setDiscardVectorChanges(false);
-  }
+  };
 
   const onFullTextChangesDiscarded = (): void => {
     setDiscardFullTextChanges(false);
-  }
+  };
 
   const onPivotChange = (item: PivotItem): void => {
     const selectedTab = ContainerPolicyTabTypes[item.props.itemKey as keyof typeof ContainerPolicyTabTypes];
@@ -94,10 +98,7 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
 
   return (
     <div>
-      <Pivot
-        onLinkClick={onPivotChange}
-        selectedKey={ContainerPolicyTabTypes[selectedTab]}
-      >
+      <Pivot onLinkClick={onPivotChange} selectedKey={ContainerPolicyTabTypes[selectedTab]}>
         <PivotItem
           itemKey={ContainerPolicyTabTypes[ContainerPolicyTabTypes.VectorPolicyTab]}
           style={{ marginTop: 20 }}
@@ -109,8 +110,9 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
                 disabled={true}
                 vectorEmbeddings={vectorEmbeddings}
                 vectorIndexes={undefined}
-                onVectorEmbeddingChange={(vectorEmbeddings: VectorEmbedding[], _vectorIndexes, _validationPassed) =>
-                  checkAndSendVectorEmbeddingPoliciesToSettings(vectorEmbeddings)}
+                onVectorEmbeddingChange={(vectorEmbeddings: VectorEmbedding[]) =>
+                  checkAndSendVectorEmbeddingPoliciesToSettings(vectorEmbeddings)
+                }
                 discardChanges={discardVectorChanges}
                 onChangesDiscarded={onVectorChangesDiscarded}
               />
@@ -126,8 +128,9 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
             {fullTextSearchPolicy ? (
               <FullTextPoliciesComponent
                 fullTextPolicy={fullTextSearchPolicy}
-                onFullTextPathChange={(newFullTextPolicy: FullTextPolicy, _fullTextIndexes, _validationPassed) =>
-                  checkAndSendFullTextPolicyToSettings(newFullTextPolicy)}
+                onFullTextPathChange={(newFullTextPolicy: FullTextPolicy) =>
+                  checkAndSendFullTextPolicyToSettings(newFullTextPolicy)
+                }
                 displayIndexFields={false}
                 discardChanges={discardFullTextChanges}
                 onChangesDiscarded={onFullTextChangesDiscarded}
@@ -139,26 +142,16 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
                 onClick={() => {
                   checkAndSendFullTextPolicyToSettings({
                     defaultLanguage: getFullTextLanguageOptions()[0].key as never,
-                    fullTextPaths: []
+                    fullTextPaths: [],
                   });
                 }}
-              >Create new full text search policy</DefaultButton>
+              >
+                Create new full text search policy
+              </DefaultButton>
             )}
           </Stack>
         </PivotItem>
       </Pivot>
     </div>
   );
-};
-
-const orderObjectKeys = (unorderedObject: any): any => {
-  return Object.keys(unorderedObject)
-    .sort()
-    .reduce(
-      (obj: any, key) => {
-        obj[key] = unorderedObject[key];
-        return obj;
-      },
-      {}
-    );
 };

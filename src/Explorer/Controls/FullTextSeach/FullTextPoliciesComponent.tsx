@@ -7,7 +7,7 @@ import {
   ITextFieldStyles,
   Label,
   Stack,
-  TextField
+  TextField,
 } from "@fluentui/react";
 import { FullTextIndex, FullTextPath, FullTextPolicy } from "Contracts/DataModels";
 import { CollapsibleSectionComponent } from "Explorer/Controls/CollapsiblePanel/CollapsibleSectionComponent";
@@ -20,10 +20,10 @@ export interface FullTextPoliciesComponentProps {
     fullTextIndexes: FullTextIndex[],
     validationPassed: boolean,
   ) => void;
-  displayIndexFields: boolean,
+  displayIndexFields: boolean;
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
-};
+}
 
 export interface FullTextPolicyData {
   path: string;
@@ -34,8 +34,8 @@ export interface FullTextPolicyData {
 const labelStyles = {
   root: {
     fontSize: 12,
-  }
-}
+  },
+};
 
 const textFieldStyles: IStyleFunctionOrObject<ITextFieldStyleProps, ITextFieldStyles> = {
   fieldGroup: {
@@ -77,8 +77,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
     if (
       index >= 0 &&
       fullTextPathData?.find(
-        (fullTextPath: FullTextPolicyData, dataIndex: number) =>
-          dataIndex !== index && fullTextPath.path === path,
+        (fullTextPath: FullTextPolicyData, dataIndex: number) => dataIndex !== index && fullTextPath.path === path,
       )
     ) {
       error = "Full text path is already defined";
@@ -90,19 +89,15 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
     if (!fullTextPolicy) {
       fullTextPolicy = { defaultLanguage: getFullTextLanguageOptions()[0].key as never, fullTextPaths: [] };
     }
-    return fullTextPolicy.fullTextPaths.map((fullTextPath: FullTextPath) => (
-      {
-        ...fullTextPath,
-        pathError: getFullTextPathError(fullTextPath.path),
-      }
-    ));
+    return fullTextPolicy.fullTextPaths.map((fullTextPath: FullTextPath) => ({
+      ...fullTextPath,
+      pathError: getFullTextPathError(fullTextPath.path),
+    }));
   };
 
-  const [fullTextPathData, setFullTextPathData] = React.useState<FullTextPolicyData[]>(
-    initializeData(fullTextPolicy)
-  );
+  const [fullTextPathData, setFullTextPathData] = React.useState<FullTextPolicyData[]>(initializeData(fullTextPolicy));
   const [defaultLanguage, setDefaultLanguage] = React.useState<string>(
-    fullTextPolicy ? fullTextPolicy.defaultLanguage : getFullTextLanguageOptions()[0].key as never
+    fullTextPolicy ? fullTextPolicy.defaultLanguage : (getFullTextLanguageOptions()[0].key as never),
   );
 
   React.useEffect(() => {
@@ -120,21 +115,15 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
   const propagateData = () => {
     const newFullTextPolicy: FullTextPolicy = {
       defaultLanguage: defaultLanguage,
-      fullTextPaths: fullTextPathData.map((policy: FullTextPolicyData) => (
-        {
-          path: policy.path,
-          language: policy.language,
-        }
-      ))
-    };
-    const fullTextIndexes: FullTextIndex[] = fullTextPathData.map((policy) => (
-      {
+      fullTextPaths: fullTextPathData.map((policy: FullTextPolicyData) => ({
         path: policy.path,
-      }
-    ));
-    const validationPassed = fullTextPathData.every(
-      (policy: FullTextPolicyData) => policy.pathError === "",
-    );
+        language: policy.language,
+      })),
+    };
+    const fullTextIndexes: FullTextIndex[] = fullTextPathData.map((policy) => ({
+      path: policy.path,
+    }));
+    const validationPassed = fullTextPathData.every((policy: FullTextPolicyData) => policy.pathError === "");
     onFullTextPathChange(newFullTextPolicy, fullTextIndexes, validationPassed);
   };
 
@@ -150,10 +139,7 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
     setFullTextPathData(fullTextPaths);
   };
 
-  const onFullTextPathPolicyChange = (
-    index: number,
-    option: IDropdownOption,
-  ): void => {
+  const onFullTextPathPolicyChange = (index: number, option: IDropdownOption): void => {
     const policies = [...fullTextPathData];
     policies[index].language = option.key as never;
     setFullTextPathData(policies);
@@ -189,14 +175,16 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
           }
         ></Dropdown>
       </Stack>
-      {fullTextPathData && fullTextPathData.length > 0 &&
+      {fullTextPathData &&
+        fullTextPathData.length > 0 &&
         fullTextPathData.map((fullTextPolicy: FullTextPolicyData, index: number) => (
           <CollapsibleSectionComponent
             key={index}
             isExpandedByDefault={true}
             title={`Full text path ${index + 1}`}
             showDelete={true}
-            onDelete={() => onDelete(index)}>
+            onDelete={() => onDelete(index)}
+          >
             <Stack horizontal tokens={{ childrenGap: 4 }}>
               <Stack
                 styles={{
@@ -250,6 +238,6 @@ export const getFullTextLanguageOptions = (): IDropdownOption[] => {
     {
       key: "en-US",
       text: "English (US)",
-    }
+    },
   ];
-}
+};
