@@ -131,7 +131,6 @@ export const ContainerPolicyComponent: React.FC<ContainerPolicyComponentProps> =
                 onFullTextPathChange={(newFullTextPolicy: FullTextPolicy) =>
                   checkAndSendFullTextPolicyToSettings(newFullTextPolicy)
                 }
-                displayIndexFields={false}
                 discardChanges={discardFullTextChanges}
                 onChangesDiscarded={onFullTextChangesDiscarded}
               />

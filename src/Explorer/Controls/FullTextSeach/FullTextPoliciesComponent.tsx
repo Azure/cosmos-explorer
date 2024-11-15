@@ -20,7 +20,6 @@ export interface FullTextPoliciesComponentProps {
     fullTextIndexes: FullTextIndex[],
     validationPassed: boolean,
   ) => void;
-  displayIndexFields: boolean;
   discardChanges?: boolean;
   onChangesDiscarded?: () => void;
 }
@@ -65,7 +64,6 @@ const dropdownStyles = {
 export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPoliciesComponentProps> = ({
   fullTextPolicy,
   onFullTextPathChange,
-  displayIndexFields,
   discardChanges,
   onChangesDiscarded,
 }): JSX.Element => {
@@ -196,20 +194,18 @@ export const FullTextPoliciesComponent: React.FunctionComponent<FullTextPolicies
                   },
                 }}
               >
-                {displayIndexFields && (
-                  <Stack>
-                    <Label styles={labelStyles}>Path</Label>
-                    <TextField
-                      id={`full-text-policy-path-${index + 1}`}
-                      required={true}
-                      placeholder="/fullTextPath1"
-                      styles={textFieldStyles}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => onFullTextPathValueChange(index, event)}
-                      value={fullTextPolicy.path || ""}
-                      errorMessage={fullTextPolicy.pathError}
-                    />
-                  </Stack>
-                )}
+                <Stack>
+                  <Label styles={labelStyles}>Path</Label>
+                  <TextField
+                    id={`full-text-policy-path-${index + 1}`}
+                    required={true}
+                    placeholder="/fullTextPath1"
+                    styles={textFieldStyles}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => onFullTextPathValueChange(index, event)}
+                    value={fullTextPolicy.path || ""}
+                    errorMessage={fullTextPolicy.pathError}
+                  />
+                </Stack>
                 <Stack>
                   <Label styles={labelStyles}>Language</Label>
                   <Dropdown
