@@ -49,6 +49,7 @@ jest.mock("Common/dataAccess/queryDocuments", () => ({
         requestCharge: 1,
         activityId: "activityId",
         indexMetrics: "indexMetrics",
+        correlatedActivityId: undefined,
       }),
   })),
 }));
@@ -70,7 +71,7 @@ jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
 
 const mockDialogState = {
   showOkCancelModalDialog: jest.fn((title: string, subText: string, okLabel: string, onOk: () => void) => onOk()),
-  showOkModalDialog: () => {},
+  showOkModalDialog: () => { },
 };
 
 jest.mock("Explorer/Controls/Dialog", () => ({
