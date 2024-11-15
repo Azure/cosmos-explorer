@@ -75,7 +75,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   const inputEdited = useRef(false);
   const itemRefs = useRef([]);
   const searchInputRef = useRef(null);
-  const copyQueryRef= useRef(null);
+  const copyQueryRef = useRef(null);
   const {
     openFeedbackModal,
     hideFeedbackModalForLikedQueries,
