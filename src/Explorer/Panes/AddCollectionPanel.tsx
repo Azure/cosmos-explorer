@@ -704,8 +704,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                   provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                  true,
-                ).toLocaleLowerCase()} in the database and
+                    true,
+                  ).toLocaleLowerCase()} in the database and
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
@@ -715,8 +715,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   tabIndex={0}
                   ariaLabel={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                 provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                    true,
-                  ).toLocaleLowerCase()} in the database and
+                  true,
+                ).toLocaleLowerCase()} in the database and
                 does not count towards the throughput you provisioned for the database. This throughput amount will be
                 billed in addition to the throughput amount you provisioned at the database level.`}
                 />
@@ -896,8 +896,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 onExpand={() => {
                   this.scrollToSection("collapsibleVectorPolicySectionContent");
                 }}
-              //TODO: uncomment when learn more text becomes available
-              // tooltipContent={this.getContainerVectorPolicyTooltipContent()}
+                tooltipContent={this.getContainerVectorPolicyTooltipContent()}
               >
                 <Stack id="collapsibleVectorPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
@@ -922,7 +921,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 onExpand={() => {
                   this.scrollToSection("collapsibleFullTextPolicySectionContent");
                 }}
-                tooltipContent={this.getContainerFullTextPolicyTooltipContent()}
+                //TODO: uncomment when learn more text becomes available
+                // tooltipContent={this.getContainerFullTextPolicyTooltipContent()}
               >
                 <Stack id="collapsibleFullTextPolicySectionContent" styles={{ root: { position: "relative" } }}>
                   <Stack styles={{ root: { paddingLeft: 40 } }}>
@@ -1070,12 +1070,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       case "Gremlin":
         return "e.g., /address";
       case "SQL":
-        return `${index === undefined
-          ? "Required - first partition key e.g., /TenantId"
-          : index === 0
+        return `${
+          index === undefined
+            ? "Required - first partition key e.g., /TenantId"
+            : index === 0
             ? "second partition key e.g., /UserId"
             : "third partition key e.g., /SessionId"
-          }`;
+        }`;
       default:
         return "e.g., /address/zipCode";
     }
@@ -1233,30 +1234,30 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     );
   }
 
-  //TODO: uncomment when learn more text is available.
-  // private getContainerVectorPolicyTooltipContent(): JSX.Element {
-  //   return (
-  //     <Text variant="small">
-  //       Describe any properties in your data that contain vectors, so that they can be made available for similarity
-  //       queries.{" "}
-  //       <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
-  //         Learn more
-  //       </Link>
-  //     </Text>
-  //   );
-  // }
-
-  private getContainerFullTextPolicyTooltipContent(): JSX.Element {
+  private getContainerVectorPolicyTooltipContent(): JSX.Element {
     return (
       <Text variant="small">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua.{" "}
-        <Link target="_blank" href="https://aka.ms/CosmosFullTextSearch">
+        Describe any properties in your data that contain vectors, so that they can be made available for similarity
+        queries.{" "}
+        <Link target="_blank" href="https://aka.ms/CosmosDBVectorSetup">
           Learn more
         </Link>
       </Text>
     );
   }
+
+  //TODO: uncomment when learn more text becomes available
+  // private getContainerFullTextPolicyTooltipContent(): JSX.Element {
+  //   return (
+  //     <Text variant="small">
+  //       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+  //       magna aliqua.{" "}
+  //       <Link target="_blank" href="https://aka.ms/CosmosFullTextSearch">
+  //         Learn more
+  //       </Link>
+  //     </Text>
+  //   );
+  // }
 
   private shouldShowCollectionThroughputInput(): boolean {
     if (isServerlessAccount()) {
@@ -1453,15 +1454,15 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
-        paths: [
-          partitionKeyString,
-          ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
-            ? this.state.subPartitionKeys
-            : []),
-        ],
-        kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
-        version: partitionKeyVersion,
-      }
+          paths: [
+            partitionKeyString,
+            ...(userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0
+              ? this.state.subPartitionKeys
+              : []),
+          ],
+          kind: userContext.apiType === "SQL" && this.state.subPartitionKeys.length > 0 ? "MultiHash" : "Hash",
+          version: partitionKeyVersion,
+        }
       : undefined;
 
     const indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
