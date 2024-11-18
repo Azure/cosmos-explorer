@@ -1,5 +1,6 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { Dropdown, IDropdownOption, Label, TextField } from "@fluentui/react";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { KeyboardAction } from "KeyboardShortcuts";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
@@ -14,7 +15,6 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../Controls/Editor/EditorReact";
-import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import TriggerTab from "./TriggerTab";
 
 const triggerTypeOptions: IDropdownOption[] = [

@@ -3,7 +3,7 @@ import { Stack } from "@fluentui/react";
 import { QueryCopilotSampleContainerId, QueryCopilotSampleDatabaseId } from "Common/Constants";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
-import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { SaveQueryPane } from "Explorer/Panes/SaveQueryPane/SaveQueryPane";
 import { QueryCopilotPromptbar } from "Explorer/QueryCopilot/QueryCopilotPromptbar";
 import { readCopilotToggleStatus, saveCopilotToggleStatus } from "Explorer/QueryCopilot/QueryCopilotUtilities";

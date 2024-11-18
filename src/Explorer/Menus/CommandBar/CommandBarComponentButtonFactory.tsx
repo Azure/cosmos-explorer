@@ -21,7 +21,6 @@ import { userContext } from "../../../UserContext";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
@@ -32,19 +31,20 @@ import { SelectedNodeState, useSelectedNode } from "../../useSelectedNode";
 
 let counter = 0;
 
-export function createStaticCommandBarButtons(
-  container: Explorer,
-  selectedNodeState: SelectedNodeState,
-): CommandButtonComponentProps[] {
+export function createStaticCommandBarButtons(selectedNodeState: SelectedNodeState): CommandButtonComponentProps[] {
+  if (userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo") {
+    return userContext.apiType === "Postgres" ? createPostgreButtons() : createVCoreMongoButtons();
+  }
+
   if (userContext.authType === AuthType.ResourceToken) {
-    return createStaticCommandBarButtonsForResourceToken(container, selectedNodeState);
+    return createStaticCommandBarButtonsForResourceToken(selectedNodeState);
   }
 
   const buttons: CommandButtonComponentProps[] = [];
 
   // Avoid starting with a divider
   const addDivider = () => {
-    if (buttons.length > 0) {
+    if (buttons.length > 0 && !buttons[buttons.length - 1].isDivider) {
       buttons.push(createDivider());
     }
   };
@@ -54,7 +54,7 @@ export function createStaticCommandBarButtons(
     userContext.apiType !== "Tables" &&
     userContext.apiType !== "Cassandra"
   ) {
-    const addSynapseLink = createOpenSynapseLinkDialogButton(container);
+    const addSynapseLink = createOpenSynapseLinkDialogButton();
     if (addSynapseLink) {
       addDivider();
       buttons.push(addSynapseLink);
@@ -67,9 +67,9 @@ export function createStaticCommandBarButtons(
     const aadTokenUpdated = useDataPlaneRbac((state) => state.aadTokenUpdated);
 
     useEffect(() => {
-      const buttonProps = createLoginForEntraIDButton(container);
+      const buttonProps = createLoginForEntraIDButton();
       setLoginButtonProps(buttonProps);
-    }, [dataPlaneRbacEnabled, aadTokenUpdated, container]);
+    }, [dataPlaneRbacEnabled, aadTokenUpdated]);
 
     if (loginButtonProps) {
       addDivider();
@@ -87,8 +87,8 @@ export function createStaticCommandBarButtons(
     }
 
     if (isQuerySupported && selectedNodeState.findSelectedCollection() && configContext.platform !== Platform.Fabric) {
-      const openQueryBtn = createOpenQueryButton(container);
-      openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
+      const openQueryBtn = createOpenQueryButton();
+      openQueryBtn.children = [createOpenQueryButton(), createOpenQueryFromDiskButton()];
       buttons.push(openQueryBtn);
     }
 
@@ -103,6 +103,7 @@ export function createStaticCommandBarButtons(
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
         },
         commandButtonLabel: label,
+        tooltipText: userContext.features.commandBarV2 ? "New..." : label,
         ariaLabel: label,
         hasPopup: true,
         disabled:
@@ -115,21 +116,12 @@ export function createStaticCommandBarButtons(
     }
   }
 
-  return buttons;
-}
-
-export function createContextCommandBarButtons(
-  container: Explorer,
-  selectedNodeState: SelectedNodeState,
-): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = [];
-
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
     const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
-      onCommandClick: () => {
+      onCommandClick: (_, container) => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
@@ -141,6 +133,7 @@ export function createContextCommandBarButtons(
       ariaLabel: label,
       hasPopup: true,
     };
+    addDivider();
     buttons.push(newMongoShellBtn);
   }
 
@@ -153,25 +146,27 @@ export function createContextCommandBarButtons(
     const newCassandraShellButton: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
-      onCommandClick: () => {
+      onCommandClick: (_, container) => {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
     };
+    addDivider();
     buttons.push(newCassandraShellButton);
   }
 
   return buttons;
 }
 
-export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
+export function createPlatformButtons(): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
-      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
+      onCommandClick: (_, container) =>
+        useSidePanel.getState().openSidePanel("Settings", <SettingsPane explorer={container} />),
       commandButtonLabel: undefined,
       ariaLabel: "Settings",
       tooltipText: "Settings",
@@ -207,7 +202,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     const feedbackButtonOptions: CommandButtonComponentProps = {
       iconSrc: FeedbackIcon,
       iconAlt: label,
-      onCommandClick: () => container.openCESCVAFeedbackBlade(),
+      onCommandClick: (_, container) => container.openCESCVAFeedbackBlade(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,
@@ -239,7 +234,7 @@ function areScriptsSupported(): boolean {
   );
 }
 
-function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonComponentProps {
+function createOpenSynapseLinkDialogButton(): CommandButtonComponentProps {
   if (configContext.platform === Platform.Emulator) {
     return undefined;
   }
@@ -257,7 +252,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
   return {
     iconSrc: SynapseIcon,
     iconAlt: label,
-    onCommandClick: () => container.openEnableSynapseLinkDialog(),
+    onCommandClick: (_, container) => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
     disabled:
@@ -266,12 +261,12 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
   };
 }
 
-function createLoginForEntraIDButton(container: Explorer): CommandButtonComponentProps {
+function createLoginForEntraIDButton(): CommandButtonComponentProps {
   if (configContext.platform !== Platform.Portal) {
     return undefined;
   }
 
-  const handleCommandClick = async () => {
+  const handleCommandClick: CommandButtonComponentProps["onCommandClick"] = async (_, container) => {
     await container.openLoginForEntraIDPopUp();
     useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
   };
@@ -398,13 +393,14 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
   return buttons;
 }
 
-function createOpenQueryButton(container: Explorer): CommandButtonComponentProps {
+function createOpenQueryButton(): CommandButtonComponentProps {
   const label = "Open Query";
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
+    tooltipText: userContext.features.commandBarV2 ? "Open Query..." : "Open Query",
     keyboardAction: KeyboardAction.OPEN_QUERY,
-    onCommandClick: () =>
+    onCommandClick: (_, container) =>
       useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
@@ -427,10 +423,7 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
   };
 }
 
-function createOpenTerminalButtonByKind(
-  container: Explorer,
-  terminalKind: ViewModels.TerminalKind,
-): CommandButtonComponentProps {
+function createOpenTerminalButtonByKind(terminalKind: ViewModels.TerminalKind): CommandButtonComponentProps {
   const terminalFriendlyName = (): string => {
     switch (terminalKind) {
       case ViewModels.TerminalKind.Cassandra:
@@ -453,7 +446,7 @@ function createOpenTerminalButtonByKind(
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
-    onCommandClick: () => {
+    onCommandClick: (_, container) => {
       if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(terminalKind);
       }
@@ -467,11 +460,10 @@ function createOpenTerminalButtonByKind(
 }
 
 function createStaticCommandBarButtonsForResourceToken(
-  container: Explorer,
   selectedNodeState: SelectedNodeState,
 ): CommandButtonComponentProps[] {
   const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
-  const openQueryBtn = createOpenQueryButton(container);
+  const openQueryBtn = createOpenQueryButton();
 
   const resourceTokenCollection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
   const isResourceTokenCollectionNodeSelected: boolean =
@@ -484,20 +476,20 @@ function createStaticCommandBarButtonsForResourceToken(
 
   openQueryBtn.disabled = !isResourceTokenCollectionNodeSelected;
   if (!openQueryBtn.disabled) {
-    openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
+    openQueryBtn.children = [createOpenQueryButton(), createOpenQueryFromDiskButton()];
   }
 
   return [newSqlQueryBtn, openQueryBtn];
 }
 
-export function createPostgreButtons(container: Explorer): CommandButtonComponentProps[] {
-  const openPostgreShellBtn = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.Postgres);
+export function createPostgreButtons(): CommandButtonComponentProps[] {
+  const openPostgreShellBtn = createOpenTerminalButtonByKind(ViewModels.TerminalKind.Postgres);
 
   return [openPostgreShellBtn];
 }
 
-export function createVCoreMongoButtons(container: Explorer): CommandButtonComponentProps[] {
-  const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(container, ViewModels.TerminalKind.VCoreMongo);
+export function createVCoreMongoButtons(): CommandButtonComponentProps[] {
+  const openVCoreMongoTerminalButton = createOpenTerminalButtonByKind(ViewModels.TerminalKind.VCoreMongo);
 
   return [openVCoreMongoTerminalButton];
 }

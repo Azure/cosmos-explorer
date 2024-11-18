@@ -1,5 +1,6 @@
 import { DatabaseRegular, DocumentMultipleRegular, SettingsRegular } from "@fluentui/react-icons";
 import { TreeNode } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
+import { useCommandBar } from "Explorer/Menus/CommandBar/useCommandBar";
 import { collectionWasOpened } from "Explorer/MostRecentActivity/MostRecentActivity";
 import TabsBase from "Explorer/Tabs/TabsBase";
 import StoredProcedure from "Explorer/Tree/StoredProcedure";
@@ -17,7 +18,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import Explorer from "../Explorer";
-import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { useNotebook } from "../Notebook/useNotebook";
 import { useSelectedNode } from "../useSelectedNode";
 

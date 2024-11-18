@@ -25,7 +25,11 @@ import { MemoryTracker } from "./MemoryTrackerComponent";
  * Convert our NavbarButtonConfig to UI Fabric buttons
  * @param btns
  */
-export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
+export const convertButton = (
+  btns: CommandButtonComponentProps[],
+  backgroundColor: string,
+  container: Explorer,
+): ICommandBarItemProps[] => {
   const buttonHeightPx =
     configContext.platform == Platform.Fabric
       ? StyleConstants.FabricCommandBarButtonHeight
@@ -54,15 +58,14 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         iconProps: {
           style: {
             width: StyleConstants.CommandBarIconWidth, // 16
-            alignSelf: btn.iconName ? "baseline" : undefined,
+            alignSelf: undefined,
             filter: getFilter(btn.disabled),
           },
           imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
-          iconName: btn.iconName,
         },
         onClick: btn.onCommandClick
           ? (ev?: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
-              btn.onCommandClick(ev);
+              btn.onCommandClick(ev, container);
               let copilotEnabled = false;
               if (useQueryCopilot.getState().copilotEnabled && useQueryCopilot.getState().copilotUserDBEnabled) {
                 copilotEnabled = useQueryCopilot.getState().copilotEnabledforExecution;
@@ -135,7 +138,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
         result.split = true;
 
         result.subMenuProps = {
-          items: convertButton(btn.children, backgroundColor),
+          items: convertButton(btn.children, backgroundColor, container),
           styles: {
             list: {
               // TODO Figure out how to do it the proper way with subComponentStyles.
@@ -186,7 +189,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           option?: IDropdownOption,
           index?: number,
         ): void => {
-          btn.children[index].onCommandClick(event);
+          btn.children[index].onCommandClick(event, container);
           TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label: option.text });
         };
 
@@ -237,14 +240,17 @@ export const createConnectionStatus = (container: Explorer, poolId: PoolIdType, 
   };
 };
 
-export function createKeyboardHandlers(allButtons: CommandButtonComponentProps[]): KeyboardHandlerMap {
+export function createKeyboardHandlers(
+  allButtons: CommandButtonComponentProps[],
+  container: Explorer,
+): KeyboardHandlerMap {
   const handlers: KeyboardHandlerMap = {};
 
   function createHandlers(buttons: CommandButtonComponentProps[]) {
     buttons.forEach((button) => {
       if (!button.disabled && button.keyboardAction) {
         handlers[button.keyboardAction] = (e) => {
-          button.onCommandClick(e);
+          button.onCommandClick(e, container);
 
           // If the handler is bound, it means the button is visible and enabled, so we should prevent the default action
           return true;
