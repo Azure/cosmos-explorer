@@ -67,6 +67,13 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   },
 }));
 
+// Added as recent change to @azure/core-util would cause randomUUID() to throw an error during jest tests.
+// TODO: when not using beta version of @azure/cosmos sdk try removing this
+jest.mock("@azure/core-util", () => ({
+  ...jest.requireActual("@azure/core-util"),
+  randomUUID: jest.fn(),
+}));
+
 async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P> | ShallowWrapper<P>, amount = 0) {
   let newWrapper;
   await act(async () => {
