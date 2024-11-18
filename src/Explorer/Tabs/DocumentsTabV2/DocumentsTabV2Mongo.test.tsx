@@ -19,6 +19,7 @@ import { act } from "react-dom/test-utils";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
 
+
 jest.requireActual("Explorer/Controls/Editor/EditorReact");
 
 const PROPERTY_VALUE = "__SOME_PROPERTY_VALUE__";
@@ -62,9 +63,14 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => {},
+      showOkModalDialog: () => { },
     })),
   },
+}));
+
+jest.mock("@azure/core-util", () => ({
+  ...jest.requireActual("@azure/core-util"),
+  randomUUID: jest.fn(),
 }));
 
 async function waitForComponentToPaint<P = unknown>(wrapper: ReactWrapper<P> | ShallowWrapper<P>, amount = 0) {
