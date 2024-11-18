@@ -49,6 +49,7 @@ jest.mock("Common/dataAccess/queryDocuments", () => ({
         requestCharge: 1,
         activityId: "activityId",
         indexMetrics: "indexMetrics",
+        correlatedActivityId: undefined,
       }),
   })),
 }));

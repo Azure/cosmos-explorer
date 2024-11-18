@@ -99,6 +99,9 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
   if (params.vectorEmbeddingPolicy) {
     resource.vectorEmbeddingPolicy = params.vectorEmbeddingPolicy;
   }
+  if (params.fullTextPolicy) {
+    resource.fullTextPolicy = params.fullTextPolicy;
+  }
 
   const rpPayload: ARMTypes.SqlDatabaseCreateUpdateParameters = {
     properties: {
@@ -270,6 +273,7 @@ const createCollectionWithSDK = async (params: DataModels.CreateCollectionParams
     uniqueKeyPolicy: params.uniqueKeyPolicy || undefined,
     analyticalStorageTtl: params.analyticalStorageTtl,
     vectorEmbeddingPolicy: params.vectorEmbeddingPolicy,
+    fullTextPolicy: params.fullTextPolicy,
   } as ContainerRequest; // TODO: remove cast when https://github.com/Azure/azure-cosmos-js/issues/423 is fixed
   const collectionOptions: RequestOptions = {};
   const createDatabaseBody: DatabaseRequest = { id: params.databaseId };

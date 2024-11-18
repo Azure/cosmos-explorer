@@ -55,6 +55,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "databaseId": "test",
               "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
               "geospatialConfig": [Function],
               "getDatabase": [Function],
               "id": [Function],
@@ -71,6 +72,7 @@ exports[`SettingsComponent renders 1`] = `
               "readSettings": [Function],
               "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
             }
           }
           isAutoPilotSelected={false}
@@ -132,6 +134,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "databaseId": "test",
               "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
               "geospatialConfig": [Function],
               "getDatabase": [Function],
               "id": [Function],
@@ -148,6 +151,7 @@ exports[`SettingsComponent renders 1`] = `
               "readSettings": [Function],
               "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
             }
           }
           displayedTtlSeconds="5"
@@ -249,6 +253,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "databaseId": "test",
               "defaultTtl": [Function],
+              "fullTextPolicy": [Function],
               "geospatialConfig": [Function],
               "getDatabase": [Function],
               "id": [Function],
@@ -265,6 +270,7 @@ exports[`SettingsComponent renders 1`] = `
               "readSettings": [Function],
               "uniqueKeyPolicy": {},
               "usageSizeInKB": [Function],
+              "vectorEmbeddingPolicy": [Function],
             }
           }
           explorer={
