@@ -46,6 +46,8 @@ export const collection = {
       query: "query",
     },
   ]),
+  vectorEmbeddingPolicy: ko.observable<DataModels.VectorEmbeddingPolicy>({} as DataModels.VectorEmbeddingPolicy),
+  fullTextPolicy: ko.observable<DataModels.FullTextPolicy>({} as DataModels.FullTextPolicy),
   readSettings: () => {
     return;
   },
