@@ -34,7 +34,12 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "UserContext";
 import { getCollectionName } from "Utils/APITypeUtils";
-import { isCapabilityEnabled, isServerlessAccount, isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import {
+  isCapabilityEnabled,
+  isFullTextSearchEnabled,
+  isServerlessAccount,
+  isVectorSearchEnabled,
+} from "Utils/CapabilityUtils";
 import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
@@ -914,7 +919,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   </Stack>
                 </Stack>
               </CollapsibleSectionComponent>
-              {/*CTODO: hide behind EnableNoSQLFullTextSearch capability when it becomes available */}
+            </Stack>
+          )}
+          {this.shouldShowFullTextSearchParameters() && (
+            <Stack>
               <CollapsibleSectionComponent
                 title="Container Full Text Search Policy"
                 isExpandedByDefault={false}
@@ -1322,6 +1330,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return isVectorSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
   }
 
+  private shouldShowFullTextSearchParameters() {
+    return isFullTextSearchEnabled() && (isServerlessAccount() || this.shouldShowCollectionThroughputInput());
+  }
+
   private parseUniqueKeys(): DataModels.UniqueKeyPolicy {
     if (this.state.uniqueKeys?.length === 0) {
       return undefined;
@@ -1476,8 +1488,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       vectorEmbeddingPolicy = {
         vectorEmbeddings: this.state.vectorEmbeddingPolicy,
       };
+    }
 
-      //CTODO: gate behind EnableNoSQLFullTextSearch when the capability is available
+    if (this.shouldShowFullTextSearchParameters()) {
       indexingPolicy.fullTextIndexes = this.state.fullTextIndexes;
     }
 

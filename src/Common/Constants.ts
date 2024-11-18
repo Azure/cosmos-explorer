@@ -89,6 +89,7 @@ export class CapabilityNames {
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
   public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
+  public static readonly EnableNoSQLFullTextSearch: string = "EnableNoSQLFullTextSearch";
 }
 
 export enum CapacityMode {

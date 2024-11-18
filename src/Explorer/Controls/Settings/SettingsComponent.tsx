@@ -8,7 +8,7 @@ import {
   ContainerPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerPolicyComponent";
 import { useDatabases } from "Explorer/useDatabases";
-import { isVectorSearchEnabled } from "Utils/CapabilityUtils";
+import { isFullTextSearchEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
@@ -156,6 +156,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
   private isVectorSearchEnabled: boolean;
+  private isFullTextSearchEnabled: boolean;
   private totalThroughputUsed: number;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
@@ -171,6 +172,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
+      this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
@@ -1141,15 +1143,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onSubSettingsDiscardableChange: this.onSubSettingsDiscardableChange,
     };
 
-    const containerVectorPolicyProps: ContainerPolicyComponentProps = {
+    const containerPolicyComponentProps: ContainerPolicyComponentProps = {
       vectorEmbeddingPolicy: this.state.vectorEmbeddingPolicy,
       vectorEmbeddingPolicyBaseline: this.state.vectorEmbeddingPolicyBaseline,
       onVectorEmbeddingPolicyChange: this.onVectorEmbeddingPolicyChange,
       onVectorEmbeddingPolicyDirtyChange: this.onVectorEmbeddingPolicyDirtyChange,
+      isVectorSearchEnabled: this.isVectorSearchEnabled,
       fullTextPolicy: this.state.fullTextPolicy,
       fullTextPolicyBaseline: this.state.fullTextPolicyBaseline,
       onFullTextPolicyChange: this.onFullTextPolicyChange,
       onFullTextPolicyDirtyChange: this.onFullTextPolicyDirtyChange,
+      isFullTextSearchEnabled: this.isFullTextSearchEnabled,
       shouldDiscardContainerPolicies: this.state.shouldDiscardContainerPolicies,
       resetShouldDiscardContainerPolicyChange: this.resetShouldDiscardContainerPolicies,
     };
@@ -1224,10 +1228,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       content: <SubSettingsComponent {...subSettingsComponentProps} />,
     });
 
-    if (this.isVectorSearchEnabled) {
+    if (this.isVectorSearchEnabled || this.isFullTextSearchEnabled) {
       tabs.push({
         tab: SettingsV2TabTypes.ContainerVectorPolicyTab,
-        content: <ContainerPolicyComponent {...containerVectorPolicyProps} />,
+        content: <ContainerPolicyComponent {...containerPolicyComponentProps} />,
       });
     }
 

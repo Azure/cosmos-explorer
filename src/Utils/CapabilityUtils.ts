@@ -20,3 +20,7 @@ export const isServerlessAccount = (): boolean => {
 export const isVectorSearchEnabled = (): boolean => {
   return userContext.apiType === "SQL" && isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLVectorSearch);
 };
+
+export const isFullTextSearchEnabled = (): boolean => {
+  return userContext.apiType === "SQL" && isCapabilityEnabled(Constants.CapabilityNames.EnableNoSQLFullTextSearch);
+};

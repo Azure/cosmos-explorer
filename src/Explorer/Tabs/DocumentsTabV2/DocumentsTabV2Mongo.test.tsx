@@ -19,7 +19,6 @@ import { act } from "react-dom/test-utils";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
 
-
 jest.requireActual("Explorer/Controls/Editor/EditorReact");
 
 const PROPERTY_VALUE = "__SOME_PROPERTY_VALUE__";
@@ -63,11 +62,13 @@ jest.mock("Explorer/Controls/Dialog", () => ({
   useDialog: {
     getState: jest.fn(() => ({
       showOkCancelModalDialog: (title: string, subText: string, okLabel: string, onOk: () => void) => onOk(),
-      showOkModalDialog: () => { },
+      showOkModalDialog: () => {},
     })),
   },
 }));
 
+// Added as recent change to @azure/core-util would cause randomUUID() to throw an error during jest tests.
+// TODO: when not using beta version of @azure/cosmos sdk try removing this
 jest.mock("@azure/core-util", () => ({
   ...jest.requireActual("@azure/core-util"),
   randomUUID: jest.fn(),
