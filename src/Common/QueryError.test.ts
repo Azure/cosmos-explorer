@@ -36,7 +36,7 @@ describe("QueryError.tryParse", () => {
       code: "BadRequest",
       message: "Your query is bad, and you should feel bad",
     };
-    const message = JSON.stringify(innerError);
+    const message = `Message: ${JSON.stringify(innerError)}\r\nActivity ID: 42`;
     const outerError = {
       code: "BadRequest",
       message,
@@ -48,7 +48,7 @@ describe("QueryError.tryParse", () => {
     ]);
   });
 
-  // Imitate the value coming from the backend, which has the syntax errors serialized as JSON in the message.
+  // Imitate the value coming from the backend, which has the syntax errors serialized as JSON in the message, along with a prefix and activity id.
   it("handles single-nested error", () => {
     const errors = [
       {
@@ -69,7 +69,7 @@ describe("QueryError.tryParse", () => {
       message: "Your query is bad, and you should feel bad",
       errors,
     };
-    const message = JSON.stringify(innerError);
+    const message = `Message: ${JSON.stringify(innerError)}\r\nActivity ID: 42`;
     const outerError = {
       code: "BadRequest",
       message,
@@ -88,6 +88,25 @@ describe("QueryError.tryParse", () => {
         QueryErrorSeverity.Error,
         "code2",
         new QueryErrorLocation({ offset: 2, lineNumber: 2, column: 2 }, { offset: 3, lineNumber: 3, column: 3 }),
+      ),
+    ]);
+  });
+
+  // Imitate another value we've gotten from the backend, which has a doubly-nested JSON payload.
+  it("handles double-nested error", () => {
+    const outerError = {
+      code: "BadRequest",
+      message:
+        '{"code":"BadRequest","message":"{\\"errors\\":[{\\"severity\\":\\"Error\\",\\"location\\":{\\"start\\":7,\\"end\\":18},\\"code\\":\\"SC2005\\",\\"message\\":\\"\'nonexistent\' is not a recognized built-in function name.\\"}]}\\r\\nActivityId: aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, Windows/10.0.20348 cosmos-netstandard-sdk/3.18.0"}',
+    };
+
+    const result = QueryError.tryParse(outerError, testErrorLocationResolver);
+    expect(result).toEqual([
+      new QueryError(
+        "'nonexistent' is not a recognized built-in function name.",
+        QueryErrorSeverity.Error,
+        "SC2005",
+        new QueryErrorLocation({ offset: 7, lineNumber: 7, column: 7 }, { offset: 18, lineNumber: 18, column: 18 }),
       ),
     ]);
   });

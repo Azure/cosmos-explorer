@@ -89,6 +89,7 @@ export class CapabilityNames {
   public static readonly EnableMongo: string = "EnableMongo";
   public static readonly EnableServerless: string = "EnableServerless";
   public static readonly EnableNoSQLVectorSearch: string = "EnableNoSQLVectorSearch";
+  public static readonly EnableNoSQLFullTextSearch: string = "EnableNoSQLFullTextSearch";
 }
 
 export enum CapacityMode {
@@ -158,7 +159,7 @@ export class MongoProxyEndpoints {
 export class MongoProxyApi {
   public static readonly ResourceList: string = "ResourceList";
   public static readonly QueryDocuments: string = "QueryDocuments";
-  public static readonly CreateDocument: string = "CreateDocumen";
+  public static readonly CreateDocument: string = "CreateDocument";
   public static readonly ReadDocument: string = "ReadDocument";
   public static readonly UpdateDocument: string = "UpdateDocument";
   public static readonly DeleteDocument: string = "DeleteDocument";

@@ -67,6 +67,8 @@ export interface ConfigContext {
   hostedExplorerURL: string;
   armAPIVersion?: string;
   msalRedirectURI?: string;
+  globallyEnabledCassandraAPIs?: string[];
+  globallyEnabledMongoAPIs?: string[];
 }
 
 // Default configuration
@@ -114,6 +116,8 @@ let configContext: Readonly<ConfigContext> = {
   NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
+  globallyEnabledCassandraAPIs: [],
+  globallyEnabledMongoAPIs: [],
 };
 
 export function resetConfigContext(): void {

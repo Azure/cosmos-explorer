@@ -20,6 +20,10 @@ a:focus {
   text-decoration: underline;
 }
 
+.splashLoaderContainer {
+  background-color: #f5f5f5;
+}
+
 #divExplorer {
   background-color: #f5f5f5;
 }
@@ -27,26 +31,24 @@ a:focus {
 .resourceTreeAndTabs {
   border-radius: 0px;
   box-shadow: @FabricBoxBorderShadow;
-  margin: @FabricBoxMargin;
   margin-top: 0px;
   margin-bottom: 0px;
   background-color: #ffffff;
 }
 
 .tabsManagerContainer {
-  background-color: #ffffff
+  background-color: #ffffff;
 }
 
 .nav-tabs-margin {
   padding-top: 5px;
-  background-color: #ffffff
+  background-color: #ffffff;
 }
 
 .commandBarContainer {
   background-color: #ffffff;
   border-radius: @FabricBoxBorderRadius @FabricBoxBorderRadius 0px 0px;
   box-shadow: @FabricBoxBorderShadow;
-  margin: @FabricBoxMargin;
   margin-top: 0px;
   margin-bottom: 0px;
   padding-top: 2px;
@@ -65,17 +67,16 @@ a:focus {
   }
 }
 
-
-.nav-tabs>li>.tabNavContentContainer>.tab_Content:hover {
+.nav-tabs > li > .tabNavContentContainer > .tab_Content:hover {
   border-bottom: 2px solid #e0e0e0;
 }
 
-.nav-tabs>li.active>.tabNavContentContainer>.tab_Content,
-.nav-tabs>li.active>.tabNavContentContainer>.tab_Content:hover {
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content,
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content:hover {
   border-bottom: 2px solid @FabricAccentMedium;
 }
 
-.nav-tabs>li.active>.tabNavContentContainer>.tab_Content>.contentWrapper>.tabNavText {
+.nav-tabs > li.active > .tabNavContentContainer > .tab_Content > .contentWrapper > .tabNavText {
   border-bottom: 0px none transparent;
 }
 
@@ -94,10 +95,10 @@ a:focus {
     padding-bottom: @SmallSpace;
 
     .contentWrapper {
-        .statusIconContainer {
-          margin-left: 0px;
-        }
+      .statusIconContainer {
+        margin-left: 0px;
       }
+    }
 
     .tabIconSection {
       .cancelButton {
@@ -118,7 +119,6 @@ a:focus {
     }
   }
 }
-
 
 .resourceTree {
   padding: 12px;
@@ -156,24 +156,20 @@ a:focus {
     }
 
     .selected {
-      &>.treeNodeHeader {
+      & > .treeNodeHeader {
         background-color: @FabricAccentExtra;
       }
     }
   }
 }
 
-
 .dataExplorerErrorConsoleContainer {
-  border-radius:  0px 0px @FabricBoxBorderRadius @FabricBoxBorderRadius;
+  border-radius: 0px 0px @FabricBoxBorderRadius @FabricBoxBorderRadius;
   box-shadow: @FabricBoxBorderShadow;
-  margin: @FabricBoxMargin;
   margin-top: 0px;
   width: auto;
   align-self: auto;
 }
-
-
 
 .filterbtnstyle {
   background: #fff;
@@ -200,11 +196,9 @@ a:focus {
   border: solid 1px #d1d1d1;
 }
 
-
 .gridRowSelected .tabdocumentsGridElement:hover {
   background-color: @FabricAccentLight !important;
 }
-
 
 .refreshcol {
   filter: brightness(0) saturate(100%);

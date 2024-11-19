@@ -126,6 +126,8 @@ export interface Collection extends CollectionBase {
   analyticalStorageTtl: ko.Observable<number>;
   schema?: DataModels.ISchema;
   requestSchema?: () => void;
+  vectorEmbeddingPolicy: ko.Observable<DataModels.VectorEmbeddingPolicy>;
+  fullTextPolicy: ko.Observable<DataModels.FullTextPolicy>;
   indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   usageSizeInKB: ko.Observable<number>;
@@ -381,8 +383,9 @@ export enum TerminalKind {
 export interface DataExplorerInputsFrame {
   databaseAccount: any;
   subscriptionId?: string;
-  tenantId?: string;
   resourceGroup?: string;
+  tenantId?: string;
+  userName?: string;
   masterKey?: string;
   hasWriteAccess?: boolean;
   authorizationToken?: string;

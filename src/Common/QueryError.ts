@@ -214,15 +214,27 @@ export default class QueryError {
       return null;
     }
 
-    // Assign to a new variable because of a TypeScript flow typing quirk, see below.
-    if (message.startsWith("Message: ")) {
-      // Reassigning this to 'error' restores the original type of 'error', which is 'unknown'.
-      // So we use a separate variable to avoid this.
-      message = message.substring("Message: ".length);
+    // Some newer backends produce a message that contains a doubly-nested JSON payload.
+    // In this case, the message we get is a fully-complete JSON object we can parse.
+    // So let's try that first
+    if (message.startsWith("{") && message.endsWith("}")) {
+      let outer: unknown = undefined;
+      try {
+        outer = JSON.parse(message);
+        if (typeof outer === "object" && "message" in outer && typeof outer.message === "string") {
+          message = outer.message;
+        }
+      } catch (e) {
+        // Just continue if the parsing fails. We'll use the fallback logic below.
+      }
     }
 
     const lines = message.split("\n");
     message = lines[0].trim();
+
+    if (message.startsWith("Message: ")) {
+      message = message.substring("Message: ".length);
+    }
 
     let parsed: unknown;
     try {

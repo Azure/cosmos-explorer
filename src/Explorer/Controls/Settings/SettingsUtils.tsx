@@ -4,7 +4,14 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 
 const zeroValue = 0;
-export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy | DataModels.ComputedProperties;
+export type isDirtyTypes =
+  | boolean
+  | string
+  | number
+  | DataModels.IndexingPolicy
+  | DataModels.ComputedProperties
+  | DataModels.VectorEmbedding[]
+  | DataModels.FullTextPolicy;
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";
@@ -48,6 +55,11 @@ export enum SettingsV2TabTypes {
   PartitionKeyTab,
   ComputedPropertiesTab,
   ContainerVectorPolicyTab,
+}
+
+export enum ContainerPolicyTabTypes {
+  VectorPolicyTab,
+  FullTextPolicyTab,
 }
 
 export interface IsComponentDirtyResult {
@@ -154,7 +166,7 @@ export const getTabTitle = (tab: SettingsV2TabTypes): string => {
     case SettingsV2TabTypes.ComputedPropertiesTab:
       return "Computed Properties";
     case SettingsV2TabTypes.ContainerVectorPolicyTab:
-      return "Container Vector Policy (preview)";
+      return "Container Policies";
     default:
       throw new Error(`Unknown tab ${tab}`);
   }

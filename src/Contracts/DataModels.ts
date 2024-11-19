@@ -159,6 +159,7 @@ export interface Collection extends Resource {
   analyticalStorageTtl?: number;
   geospatialConfig?: GeospatialConfig;
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+  fullTextPolicy?: FullTextPolicy;
   schema?: ISchema;
   requestSchema?: () => void;
   computedProperties?: ComputedProperties;
@@ -199,11 +200,19 @@ export interface IndexingPolicy {
   compositeIndexes?: any[];
   spatialIndexes?: any[];
   vectorIndexes?: VectorIndex[];
+  fullTextIndexes?: FullTextIndex[];
 }
 
 export interface VectorIndex {
   path: string;
   type: "flat" | "diskANN" | "quantizedFlat";
+  diskANNShardKey?: string;
+  indexingSearchListSize?: number;
+  quantizationByteSize?: number;
+}
+
+export interface FullTextIndex {
+  path: string;
 }
 
 export interface ComputedProperty {
@@ -342,6 +351,7 @@ export interface CreateCollectionParams {
   uniqueKeyPolicy?: UniqueKeyPolicy;
   createMongoWildcardIndex?: boolean;
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+  fullTextPolicy?: FullTextPolicy;
 }
 
 export interface VectorEmbeddingPolicy {
@@ -353,6 +363,16 @@ export interface VectorEmbedding {
   dimensions: number;
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
   path: string;
+}
+
+export interface FullTextPolicy {
+  defaultLanguage: string;
+  fullTextPaths: FullTextPath[];
+}
+
+export interface FullTextPath {
+  path: string;
+  language: string;
 }
 
 export interface ReadDatabaseOfferParams {

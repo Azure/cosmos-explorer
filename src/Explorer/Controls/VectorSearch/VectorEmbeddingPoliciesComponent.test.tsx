@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { RenderResult, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { VectorEmbedding, VectorIndex } from "Contracts/DataModels";
 import React from "react";
-import { AddVectorEmbeddingPolicyForm } from "./AddVectorEmbeddingPolicyForm";
+import { VectorEmbeddingPoliciesComponent } from "./VectorEmbeddingPoliciesComponent";
 
 const mockVectorEmbedding: VectorEmbedding[] = [
   { path: "/vector1", dataType: "float32", distanceFunction: "euclidean", dimensions: 0 },
@@ -17,9 +17,9 @@ describe("AddVectorEmbeddingPolicyForm", () => {
 
   beforeEach(() => {
     component = render(
-      <AddVectorEmbeddingPolicyForm
-        vectorEmbedding={mockVectorEmbedding}
-        vectorIndex={mockVectorIndex}
+      <VectorEmbeddingPoliciesComponent
+        vectorEmbeddings={mockVectorEmbedding}
+        vectorIndexes={mockVectorIndex}
         onVectorEmbeddingChange={mockOnVectorEmbeddingChange}
       />,
     );
@@ -36,7 +36,7 @@ describe("AddVectorEmbeddingPolicyForm", () => {
   });
 
   test("calls onDelete when delete button is clicked", async () => {
-    const deleteButton = component.container.querySelector("#delete-vector-policy-1");
+    const deleteButton = component.container.querySelector("#delete-Vector-embedding-1");
     fireEvent.click(deleteButton);
     expect(mockOnVectorEmbeddingChange).toHaveBeenCalled();
     expect(screen.queryByText("Vector embedding 1")).toBeNull();
@@ -49,21 +49,19 @@ describe("AddVectorEmbeddingPolicyForm", () => {
 
   test("validates input correctly", async () => {
     fireEvent.change(screen.getByPlaceholderText("/vector1"), { target: { value: "" } });
-    await waitFor(() => expect(screen.getByText("Vector embedding path should not be empty")).toBeInTheDocument(), {
+    await waitFor(() => expect(screen.getByText("Path should not be empty")).toBeInTheDocument(), {
       timeout: 1500,
     });
     await waitFor(
       () =>
-        expect(
-          screen.getByText("Vector embedding dimension must be greater than 0 and less than or equal 4096"),
-        ).toBeInTheDocument(),
+        expect(screen.getByText("Dimension must be greater than 0 and less than or equal 4096")).toBeInTheDocument(),
       {
         timeout: 1500,
       },
     );
     fireEvent.change(component.container.querySelector("#vector-policy-dimension-1"), { target: { value: "4096" } });
     fireEvent.change(screen.getByPlaceholderText("/vector1"), { target: { value: "/vector1" } });
-    await waitFor(() => expect(screen.queryByText("Vector embedding path should not be empty")).toBeNull(), {
+    await waitFor(() => expect(screen.queryByText("Path should not be empty")).toBeNull(), {
       timeout: 1500,
     });
     await waitFor(
