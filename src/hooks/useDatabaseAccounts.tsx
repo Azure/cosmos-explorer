@@ -136,7 +136,6 @@ interface QueryResponse {
   $skipToken?: string;
 }
 
-// Define a generic runCommand function
 export async function runCommand<T>(
   fn: (...args: any[]) => Promise<T>,
   ...args: any[]

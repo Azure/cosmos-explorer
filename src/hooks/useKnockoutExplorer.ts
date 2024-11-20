@@ -51,7 +51,6 @@ import {
 } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
@@ -463,9 +462,6 @@ function configureEmulator(): Explorer {
   return explorer;
 }
 
-export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
-  Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
-  let keys;
 export async function fetchAndUpdateKeys(subscriptionId: string, resourceGroup: string, account: string) {
   Logger.logInfo(`Fetching keys for ${userContext.apiType} account ${account}`, "Explorer/fetchAndUpdateKeys");
   let keys;

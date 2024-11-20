@@ -8,11 +8,13 @@ import { AuthType } from "../AuthType";
 import { BackendApi, PriorityLevel } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
+import { runCommand } from "hooks/useDatabaseAccounts";
+import { acquireTokenWithMsal, getMsalInstance } from "Utils/AuthorizationUtils";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -32,7 +34,42 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       return null;
     }
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
-    const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
+    let authorizationToken;
+
+    try {
+       authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
+    } catch (error) {
+      if (error.code === "ExpiredAuthenticationToken") {
+        // Renew the AAD token using runCommand
+        const newToken = await runCommand(async () => {
+          // Implement the logic to acquire a new AAD token
+          const msalInstance = await getMsalInstance();
+          const cachedAccount = msalInstance.getAllAccounts()?.[0];
+          const cachedTenantId = localStorage.getItem("cachedTenantId");
+  
+          msalInstance.setActiveAccount(cachedAccount);
+          const newAccessToken = await acquireTokenWithMsal(msalInstance, {
+            authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
+            scopes: [`${configContext.ARM_ENDPOINT}/.default`],
+          });
+  
+          // Update user context with the new token
+          updateUserContext({ aadToken: newAccessToken });
+          authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
+          return newAccessToken;
+        });
+  
+        // Retry getting the token after renewing
+        const retryResult = await getTokenFromAuthService(verb, resourceType, resourceId);
+        headers[HttpHeaders.msDate] = retryResult.XDate;
+        return decodeURIComponent(retryResult.PrimaryReadWriteToken);
+      } else {
+        console.error('An error occurred:', error.message);
+        throw error; 
+      }
+    }
+
+    
     return authorizationToken;
   }
 
