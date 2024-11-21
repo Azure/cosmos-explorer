@@ -4,18 +4,11 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { Environment, getEnvironment } from "Common/EnvironmentUtility";
 import { sendMessage } from "Common/MessageHandler";
 import { Platform, configContext } from "ConfigContext";
-import { DataExplorerAction } from "Contracts/ActionContracts";
 import { MessageTypes } from "Contracts/ExplorerContracts";
-import { handleOpenAction } from "Explorer/OpenActions/OpenActions";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
-import {
-  AppStateComponentNames,
-  OPEN_TABS_SUBCOMPONENT_NAME,
-  readSubComponentState,
-} from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
@@ -1166,10 +1159,6 @@ export default class Explorer {
     }
 
     await this.refreshSampleData();
-
-    if (userContext.features.restoreTabs) {
-      this.restoreOpenTabs();
-    }
   }
 
   public async configureCopilot(): Promise<void> {
@@ -1215,20 +1204,5 @@ export default class Explorer {
       Logger.logError(getErrorMessage(error), "Explorer");
       return;
     }
-  }
-
-  private restoreOpenTabs() {
-    const openTabsState = readSubComponentState<(DataExplorerAction | undefined)[]>(
-      AppStateComponentNames.DataExplorerAction,
-      OPEN_TABS_SUBCOMPONENT_NAME,
-      undefined,
-      [],
-    );
-
-    openTabsState.forEach((openTabState) => {
-      if (openTabState) {
-        handleOpenAction(openTabState, useDatabases.getState().databases, this);
-      }
-    });
   }
 }

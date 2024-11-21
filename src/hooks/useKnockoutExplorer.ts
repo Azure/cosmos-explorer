@@ -7,6 +7,11 @@ import Explorer from "Explorer/Explorer";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import {
+  AppStateComponentNames,
+  OPEN_TABS_SUBCOMPONENT_NAME,
+  readSubComponentState,
+} from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
@@ -80,6 +85,11 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           await updateContextForCopilot(explorer);
           await updateContextForSampleData(explorer);
         }
+
+        if (userContext.features.restoreTabs) {
+          restoreOpenTabs();
+        }
+
         setExplorer(explorer);
       }
     };
@@ -816,3 +826,17 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
 interface SampledataconnectionResponse {
   connectionString: string;
 }
+
+const restoreOpenTabs = () => {
+  const openTabsState = readSubComponentState<(DataExplorerAction | undefined)[]>(
+    AppStateComponentNames.DataExplorerAction,
+    OPEN_TABS_SUBCOMPONENT_NAME,
+    undefined,
+    [],
+  );
+  openTabsState.forEach((openTabState) => {
+    if (openTabState) {
+      handleOpenAction(openTabState, useDatabases.getState().databases, this);
+    }
+  });
+};
