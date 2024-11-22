@@ -3,6 +3,8 @@ import { QueryRequestOptions, QueryResponse } from "Contracts/AzureResourceGraph
 import useSWR from "swr";
 import { configContext } from "../ConfigContext";
 import { Subscription } from "../Contracts/DataModels";
+import { runCommand } from "hooks/useDatabaseAccounts";
+import { userContext } from "UserContext";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 interface SubscriptionListResult {
@@ -35,9 +37,9 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
   return subscriptions.sort((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
-export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<Subscription[]> {
+export async function fetchSubscriptionsFromGraph(): Promise<Subscription[]> {
   const headers = new Headers();
-  const bearer = `Bearer ${accessToken}`;
+  const bearer = `Bearer ${userContext.armToken}`;
 
   headers.append("Authorization", bearer);
   headers.append(HttpHeaders.contentType, "application/json");
@@ -48,6 +50,7 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
 
   const subscriptions: Subscription[] = [];
   let skipToken: string;
+  console.log("Old ARM Token fetchSubscriptionsFromGraph fn", userContext.armToken);
   do {
     const body = {
       query: subscriptionsQuery,
@@ -86,9 +89,14 @@ export async function fetchSubscriptionsFromGraph(accessToken: string): Promise<
 }
 
 export function useSubscriptions(armToken: string): Subscription[] | undefined {
-  const { data } = useSWR(
+  const { data, error } = useSWR(
     () => (armToken ? ["subscriptions", armToken] : undefined),
-    (_, armToken) => fetchSubscriptionsFromGraph(armToken),
+    (_) => runCommand(fetchSubscriptionsFromGraph),
   );
+
+  if (error) {
+    console.error("Error fetching subscriptions:", error);
+  }
+
   return data;
 }

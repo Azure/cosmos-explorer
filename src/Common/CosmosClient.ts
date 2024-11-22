@@ -8,11 +8,12 @@ import { AuthType } from "../AuthType";
 import { BackendApi, PriorityLevel } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
 import { getErrorMessage } from "./ErrorHandlingUtils";
+import { runCommand } from "hooks/useDatabaseAccounts";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -32,6 +33,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
       return null;
     }
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+    console.log("AAD Token ", userContext.aadToken);
     const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
     return authorizationToken;
   }
@@ -209,10 +211,14 @@ export function client(): Cosmos.CosmosClient {
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
 
+  const wrappedTokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
+    return await runCommand(tokenProvider, requestInfo);
+  };
+
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
-    tokenProvider,
+    tokenProvider: wrappedTokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
