@@ -115,7 +115,13 @@ export interface CollectionBase extends TreeNode {
   isSampleCollection?: boolean;
 
   onDocumentDBDocumentsClick(): void;
-  onNewQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
+  onNewQueryClick(
+    source: any,
+    event?: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ): void;
   expandCollection(): void;
   collapseCollection(): void;
   getDatabase(): Database;
@@ -151,7 +157,13 @@ export interface Collection extends CollectionBase {
   onSettingsClick: () => Promise<void>;
 
   onNewGraphClick(): void;
-  onNewMongoQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
+  onNewMongoQueryClick(
+    source: any,
+    event?: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ): void;
   onNewMongoShellClick(): void;
   onNewStoredProcedureClick(source: Collection, event?: MouseEvent): void;
   onNewUserDefinedFunctionClick(source: Collection, event?: MouseEvent): void;
@@ -311,6 +323,8 @@ export interface QueryTabOptions extends TabOptions {
   partitionKey?: DataModels.PartitionKey;
   queryText?: string;
   resourceTokenPartitionKey?: string;
+  splitterDirection?: "horizontal" | "vertical";
+  queryViewSizePercent?: number;
 }
 
 export interface ScriptTabOption extends TabOptions {

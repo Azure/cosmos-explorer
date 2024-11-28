@@ -1134,7 +1134,7 @@ export default class Explorer {
     if (userContext.apiType !== "Postgres" && userContext.apiType !== "VCoreMongo") {
       userContext.authType === AuthType.ResourceToken
         ? this.refreshDatabaseForResourceToken()
-        : this.refreshAllDatabases();
+        : await this.refreshAllDatabases(); // await: we rely on the databases to be loaded before restoring the tabs further in the flow
     }
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 

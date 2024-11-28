@@ -630,7 +630,13 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
@@ -653,13 +659,21 @@ export default class Collection implements ViewModels.Collection {
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
+          splitterDirection,
+          queryViewSizePercent,
         },
         { container: this.container },
       ),
     );
   }
 
-  public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewMongoQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
 
@@ -681,6 +695,9 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         partitionKey: collection.partitionKey,
         onLoadStartKey: startKey,
+        queryText,
+        splitterDirection,
+        queryViewSizePercent,
       },
       {
         container: this.container,

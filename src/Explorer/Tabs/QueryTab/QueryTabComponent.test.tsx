@@ -34,6 +34,7 @@ jest.mock("Shared/AppStatePersistenceUtility", () => ({
   AppStateComponentNames: {
     QueryCopilot: "QueryCopilot",
   },
+  readSubComponentState: jest.fn(),
 }));
 
 describe("QueryTabComponent", () => {

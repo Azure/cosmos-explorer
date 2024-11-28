@@ -21,6 +21,7 @@ import { queryDocuments } from "Common/dataAccess/queryDocuments";
 import { readDocument } from "Common/dataAccess/readDocument";
 import { updateDocument } from "Common/dataAccess/updateDocument";
 import { Platform, configContext } from "ConfigContext";
+import { ActionType, OpenCollectionTab, TabKind } from "Contracts/ActionContracts";
 import { CommandButtonComponentProps } from "Explorer/Controls/CommandButton/CommandButtonComponent";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReact } from "Explorer/Controls/Editor/EditorReact";
@@ -34,8 +35,9 @@ import {
   FilterHistory,
   SubComponentName,
   TabDivider,
-  readSubComponentState,
-  saveSubComponentState,
+  deleteDocumentsTabSubComponentState,
+  readDocumentsTabSubComponentState,
+  saveDocumentsTabSubComponentState,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { usePrevious } from "Explorer/Tabs/DocumentsTabV2/SelectionHelper";
 import { CosmosFluentProvider, LayoutConstants, cosmosShorthands, tokens } from "Explorer/Theme/ThemeUtil";
@@ -140,6 +142,8 @@ export class DocumentsTabV2 extends TabsBase {
   private title: string;
   private resourceTokenPartitionKey: string;
 
+  protected persistedState: OpenCollectionTab;
+
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
 
@@ -147,6 +151,13 @@ export class DocumentsTabV2 extends TabsBase {
     this.title = options.title;
     this.partitionKey = options.partitionKey;
     this.resourceTokenPartitionKey = options.resourceTokenPartitionKey;
+
+    this.persistedState = {
+      actionType: ActionType.OpenCollectionTab,
+      tabKind: options.isPreferredApiMongoDB ? TabKind.MongoDocuments : TabKind.SQLDocuments,
+      databaseResourceId: options.collection.databaseId,
+      collectionResourceId: options.collection.id(),
+    };
   }
 
   public render(): JSX.Element {
@@ -575,7 +586,10 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   onIsExecutingChange,
   isTabActive,
 }): JSX.Element => {
-  const [filterContent, setFilterContent] = useState<string>("");
+  const [filterContent, setFilterContent] = useState<string>(() =>
+    readDocumentsTabSubComponentState<string>(SubComponentName.CurrentFilter, _collection, ""),
+  );
+
   const [documentIds, setDocumentIds] = useState<ExtendedDocumentId[]>([]);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const styles = useDocumentsTabStyles();
@@ -606,7 +620,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // State
   const [tabStateData, setTabStateData] = useState<TabDivider>(() =>
-    readSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
+    readDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, {
       leftPaneWidthPercent: 35,
     }),
   );
@@ -621,7 +635,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // User's filter history
   const [lastFilterContents, setLastFilterContents] = useState<FilterHistory>(() =>
-    readSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
+    readDocumentsTabSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, [] as FilterHistory),
   );
 
   // For progress bar for bulk delete (noSql)
@@ -763,7 +777,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   };
 
   const [selectedColumnIds, setSelectedColumnIds] = useState<string[]>(() => {
-    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+    const persistedColumnsSelection = readDocumentsTabSubComponentState<ColumnsSelection>(
       SubComponentName.ColumnsSelection,
       _collection,
       undefined,
@@ -808,7 +822,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
   useEffect(() => {
     setKeyboardActions({
       [KeyboardAction.CLEAR_SEARCH]: () => {
-        setFilterContent("");
+        updateFilterContent("");
         refreshDocumentsGrid(true);
         return true;
       },
@@ -1645,7 +1659,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
   // Column definition is a map<id, ColumnDefinition> to garantee uniqueness
   const [columnDefinitions, setColumnDefinitions] = useState<ColumnDefinition[]>(() => {
-    const persistedColumnsSelection = readSubComponentState<ColumnsSelection>(
+    const persistedColumnsSelection = readDocumentsTabSubComponentState<ColumnsSelection>(
       SubComponentName.ColumnsSelection,
       _collection,
       undefined,
@@ -1956,7 +1970,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     const limitedLastFilterContents = lastFilterContents.slice(0, MAX_FILTER_HISTORY_COUNT);
 
     setLastFilterContents(limitedLastFilterContents);
-    saveSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
+    saveDocumentsTabSubComponentState<FilterHistory>(SubComponentName.FilterHistory, _collection, lastFilterContents);
   };
 
   const refreshDocumentsGrid = useCallback(
@@ -2013,7 +2027,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
 
     setSelectedColumnIds(newSelectedColumnIds);
 
-    saveSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
+    saveDocumentsTabSubComponentState<ColumnsSelection>(SubComponentName.ColumnsSelection, _collection, {
       selectedColumnIds: newSelectedColumnIds,
       columnDefinitions,
     });
@@ -2063,6 +2077,15 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
     return options;
   };
 
+  const updateFilterContent = (filter: string): void => {
+    if (filter === "" || filter === undefined) {
+      deleteDocumentsTabSubComponentState(SubComponentName.CurrentFilter, _collection);
+    } else {
+      saveDocumentsTabSubComponentState<string>(SubComponentName.CurrentFilter, _collection, filter, true);
+    }
+    setFilterContent(filter);
+  };
+
   return (
     <CosmosFluentProvider className={styles.container}>
       <div className="tab-pane active" role="tabpanel" style={{ display: "flex" }}>
@@ -2077,7 +2100,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
             }
             title="Type a query predicate or choose one from the list."
             value={filterContent}
-            onChange={(value) => setFilterContent(value)}
+            onChange={updateFilterContent}
             onKeyDown={onFilterKeyDown}
             bottomLink={{ text: "Learn more", url: DATA_EXPLORER_DOC_URL }}
           />
@@ -2103,7 +2126,7 @@ export const DocumentsTabComponent: React.FunctionComponent<IDocumentsTabCompone
         <Allotment
           onDragEnd={(sizes: number[]) => {
             tabStateData.leftPaneWidthPercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
-            saveSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
+            saveDocumentsTabSubComponentState<TabDivider>(SubComponentName.MainTabDivider, _collection, tabStateData);
             setTabStateData(tabStateData);
           }}
         >
