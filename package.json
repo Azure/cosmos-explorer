@@ -205,7 +205,7 @@
     "build:dataExplorer:ci": "npm run build:ci",
     "build": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToConsumers",
     "build:ci": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:fast",
-    "build:proxy": "npm run format:check && npm run lint && npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToProxy",
+    "build:proxy": "npm run compile && npm run compile:strict && npm run pack:prod && npm run copyToProxy",
     "pack:prod": "webpack  --mode production",
     "pack:fast": "webpack  --mode development --progress",
     "copyToConsumers": "node copyToConsumers",

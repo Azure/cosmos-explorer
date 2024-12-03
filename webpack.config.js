@@ -134,16 +134,17 @@ module.exports = function (_env = {}, argv = {}) {
       chunks: ["terminal"],
     }),
     //todo - dynamically include apis
-    ishttps ? 
-    new HtmlWebpackPlugin({
-      filename: "quickstart.html",
-      template: "src/quickstart-sql-only.html",
-      chunks: ["quickstart"],
-    }) : new HtmlWebpackPlugin({
-      filename: "quickstart.html",
-      template: "src/quickstart-sql-only-http.html",
-      chunks: ["quickstart"],
-    }),
+    ishttps
+      ? new HtmlWebpackPlugin({
+          filename: "quickstart.html",
+          template: "src/quickstart-sql-only.html",
+          chunks: ["quickstart"],
+        })
+      : new HtmlWebpackPlugin({
+          filename: "quickstart.html",
+          template: "src/quickstart-sql-only-http.html",
+          chunks: ["quickstart"],
+        }),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "src/index.html",
@@ -200,10 +201,12 @@ module.exports = function (_env = {}, argv = {}) {
     new EnvironmentPlugin(envVars),
   ];
 
-  if(process.env.EXPLORER_CONFIG_PATH) {
-    plugins.push(new CopyWebpackPlugin({
-      patterns: [{ from: process.env.EXPLORER_CONFIG_PATH, to: "config.json" }]
-    }));
+  if (process.env.EXPLORER_CONFIG_PATH) {
+    plugins.push(
+      new CopyWebpackPlugin({
+        patterns: [{ from: process.env.EXPLORER_CONFIG_PATH, to: "config.json" }],
+      }),
+    );
   }
 
   if (argv.analyze) {

@@ -28,6 +28,10 @@ app.get("/_ready", (_, res) => {
   }
 });
 
+app.get("config.json", (_, res) => {
+  res.json({ EMULATOR_ENDPOINT: conf.EMULATOR_ENDPOINT });
+});
+
 const bypass = (req, res) => {
   if (req.method === "OPTIONS") {
     res.statusCode = 200;
