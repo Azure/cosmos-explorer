@@ -1,11 +1,4 @@
-import {
-  BackendApi,
-  CassandraProxyEndpoints,
-  JunoEndpoints,
-  MongoProxyEndpoints,
-  PortalBackendEndpoints,
-} from "Common/Constants";
-import { configContext } from "ConfigContext";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -58,26 +51,6 @@ export const allowedAadEndpoints: ReadonlyArray<string> = [
   "https://login.partner.microsoftonline.cn/",
 ];
 
-export const defaultAllowedBackendEndpoints: ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
-  "https://localhost:1234",
-];
-
-export const PortalBackendIPs: { [key: string]: string[] } = {
-  "https://main.documentdb.ext.azure.com": ["104.42.195.92", "40.76.54.131"],
-  // DE doesn't talk to prod2 (main2) but it might be added
-  //"https://main2.documentdb.ext.azure.com": ["104.42.196.69"],
-  "https://main.documentdb.ext.azure.cn": ["139.217.8.252"],
-  "https://main.documentdb.ext.azure.us": ["52.244.48.71"],
-  // Add ussec and usnat when endpoint address is known:
-  //ussec: ["29.26.26.67", "29.26.26.66"],
-  //usnat: ["7.28.202.68"],
-};
-
 export const PortalBackendOutboundIPs: { [key: string]: string[] } = {
   [PortalBackendEndpoints.Mpac]: ["13.91.105.215", "4.210.172.107"],
   [PortalBackendEndpoints.Prod]: ["13.88.56.148", "40.91.218.243"],
@@ -92,20 +65,20 @@ export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
   [MongoProxyEndpoints.Mooncake]: ["52.131.240.99", "143.64.61.130"],
 };
 
+export const defaultAllowedPortalBackendEndpoints: ReadonlyArray<string> = [
+  PortalBackendEndpoints.Development,
+  PortalBackendEndpoints.Mpac,
+  PortalBackendEndpoints.Prod,
+  PortalBackendEndpoints.Fairfax,
+  PortalBackendEndpoints.Mooncake,
+];
+
 export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
-  MongoProxyEndpoints.Local,
+  MongoProxyEndpoints.Development,
   MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
   MongoProxyEndpoints.Fairfax,
   MongoProxyEndpoints.Mooncake,
-];
-
-export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
 ];
 
 export const defaultAllowedCassandraProxyEndpoints: ReadonlyArray<string> = [
@@ -114,14 +87,6 @@ export const defaultAllowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Prod,
   CassandraProxyEndpoints.Fairfax,
   CassandraProxyEndpoints.Mooncake,
-];
-
-export const allowedCassandraProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
 ];
 
 export const CassandraProxyOutboundIPs: { [key: string]: string[] } = {
@@ -155,53 +120,3 @@ export const allowedJunoOrigins: ReadonlyArray<string> = [
 ];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
-
-//
-// Temporary function to determine if a portal backend API is supported by the
-// new backend in this environment.
-//
-// TODO: Remove this function once new backend migration is completed for all environments.
-//
-export function useNewPortalBackendEndpoint(backendApi: string): boolean {
-  // This maps backend APIs to the environments supported by the new backend.
-  const newBackendApiEnvironmentMap: { [key: string]: string[] } = {
-    [BackendApi.GenerateToken]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.PortalSettings]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.AccountRestrictions]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.RuntimeProxy]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.DisallowedLocations]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-      PortalBackendEndpoints.Fairfax,
-      PortalBackendEndpoints.Mooncake,
-    ],
-    [BackendApi.SampleData]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-  };
-
-  if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
-    return false;
-  }
-
-  return newBackendApiEnvironmentMap[backendApi].includes(configContext.PORTAL_BACKEND_ENDPOINT);
-}

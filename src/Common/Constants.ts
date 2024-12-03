@@ -131,15 +131,6 @@ export enum MongoBackendEndpointType {
   remote,
 }
 
-export class BackendApi {
-  public static readonly GenerateToken: string = "GenerateToken";
-  public static readonly PortalSettings: string = "PortalSettings";
-  public static readonly AccountRestrictions: string = "AccountRestrictions";
-  public static readonly RuntimeProxy: string = "RuntimeProxy";
-  public static readonly DisallowedLocations: string = "DisallowedLocations";
-  public static readonly SampleData: string = "SampleData";
-}
-
 export class PortalBackendEndpoints {
   public static readonly Development: string = "https://localhost:7235";
   public static readonly Mpac: string = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
@@ -149,23 +140,11 @@ export class PortalBackendEndpoints {
 }
 
 export class MongoProxyEndpoints {
-  public static readonly Local: string = "https://localhost:7238";
+  public static readonly Development: string = "https://localhost:7238";
   public static readonly Mpac: string = "https://cdb-ms-mpac-mp.cosmos.azure.com";
   public static readonly Prod: string = "https://cdb-ms-prod-mp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-mp.cosmos.azure.us";
   public static readonly Mooncake: string = "https://cdb-mc-prod-mp.cosmos.azure.cn";
-}
-
-export class MongoProxyApi {
-  public static readonly ResourceList: string = "ResourceList";
-  public static readonly QueryDocuments: string = "QueryDocuments";
-  public static readonly CreateDocument: string = "CreateDocument";
-  public static readonly ReadDocument: string = "ReadDocument";
-  public static readonly UpdateDocument: string = "UpdateDocument";
-  public static readonly DeleteDocument: string = "DeleteDocument";
-  public static readonly CreateCollectionWithProxy: string = "CreateCollectionWithProxy";
-  public static readonly LegacyMongoShell: string = "LegacyMongoShell";
-  public static readonly BulkDelete: string = "BulkDelete";
 }
 
 export class CassandraProxyEndpoints {
@@ -174,18 +153,6 @@ export class CassandraProxyEndpoints {
   public static readonly Prod: string = "https://cdb-ms-prod-cp.cosmos.azure.com";
   public static readonly Fairfax: string = "https://cdb-ff-prod-cp.cosmos.azure.us";
   public static readonly Mooncake: string = "https://cdb-mc-prod-cp.cosmos.azure.cn";
-}
-
-//TODO: Remove this when new backend is migrated over
-export class CassandraBackend {
-  public static readonly createOrDeleteApi: string = "api/cassandra/createordelete";
-  public static readonly guestCreateOrDeleteApi: string = "api/guest/cassandra/createordelete";
-  public static readonly queryApi: string = "api/cassandra";
-  public static readonly guestQueryApi: string = "api/guest/cassandra";
-  public static readonly keysApi: string = "api/cassandra/keys";
-  public static readonly guestKeysApi: string = "api/guest/cassandra/keys";
-  public static readonly schemaApi: string = "api/cassandra/schema";
-  public static readonly guestSchemaApi: string = "api/guest/cassandra/schema";
 }
 
 export class CassandraProxyAPIs {

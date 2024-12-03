@@ -1,10 +1,4 @@
-import {
-  BackendApi,
-  CassandraProxyEndpoints,
-  JunoEndpoints,
-  MongoProxyEndpoints,
-  PortalBackendEndpoints,
-} from "Common/Constants";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import {
   allowedAadEndpoints,
   allowedArcadiaEndpoints,
@@ -15,9 +9,9 @@ import {
   allowedMongoBackendEndpoints,
   allowedMsalRedirectEndpoints,
   defaultAllowedArmEndpoints,
-  defaultAllowedBackendEndpoints,
   defaultAllowedCassandraProxyEndpoints,
   defaultAllowedMongoProxyEndpoints,
+  defaultAllowedPortalBackendEndpoints,
   validateEndpoint,
 } from "Utils/EndpointUtils";
 
@@ -31,7 +25,7 @@ export enum Platform {
 export interface ConfigContext {
   platform: Platform;
   allowedArmEndpoints: ReadonlyArray<string>;
-  allowedBackendEndpoints: ReadonlyArray<string>;
+  allowedPortalBackendEndpoints: ReadonlyArray<string>;
   allowedCassandraProxyEndpoints: ReadonlyArray<string>;
   allowedMongoProxyEndpoints: ReadonlyArray<string>;
   allowedParentFrameOrigins: ReadonlyArray<string>;
@@ -50,13 +44,10 @@ export interface ConfigContext {
   CATALOG_API_KEY: string;
   ARCADIA_ENDPOINT: string;
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: string;
-  BACKEND_ENDPOINT?: string;
   PORTAL_BACKEND_ENDPOINT: string;
-  NEW_BACKEND_APIS?: BackendApi[];
   MONGO_BACKEND_ENDPOINT?: string;
   MONGO_PROXY_ENDPOINT: string;
   CASSANDRA_PROXY_ENDPOINT: string;
-  NEW_CASSANDRA_APIS?: string[];
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
@@ -75,7 +66,7 @@ export interface ConfigContext {
 let configContext: Readonly<ConfigContext> = {
   platform: Platform.Portal,
   allowedArmEndpoints: defaultAllowedArmEndpoints,
-  allowedBackendEndpoints: defaultAllowedBackendEndpoints,
+  allowedPortalBackendEndpoints: defaultAllowedPortalBackendEndpoints,
   allowedCassandraProxyEndpoints: defaultAllowedCassandraProxyEndpoints,
   allowedMongoProxyEndpoints: defaultAllowedMongoProxyEndpoints,
   allowedParentFrameOrigins: [
@@ -109,11 +100,9 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1189306
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   JUNO_ENDPOINT: JunoEndpoints.Prod,
-  BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   PORTAL_BACKEND_ENDPOINT: PortalBackendEndpoints.Prod,
   MONGO_PROXY_ENDPOINT: MongoProxyEndpoints.Prod,
   CASSANDRA_PROXY_ENDPOINT: CassandraProxyEndpoints.Prod,
-  NEW_CASSANDRA_APIS: ["postQuery", "createOrDelete", "getKeys", "getSchema"],
   isTerminalEnabled: false,
   isPhoenixEnabled: false,
   globallyEnabledCassandraAPIs: [],
@@ -154,11 +143,11 @@ export function updateConfigContext(newContext: Partial<ConfigContext>): void {
 
   if (
     !validateEndpoint(
-      newContext.BACKEND_ENDPOINT,
-      configContext.allowedBackendEndpoints || defaultAllowedBackendEndpoints,
+      newContext.PORTAL_BACKEND_ENDPOINT,
+      configContext.allowedPortalBackendEndpoints || defaultAllowedPortalBackendEndpoints,
     )
   ) {
-    delete newContext.BACKEND_ENDPOINT;
+    delete newContext.PORTAL_BACKEND_ENDPOINT;
   }
 
   if (

@@ -13,7 +13,6 @@ import {
   readSubComponentState,
 } from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
@@ -546,14 +545,6 @@ async function configurePortal(): Promise<Explorer> {
         const inputs = message?.inputs;
         const openAction = message?.openAction;
         if (inputs) {
-          if (
-            configContext.BACKEND_ENDPOINT &&
-            configContext.platform === Platform.Portal &&
-            process.env.NODE_ENV === "development"
-          ) {
-            inputs.extensionEndpoint = configContext.PROXY_PATH;
-          }
-
           updateContextsFromPortalMessage(inputs);
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
@@ -677,19 +668,10 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
 }
 
 function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
-  if (
-    configContext.BACKEND_ENDPOINT &&
-    configContext.platform === Platform.Portal &&
-    process.env.NODE_ENV === "development"
-  ) {
-    inputs.extensionEndpoint = configContext.PROXY_PATH;
-  }
-
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
 
   updateConfigContext({
-    BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
     MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
     CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
@@ -794,16 +776,7 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
     return;
   }
 
-  let url: string;
-  if (useNewPortalBackendEndpoint(Constants.BackendApi.SampleData)) {
-    url = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
-  } else {
-    const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
-      ? `/api/tokens/sampledataconnection/v2`
-      : `/api/tokens/sampledataconnection`;
-
-    url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
-  }
+  const url: string = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
 
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };

@@ -1,13 +1,11 @@
 import { useBoolean } from "@fluentui/react-hooks";
 import { userContext } from "UserContext";
-import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import * as React from "react";
 import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import ErrorImage from "../../../../images/error.svg";
 import { AuthType } from "../../../AuthType";
-import { BackendApi, HttpHeaders } from "../../../Common/Constants";
+import { HttpHeaders } from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
-import { GenerateTokenResponse } from "../../../Contracts/DataModels";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 
 interface Props {
@@ -19,10 +17,6 @@ interface Props {
 }
 
 export const fetchEncryptedToken = async (connectionString: string): Promise<string> => {
-  if (!useNewPortalBackendEndpoint(BackendApi.GenerateToken)) {
-    return await fetchEncryptedToken_ToBeDeprecated(connectionString);
-  }
-
   const headers = new Headers();
   headers.append(HttpHeaders.connectionString, connectionString);
   const url = configContext.PORTAL_BACKEND_ENDPOINT + "/api/connectionstring/token/generatetoken";
@@ -35,28 +29,11 @@ export const fetchEncryptedToken = async (connectionString: string): Promise<str
   return decodeURIComponent(encryptedTokenResponse);
 };
 
-export const fetchEncryptedToken_ToBeDeprecated = async (connectionString: string): Promise<string> => {
-  const headers = new Headers();
-  headers.append(HttpHeaders.connectionString, connectionString);
-  const url = configContext.BACKEND_ENDPOINT + "/api/guest/tokens/generateToken";
-  const response = await fetch(url, { headers, method: "POST" });
-  if (!response.ok) {
-    throw response;
-  }
-  // This API has a quirk where it must be parsed twice
-  const result: GenerateTokenResponse = JSON.parse(await response.json());
-  return decodeURIComponent(result.readWrite || result.read);
-};
-
 export const isAccountRestrictedForConnectionStringLogin = async (connectionString: string): Promise<boolean> => {
   const headers = new Headers();
   headers.append(HttpHeaders.connectionString, connectionString);
 
-  const backendEndpoint: string = useNewPortalBackendEndpoint(BackendApi.AccountRestrictions)
-    ? configContext.PORTAL_BACKEND_ENDPOINT
-    : configContext.BACKEND_ENDPOINT;
-
-  const url = backendEndpoint + "/api/guest/accountrestrictions/checkconnectionstringlogin";
+  const url: string = `${configContext.PORTAL_BACKEND_ENDPOINT}/api/guest/accountrestrictions/checkconnectionstringlogin`;
   const response = await fetch(url, { headers, method: "POST" });
   if (!response.ok) {
     throw response;
