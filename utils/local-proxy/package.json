@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node main.js",
+    "pack": "cd ../.. && npm run build:proxy && cd utils/local-proxy"
   },
   "keywords": [],
   "author": "",
