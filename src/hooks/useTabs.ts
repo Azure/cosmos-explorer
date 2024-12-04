@@ -42,6 +42,7 @@ export interface TabsState {
   selectLeftTab: () => void;
   selectRightTab: () => void;
   closeActiveTab: () => void;
+  closeAllTabs: () => void;
   persistTabsState: () => void;
 }
 
@@ -236,6 +237,9 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     } else if (state.activeTab !== undefined) {
       state.closeTab(state.activeTab);
     }
+  },
+  closeAllTabs: () => {
+    set({ openedTabs: [], openedReactTabs: [], activeTab: undefined, activeReactTab: undefined });
   },
   persistTabsState: () => {
     const state = get();

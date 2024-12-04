@@ -142,7 +142,7 @@ async function configureFabric(): Promise<Explorer> {
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
             await explorer.refreshAllDatabases();
-            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
+            if (userContext.fabricContext.isVisible) {
               firstContainerOpened = true;
               openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
             }
@@ -439,6 +439,7 @@ function createExplorerFabric(params: { connectionId: string; isVisible: boolean
       },
     },
   });
+  useTabs.getState().closeAllTabs();
   const explorer = new Explorer();
   return explorer;
 }
