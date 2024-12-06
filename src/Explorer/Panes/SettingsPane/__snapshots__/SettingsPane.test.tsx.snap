@@ -11,7 +11,7 @@ exports[`Settings Pane should render Default properly 1`] = `
     className="paneMainContent ___133e6fg_0000000 f22iagw f1vx9l62 f1l02sjl"
   >
     <Accordion
-      className="___1uf6361_0000000 fz7g6wx"
+      className="customAccordion ___1uf6361_0000000 fz7g6wx"
     >
       <AccordionItem
         value="1"
@@ -572,7 +572,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
     className="paneMainContent ___133e6fg_0000000 f22iagw f1vx9l62 f1l02sjl"
   >
     <Accordion
-      className="___1uf6361_0000000 fz7g6wx"
+      className="customAccordion ___1uf6361_0000000 fz7g6wx"
     >
       <AccordionItem
         value="6"
