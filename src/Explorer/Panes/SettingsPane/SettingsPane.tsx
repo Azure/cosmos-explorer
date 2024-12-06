@@ -482,7 +482,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   return (
     <RightPaneForm {...genericPaneProps}>
       <div className={`paneMainContent ${styles.container}`}>
-        <Accordion className={styles.firstItem}>
+        <Accordion className={`customAccordion ${styles.firstItem}`}>
           {shouldShowQueryPageOptions && (
             <AccordionItem value="1">
               <AccordionHeader>
