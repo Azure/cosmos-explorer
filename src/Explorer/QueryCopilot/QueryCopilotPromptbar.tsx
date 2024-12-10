@@ -305,7 +305,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     if (isGeneratingQuery === null) {
       return " ";
     } else if (isGeneratingQuery) {
-      return "Content is loading";
+      return "Thinking";
     } else {
       return "Content is updated";
     }
@@ -400,6 +400,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                   <IconButton
                     iconProps={{ iconName: "Send" }}
                     disabled={isGeneratingQuery || !userPrompt.trim()}
+                    allowDisabledFocus={true}
                     style={{ background: "none" }}
                     onClick={() => startGenerateQueryProcess()}
                     aria-label="Send"
@@ -705,6 +706,9 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                 </Stack>
               )}
             </Stack>
+          )}
+          {(showFeedbackBar || isGeneratingQuery) && (
+            <span role="alert" className="screenReaderOnly" aria-label={getAriaLabel()} />
           )}
           {isGeneratingQuery && (
             <ProgressIndicator
