@@ -39,7 +39,7 @@ export const SplashScreenButton: React.FC<SplashScreenButtonProps> = ({
       role="button"
     >
       <div>
-        <img src={imgSrc} />
+        <img src={imgSrc} alt={title} aria-hidden="true" />
       </div>
       <Stack style={{ marginLeft: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 600 }}>{title}</Text>
