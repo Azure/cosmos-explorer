@@ -819,22 +819,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           {this.shouldShowAnalyticalStoreOptions() && (
             <Stack className="panelGroupSpacing">
-              <Stack horizontal>
-                <Text className="panelTextBold" variant="small">
-                  Analytical store
-                </Text>
-                <TooltipHost
-                  directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={this.getAnalyticalStorageTooltipContent()}
-                >
-                  <Icon
-                    iconName="Info"
-                    className="panelInfoIcon"
-                    tabIndex={0}
-                    ariaLabel="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads."
-                  />
-                </TooltipHost>
-              </Stack>
+              <Text className="panelTextBold" variant="small">
+                {this.getAnalyticalStorageContent()}
+              </Text>
 
               <Stack horizontal verticalAlign="center">
                 <div role="radiogroup">
@@ -1230,7 +1217,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return "";
   }
 
-  private getAnalyticalStorageTooltipContent(): JSX.Element {
+  private getAnalyticalStorageContent(): JSX.Element {
     return (
       <Text variant="small">
         Enable analytical store capability to perform near real-time analytics on your operational data, without
