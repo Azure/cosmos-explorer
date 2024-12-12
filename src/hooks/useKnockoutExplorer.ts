@@ -14,7 +14,6 @@ import {
 } from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
-import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -741,8 +740,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
       });
     }
   }
-
-  getNetworkSettingsWarningMessage(useTabs.getState().setNetworkSettingsWarning);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));

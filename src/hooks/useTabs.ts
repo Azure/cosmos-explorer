@@ -18,7 +18,6 @@ export interface TabsState {
   openedReactTabs: ReactTabKind[];
   activeTab: TabsBase | undefined;
   activeReactTab: ReactTabKind | undefined;
-  networkSettingsWarning: string;
   queryCopilotTabInitialInput: string;
   isTabExecuting: boolean;
   isQueryErrorThrown: boolean;
@@ -33,7 +32,6 @@ export interface TabsState {
   closeAllNotebookTabs: (hardClose: boolean) => void;
   openAndActivateReactTab: (tabKind: ReactTabKind) => void;
   closeReactTab: (tabKind: ReactTabKind) => void;
-  setNetworkSettingsWarning: (warningMessage: string) => void;
   setQueryCopilotTabInitialInput: (input: string) => void;
   setIsTabExecuting: (state: boolean) => void;
   setIsQueryErrorThrown: (state: boolean) => void;
@@ -69,7 +67,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedReactTabs: !isPlatformFabric ? [ReactTabKind.Home] : [],
   activeTab: undefined,
   activeReactTab: !isPlatformFabric ? ReactTabKind.Home : undefined,
-  networkSettingsWarning: "",
   queryCopilotTabInitialInput: "",
   isTabExecuting: false,
   isQueryErrorThrown: false,
@@ -190,7 +187,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     set({ openedReactTabs: updatedOpenedReactTabs });
   },
-  setNetworkSettingsWarning: (warningMessage: string) => set({ networkSettingsWarning: warningMessage }),
   setQueryCopilotTabInitialInput: (input: string) => set({ queryCopilotTabInitialInput: input }),
   setIsTabExecuting: (state: boolean) => {
     set({ isTabExecuting: state });
