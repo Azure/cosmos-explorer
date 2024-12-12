@@ -1,9 +1,7 @@
-import { IMessageBarStyles, MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
+import { IMessageBarStyles, MessageBar, MessageBarType } from "@fluentui/react";
 import { CassandraProxyEndpoints, MongoProxyEndpoints } from "Common/Constants";
-import { sendMessage } from "Common/MessageHandler";
 import { configContext } from "ConfigContext";
 import { IpRule } from "Contracts/DataModels";
-import { MessageTypes } from "Contracts/ExplorerContracts";
 import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -35,7 +33,7 @@ interface TabsProps {
 }
 
 export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
-  const { openedTabs, openedReactTabs, activeTab, activeReactTab, networkSettingsWarning } = useTabs();
+  const { openedTabs, openedReactTabs, activeTab, activeReactTab } = useTabs();
   const [
     showMongoAndCassandraProxiesNetworkSettingsWarningState,
     setShowMongoAndCassandraProxiesNetworkSettingsWarningState,
@@ -60,29 +58,6 @@ export const Tabs = ({ explorer }: TabsProps): JSX.Element => {
 
   return (
     <div className="tabsManagerContainer">
-      {networkSettingsWarning && (
-        <MessageBar
-          messageBarType={MessageBarType.warning}
-          styles={defaultMessageBarStyles}
-          actions={
-            <MessageBarButton
-              onClick={() =>
-                sendMessage({
-                  type:
-                    userContext.apiType === "VCoreMongo"
-                      ? MessageTypes.OpenVCoreMongoNetworkingBlade
-                      : MessageTypes.OpenPostgresNetworkingBlade,
-                })
-              }
-            >
-              Change network settings
-            </MessageBarButton>
-          }
-          messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
-        >
-          {networkSettingsWarning}
-        </MessageBar>
-      )}
       {showMongoAndCassandraProxiesNetworkSettingsWarningState && (
         <MessageBar
           messageBarType={MessageBarType.warning}
