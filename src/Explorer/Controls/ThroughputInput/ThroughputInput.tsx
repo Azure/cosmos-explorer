@@ -1,4 +1,5 @@
 import { Checkbox, DirectionalHint, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
+import { getWorkloadType } from "Common/DatabaseAccountUtility";
 import { useDatabases } from "Explorer/useDatabases";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
@@ -35,9 +36,17 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
   const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
-  const [throughput, setThroughput] = useState<number>(
-    isFreeTier || isQuickstart ? AutoPilotUtils.autoPilotThroughput1K : AutoPilotUtils.autoPilotThroughput4K,
-  );
+  const [throughput, setThroughput] = useState<number>(() => {
+    if (
+      isFreeTier ||
+      isQuickstart ||
+      [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
+    ) {
+      return AutoPilotUtils.autoPilotThroughput1K;
+    }
+
+    return AutoPilotUtils.autoPilotThroughput4K;
+  });
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
   const [throughputError, setThroughputError] = useState<string>("");
   const [totalThroughputUsed, setTotalThroughputUsed] = useState<number>(0);
@@ -157,9 +166,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
     if (mode === "Autoscale") {
-      const defaultThroughput = isFreeTier
-        ? AutoPilotUtils.autoPilotThroughput1K
-        : AutoPilotUtils.autoPilotThroughput4K;
+      const defaultThroughput =
+        isFreeTier ||
+        [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
+          ? AutoPilotUtils.autoPilotThroughput1K
+          : AutoPilotUtils.autoPilotThroughput4K;
       setThroughput(defaultThroughput);
       setIsAutoScaleSelected(true);
       setThroughputValue(defaultThroughput);
