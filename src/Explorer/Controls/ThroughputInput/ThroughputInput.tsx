@@ -35,18 +35,15 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   setIsThroughputCapExceeded,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
-  const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
-  const [throughput, setThroughput] = useState<number>(() => {
-    if (
-      isFreeTier ||
-      isQuickstart ||
-      [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
-    ) {
-      return AutoPilotUtils.autoPilotThroughput1K;
-    }
+  const defaultThroughput: number =
+    isFreeTier ||
+    isQuickstart ||
+    [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
+      ? AutoPilotUtils.autoPilotThroughput1K
+      : AutoPilotUtils.autoPilotThroughput4K;
 
-    return AutoPilotUtils.autoPilotThroughput4K;
-  });
+  const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
+  const [throughput, setThroughput] = useState<number>(defaultThroughput);
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
   const [throughputError, setThroughputError] = useState<string>("");
   const [totalThroughputUsed, setTotalThroughputUsed] = useState<number>(0);
@@ -56,7 +53,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
   const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
-
   useEffect(() => {
     // throughput cap check for the initial state
     let totalThroughput = 0;
@@ -166,11 +162,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
     if (mode === "Autoscale") {
-      const defaultThroughput =
-        isFreeTier ||
-        [Constants.WorkloadType.Learning, Constants.WorkloadType.DevelopmentTesting].includes(getWorkloadType())
-          ? AutoPilotUtils.autoPilotThroughput1K
-          : AutoPilotUtils.autoPilotThroughput4K;
       setThroughput(defaultThroughput);
       setIsAutoScaleSelected(true);
       setThroughputValue(defaultThroughput);
