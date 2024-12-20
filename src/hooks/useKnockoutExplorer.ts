@@ -14,7 +14,6 @@ import {
 } from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
-import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -142,7 +141,7 @@ async function configureFabric(): Promise<Explorer> {
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
             await explorer.refreshAllDatabases();
-            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
+            if (userContext.fabricContext.isVisible) {
               firstContainerOpened = true;
               openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
             }
@@ -439,6 +438,7 @@ function createExplorerFabric(params: { connectionId: string; isVisible: boolean
       },
     },
   });
+  useTabs.getState().closeAllTabs();
   const explorer = new Explorer();
   return explorer;
 }
@@ -740,8 +740,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
       });
     }
   }
-
-  getNetworkSettingsWarningMessage(useTabs.getState().setNetworkSettingsWarning);
 
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
