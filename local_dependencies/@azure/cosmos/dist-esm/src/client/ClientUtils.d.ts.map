@@ -1,1 +1,0 @@
-{"version":3,"file":"ClientUtils.d.ts","sourceRoot":"","sources":["../../../src/client/ClientUtils.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,sBAAsB,EAAE,MAAM,uCAAuC,CAAC;AAC/E,OAAO,EAAE,sBAAsB,EAAE,MAAM,cAAc,CAAC;AACtD,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AAExC,wBAAsB,0BAA0B,CAC9C,cAAc,EAAE,sBAAsB,EACtC,SAAS,EAAE,SAAS,GACnB,OAAO,CAAC,sBAAsB,CAAC,CAGjC"}

@@ -1,1 +1,0 @@
-{"version":3,"file":"SingleIndexUtilizationEntity.d.ts","sourceRoot":"","sources":["../../../src/indexMetrics/SingleIndexUtilizationEntity.ts"],"names":[],"mappings":"AAGA;;GAEG;AACH,MAAM,WAAW,4BAA4B;IAC3C,gBAAgB,CAAC,EAAE,MAAM,CAAC;IAC1B,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,gBAAgB,CAAC,EAAE,OAAO,CAAC;IAC3B,eAAe,CAAC,EAAE,OAAO,CAAC;IAC1B,gBAAgB,CAAC,EAAE,MAAM,CAAC;CAC3B"}

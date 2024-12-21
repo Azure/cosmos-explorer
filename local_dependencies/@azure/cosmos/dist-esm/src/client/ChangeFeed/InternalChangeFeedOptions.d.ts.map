@@ -1,1 +1,0 @@
-{"version":3,"file":"InternalChangeFeedOptions.d.ts","sourceRoot":"","sources":["../../../../src/client/ChangeFeed/InternalChangeFeedOptions.ts"],"names":[],"mappings":"AAGA;;;GAGG;AACH,MAAM,WAAW,iCAAiC;IAChD,YAAY,CAAC,EAAE,MAAM,CAAC;IAEtB,YAAY,CAAC,EAAE,MAAM,CAAC;IAEtB,iBAAiB,CAAC,EAAE,MAAM,CAAC;IAE3B,SAAS,CAAC,EAAE,IAAI,CAAC;CAClB"}
