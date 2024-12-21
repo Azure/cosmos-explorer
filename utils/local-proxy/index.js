@@ -1,35 +1,39 @@
-const { assert } = require("console");
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const { inspect } = require("util");
+const fs = require("fs");
+const https = require("https");
 
 const conf = {};
 conf.PORT = process.env.EXPLORER_PORT || 1234;
 conf.LOG_LEVEL = process.env.LOG_LEVEL || "info";
-conf.EMULATOR_ENDPOINT = process.env.EMULATOR_ENDPOINT || "http://127.0.0.1:8081";
+conf.EMULATOR_ENDPOINT = process.env.EMULATOR_ENDPOINT || "http://localhost:8081";
 conf.ENDPOINT_DISCOVERY_ENABLED = (process.env.ENDPOINT_DISCOVERY_ENABLED || "false").toLowerCase() === "true";
+conf.GATEWAY_TLS_ENABLED = (process.env.GATEWAY_TLS_ENABLED || "false").toLowerCase() === "true";
+conf.CERT_PATH = process.env.CERT_PATH;
+conf.CERT_SECRET = process.env.CERT_SECRET;
 
 const LOG_NUM = levelToNumber(conf.LOG_LEVEL);
-function log(level, msg, color) {
+function _log(level, msg, color) {
   if (levelToNumber(level) >= LOG_NUM) {
     console.log(`${colorToCode(color)}[${level || "debug"}]${msg}\x1b[0m`);
   }
 }
 
-function debug(msg, color) {
-  log("debug", msg, color);
+function _debug(msg, color) {
+  _log("debug", msg, color);
 }
 
-function info(msg, color) {
-  log("info", msg, color);
+function _info(msg, color) {
+  _log("info", msg, color);
 }
 
-function warn(msg, color) {
-  log("warn", msg, color || "yellow");
+function _warn(msg, color) {
+  _log("warn", msg, color || "yellow");
 }
 
-function err(msg, color) {
-  log("error", msg, color || "red");
+function _err(msg, color) {
+  _log("error", msg, color || "red");
 }
 
 function levelToNumber(level) {
@@ -76,11 +80,11 @@ const testEndpoint = () => {
   fetch(conf.EMULATOR_ENDPOINT)
     .then(async (res) => {
       const body = await res.json();
-      info("[EMU] Emulator is accessible");
+      _info("[EMU] Emulator is accessible");
     })
-    .catch((err) => {
-      err("[EMU] Emulator is not accessible");
-      err(`[EMU] ${inspect(err)}`);
+    .catch((e) => {
+      _warn("[EMU] Emulator is not accessible");
+      _warn(`[EMU] ${inspect(e)}`);
     });
 };
 
@@ -88,33 +92,30 @@ testEndpoint();
 
 const app = express();
 
-app.use((err, req, res, next) => {
-  err(`[APP] ${inspect(err)}`);
-  res.status(500).json({ error: err.message });
+app.use((e, req, res, next) => {
+  _err(`[APP] ${inspect(e)}`);
+  res.status(500).json({ error: _err.message });
 });
 
 app.use((req, res, next) => {
   req.startTime = new Date();
-  req.requestId = Math.random().toString(36).substring(7);
   res.append("Access-Control-Allow-Origin", "*");
   res.append("Access-Control-Allow-Credentials", "true");
   res.append("Access-Control-Max-Age", "3600");
   res.append("Access-Control-Allow-Headers", "*");
   res.append("Access-Control-Allow-Methods", "*");
+  res.once("finish", () => {
+    const ms = new Date() - req.startTime;
+    (res.statusCode < 400 ? _debug : _err)(
+      `[APP] ${req.method} ${req.url} ${res.statusCode} - ${ms}ms`,
+      statusToColor(res.statusCode),
+    );
+  });
   next();
-  const ms = new Date() - req.startTime;
-  (res.statusCode < 400 ? debug : err)(
-    `[APP][${req.requestId}][${req.method}][${res.statusCode}][${ms}ms] ${req.url}`,
-    statusToColor(res.statusCode),
-  );
 });
 
 app.get("/_ready", (_, res) => {
-  if (compilationComplete) {
-    res.status(200).send("Compilation complete.");
-  } else {
-    res.status(503).send("Compilation not complete.");
-  }
+  res.status(200).send("Compilation complete.");
 });
 
 const appConf = {
@@ -155,6 +156,21 @@ app.use(`/${conf.AZURE_TENANT_ID}`, unsupported);
 
 app.use(express.static("dist"));
 
-info(`[EMU] Expecting emulator on [${conf.EMULATOR_ENDPOINT}]`);
-info(`[APP] Listening on [${conf.PORT}]`);
-app.listen(conf.PORT);
+_info(`[EMU] Expecting emulator on [${conf.EMULATOR_ENDPOINT}]`);
+_info(`[APP] Listening on [${conf.PORT}]`);
+if (conf.GATEWAY_TLS_ENABLED) {
+  if (!conf.CERT_PATH || !conf.CERT_SECRET) {
+    _err("[APP] Certificate path or secret not provided");
+    process.exit(1);
+  }
+
+  const options = {
+    pfx: fs.readFileSync(conf.CERT_PATH),
+    passphrase: conf.CERT_SECRET,
+  };
+
+  const server = https.createServer(options, app);
+  server.listen(conf.PORT);
+} else {
+  app.listen(conf.PORT);
+}
