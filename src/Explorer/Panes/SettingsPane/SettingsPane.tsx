@@ -6,6 +6,7 @@ import {
   Checkbox,
   ChoiceGroup,
   DefaultButton,
+  Dropdown,
   IChoiceGroupOption,
   ISpinButtonStyles,
   IToggleStyles,
@@ -679,10 +680,41 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   </div>
                 </AccordionPanel>
               </AccordionItem>
+
+              <AccordionItem value="6">
+                <AccordionHeader>
+                  <div className={styles.header}>Region Selection</div>
+                </AccordionHeader>
+                <AccordionPanel>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      Select region for read and write operations.
+                    </div>
+                    <Dropdown
+                      placeholder="Select Read Region"
+                      options={[
+                        { key: "West US", text: "West US" },
+                        { key: "East US", text: "East US" },
+                        { key: "Central US", text: "Central US" },
+                      ]}
+                    />
+                    <Dropdown
+                      placeholder="Select Write Region"
+                      options={[
+                        { key: "West US", text: "West US" },
+                        { key: "East US", text: "East US" },
+                        { key: "Central US", text: "Central US" },
+                      ]}
+                      styles={{ root: { marginTop: "10px" } }}
+                    />
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
             </>
           )}
-          {showRetrySettings && (
-            <AccordionItem value="6">
+
+          {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") && (
+            <AccordionItem value="7">
               <AccordionHeader>
                 <div className={styles.header}>Retry Settings</div>
               </AccordionHeader>
@@ -754,32 +786,21 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {!isEmulator && (
-            <AccordionItem value="7">
-              <AccordionHeader>
-                <div className={styles.header}>Enable container pagination</div>
-              </AccordionHeader>
-              <AccordionPanel>
-                <div className={styles.settingsSectionContainer}>
-                  <div className={styles.settingsSectionDescription}>
-                    Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
-                  </div>
-                  <Checkbox
-                    styles={{
-                      label: { padding: 0 },
-                    }}
-                    className="padding"
-                    ariaLabel="Enable container pagination"
-                    checked={containerPaginationEnabled}
-                    onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
-                    label="Enable container pagination"
-                  />
+
+          <AccordionItem value="8">
+            <AccordionHeader>
+              <div className={styles.header}>Enable container pagination</div>
+            </AccordionHeader>
+            <AccordionPanel>
+              <div className={styles.settingsSectionContainer}>
+                <div className={styles.settingsSectionDescription}>
+                  Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
                 </div>
               </AccordionPanel>
             </AccordionItem>
           )}
           {shouldShowCrossPartitionOption && (
-            <AccordionItem value="8">
+            <AccordionItem value="9">
               <AccordionHeader>
                 <div className={styles.header}>Enable cross-partition query</div>
               </AccordionHeader>
@@ -804,7 +825,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowParallelismOption && (
-            <AccordionItem value="9">
+            <AccordionItem value="10">
               <AccordionHeader>
                 <div className={styles.header}>Max degree of parallelism</div>
               </AccordionHeader>
@@ -837,7 +858,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowPriorityLevelOption && (
-            <AccordionItem value="10">
+            <AccordionItem value="11">
               <AccordionHeader>
                 <div className={styles.header}>Priority Level</div>
               </AccordionHeader>
@@ -860,7 +881,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowGraphAutoVizOption && (
-            <AccordionItem value="11">
+            <AccordionItem value="12">
               <AccordionHeader>
                 <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
               </AccordionHeader>
@@ -881,7 +902,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowCopilotSampleDBOption && (
-            <AccordionItem value="12">
+            <AccordionItem value="13">
               <AccordionHeader>
                 <div className={styles.header}>Enable sample database</div>
               </AccordionHeader>
