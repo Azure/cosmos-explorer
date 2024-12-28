@@ -11,6 +11,8 @@ export enum StorageKey {
   RUThreshold,
   QueryTimeoutEnabled,
   QueryTimeout,
+  ReadRegion,
+  WriteRegion,
   RetryAttempts,
   RetryInterval,
   MaxWaitTimeInSeconds,
