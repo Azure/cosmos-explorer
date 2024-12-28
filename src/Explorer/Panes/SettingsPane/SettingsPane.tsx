@@ -8,6 +8,7 @@ import {
   DefaultButton,
   Dropdown,
   IChoiceGroupOption,
+  IDropdownOption,
   ISpinButtonStyles,
   IToggleStyles,
   Position,
@@ -144,6 +145,16 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false",
   );
+  const [readRegion, setReadRegion] = useState<string>(
+    LocalStorageUtility.hasItem(StorageKey.ReadRegion)
+      ? LocalStorageUtility.getEntryString(StorageKey.ReadRegion)
+      : userContext?.databaseAccount?.properties?.readLocations?.[0]?.locationName,
+  );
+  const [writeRegion, setWriteRegion] = useState<string>(
+    LocalStorageUtility.hasItem(StorageKey.WriteRegion)
+      ? LocalStorageUtility.getEntryString(StorageKey.WriteRegion)
+      : userContext?.databaseAccount?.properties?.writeLocations?.[0]?.locationName,
+  );
   const [retryAttempts, setRetryAttempts] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
       ? LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts)
@@ -178,18 +189,18 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const explorerVersion = configContext.gitSha;
   const isEmulator = configContext.platform === Platform.Emulator;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
-  const showRetrySettings =
-    (userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
-    !isEmulator;
-  const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin" && !isEmulator;
-  const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin" && !isEmulator;
-  const shouldShowParallelismOption = userContext.apiType !== "Gremlin" && !isEmulator;
-  const showEnableEntraIdRbac =
-    isDataplaneRbacSupported(userContext.apiType) &&
-    userContext.authType === AuthType.AAD &&
-    configContext.platform !== Platform.Fabric &&
-    !isEmulator;
-  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled() && !isEmulator;
+  const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
+  const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
+  const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
+  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
+  const readRegionOptions = userContext?.databaseAccount?.properties?.readLocations?.map((location) => ({
+    key: location.locationName,
+    text: location.locationName,
+  }));
+  const writeRegionOptions = userContext?.databaseAccount?.properties?.writeLocations?.map((location) => ({
+    key: location.locationName,
+    text: location.locationName,
+  }));
   const shouldShowCopilotSampleDBOption =
     userContext.apiType === "SQL" &&
     useQueryCopilot.getState().copilotEnabled &&
@@ -277,6 +288,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
+    LocalStorageUtility.setEntryString(StorageKey.ReadRegion, readRegion);
+    LocalStorageUtility.setEntryString(StorageKey.WriteRegion, writeRegion);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
     LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
@@ -422,6 +435,16 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     option: IChoiceGroupOption,
   ): void => {
     setDefaultQueryResultsView(option.key as SplitterDirection);
+  };
+
+  const handleOnReadRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
+    // TODO: Region validation?
+    setReadRegion(option.text);
+  };
+
+  const handleOnWriteRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
+    // TODO: Region Validation?
+    setWriteRegion(option.text);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -690,22 +713,28 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     <div className={styles.settingsSectionDescription}>
                       Select region for read and write operations.
                     </div>
+                    <div>
+                      <span className={styles.subHeader}>Read Region</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Changes the account endpoint used to perform read operations.
+                      </InfoTooltip>
+                    </div>
                     <Dropdown
-                      placeholder="Select Read Region"
-                      options={[
-                        { key: "West US", text: "West US" },
-                        { key: "East US", text: "East US" },
-                        { key: "Central US", text: "Central US" },
-                      ]}
+                      placeholder={readRegion}
+                      onChange={handleOnReadRegionOptionChange}
+                      options={readRegionOptions}
+                      styles={{ root: { marginBottom: "10px" } }}
                     />
+                    <div>
+                      <span className={styles.subHeader}>Write Region</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Changes the account endpoint used to perform write operations.
+                      </InfoTooltip>
+                    </div>
                     <Dropdown
-                      placeholder="Select Write Region"
-                      options={[
-                        { key: "West US", text: "West US" },
-                        { key: "East US", text: "East US" },
-                        { key: "Central US", text: "Central US" },
-                      ]}
-                      styles={{ root: { marginTop: "10px" } }}
+                      placeholder={writeRegion}
+                      onChange={handleOnWriteRegionOptionChange}
+                      options={writeRegionOptions}
                     />
                   </div>
                 </AccordionPanel>
