@@ -150,11 +150,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.ReadRegion)
       : userContext?.databaseAccount?.properties?.readLocations?.[0]?.locationName,
   );
-  const [writeRegion, setWriteRegion] = useState<string>(
-    LocalStorageUtility.hasItem(StorageKey.WriteRegion)
-      ? LocalStorageUtility.getEntryString(StorageKey.WriteRegion)
-      : userContext?.databaseAccount?.properties?.writeLocations?.[0]?.locationName,
-  );
   const [retryAttempts, setRetryAttempts] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
       ? LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts)
@@ -194,10 +189,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
   const readRegionOptions = userContext?.databaseAccount?.properties?.readLocations?.map((location) => ({
-    key: location.locationName,
-    text: location.locationName,
-  }));
-  const writeRegionOptions = userContext?.databaseAccount?.properties?.writeLocations?.map((location) => ({
     key: location.locationName,
     text: location.locationName,
   }));
@@ -289,7 +280,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryString(StorageKey.ReadRegion, readRegion);
-    LocalStorageUtility.setEntryString(StorageKey.WriteRegion, writeRegion);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
     LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
@@ -440,11 +430,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const handleOnReadRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
     // TODO: Region validation?
     setReadRegion(option.text);
-  };
-
-  const handleOnWriteRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
-    // TODO: Region Validation?
-    setWriteRegion(option.text);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -711,12 +696,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 <AccordionPanel>
                   <div className={styles.settingsSectionContainer}>
                     <div className={styles.settingsSectionDescription}>
-                      Select region for read and write operations.
+                      Changes region the Cosmos Client uses to access account.
                     </div>
                     <div>
-                      <span className={styles.subHeader}>Read Region</span>
+                      <span className={styles.subHeader}>Select Region</span>
                       <InfoTooltip className={styles.headerIcon}>
-                        Changes the account endpoint used to perform read operations.
+                        Changes the account endpoint used to perform client operations.
                       </InfoTooltip>
                     </div>
                     <Dropdown
@@ -724,17 +709,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       onChange={handleOnReadRegionOptionChange}
                       options={readRegionOptions}
                       styles={{ root: { marginBottom: "10px" } }}
-                    />
-                    <div>
-                      <span className={styles.subHeader}>Write Region</span>
-                      <InfoTooltip className={styles.headerIcon}>
-                        Changes the account endpoint used to perform write operations.
-                      </InfoTooltip>
-                    </div>
-                    <Dropdown
-                      placeholder={writeRegion}
-                      onChange={handleOnWriteRegionOptionChange}
-                      options={writeRegionOptions}
                     />
                   </div>
                 </AccordionPanel>
