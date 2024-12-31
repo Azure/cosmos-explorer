@@ -107,7 +107,9 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
+  console.log(`REQUEST CONTEXT ENDPOINT: ${JSON.stringify(requestContext.endpoint)}`);
   requestContext.headers["x-ms-proxy-target"] = endpoint();
+  console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
   return next(requestContext);
 };
 
@@ -267,6 +269,25 @@ export function client(): Cosmos.CosmosClient {
       },
     },
   };
+
+  // Account details from userContext.
+  console.log(`userContext details: ${JSON.stringify(userContext)}`);
+  console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
+  console.log(
+    `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.documentEndpoint,
+    )}`,
+  );
+  console.log(
+    `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.readLocations,
+    )}`,
+  );
+  console.log(
+    `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.writeLocations,
+    )}`,
+  );
 
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];

@@ -425,6 +425,23 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
   const handleOnReadRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
     // TODO: Region validation?
+    const updatedDatabaseAccount = {
+      ...userContext.databaseAccount,
+      properties: {
+        ...userContext.databaseAccount.properties,
+        documentEndpoint: userContext?.databaseAccount?.properties?.readLocations?.find(
+          (loc) => loc.locationName === readRegion,
+        )?.documentEndpoint,
+      },
+    };
+    updateUserContext({
+      databaseAccount: updatedDatabaseAccount,
+    });
+    console.log(
+      `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
+        userContext?.databaseAccount?.properties?.documentEndpoint,
+      )}`,
+    );
     setReadRegion(option.text);
   };
 
