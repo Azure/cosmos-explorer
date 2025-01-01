@@ -231,10 +231,13 @@ export function client(): Cosmos.CosmosClient {
 
     const currentWriteRegion = await client.getWriteEndpoint();
     console.log(`Current write endpoint: ${JSON.stringify(currentWriteRegion)}`);
+    console.log(`Current userContext endpoint: ${JSON.stringify(userContext?.endpoint)}`);
   }
 
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    // endpoint: "https://test-craig-nosql-westus3.documents.azure.com:443/",
+    // endpoint: "https://test-craig-nosql-eastus2.documents.azure.com:443/",
     key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
