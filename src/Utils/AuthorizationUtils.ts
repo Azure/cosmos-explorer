@@ -73,10 +73,11 @@ export async function acquireMsalTokenForAccount(
   if (userContext.databaseAccount.properties?.documentEndpoint === undefined) {
     throw new Error("Database account has no document endpoint defined");
   }
-  const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
-    /\/+$/,
-    "/.default",
-  );
+  // const hrefEndpoint = new URL(userContext.databaseAccount.properties.documentEndpoint).href.replace(
+  //   /\/+$/,
+  //   "/.default",
+  // );
+  const hrefEndpoint = new URL("https://test-craig-nosql.documents.azure.com").href.replace(/\/+$/, "/.default");
   const msalInstance = await getMsalInstance();
   const knownAccounts = msalInstance.getAllAccounts();
   // If user_hint is provided, we will try to use it to find the account.
