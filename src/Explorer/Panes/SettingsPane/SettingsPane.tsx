@@ -144,10 +144,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false",
   );
-  const [readRegion, setReadRegion] = useState<string>(
-    LocalStorageUtility.hasItem(StorageKey.ReadRegion)
-      ? LocalStorageUtility.getEntryString(StorageKey.ReadRegion)
-      : userContext?.databaseAccount?.properties?.readLocations?.[0]?.locationName,
+  const [selectedRegion, setSelectedRegion] = useState<string>(
+    LocalStorageUtility.hasItem(StorageKey.SelectedRegion)
+      ? LocalStorageUtility.getEntryString(StorageKey.SelectedRegion)
+      : Constants.RegionSelectionOptions.Global,
   );
   const [retryAttempts, setRetryAttempts] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
@@ -186,10 +186,44 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
-  const readRegionOptions = userContext?.databaseAccount?.properties?.readLocations?.map((location) => ({
-    key: location.locationName,
-    text: location.locationName,
-  }));
+
+  const uniqueAccountRegions = new Set<string>();
+  const regionOptions: IDropdownOption[] = [];
+  regionOptions.push({
+    key: Constants.RegionSelectionOptions.Global,
+    text: `${Constants.RegionSelectionOptions.Global} (Default)`,
+    data: {
+      endpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
+      writeEnabled: true,
+    },
+  });
+  userContext?.databaseAccount?.properties?.writeLocations?.forEach((loc) => {
+    if (!uniqueAccountRegions.has(loc.locationName)) {
+      uniqueAccountRegions.add(loc.locationName);
+      regionOptions.push({
+        key: loc.locationName,
+        text: `${loc.locationName} (Read/Write)`,
+        data: {
+          endpoint: loc.documentEndpoint,
+          writeEnabled: true,
+        },
+      });
+    }
+  });
+  userContext?.databaseAccount?.properties?.readLocations?.forEach((loc) => {
+    if (!uniqueAccountRegions.has(loc.locationName)) {
+      uniqueAccountRegions.add(loc.locationName);
+      regionOptions.push({
+        key: loc.locationName,
+        text: `${loc.locationName} (Read)`,
+        data: {
+          endpoint: loc.documentEndpoint,
+          writeEnabled: false,
+        },
+      });
+    }
+  });
+
   const shouldShowCopilotSampleDBOption =
     userContext.apiType === "SQL" &&
     useQueryCopilot.getState().copilotEnabled &&
@@ -273,20 +307,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       }
     }
 
-    // Check if region selection has been updated.  Update database account in user context accordingly.
-    const updatedDatabaseAccount = {
-      ...userContext.databaseAccount,
-      properties: {
-        ...userContext.databaseAccount.properties,
-        documentEndpoint: userContext?.databaseAccount?.properties?.readLocations?.find(
-          (loc) => loc.locationName === readRegion,
-        )?.documentEndpoint,
-      },
-    };
+    // TODO: Check if region selection has been updated.  Update database account in user context accordingly.
     updateUserContext({
-      databaseAccount: updatedDatabaseAccount,
+      selectedRegionalEndpoint: regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint,
       hasCosmosClientRegionSettingChanged: true,
     });
+    // TODO: If Global selected, then clear out region selection, but keep change variable enabled.
     console.log(
       `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
         userContext?.databaseAccount?.properties?.documentEndpoint,
@@ -295,7 +321,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
-    LocalStorageUtility.setEntryString(StorageKey.ReadRegion, readRegion);
+    LocalStorageUtility.setEntryString(StorageKey.SelectedRegion, selectedRegion);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
     LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
@@ -443,9 +469,8 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     setDefaultQueryResultsView(option.key as SplitterDirection);
   };
 
-  const handleOnReadRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
-    // TODO: Region validation?
-    setReadRegion(option.text);
+  const handleOnSelectedRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
+    setSelectedRegion(option.key as string);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -723,9 +748,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       </InfoTooltip>
                     </div>
                     <Dropdown
-                      placeholder={readRegion}
-                      onChange={handleOnReadRegionOptionChange}
-                      options={readRegionOptions}
+                      placeholder={regionOptions.find((option) => option.key === selectedRegion)?.text}
+                      onChange={handleOnSelectedRegionOptionChange}
+                      options={regionOptions}
                       styles={{ root: { marginBottom: "10px" } }}
                     />
                   </div>
