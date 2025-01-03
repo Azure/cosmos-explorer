@@ -194,6 +194,8 @@ enum SDKSupportedCapabilities {
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
+  console.log(`Client Call`);
+  console.log(`Client Call: userContext.hasDataPlaneRbacSettingChanged: ${userContext.hasDataPlaneRbacSettingChanged}`);
   if (_client) {
     if (!userContext.refreshCosmosClient) {
       return _client;
