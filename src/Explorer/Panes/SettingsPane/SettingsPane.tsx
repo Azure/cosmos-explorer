@@ -193,6 +193,18 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
 
+    // Check if any settings have changed that would require refresh of the Cosmos Client.
+    if (
+      enableDataPlaneRBACOption !== LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) ||
+      retryAttempts != LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts) ||
+      retryInterval != LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval) ||
+      MaxWaitTimeInSeconds != LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
+    ) {
+      updateUserContext({
+        refreshCosmosClientAfterSettingsChange: true,
+      });
+    }
+
     if (configContext.platform !== Platform.Fabric) {
       LocalStorageUtility.setEntryString(StorageKey.DataPlaneRbacEnabled, enableDataPlaneRBACOption);
       if (
@@ -202,7 +214,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ) {
         updateUserContext({
           dataPlaneRbacEnabled: true,
-          refreshCosmosClientAfterSettingsChange: true,
         });
         useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
         try {
@@ -226,7 +237,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       } else {
         updateUserContext({
           dataPlaneRbacEnabled: false,
-          refreshCosmosClientAfterSettingsChange: true,
         });
         const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
         if (!userContext.features.enableAadDataPlane && !userContext.masterKey) {
