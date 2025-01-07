@@ -189,16 +189,16 @@ let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
   if (_client) {
-    if (!userContext.hasDataPlaneRbacSettingChanged) {
+    if (!userContext.refreshCosmosClientAfterSettingsChange) {
       return _client;
     }
     _client.dispose();
     _client = null;
   }
 
-  if (userContext.hasDataPlaneRbacSettingChanged) {
+  if (userContext.refreshCosmosClientAfterSettingsChange) {
     updateUserContext({
-      hasDataPlaneRbacSettingChanged: false,
+      refreshCosmosClientAfterSettingsChange: false,
     });
   }
 

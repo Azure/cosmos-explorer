@@ -202,7 +202,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ) {
         updateUserContext({
           dataPlaneRbacEnabled: true,
-          hasDataPlaneRbacSettingChanged: true,
+          refreshCosmosClientAfterSettingsChange: true,
         });
         useDataPlaneRbac.setState({ dataPlaneRbacEnabled: true });
         try {
@@ -226,7 +226,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       } else {
         updateUserContext({
           dataPlaneRbacEnabled: false,
-          hasDataPlaneRbacSettingChanged: true,
+          refreshCosmosClientAfterSettingsChange: true,
         });
         const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
         if (!userContext.features.enableAadDataPlane && !userContext.masterKey) {
