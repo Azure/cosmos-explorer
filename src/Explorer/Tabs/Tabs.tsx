@@ -343,7 +343,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
 const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
   const ipRules: IpRule[] = userContext.databaseAccount?.properties?.ipRules;
   if (
-    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local) ||
+    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Development) ||
       (userContext.apiType === "Cassandra" &&
         configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development)) &&
     ipRules?.length

@@ -93,7 +93,7 @@ export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
 };
 
 export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
-  MongoProxyEndpoints.Local,
+  MongoProxyEndpoints.Development,
   MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
   MongoProxyEndpoints.Fairfax,
