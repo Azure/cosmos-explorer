@@ -35,7 +35,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - run: npm install
       - run: npm ci
       - run: npm run compile
       - run: npm run compile:strict
