@@ -189,16 +189,16 @@ let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
   if (_client) {
-    if (!userContext.refreshCosmosClientAfterSettingsChange) {
+    if (!userContext.refreshCosmosClient) {
       return _client;
     }
     _client.dispose();
     _client = null;
   }
 
-  if (userContext.refreshCosmosClientAfterSettingsChange) {
+  if (userContext.refreshCosmosClient) {
     updateUserContext({
-      refreshCosmosClientAfterSettingsChange: false,
+      refreshCosmosClient: false,
     });
   }
 

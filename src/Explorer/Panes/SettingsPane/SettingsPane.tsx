@@ -200,7 +200,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       MaxWaitTimeInSeconds !== LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
     ) {
       updateUserContext({
-        refreshCosmosClientAfterSettingsChange: true,
+        refreshCosmosClient: true,
       });
     }
 
