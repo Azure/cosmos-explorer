@@ -196,9 +196,9 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     // Check if any settings have changed that would require refresh of the Cosmos Client.
     if (
       enableDataPlaneRBACOption !== LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) ||
-      retryAttempts != LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts) ||
-      retryInterval != LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval) ||
-      MaxWaitTimeInSeconds != LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
+      retryAttempts !== LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts) ||
+      retryInterval !== LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval) ||
+      MaxWaitTimeInSeconds !== LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds)
     ) {
       updateUserContext({
         refreshCosmosClientAfterSettingsChange: true,
