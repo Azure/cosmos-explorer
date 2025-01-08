@@ -193,7 +193,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     LocalStorageUtility.setEntryNumber(StorageKey.CustomItemPerPage, customItemPerPage);
 
-    // Check if any settings have changed that would require refresh of the Cosmos Client.
     if (
       enableDataPlaneRBACOption !== LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled) ||
       retryAttempts !== LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts) ||
