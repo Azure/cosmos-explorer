@@ -11,7 +11,8 @@ export type isDirtyTypes =
   | DataModels.IndexingPolicy
   | DataModels.ComputedProperties
   | DataModels.VectorEmbedding[]
-  | DataModels.FullTextPolicy;
+  | DataModels.FullTextPolicy
+  | DataModels.ThroughputBucket[];
 export const TtlOff = "off";
 export const TtlOn = "on";
 export const TtlOnNoDefault = "on-nodefault";

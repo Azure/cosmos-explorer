@@ -86,6 +86,8 @@ export interface SettingsComponentState {
   wasAutopilotOriginallySet: boolean;
   isScaleSaveable: boolean;
   isScaleDiscardable: boolean;
+  throughputBuckets: DataModels.ThroughputBucket[];
+  throughputBucketsBaseline: DataModels.ThroughputBucket[];
   throughputError: string;
 
   timeToLive: TtlType;
@@ -158,6 +160,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private isVectorSearchEnabled: boolean;
   private isFullTextSearchEnabled: boolean;
   private totalThroughputUsed: number;
+  private throughputBucketsEnabled: boolean;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
   constructor(props: SettingsComponentProps) {
@@ -175,6 +178,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
+      this.throughputBucketsEnabled =
+        userContext.features.enableThroughputBuckets && userContext.authType === AuthType.AAD;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -193,6 +198,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       wasAutopilotOriginallySet: false,
       isScaleSaveable: false,
       isScaleDiscardable: false,
+      throughputBuckets: undefined,
+      throughputBucketsBaseline: undefined,
       throughputError: undefined,
 
       timeToLive: undefined,
@@ -419,6 +426,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     this.setState({
       throughput: this.state.throughputBaseline,
+      throughputBuckets: this.state.throughputBucketsBaseline,
+      throughputBucketsBaseline: this.state.throughputBucketsBaseline,
       timeToLive: this.state.timeToLiveBaseline,
       timeToLiveSeconds: this.state.timeToLiveSecondsBaseline,
       displayedTtlSeconds: this.state.displayedTtlSecondsBaseline,
@@ -749,9 +758,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       ] as DataModels.ComputedProperties;
     }
 
+    const throughputBuckets = this.offer?.throughputBuckets;
+
     return {
       throughput: offerThroughput,
       throughputBaseline: offerThroughput,
+      throughputBuckets,
+      throughputBucketsBaseline: throughputBuckets,
       changeFeedPolicy: changeFeedPolicy,
       changeFeedPolicyBaseline: changeFeedPolicy,
       timeToLive: timeToLive,
@@ -837,6 +850,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });
+  };
+
+  private onThroughputBucketChange = (throughputBuckets: DataModels.ThroughputBucket[]): void => {
+    this.setState({ throughputBuckets });
   };
 
   private onAutoPilotSelected = (isAutoPilotSelected: boolean): void =>
@@ -1036,6 +1053,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         currentOffer: this.collection.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
         manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
+        ...(this.state.throughputBuckets && { throughputBuckets: this.state.throughputBuckets }),
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -1102,6 +1120,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
       onScaleSaveableChange: this.onScaleSaveableChange,
       onScaleDiscardableChange: this.onScaleDiscardableChange,
+      throughputBucketsBaseline: this.state.throughputBucketsBaseline,
+      throughputBuckets: this.state.throughputBuckets,
+      enableThroughputBuckets: this.isCollectionSettingsTab && this.throughputBucketsEnabled,
+      onThroughputBucketChange: this.onThroughputBucketChange,
       throughputError: this.state.throughputError,
     };
 

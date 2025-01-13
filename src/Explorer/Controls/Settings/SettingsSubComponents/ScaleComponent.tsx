@@ -16,6 +16,7 @@ import {
   titleAndInputStackProps,
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
+import { ThroughputBucketsComponent } from "./ThroughputInputComponents/ThroughputBucketsComponent";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 export interface ScaleComponentProps {
@@ -33,10 +34,21 @@ export interface ScaleComponentProps {
   onMaxAutoPilotThroughputChange: (newThroughput: number) => void;
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
+  throughputBuckets: DataModels.ThroughputBucket[];
+  throughputBucketsBaseline: DataModels.ThroughputBucket[];
+  enableThroughputBuckets: boolean;
+  onThroughputBucketChange: (throughputBuckets: DataModels.ThroughputBucket[]) => void;
   throughputError?: string;
 }
 
-export class ScaleComponent extends React.Component<ScaleComponentProps> {
+interface ScaleComponentState {
+  isThroughputSaveable: boolean;
+  isBucketsSaveable: boolean;
+  isThroughputDiscardable: boolean;
+  isBucketsDiscardable: boolean;
+}
+
+export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleComponentState> {
   private isEmulator: boolean;
   private offer: DataModels.Offer;
   private databaseId: string;
@@ -48,6 +60,13 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     this.offer = this.props.database?.offer() || this.props.collection?.offer();
     this.databaseId = this.props.database?.id() || this.props.collection.databaseId;
     this.collectionId = this.props.collection?.id();
+    this.state = {
+      isThroughputSaveable: false,
+      isBucketsSaveable: false,
+      isThroughputDiscardable: false,
+      isBucketsDiscardable: false,
+    };
+    console.log(this.offer);
   }
 
   public isAutoScaleEnabled = (): boolean => {
@@ -137,8 +156,8 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       maxAutoPilotThroughputBaseline={this.props.autoPilotThroughputBaseline}
       onMaxAutoPilotThroughputChange={this.props.onMaxAutoPilotThroughputChange}
       spendAckChecked={false}
-      onScaleSaveableChange={this.props.onScaleSaveableChange}
-      onScaleDiscardableChange={this.props.onScaleDiscardableChange}
+      onScaleSaveableChange={this.handleThroughputSaveableChange}
+      onScaleDiscardableChange={this.handleThroughputDiscardableChange}
       usageSizeInKB={this.props.collection?.usageSizeInKB()}
       throughputError={this.props.throughputError}
       instantMaximumThroughput={this.offer?.instantMaximumThroughput}
@@ -167,6 +186,39 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     );
   }
 
+  private updateScaleSettingsState = (updates: Partial<ScaleComponentState>) => {
+    this.setState(
+      (prevState) => {
+        const hasChanges = Object.keys(updates).some(
+          (key) => prevState[key as keyof ScaleComponentState] !== updates[key as keyof ScaleComponentState],
+        );
+        return hasChanges ? { ...prevState, ...updates } : null;
+      },
+      () => {
+        const isSaveable = this.state.isThroughputSaveable || this.state.isBucketsSaveable;
+        const isDiscardable = this.state.isThroughputDiscardable || this.state.isBucketsDiscardable;
+        this.props.onScaleSaveableChange(isSaveable);
+        this.props.onScaleDiscardableChange(isDiscardable);
+      },
+    );
+  };
+
+  private handleThroughputSaveableChange = (isSaveable: boolean) => {
+    this.updateScaleSettingsState({ isThroughputSaveable: isSaveable });
+  };
+
+  private handleThroughputDiscardableChange = (isDiscardable: boolean) => {
+    this.updateScaleSettingsState({ isThroughputDiscardable: isDiscardable });
+  };
+
+  private handleBucketsSaveableChange = (isSaveable: boolean) => {
+    this.updateScaleSettingsState({ isBucketsSaveable: isSaveable });
+  };
+
+  private handleBucketsDiscardableChange = (isDiscardable: boolean) => {
+    this.updateScaleSettingsState({ isBucketsDiscardable: isDiscardable });
+  };
+
   public render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
@@ -182,6 +234,15 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
           <MessageBar messageBarType={MessageBarType.warning}>{this.getInitialNotificationElement()}</MessageBar>
         )}
         {!this.isAutoScaleEnabled() && <Stack {...subComponentStackProps}>{this.getThroughputInputComponent()}</Stack>}
+        {this.props.enableThroughputBuckets && (
+          <ThroughputBucketsComponent
+            currentBuckets={this.props.throughputBuckets}
+            throughputBucketsBaseline={this.props.throughputBucketsBaseline}
+            onBucketsChange={this.props.onThroughputBucketChange}
+            onSaveableChange={this.handleBucketsSaveableChange}
+            onDiscardableChange={this.handleBucketsDiscardableChange}
+          />
+        )}
 
         {/* TODO: Replace link with call to the Azure Support blade */}
         {this.isAutoScaleEnabled() && (
