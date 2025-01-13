@@ -66,7 +66,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
       isThroughputDiscardable: false,
       isBucketsDiscardable: false,
     };
-    console.log(this.offer);
   }
 
   public isAutoScaleEnabled = (): boolean => {
@@ -80,7 +79,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
           capability.name.toLowerCase() === Constants.CapabilityNames.EnableAutoScale.toLowerCase()
         );
       });
-
     return !!enableAutoScaleCapability;
   };
 
@@ -234,7 +232,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
           <MessageBar messageBarType={MessageBarType.warning}>{this.getInitialNotificationElement()}</MessageBar>
         )}
         {!this.isAutoScaleEnabled() && <Stack {...subComponentStackProps}>{this.getThroughputInputComponent()}</Stack>}
-        {this.props.enableThroughputBuckets && (
+        {this.props.enableThroughputBuckets && !this.props.isAutoPilotSelected && (
           <ThroughputBucketsComponent
             currentBuckets={this.props.throughputBuckets}
             throughputBucketsBaseline={this.props.throughputBucketsBaseline}

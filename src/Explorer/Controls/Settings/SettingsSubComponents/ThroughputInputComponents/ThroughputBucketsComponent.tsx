@@ -27,7 +27,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
 }) => {
   const getThroughputBuckets = (buckets: ThroughputBucket[]): ThroughputBucket[] => {
     return DEFAULT_BUCKETS.map(
-      (defaultBucket) => buckets.find((bucket) => bucket.id === defaultBucket.id) || defaultBucket,
+      (defaultBucket) => buckets?.find((bucket) => bucket.id === defaultBucket.id) || defaultBucket,
     );
   };
 
