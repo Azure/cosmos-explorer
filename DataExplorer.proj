@@ -3,5 +3,7 @@
     <NuspecFile>DataExplorer.nuspec</NuspecFile>
     <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
   </PropertyGroup>
-  <Content Include=".\**\*.*" />
+  <ItemGroup>
+    <Content Include=".\**\*.*" />
+  </ItemGroup>
 </Project>
