@@ -113,6 +113,7 @@ jobs:
       #NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       #AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
       NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
     steps:
       - uses: actions/setup-dotnet@v4
         with:
