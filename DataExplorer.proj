@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <NuspecFile>DataExplorer.nuspec</NuspecFile>
+    <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
+  </PropertyGroup>
+  <Content Include=".\**\*.*" />
+</Project>
