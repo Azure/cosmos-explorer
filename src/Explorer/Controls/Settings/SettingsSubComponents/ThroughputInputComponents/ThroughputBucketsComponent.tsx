@@ -34,8 +34,9 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   const [throughputBuckets, setThroughputBuckets] = useState<ThroughputBucket[]>(getThroughputBuckets(currentBuckets));
 
   useEffect(() => {
-    const isChanged = isDirty(currentBuckets, getThroughputBuckets(throughputBucketsBaseline));
-    isChanged && setThroughputBuckets(getThroughputBuckets(currentBuckets));
+    setThroughputBuckets(getThroughputBuckets(currentBuckets));
+    onSaveableChange(false);
+    onDiscardableChange(false);
   }, [currentBuckets]);
 
   useEffect(() => {
