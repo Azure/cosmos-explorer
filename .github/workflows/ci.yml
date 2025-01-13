@@ -115,11 +115,11 @@ jobs:
       NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
       DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
     steps:
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '3.1.x'
-          source-url: ${{ secrets.NUGET_SOURCE }}
-          #nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+      #- uses: actions/setup-dotnet@v4
+      #  with:
+      #    dotnet-version: '3.1.x'
+      #    source-url: ${{ secrets.NUGET_SOURCE }}
+      #    #nuget-api-key: ${{ secrets.NUGET_API_KEY }}
       - name: Download Dist Folder
         uses: actions/download-artifact@v4
         with:
