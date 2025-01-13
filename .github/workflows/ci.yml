@@ -109,7 +109,7 @@ jobs:
     #if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [build]
     runs-on: ubuntu-latest
-    env:
+    #env:
       #NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       #AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
     steps:
