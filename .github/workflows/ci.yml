@@ -125,7 +125,9 @@ jobs:
       #- run: dotnet nuget push "Azure.Cosmos.DB.Data.Explorer.2.0.0-github-${GITHUB_SHA}.nupkg" --skip-duplicate --symbol-api-key Az --source="$NUGET_SOURCE"
       - run: dotnet nuget add source "$NUGET_SOURCE" --name "ADO" --username "jawelton@microsoft.com" --password "$AZURE_DEVOPS_PAT" --store-password-in-clear-text
       - run: dotnet pack DataExplorer.proj /p:PackageVersion="0.0.9-TEST-${GITHUB_SHA}"
-      - run: dotnet nuget push "Azure.Cosmos.DB.Data.Explorer.0.0.9-TEST-${GITHUB_SHA}.nupkg" --skip-duplicate --symbol-api-key Az --source="$NUGET_SOURCE"
+      - run: ls -la .
+      - run: ls -la ./bin/release
+      - run: dotnet nuget push *.nupkg --skip-duplicate --symbol-api-key Az --source="$NUGET_SOURCE"
       - run: dotnet nuget remove source --name "ADO"
       #- run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       #- run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
