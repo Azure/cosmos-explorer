@@ -112,7 +112,6 @@ jobs:
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-      #NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
       DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
     steps:
       - name: Download Dist Folder
@@ -120,45 +119,40 @@ jobs:
         with:
           name: dist
       - run: cp ./configs/prod.json config.json
-      #- run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "jawelton@microsoft.com" -Password "$AZURE_DEVOPS_PAT"
-      #- run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-github-${GITHUB_SHA}"
-      #- run: dotnet nuget push "Azure.Cosmos.DB.Data.Explorer.2.0.0-github-${GITHUB_SHA}.nupkg" --skip-duplicate --symbol-api-key Az --source="$NUGET_SOURCE"
       - run: dotnet nuget add source "$NUGET_SOURCE" --name "ADO" --username "jawelton@microsoft.com" --password "$AZURE_DEVOPS_PAT" --store-password-in-clear-text
-      - run: dotnet pack DataExplorer.proj /p:PackageVersion="0.0.9-TEST-${GITHUB_SHA}"
+      #- run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-github-${GITHUB_SHA}"
+      - run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-test-${GITHUB_SHA}"
       - run: dotnet nuget push "bin/Release/*.nupkg" --skip-duplicate --api-key Az --source="$NUGET_SOURCE"
-      - run: dotnet nuget remove source --name "ADO"
-      #- run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
-      #- run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
-
-      #- uses: actions/upload-artifact@v4
-      #  name: packages
-      #  with:
-      #    path: "*.nupkg"
-  #nugetmpac:
-  #  name: Publish Nuget MPAC
-  #  if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-  #  needs: [build]
-  #  runs-on: ubuntu-latest
-  #  env:
-  #    NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
-  #    AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-  #  steps:
-  #    - uses: nuget/setup-nuget@v2
-  #      with:
-  #        nuget-api-key: ${{ secrets.NUGET_API_KEY }}
-  #    - name: Download Dist Folder
-  #      uses: actions/download-artifact@v4
-  #      with:
-  #        name: dist
-  #    - run: cp ./configs/mpac.json config.json
-  #    - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
-  #    - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "jawelton@microsoft.com" -Password "$AZURE_DEVOPS_PAT"
-  #    - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
-  #    - run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
-  #    - uses: actions/upload-artifact@v4
-  #      name: packages
-  #      with:
-  #        path: "*.nupkg"
+      - run: dotnet nuget remove source "ADO"
+      - uses: actions/upload-artifact@v4
+        name: packages
+        with:
+          path: "bin/Release/*.nupkg"
+  nugetmpac:
+    name: Publish Nuget MPAC
+    #if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
+    needs: [build]
+    runs-on: ubuntu-latest
+    env:
+      NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+    steps:
+      - name: Download Dist Folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+      - run: cp ./configs/mpac.json config.json
+      - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
+      - run: dotnet nuget add source "$NUGET_SOURCE" --name "ADO" --username "jawelton@microsoft.com" --password "$AZURE_DEVOPS_PAT" --store-password-in-clear-text
+      #- run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-github-${GITHUB_SHA}"
+      - run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-test-${GITHUB_SHA}"
+      - run: dotnet nuget push "bin/Release/*.nupkg" --skip-duplicate --api-key Az --source="$NUGET_SOURCE"
+      - run: dotnet nuget remove source "ADO"
+      - uses: actions/upload-artifact@v4
+        name: packages
+        with:
+          path: "bin/Release/*.nupkg"
 
   playwright-tests:
     name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
