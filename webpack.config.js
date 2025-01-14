@@ -263,6 +263,14 @@ module.exports = function (_env = {}, argv = {}) {
       ],
       splitChunks: {
         chunks: "all",
+        cacheGroups: {
+          fluentIcons: {
+            test: /[\\/]node_modules[\\/]@fluentui[\\/](font-icons-mdl2|react-icons)/,
+            name: "fluent-icons",
+            chunks: "all",
+            enforce: true,
+          },
+        },
       },
     },
     watch: false,
