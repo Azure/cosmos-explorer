@@ -228,6 +228,7 @@
     "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks",
     "generateARMClients": "npx ts-node utils/armClientGenerator/generator.ts"
   },
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Azure/cosmos-explorer"
