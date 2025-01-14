@@ -126,7 +126,7 @@ jobs:
           name: dist
       - run: cp ./configs/prod.json config.json
       #- run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "jawelton@microsoft.com" -Password "$AZURE_DEVOPS_PAT"
-      - run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-github-${GITHUB_SHA}" --no-build
+      - run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-github-${GITHUB_SHA}"
       #- run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
       #- run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
 
