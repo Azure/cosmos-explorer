@@ -111,15 +111,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
-      #AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-      NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+      #NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
       DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
     steps:
-      #- uses: actions/setup-dotnet@v4
-      #  with:
-      #    dotnet-version: '3.1.x'
-      #    source-url: ${{ secrets.NUGET_SOURCE }}
-      #    #nuget-api-key: ${{ secrets.NUGET_API_KEY }}
       - name: Download Dist Folder
         uses: actions/download-artifact@v4
         with:
@@ -128,6 +123,7 @@ jobs:
       #- run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "jawelton@microsoft.com" -Password "$AZURE_DEVOPS_PAT"
       #- run: dotnet pack DataExplorer.proj /p:PackageVersion="2.0.0-github-${GITHUB_SHA}"
       #- run: dotnet nuget push "Azure.Cosmos.DB.Data.Explorer.2.0.0-github-${GITHUB_SHA}.nupkg" --skip-duplicate --symbol-api-key Az --source="$NUGET_SOURCE"
+      - run: dotnet nuget add source "$NUGET_SOURCE" --name "ADO" --name "jawelton@microsoft.com" -Password "$AZURE_DEVOPS_PAT"
       - run: dotnet pack DataExplorer.proj /p:PackageVersion="0.0.9-TEST-${GITHUB_SHA}"
       - run: dotnet nuget push "Azure.Cosmos.DB.Data.Explorer.0.0.9-TEST-${GITHUB_SHA}.nupkg" --skip-duplicate --symbol-api-key Az --source="$NUGET_SOURCE"
       #- run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
