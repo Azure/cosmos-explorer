@@ -1,9 +1,8 @@
-<Project>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <NoBuild>true</NoBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>DataExplorer.nuspec</NuspecFile>
     <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Include=".\**\*.*" />
-  </ItemGroup>
 </Project>
