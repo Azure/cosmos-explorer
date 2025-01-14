@@ -112,7 +112,7 @@ jobs:
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
       AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+      #DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
     steps:
       - name: Download Dist Folder
         uses: actions/download-artifact@v4
