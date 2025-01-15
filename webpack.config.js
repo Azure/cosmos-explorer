@@ -248,7 +248,7 @@ module.exports = function (_env = {}, argv = {}) {
         new TerserPlugin({
           terserOptions: {
             // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
-            // compress: false,
+            compress: true,
             mangle: {
               keep_fnames: true,
               keep_classnames: true,
@@ -256,17 +256,17 @@ module.exports = function (_env = {}, argv = {}) {
           },
         }),
       ],
-      splitChunks: {
-        chunks: "all",
-        cacheGroups: {
-          fluentIcons: {
-            test: /[\\/]node_modules[\\/]@fluentui[\\/](font-icons-mdl2|react-icons)/,
-            name: "fluent-icons",
-            chunks: "all",
-            enforce: true,
-          },
-        },
-      },
+      // splitChunks: {
+      //   chunks: "all",
+      //   cacheGroups: {
+      //     fluentIcons: {
+      //       test: /[\\/]node_modules[\\/]@fluentui[\\/](font-icons-mdl2|react-icons)/,
+      //       name: "fluent-icons",
+      //       chunks: "all",
+      //       enforce: true,
+      //     },
+      //   },
+      // },
     },
     watch: false,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
