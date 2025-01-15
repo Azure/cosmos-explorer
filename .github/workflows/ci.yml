@@ -106,7 +106,7 @@ jobs:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
   nuget:
     name: Publish Nuget
-    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
+    #if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [build]
     runs-on: ubuntu-latest
     env:
@@ -125,11 +125,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         name: packages
         with:
-          path: "bin/Release/*.nupkg"
+          path: "bin/Release/Azure.Cosmos.DB.Data.Explorer.2.0.0-github-${GITHUB_SHA}.nupkg"
 
   nugetmpac:
     name: Publish Nuget MPAC
-    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
+    #if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [build]
     runs-on: ubuntu-latest
     env:
@@ -149,7 +149,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         name: packages
         with:
-          path: "bin/Release/*.nupkg"
+          path: "bin/Release/Azure.Cosmos.DB.Data.Explorer.MPAC.2.0.0-github-${GITHUB_SHA}.nupkg"
 
   playwright-tests:
     name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
