@@ -123,9 +123,9 @@ jobs:
       - run: dotnet nuget push "bin/Release/*.nupkg" --skip-duplicate --api-key Az --source="$NUGET_SOURCE"
       - run: dotnet nuget remove source "ADO"
       - uses: actions/upload-artifact@v4
-        name: packages
+        name: prod-package
         with:
-          path: "bin/Release/Azure.Cosmos.DB.Data.Explorer.2.0.0-github-${GITHUB_SHA}.nupkg"
+          path: "bin/Release/*.nupkg"
 
   nugetmpac:
     name: Publish Nuget MPAC
@@ -147,9 +147,9 @@ jobs:
       - run: dotnet nuget push "bin/Release/*.nupkg" --skip-duplicate --api-key Az --source="$NUGET_SOURCE"
       - run: dotnet nuget remove source "ADO"
       - uses: actions/upload-artifact@v4
-        name: packages
+        name: mpac-package
         with:
-          path: "bin/Release/Azure.Cosmos.DB.Data.Explorer.MPAC.2.0.0-github-${GITHUB_SHA}.nupkg"
+          path: "bin/Release/*.nupkg"
 
   playwright-tests:
     name: "Run Playwright Tests (Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }})"
