@@ -106,7 +106,7 @@ jobs:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
   nuget:
     name: Publish Nuget
-    #if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [build]
     runs-on: ubuntu-latest
     env:
@@ -130,7 +130,7 @@ jobs:
 
   nugetmpac:
     name: Publish Nuget MPAC
-    #if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     needs: [build]
     runs-on: ubuntu-latest
     env:
