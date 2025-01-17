@@ -243,12 +243,12 @@ module.exports = function (_env = {}, argv = {}) {
       extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
-      minimize: mode === "production" ? true : false,
+      minimize: true,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
             // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
-            compress: true,
+            // compress: false,
             mangle: {
               keep_fnames: true,
               keep_classnames: true,
@@ -266,6 +266,7 @@ module.exports = function (_env = {}, argv = {}) {
       //       enforce: true,
       //     },
       //   },
+      //   runtimeChunk: false,
       // },
     },
     watch: false,
