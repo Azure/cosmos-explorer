@@ -733,7 +733,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   </div>
                 </AccordionPanel>
               </AccordionItem>
+            </>
+          )}
 
+          {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") && (
+            <>
               <AccordionItem value="6">
                 <AccordionHeader>
                   <div className={styles.header}>Region Selection</div>
@@ -758,81 +762,83 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                   </div>
                 </AccordionPanel>
               </AccordionItem>
-            </>
-          )}
 
-          {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") && (
-            <AccordionItem value="7">
-              <AccordionHeader>
-                <div className={styles.header}>Retry Settings</div>
-              </AccordionHeader>
-              <AccordionPanel>
-                <div className={styles.settingsSectionContainer}>
-                  <div className={styles.settingsSectionDescription}>
-                    Retry policy associated with throttled requests during CosmosDB queries.
+              <AccordionItem value="7">
+                <AccordionHeader>
+                  <div className={styles.header}>Retry Settings</div>
+                </AccordionHeader>
+                <AccordionPanel>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      Retry policy associated with throttled requests during CosmosDB queries.
+                    </div>
+                    <div>
+                      <span className={styles.subHeader}>Max retry attempts</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Max number of retries to be performed for a request. Default value 9.
+                      </InfoTooltip>
+                    </div>
+                    <SpinButton
+                      labelPosition={Position.top}
+                      min={1}
+                      step={1}
+                      value={"" + retryAttempts}
+                      onChange={handleOnQueryRetryAttemptsSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1"
+                      decrementButtonAriaLabel="Decrease value by 1"
+                      onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
+                      onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
+                      onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
+                      styles={spinButtonStyles}
+                    />
+                    <div>
+                      <span className={styles.subHeader}>Fixed retry interval (ms)</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned
+                        as part of the response. Default value is 0 milliseconds.
+                      </InfoTooltip>
+                    </div>
+                    <SpinButton
+                      labelPosition={Position.top}
+                      min={1000}
+                      step={1000}
+                      value={"" + retryInterval}
+                      onChange={handleOnRetryIntervalSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1000"
+                      decrementButtonAriaLabel="Decrease value by 1000"
+                      onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
+                      onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
+                      onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
+                      styles={spinButtonStyles}
+                    />
+                    <div>
+                      <span className={styles.subHeader}>Max wait time (s)</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Max wait time in seconds to wait for a request while the retries are happening. Default value 30
+                        seconds.
+                      </InfoTooltip>
+                    </div>
+                    <SpinButton
+                      labelPosition={Position.top}
+                      min={1}
+                      step={1}
+                      value={"" + MaxWaitTimeInSeconds}
+                      onChange={handleOnMaxWaitTimeSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1"
+                      decrementButtonAriaLabel="Decrease value by 1"
+                      onIncrement={(newValue) =>
+                        setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)
+                      }
+                      onDecrement={(newValue) =>
+                        setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)
+                      }
+                      onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
+                      styles={spinButtonStyles}
+                    />
                   </div>
-                  <div>
-                    <span className={styles.subHeader}>Max retry attempts</span>
-                    <InfoTooltip className={styles.headerIcon}>
-                      Max number of retries to be performed for a request. Default value 9.
-                    </InfoTooltip>
-                  </div>
-                  <SpinButton
-                    labelPosition={Position.top}
-                    min={1}
-                    step={1}
-                    value={"" + retryAttempts}
-                    onChange={handleOnQueryRetryAttemptsSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1"
-                    decrementButtonAriaLabel="Decrease value by 1"
-                    onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
-                    onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
-                    onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
-                    styles={spinButtonStyles}
-                  />
-                  <div>
-                    <span className={styles.subHeader}>Fixed retry interval (ms)</span>
-                    <InfoTooltip className={styles.headerIcon}>
-                      Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned
-                      as part of the response. Default value is 0 milliseconds.
-                    </InfoTooltip>
-                  </div>
-                  <SpinButton
-                    labelPosition={Position.top}
-                    min={1000}
-                    step={1000}
-                    value={"" + retryInterval}
-                    onChange={handleOnRetryIntervalSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1000"
-                    decrementButtonAriaLabel="Decrease value by 1000"
-                    onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
-                    onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
-                    onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
-                    styles={spinButtonStyles}
-                  />
-                  <div>
-                    <span className={styles.subHeader}>Max wait time (s)</span>
-                    <InfoTooltip className={styles.headerIcon}>
-                      Max wait time in seconds to wait for a request while the retries are happening. Default value 30
-                      seconds.
-                    </InfoTooltip>
-                  </div>
-                  <SpinButton
-                    labelPosition={Position.top}
-                    min={1}
-                    step={1}
-                    value={"" + MaxWaitTimeInSeconds}
-                    onChange={handleOnMaxWaitTimeSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1"
-                    decrementButtonAriaLabel="Decrease value by 1"
-                    onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
-                    onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
-                    onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
-                    styles={spinButtonStyles}
-                  />
-                </div>
-              </AccordionPanel>
-            </AccordionItem>
+                </AccordionPanel>
+              </AccordionItem>
+            </>
           )}
 
           <AccordionItem value="8">
