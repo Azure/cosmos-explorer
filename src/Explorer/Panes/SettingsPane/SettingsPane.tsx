@@ -308,11 +308,21 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     }
 
     // TODO: Check if region selection has been updated.  Update database account in user context accordingly.
-    updateUserContext({
-      selectedRegionalEndpoint: regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint,
-      refreshCosmosClient: true,
-    });
-    // TODO: If Global selected, then clear out region selection, but keep change variable enabled.
+    // If global is selected, then remove the region selection from local storage.
+    if (selectedRegion !== LocalStorageUtility.getEntryString(StorageKey.SelectedRegion)) {
+      LocalStorageUtility.setEntryString(StorageKey.SelectedRegion, selectedRegion);
+      let selectedRegionalEndpoint: string | undefined;
+      if (selectedRegion === Constants.RegionSelectionOptions.Global) {
+        selectedRegionalEndpoint = undefined;
+      } else {
+        selectedRegionalEndpoint = regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint;
+      }
+      updateUserContext({
+        selectedRegionalEndpoint: selectedRegionalEndpoint,
+        refreshCosmosClient: true,
+      });
+    }
+
     console.log(
       `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
         userContext?.databaseAccount?.properties?.documentEndpoint,
@@ -321,7 +331,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
-    LocalStorageUtility.setEntryString(StorageKey.SelectedRegion, selectedRegion);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryInterval, retryInterval);
     LocalStorageUtility.setEntryNumber(StorageKey.MaxWaitTimeInSeconds, MaxWaitTimeInSeconds);
