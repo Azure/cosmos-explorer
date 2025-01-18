@@ -314,7 +314,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     // TODO: Check if region selection has been updated.  Update database account in user context accordingly.
     updateUserContext({
       selectedRegionalEndpoint: regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint,
-      hasCosmosClientRegionSettingChanged: true,
+      refreshCosmosClient: true,
     });
     // TODO: If Global selected, then clear out region selection, but keep change variable enabled.
     console.log(
