@@ -128,8 +128,8 @@ export const endpoint = () => {
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
   return (
-    userContext.endpoint ||
     userContext.selectedRegionalEndpoint ||
+    userContext.endpoint ||
     userContext?.databaseAccount?.properties?.documentEndpoint
   );
 };
