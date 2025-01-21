@@ -106,6 +106,7 @@ export interface SettingsComponentState {
   changeFeedPolicyBaseline: ChangeFeedPolicyState;
   isSubSettingsSaveable: boolean;
   isSubSettingsDiscardable: boolean;
+  isThroughputBucketsSaveable: boolean;
 
   vectorEmbeddingPolicy: DataModels.VectorEmbeddingPolicy;
   vectorEmbeddingPolicyBaseline: DataModels.VectorEmbeddingPolicy;
@@ -179,7 +180,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
       this.throughputBucketsEnabled =
-        userContext.features.enableThroughputBuckets && userContext.authType === AuthType.AAD;
+        userContext.apiType === "SQL" &&
+        userContext.features.enableThroughputBuckets &&
+        userContext.authType === AuthType.AAD;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -218,6 +221,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       changeFeedPolicyBaseline: undefined,
       isSubSettingsSaveable: false,
       isSubSettingsDiscardable: false,
+      isThroughputBucketsSaveable: false,
 
       vectorEmbeddingPolicy: undefined,
       vectorEmbeddingPolicyBaseline: undefined,
@@ -450,6 +454,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isScaleSaveable: false,
       isScaleDiscardable: false,
       isSubSettingsSaveable: false,
+      isThroughputBucketsSaveable: false,
       isSubSettingsDiscardable: false,
       isContainerPolicyDirty: false,
       isIndexingPolicyDirty: false,
@@ -487,6 +492,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   private onIndexingPolicyContentChange = (newIndexingPolicy: DataModels.IndexingPolicy): void =>
     this.setState({ indexingPolicyContent: newIndexingPolicy });
+
+  private onThroughputBucketsSaveableChange = (isSaveable: boolean): void => {
+    this.setState({ isThroughputBucketsSaveable: isSaveable });
+  };
 
   private resetShouldDiscardContainerPolicies = (): void => this.setState({ shouldDiscardContainerPolicies: false });
 
@@ -1053,7 +1062,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         currentOffer: this.collection.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
         manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
-        ...(this.state.throughputBuckets && { throughputBuckets: this.state.throughputBuckets }),
+        ...(this.throughputBucketsEnabled &&
+          this.state.isThroughputBucketsSaveable && { throughputBuckets: this.state.throughputBuckets }),
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -1124,6 +1134,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       throughputBuckets: this.state.throughputBuckets,
       enableThroughputBuckets: this.isCollectionSettingsTab && this.throughputBucketsEnabled,
       onThroughputBucketChange: this.onThroughputBucketChange,
+      onThroughputBucketsSaveableChange: this.onThroughputBucketsSaveableChange,
       throughputError: this.state.throughputError,
     };
 

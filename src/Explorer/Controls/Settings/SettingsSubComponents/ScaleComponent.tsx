@@ -38,14 +38,15 @@ export interface ScaleComponentProps {
   throughputBucketsBaseline: DataModels.ThroughputBucket[];
   enableThroughputBuckets: boolean;
   onThroughputBucketChange: (throughputBuckets: DataModels.ThroughputBucket[]) => void;
+  onThroughputBucketsSaveableChange: (isSaveable: boolean) => void;
   throughputError?: string;
 }
 
 interface ScaleComponentState {
   isThroughputSaveable: boolean;
-  isBucketsSaveable: boolean;
+  isThroughputBucketsSaveable: boolean;
   isThroughputDiscardable: boolean;
-  isBucketsDiscardable: boolean;
+  isThroughputBucketsDiscardable: boolean;
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleComponentState> {
@@ -62,9 +63,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
     this.collectionId = this.props.collection?.id();
     this.state = {
       isThroughputSaveable: false,
-      isBucketsSaveable: false,
+      isThroughputBucketsSaveable: false,
       isThroughputDiscardable: false,
-      isBucketsDiscardable: false,
+      isThroughputBucketsDiscardable: false,
     };
   }
 
@@ -98,7 +99,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
     if (userContext.isTryCosmosDBSubscription) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     }
-
     return this.offer?.minimumThroughput || SharedConstants.CollectionCreation.DefaultCollectionRUs400;
   };
 
@@ -193,9 +193,12 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
         return hasChanges ? { ...prevState, ...updates } : null;
       },
       () => {
-        const isSaveable = this.state.isThroughputSaveable || this.state.isBucketsSaveable;
-        const isDiscardable = this.state.isThroughputDiscardable || this.state.isBucketsDiscardable;
+        const isSaveable = this.state.isThroughputSaveable
+          ? this.state.isThroughputDiscardable || this.state.isThroughputBucketsSaveable
+          : this.state.isThroughputBucketsSaveable;
+        const isDiscardable = this.state.isThroughputDiscardable || this.state.isThroughputBucketsDiscardable;
         this.props.onScaleSaveableChange(isSaveable);
+        this.props.onThroughputBucketsSaveableChange(this.state.isThroughputBucketsSaveable);
         this.props.onScaleDiscardableChange(isDiscardable);
       },
     );
@@ -209,12 +212,12 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
     this.updateScaleSettingsState({ isThroughputDiscardable: isDiscardable });
   };
 
-  private handleBucketsSaveableChange = (isSaveable: boolean) => {
-    this.updateScaleSettingsState({ isBucketsSaveable: isSaveable });
+  private handleThroughputBucketsSaveableChange = (isSaveable: boolean) => {
+    this.updateScaleSettingsState({ isThroughputBucketsSaveable: isSaveable });
   };
 
-  private handleBucketsDiscardableChange = (isDiscardable: boolean) => {
-    this.updateScaleSettingsState({ isBucketsDiscardable: isDiscardable });
+  private handleThroughputBucketsDiscardableChange = (isDiscardable: boolean) => {
+    this.updateScaleSettingsState({ isThroughputBucketsDiscardable: isDiscardable });
   };
 
   public render(): JSX.Element {
@@ -232,13 +235,13 @@ export class ScaleComponent extends React.Component<ScaleComponentProps, ScaleCo
           <MessageBar messageBarType={MessageBarType.warning}>{this.getInitialNotificationElement()}</MessageBar>
         )}
         {!this.isAutoScaleEnabled() && <Stack {...subComponentStackProps}>{this.getThroughputInputComponent()}</Stack>}
-        {this.props.enableThroughputBuckets && !this.props.isAutoPilotSelected && (
+        {this.props.enableThroughputBuckets && (
           <ThroughputBucketsComponent
             currentBuckets={this.props.throughputBuckets}
             throughputBucketsBaseline={this.props.throughputBucketsBaseline}
             onBucketsChange={this.props.onThroughputBucketChange}
-            onSaveableChange={this.handleBucketsSaveableChange}
-            onDiscardableChange={this.handleBucketsDiscardableChange}
+            onSaveableChange={this.handleThroughputBucketsSaveableChange}
+            onDiscardableChange={this.handleThroughputBucketsDiscardableChange}
           />
         )}
 

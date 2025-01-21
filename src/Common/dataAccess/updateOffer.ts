@@ -39,7 +39,10 @@ import {
   migrateTableToManualThroughput,
   updateTableThroughput,
 } from "../../Utils/arm/generatedClients/cosmos/tableResources";
-import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/cosmos/types";
+import {
+  ThroughputSettingsGetResults,
+  ThroughputSettingsUpdateParameters,
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { HttpHeaders } from "../Constants";
 import { client } from "../CosmosClient";
@@ -146,23 +149,28 @@ const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void>
   const { subscriptionId, resourceGroup, databaseAccount } = userContext;
   const accountName = databaseAccount.name;
 
+  let updatedOffer: ThroughputSettingsGetResults;
+
   if (params.migrateToAutoPilot) {
-    await migrateSqlContainerToAutoscale(
+    updatedOffer = (await migrateSqlContainerToAutoscale(
       subscriptionId,
       resourceGroup,
       accountName,
       params.databaseId,
       params.collectionId,
-    );
+    )) as ThroughputSettingsGetResults;
+    params.autopilotThroughput = updatedOffer.properties?.resource?.autoscaleSettings?.maxThroughput;
   } else if (params.migrateToManual) {
-    await migrateSqlContainerToManualThroughput(
+    updatedOffer = (await migrateSqlContainerToManualThroughput(
       subscriptionId,
       resourceGroup,
       accountName,
       params.databaseId,
       params.collectionId,
-    );
-  } else {
+    )) as ThroughputSettingsGetResults;
+    params.manualThroughput = updatedOffer.properties?.resource?.throughput;
+  }
+  if (params.throughputBuckets || !(params.migrateToAutoPilot || params.migrateToManual)) {
     const body: ThroughputSettingsUpdateParameters = createUpdateOfferBody(params);
     await updateSqlContainerThroughput(
       subscriptionId,

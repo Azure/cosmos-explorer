@@ -1,4 +1,4 @@
-import { Icon, Label, Slider, Stack, TextField } from "@fluentui/react";
+import { Label, Slider, Stack, TextField, Toggle } from "@fluentui/react";
 import { ThroughputBucket } from "Contracts/DataModels";
 import React, { FC, useEffect, useState } from "react";
 import { isDirty } from "../../SettingsUtils";
@@ -26,7 +26,16 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   onDiscardableChange,
 }) => {
   const getThroughputBuckets = (buckets: ThroughputBucket[]): ThroughputBucket[] => {
-    return DEFAULT_BUCKETS.map(
+    if (!buckets || buckets.length === 0) {
+      return DEFAULT_BUCKETS;
+    }
+    const maxBuckets = Math.max(DEFAULT_BUCKETS.length, buckets.length);
+    const adjustedDefaultBuckets = Array.from({ length: maxBuckets }, (_, i) => ({
+      id: i + 1,
+      maxThroughputPercentage: 100,
+    }));
+
+    return adjustedDefaultBuckets.map(
       (defaultBucket) => buckets?.find((bucket) => bucket.id === defaultBucket.id) || defaultBucket,
     );
   };
@@ -54,9 +63,13 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
     settingsChanged && onBucketsChange(updatedBuckets);
   };
 
+  const onToggle = (id: number, checked: boolean) => {
+    handleBucketChange(id, checked ? 50 : 100);
+  };
+
   return (
     <Stack tokens={{ childrenGap: "m" }} styles={{ root: { width: "70%", maxWidth: 700 } }}>
-      <Label>Throughput buckets</Label>
+      <Label>Throughput groups</Label>
       <Stack>
         {throughputBuckets?.map((bucket) => (
           <Stack key={bucket.id} horizontal tokens={{ childrenGap: 8 }} verticalAlign="center">
@@ -67,8 +80,9 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               value={bucket.maxThroughputPercentage}
               onChange={(newValue) => handleBucketChange(bucket.id, newValue)}
               showValue={false}
-              label={`Bucket ${bucket.id}`}
+              label={`Group ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Bucket)" : ""}`}
               styles={{ root: { flex: 2, maxWidth: 400 } }}
+              disabled={bucket.maxThroughputPercentage === 100}
             />
             <TextField
               value={bucket.maxThroughputPercentage.toString()}
@@ -78,13 +92,21 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               styles={{
                 fieldGroup: { width: 80 },
               }}
+              disabled={bucket.maxThroughputPercentage === 100}
             />
-            {bucket.id === 1 && (
+            <Toggle
+              onText="Enabled"
+              offText="Disabled"
+              checked={bucket.maxThroughputPercentage !== 100}
+              onChange={(event, checked) => onToggle(bucket.id, checked)}
+              styles={{ root: { marginBottom: 0 }, text: { fontSize: 12 } }}
+            ></Toggle>
+            {/* {bucket.id === 1 && (
               <Stack horizontal tokens={{ childrenGap: 4 }} verticalAlign="center">
                 <Icon iconName="TagSolid" />
                 <span>Data Explorer Query Bucket</span>
               </Stack>
-            )}
+            )} */}
           </Stack>
         ))}
       </Stack>
