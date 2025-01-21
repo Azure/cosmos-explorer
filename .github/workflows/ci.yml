@@ -123,8 +123,9 @@ jobs:
       - run: dotnet nuget push "bin/Release/*.nupkg" --skip-duplicate --api-key Az --source="$NUGET_SOURCE"
       - run: dotnet nuget remove source "ADO"
       - uses: actions/upload-artifact@v4
-        name: packages
+        name: Upload package to Artifacts
         with:
+          name: prod-package
           path: "bin/Release/*.nupkg"
 
   nugetmpac:
@@ -147,8 +148,9 @@ jobs:
       - run: dotnet nuget push "bin/Release/*.nupkg" --skip-duplicate --api-key Az --source="$NUGET_SOURCE"
       - run: dotnet nuget remove source "ADO"
       - uses: actions/upload-artifact@v4
-        name: packages
+        name: Upload package to Artifacts
         with:
+          name: mpac-package
           path: "bin/Release/*.nupkg"
 
   playwright-tests:
