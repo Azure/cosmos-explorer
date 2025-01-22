@@ -307,18 +307,18 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       }
     }
 
-    // TODO: Check if region selection has been updated.  Update database account in user context accordingly.
-    // If global is selected, then remove the region selection from local storage.
-    if (selectedRegion !== LocalStorageUtility.getEntryString(StorageKey.SelectedRegion)) {
-      LocalStorageUtility.setEntryString(StorageKey.SelectedRegion, selectedRegion);
-      let selectedRegionalEndpoint: string | undefined;
-      if (selectedRegion === Constants.RegionSelectionOptions.Global) {
-        selectedRegionalEndpoint = undefined;
-      } else {
-        selectedRegionalEndpoint = regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint;
-      }
+    const storedRegion = LocalStorageUtility.getEntryString(StorageKey.SelectedRegion);
+    const selectedRegionIsGlobal = selectedRegion === Constants.RegionSelectionOptions.Global;
+    if (selectedRegionIsGlobal && storedRegion) {
+      LocalStorageUtility.removeEntry(StorageKey.SelectedRegion);
       updateUserContext({
-        selectedRegionalEndpoint: selectedRegionalEndpoint,
+        selectedRegionalEndpoint: undefined,
+        refreshCosmosClient: true,
+      });
+    } else if (!selectedRegionIsGlobal && selectedRegion !== storedRegion) {
+      LocalStorageUtility.setEntryString(StorageKey.SelectedRegion, selectedRegion);
+      updateUserContext({
+        selectedRegionalEndpoint: regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint,
         refreshCosmosClient: true,
       });
     }
