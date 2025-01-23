@@ -345,6 +345,25 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       `Configuring Data Explorer for ${userContext.apiType} account ${account.name}`,
       "Explorer/configureHostedWithAAD",
     );
+    // TODO:  Somewhere in here need to configure regional endpoint selection in the user context for the client to pull from.
+    // Essentially, if the value exists in local storage, then grab the regional endpoint and load it.  Only if data plane RBAC is enabled.
+    // For now, just loading up setting from storage if it exists.  If we limit to data plane rbac accounts, then we limit other client APIs besides nosql.
+    // TODO: Maybe just load up the regional endpoint if it exists in the local storage?  Loading here makes sense since we are configuring
+    // user context, but introduces a lot of repetitive code.
+    if (
+      (userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
+      LocalStorageUtility.hasItem(StorageKey.SelectedRegion)
+    ) {
+      const storedRegion = LocalStorageUtility.getEntryString(StorageKey.SelectedRegion);
+      const location = userContext.databaseAccount?.properties?.readLocations?.find(
+        (loc) => loc.locationName === storedRegion,
+      );
+      updateUserContext({
+        // TODO: Can possible make this process better by just storing the selected region endpoint.
+        selectedRegionalEndpoint: location?.documentEndpoint,
+        refreshCosmosClient: true,
+      });
+    }
     if (!userContext.features.enableAadDataPlane) {
       Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
       if (isDataplaneRbacSupported(userContext.apiType)) {
@@ -705,6 +724,23 @@ async function configurePortal(): Promise<Explorer> {
           updateContextsFromPortalMessage(inputs);
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
+          // TODO:  Somewhere in here need to configure regional endpoint selection in the user context for the client to pull from.
+          // Essentially, if the value exists in local storage, then grab the regional endpoint and load it.  Only if data plane RBAC is enabled.
+          // For now, just loading up setting from storage if it exists.  If we limit to data plane rbac accounts, then we limit other client APIs besides nosql.
+          if (
+            (userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
+            LocalStorageUtility.hasItem(StorageKey.SelectedRegion)
+          ) {
+            const storedRegion = LocalStorageUtility.getEntryString(StorageKey.SelectedRegion);
+            const location = userContext.databaseAccount?.properties?.readLocations?.find(
+              (loc) => loc.locationName === storedRegion,
+            );
+            updateUserContext({
+              // TODO: Can possible make this process better by just storing the selected region endpoint.
+              selectedRegionalEndpoint: location?.documentEndpoint,
+              refreshCosmosClient: true,
+            });
+          }
 
           let dataPlaneRbacEnabled;
           if (isDataplaneRbacSupported(userContext.apiType)) {
