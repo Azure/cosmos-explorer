@@ -32,6 +32,8 @@ export const updateDocument = async (
     logConsoleInfo(`Successfully updated ${entityName} ${documentId.id()}`);
     return response?.resource;
   } catch (error) {
+    console.log(`Caught in client update call.`);
+    console.log(error);
     handleError(error, "UpdateDocument", `Failed to update ${entityName} ${documentId.id()}`);
     throw error;
   } finally {
