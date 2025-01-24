@@ -13,7 +13,7 @@ import { isDataplaneRbacSupported } from "../Utils/APITypeUtils";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
-import { getErrorMessage } from "./ErrorHandlingUtils";
+import { getErrorMessage, handleError } from "./ErrorHandlingUtils";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -118,7 +118,17 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnost
   console.log(`REQUEST CONTEXT ENDPOINT: ${JSON.stringify(requestContext.endpoint)}`);
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
-  return next(requestContext);
+  // return next(requestContext);
+  // Don't re-throw error so the SDK sees a completed request with the error.
+  // Maybe only re-throw unknown errors?
+  try {
+    return await next(requestContext);
+  } catch (error) {
+    console.log(`Caught in proxy.`);
+    console.log(error);
+    handleError(error, "ProxyRequest", "Failed to proxy request.");
+    // throw error;
+  }
 };
 
 export const endpoint = () => {
@@ -252,7 +262,8 @@ export function client(): Cosmos.CosmosClient {
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
       retryOptions: {
-        maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        //maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        maxRetryAttemptCount: 0,
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
         maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds),
       },
