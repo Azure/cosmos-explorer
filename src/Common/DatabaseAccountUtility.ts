@@ -21,5 +21,8 @@ export function isPublicInternetAccessAllowed(): boolean {
 export function getWorkloadType(): WorkloadType {
   const tags: Tags = userContext?.databaseAccount?.tags;
   const workloadType: WorkloadType = tags && (tags[TagNames.WorkloadType] as WorkloadType);
+  if (!workloadType) {
+    return WorkloadType.None;
+  }
   return workloadType;
 }
