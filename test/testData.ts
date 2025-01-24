@@ -56,7 +56,7 @@ export class TestContainerContext {
 export async function createTestSQLContainer(includeTestData?: boolean) {
   const databaseId = generateUniqueName("db");
   const containerId = "testcontainer"; // A unique container name isn't needed because the database is unique
-  const credentials = await getAzureCLICredentials();
+  const credentials = getAzureCLICredentials();
   const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
