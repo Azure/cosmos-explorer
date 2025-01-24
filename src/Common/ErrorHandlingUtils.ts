@@ -57,6 +57,8 @@ const replaceKnownError = (errorMessage: string): string => {
     errorMessage === "signal is aborted without reason"
   ) {
     return "User aborted query.";
+  } else if (errorMessage?.indexOf("The requested operation cannot be performed at this region") >= 0) {
+    return "Please select another region for this operation.";
   }
 
   return errorMessage;
