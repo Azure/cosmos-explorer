@@ -101,7 +101,7 @@ export enum WorkloadType {
   Learning = "Learning",
   DevelopmentTesting = "Development/Testing",
   Production = "Production",
-  None = "None"
+  None = "None",
 }
 // flight names returned from the portal are always lowercase
 export class Flights {
