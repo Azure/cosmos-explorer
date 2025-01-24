@@ -20,9 +20,7 @@ const isCI = require("is-ci");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
-const AZURE_CLIENT_ID = "fd8753b0-0707-4e32-84e9-2532af865fb4";
 const AZURE_TENANT_ID = "72f988bf-86f1-41af-91ab-2d7cd011db47";
-const SUBSCRIPTION_ID = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const RESOURCE_GROUP = "de-e2e-tests";
 const AZURE_CLIENT_SECRET = process.env.AZURE_CLIENT_SECRET || process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET; // TODO Remove. Exists for backwards compat with old .env files. Prefer AZURE_CLIENT_SECRET
 
@@ -96,10 +94,7 @@ module.exports = function (_env = {}, argv = {}) {
 
   if (mode === "development") {
     envVars.NODE_ENV = "development";
-    envVars.AZURE_CLIENT_ID = AZURE_CLIENT_ID;
-    envVars.AZURE_TENANT_ID = AZURE_TENANT_ID;
     envVars.AZURE_CLIENT_SECRET = AZURE_CLIENT_SECRET || null;
-    envVars.SUBSCRIPTION_ID = SUBSCRIPTION_ID;
     envVars.RESOURCE_GROUP = RESOURCE_GROUP;
     typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
   }
