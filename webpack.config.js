@@ -243,12 +243,12 @@ module.exports = function (_env = {}, argv = {}) {
       extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
-      minimize: mode === "production" ? true : false,
+      minimize: true,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
             // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
-            compress: false,
+            // compress: false,
             mangle: {
               keep_fnames: true,
               keep_classnames: true,
@@ -256,10 +256,32 @@ module.exports = function (_env = {}, argv = {}) {
           },
         }),
       ],
+      // splitChunks: {
+      //   chunks: "all",
+      //   cacheGroups: {
+      //     fluentIcons: {
+      //       test: /[\\/]node_modules[\\/]@fluentui[\\/](font-icons-mdl2|react-icons)/,
+      //       name: "fluent-icons",
+      //       chunks: "all",
+      //       enforce: true,
+      //     },
+      //   },
+      //   runtimeChunk: false,
+      // },
     },
     watch: false,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
+    stats: {
+      all: true, // Include all stats information
+      errors: true,
+      warnings: true,
+      modules: true,
+      chunks: true,
+      chunkModules: true,
+      assets: true,
+      children: true,
+    },
 
     /** @type {import("webpack-dev-server").Configuration}*/
     devServer: {
