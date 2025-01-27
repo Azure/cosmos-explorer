@@ -13,6 +13,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.1.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.7"
   }
 }
