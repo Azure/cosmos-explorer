@@ -97,6 +97,12 @@ export enum CapacityMode {
   Serverless = "Serverless",
 }
 
+export enum WorkloadType {
+  Learning = "Learning",
+  DevelopmentTesting = "Development/Testing",
+  Production = "Production",
+  None = "None",
+}
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
@@ -119,6 +125,7 @@ export class AfecFeatures {
 
 export class TagNames {
   public static defaultExperience: string = "defaultExperience";
+  public static WorkloadType: string = "hidden-workload-type";
 }
 
 export class MongoDBAccounts {
