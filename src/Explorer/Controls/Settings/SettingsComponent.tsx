@@ -7,6 +7,10 @@ import {
   ContainerPolicyComponent,
   ContainerPolicyComponentProps,
 } from "Explorer/Controls/Settings/SettingsSubComponents/ContainerPolicyComponent";
+import {
+  ThroughputBucketsComponent,
+  ThroughputBucketsComponentProps,
+} from "Explorer/Controls/Settings/SettingsSubComponents/ThroughputInputComponents/ThroughputBucketsComponent";
 import { useDatabases } from "Explorer/useDatabases";
 import { isFullTextSearchEnabled, isVectorSearchEnabled } from "Utils/CapabilityUtils";
 import { isRunningOnPublicCloud } from "Utils/CloudUtils";
@@ -338,7 +342,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
-      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicySaveable)
+      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicySaveable) ||
+      this.state.isThroughputBucketsSaveable
     );
   };
 
@@ -350,7 +355,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.state.isIndexingPolicyDirty ||
       this.state.isConflictResolutionDirty ||
       this.state.isComputedPropertiesDirty ||
-      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicyDiscardable)
+      (!!this.state.currentMongoIndexes && this.state.isMongoIndexingPolicyDiscardable) ||
+      this.state.isThroughputBucketsSaveable
     );
   };
 
@@ -1055,6 +1061,24 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
+    if (this.throughputBucketsEnabled && this.state.isThroughputBucketsSaveable) {
+      const updatedOffer: DataModels.Offer = await updateOffer({
+        databaseId: this.collection.databaseId,
+        collectionId: this.collection.id(),
+        currentOffer: this.collection.offer(),
+        autopilotThroughput: this.collection.offer().autoscaleMaxThroughput
+          ? this.collection.offer().autoscaleMaxThroughput
+          : undefined,
+        manualThroughput: this.collection.offer().manualThroughput
+          ? this.collection.offer().manualThroughput
+          : undefined,
+        throughputBuckets: this.state.throughputBuckets,
+      });
+      this.collection.offer(updatedOffer);
+      this.offer = updatedOffer;
+      this.setState({ isThroughputBucketsSaveable: false });
+    }
+
     if (this.state.isScaleSaveable) {
       const updateOfferParams: DataModels.UpdateOfferParams = {
         databaseId: this.collection.databaseId,
@@ -1062,8 +1086,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         currentOffer: this.collection.offer(),
         autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
         manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
-        ...(this.throughputBucketsEnabled &&
-          this.state.isThroughputBucketsSaveable && { throughputBuckets: this.state.throughputBuckets }),
       };
       if (this.hasProvisioningTypeChanged()) {
         if (this.state.isAutoPilotSelected) {
@@ -1130,11 +1152,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onMaxAutoPilotThroughputChange: this.onMaxAutoPilotThroughputChange,
       onScaleSaveableChange: this.onScaleSaveableChange,
       onScaleDiscardableChange: this.onScaleDiscardableChange,
-      throughputBucketsBaseline: this.state.throughputBucketsBaseline,
-      throughputBuckets: this.state.throughputBuckets,
-      enableThroughputBuckets: this.isCollectionSettingsTab && this.throughputBucketsEnabled,
-      onThroughputBucketChange: this.onThroughputBucketChange,
-      onThroughputBucketsSaveableChange: this.onThroughputBucketsSaveableChange,
       throughputError: this.state.throughputError,
     };
 
@@ -1242,6 +1259,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onConflictResolutionDirtyChange: this.onConflictResolutionDirtyChange,
     };
 
+    const throughputBucketsComponentProps: ThroughputBucketsComponentProps = {
+      currentBuckets: this.state.throughputBuckets,
+      throughputBucketsBaseline: this.state.throughputBucketsBaseline,
+      onBucketsChange: this.onThroughputBucketChange,
+      onSaveableChange: this.onThroughputBucketsSaveableChange,
+    };
+
     const partitionKeyComponentProps: PartitionKeyComponentProps = {
       database: useDatabases.getState().findDatabaseWithId(this.collection.databaseId),
       collection: this.collection,
@@ -1301,6 +1325,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.ComputedPropertiesTab,
         content: <ComputedPropertiesComponent {...computedPropertiesComponentProps} />,
+      });
+    }
+
+    if (this.throughputBucketsEnabled) {
+      tabs.push({
+        tab: SettingsV2TabTypes.ThroughputBucketsTab,
+        content: <ThroughputBucketsComponent {...throughputBucketsComponentProps} />,
       });
     }
 

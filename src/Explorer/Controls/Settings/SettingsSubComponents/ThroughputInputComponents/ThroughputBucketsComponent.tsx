@@ -10,12 +10,11 @@ const DEFAULT_BUCKETS = Array.from({ length: MAX_BUCKET_SIZES }, (_, i) => ({
   maxThroughputPercentage: 100,
 }));
 
-interface ThroughputBucketsComponentProps {
+export interface ThroughputBucketsComponentProps {
   currentBuckets: ThroughputBucket[];
   throughputBucketsBaseline: ThroughputBucket[];
   onBucketsChange: (updatedBuckets: ThroughputBucket[]) => void;
   onSaveableChange: (isSaveable: boolean) => void;
-  onDiscardableChange: (isDiscardable: boolean) => void;
 }
 
 export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = ({
@@ -23,7 +22,6 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   throughputBucketsBaseline,
   onBucketsChange,
   onSaveableChange,
-  onDiscardableChange,
 }) => {
   const getThroughputBuckets = (buckets: ThroughputBucket[]): ThroughputBucket[] => {
     if (!buckets || buckets.length === 0) {
@@ -45,13 +43,13 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   useEffect(() => {
     setThroughputBuckets(getThroughputBuckets(currentBuckets));
     onSaveableChange(false);
-    onDiscardableChange(false);
+    // onDiscardableChange(false);
   }, [currentBuckets]);
 
   useEffect(() => {
     const isChanged = isDirty(throughputBuckets, getThroughputBuckets(throughputBucketsBaseline));
     onSaveableChange(isChanged);
-    onDiscardableChange(isChanged);
+    // onDiscardableChange(isChanged);
   }, [throughputBuckets]);
 
   const handleBucketChange = (id: number, newValue: number) => {
@@ -69,7 +67,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
 
   return (
     <Stack tokens={{ childrenGap: "m" }} styles={{ root: { width: "70%", maxWidth: 700 } }}>
-      <Label>Throughput groups</Label>
+      <Label>Throughput Buckets</Label>
       <Stack>
         {throughputBuckets?.map((bucket) => (
           <Stack key={bucket.id} horizontal tokens={{ childrenGap: 8 }} verticalAlign="center">
@@ -80,7 +78,7 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               value={bucket.maxThroughputPercentage}
               onChange={(newValue) => handleBucketChange(bucket.id, newValue)}
               showValue={false}
-              label={`Group ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Group)" : ""}`}
+              label={`Group ${bucket.id}${bucket.id === 1 ? " (Data Explorer Query Bucket)" : ""}`}
               styles={{ root: { flex: 2, maxWidth: 400 } }}
               disabled={bucket.maxThroughputPercentage === 100}
             />
@@ -94,9 +92,13 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               }}
               disabled={bucket.maxThroughputPercentage === 100}
             />
+            {/* <IconButton
+              iconProps={{ iconName: bucket.maxThroughputPercentage === 100 ? "Add" : "Remove" }}
+              onClick={() => onToggle(bucket.id, bucket.maxThroughputPercentage === 100)}
+            ></IconButton> */}
             <Toggle
-              onText="Enabled"
-              offText="Disabled"
+              onText="Active"
+              offText="Inactive"
               checked={bucket.maxThroughputPercentage !== 100}
               onChange={(event, checked) => onToggle(bucket.id, checked)}
               styles={{ root: { marginBottom: 0 }, text: { fontSize: 12 } }}
