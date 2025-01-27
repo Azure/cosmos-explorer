@@ -12,7 +12,7 @@ describe("Database Account Utility", () => {
         } as DatabaseAccount,
       });
     });
-    
+
     it("Workload Type should return Learning", () => {
       updateUserContext({
         databaseAccount: {
