@@ -644,9 +644,35 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
             )}
+          {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && (
+            <AccordionItem value="3">
+              <AccordionHeader>
+                <div className={styles.header}>Region Selection</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Changes region the Cosmos Client uses to access account.
+                  </div>
+                  <div>
+                    <span className={styles.subHeader}>Select Region</span>
+                    <InfoTooltip className={styles.headerIcon}>
+                      Changes the account endpoint used to perform client operations.
+                    </InfoTooltip>
+                  </div>
+                  <Dropdown
+                    placeholder={regionOptions.find((option) => option.key === selectedRegion)?.text}
+                    onChange={handleOnSelectedRegionOptionChange}
+                    options={regionOptions}
+                    styles={{ root: { marginBottom: "10px" } }}
+                  />
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
           {userContext.apiType === "SQL" && (
             <>
-              <AccordionItem value="3">
+              <AccordionItem value="4">
                 <AccordionHeader>
                   <div className={styles.header}>Query Timeout</div>
                 </AccordionHeader>
@@ -687,7 +713,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
 
-              <AccordionItem value="4">
+              <AccordionItem value="5">
                 <AccordionHeader>
                   <div className={styles.header}>RU Limit</div>
                 </AccordionHeader>
@@ -718,31 +744,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                       />
                     </div>
                   )}
-                </AccordionPanel>
-              </AccordionItem>
-
-              <AccordionItem value="5">
-                <AccordionHeader>
-                  <div className={styles.header}>Region Selection</div>
-                </AccordionHeader>
-                <AccordionPanel>
-                  <div className={styles.settingsSectionContainer}>
-                    <div className={styles.settingsSectionDescription}>
-                      Changes region the Cosmos Client uses to access account.
-                    </div>
-                    <div>
-                      <span className={styles.subHeader}>Select Region</span>
-                      <InfoTooltip className={styles.headerIcon}>
-                        Changes the account endpoint used to perform client operations.
-                      </InfoTooltip>
-                    </div>
-                    <Dropdown
-                      placeholder={regionOptions.find((option) => option.key === selectedRegion)?.text}
-                      onChange={handleOnSelectedRegionOptionChange}
-                      options={regionOptions}
-                      styles={{ root: { marginBottom: "10px" } }}
-                    />
-                  </div>
                 </AccordionPanel>
               </AccordionItem>
 
