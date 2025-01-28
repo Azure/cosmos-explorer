@@ -2,7 +2,7 @@ const msRestNodeAuth = require("@azure/ms-rest-nodeauth");
 const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
 const ms = require("ms");
 
-const subscriptionId = process.env["AZURE_SUBSCRIPTION_ID"];
+const subscriptionId = process.env["DE_SUBSCRIPTION_ID"];
 const resourceGroupName = "de-e2e-tests";
 
 const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 30).getTime();
