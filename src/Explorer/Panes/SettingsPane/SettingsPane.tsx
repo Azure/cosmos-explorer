@@ -725,30 +725,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
 
               <AccordionItem value="5">
                 <AccordionHeader>
-                  <div className={styles.header}>Default Query Results View</div>
-                </AccordionHeader>
-                <AccordionPanel>
-                  <div className={styles.settingsSectionContainer}>
-                    <div className={styles.settingsSectionDescription}>
-                      Select the default view to use when displaying query results.
-                    </div>
-                    <ChoiceGroup
-                      ariaLabelledBy="defaultQueryResultsView"
-                      selectedKey={defaultQueryResultsView}
-                      options={defaultQueryResultsViewOptionList}
-                      styles={choiceButtonStyles}
-                      onChange={handleOnDefaultQueryResultsViewChange}
-                    />
-                  </div>
-                </AccordionPanel>
-              </AccordionItem>
-            </>
-          )}
-
-          {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") && (
-            <>
-              <AccordionItem value="6">
-                <AccordionHeader>
                   <div className={styles.header}>Region Selection</div>
                 </AccordionHeader>
                 <AccordionPanel>
@@ -772,6 +748,30 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
 
+              <AccordionItem value="6">
+                <AccordionHeader>
+                  <div className={styles.header}>Default Query Results View</div>
+                </AccordionHeader>
+                <AccordionPanel>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      Select the default view to use when displaying query results.
+                    </div>
+                    <ChoiceGroup
+                      ariaLabelledBy="defaultQueryResultsView"
+                      selectedKey={defaultQueryResultsView}
+                      options={defaultQueryResultsViewOptionList}
+                      styles={choiceButtonStyles}
+                      onChange={handleOnDefaultQueryResultsViewChange}
+                    />
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
+            </>
+          )}
+
+          {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") && (
+            <>
               <AccordionItem value="7">
                 <AccordionHeader>
                   <div className={styles.header}>Retry Settings</div>
