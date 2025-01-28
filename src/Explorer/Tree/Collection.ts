@@ -52,6 +52,8 @@ export default class Collection implements ViewModels.Collection {
   public partitionKeyProperties: string[];
   public id: ko.Observable<string>;
   public defaultTtl: ko.Observable<number>;
+  public vectorEmbeddingPolicy: ko.Observable<DataModels.VectorEmbeddingPolicy>;
+  public fullTextPolicy: ko.Observable<DataModels.FullTextPolicy>;
   public indexingPolicy: ko.Observable<DataModels.IndexingPolicy>;
   public uniqueKeyPolicy: DataModels.UniqueKeyPolicy;
   public usageSizeInKB: ko.Observable<number>;
@@ -110,6 +112,8 @@ export default class Collection implements ViewModels.Collection {
 
     this.id = ko.observable(data.id);
     this.defaultTtl = ko.observable(data.defaultTtl);
+    this.vectorEmbeddingPolicy = ko.observable(data.vectorEmbeddingPolicy);
+    this.fullTextPolicy = ko.observable(data.fullTextPolicy);
     this.indexingPolicy = ko.observable(data.indexingPolicy);
     this.usageSizeInKB = ko.observable();
     this.offer = ko.observable();
@@ -626,7 +630,13 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
@@ -649,13 +659,21 @@ export default class Collection implements ViewModels.Collection {
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
+          splitterDirection,
+          queryViewSizePercent,
         },
         { container: this.container },
       ),
     );
   }
 
-  public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewMongoQueryClick(
+    source: any,
+    event: MouseEvent,
+    queryText?: string,
+    splitterDirection?: "horizontal" | "vertical",
+    queryViewSizePercent?: number,
+  ) {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
 
@@ -677,6 +695,9 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         partitionKey: collection.partitionKey,
         onLoadStartKey: startKey,
+        queryText,
+        splitterDirection,
+        queryViewSizePercent,
       },
       {
         container: this.container,

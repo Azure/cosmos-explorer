@@ -18,13 +18,7 @@ import { CosmosFluentProvider } from "Explorer/Theme/ThemeUtil";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { KeyboardAction } from "KeyboardShortcuts";
 import { QueryConstants } from "Shared/Constants";
-import {
-  LocalStorageUtility,
-  StorageKey,
-  getDefaultQueryResultsView,
-  getRUThreshold,
-  ruThresholdEnabled,
-} from "Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey, getRUThreshold, ruThresholdEnabled } from "Shared/StorageUtility";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { Allotment } from "allotment";
 import { QueryCopilotState, useQueryCopilot } from "hooks/useQueryCopilot";
@@ -99,6 +93,13 @@ export interface IQueryTabComponentProps {
   copilotEnabled?: boolean;
   isSampleCopilotActive?: boolean;
   copilotStore?: Partial<QueryCopilotState>;
+  splitterDirection?: "horizontal" | "vertical";
+  queryViewSizePercent?: number;
+  onUpdatePersistedState: (state: {
+    queryText: string;
+    splitterDirection: "vertical" | "horizontal";
+    queryViewSizePercent: number;
+  }) => void;
 }
 
 interface IQueryTabStates {
@@ -118,11 +119,13 @@ interface IQueryTabStates {
   queryResultsView: SplitterDirection;
   errors?: QueryError[];
   modelMarkers?: monaco.editor.IMarkerData[];
+  queryViewSizePercent: number;
 }
 
 export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
   const copilotStore = useCopilotStore();
+
   const isSampleCopilotActive = useSelectedNode.getState().isQueryCopilotCollectionSelected();
   const queryTabProps = {
     ...props,
@@ -132,12 +135,12 @@ export const QueryTabCopilotComponent = (props: IQueryTabComponentProps): any =>
     isSampleCopilotActive: isSampleCopilotActive,
     copilotStore: copilotStore,
   };
-  return <QueryTabComponentImpl styles={styles} {...queryTabProps}></QueryTabComponentImpl>;
+  return <QueryTabComponentImpl styles={styles} {...queryTabProps} />;
 };
 
 export const QueryTabComponent = (props: IQueryTabComponentProps): any => {
   const styles = useQueryTabStyles();
-  return <QueryTabComponentImpl styles={styles} {...props}></QueryTabComponentImpl>;
+  return <QueryTabComponentImpl styles={styles} {...{ ...props }} />;
 };
 
 type QueryTabComponentImplProps = IQueryTabComponentProps & {
@@ -146,6 +149,8 @@ type QueryTabComponentImplProps = IQueryTabComponentProps & {
 
 // Inner (legacy) class component. We only use this component via one of the two functional components above (since we need to use the `useQueryTabStyles` hook).
 class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, IQueryTabStates> {
+  private static readonly DEBOUNCE_DELAY_MS = 1000;
+
   public queryEditorId: string;
   public executeQueryButton: Button;
   public saveQueryButton: Button;
@@ -157,10 +162,10 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
   private _iterator: MinimalQueryIterator;
   private queryAbortController: AbortController;
   queryEditor: React.RefObject<EditorReact>;
+  private timeoutId: NodeJS.Timeout | undefined;
 
   constructor(props: QueryTabComponentImplProps) {
     super(props);
-
     this.queryEditor = createRef<EditorReact>();
 
     this.state = {
@@ -176,7 +181,9 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       cancelQueryTimeoutID: undefined,
       copilotActive: this._queryCopilotActive(),
       currentTabActive: true,
-      queryResultsView: getDefaultQueryResultsView(),
+      queryResultsView:
+        props.splitterDirection === "vertical" ? SplitterDirection.Vertical : SplitterDirection.Horizontal,
+      queryViewSizePercent: props.queryViewSizePercent,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -206,6 +213,23 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
       onCloseClickEvent: this.onCloseClick.bind(this),
     });
   }
+
+  /**
+   * Helper function to save the query text in the query tab state
+   * Since it reads and writes to the same state, it is debounced
+   */
+  private saveQueryTabStateDebounced = () => {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    this.timeoutId = setTimeout(async () => {
+      this.props.onUpdatePersistedState({
+        queryText: this.state.sqlQueryEditorContent,
+        splitterDirection: this.state.queryResultsView,
+        queryViewSizePercent: this.state.queryViewSizePercent,
+      });
+    }, QueryTabComponentImpl.DEBOUNCE_DELAY_MS);
+  };
 
   private _queryCopilotActive(): boolean {
     if (this.props.copilotEnabled) {
@@ -567,7 +591,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     };
   }
   private _setViewLayout(direction: SplitterDirection): void {
-    this.setState({ queryResultsView: direction });
+    this.setState({ queryResultsView: direction }, () => this.saveQueryTabStateDebounced());
 
     // We'll need to refresh the context buttons to update the selected state of the view buttons
     setTimeout(() => {
@@ -599,13 +623,16 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
     if (this.state.copilotActive) {
       this.props.copilotStore?.setQuery(newContent);
     }
-    this.setState({
-      sqlQueryEditorContent: newContent,
-      queryCopilotGeneratedQuery: "",
+    this.setState(
+      {
+        sqlQueryEditorContent: newContent,
+        queryCopilotGeneratedQuery: "",
 
-      // Clear the markers when the user edits the document.
-      modelMarkers: [],
-    });
+        // Clear the markers when the user edits the document.
+        modelMarkers: [],
+      },
+      () => this.saveQueryTabStateDebounced(),
+    );
     if (this.isPreferredApiMongoDB) {
       if (newContent.length > 0) {
         this.executeQueryButton = {
@@ -704,8 +731,20 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
             ></QueryCopilotPromptbar>
           )}
           {/* Set 'key' to the value of vertical to force re-rendering when vertical changes, to work around https://github.com/johnwalley/allotment/issues/457 */}
-          <Allotment key={vertical.toString()} vertical={vertical}>
-            <Allotment.Pane data-test="QueryTab/EditorPane">
+          <Allotment
+            key={vertical.toString()}
+            vertical={vertical}
+            onDragEnd={(sizes: number[]) => {
+              const queryViewSizePercent = (100 * sizes[0]) / (sizes[0] + sizes[1]);
+              this.setState({ queryViewSizePercent }, () => this.saveQueryTabStateDebounced());
+            }}
+          >
+            <Allotment.Pane
+              data-test="QueryTab/EditorPane"
+              preferredSize={
+                this.state.queryViewSizePercent !== undefined ? `${this.state.queryViewSizePercent}%` : undefined
+              }
+            >
               <EditorReact
                 ref={this.queryEditor}
                 className={this.props.styles.queryEditor}

@@ -42,9 +42,9 @@ import { TableColumnSelectionPane } from "Explorer/Panes/TableColumnSelectionPan
 import {
   ColumnSizesMap,
   ColumnSort,
-  deleteSubComponentState,
-  readSubComponentState,
-  saveSubComponentState,
+  deleteDocumentsTabSubComponentState,
+  readDocumentsTabSubComponentState,
+  saveDocumentsTabSubComponentState,
   SubComponentName,
 } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabStateUtil";
 import { INITIAL_SELECTED_ROW_INDEX, useDocumentsTabStyles } from "Explorer/Tabs/DocumentsTabV2/DocumentsTabV2";
@@ -68,7 +68,6 @@ export type ColumnDefinition = {
 export interface IDocumentsTableComponentProps {
   onRefreshTable: () => void;
   items: DocumentsTableComponentItem[];
-  onItemClicked: (index: number) => void;
   onSelectedRowsChange: (selectedItemsIndices: Set<TableRowId>) => void;
   selectedRows: Set<TableRowId>;
   size: { height: number; width: number };
@@ -98,6 +97,7 @@ const defaultSize = {
   idealWidth: 200,
   minWidth: 50,
 };
+
 export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = ({
   onRefreshTable,
   items,
@@ -115,8 +115,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 }: IDocumentsTableComponentProps) => {
   const styles = useDocumentsTabStyles();
 
+  const sortedRowsRef = React.useRef(null);
+
   const [columnSizingOptions, setColumnSizingOptions] = React.useState<TableColumnSizingOptions>(() => {
-    const columnSizesMap: ColumnSizesMap = readSubComponentState(SubComponentName.ColumnSizes, collection, {});
+    const columnSizesMap: ColumnSizesMap = readDocumentsTabSubComponentState(
+      SubComponentName.ColumnSizes,
+      collection,
+      {},
+    );
     const columnSizesPx: TableColumnSizingOptions = {};
     selectedColumnIds.forEach((columnId) => {
       if (
@@ -140,7 +146,7 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     sortDirection: "ascending" | "descending";
     sortColumn: TableColumnId | undefined;
   }>(() => {
-    const sort = readSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, undefined);
+    const sort = readDocumentsTabSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, undefined);
 
     if (!sort) {
       return {
@@ -172,7 +178,12 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
         return acc;
       }, {} as ColumnSizesMap);
 
-      saveSubComponentState<ColumnSizesMap>(SubComponentName.ColumnSizes, collection, persistentSizes, true);
+      saveDocumentsTabSubComponentState<ColumnSizesMap>(
+        SubComponentName.ColumnSizes,
+        collection,
+        persistentSizes,
+        true,
+      );
 
       return newSizingOptions;
     });
@@ -184,11 +195,14 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
     setColumnSort(event, columnId, direction);
 
     if (columnId === undefined || direction === undefined) {
-      deleteSubComponentState(SubComponentName.ColumnSort, collection);
+      deleteDocumentsTabSubComponentState(SubComponentName.ColumnSort, collection);
       return;
     }
 
-    saveSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, { columnId, direction });
+    saveDocumentsTabSubComponentState<ColumnSort>(SubComponentName.ColumnSort, collection, {
+      columnId,
+      direction,
+    });
   };
 
   // Columns must be a static object and cannot change on re-renders otherwise React will complain about too many refreshes
@@ -291,22 +305,42 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
 
   const [selectionStartIndex, setSelectionStartIndex] = React.useState<number>(INITIAL_SELECTED_ROW_INDEX);
   const onTableCellClicked = useCallback(
-    (e: React.MouseEvent, index: number) => {
+    (e: React.MouseEvent | undefined, index: number, rowId: TableRowId) => {
       if (isSelectionDisabled) {
         // Only allow click
-        onSelectedRowsChange(new Set<TableRowId>([index]));
+        onSelectedRowsChange(new Set<TableRowId>([rowId]));
         setSelectionStartIndex(index);
         return;
       }
 
+      // The selection helper computes in the index space (what's visible to the user in the table, ie the sorted array).
+      // selectedRows is in the rowId space (the index of the original unsorted array), so it must be converted to the index space.
+      const selectedRowsIndex = new Set<number>();
+      selectedRows.forEach((rowId) => {
+        const index = sortedRowsRef.current.findIndex((row: TableRowData) => row.rowId === rowId);
+        if (index !== -1) {
+          selectedRowsIndex.add(index);
+        } else {
+          // This should never happen
+          console.error(`Row with rowId ${rowId} not found in sorted rows`);
+        }
+      });
+
       const result = selectionHelper(
-        selectedRows as Set<number>,
+        selectedRowsIndex,
         index,
-        isEnvironmentShiftPressed(e),
-        isEnvironmentCtrlPressed(e),
+        e && isEnvironmentShiftPressed(e),
+        e && isEnvironmentCtrlPressed(e),
         selectionStartIndex,
       );
-      onSelectedRowsChange(result.selection);
+
+      // Convert selectionHelper result from index space back to rowId space
+      const selectedRowIds = new Set<TableRowId>();
+      result.selection.forEach((index) => {
+        selectedRowIds.add(sortedRowsRef.current[index].rowId);
+      });
+      onSelectedRowsChange(selectedRowIds);
+
       if (result.selectionStartIndex !== undefined) {
         setSelectionStartIndex(result.selectionStartIndex);
       }
@@ -320,16 +354,20 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
    * - a key is down and the cell is clicked by the mouse
    */
   const onIdClicked = useCallback(
-    (e: React.KeyboardEvent<Element>, index: number) => {
+    (e: React.KeyboardEvent<Element>, rowId: TableRowId) => {
       if (e.key === NormalizedEventKey.Enter || e.key === NormalizedEventKey.Space) {
-        onSelectedRowsChange(new Set<TableRowId>([index]));
+        onSelectedRowsChange(new Set<TableRowId>([rowId]));
       }
     },
     [onSelectedRowsChange],
   );
 
   const RenderRow = ({ index, style, data }: ReactWindowRenderFnProps) => {
-    const { item, selected, appearance, onClick, onKeyDown } = data[index];
+    // WARNING: because the table sorts the data, 'index' is not the same as 'rowId'
+    // The rowId is the index of the item in the original array,
+    // while the index is the index of the item in the sorted array
+    const { item, selected, appearance, onClick, onKeyDown, rowId } = data[index];
+
     return (
       <TableRow
         aria-rowindex={index + 2}
@@ -359,8 +397,8 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
             key={column.columnId}
             className={styles.tableCell}
             // When clicking on a cell with shift/ctrl key, onKeyDown is called instead of onClick.
-            onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index)}
-            onKeyPress={(e: React.KeyboardEvent<Element>) => onIdClicked(e, index)}
+            onClick={(e: React.MouseEvent<Element, MouseEvent>) => onTableCellClicked(e, index, rowId)}
+            onKeyPress={(e: React.KeyboardEvent<Element>) => onIdClicked(e, rowId)}
             {...columnSizing.getTableCellProps(column.columnId)}
             tabIndex={column.columnId === "id" ? 0 : -1}
           >
@@ -419,6 +457,19 @@ export const DocumentsTableComponent: React.FC<IDocumentsTableComponentProps> = 
       };
     }),
   );
+
+  // Store the sorted rows in a ref which won't trigger a re-render (as opposed to a state)
+  sortedRowsRef.current = rows;
+
+  // If there are no selected rows, auto select the first row
+  const [autoSelectFirstDoc, setAutoSelectFirstDoc] = React.useState<boolean>(true);
+  React.useEffect(() => {
+    if (autoSelectFirstDoc && sortedRowsRef.current?.length > 0 && selectedRows.size === 0) {
+      setAutoSelectFirstDoc(false);
+      const DOC_INDEX_TO_SELECT = 0;
+      onTableCellClicked(undefined, DOC_INDEX_TO_SELECT, sortedRowsRef.current[DOC_INDEX_TO_SELECT].rowId);
+    }
+  }, [selectedRows, onTableCellClicked, autoSelectFirstDoc]);
 
   const toggleAllKeydown = React.useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {

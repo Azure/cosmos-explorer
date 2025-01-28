@@ -1,4 +1,4 @@
-import { AzureCliCredentials } from "@azure/ms-rest-nodeauth";
+import { AzureCliCredential } from "@azure/identity";
 import { expect, Frame, Locator, Page } from "@playwright/test";
 import crypto from "crypto";
 
@@ -20,13 +20,13 @@ export function generateUniqueName(baseName, options?: TestNameOptions): string 
   return `${prefix}${baseName}${crypto.randomBytes(length).toString("hex")}${suffix}`;
 }
 
-export async function getAzureCLICredentials(): Promise<AzureCliCredentials> {
-  return await AzureCliCredentials.create();
+export function getAzureCLICredentials(): AzureCliCredential {
+  return new AzureCliCredential();
 }
 
 export async function getAzureCLICredentialsToken(): Promise<string> {
-  const credentials = await getAzureCLICredentials();
-  const token = (await credentials.getToken()).accessToken;
+  const credentials = getAzureCLICredentials();
+  const token = (await credentials.getToken("https://management.core.windows.net//.default")).token;
   return token;
 }
 

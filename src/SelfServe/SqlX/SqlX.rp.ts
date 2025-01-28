@@ -266,7 +266,10 @@ export const getOfferingIds = async (regions: Array<RegionItem>): Promise<Offeri
         method: "GET",
         apiVersion: "2023-05-01-preview",
         queryParams: {
-          filter: "armRegionName eq '" + regionShortName + "'",
+          filter:
+            "armRegionName eq '" +
+            regionShortName +
+            "' and productDisplayName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
         },
       });
 

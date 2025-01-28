@@ -1,5 +1,11 @@
 import { clamp } from "@fluentui/react";
+import { OpenTab } from "Contracts/ActionContracts";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import {
+  AppStateComponentNames,
+  OPEN_TABS_SUBCOMPONENT_NAME,
+  saveSubComponentState,
+} from "Shared/AppStatePersistenceUtility";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import { CollectionTabKind } from "../Contracts/ViewModels";
@@ -12,7 +18,6 @@ export interface TabsState {
   openedReactTabs: ReactTabKind[];
   activeTab: TabsBase | undefined;
   activeReactTab: ReactTabKind | undefined;
-  networkSettingsWarning: string;
   queryCopilotTabInitialInput: string;
   isTabExecuting: boolean;
   isQueryErrorThrown: boolean;
@@ -27,7 +32,6 @@ export interface TabsState {
   closeAllNotebookTabs: (hardClose: boolean) => void;
   openAndActivateReactTab: (tabKind: ReactTabKind) => void;
   closeReactTab: (tabKind: ReactTabKind) => void;
-  setNetworkSettingsWarning: (warningMessage: string) => void;
   setQueryCopilotTabInitialInput: (input: string) => void;
   setIsTabExecuting: (state: boolean) => void;
   setIsQueryErrorThrown: (state: boolean) => void;
@@ -36,6 +40,8 @@ export interface TabsState {
   selectLeftTab: () => void;
   selectRightTab: () => void;
   closeActiveTab: () => void;
+  closeAllTabs: () => void;
+  persistTabsState: () => void;
 }
 
 export enum ReactTabKind {
@@ -61,7 +67,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   openedReactTabs: !isPlatformFabric ? [ReactTabKind.Home] : [],
   activeTab: undefined,
   activeReactTab: !isPlatformFabric ? ReactTabKind.Home : undefined,
-  networkSettingsWarning: "",
   queryCopilotTabInitialInput: "",
   isTabExecuting: false,
   isQueryErrorThrown: false,
@@ -73,7 +78,9 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
   },
   activateNewTab: (tab: TabsBase): void => {
     set((state) => ({ openedTabs: [...state.openedTabs, tab], activeTab: tab, activeReactTab: undefined }));
+    tab.triggerPersistState = get().persistTabsState;
     tab.onActivate();
+    get().persistTabsState();
   },
   activateReactTab: (tabKind: ReactTabKind): void => {
     // Clear the selected node when switching to a react tab.
@@ -130,6 +137,8 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     }
 
     set({ openedTabs: updatedTabs });
+
+    get().persistTabsState();
   },
   closeAllNotebookTabs: (hardClose): void => {
     const isNotebook = (tabKind: CollectionTabKind): boolean => {
@@ -178,7 +187,6 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     set({ openedReactTabs: updatedOpenedReactTabs });
   },
-  setNetworkSettingsWarning: (warningMessage: string) => set({ networkSettingsWarning: warningMessage }),
   setQueryCopilotTabInitialInput: (input: string) => set({ queryCopilotTabInitialInput: input }),
   setIsTabExecuting: (state: boolean) => {
     set({ isTabExecuting: state });
@@ -225,5 +233,19 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     } else if (state.activeTab !== undefined) {
       state.closeTab(state.activeTab);
     }
+  },
+  closeAllTabs: () => {
+    set({ openedTabs: [], openedReactTabs: [], activeTab: undefined, activeReactTab: undefined });
+  },
+  persistTabsState: () => {
+    const state = get();
+    const openTabsStates = state.openedTabs.map((tab) => tab.getPersistedState());
+
+    saveSubComponentState<OpenTab[]>(
+      AppStateComponentNames.DataExplorerAction,
+      OPEN_TABS_SUBCOMPONENT_NAME,
+      undefined,
+      openTabsStates,
+    );
   },
 }));

@@ -7,9 +7,13 @@ import Explorer from "Explorer/Explorer";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import {
+  AppStateComponentNames,
+  OPEN_TABS_SUBCOMPONENT_NAME,
+  readSubComponentState,
+} from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
-import { getNetworkSettingsWarningMessage } from "Utils/NetworkUtility";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -80,6 +84,11 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           await updateContextForCopilot(explorer);
           await updateContextForSampleData(explorer);
         }
+
+        if (userContext.features.restoreTabs) {
+          restoreOpenTabs();
+        }
+
         setExplorer(explorer);
       }
     };
@@ -132,7 +141,7 @@ async function configureFabric(): Promise<Explorer> {
             await scheduleRefreshDatabaseResourceToken(true);
             resolve(explorer);
             await explorer.refreshAllDatabases();
-            if (userContext.fabricContext.isVisible && !firstContainerOpened) {
+            if (userContext.fabricContext.isVisible) {
               firstContainerOpened = true;
               openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
             }
@@ -429,6 +438,7 @@ function createExplorerFabric(params: { connectionId: string; isVisible: boolean
       },
     },
   });
+  useTabs.getState().closeAllTabs();
   const explorer = new Explorer();
   return explorer;
 }
@@ -731,8 +741,6 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
   }
 
-  getNetworkSettingsWarningMessage(useTabs.getState().setNetworkSettingsWarning);
-
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
   }
@@ -816,3 +824,17 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
 interface SampledataconnectionResponse {
   connectionString: string;
 }
+
+const restoreOpenTabs = () => {
+  const openTabsState = readSubComponentState<(DataExplorerAction | undefined)[]>(
+    AppStateComponentNames.DataExplorerAction,
+    OPEN_TABS_SUBCOMPONENT_NAME,
+    undefined,
+    [],
+  );
+  openTabsState.forEach((openTabState) => {
+    if (openTabState) {
+      handleOpenAction(openTabState, useDatabases.getState().databases, this);
+    }
+  });
+};

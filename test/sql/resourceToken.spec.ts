@@ -13,7 +13,7 @@ import {
 } from "../fx";
 
 test("SQL account using Resource token", async ({ page }) => {
-  const credentials = await getAzureCLICredentials();
+  const credentials = getAzureCLICredentials();
   const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
   const accountName = getAccountName(TestAccount.SQL);
   const account = await armClient.databaseAccounts.get(resourceGroupName, accountName);
