@@ -49,6 +49,9 @@ app.use(proxy);
 app.use(commit);
 app.get("/pull/:pr(\\d+)", (req, res) => {
   const pr = req.params.pr;
+  if (!/^\d+$/.test(pr)) {
+    return res.status(400).send("Invalid pull request number");
+  }
   const [, query] = req.originalUrl.split("?");
   const search = new URLSearchParams(query);
 
