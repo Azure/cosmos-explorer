@@ -99,8 +99,8 @@ jobs:
       - name: "Az CLI login"
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.DE_CLIENT_ID }}
-          tenant-id: ${{ secrets.DE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
       - name: Upload build to preview blob storage
         run: az storage blob upload-batch -d '$web' -s 'dist' --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --auth-mode login --overwrite true
@@ -160,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      DE_SUBSCRIPTION_ID: ${{ secrets.DE_SUBSCRIPTION_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     strategy:
       fail-fast: false
       matrix:
@@ -171,9 +171,9 @@ jobs:
       - name: "Az CLI login"
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.DE_CLIENT_ID }}
-          tenant-id: ${{ secrets.DE_TENANT_ID }}
-          subscription-id: ${{ secrets.DE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
