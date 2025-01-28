@@ -5,7 +5,7 @@ import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil"
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { AuthType } from "../AuthType";
-import { BackendApi, HttpStatusCodes, PriorityLevel } from "../Common/Constants";
+import { BackendApi, PriorityLevel } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
 import { updateUserContext, userContext } from "../UserContext";
@@ -110,17 +110,13 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnost
   console.log(`REQUEST CONTEXT ENDPOINT: ${JSON.stringify(requestContext.endpoint)}`);
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
-  // Try request.  Catch known errors and rethrow in format that can be handled by the calling code.
   try {
     return await next(requestContext);
   } catch (error) {
-    if (
-      error?.message.indexOf("The requested operation cannot be performed at this region") >= 0 &&
-      error.code === HttpStatusCodes.Forbidden
-    ) {
-      throw new Error("Request Plugin: 403 Forbidden in Operation for Region: " + error.message);
-    }
-    throw error;
+    throw {
+      code: error?.code || undefined,
+      message: error.message,
+    };
   }
 };
 
