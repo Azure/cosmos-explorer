@@ -865,6 +865,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <Link
                       href="https://aka.ms/cosmosdb-synapselink"
                       target="_blank"
+                      aria-label={Constants.ariaLabelForLearnMoreLink.AzureSynapseLink}
                       className="capacitycalculator-link"
                     >
                       Learn more
@@ -1222,7 +1223,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       <Text variant="small">
         Enable analytical store capability to perform near real-time analytics on your operational data, without
         impacting the performance of transactional workloads.{" "}
-        <Link target="_blank" href="https://aka.ms/analytical-store-overview">
+        <Link
+          aria-label={Constants.ariaLabelForLearnMoreLink.AnalyticalStore}
+          target="_blank"
+          href="https://aka.ms/analytical-store-overview"
+        >
           Learn more
         </Link>
       </Text>
