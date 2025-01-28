@@ -1,10 +1,17 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const port = process.env.PORT || 3000;
-const fetch = require("node-fetch");
+const fetch = require("node-fetch"); 
+
+const backendEndpoint = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
+const previewSiteEndpoint = "https://dataexplorer-preview.azurewebsites.net";
+const previewStorageWebsiteEndpoint = "https://dataexplorerpreview.blob.core.windows.net";
+const githubApiUrl = "https://api.github.com/repos/Azure/cosmos-explorer";
+const githubPullRequestUrl = "https://github.com/Azure/cosmos-explorer/pull";
+const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
 const api = createProxyMiddleware("/api", {
-  target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
+  target: backendEndpoint,
   changeOrigin: true,
   logLevel: "debug",
   bypass: (req, res) => {
@@ -16,7 +23,7 @@ const api = createProxyMiddleware("/api", {
 });
 
 const proxy = createProxyMiddleware("/proxy", {
-  target: "https://cdb-ms-mpac-pbe.cosmos.azure.com",
+  target: backendEndpoint,
   changeOrigin: true,
   secure: false,
   logLevel: "debug",
@@ -28,11 +35,11 @@ const proxy = createProxyMiddleware("/proxy", {
 });
 
 const commit = createProxyMiddleware("/commit", {
-  target: "https://cosmosexplorerpreview.blob.core.windows.net",
+  target: previewStorageWebsiteEndpoint,
   changeOrigin: true,
   secure: false,
   logLevel: "debug",
-  pathRewrite: { "^/commit": "$web/" },
+  pathRewrite: { "^/commit": "/" },
 });
 
 const app = express();
@@ -45,17 +52,17 @@ app.get("/pull/:pr(\\d+)", (req, res) => {
   const [, query] = req.originalUrl.split("?");
   const search = new URLSearchParams(query);
 
-  fetch("https://api.github.com/repos/Azure/cosmos-explorer/pulls/" + pr)
+  fetch(`${githubApiUrl}/pulls/${pr}`)
     .then((response) => response.json())
     .then(({ head: { ref, sha } }) => {
-      const prUrl = new URL("https://github.com/Azure/cosmos-explorer/pull/" + pr);
+      const prUrl = new URL(`${githubPullRequestUrl}/${pr}`);
       prUrl.hash = ref;
       search.set("feature.pr", prUrl.href);
 
-      const explorer = new URL("https://cosmos-explorer-preview.azurewebsites.net/commit/" + sha + "/explorer.html");
+      const explorer = new URL(`${previewSiteEndpoint}/commit/${sha}/explorer.html`);
       explorer.search = search.toString();
 
-      const portal = new URL("https://ms.portal.azure.com/");
+      const portal = new URL(azurePortalMpacEndpoint);
       portal.searchParams.set("dataExplorerSource", explorer.href);
 
       return res.redirect(portal.href);
@@ -63,11 +70,11 @@ app.get("/pull/:pr(\\d+)", (req, res) => {
     .catch(() => res.sendStatus(500));
 });
 app.get("/", (req, res) => {
-  fetch("https://api.github.com/repos/Azure/cosmos-explorer/branches/master")
+  fetch(`${githubApiUrl}/branches/master`)
     .then((response) => response.json())
     .then(({ commit: { sha } }) => {
       const explorer = new URL(
-        "https://cosmos-explorer-preview.azurewebsites.net/commit/" + sha + "/hostedExplorer.html"
+        `${previewSiteEndpoint}/commit/${sha}/hostedExplorer.html`
       );
       return res.redirect(explorer.href);
     })

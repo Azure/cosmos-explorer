@@ -1,4 +1,4 @@
 {
   "PROXY_PATH": "/proxy",
-  "msalRedirectURI": "https://cosmos-explorer-preview.azurewebsites.net/"
+  "msalRedirectURI": "https://dataexplorer-preview.azurewebsites.net/"
 }
