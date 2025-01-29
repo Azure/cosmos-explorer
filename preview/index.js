@@ -1,16 +1,16 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const port = process.env.PORT || 3000;
-const fetch = require("node-fetch"); 
+const fetch = require("node-fetch");
 
 const backendEndpoint = "https://cdb-ms-mpac-pbe.cosmos.azure.com";
 const previewSiteEndpoint = "https://dataexplorer-preview.azurewebsites.net";
-const previewStorageWebsiteEndpoint = "https://dataexplorerpreview.blob.core.windows.net";
+const previewStorageWebsiteEndpoint = "https://dataexplorerpreview.z5.web.core.windows.net/";
 const githubApiUrl = "https://api.github.com/repos/Azure/cosmos-explorer";
 const githubPullRequestUrl = "https://github.com/Azure/cosmos-explorer/pull";
 const azurePortalMpacEndpoint = "https://ms.portal.azure.com/";
 
-const api = createProxyMiddleware("/api", {
+const api = createProxyMiddleware({
   target: backendEndpoint,
   changeOrigin: true,
   logLevel: "debug",
@@ -22,7 +22,7 @@ const api = createProxyMiddleware("/api", {
   },
 });
 
-const proxy = createProxyMiddleware("/proxy", {
+const proxy = createProxyMiddleware({
   target: backendEndpoint,
   changeOrigin: true,
   secure: false,
@@ -34,7 +34,7 @@ const proxy = createProxyMiddleware("/proxy", {
   },
 });
 
-const commit = createProxyMiddleware("/commit", {
+const commit = createProxyMiddleware({
   target: previewStorageWebsiteEndpoint,
   changeOrigin: true,
   secure: false,
@@ -44,9 +44,9 @@ const commit = createProxyMiddleware("/commit", {
 
 const app = express();
 
-app.use(api);
-app.use(proxy);
-app.use(commit);
+app.use("/api", api);
+app.use("/proxy", proxy);
+app.use("/commit", commit);
 app.get("/pull/:pr(\\d+)", (req, res) => {
   const pr = req.params.pr;
   if (!/^\d+$/.test(pr)) {
@@ -76,9 +76,7 @@ app.get("/", (req, res) => {
   fetch(`${githubApiUrl}/branches/master`)
     .then((response) => response.json())
     .then(({ commit: { sha } }) => {
-      const explorer = new URL(
-        `${previewSiteEndpoint}/commit/${sha}/hostedExplorer.html`
-      );
+      const explorer = new URL(`${previewSiteEndpoint}/commit/${sha}/hostedExplorer.html`);
       return res.redirect(explorer.href);
     })
     .catch(() => res.sendStatus(500));
