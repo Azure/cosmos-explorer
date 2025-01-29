@@ -1,4 +1,4 @@
-import { initializeIcons } from "@fluentui/react";
+// import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
 import React from "react";
 import * as ReactDOM from "react-dom";
@@ -14,7 +14,7 @@ import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
 
 const onInit = async () => {
-  initializeIcons();
+  // initializeIcons();
   await initializeConfiguration();
   const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
   const notebookViewerProps = GalleryUtils.getNotebookViewerProps(window.location.search);

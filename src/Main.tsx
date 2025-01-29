@@ -2,7 +2,7 @@
 import "./ReactDevTools";
 
 // CSS Dependencies
-import { initializeIcons, loadTheme } from "@fluentui/react";
+import { loadTheme } from "@fluentui/react";
 import { QuickstartCarousel } from "Explorer/Quickstart/QuickstartCarousel";
 import { MongoQuickstartTutorial } from "Explorer/Quickstart/Tutorials/MongoQuickstartTutorial";
 import { SQLQuickstartTutorial } from "Explorer/Quickstart/Tutorials/SQLQuickstartTutorial";
@@ -62,7 +62,7 @@ import "./Shared/appInsights";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 
-initializeIcons();
+// initializeIcons();
 
 const App: React.FunctionComponent = () => {
   const isCarouselOpen = useCarousel((state) => state.shouldOpen);
