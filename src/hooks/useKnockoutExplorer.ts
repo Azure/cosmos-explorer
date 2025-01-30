@@ -54,6 +54,7 @@ import {
 import { isInvalidParentFrameOrigin, shouldProcessMessage } from "../Utils/MessageValidation";
 import { getReadOnlyKeys, listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { applyExplorerBindings } from "../applyExplorerBindings";
+
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
 // Please tread carefully :)
@@ -88,16 +89,17 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           restoreOpenTabs();
         }
 
-        useEffect(() => {
-          if (explorer) {
-            applyExplorerBindings(explorer);
-          }
-        }, [explorer]);
         setExplorer(explorer);
       }
     };
     effect();
   }, [platform]);
+
+  useEffect(() => {
+    if (explorer) {
+      applyExplorerBindings(explorer);
+    }
+  }, [explorer]);
 
   return explorer;
 }
