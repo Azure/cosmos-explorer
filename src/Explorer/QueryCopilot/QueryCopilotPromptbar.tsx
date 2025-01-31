@@ -75,6 +75,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
   const inputEdited = useRef(false);
   const itemRefs = useRef([]);
   const searchInputRef = useRef(null);
+  const copyQueryRef = useRef(null);
   const {
     openFeedbackModal,
     hideFeedbackModalForLikedQueries,
@@ -132,6 +133,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
     document.body.removeChild(queryElement);
 
     setshowCopyPopup(true);
+    copyQueryRef.current.focus();
     setTimeout(() => {
       setshowCopyPopup(false);
     }, 6000);
@@ -677,6 +679,7 @@ export const QueryCopilotPromptbar: React.FC<QueryCopilotPromptProps> = ({
                   )}
                   <CommandBarButton
                     className="copyQuery"
+                    elementRef={copyQueryRef}
                     onClick={copyGeneratedCode}
                     iconProps={{ iconName: "Copy" }}
                     style={{ fontSize: 12, transition: "background-color 0.3s ease", height: "100%" }}
