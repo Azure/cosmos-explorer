@@ -327,12 +327,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       });
     }
 
-    console.log(
-      `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
-        userContext?.databaseAccount?.properties?.documentEndpoint,
-      )}`,
-    );
-
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
     LocalStorageUtility.setEntryBoolean(StorageKey.QueryTimeoutEnabled, queryTimeoutEnabled);
     LocalStorageUtility.setEntryNumber(StorageKey.RetryAttempts, retryAttempts);
