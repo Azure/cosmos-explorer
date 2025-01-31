@@ -96,14 +96,16 @@ jobs:
         with:
           name: dist
           path: dist/
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.PREVIEW_SUBSCRIPTION_ID }}
       - name: Upload build to preview blob storage
-        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name cosmosexplorerpreview --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --account-key="${PREVIEW_STORAGE_KEY}" --overwrite true
-        env:
-          PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
+        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --auth-mode login --overwrite true
       - name: Upload preview config to blob storage
-        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name cosmosexplorerpreview --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --account-key="${PREVIEW_STORAGE_KEY}" --overwrite true
-        env:
-          PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
+        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name ${{ secrets.PREVIEW_STORAGE_ACCOUNT_NAME }} --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --auth-mode login --overwrite true
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
