@@ -98,7 +98,6 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
   useEffect(() => {
     if (explorer) {
       applyExplorerBindings(explorer);
-      explorer.openNPSSurveyDialog();
     }
   }, [explorer]);
 

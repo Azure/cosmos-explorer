@@ -35,7 +35,7 @@ import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { isAccountNewerThanThresholdInMs, updateUserContext, userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -274,37 +274,6 @@ export default class Explorer {
             `Failed to perform authorization for this account, due to the following error: \n${errorJson}`,
           );
         }
-      }
-    }
-  }
-
-  public openNPSSurveyDialog(): void {
-    if (!Platform.Portal || !["Postgres", "SQL", "Mongo"].includes(userContext.apiType)) {
-      return;
-    }
-
-    const ONE_DAY_IN_MS = 86400000;
-    const SEVEN_DAYS_IN_MS = 604800000;
-
-    // Try Cosmos DB subscription - survey shown to 100% of users at day 1 in Data Explorer.
-    if (userContext.isTryCosmosDBSubscription) {
-      if (isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", ONE_DAY_IN_MS)) {
-        Logger.logInfo(
-          `Sending message to Portal to check if NPS Survey can be displayed in Try Cosmos DB ${userContext.apiType}`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
-      }
-    } else {
-      // Show survey when an existing account is older than 7 days
-      if (
-        !isAccountNewerThanThresholdInMs(userContext.databaseAccount?.systemData?.createdAt || "", SEVEN_DAYS_IN_MS)
-      ) {
-        Logger.logInfo(
-          `Sending message to Portal to check if NPS Survey can be displayed for existing ${userContext.apiType} account older than 7 days`,
-          "Explorer/openNPSSurveyDialog",
-        );
-        sendMessage({ type: MessageTypes.DisplayNPSSurvey });
       }
     }
   }
