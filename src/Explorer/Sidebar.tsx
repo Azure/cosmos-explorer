@@ -26,7 +26,7 @@ import { getCollectionName, getDatabaseName } from "Utils/APITypeUtils";
 import { Allotment, AllotmentHandle } from "allotment";
 import { useSidePanel } from "hooks/useSidePanel";
 import { debounce } from "lodash";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 const useSidebarStyles = makeStyles({
   sidebar: {
@@ -109,6 +109,7 @@ interface GlobalCommand {
   icon: JSX.Element;
   onClick: () => void;
   keyboardAction?: KeyboardAction;
+  ref?: React.RefObject<HTMLButtonElement>;
 }
 
 const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
@@ -118,6 +119,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   // However, that messes with the Menu positioning, so we need to get a reference to the 'div' to pass to the Menu.
   // We can't use a ref though, because it would be set after the Menu is rendered, so we use a state value to force a re-render.
   const [globalCommandButton, setGlobalCommandButton] = useState<HTMLElement | null>(null);
+  const primaryFocusableRef = useRef<HTMLButtonElement>(null);
 
   const actions = useMemo<GlobalCommand[]>(() => {
     if (
@@ -177,6 +179,16 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
     );
   }, [actions, setKeyboardActions]);
 
+  useLayoutEffect(() => {
+    if (primaryFocusableRef.current) {
+      const timer = setTimeout(() => {
+        primaryFocusableRef.current.focus();
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, []);
+
   if (!primaryAction) {
     return null;
   }
@@ -184,7 +196,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
   return (
     <div className={styles.globalCommandsContainer} data-test="GlobalCommands">
       {actions.length === 1 ? (
-        <Button icon={primaryAction.icon} onClick={onPrimaryActionClick}>
+        <Button icon={primaryAction.icon} onClick={onPrimaryActionClick} ref={primaryFocusableRef}>
           {primaryAction.label}
         </Button>
       ) : (
@@ -194,7 +206,7 @@ const GlobalCommands: React.FC<GlobalCommandsProps> = ({ explorer }) => {
               <div ref={setGlobalCommandButton}>
                 <SplitButton
                   menuButton={{ ...triggerProps, "aria-label": "More commands" }}
-                  primaryActionButton={{ onClick: onPrimaryActionClick }}
+                  primaryActionButton={{ onClick: onPrimaryActionClick, ref: primaryFocusableRef }}
                   className={styles.globalCommandsSplitButton}
                   icon={primaryAction.icon}
                 >
