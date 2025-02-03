@@ -43,13 +43,11 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
   useEffect(() => {
     setThroughputBuckets(getThroughputBuckets(currentBuckets));
     onSaveableChange(false);
-    // onDiscardableChange(false);
   }, [currentBuckets]);
 
   useEffect(() => {
     const isChanged = isDirty(throughputBuckets, getThroughputBuckets(throughputBucketsBaseline));
     onSaveableChange(isChanged);
-    // onDiscardableChange(isChanged);
   }, [throughputBuckets]);
 
   const handleBucketChange = (id: number, newValue: number) => {
@@ -92,10 +90,6 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               }}
               disabled={bucket.maxThroughputPercentage === 100}
             />
-            {/* <IconButton
-              iconProps={{ iconName: bucket.maxThroughputPercentage === 100 ? "Add" : "Remove" }}
-              onClick={() => onToggle(bucket.id, bucket.maxThroughputPercentage === 100)}
-            ></IconButton> */}
             <Toggle
               onText="Active"
               offText="Inactive"
@@ -103,12 +97,6 @@ export const ThroughputBucketsComponent: FC<ThroughputBucketsComponentProps> = (
               onChange={(event, checked) => onToggle(bucket.id, checked)}
               styles={{ root: { marginBottom: 0 }, text: { fontSize: 12 } }}
             ></Toggle>
-            {/* {bucket.id === 1 && (
-              <Stack horizontal tokens={{ childrenGap: 4 }} verticalAlign="center">
-                <Icon iconName="TagSolid" />
-                <span>Data Explorer Query Bucket</span>
-              </Stack>
-            )} */}
           </Stack>
         ))}
       </Stack>
