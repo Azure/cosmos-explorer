@@ -107,8 +107,17 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnosticNode, next) => {
   requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
+  console.log(`REQUEST CONTEXT ENDPOINT: ${JSON.stringify(requestContext.endpoint)}`);
   requestContext.headers["x-ms-proxy-target"] = endpoint();
-  return next(requestContext);
+  console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
+  try {
+    return await next(requestContext);
+  } catch (error) {
+    throw {
+      code: error?.code || undefined,
+      message: error.message,
+    };
+  }
 };
 
 export const endpoint = () => {
@@ -117,7 +126,11 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
+  return (
+    userContext.selectedRegionalEndpoint ||
+    userContext.endpoint ||
+    userContext?.databaseAccount?.properties?.documentEndpoint
+  );
 };
 
 export async function getTokenFromAuthService(
@@ -188,6 +201,8 @@ enum SDKSupportedCapabilities {
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
+  console.log(`Client Call`);
+  console.log(`Client Call: userContext.refreshCosmosClient: ${userContext.refreshCosmosClient}`);
   if (_client) {
     if (!userContext.refreshCosmosClient) {
       return _client;
@@ -218,20 +233,80 @@ export function client(): Cosmos.CosmosClient {
     _defaultHeaders["x-ms-cosmos-priority-level"] = PriorityLevel.Default;
   }
 
+  // Parsing out endpoint from diagnostics.  Used to find address I need to add to firewall rule.
+  function parseEndpointFromDiag(json: string): string {
+    const suffix: string = ".documents.azure.com";
+    const start: number = json.indexOf("//") + "//".length;
+    const end: number = json.indexOf(suffix) + suffix.length;
+    const endpoint: string = json.substring(start, end);
+
+    return endpoint;
+  }
+  // Used to check current client region configuration.
+  async function fetchConnectedRegions(client: Cosmos.CosmosClient) {
+    // Check currently connected regions.
+    try {
+      const someMoreThings = await client.databases.readAll().fetchAll();
+      console.log(`Current list of databases: ${JSON.stringify(someMoreThings)}`);
+      const currentReadRegion = await client.getReadEndpoint();
+      console.log(`Current read endpoint: ${JSON.stringify(currentReadRegion)}`);
+      const currentReadRegions = await client.getReadEndpoints();
+      console.log(`Current account endpoints: ${JSON.stringify(currentReadRegions)}`);
+      // Getting primary region IP that needs to be blocked.
+      // retrieve the regional endpoint of the account
+      const regionalWriteEndpoint = await client.getWriteEndpoint();
+      console.log(`Current write endpoint: ${JSON.stringify(regionalWriteEndpoint)}`);
+      const parsedWriteEndpoint = parseEndpointFromDiag(JSON.stringify(regionalWriteEndpoint));
+      console.log(`Current parsed write endpoint: ${JSON.stringify(parsedWriteEndpoint)}`);
+      // const writeHostAddress = await findHostAddress(parsedWriteEndpoint);
+      // console.log(`Current write host address: ${JSON.stringify(writeHostAddress)}`);
+    } catch (error) {
+      console.error("Error getting read endpoints:", error);
+    }
+
+    const currentWriteRegion = await client.getWriteEndpoint();
+    console.log(`Current write endpoint: ${JSON.stringify(currentWriteRegion)}`);
+    console.log(
+      `Current userContext.selectedRegionalEndpoint: ${JSON.stringify(userContext?.selectedRegionalEndpoint)}`,
+    );
+  }
+
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
+    // endpoint: "https://test-craig-nosql-westus3.documents.azure.com:443/",
+    // endpoint: "https://test-craig-nosql-eastus2.documents.azure.com:443/",
     key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,
     connectionPolicy: {
       retryOptions: {
-        maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        //maxRetryAttemptCount: LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts),
+        maxRetryAttemptCount: 0,
         fixedRetryIntervalInMilliseconds: LocalStorageUtility.getEntryNumber(StorageKey.RetryInterval),
         maxWaitTimeInSeconds: LocalStorageUtility.getEntryNumber(StorageKey.MaxWaitTimeInSeconds),
       },
     },
   };
+
+  // Account details from userContext.
+  console.log(`userContext details: ${JSON.stringify(userContext)}`);
+  console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
+  console.log(
+    `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.documentEndpoint,
+    )}`,
+  );
+  console.log(
+    `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.readLocations,
+    )}`,
+  );
+  console.log(
+    `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
+      userContext?.databaseAccount?.properties?.writeLocations,
+    )}`,
+  );
 
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
@@ -244,5 +319,9 @@ export function client(): Cosmos.CosmosClient {
   }
 
   _client = new Cosmos.CosmosClient(options);
+
+  // Log debug vals
+  fetchConnectedRegions(_client).catch((error) => console.error(error));
+
   return _client;
 }

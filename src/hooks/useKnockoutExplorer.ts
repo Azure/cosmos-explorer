@@ -294,6 +294,9 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       `Configuring Data Explorer for ${userContext.apiType} account ${account.name}`,
       "Explorer/configureHostedWithAAD",
     );
+    if (userContext.apiType === "SQL") {
+      checkAndUpdateSelectedRegionalEndpoint();
+    }
     if (!userContext.features.enableAadDataPlane) {
       Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
       if (userContext.apiType === "SQL") {
@@ -556,6 +559,10 @@ async function configurePortal(): Promise<Explorer> {
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
+          if (userContext.apiType === "SQL") {
+            checkAndUpdateSelectedRegionalEndpoint();
+          }
+
           let dataPlaneRbacEnabled;
           if (userContext.apiType === "SQL") {
             if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
@@ -671,6 +678,20 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
     default:
       console.warn(`Unknown portal environment: ${portalEnv}`);
       break;
+  }
+}
+
+function checkAndUpdateSelectedRegionalEndpoint() {
+  //TODO: Possibly refactor userContext to store selected regional endpoint instead of selected region.
+  if (LocalStorageUtility.hasItem(StorageKey.SelectedRegion)) {
+    const storedRegion = LocalStorageUtility.getEntryString(StorageKey.SelectedRegion);
+    const location = userContext.databaseAccount?.properties?.readLocations?.find(
+      (loc) => loc.locationName === storedRegion,
+    );
+    updateUserContext({
+      selectedRegionalEndpoint: location?.documentEndpoint,
+      refreshCosmosClient: true,
+    });
   }
 }
 

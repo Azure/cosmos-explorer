@@ -9,7 +9,9 @@ import { sendMessage } from "./MessageHandler";
 
 export const handleError = (error: string | ARMError | Error, area: string, consoleErrorPrefix?: string): void => {
   const errorMessage = getErrorMessage(error);
-  const errorCode = error instanceof ARMError ? error.code : undefined;
+  const anyError = error as any;
+  const errorCode: string | number | undefined =
+    error instanceof ARMError ? error.code : anyError?.code ? anyError.code : undefined;
 
   // logs error to data explorer console
   const consoleErrorMessage = consoleErrorPrefix ? `${consoleErrorPrefix}:\n ${errorMessage}` : errorMessage;
@@ -57,6 +59,8 @@ const replaceKnownError = (errorMessage: string): string => {
     errorMessage === "signal is aborted without reason"
   ) {
     return "User aborted query.";
+  } else if (errorMessage?.indexOf("The requested operation cannot be performed at this region") >= 0) {
+    return "Please select another region for this operation.";
   }
 
   return errorMessage;
