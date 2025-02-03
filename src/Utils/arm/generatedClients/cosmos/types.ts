@@ -1359,7 +1359,7 @@ export interface VectorEmbedding {
   /* The path to the vector field in the document. */
   path: string;
   /* Indicates the data type of vector. */
-  dataType: "float32" | "uint8" | "int8";
+  dataType: "float16" | "float32" | "uint8" | "int8";
 
   /* The distance function to use for distance calculation in between vectors. */
   distanceFunction: "euclidean" | "cosine" | "dotproduct";
