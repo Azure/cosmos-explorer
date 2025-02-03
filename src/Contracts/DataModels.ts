@@ -274,6 +274,12 @@ export interface Offer {
   offerReplacePending: boolean;
   instantMaximumThroughput?: number;
   softAllowedMaximumThroughput?: number;
+  throughputBuckets?: ThroughputBucket[];
+}
+
+export interface ThroughputBucket {
+  id: number;
+  maxThroughputPercentage: number;
 }
 
 export interface SDKOfferDefinition extends Resource {
@@ -396,6 +402,7 @@ export interface UpdateOfferParams {
   collectionId?: string;
   migrateToAutoPilot?: boolean;
   migrateToManual?: boolean;
+  throughputBuckets?: ThroughputBucket[];
 }
 
 export interface Notification {

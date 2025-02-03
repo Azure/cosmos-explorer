@@ -1,5 +1,7 @@
+import { AuthType } from "AuthType";
 import { shallow } from "enzyme";
 import ko from "knockout";
+import { Features } from "Platform/Hosted/extractFeatures";
 import React from "react";
 import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
@@ -246,5 +248,43 @@ describe("SettingsComponent", () => {
     conflictResolutionPolicy = settingsComponentInstance.getUpdatedConflictResolutionPolicy();
     expect(conflictResolutionPolicy.mode).toEqual(DataModels.ConflictResolutionMode.Custom);
     expect(conflictResolutionPolicy.conflictResolutionProcedure).toEqual(expectSprocPath);
+  });
+
+  it("should save throughput bucket changes when Save button is clicked", async () => {
+    updateUserContext({
+      apiType: "SQL",
+      features: { enableThroughputBuckets: true } as Features,
+      authType: AuthType.AAD,
+    });
+
+    const wrapper = shallow(<SettingsComponent {...baseProps} />);
+
+    const settingsComponentInstance = wrapper.instance() as SettingsComponent;
+    const isEnabled = settingsComponentInstance["throughputBucketsEnabled"];
+    expect(isEnabled).toBe(true);
+
+    wrapper.setState({
+      isThroughputBucketsSaveable: true,
+      throughputBuckets: [
+        { id: 1, maxThroughputPercentage: 70 },
+        { id: 2, maxThroughputPercentage: 60 },
+      ],
+    });
+
+    await settingsComponentInstance.onSaveClick();
+
+    expect(updateOffer).toHaveBeenCalledWith({
+      databaseId: collection.databaseId,
+      collectionId: collection.id(),
+      currentOffer: expect.any(Object),
+      autopilotThroughput: collection.offer().autoscaleMaxThroughput,
+      manualThroughput: collection.offer().manualThroughput,
+      throughputBuckets: [
+        { id: 1, maxThroughputPercentage: 70 },
+        { id: 2, maxThroughputPercentage: 60 },
+      ],
+    });
+
+    expect(wrapper.state("isThroughputBucketsSaveable")).toBe(false);
   });
 });
