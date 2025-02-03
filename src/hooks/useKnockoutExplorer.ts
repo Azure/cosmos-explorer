@@ -85,9 +85,7 @@ export function useKnockoutExplorer(platform: Platform): Explorer {
           await updateContextForSampleData(explorer);
         }
 
-        if (userContext.features.restoreTabs) {
-          restoreOpenTabs();
-        }
+        restoreOpenTabs();
 
         setExplorer(explorer);
       }
