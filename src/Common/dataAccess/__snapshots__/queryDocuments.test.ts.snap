@@ -5,6 +5,9 @@ exports[`getCommonQueryOptions builds the correct default options objects 1`] = 
   "disableNonStreamingOrderByQuery": true,
   "enableScanInQuery": true,
   "forceQueryPlan": true,
+  "initialHeaders": {
+    "x-ms-cosmos-throughput-bucket": "1",
+  },
   "maxDegreeOfParallelism": 0,
   "maxItemCount": 100,
   "populateQueryMetrics": true,
@@ -16,6 +19,9 @@ exports[`getCommonQueryOptions reads from localStorage 1`] = `
   "disableNonStreamingOrderByQuery": true,
   "enableScanInQuery": true,
   "forceQueryPlan": true,
+  "initialHeaders": {
+    "x-ms-cosmos-throughput-bucket": "1",
+  },
   "maxDegreeOfParallelism": 17,
   "maxItemCount": 37,
   "populateQueryMetrics": true,

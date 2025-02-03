@@ -1290,6 +1290,8 @@ export interface SqlContainerResource {
 
   /* The vector embedding policy for the container. */
   vectorEmbeddingPolicy?: VectorEmbeddingPolicy;
+
+  fullTextPolicy?: FullTextPolicy;
 }
 
 /* Cosmos DB indexing policy */
@@ -1366,6 +1368,28 @@ export interface VectorEmbedding {
 
   /* The number of dimensions in the vector. */
   dimensions: number;
+}
+
+export interface FullTextPolicy {
+  /**
+   * The default language for the full text .
+   */
+  defaultLanguage: string;
+  /**
+   * The paths to be indexed for full text search.
+   */
+  fullTextPaths: FullTextPath[];
+}
+
+export interface FullTextPath {
+  /**
+   * The path to be indexed for full text search.
+   */
+  path: string;
+  /**
+   * The language for the full text path.
+   */
+  language: string;
 }
 
 /* List of composite path */
