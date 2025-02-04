@@ -174,6 +174,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const styles = useStyles();
 
   const explorerVersion = configContext.gitSha;
+  const isEmulator = configContext.platform === Platform.Emulator;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
@@ -503,6 +504,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as
                     many query results per page.
                   </div>
+
                   <ChoiceGroup
                     ariaLabelledBy="pageOptions"
                     selectedKey={pageOption}
@@ -544,7 +546,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           {userContext.apiType === "SQL" &&
             userContext.authType === AuthType.AAD &&
             configContext.platform !== Platform.Fabric &&
-            configContext.platform !== Platform.Emulator && (
+            !isEmulator && (
               <AccordionItem value="2">
                 <AccordionHeader>
                   <div className={styles.header}>Enable Entra ID RBAC</div>
@@ -574,7 +576,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
             )}
-          {userContext.apiType === "SQL" && configContext.platform !== Platform.Emulator && (
+          {userContext.apiType === "SQL" && !isEmulator && (
             <>
               <AccordionItem value="3">
                 <AccordionHeader>
@@ -673,7 +675,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </>
           )}
           {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
-            configContext.platform !== Platform.Emulator && (
+            !isEmulator && (
               <AccordionItem value="6">
                 <AccordionHeader>
                   <div className={styles.header}>Retry Settings</div>
@@ -750,7 +752,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
             )}
-          {configContext.platform !== Platform.Emulator && (
+          {!isEmulator && (
             <AccordionItem value="7">
               <AccordionHeader>
                 <div className={styles.header}>Enable container pagination</div>
@@ -775,7 +777,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
 
-          {shouldShowCrossPartitionOption && configContext.platform !== Platform.Emulator && (
+          {shouldShowCrossPartitionOption && !isEmulator && (
             <AccordionItem value="8">
               <AccordionHeader>
                 <div className={styles.header}>Enable cross-partition query</div>
@@ -800,7 +802,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowParallelismOption && configContext.platform !== Platform.Emulator && (
+          {shouldShowParallelismOption && !isEmulator && (
             <AccordionItem value="9">
               <AccordionHeader>
                 <div className={styles.header}>Max degree of parallelism</div>
@@ -833,7 +835,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowPriorityLevelOption && configContext.platform !== Platform.Emulator && (
+          {shouldShowPriorityLevelOption && !isEmulator && (
             <AccordionItem value="10">
               <AccordionHeader>
                 <div className={styles.header}>Priority Level</div>
@@ -856,7 +858,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowGraphAutoVizOption && configContext.platform !== Platform.Emulator && (
+          {shouldShowGraphAutoVizOption && !isEmulator && (
             <AccordionItem value="11">
               <AccordionHeader>
                 <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
@@ -877,7 +879,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowCopilotSampleDBOption && configContext.platform !== Platform.Emulator && (
+          {shouldShowCopilotSampleDBOption && !isEmulator && (
             <AccordionItem value="12">
               <AccordionHeader>
                 <div className={styles.header}>Enable sample database</div>
