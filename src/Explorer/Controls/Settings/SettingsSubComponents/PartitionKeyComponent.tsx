@@ -14,6 +14,7 @@ import * as ViewModels from "../../../../Contracts/ViewModels";
 
 import { handleError } from "Common/ErrorHandlingUtils";
 import { cancelDataTransferJob, pollDataTransferJob } from "Common/dataAccess/dataTransfers";
+import { Platform, configContext } from "ConfigContext";
 import Explorer from "Explorer/Explorer";
 import { ChangePartitionKeyPane } from "Explorer/Panes/ChangePartitionKeyPane/ChangePartitionKeyPane";
 import {
@@ -177,12 +178,14 @@ export const PartitionKeyComponent: React.FC<PartitionKeyComponentProps> = ({ da
         To change the partition key, a new destination container must be created or an existing destination container
         selected. Data will then be copied to the destination container.
       </Text>
-      <PrimaryButton
-        styles={{ root: { width: "fit-content" } }}
-        text="Change"
-        onClick={startPartitionkeyChangeWorkflow}
-        disabled={isCurrentJobInProgress(portalDataTransferJob)}
-      />
+      {configContext.platform !== Platform.Emulator && (
+        <PrimaryButton
+          styles={{ root: { width: "fit-content" } }}
+          text="Change"
+          onClick={startPartitionkeyChangeWorkflow}
+          disabled={isCurrentJobInProgress(portalDataTransferJob)}
+        />
+      )}
       {portalDataTransferJob && (
         <Stack>
           <Text styles={textHeadingStyle}>{partitionKeyName} change job</Text>
