@@ -176,14 +176,24 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const explorerVersion = configContext.gitSha;
   const isEmulator = configContext.platform === Platform.Emulator;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
-  const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
-  const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
-  const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
+  const showRetrySettings =
+    (userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
+    !isEmulator;
+  const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin" && !isEmulator;
+  const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin" && !isEmulator;
+  const shouldShowParallelismOption = userContext.apiType !== "Gremlin" && !isEmulator;
+  const showEnableEntraIdRbac =
+    userContext.apiType === "SQL" &&
+    userContext.authType === AuthType.AAD &&
+    configContext.platform !== Platform.Fabric &&
+    !isEmulator;
+  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled() && !isEmulator;
   const shouldShowCopilotSampleDBOption =
     userContext.apiType === "SQL" &&
     useQueryCopilot.getState().copilotEnabled &&
-    useDatabases.getState().sampleDataResourceTokenCollection;
+    useDatabases.getState().sampleDataResourceTokenCollection &&
+    !isEmulator;
+
   const handlerOnSubmit = async () => {
     setIsExecuting(true);
 
@@ -504,7 +514,6 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as
                     many query results per page.
                   </div>
-
                   <ChoiceGroup
                     ariaLabelledBy="pageOptions"
                     selectedKey={pageOption}
@@ -543,39 +552,36 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {userContext.apiType === "SQL" &&
-            userContext.authType === AuthType.AAD &&
-            configContext.platform !== Platform.Fabric &&
-            !isEmulator && (
-              <AccordionItem value="2">
-                <AccordionHeader>
-                  <div className={styles.header}>Enable Entra ID RBAC</div>
-                </AccordionHeader>
-                <AccordionPanel>
-                  <div className={styles.settingsSectionContainer}>
-                    <div className={styles.settingsSectionDescription}>
-                      Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
-                      ID RBAC.
-                      <a
-                        href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {" "}
-                        Learn more{" "}
-                      </a>
-                    </div>
-                    <ChoiceGroup
-                      ariaLabelledBy="enableDataPlaneRBACOptions"
-                      options={dataPlaneRBACOptionsList}
-                      styles={choiceButtonStyles}
-                      selectedKey={enableDataPlaneRBACOption}
-                      onChange={handleOnDataPlaneRBACOptionChange}
-                    />
+          {showEnableEntraIdRbac && (
+            <AccordionItem value="2">
+              <AccordionHeader>
+                <div className={styles.header}>Enable Entra ID RBAC</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra ID
+                    RBAC.
+                    <a
+                      href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {" "}
+                      Learn more{" "}
+                    </a>
                   </div>
-                </AccordionPanel>
-              </AccordionItem>
-            )}
+                  <ChoiceGroup
+                    ariaLabelledBy="enableDataPlaneRBACOptions"
+                    options={dataPlaneRBACOptionsList}
+                    styles={choiceButtonStyles}
+                    selectedKey={enableDataPlaneRBACOption}
+                    onChange={handleOnDataPlaneRBACOptionChange}
+                  />
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
           {userContext.apiType === "SQL" && !isEmulator && (
             <>
               <AccordionItem value="3">
@@ -674,84 +680,79 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionItem>
             </>
           )}
-          {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
-            !isEmulator && (
-              <AccordionItem value="6">
-                <AccordionHeader>
-                  <div className={styles.header}>Retry Settings</div>
-                </AccordionHeader>
-                <AccordionPanel>
-                  <div className={styles.settingsSectionContainer}>
-                    <div className={styles.settingsSectionDescription}>
-                      Retry policy associated with throttled requests during CosmosDB queries.
-                    </div>
-                    <div>
-                      <span className={styles.subHeader}>Max retry attempts</span>
-                      <InfoTooltip className={styles.headerIcon}>
-                        Max number of retries to be performed for a request. Default value 9.
-                      </InfoTooltip>
-                    </div>
-                    <SpinButton
-                      labelPosition={Position.top}
-                      min={1}
-                      step={1}
-                      value={"" + retryAttempts}
-                      onChange={handleOnQueryRetryAttemptsSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1"
-                      decrementButtonAriaLabel="Decrease value by 1"
-                      onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
-                      onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
-                      onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
-                      styles={spinButtonStyles}
-                    />
-                    <div>
-                      <span className={styles.subHeader}>Fixed retry interval (ms)</span>
-                      <InfoTooltip className={styles.headerIcon}>
-                        Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned
-                        as part of the response. Default value is 0 milliseconds.
-                      </InfoTooltip>
-                    </div>
-                    <SpinButton
-                      labelPosition={Position.top}
-                      min={1000}
-                      step={1000}
-                      value={"" + retryInterval}
-                      onChange={handleOnRetryIntervalSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1000"
-                      decrementButtonAriaLabel="Decrease value by 1000"
-                      onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
-                      onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
-                      onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
-                      styles={spinButtonStyles}
-                    />
-                    <div>
-                      <span className={styles.subHeader}>Max wait time (s)</span>
-                      <InfoTooltip className={styles.headerIcon}>
-                        Max wait time in seconds to wait for a request while the retries are happening. Default value 30
-                        seconds.
-                      </InfoTooltip>
-                    </div>
-                    <SpinButton
-                      labelPosition={Position.top}
-                      min={1}
-                      step={1}
-                      value={"" + MaxWaitTimeInSeconds}
-                      onChange={handleOnMaxWaitTimeSpinButtonChange}
-                      incrementButtonAriaLabel="Increase value by 1"
-                      decrementButtonAriaLabel="Decrease value by 1"
-                      onIncrement={(newValue) =>
-                        setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)
-                      }
-                      onDecrement={(newValue) =>
-                        setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)
-                      }
-                      onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
-                      styles={spinButtonStyles}
-                    />
+          {showRetrySettings && (
+            <AccordionItem value="6">
+              <AccordionHeader>
+                <div className={styles.header}>Retry Settings</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Retry policy associated with throttled requests during CosmosDB queries.
                   </div>
-                </AccordionPanel>
-              </AccordionItem>
-            )}
+                  <div>
+                    <span className={styles.subHeader}>Max retry attempts</span>
+                    <InfoTooltip className={styles.headerIcon}>
+                      Max number of retries to be performed for a request. Default value 9.
+                    </InfoTooltip>
+                  </div>
+                  <SpinButton
+                    labelPosition={Position.top}
+                    min={1}
+                    step={1}
+                    value={"" + retryAttempts}
+                    onChange={handleOnQueryRetryAttemptsSpinButtonChange}
+                    incrementButtonAriaLabel="Increase value by 1"
+                    decrementButtonAriaLabel="Decrease value by 1"
+                    onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
+                    onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
+                    onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
+                    styles={spinButtonStyles}
+                  />
+                  <div>
+                    <span className={styles.subHeader}>Fixed retry interval (ms)</span>
+                    <InfoTooltip className={styles.headerIcon}>
+                      Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned
+                      as part of the response. Default value is 0 milliseconds.
+                    </InfoTooltip>
+                  </div>
+                  <SpinButton
+                    labelPosition={Position.top}
+                    min={1000}
+                    step={1000}
+                    value={"" + retryInterval}
+                    onChange={handleOnRetryIntervalSpinButtonChange}
+                    incrementButtonAriaLabel="Increase value by 1000"
+                    decrementButtonAriaLabel="Decrease value by 1000"
+                    onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
+                    onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
+                    onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
+                    styles={spinButtonStyles}
+                  />
+                  <div>
+                    <span className={styles.subHeader}>Max wait time (s)</span>
+                    <InfoTooltip className={styles.headerIcon}>
+                      Max wait time in seconds to wait for a request while the retries are happening. Default value 30
+                      seconds.
+                    </InfoTooltip>
+                  </div>
+                  <SpinButton
+                    labelPosition={Position.top}
+                    min={1}
+                    step={1}
+                    value={"" + MaxWaitTimeInSeconds}
+                    onChange={handleOnMaxWaitTimeSpinButtonChange}
+                    incrementButtonAriaLabel="Increase value by 1"
+                    decrementButtonAriaLabel="Decrease value by 1"
+                    onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
+                    onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
+                    onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
+                    styles={spinButtonStyles}
+                  />
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
           {!isEmulator && (
             <AccordionItem value="7">
               <AccordionHeader>
@@ -776,8 +777,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-
-          {shouldShowCrossPartitionOption && !isEmulator && (
+          {shouldShowCrossPartitionOption && (
             <AccordionItem value="8">
               <AccordionHeader>
                 <div className={styles.header}>Enable cross-partition query</div>
@@ -802,7 +802,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowParallelismOption && !isEmulator && (
+          {shouldShowParallelismOption && (
             <AccordionItem value="9">
               <AccordionHeader>
                 <div className={styles.header}>Max degree of parallelism</div>
@@ -835,7 +835,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowPriorityLevelOption && !isEmulator && (
+          {shouldShowPriorityLevelOption && (
             <AccordionItem value="10">
               <AccordionHeader>
                 <div className={styles.header}>Priority Level</div>
@@ -858,7 +858,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowGraphAutoVizOption && !isEmulator && (
+          {shouldShowGraphAutoVizOption && (
             <AccordionItem value="11">
               <AccordionHeader>
                 <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
@@ -879,7 +879,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {shouldShowCopilotSampleDBOption && !isEmulator && (
+          {shouldShowCopilotSampleDBOption && (
             <AccordionItem value="12">
               <AccordionHeader>
                 <div className={styles.header}>Enable sample database</div>
