@@ -483,7 +483,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     <RightPaneForm {...genericPaneProps}>
       <div className={`paneMainContent ${styles.container}`}>
         <Accordion className={styles.firstItem}>
-          {shouldShowQueryPageOptions && configContext.platform !== Platform.Emulator && (
+          {shouldShowQueryPageOptions && (
             <AccordionItem value="1">
               <AccordionHeader>
                 <div className={styles.header}>Page Options</div>
