@@ -142,10 +142,11 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                 <div className="labelCol">
                   <TextField
                     className="edgeInput"
+                    label={index === 0 && "Key"}
                     type="text"
                     id="propertyKeyNewVertexPane"
                     componentRef={input}
-                    aria-required="true"
+                    required
                     placeholder="Key"
                     autoComplete="off"
                     aria-label={`Enter value for propery ${index + 1}`}
@@ -153,11 +154,11 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => onKeyChange(event, index)}
                   />
                 </div>
-                <span className="mandatoryStar">*&nbsp;</span>
 
                 <div className="valueCol">
                   <TextField
                     className="edgeInput"
+                    label={index === 0 && "Value"}
                     type="text"
                     placeholder="Value"
                     autoComplete="off"
@@ -169,6 +170,8 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                 <div>
                   <Dropdown
                     role="combobox"
+                    label={index === 0 && "Type"}
+                    ariaLabel="Type"
                     placeholder="Select an option"
                     defaultSelectedKey={data.values[0].type}
                     style={{ width: 100 }}
@@ -181,7 +184,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                 </div>
                 <div className="actionCol">
                   <div
-                    className="rightPaneTrashIcon rightPaneBtns"
+                    className={`rightPaneTrashIcon rightPaneBtns ${index === 0 && "customTrashIcon"}`}
                     tabIndex={0}
                     role="button"
                     aria-label={`Delete ${data.key}`}
