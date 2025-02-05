@@ -201,5 +201,17 @@ export function useNewPortalBackendEndpoint(backendApi: string): boolean {
     return false;
   }
 
+  const existingEnvEndpoints = [
+    PortalBackendEndpoints.Development,
+    PortalBackendEndpoints.Mpac,
+    PortalBackendEndpoints.Prod,
+    PortalBackendEndpoints.Fairfax,
+    PortalBackendEndpoints.Mooncake,
+  ];
+
+  if (!existingEnvEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT)) {
+    return true;
+  }
+
   return newBackendApiEnvironmentMap[backendApi].includes(configContext.PORTAL_BACKEND_ENDPOINT);
 }
