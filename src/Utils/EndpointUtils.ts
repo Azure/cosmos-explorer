@@ -73,9 +73,6 @@ export const PortalBackendIPs: { [key: string]: string[] } = {
   //"https://main2.documentdb.ext.azure.com": ["104.42.196.69"],
   "https://main.documentdb.ext.azure.cn": ["139.217.8.252"],
   "https://main.documentdb.ext.azure.us": ["52.244.48.71"],
-  // Add ussec and usnat when endpoint address is known:
-  //ussec: ["29.26.26.67", "29.26.26.66"],
-  //usnat: ["7.28.202.68"],
 };
 
 export const PortalBackendOutboundIPs: { [key: string]: string[] } = {
