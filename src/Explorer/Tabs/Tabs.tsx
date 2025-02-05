@@ -159,7 +159,7 @@ function TabNav({ tab, active, tabKind }: { tab?: Tab; active: boolean; tabKind?
             </span>
             <span className="tabNavText">{tabTitle}</span>
           </span>
-          <span className="tabIconSection">
+          <span className="tabIconSection" aria-hidden="true">
             <CloseButton tab={tab} active={active} hovering={hovering} tabKind={tabKind} ariaLabel={tabTitle} />
           </span>
         </div>
@@ -247,7 +247,7 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
   if (tab) {
     if ("render" in tab) {
       return (
-        <div data-test={`Tab:${tab.tabId}`} {...attrs}>
+        <div id={tab.tabId} data-test={`Tab:${tab.tabId}`} {...attrs}>
           {tab.render()}
         </div>
       );
