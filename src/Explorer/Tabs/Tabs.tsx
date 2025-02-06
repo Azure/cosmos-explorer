@@ -205,7 +205,7 @@ const CloseButton = ({
     onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactTabClose(e, tabKind))}
   >
     <span className="tabIcon close-Icon">
-      <img src={errorIcon} title="Close" alt="Close" role="none" />
+      <img src={errorIcon} title="Close" alt="Close" aria-label="hidden" />
     </span>
   </span>
 );
