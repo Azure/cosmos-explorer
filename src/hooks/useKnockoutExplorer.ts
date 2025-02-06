@@ -13,7 +13,6 @@ import {
   readSubComponentState,
 } from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
-import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -788,17 +787,11 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
   if (!copilotEnabled) {
     return;
   }
+  const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
+    ? `/api/tokens/sampledataconnection/v2`
+    : `/api/tokens/sampledataconnection`;
 
-  let url: string;
-  if (useNewPortalBackendEndpoint(Constants.BackendApi.SampleData)) {
-    url = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
-  } else {
-    const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
-      ? `/api/tokens/sampledataconnection/v2`
-      : `/api/tokens/sampledataconnection`;
-
-    url = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
-  }
+  let url: string = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
 
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };

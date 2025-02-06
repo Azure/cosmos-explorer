@@ -1,11 +1,4 @@
-import {
-  BackendApi,
-  CassandraProxyEndpoints,
-  JunoEndpoints,
-  MongoProxyEndpoints,
-  PortalBackendEndpoints,
-} from "Common/Constants";
-import { configContext } from "ConfigContext";
+import { CassandraProxyEndpoints, JunoEndpoints, MongoProxyEndpoints, PortalBackendEndpoints } from "Common/Constants";
 import * as Logger from "../Common/Logger";
 
 export function validateEndpoint(
@@ -150,67 +143,3 @@ export const allowedJunoOrigins: ReadonlyArray<string> = [
 ];
 
 export const allowedNotebookServerUrls: ReadonlyArray<string> = [];
-
-//
-// Temporary function to determine if a portal backend API is supported by the
-// new backend in this environment.
-//
-// TODO: Remove this function once new backend migration is completed for all environments.
-//
-export function useNewPortalBackendEndpoint(backendApi: string): boolean {
-  // This maps backend APIs to the environments supported by the new backend.
-  const newBackendApiEnvironmentMap: { [key: string]: string[] } = {
-    [BackendApi.GenerateToken]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.PortalSettings]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.AccountRestrictions]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.RuntimeProxy]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-    [BackendApi.DisallowedLocations]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-      PortalBackendEndpoints.Fairfax,
-      PortalBackendEndpoints.Mooncake,
-    ],
-    [BackendApi.SampleData]: [
-      PortalBackendEndpoints.Development,
-      PortalBackendEndpoints.Mpac,
-      PortalBackendEndpoints.Prod,
-    ],
-  };
-
-  if (!newBackendApiEnvironmentMap[backendApi] || !configContext.PORTAL_BACKEND_ENDPOINT) {
-    return false;
-  }
-
-  const existingEnvEndpoints = [
-    PortalBackendEndpoints.Development,
-    PortalBackendEndpoints.Mpac,
-    PortalBackendEndpoints.Prod,
-    PortalBackendEndpoints.Fairfax,
-    PortalBackendEndpoints.Mooncake,
-  ];
-
-  // During migration of environments outside the standard set, should default to new backend.
-  // Can be removed with rest of function once migration is complete in all environments.
-  if (!existingEnvEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT)) {
-    return true;
-  }
-
-  return newBackendApiEnvironmentMap[backendApi].includes(configContext.PORTAL_BACKEND_ENDPOINT);
-}

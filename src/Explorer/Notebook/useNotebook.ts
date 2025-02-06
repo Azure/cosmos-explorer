@@ -1,6 +1,5 @@
 import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
-import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { cloneDeep } from "lodash";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
@@ -128,9 +127,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       userContext.apiType === "Postgres" || userContext.apiType === "VCoreMongo"
         ? databaseAccount?.location
         : databaseAccount?.properties?.writeLocations?.[0]?.locationName.toLowerCase();
-    const disallowedLocationsUri: string = useNewPortalBackendEndpoint(Constants.BackendApi.DisallowedLocations)
-      ? `${configContext.PORTAL_BACKEND_ENDPOINT}/api/disallowedlocations`
-      : `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
+    const disallowedLocationsUri: string = `${configContext.PORTAL_BACKEND_ENDPOINT}/api/disallowedlocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
       const response = await fetch(disallowedLocationsUri, {
