@@ -1,6 +1,6 @@
 import { ContainerResponse } from "@azure/cosmos";
 import { Queries } from "Common/Constants";
-import { Platform, configContext } from "ConfigContext";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -16,15 +16,11 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
 
-  if (
-    configContext.platform === Platform.Fabric &&
-    userContext.fabricContext &&
-    userContext.fabricContext.databaseConnectionInfo.databaseId === databaseId
-  ) {
+  if (isFabricMirrored() && userContext.fabricContext?.mirroredConnectionInfo.databaseId === databaseId) {
     const collections: DataModels.Collection[] = [];
     const promises: Promise<ContainerResponse>[] = [];
 
-    for (const collectionResourceId in userContext.fabricContext.databaseConnectionInfo.resourceTokens) {
+    for (const collectionResourceId in userContext.fabricContext.mirroredConnectionInfo.resourceTokens) {
       // Dictionary key looks like this: dbs/SampleDB/colls/Container
       const resourceIdObj = collectionResourceId.split("/");
       const tokenDatabaseId = resourceIdObj[1];

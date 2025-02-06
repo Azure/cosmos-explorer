@@ -1,5 +1,7 @@
+import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { useDatabases } from "Explorer/useDatabases";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -19,7 +21,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { Platform, configContext } from "./../ConfigContext";
 import Explorer from "./Explorer";
 import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
@@ -41,7 +42,7 @@ export interface DatabaseContextMenuButtonParams {
  * New resource tree (in ReactJS)
  */
 export const createDatabaseContextMenu = (container: Explorer, databaseId: string): TreeNodeMenuItem[] => {
-  if (configContext.platform === Platform.Fabric && userContext.fabricContext?.isReadOnly) {
+  if (isFabricMirrored() && userContext.fabricContext?.isReadOnly) {
     return undefined;
   }
 

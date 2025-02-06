@@ -1,6 +1,8 @@
 import { clamp } from "@fluentui/react";
+import { Platform } from "ConfigContext";
 import { OpenTab } from "Contracts/ActionContracts";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import {
   AppStateComponentNames,
   OPEN_TABS_SUBCOMPONENT_NAME,
@@ -11,7 +13,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { CollectionTabKind } from "../Contracts/ViewModels";
 import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
-import { Platform, configContext } from "./../ConfigContext";
 
 export interface TabsState {
   openedTabs: TabsBase[];
@@ -122,7 +123,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       }
       return true;
     });
-    if (updatedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
+    if (updatedTabs.length === 0 && !isFabricMirrored()) {
       set({ activeTab: undefined, activeReactTab: undefined });
     }
 
@@ -162,7 +163,7 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
         }
       });
 
-      if (get().openedTabs.length === 0 && configContext.platform !== Platform.Fabric) {
+      if (get().openedTabs.length === 0 && !isFabricMirrored()) {
         set({ activeTab: undefined, activeReactTab: undefined });
       }
     }

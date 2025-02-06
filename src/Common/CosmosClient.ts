@@ -1,7 +1,7 @@
 import * as Cosmos from "@azure/cosmos";
 import { getAuthorizationTokenUsingResourceTokens } from "Common/getAuthorizationTokenUsingResourceTokens";
 import { AuthorizationToken } from "Contracts/FabricMessageTypes";
-import { checkDatabaseResourceTokensValidity } from "Platform/Fabric/FabricUtil";
+import { checkDatabaseResourceTokensValidity, isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { useNewPortalBackendEndpoint } from "Utils/EndpointUtils";
 import { AuthType } from "../AuthType";
@@ -42,7 +42,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
     return decodeURIComponent(headers.authorization);
   }
 
-  if (configContext.platform === Platform.Fabric) {
+  if (isFabricMirrored()) {
     switch (requestInfo.resourceType) {
       case Cosmos.ResourceType.conflicts:
       case Cosmos.ResourceType.container:
@@ -54,8 +54,8 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
         // User resource tokens
         // TODO userContext.fabricContext.databaseConnectionInfo can be undefined
         headers[HttpHeaders.msDate] = new Date().toUTCString();
-        const resourceTokens = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
-        checkDatabaseResourceTokensValidity(userContext.fabricContext.databaseConnectionInfo.resourceTokensTimestamp);
+        const resourceTokens = userContext.fabricContext.mirroredConnectionInfo.resourceTokens;
+        checkDatabaseResourceTokensValidity(userContext.fabricContext.mirroredConnectionInfo.resourceTokensTimestamp);
         return getAuthorizationTokenUsingResourceTokens(resourceTokens, requestInfo.path, requestInfo.resourceId);
 
       case Cosmos.ResourceType.none:
@@ -66,7 +66,7 @@ export const tokenProvider = async (requestInfo: Cosmos.RequestInfo) => {
         // For now, these operations aren't used, so fetching the authorization token is commented out.
         // This provider must return a real token to pass validation by the client, so we return the cached resource token
         // (which is a valid token, but won't work for these operations).
-        const resourceTokens2 = userContext.fabricContext.databaseConnectionInfo.resourceTokens;
+        const resourceTokens2 = userContext.fabricContext.mirroredConnectionInfo.resourceTokens;
         return getAuthorizationTokenUsingResourceTokens(resourceTokens2, requestInfo.path, requestInfo.resourceId);
 
       /* ************** TODO: Uncomment this code if we need to support these operations **************

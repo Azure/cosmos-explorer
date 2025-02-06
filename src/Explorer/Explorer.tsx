@@ -8,7 +8,7 @@ import { MessageTypes } from "Contracts/ExplorerContracts";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { getCopilotEnabled, isCopilotFeatureRegistered } from "Explorer/QueryCopilot/Shared/QueryCopilotClient";
 import { IGalleryItem } from "Juno/JunoClient";
-import { scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
+import { isFabricMirrored, scheduleRefreshDatabaseResourceToken } from "Platform/Fabric/FabricUtil";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { allowedNotebookServerUrls, validateEndpoint } from "Utils/EndpointUtils";
@@ -378,7 +378,7 @@ export default class Explorer {
   };
 
   public onRefreshResourcesClick = async (): Promise<void> => {
-    if (configContext.platform === Platform.Fabric) {
+    if (isFabricMirrored()) {
       scheduleRefreshDatabaseResourceToken(true).then(() => this.refreshAllDatabases());
       return;
     }

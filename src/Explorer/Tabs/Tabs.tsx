@@ -6,6 +6,7 @@ import { CollectionTabKind } from "Contracts/ViewModels";
 import Explorer from "Explorer/Explorer";
 import { useCommandBar } from "Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import { QueryCopilotTab } from "Explorer/QueryCopilot/QueryCopilotTab";
+import { FabricHomeScreen } from "Explorer/SplashScreen/FabricHome";
 import { SplashScreen } from "Explorer/SplashScreen/SplashScreen";
 import { ConnectTab } from "Explorer/Tabs/ConnectTab";
 import { PostgresConnectTab } from "Explorer/Tabs/PostgresConnectTab";
@@ -14,6 +15,7 @@ import { VcoreMongoConnectTab } from "Explorer/Tabs/VCoreMongoConnectTab";
 import { VcoreMongoQuickstartTab } from "Explorer/Tabs/VCoreMongoQuickstartTab";
 import { LayoutConstants } from "Explorer/Theme/ThemeUtil";
 import { KeyboardAction, KeyboardActionGroup, useKeyboardActionGroup } from "KeyboardShortcuts";
+import { isFabricNative } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { CassandraProxyOutboundIPs, MongoProxyOutboundIPs, PortalBackendIPs } from "Utils/EndpointUtils";
 import { useTeachingBubble } from "hooks/useTeachingBubble";
@@ -301,7 +303,11 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
         <ConnectTab />
       );
     case ReactTabKind.Home:
-      return <SplashScreen explorer={explorer} />;
+      if (isFabricNative()) {
+        return <FabricHomeScreen explorer={explorer} />;
+      } else {
+        return <SplashScreen explorer={explorer} />;
+      }
     case ReactTabKind.Quickstart:
       return userContext.apiType === "VCoreMongo" ? (
         <VcoreMongoQuickstartTab explorer={explorer} />

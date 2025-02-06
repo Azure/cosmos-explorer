@@ -1,47 +1,9 @@
-import { AuthorizationToken } from "Contracts/FabricMessageTypes";
+import { AuthorizationToken } from "./FabricMessageTypes";
 
 // This is the version of these messages
 export const FABRIC_RPC_VERSION = "2";
 
 // Fabric to Data Explorer
-
-// TODO Deprecated. Remove this section once DE is updated
-export type FabricMessageV1 =
-  | {
-      type: "newContainer";
-      databaseName: string;
-    }
-  | {
-      type: "initialize";
-      message: {
-        endpoint: string | undefined;
-        databaseId: string | undefined;
-        resourceTokens: unknown | undefined;
-        resourceTokensTimestamp: number | undefined;
-        error: string | undefined;
-      };
-    }
-  | {
-      type: "authorizationToken";
-      message: {
-        id: string;
-        error: string | undefined;
-        data: AuthorizationToken | undefined;
-      };
-    }
-  | {
-      type: "allResourceTokens";
-      message: {
-        id: string;
-        error: string | undefined;
-        endpoint: string | undefined;
-        databaseId: string | undefined;
-        resourceTokens: unknown | undefined;
-        resourceTokensTimestamp: number | undefined;
-      };
-    };
-// -----------------------------
-
 export type FabricMessageV2 =
   | {
       type: "newContainer";
@@ -54,6 +16,11 @@ export type FabricMessageV2 =
       message: {
         connectionId: string;
         isVisible: boolean;
+        isReadOnly: boolean;
+        artifactType: CosmosDbArtifactType;
+
+        // For Native artifacts
+        nativeConnectionInfo?: FabricNativeDatabaseConnectionInfo;
       };
     }
   | {
@@ -69,7 +36,7 @@ export type FabricMessageV2 =
       message: {
         id: string;
         error: string | undefined;
-        data: FabricDatabaseConnectionInfo | undefined;
+        data: FabricMirroredDatabaseConnectionInfo | undefined;
       };
     }
   | {
@@ -79,17 +46,29 @@ export type FabricMessageV2 =
       };
     };
 
-export type CosmosDBTokenResponse = {
+export enum CosmosDbArtifactType {
+  MIRRORED = "MIRRORED",
+  NATIVE = "NATIVE",
+}
+
+export interface FabricNativeDatabaseConnectionInfo {
+  accessToken: string;
+  accountName: string;
+  databaseName: string;
+  connectionString: string;
+}
+
+export interface CosmosDBTokenResponse {
   token: string;
   date: string;
-};
+}
 
-export type CosmosDBConnectionInfoResponse = {
+export interface CosmosDBConnectionInfoResponse {
   endpoint: string;
   databaseId: string;
-  resourceTokens: { [resourceId: string]: string };
-};
+  resourceTokens: Record<string, string>;
+}
 
-export interface FabricDatabaseConnectionInfo extends CosmosDBConnectionInfoResponse {
+export interface FabricMirroredDatabaseConnectionInfo extends CosmosDBConnectionInfoResponse {
   resourceTokensTimestamp: number;
 }

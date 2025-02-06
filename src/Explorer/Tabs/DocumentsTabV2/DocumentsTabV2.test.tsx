@@ -2,6 +2,7 @@ import { FeedResponse, ItemDefinition, Resource } from "@azure/cosmos";
 import { waitFor } from "@testing-library/react";
 import { deleteDocuments } from "Common/dataAccess/deleteDocument";
 import { Platform, updateConfigContext } from "ConfigContext";
+import { CosmosDbArtifactType } from "Contracts/FabricMessagesContract";
 import { useDialog } from "Explorer/Controls/Dialog";
 import { EditorReactProps } from "Explorer/Controls/Editor/EditorReact";
 import { ProgressModalDialog } from "Explorer/Controls/ProgressModalDialog";
@@ -71,7 +72,7 @@ jest.mock("Explorer/Controls/Editor/EditorReact", () => ({
 
 const mockDialogState = {
   showOkCancelModalDialog: jest.fn((title: string, subText: string, okLabel: string, onOk: () => void) => onOk()),
-  showOkModalDialog: () => {},
+  showOkModalDialog: () => { },
 };
 
 jest.mock("Explorer/Controls/Dialog", () => ({
@@ -342,7 +343,9 @@ describe("Documents tab (noSql API)", () => {
     updateUserContext({
       fabricContext: {
         connectionId: "test",
-        databaseConnectionInfo: undefined,
+        mirroredConnectionInfo: undefined,
+        nativeConnectionInfo: undefined,
+        artifactType: CosmosDbArtifactType.MIRRORED,
         isReadOnly: true,
         isVisible: true,
       },
