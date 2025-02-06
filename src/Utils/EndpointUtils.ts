@@ -206,7 +206,7 @@ export function useNewPortalBackendEndpoint(backendApi: string): boolean {
     PortalBackendEndpoints.Mooncake,
   ];
 
-  // During migration of environments outside the standard set, need to default to new backend.
+  // During migration of environments outside the standard set, should default to new backend.
   // Can be removed with rest of function once migration is complete in all environments.
   if (!existingEnvEndpoints.includes(configContext.PORTAL_BACKEND_ENDPOINT)) {
     return true;
