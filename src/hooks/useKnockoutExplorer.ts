@@ -787,12 +787,8 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
   if (!copilotEnabled) {
     return;
   }
-  const sampleDatabaseEndpoint = useQueryCopilot.getState().copilotUserDBEnabled
-    ? `/api/tokens/sampledataconnection/v2`
-    : `/api/tokens/sampledataconnection`;
 
-  let url: string = createUri(`${configContext.BACKEND_ENDPOINT}`, sampleDatabaseEndpoint);
-
+  const url: string = createUri(configContext.PORTAL_BACKEND_ENDPOINT, "/api/sampledata");
   const authorizationHeader = getAuthorizationHeader();
   const headers = { [authorizationHeader.header]: authorizationHeader.token };
 

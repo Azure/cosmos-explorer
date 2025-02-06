@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { ApiEndpoints, HttpHeaders } from "../Common/Constants";
+import { HttpHeaders } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import { AccessInputMetadata } from "../Contracts/DataModels";
-
-const url = `${configContext.BACKEND_ENDPOINT}${ApiEndpoints.guestRuntimeProxy}/accessinputmetadata?_=1609359229955`;
 
 export async function fetchAccessData(portalToken: string): Promise<AccessInputMetadata> {
   const headers = new Headers();
