@@ -12,7 +12,6 @@ export enum StorageKey {
   QueryTimeoutEnabled,
   QueryTimeout,
   SelectedRegion,
-  WriteRegion,
   RetryAttempts,
   RetryInterval,
   MaxWaitTimeInSeconds,
