@@ -177,8 +177,6 @@ enum SDKSupportedCapabilities {
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
-  console.log(`Client Call`);
-  console.log(`Client Call: userContext.refreshCosmosClient: ${userContext.refreshCosmosClient}`);
   if (_client) {
     if (!userContext.refreshCosmosClient) {
       return _client;
@@ -224,8 +222,8 @@ export function client(): Cosmos.CosmosClient {
   async function fetchConnectedRegions(client: Cosmos.CosmosClient) {
     // Check currently connected regions.
     try {
-      const someMoreThings = await client.databases.readAll().fetchAll();
-      console.log(`Current list of databases: ${JSON.stringify(someMoreThings)}`);
+      // const someMoreThings = await client.databases.readAll().fetchAll();
+      // console.log(`Current list of databases: ${JSON.stringify(someMoreThings)}`);
       const currentReadRegion = await client.getReadEndpoint();
       console.log(`Current read endpoint: ${JSON.stringify(currentReadRegion)}`);
       const currentReadRegions = await client.getReadEndpoints();
@@ -241,12 +239,6 @@ export function client(): Cosmos.CosmosClient {
     } catch (error) {
       console.error("Error getting read endpoints:", error);
     }
-
-    const currentWriteRegion = await client.getWriteEndpoint();
-    console.log(`Current write endpoint: ${JSON.stringify(currentWriteRegion)}`);
-    console.log(
-      `Current userContext.selectedRegionalEndpoint: ${JSON.stringify(userContext?.selectedRegionalEndpoint)}`,
-    );
   }
 
   const options: Cosmos.CosmosClientOptions = {
@@ -265,7 +257,7 @@ export function client(): Cosmos.CosmosClient {
   };
 
   // Account details from userContext.
-  console.log(`userContext details: ${JSON.stringify(userContext)}`);
+  // console.log(`userContext details: ${JSON.stringify(userContext)}`);
   console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
   console.log(
     `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
