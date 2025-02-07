@@ -203,7 +203,7 @@ const CloseButton = ({
     onKeyPress={({ nativeEvent: e }) => (tab ? tab.onKeyPressClose(undefined, e) : onKeyPressReactTabClose(e, tabKind))}
   >
     <span className="tabIcon close-Icon">
-      <img src={errorIcon} title="Close" alt="Close" role="none" />
+      <img src={errorIcon} title="Close" alt="Close" aria-label="hidden" />
     </span>
   </span>
 );
@@ -318,7 +318,7 @@ const getReactTabContent = (activeReactTab: ReactTabKind, explorer: Explorer): J
 const showMongoAndCassandraProxiesNetworkSettingsWarning = (): boolean => {
   const ipRules: IpRule[] = userContext.databaseAccount?.properties?.ipRules;
   if (
-    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Local) ||
+    ((userContext.apiType === "Mongo" && configContext.MONGO_PROXY_ENDPOINT !== MongoProxyEndpoints.Development) ||
       (userContext.apiType === "Cassandra" &&
         configContext.CASSANDRA_PROXY_ENDPOINT !== CassandraProxyEndpoints.Development)) &&
     ipRules?.length

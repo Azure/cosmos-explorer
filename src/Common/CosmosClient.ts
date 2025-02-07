@@ -8,7 +8,7 @@ import { AuthType } from "../AuthType";
 import { BackendApi, PriorityLevel } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
 import { Platform, configContext } from "../ConfigContext";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "../Utils/PriorityBasedExecutionUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
@@ -189,10 +189,19 @@ let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
   if (_client) {
-    if (!userContext.hasDataPlaneRbacSettingChanged) {
+    if (!userContext.refreshCosmosClient) {
       return _client;
     }
+    _client.dispose();
+    _client = null;
   }
+
+  if (userContext.refreshCosmosClient) {
+    updateUserContext({
+      refreshCosmosClient: false,
+    });
+  }
+
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;

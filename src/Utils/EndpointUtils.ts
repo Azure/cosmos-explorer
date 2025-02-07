@@ -93,7 +93,7 @@ export const MongoProxyOutboundIPs: { [key: string]: string[] } = {
 };
 
 export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
-  MongoProxyEndpoints.Local,
+  MongoProxyEndpoints.Development,
   MongoProxyEndpoints.Mpac,
   MongoProxyEndpoints.Prod,
   MongoProxyEndpoints.Fairfax,
@@ -141,9 +141,7 @@ export const allowedArcadiaEndpoints: ReadonlyArray<string> = ["https://workspac
 
 export const allowedHostedExplorerEndpoints: ReadonlyArray<string> = ["https://cosmos.azure.com/"];
 
-export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = [
-  "https://cosmos-explorer-preview.azurewebsites.net/",
-];
+export const allowedMsalRedirectEndpoints: ReadonlyArray<string> = ["https://dataexplorer-preview.azurewebsites.net/"];
 
 export const allowedJunoOrigins: ReadonlyArray<string> = [
   JunoEndpoints.Test,

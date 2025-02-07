@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy": "az webapp up --name \"cosmos-explorer-preview\" --subscription \"cosmosdb-portalteam-generaltest-msft\" --resource-group \"stfaul\"",
+    "deploy": "az webapp up --name \"dataexplorer-preview\" --subscription \"cosmosdb-portalteam-runners\" --resource-group \"dataexplorer-preview\" --runtime \"NODE:18-lts\" --sku P1V2",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,8 @@
   "author": "Microsoft Corporation",
   "dependencies": {
     "express": "^4.17.1",
-    "http-proxy-middleware": "^1.1.0",
+    "http-proxy-middleware": "^3.0.3",
+    "node": "^18.20.6",
     "node-fetch": "^2.6.1"
   }
 }
