@@ -193,7 +193,12 @@ module.exports = function (_env = {}, argv = {}) {
   ];
 
   if (argv.analyze) {
-    plugins.push(new BundleAnalyzerPlugin());
+    plugins.push(
+      new BundleAnalyzerPlugin({
+        analyzerMode: "static",
+        reportFilename: "bundle-report.html",
+      }),
+    );
   }
 
   return {
@@ -256,6 +261,17 @@ module.exports = function (_env = {}, argv = {}) {
           },
         }),
       ],
+      splitChunks: {
+        chunks: "all",
+        cacheGroups: {
+          fluentIcons: {
+            test: /[\\/]node_modules[\\/]@fluentui[\\/](font-icons-mdl2|react-icons)/,
+            name: "fluent-icons",
+            chunks: "all",
+            enforce: true,
+          },
+        },
+      },
     },
     watch: false,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734

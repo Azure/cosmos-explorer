@@ -1,4 +1,4 @@
-import { initializeIcons, Link, Text } from "@fluentui/react";
+import { Link, Text } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -20,7 +20,7 @@ const createAccountUrl = "https://aka.ms/cosmos-create-account-portal";
 const onInit = async () => {
   const dataExplorerUrl = new URL("./", window.location.href).href;
 
-  initializeIcons();
+  // initializeIcons();
   await initializeConfiguration();
   const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
 

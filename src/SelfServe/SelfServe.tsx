@@ -1,4 +1,4 @@
-import { initializeIcons, Spinner, SpinnerSize } from "@fluentui/react";
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { withTranslation } from "react-i18next";
@@ -13,7 +13,7 @@ import "./SelfServe.less";
 import { SelfServeComponent } from "./SelfServeComponent";
 import { SelfServeDescriptor } from "./SelfServeTypes";
 import { SelfServeType } from "./SelfServeUtils";
-initializeIcons();
+// initializeIcons();
 
 const loadTranslationFile = async (className: string): Promise<void> => {
   const language = i18n.languages[0];

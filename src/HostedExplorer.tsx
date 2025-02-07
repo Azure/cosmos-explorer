@@ -1,4 +1,4 @@
-import { initializeIcons } from "@fluentui/react";
+// import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import { AadAuthorizationFailure } from "Platform/Hosted/Components/AadAuthorizationFailure";
 import * as React from "react";
@@ -22,7 +22,7 @@ import { useAADAuth } from "./hooks/useAADAuth";
 import { useConfig } from "./hooks/useConfig";
 import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 
-initializeIcons();
+// initializeIcons();
 
 const App: React.FunctionComponent = () => {
   // For handling encrypted portal tokens sent via query paramter
