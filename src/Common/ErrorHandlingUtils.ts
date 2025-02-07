@@ -9,9 +9,7 @@ import { sendMessage } from "./MessageHandler";
 
 export const handleError = (error: string | ARMError | Error, area: string, consoleErrorPrefix?: string): void => {
   const errorMessage = getErrorMessage(error);
-  const anyError = error as any;
-  const errorCode: string | number | undefined =
-    error instanceof ARMError ? error.code : anyError?.code ? anyError.code : undefined;
+  const errorCode = error instanceof ARMError ? error.code : undefined;
 
   // logs error to data explorer console
   const consoleErrorMessage = consoleErrorPrefix ? `${consoleErrorPrefix}:\n ${errorMessage}` : errorMessage;
