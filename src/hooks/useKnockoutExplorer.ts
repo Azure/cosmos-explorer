@@ -139,6 +139,10 @@ async function configureFabric(): Promise<Explorer> {
               return;
             }
 
+            // TODO: Default values points to MIRRORED. This is for old fabric clients to explitly settings these values
+            data.message.artifactType = data.message.artifactType ?? CosmosDbArtifactType.MIRRORED;
+            data.message.isReadOnly = data.message.isReadOnly ?? true;
+
             explorer = createExplorerFabric(data.message);
 
             if (data.message.artifactType === CosmosDbArtifactType.MIRRORED) {
@@ -432,20 +436,18 @@ const createExplorerFabric = (params: {
   artifactType?: CosmosDbArtifactType;
   nativeConnectionInfo?: FabricNativeDatabaseConnectionInfo;
 }): Explorer => {
-  const artifactType = params.artifactType ?? CosmosDbArtifactType.MIRRORED;
-
   updateUserContext({
     fabricContext: {
       connectionId: params.connectionId,
       mirroredConnectionInfo: undefined,
-      isReadOnly: params.isReadOnly ?? true,
-      isVisible: params.isVisible ?? true,
-      artifactType,
+      isReadOnly: params.isReadOnly,
+      isVisible: params.isVisible,
+      artifactType: params.artifactType,
       nativeConnectionInfo: params.nativeConnectionInfo,
     },
   });
 
-  if (artifactType === CosmosDbArtifactType.MIRRORED) {
+  if (params.artifactType === CosmosDbArtifactType.MIRRORED) {
     updateUserContext({
       authType: AuthType.ConnectionString, // TODO: will need its own type and Mirroring could be using AAD
       databaseAccount: {
@@ -459,7 +461,7 @@ const createExplorerFabric = (params: {
         },
       },
     });
-  } else if (artifactType === CosmosDbArtifactType.NATIVE) {
+  } else if (params.artifactType === CosmosDbArtifactType.NATIVE) {
     updateUserContext({
       databaseAccount: {
         id: "",
