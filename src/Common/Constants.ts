@@ -525,6 +525,11 @@ export class PriorityLevel {
   public static readonly Default = "low";
 }
 
+export class ariaLabelForLearnMoreLink {
+  public static readonly AnalyticalStore = "Learn more about analytical store.";
+  public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
+}
+
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
