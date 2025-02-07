@@ -6,7 +6,9 @@ import {
   Checkbox,
   ChoiceGroup,
   DefaultButton,
+  Dropdown,
   IChoiceGroupOption,
+  IDropdownOption,
   ISpinButtonStyles,
   IToggleStyles,
   Position,
@@ -142,6 +144,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false",
   );
+  const [selectedRegion, setSelectedRegion] = useState<string>(
+    LocalStorageUtility.hasItem(StorageKey.SelectedRegion)
+      ? LocalStorageUtility.getEntryString(StorageKey.SelectedRegion)
+      : Constants.RegionSelectionOptions.Global,
+  );
   const [retryAttempts, setRetryAttempts] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
       ? LocalStorageUtility.getEntryNumber(StorageKey.RetryAttempts)
@@ -179,6 +186,44 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
   const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
+
+  const uniqueAccountRegions = new Set<string>();
+  const regionOptions: IDropdownOption[] = [];
+  regionOptions.push({
+    key: Constants.RegionSelectionOptions.Global,
+    text: `${Constants.RegionSelectionOptions.Global} (Default)`,
+    data: {
+      endpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
+      writeEnabled: true,
+    },
+  });
+  userContext?.databaseAccount?.properties?.writeLocations?.forEach((loc) => {
+    if (!uniqueAccountRegions.has(loc.locationName)) {
+      uniqueAccountRegions.add(loc.locationName);
+      regionOptions.push({
+        key: loc.locationName,
+        text: `${loc.locationName} (Read/Write)`,
+        data: {
+          endpoint: loc.documentEndpoint,
+          writeEnabled: true,
+        },
+      });
+    }
+  });
+  userContext?.databaseAccount?.properties?.readLocations?.forEach((loc) => {
+    if (!uniqueAccountRegions.has(loc.locationName)) {
+      uniqueAccountRegions.add(loc.locationName);
+      regionOptions.push({
+        key: loc.locationName,
+        text: `${loc.locationName} (Read)`,
+        data: {
+          endpoint: loc.documentEndpoint,
+          writeEnabled: false,
+        },
+      });
+    }
+  });
+
   const shouldShowCopilotSampleDBOption =
     userContext.apiType === "SQL" &&
     useQueryCopilot.getState().copilotEnabled &&
@@ -260,6 +305,22 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
           useDataPlaneRbac.setState({ dataPlaneRbacEnabled: false });
         }
       }
+    }
+
+    const storedRegion = LocalStorageUtility.getEntryString(StorageKey.SelectedRegion);
+    const selectedRegionIsGlobal = selectedRegion === Constants.RegionSelectionOptions.Global;
+    if (selectedRegionIsGlobal && storedRegion) {
+      LocalStorageUtility.removeEntry(StorageKey.SelectedRegion);
+      updateUserContext({
+        selectedRegionalEndpoint: undefined,
+        refreshCosmosClient: true,
+      });
+    } else if (!selectedRegionIsGlobal && selectedRegion !== storedRegion) {
+      LocalStorageUtility.setEntryString(StorageKey.SelectedRegion, selectedRegion);
+      updateUserContext({
+        selectedRegionalEndpoint: regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint,
+        refreshCosmosClient: true,
+      });
     }
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
@@ -409,6 +470,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     option: IChoiceGroupOption,
   ): void => {
     setDefaultQueryResultsView(option.key as SplitterDirection);
+  };
+
+  const handleOnSelectedRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
+    setSelectedRegion(option.key as string);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -573,9 +638,35 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
             )}
+          {userContext.apiType === "SQL" && userContext.authType === AuthType.AAD && (
+            <AccordionItem value="3">
+              <AccordionHeader>
+                <div className={styles.header}>Region Selection</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Changes region the Cosmos Client uses to access account.
+                  </div>
+                  <div>
+                    <span className={styles.subHeader}>Select Region</span>
+                    <InfoTooltip className={styles.headerIcon}>
+                      Changes the account endpoint used to perform client operations.
+                    </InfoTooltip>
+                  </div>
+                  <Dropdown
+                    placeholder={regionOptions.find((option) => option.key === selectedRegion)?.text}
+                    onChange={handleOnSelectedRegionOptionChange}
+                    options={regionOptions}
+                    styles={{ root: { marginBottom: "10px" } }}
+                  />
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
           {userContext.apiType === "SQL" && (
             <>
-              <AccordionItem value="3">
+              <AccordionItem value="4">
                 <AccordionHeader>
                   <div className={styles.header}>Query Timeout</div>
                 </AccordionHeader>
@@ -616,7 +707,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
 
-              <AccordionItem value="4">
+              <AccordionItem value="5">
                 <AccordionHeader>
                   <div className={styles.header}>RU Limit</div>
                 </AccordionHeader>
@@ -650,7 +741,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                 </AccordionPanel>
               </AccordionItem>
 
-              <AccordionItem value="5">
+              <AccordionItem value="6">
                 <AccordionHeader>
                   <div className={styles.header}>Default Query Results View</div>
                 </AccordionHeader>
@@ -671,81 +762,88 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionItem>
             </>
           )}
+
           {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") && (
-            <AccordionItem value="6">
-              <AccordionHeader>
-                <div className={styles.header}>Retry Settings</div>
-              </AccordionHeader>
-              <AccordionPanel>
-                <div className={styles.settingsSectionContainer}>
-                  <div className={styles.settingsSectionDescription}>
-                    Retry policy associated with throttled requests during CosmosDB queries.
+            <>
+              <AccordionItem value="7">
+                <AccordionHeader>
+                  <div className={styles.header}>Retry Settings</div>
+                </AccordionHeader>
+                <AccordionPanel>
+                  <div className={styles.settingsSectionContainer}>
+                    <div className={styles.settingsSectionDescription}>
+                      Retry policy associated with throttled requests during CosmosDB queries.
+                    </div>
+                    <div>
+                      <span className={styles.subHeader}>Max retry attempts</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Max number of retries to be performed for a request. Default value 9.
+                      </InfoTooltip>
+                    </div>
+                    <SpinButton
+                      labelPosition={Position.top}
+                      min={1}
+                      step={1}
+                      value={"" + retryAttempts}
+                      onChange={handleOnQueryRetryAttemptsSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1"
+                      decrementButtonAriaLabel="Decrease value by 1"
+                      onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
+                      onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
+                      onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
+                      styles={spinButtonStyles}
+                    />
+                    <div>
+                      <span className={styles.subHeader}>Fixed retry interval (ms)</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned
+                        as part of the response. Default value is 0 milliseconds.
+                      </InfoTooltip>
+                    </div>
+                    <SpinButton
+                      labelPosition={Position.top}
+                      min={1000}
+                      step={1000}
+                      value={"" + retryInterval}
+                      onChange={handleOnRetryIntervalSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1000"
+                      decrementButtonAriaLabel="Decrease value by 1000"
+                      onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
+                      onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
+                      onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
+                      styles={spinButtonStyles}
+                    />
+                    <div>
+                      <span className={styles.subHeader}>Max wait time (s)</span>
+                      <InfoTooltip className={styles.headerIcon}>
+                        Max wait time in seconds to wait for a request while the retries are happening. Default value 30
+                        seconds.
+                      </InfoTooltip>
+                    </div>
+                    <SpinButton
+                      labelPosition={Position.top}
+                      min={1}
+                      step={1}
+                      value={"" + MaxWaitTimeInSeconds}
+                      onChange={handleOnMaxWaitTimeSpinButtonChange}
+                      incrementButtonAriaLabel="Increase value by 1"
+                      decrementButtonAriaLabel="Decrease value by 1"
+                      onIncrement={(newValue) =>
+                        setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)
+                      }
+                      onDecrement={(newValue) =>
+                        setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)
+                      }
+                      onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
+                      styles={spinButtonStyles}
+                    />
                   </div>
-                  <div>
-                    <span className={styles.subHeader}>Max retry attempts</span>
-                    <InfoTooltip className={styles.headerIcon}>
-                      Max number of retries to be performed for a request. Default value 9.
-                    </InfoTooltip>
-                  </div>
-                  <SpinButton
-                    labelPosition={Position.top}
-                    min={1}
-                    step={1}
-                    value={"" + retryAttempts}
-                    onChange={handleOnQueryRetryAttemptsSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1"
-                    decrementButtonAriaLabel="Decrease value by 1"
-                    onIncrement={(newValue) => setRetryAttempts(parseInt(newValue) + 1 || retryAttempts)}
-                    onDecrement={(newValue) => setRetryAttempts(parseInt(newValue) - 1 || retryAttempts)}
-                    onValidate={(newValue) => setRetryAttempts(parseInt(newValue) || retryAttempts)}
-                    styles={spinButtonStyles}
-                  />
-                  <div>
-                    <span className={styles.subHeader}>Fixed retry interval (ms)</span>
-                    <InfoTooltip className={styles.headerIcon}>
-                      Fixed retry interval in milliseconds to wait between each retry ignoring the retryAfter returned
-                      as part of the response. Default value is 0 milliseconds.
-                    </InfoTooltip>
-                  </div>
-                  <SpinButton
-                    labelPosition={Position.top}
-                    min={1000}
-                    step={1000}
-                    value={"" + retryInterval}
-                    onChange={handleOnRetryIntervalSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1000"
-                    decrementButtonAriaLabel="Decrease value by 1000"
-                    onIncrement={(newValue) => setRetryInterval(parseInt(newValue) + 1000 || retryInterval)}
-                    onDecrement={(newValue) => setRetryInterval(parseInt(newValue) - 1000 || retryInterval)}
-                    onValidate={(newValue) => setRetryInterval(parseInt(newValue) || retryInterval)}
-                    styles={spinButtonStyles}
-                  />
-                  <div>
-                    <span className={styles.subHeader}>Max wait time (s)</span>
-                    <InfoTooltip className={styles.headerIcon}>
-                      Max wait time in seconds to wait for a request while the retries are happening. Default value 30
-                      seconds.
-                    </InfoTooltip>
-                  </div>
-                  <SpinButton
-                    labelPosition={Position.top}
-                    min={1}
-                    step={1}
-                    value={"" + MaxWaitTimeInSeconds}
-                    onChange={handleOnMaxWaitTimeSpinButtonChange}
-                    incrementButtonAriaLabel="Increase value by 1"
-                    decrementButtonAriaLabel="Decrease value by 1"
-                    onIncrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) + 1 || MaxWaitTimeInSeconds)}
-                    onDecrement={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) - 1 || MaxWaitTimeInSeconds)}
-                    onValidate={(newValue) => setMaxWaitTimeInSeconds(parseInt(newValue) || MaxWaitTimeInSeconds)}
-                    styles={spinButtonStyles}
-                  />
-                </div>
-              </AccordionPanel>
-            </AccordionItem>
+                </AccordionPanel>
+              </AccordionItem>
+            </>
           )}
 
-          <AccordionItem value="7">
+          <AccordionItem value="8">
             <AccordionHeader>
               <div className={styles.header}>Enable container pagination</div>
             </AccordionHeader>
@@ -768,7 +866,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionPanel>
           </AccordionItem>
           {shouldShowCrossPartitionOption && (
-            <AccordionItem value="8">
+            <AccordionItem value="9">
               <AccordionHeader>
                 <div className={styles.header}>Enable cross-partition query</div>
               </AccordionHeader>
@@ -793,7 +891,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowParallelismOption && (
-            <AccordionItem value="9">
+            <AccordionItem value="10">
               <AccordionHeader>
                 <div className={styles.header}>Max degree of parallelism</div>
               </AccordionHeader>
@@ -826,7 +924,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowPriorityLevelOption && (
-            <AccordionItem value="10">
+            <AccordionItem value="11">
               <AccordionHeader>
                 <div className={styles.header}>Priority Level</div>
               </AccordionHeader>
@@ -849,7 +947,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowGraphAutoVizOption && (
-            <AccordionItem value="11">
+            <AccordionItem value="12">
               <AccordionHeader>
                 <div className={styles.header}>Display Gremlin query results as:&nbsp;</div>
               </AccordionHeader>
@@ -870,7 +968,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
             </AccordionItem>
           )}
           {shouldShowCopilotSampleDBOption && (
-            <AccordionItem value="12">
+            <AccordionItem value="13">
               <AccordionHeader>
                 <div className={styles.header}>Enable sample database</div>
               </AccordionHeader>
