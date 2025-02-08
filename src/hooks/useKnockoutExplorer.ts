@@ -820,7 +820,7 @@ async function updateContextForSampleData(explorer: Explorer): Promise<void> {
   const sampleDataConnectionInfo = parseResourceTokenConnectionString(data.connectionString);
   updateUserContext({ sampleDataConnectionInfo });
 
-  await explorer.refreshSampleData();
+  explorer.refreshSampleData();
 }
 
 interface SampledataconnectionResponse {
