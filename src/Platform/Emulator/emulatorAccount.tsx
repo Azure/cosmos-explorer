@@ -1,21 +1,4 @@
-import { AccountKind } from "../../Common/Constants";
+const emulatorConfig = require("./emulatorConfig.json");
 
-export const emulatorAccount = {
-  name: "",
-  id: "",
-  location: "",
-  type: "",
-  kind: AccountKind.DocumentDB,
-  properties: {
-    documentEndpoint: "",
-    tableEndpoint: "",
-    gremlinEndpoint: "",
-    cassandraEndpoint: "",
-    capabilities: [
-      {
-        name: "EnableNoSQLVectorSearch",
-        description: "Enable Vector Search on NoSQL account",
-      },
-    ],
-  },
-};
+export const EmulatorMasterKey = emulatorConfig.EmulatorMasterKey || "";
+export const emulatorAccount = emulatorConfig.Account || {};
