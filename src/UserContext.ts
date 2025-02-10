@@ -51,7 +51,7 @@ export interface VCoreMongoConnectionParams {
   connectionString: string;
 }
 
-interface FabricContext {
+export interface FabricContext {
   connectionId: string;
   isReadOnly: boolean;
   isVisible: boolean;
