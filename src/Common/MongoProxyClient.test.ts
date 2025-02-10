@@ -189,7 +189,7 @@ describe("MongoProxyClient", () => {
       );
     });
   });
-  describe("deleteDocument", () => {
+  describe("deleteDocuments", () => {
     beforeEach(() => {
       resetConfigContext();
       updateUserContext({
@@ -208,7 +208,7 @@ describe("MongoProxyClient", () => {
     it("builds the correct URL", () => {
       deleteDocuments(databaseId, collection, [documentId]);
       expect(window.fetch).toHaveBeenCalledWith(
-        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`,
+        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer/bulkdelete`,
         expect.any(Object),
       );
     });
@@ -220,7 +220,7 @@ describe("MongoProxyClient", () => {
       });
       deleteDocuments(databaseId, collection, [documentId]);
       expect(window.fetch).toHaveBeenCalledWith(
-        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer`,
+        `${configContext.MONGO_PROXY_ENDPOINT}/api/mongo/explorer/bulkdelete`,
         expect.any(Object),
       );
     });
