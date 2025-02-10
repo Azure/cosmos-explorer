@@ -1,0 +1,22 @@
+{
+  "EmulatorMasterKey": "rFiKJU8m8BhOGhL5EmVP94ITQA5Qsk+sy7OmjzF7SgV5j8WhqGp/WzDrTJBtmXso6WzGaU9OppuvGa0gb/XwDQ==",
+  "Account": {
+    "name": "",
+    "id": "",
+    "location": "",
+    "type": "",
+    "kind": "DocumentDB",
+    "properties": {
+      "documentEndpoint": "",
+      "tableEndpoint": "",
+      "gremlinEndpoint": "",
+      "cassandraEndpoint": "",
+      "capabilities": [
+        {
+          "name": "EnableNoSQLVectorSearch",
+          "description": "Enable Vector Search on NoSQL account"
+        }
+      ]
+    }
+  }
+}
