@@ -439,7 +439,7 @@ const createExplorerFabric = (params: {
   updateUserContext({
     fabricContext: {
       connectionId: params.connectionId,
-      mirroredConnectionInfo: undefined,
+      mirroredConnectionInfo: undefined, // Set with resource token response
       isReadOnly: params.isReadOnly,
       isVisible: params.isVisible,
       artifactType: params.artifactType,
@@ -454,7 +454,7 @@ const createExplorerFabric = (params: {
         id: "",
         location: "",
         type: "",
-        name: "Mounted",
+        name: "Mounted", // TODO: not used?
         kind: AccountKind.Default,
         properties: {
           documentEndpoint: undefined,
@@ -462,20 +462,21 @@ const createExplorerFabric = (params: {
       },
     });
   } else if (params.artifactType === CosmosDbArtifactType.NATIVE) {
+    // Make it behave like Hosted/AAD/RBAC
     updateUserContext({
       databaseAccount: {
         id: "",
         location: "",
         type: "",
-        name: params.nativeConnectionInfo.accountName,
+        name: "Native", // TODO: not used?
         kind: AccountKind.Default,
         properties: {
-          documentEndpoint: params.nativeConnectionInfo.connectionString, // TODO: verify that <artifactid>.sql.cosmos.fabric.microsoft.com is passed to the client as account endpoint
+          documentEndpoint: params.nativeConnectionInfo.accountEndpoint,
         },
       },
-      // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
-      authType: AuthType.EncryptedToken,
-      accessToken: params.nativeConnectionInfo.accessToken,
+      authType: AuthType.AAD,
+      dataPlaneRbacEnabled: true,
+      aadToken: params.nativeConnectionInfo.accessToken,
       masterKey: undefined,
     });
   }

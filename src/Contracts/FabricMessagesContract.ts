@@ -53,9 +53,8 @@ export enum CosmosDbArtifactType {
 
 export interface FabricNativeDatabaseConnectionInfo {
   accessToken: string;
-  accountName: string;
   databaseName: string;
-  connectionString: string;
+  accountEndpoint: string;
 }
 
 export interface CosmosDBTokenResponse {
