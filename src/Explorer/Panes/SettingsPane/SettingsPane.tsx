@@ -174,15 +174,26 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const styles = useStyles();
 
   const explorerVersion = configContext.gitSha;
+  const isEmulator = configContext.platform === Platform.Emulator;
   const shouldShowQueryPageOptions = userContext.apiType === "SQL";
-  const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
-  const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
-  const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled();
+  const showRetrySettings =
+    (userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") &&
+    !isEmulator;
+  const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin" && !isEmulator;
+  const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin" && !isEmulator;
+  const shouldShowParallelismOption = userContext.apiType !== "Gremlin" && !isEmulator;
+  const showEnableEntraIdRbac =
+    userContext.apiType === "SQL" &&
+    userContext.authType === AuthType.AAD &&
+    configContext.platform !== Platform.Fabric &&
+    !isEmulator;
+  const shouldShowPriorityLevelOption = PriorityBasedExecutionUtils.isFeatureEnabled() && !isEmulator;
   const shouldShowCopilotSampleDBOption =
     userContext.apiType === "SQL" &&
     useQueryCopilot.getState().copilotEnabled &&
-    useDatabases.getState().sampleDataResourceTokenCollection;
+    useDatabases.getState().sampleDataResourceTokenCollection &&
+    !isEmulator;
+
   const handlerOnSubmit = async () => {
     setIsExecuting(true);
 
@@ -541,39 +552,37 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-          {userContext.apiType === "SQL" &&
-            userContext.authType === AuthType.AAD &&
-            configContext.platform !== Platform.Fabric && (
-              <AccordionItem value="2">
-                <AccordionHeader>
-                  <div className={styles.header}>Enable Entra ID RBAC</div>
-                </AccordionHeader>
-                <AccordionPanel>
-                  <div className={styles.settingsSectionContainer}>
-                    <div className={styles.settingsSectionDescription}>
-                      Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra
-                      ID RBAC.
-                      <a
-                        href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {" "}
-                        Learn more{" "}
-                      </a>
-                    </div>
-                    <ChoiceGroup
-                      ariaLabelledBy="enableDataPlaneRBACOptions"
-                      options={dataPlaneRBACOptionsList}
-                      styles={choiceButtonStyles}
-                      selectedKey={enableDataPlaneRBACOption}
-                      onChange={handleOnDataPlaneRBACOptionChange}
-                    />
+          {showEnableEntraIdRbac && (
+            <AccordionItem value="2">
+              <AccordionHeader>
+                <div className={styles.header}>Enable Entra ID RBAC</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Choose Automatic to enable Entra ID RBAC automatically. True/False to force enable/disable Entra ID
+                    RBAC.
+                    <a
+                      href="https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#use-data-explorer"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {" "}
+                      Learn more{" "}
+                    </a>
                   </div>
-                </AccordionPanel>
-              </AccordionItem>
-            )}
-          {userContext.apiType === "SQL" && (
+                  <ChoiceGroup
+                    ariaLabelledBy="enableDataPlaneRBACOptions"
+                    options={dataPlaneRBACOptionsList}
+                    styles={choiceButtonStyles}
+                    selectedKey={enableDataPlaneRBACOption}
+                    onChange={handleOnDataPlaneRBACOptionChange}
+                  />
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
+          {userContext.apiType === "SQL" && !isEmulator && (
             <>
               <AccordionItem value="3">
                 <AccordionHeader>
@@ -671,7 +680,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionItem>
             </>
           )}
-          {(userContext.apiType === "SQL" || userContext.apiType === "Tables" || userContext.apiType === "Gremlin") && (
+          {showRetrySettings && (
             <AccordionItem value="6">
               <AccordionHeader>
                 <div className={styles.header}>Retry Settings</div>
@@ -744,29 +753,30 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
               </AccordionPanel>
             </AccordionItem>
           )}
-
-          <AccordionItem value="7">
-            <AccordionHeader>
-              <div className={styles.header}>Enable container pagination</div>
-            </AccordionHeader>
-            <AccordionPanel>
-              <div className={styles.settingsSectionContainer}>
-                <div className={styles.settingsSectionDescription}>
-                  Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+          {!isEmulator && (
+            <AccordionItem value="7">
+              <AccordionHeader>
+                <div className={styles.header}>Enable container pagination</div>
+              </AccordionHeader>
+              <AccordionPanel>
+                <div className={styles.settingsSectionContainer}>
+                  <div className={styles.settingsSectionDescription}>
+                    Load 50 containers at a time. Currently, containers are not pulled in alphanumeric order.
+                  </div>
+                  <Checkbox
+                    styles={{
+                      label: { padding: 0 },
+                    }}
+                    className="padding"
+                    ariaLabel="Enable container pagination"
+                    checked={containerPaginationEnabled}
+                    onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
+                    label="Enable container pagination"
+                  />
                 </div>
-                <Checkbox
-                  styles={{
-                    label: { padding: 0 },
-                  }}
-                  className="padding"
-                  ariaLabel="Enable container pagination"
-                  checked={containerPaginationEnabled}
-                  onChange={() => setContainerPaginationEnabled(!containerPaginationEnabled)}
-                  label="Enable container pagination"
-                />
-              </div>
-            </AccordionPanel>
-          </AccordionItem>
+              </AccordionPanel>
+            </AccordionItem>
+          )}
           {shouldShowCrossPartitionOption && (
             <AccordionItem value="8">
               <AccordionHeader>
