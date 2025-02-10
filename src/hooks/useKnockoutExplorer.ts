@@ -180,6 +180,11 @@ async function configureFabric(): Promise<Explorer> {
 }
 
 const openFirstContainer = async (explorer: Explorer, databaseName: string, collectionName?: string) => {
+  if (useTabs.getState().openedTabs.length > 0) {
+    // Don't open any tabs if there are already tabs open
+    return;
+  }
+
   // Expand database first
   databaseName = sessionStorage.getItem("openDatabaseName") ?? databaseName;
   const database = useDatabases.getState().databases.find((db) => db.id() === databaseName);
