@@ -90,14 +90,6 @@ export const defaultAllowedMongoProxyEndpoints: ReadonlyArray<string> = [
   MongoProxyEndpoints.Mooncake,
 ];
 
-export const allowedMongoProxyEndpoints_ToBeDeprecated: ReadonlyArray<string> = [
-  "https://main.documentdb.ext.azure.com",
-  "https://main.documentdb.ext.azure.cn",
-  "https://main.documentdb.ext.azure.us",
-  "https://main.cosmos.ext.azure",
-  "https://localhost:12901",
-];
-
 export const defaultAllowedCassandraProxyEndpoints: ReadonlyArray<string> = [
   CassandraProxyEndpoints.Development,
   CassandraProxyEndpoints.Mpac,

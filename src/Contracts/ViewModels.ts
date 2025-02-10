@@ -406,7 +406,6 @@ export interface DataExplorerInputsFrame {
   csmEndpoint?: string;
   dnsSuffix?: string;
   serverId?: string;
-  extensionEndpoint?: string;
   portalBackendEndpoint?: string;
   mongoProxyEndpoint?: string;
   cassandraProxyEndpoint?: string;

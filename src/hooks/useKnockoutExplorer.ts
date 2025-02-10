@@ -542,14 +542,6 @@ async function configurePortal(): Promise<Explorer> {
         const inputs = message?.inputs;
         const openAction = message?.openAction;
         if (inputs) {
-          if (
-            configContext.BACKEND_ENDPOINT &&
-            configContext.platform === Platform.Portal &&
-            process.env.NODE_ENV === "development"
-          ) {
-            inputs.extensionEndpoint = configContext.PROXY_PATH;
-          }
-
           updateContextsFromPortalMessage(inputs);
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
@@ -674,18 +666,17 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
 
 function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   if (
-    configContext.BACKEND_ENDPOINT &&
+    configContext.PORTAL_BACKEND_ENDPOINT &&
     configContext.platform === Platform.Portal &&
     process.env.NODE_ENV === "development"
   ) {
-    inputs.extensionEndpoint = configContext.PROXY_PATH;
+    inputs.portalBackendEndpoint = configContext.PROXY_PATH;
   }
 
   const authorizationToken = inputs.authorizationToken || "";
   const databaseAccount = inputs.databaseAccount;
 
   updateConfigContext({
-    BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
     ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
     MONGO_PROXY_ENDPOINT: inputs.mongoProxyEndpoint,
     CASSANDRA_PROXY_ENDPOINT: inputs.cassandraProxyEndpoint,
