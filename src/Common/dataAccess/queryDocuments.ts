@@ -28,9 +28,5 @@ export const getCommonQueryOptions = (options: FeedOptions): FeedOptions => {
     Queries.itemsPerPage;
   options.maxDegreeOfParallelism = LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism);
   options.disableNonStreamingOrderByQuery = !isVectorSearchEnabled();
-  options.initialHeaders = {
-    ...options.initialHeaders,
-    "x-ms-cosmos-throughput-bucket": "1",
-  };
   return options;
 };
