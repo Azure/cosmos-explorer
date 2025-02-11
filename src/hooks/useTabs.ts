@@ -1,5 +1,4 @@
 import { clamp } from "@fluentui/react";
-import { Platform } from "ConfigContext";
 import { OpenTab } from "Contracts/ActionContracts";
 import { useSelectedNode } from "Explorer/useSelectedNode";
 import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
@@ -52,22 +51,11 @@ export enum ReactTabKind {
   QueryCopilot,
 }
 
-// HACK: using this const when the configuration context is not initialized yet.
-// Since Fabric is always setting the url param, use that instead of the regular config.
-const isPlatformFabric = (() => {
-  const params = new URLSearchParams(window.location.search);
-  if (params.has("platform")) {
-    const platform = params.get("platform");
-    return platform === Platform.Fabric;
-  }
-  return false;
-})();
-
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
-  openedTabs: [],
-  openedReactTabs: !isPlatformFabric ? [ReactTabKind.Home] : [],
+  openedTabs: [] as TabsBase[],
+  openedReactTabs: [ReactTabKind.Home],
   activeTab: undefined,
-  activeReactTab: !isPlatformFabric ? ReactTabKind.Home : undefined,
+  activeReactTab: ReactTabKind.Home,
   queryCopilotTabInitialInput: "",
   isTabExecuting: false,
   isQueryErrorThrown: false,

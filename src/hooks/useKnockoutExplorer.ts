@@ -146,6 +146,8 @@ async function configureFabric(): Promise<Explorer> {
             explorer = createExplorerFabric(data.message);
 
             if (data.message.artifactType === CosmosDbArtifactType.MIRRORED) {
+              // Do not show Home tab for Mirrored
+              useTabs.getState().closeReactTab(ReactTabKind.Home);
               await scheduleRefreshDatabaseResourceToken(true);
             }
 
