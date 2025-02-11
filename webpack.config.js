@@ -248,6 +248,7 @@ module.exports = function (_env = {}, argv = {}) {
         new TerserPlugin({
           terserOptions: {
             // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
+            // Update 2/11/202: we are removing this flag as our bundles sizes grew so that it can remove dead and unreachable code with compromise of build time
             // compress: false,
             mangle: {
               keep_fnames: true,
