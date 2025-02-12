@@ -4,7 +4,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import promiseRetry, { AbortError } from "p-retry";
+import promiseRetry, { AbortError, Options } from "p-retry";
 import {
   Areas,
   ConnectionStatusType,
@@ -35,7 +35,7 @@ import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 export class PhoenixClient {
   private armResourceId: string;
   private containerHealthHandler: NodeJS.Timeout;
-  private retryOptions: promiseRetry.Options = {
+  private retryOptions: Options = {
     retries: Notebook.retryAttempts,
     maxTimeout: Notebook.retryAttemptDelayMs,
     minTimeout: Notebook.retryAttemptDelayMs,
