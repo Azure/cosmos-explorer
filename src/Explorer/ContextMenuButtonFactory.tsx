@@ -1,7 +1,7 @@
 import { configContext, Platform } from "ConfigContext";
 import { TreeNodeMenuItem } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import { useDatabases } from "Explorer/useDatabases";
-import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { traceOpen } from "Shared/Telemetry/TelemetryProcessor";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -54,7 +54,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
     },
   ];
 
-  if (userContext.apiType !== "Tables" || userContext.features.enableSDKoperations) {
+  if (!isFabricNative() && (userContext.apiType !== "Tables" || userContext.features.enableSDKoperations)) {
     items.push({
       iconSrc: DeleteDatabaseIcon,
       onClick: (lastFocusedElement?: React.RefObject<HTMLElement>) => {

@@ -1,4 +1,4 @@
-import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
+import { isFabricMirrored, isFabricNative } from "Platform/Fabric/FabricUtil";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -44,6 +44,20 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
         id: databaseId,
         collections: [],
       }));
+    clearMessage();
+    return databases;
+  } else if (isFabricNative() && userContext.fabricContext?.nativeConnectionInfo.databaseName) {
+    const databaseId = userContext.fabricContext.nativeConnectionInfo.databaseName;
+    databases = [
+      {
+        _rid: "",
+        _self: "",
+        _etag: "",
+        _ts: 0,
+        id: databaseId,
+        collections: [],
+      },
+    ];
     clearMessage();
     return databases;
   }
