@@ -203,8 +203,10 @@ export function client(): Cosmos.CosmosClient {
   }
 
   let _defaultHeaders: Cosmos.CosmosHeaders = {};
+
   _defaultHeaders["x-ms-cosmos-sdk-supportedcapabilities"] =
     SDKSupportedCapabilities.None | SDKSupportedCapabilities.PartitionMerge;
+  _defaultHeaders["x-ms-cosmos-throughput-bucket"] = 1;
 
   if (
     userContext.authType === AuthType.ConnectionString ||
