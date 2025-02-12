@@ -118,13 +118,21 @@ export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, diagnost
   console.log(`REQUEST CONTEXT ENDPOINT: ${JSON.stringify(requestContext.endpoint)}`);
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   console.log(`REQUEST CONTEXT PROXY: ${JSON.stringify(requestContext.headers["x-ms-proxy-target"])}`);
+  // return await next(requestContext);
+
+  // try {
+  //   return await next(requestContext);
+  // } catch (error) {
+  //   throw {
+  //     code: error?.code || undefined,
+  //     message: error.message,
+  //   };
+  // }
+
   try {
     return await next(requestContext);
   } catch (error) {
-    throw {
-      code: error?.code || undefined,
-      message: error.message,
-    };
+    console.log(error.code);
   }
 };
 
@@ -244,6 +252,7 @@ export function client(): Cosmos.CosmosClient {
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.dataPlaneRbacEnabled ? "" : userContext.masterKey,
+    diagnosticLevel: Cosmos.CosmosDbDiagnosticLevel.debugUnsafe,
     tokenProvider,
     userAgentSuffix: "Azure Portal",
     defaultHeaders: _defaultHeaders,

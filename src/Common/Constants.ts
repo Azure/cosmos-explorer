@@ -239,10 +239,6 @@ export class SavedQueries {
   public static readonly PartitionKeyProperty: string = "id";
 }
 
-export class RegionSelectionOptions {
-  public static readonly Global: string = "Global";
-}
-
 export class DocumentsGridMetrics {
   public static DocumentsPerPage: number = 100;
   public static IndividualRowHeight: number = 34;

@@ -145,10 +145,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false",
   );
-  const [selectedRegion, setSelectedRegion] = useState<string>(
-    LocalStorageUtility.hasItem(StorageKey.SelectedRegion)
-      ? LocalStorageUtility.getEntryString(StorageKey.SelectedRegion)
-      : Constants.RegionSelectionOptions.Global,
+  const [selectedRegionalEndpoint, setSelectedRegionalEndpoint] = useState<string>(
+    LocalStorageUtility.hasItem(StorageKey.SelectedRegionalEndpoint)
+      ? LocalStorageUtility.getEntryString(StorageKey.SelectedRegionalEndpoint)
+      : "",
   );
   const [retryAttempts, setRetryAttempts] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.RetryAttempts)
@@ -192,10 +192,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   const uniqueAccountRegions = new Set<string>();
   const regionOptions: IDropdownOption[] = [];
   regionOptions.push({
-    key: Constants.RegionSelectionOptions.Global,
-    text: `${Constants.RegionSelectionOptions.Global} (Default)`,
+    key: userContext?.databaseAccount?.properties?.documentEndpoint,
+    text: `Global (Default)`,
     data: {
-      endpoint: userContext?.databaseAccount?.properties?.documentEndpoint,
+      isGlobal: true,
       writeEnabled: true,
     },
   });
@@ -203,10 +203,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     if (!uniqueAccountRegions.has(loc.locationName)) {
       uniqueAccountRegions.add(loc.locationName);
       regionOptions.push({
-        key: loc.locationName,
+        key: loc.documentEndpoint,
         text: `${loc.locationName} (Read/Write)`,
         data: {
-          endpoint: loc.documentEndpoint,
+          isGlobal: false,
           writeEnabled: true,
         },
       });
@@ -216,10 +216,10 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
     if (!uniqueAccountRegions.has(loc.locationName)) {
       uniqueAccountRegions.add(loc.locationName);
       regionOptions.push({
-        key: loc.locationName,
+        key: loc.documentEndpoint,
         text: `${loc.locationName} (Read)`,
         data: {
-          endpoint: loc.documentEndpoint,
+          isGlobal: false,
           writeEnabled: false,
         },
       });
@@ -311,18 +311,23 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       }
     }
 
-    const storedRegion = LocalStorageUtility.getEntryString(StorageKey.SelectedRegion);
-    const selectedRegionIsGlobal = selectedRegion === Constants.RegionSelectionOptions.Global;
-    if (selectedRegionIsGlobal && storedRegion) {
-      LocalStorageUtility.removeEntry(StorageKey.SelectedRegion);
+    const storedRegionalEndpoint = LocalStorageUtility.getEntryString(StorageKey.SelectedRegionalEndpoint);
+    const selectedRegionIsGlobal =
+      selectedRegionalEndpoint === userContext?.databaseAccount?.properties?.documentEndpoint;
+    if (selectedRegionIsGlobal && storedRegionalEndpoint) {
+      LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
       updateUserContext({
         selectedRegionalEndpoint: undefined,
         refreshCosmosClient: true,
       });
-    } else if (!selectedRegionIsGlobal && selectedRegion !== storedRegion) {
-      LocalStorageUtility.setEntryString(StorageKey.SelectedRegion, selectedRegion);
+    } else if (
+      selectedRegionalEndpoint &&
+      !selectedRegionIsGlobal &&
+      selectedRegionalEndpoint !== storedRegionalEndpoint
+    ) {
+      LocalStorageUtility.setEntryString(StorageKey.SelectedRegionalEndpoint, selectedRegionalEndpoint);
       updateUserContext({
-        selectedRegionalEndpoint: regionOptions.find((option) => option.key === selectedRegion)?.data?.endpoint,
+        selectedRegionalEndpoint: selectedRegionalEndpoint,
         refreshCosmosClient: true,
       });
     }
@@ -477,7 +482,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
   };
 
   const handleOnSelectedRegionOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IDropdownOption): void => {
-    setSelectedRegion(option.key as string);
+    setSelectedRegionalEndpoint(option.key as string);
   };
 
   const handleOnQueryRetryAttemptsSpinButtonChange = (ev: React.MouseEvent<HTMLElement>, newValue?: string): void => {
@@ -649,7 +654,11 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
                     </InfoTooltip>
                   </div>
                   <Dropdown
-                    placeholder={regionOptions.find((option) => option.key === selectedRegion)?.text}
+                    placeholder={
+                      selectedRegionalEndpoint
+                        ? regionOptions.find((option) => option.key === selectedRegionalEndpoint)?.text
+                        : regionOptions[0]?.text
+                    }
                     onChange={handleOnSelectedRegionOptionChange}
                     options={regionOptions}
                     styles={{ root: { marginBottom: "10px" } }}
