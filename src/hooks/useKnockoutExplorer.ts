@@ -345,7 +345,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
       `Configuring Data Explorer for ${userContext.apiType} account ${account.name}`,
       "Explorer/configureHostedWithAAD",
     );
-    if (userContext.apiType === "SQL") {
+    if (userContext.apiType === "SQL" && userContext.authType === AuthType.AAD) {
       checkAndUpdateSelectedRegionalEndpoint();
     }
     if (!userContext.features.enableAadDataPlane) {
@@ -709,7 +709,7 @@ async function configurePortal(): Promise<Explorer> {
 
           const { databaseAccount: account, subscriptionId, resourceGroup } = userContext;
 
-          if (userContext.apiType === "SQL") {
+          if (userContext.apiType === "SQL" && userContext.authType === AuthType.AAD) {
             checkAndUpdateSelectedRegionalEndpoint();
           }
 
@@ -832,16 +832,19 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
 }
 
 function checkAndUpdateSelectedRegionalEndpoint() {
-  //TODO: Possibly refactor userContext to store selected regional endpoint instead of selected region.
-  if (LocalStorageUtility.hasItem(StorageKey.SelectedRegion)) {
-    const storedRegion = LocalStorageUtility.getEntryString(StorageKey.SelectedRegion);
-    const location = userContext.databaseAccount?.properties?.readLocations?.find(
-      (loc) => loc.locationName === storedRegion,
+  if (LocalStorageUtility.hasItem(StorageKey.SelectedRegionalEndpoint)) {
+    const storedRegionalEndpoint = LocalStorageUtility.getEntryString(StorageKey.SelectedRegionalEndpoint);
+    const validLocation = userContext.databaseAccount?.properties?.readLocations?.find(
+      (loc) => loc.documentEndpoint === storedRegionalEndpoint,
     );
-    updateUserContext({
-      selectedRegionalEndpoint: location?.documentEndpoint,
-      refreshCosmosClient: true,
-    });
+    if (validLocation) {
+      updateUserContext({
+        selectedRegionalEndpoint: storedRegionalEndpoint,
+        refreshCosmosClient: true,
+      });
+    } else {
+      LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
+    }
   }
 }
 
