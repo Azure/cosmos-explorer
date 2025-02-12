@@ -40,16 +40,21 @@ export class PhoenixClient {
     maxTimeout: Notebook.retryAttemptDelayMs,
     minTimeout: Notebook.retryAttemptDelayMs,
   };
+  private abortController: AbortController;
+  private abortSignal: AbortSignal;
 
   constructor(armResourceId: string) {
     this.armResourceId = armResourceId;
   }
 
   public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixServiceInfo>> {
+    this.initializeCancelEventListener();
+
     return promiseRetry(() => this.executeContainerAssignmentOperation(provisionData, "allocate"), {
       retries: 4,
       maxTimeout: 20000,
       minTimeout: 20000,
+      signal: this.abortSignal,
     });
   }
 
@@ -268,6 +273,17 @@ export class PhoenixClient {
       [authorizationHeader.header]: authorizationHeader.token,
       [HttpHeaders.contentType]: "application/json",
     };
+  }
+
+  private initializeCancelEventListener(): void {
+    this.abortController = new AbortController();
+    this.abortSignal = this.abortController.signal;
+
+    document.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "c") {
+        this.abortController.abort(new AbortError("Request canceled"));
+      }
+    });
   }
 
   public ConvertToForbiddenErrorString(jsonData: IPhoenixError): string {
