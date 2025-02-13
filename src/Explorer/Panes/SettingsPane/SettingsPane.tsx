@@ -314,6 +314,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
       updateUserContext({
         selectedRegionalEndpoint: undefined,
+        writeEnabledInSelectedRegion: true,
         refreshCosmosClient: true,
       });
     } else if (
@@ -322,8 +323,12 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
       selectedRegionalEndpoint !== storedRegionalEndpoint
     ) {
       LocalStorageUtility.setEntryString(StorageKey.SelectedRegionalEndpoint, selectedRegionalEndpoint);
+      const validWriteEndpoint = userContext.databaseAccount?.properties?.writeLocations?.find(
+        (loc) => loc.documentEndpoint === selectedRegionalEndpoint,
+      );
       updateUserContext({
         selectedRegionalEndpoint: selectedRegionalEndpoint,
+        writeEnabledInSelectedRegion: validWriteEndpoint ? true : false,
         refreshCosmosClient: true,
       });
     }
