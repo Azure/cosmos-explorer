@@ -834,17 +834,25 @@ function updateAADEndpoints(portalEnv: PortalEnv) {
 function checkAndUpdateSelectedRegionalEndpoint() {
   if (LocalStorageUtility.hasItem(StorageKey.SelectedRegionalEndpoint)) {
     const storedRegionalEndpoint = LocalStorageUtility.getEntryString(StorageKey.SelectedRegionalEndpoint);
-    const validLocation = userContext.databaseAccount?.properties?.readLocations?.find(
+    const validEndpoint = userContext.databaseAccount?.properties?.readLocations?.find(
       (loc) => loc.documentEndpoint === storedRegionalEndpoint,
     );
-    if (validLocation) {
+    const validWriteEndpoint = userContext.databaseAccount?.properties?.writeLocations?.find(
+      (loc) => loc.documentEndpoint === storedRegionalEndpoint,
+    );
+    if (validEndpoint) {
       updateUserContext({
         selectedRegionalEndpoint: storedRegionalEndpoint,
+        writeEnabledInSelectedRegion: validWriteEndpoint ? true : false,
         refreshCosmosClient: true,
       });
     } else {
       LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
     }
+  } else {
+    updateUserContext({
+      writeEnabledInSelectedRegion: true,
+    });
   }
 }
 
