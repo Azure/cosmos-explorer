@@ -375,6 +375,7 @@ class QueryTabComponentImpl extends React.Component<QueryTabComponentImplProps, 
         ruCapPerOperation: ruThreshold,
       } as QueryOperationOptions;
     }
+
     const queryDocuments = async (firstItemIndex: number) =>
       await queryDocumentsPage(
         this.props.collection && this.props.collection.id(),

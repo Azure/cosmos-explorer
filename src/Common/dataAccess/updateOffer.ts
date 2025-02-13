@@ -1,6 +1,6 @@
 import { OfferDefinition, RequestOptions } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
+import { Offer, SDKOfferDefinition, ThroughputBucket, UpdateOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import {
   migrateCassandraKeyspaceToAutoscale,
@@ -357,6 +357,13 @@ const createUpdateOfferBody = (params: UpdateOfferParams): ThroughputSettingsUpd
     };
   } else {
     body.properties.resource.throughput = params.manualThroughput;
+  }
+
+  if (params.throughputBuckets) {
+    const throughputBuckets = params.throughputBuckets.filter(
+      (bucket: ThroughputBucket) => bucket.maxThroughputPercentage !== 100,
+    );
+    body.properties.resource.throughputBuckets = throughputBuckets;
   }
 
   return body;

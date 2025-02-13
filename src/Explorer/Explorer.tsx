@@ -1127,7 +1127,7 @@ export default class Explorer {
       await this.initNotebooks(userContext.databaseAccount);
     }
 
-    await this.refreshSampleData();
+    this.refreshSampleData();
   }
 
   public async configureCopilot(): Promise<void> {
@@ -1152,26 +1152,27 @@ export default class Explorer {
       .setCopilotSampleDBEnabled(copilotEnabled && copilotUserDBEnabled && copilotSampleDBEnabled);
   }
 
-  public async refreshSampleData(): Promise<void> {
-    try {
-      if (!userContext.sampleDataConnectionInfo) {
-        return;
-      }
-      const collection: DataModels.Collection = await readSampleCollection();
-      if (!collection) {
-        return;
-      }
-
-      const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
-      if (!databaseId) {
-        return;
-      }
-
-      const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
-      useDatabases.setState({ sampleDataResourceTokenCollection });
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer");
+  public refreshSampleData(): void {
+    if (!userContext.sampleDataConnectionInfo) {
       return;
     }
+
+    const databaseId = userContext.sampleDataConnectionInfo?.databaseId;
+    if (!databaseId) {
+      return;
+    }
+
+    readSampleCollection()
+      .then((collection: DataModels.Collection) => {
+        if (!collection) {
+          return;
+        }
+
+        const sampleDataResourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection, true);
+        useDatabases.setState({ sampleDataResourceTokenCollection });
+      })
+      .catch((error) => {
+        Logger.logError(getErrorMessage(error), "Explorer/refreshSampleData");
+      });
   }
 }
