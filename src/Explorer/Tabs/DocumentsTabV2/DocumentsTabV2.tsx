@@ -255,6 +255,9 @@ export const getSaveExistingDocumentButtonState = (editorState: ViewModels.Docum
   enabled: (() => {
     switch (editorState) {
       case ViewModels.DocumentExplorerState.existingDocumentDirtyValid:
+        if (!userContext.writeEnabledInSelectedRegion) {
+          return false;
+        }
         return true;
       default:
         return false;
@@ -477,6 +480,9 @@ const getNewDocumentButtonState = (editorState: ViewModels.DocumentExplorerState
     switch (editorState) {
       case ViewModels.DocumentExplorerState.noDocumentSelected:
       case ViewModels.DocumentExplorerState.existingDocumentNoEdits:
+        if (!userContext.writeEnabledInSelectedRegion) {
+          return false;
+        }
         return true;
       default:
         return false;
