@@ -32,6 +32,7 @@ export interface DatabaseAccountExtendedProperties {
   writeLocations?: DatabaseAccountResponseLocation[];
   enableFreeTier?: boolean;
   enableAnalyticalStorage?: boolean;
+  enableMaterializedViews?: boolean;
   isVirtualNetworkFilterEnabled?: boolean;
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
