@@ -112,6 +112,7 @@ export interface UserContext {
   collectionCreationDefaults: CollectionCreationDefaults;
   sampleDataConnectionInfo?: ParsedResourceTokenConnectionString;
   readonly selectedRegionalEndpoint?: string;
+  readonly writeEnabledInSelectedRegion?: boolean;
   readonly vcoreMongoConnectionParams?: VCoreMongoConnectionParams;
   readonly feedbackPolicies?: AdminFeedbackPolicySettings;
   readonly dataPlaneRbacEnabled?: boolean;
