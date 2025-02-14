@@ -280,7 +280,7 @@ export class PhoenixClient {
     this.abortSignal = this.abortController.signal;
 
     document.addEventListener("keydown", (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "c") {
+      if (event.ctrlKey && (event.key === "c" || event.key === "z")) {
         this.abortController.abort(new AbortError("Request canceled"));
       }
     });
