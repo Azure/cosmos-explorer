@@ -165,6 +165,8 @@ export interface Collection extends Resource {
   schema?: ISchema;
   requestSchema?: () => void;
   computedProperties?: ComputedProperties;
+  materializedViews?: MaterializedView[];
+  materializedViewDefinition?: MaterializedViewDefinition;
 }
 
 export interface CollectionsWithPagination {
@@ -223,6 +225,17 @@ export interface ComputedProperty {
 }
 
 export type ComputedProperties = ComputedProperty[];
+
+export interface MaterializedView {
+  id: string;
+  _rid: string;
+}
+
+export interface MaterializedViewDefinition {
+  definition: string;
+  sourceCollectionId: string;
+  sourceCollectionRid: string;
+}
 
 export interface PartitionKey {
   paths: string[];

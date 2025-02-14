@@ -530,6 +530,10 @@ export class ariaLabelForLearnMoreLink {
   public static readonly AzureSynapseLink = "Learn more about Azure Synapse Link.";
 }
 
+export class MaterializedViewsLabels {
+  public static readonly NewMaterializedView: string = "New Materialized View";
+}
+
 export const QueryCopilotSampleDatabaseId = "CopilotSampleDB";
 export const QueryCopilotSampleContainerId = "SampleContainer";
 
