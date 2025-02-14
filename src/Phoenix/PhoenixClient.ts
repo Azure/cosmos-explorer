@@ -4,7 +4,7 @@ import { Action } from "Shared/Telemetry/TelemetryConstants";
 import { userContext } from "UserContext";
 import { allowedJunoOrigins, validateEndpoint } from "Utils/EndpointUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
-import promiseRetry, { AbortError } from "p-retry";
+import promiseRetry, { AbortError, Options } from "p-retry";
 import {
   Areas,
   ConnectionStatusType,
@@ -35,21 +35,26 @@ import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 export class PhoenixClient {
   private armResourceId: string;
   private containerHealthHandler: NodeJS.Timeout;
-  private retryOptions: promiseRetry.Options = {
+  private retryOptions: Options = {
     retries: Notebook.retryAttempts,
     maxTimeout: Notebook.retryAttemptDelayMs,
     minTimeout: Notebook.retryAttemptDelayMs,
   };
+  private abortController: AbortController;
+  private abortSignal: AbortSignal;
 
   constructor(armResourceId: string) {
     this.armResourceId = armResourceId;
   }
 
   public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixServiceInfo>> {
+    this.initializeCancelEventListener();
+
     return promiseRetry(() => this.executeContainerAssignmentOperation(provisionData, "allocate"), {
       retries: 4,
       maxTimeout: 20000,
       minTimeout: 20000,
+      signal: this.abortSignal,
     });
   }
 
@@ -268,6 +273,17 @@ export class PhoenixClient {
       [authorizationHeader.header]: authorizationHeader.token,
       [HttpHeaders.contentType]: "application/json",
     };
+  }
+
+  private initializeCancelEventListener(): void {
+    this.abortController = new AbortController();
+    this.abortSignal = this.abortController.signal;
+
+    document.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.ctrlKey && (event.key === "c" || event.key === "z")) {
+        this.abortController.abort(new AbortError("Request canceled"));
+      }
+    });
   }
 
   public ConvertToForbiddenErrorString(jsonData: IPhoenixError): string {
