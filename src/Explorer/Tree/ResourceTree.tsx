@@ -1,7 +1,6 @@
 import { Tree, TreeItemValue, TreeOpenChangeData, TreeOpenChangeEvent } from "@fluentui/react-components";
 import { Home16Regular } from "@fluentui/react-icons";
 import { AuthType } from "AuthType";
-import { Platform, configContext } from "ConfigContext";
 import { useTreeStyles } from "Explorer/Controls/TreeComponent/Styles";
 import { TreeNode, TreeNodeComponent } from "Explorer/Controls/TreeComponent/TreeNodeComponent";
 import {
@@ -11,6 +10,7 @@ import {
 } from "Explorer/Tree/treeNodeUtil";
 import { useDatabases } from "Explorer/useDatabases";
 import { useSelectedNode } from "Explorer/useSelectedNode";
+import { isFabricMirrored } from "Platform/Fabric/FabricUtil";
 import { userContext } from "UserContext";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -76,23 +76,22 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ explorer }: Resource
       : [];
   }, [isSampleDataEnabled, sampleDataResourceTokenCollection]);
 
-  const headerNodes: TreeNode[] =
-    configContext.platform === Platform.Fabric
-      ? []
-      : [
-          {
-            id: "home",
-            iconSrc: <Home16Regular />,
-            label: "Home",
-            isSelected: () =>
-              useSelectedNode.getState().selectedNode === undefined &&
-              useTabs.getState().activeReactTab === ReactTabKind.Home,
-            onClick: () => {
-              useSelectedNode.getState().setSelectedNode(undefined);
-              useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
-            },
+  const headerNodes: TreeNode[] = isFabricMirrored()
+    ? []
+    : [
+        {
+          id: "home",
+          iconSrc: <Home16Regular />,
+          label: "Home",
+          isSelected: () =>
+            useSelectedNode.getState().selectedNode === undefined &&
+            useTabs.getState().activeReactTab === ReactTabKind.Home,
+          onClick: () => {
+            useSelectedNode.getState().setSelectedNode(undefined);
+            useTabs.getState().openAndActivateReactTab(ReactTabKind.Home);
           },
-        ];
+        },
+      ];
 
   const rootNodes: TreeNode[] = useMemo(() => {
     if (sampleDataNodes.length > 0) {

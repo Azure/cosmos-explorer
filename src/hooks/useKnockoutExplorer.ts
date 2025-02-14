@@ -2,7 +2,12 @@ import * as Constants from "Common/Constants";
 import { createUri } from "Common/UrlUtility";
 import { DATA_EXPLORER_RPC_VERSION } from "Contracts/DataExplorerMessagesContract";
 import { FabricMessageTypes } from "Contracts/FabricMessageTypes";
-import { FABRIC_RPC_VERSION, FabricMessageV2 } from "Contracts/FabricMessagesContract";
+import {
+  CosmosDbArtifactType,
+  FABRIC_RPC_VERSION,
+  FabricMessageV2,
+  FabricNativeDatabaseConnectionInfo,
+} from "Contracts/FabricMessagesContract";
 import Explorer from "Explorer/Explorer";
 import { useDataPlaneRbac } from "Explorer/Panes/SettingsPane/SettingsPane";
 import { useSelectedNode } from "Explorer/useSelectedNode";
@@ -22,7 +27,7 @@ import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import * as Logger from "../Common/Logger";
 import { handleCachedDataMessage, sendMessage, sendReadyMessage } from "../Common/MessageHandler";
-import { Platform, configContext, updateConfigContext } from "../ConfigContext";
+import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction, TabKind } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
@@ -133,13 +138,24 @@ async function configureFabric(): Promise<Explorer> {
               return;
             }
 
+            // TODO: Default values points to MIRRORED. This is for old fabric clients to explitly settings these values
+            data.message.artifactType = data.message.artifactType ?? CosmosDbArtifactType.MIRRORED;
+            data.message.isReadOnly = data.message.isReadOnly ?? true;
+
             explorer = createExplorerFabric(data.message);
-            await scheduleRefreshDatabaseResourceToken(true);
+
+            if (data.message.artifactType === CosmosDbArtifactType.MIRRORED) {
+              // Do not show Home tab for Mirrored
+              useTabs.getState().closeReactTab(ReactTabKind.Home);
+              await scheduleRefreshDatabaseResourceToken(true);
+            }
+
             resolve(explorer);
             await explorer.refreshAllDatabases();
-            if (userContext.fabricContext.isVisible) {
+
+            if (userContext.fabricContext.isVisible && userContext.fabricContext.mirroredConnectionInfo?.databaseId) {
               firstContainerOpened = true;
-              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+              openFirstContainer(explorer, userContext.fabricContext.mirroredConnectionInfo.databaseId);
             }
             break;
           }
@@ -156,10 +172,10 @@ async function configureFabric(): Promise<Explorer> {
             if (
               userContext.fabricContext.isVisible &&
               !firstContainerOpened &&
-              userContext?.fabricContext?.databaseConnectionInfo?.databaseId !== undefined
+              userContext?.fabricContext?.mirroredConnectionInfo?.databaseId !== undefined
             ) {
               firstContainerOpened = true;
-              openFirstContainer(explorer, userContext.fabricContext.databaseConnectionInfo.databaseId);
+              openFirstContainer(explorer, userContext.fabricContext.mirroredConnectionInfo.databaseId);
             }
             break;
           }
@@ -419,30 +435,61 @@ function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   return explorer;
 }
 
-function createExplorerFabric(params: { connectionId: string; isVisible: boolean }): Explorer {
+const createExplorerFabric = (params: {
+  connectionId: string;
+  isVisible: boolean;
+  isReadOnly?: boolean;
+  artifactType?: CosmosDbArtifactType;
+  nativeConnectionInfo?: FabricNativeDatabaseConnectionInfo;
+}): Explorer => {
   updateUserContext({
     fabricContext: {
       connectionId: params.connectionId,
-      databaseConnectionInfo: undefined,
-      isReadOnly: true,
-      isVisible: params.isVisible ?? true,
-    },
-    authType: AuthType.ConnectionString,
-    databaseAccount: {
-      id: "",
-      location: "",
-      type: "",
-      name: "Mounted",
-      kind: AccountKind.Default,
-      properties: {
-        documentEndpoint: undefined,
-      },
+      mirroredConnectionInfo: undefined, // Set with resource token response
+      isReadOnly: params.isReadOnly,
+      isVisible: params.isVisible,
+      artifactType: params.artifactType,
+      nativeConnectionInfo: params.nativeConnectionInfo,
     },
   });
-  useTabs.getState().closeAllTabs();
+
+  if (params.artifactType === CosmosDbArtifactType.MIRRORED) {
+    updateUserContext({
+      authType: AuthType.ConnectionString, // TODO: will need its own type and Mirroring could be using AAD
+      databaseAccount: {
+        id: "",
+        location: "",
+        type: "",
+        name: "Mounted", // TODO: not used?
+        kind: AccountKind.Default,
+        properties: {
+          documentEndpoint: undefined,
+        },
+      },
+    });
+  } else if (params.artifactType === CosmosDbArtifactType.NATIVE) {
+    // Make it behave like Hosted/AAD/RBAC
+    updateUserContext({
+      databaseAccount: {
+        id: "",
+        location: "",
+        type: "",
+        name: "Native", // TODO: not used?
+        kind: AccountKind.Default,
+        properties: {
+          documentEndpoint: params.nativeConnectionInfo.accountEndpoint,
+        },
+      },
+      authType: AuthType.AAD,
+      dataPlaneRbacEnabled: true,
+      aadToken: params.nativeConnectionInfo.accessToken,
+      masterKey: undefined,
+    });
+  }
+
   const explorer = new Explorer();
   return explorer;
-}
+};
 
 function configureWithEncryptedToken(config: EncryptedToken): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
