@@ -71,6 +71,17 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
   return currentValues;
 };
 
+const IntegratedCache = "IntegratedCache";
+const DistributedQuery = "DistributedQuery";
+
+const onDedicatedGatewayTypeChange = (
+  newValue: InputType,
+  currentValues: Map<string, SmartUiInput>,
+): Map<string, SmartUiInput> => {
+  currentValues.set("dedicatedGatewayType", { value: newValue });
+  return currentValues;
+};
+
 const onNumberOfInstancesChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
@@ -110,6 +121,7 @@ const onEnableDedicatedGatewayChange = (
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
   if (dedicatedGatewayOriginallyEnabled === newValue) {
     currentValues.set("sku", baselineValues.get("sku"));
+    currentValues.set("dedicatedGatewayType", baselineValues.get("dedicatedGatewayType"));
     currentValues.set("instances", baselineValues.get("instances"));
     currentValues.set("costPerHour", baselineValues.get("costPerHour"));
     currentValues.set("warningBanner", baselineValues.get("warningBanner"));
@@ -150,10 +162,16 @@ const onEnableDedicatedGatewayChange = (
     currentValues.set("costPerHour", { value: costPerHourDefaultValue, hidden: true });
   }
   const sku = currentValues.get("sku");
+  const dedicatedGatewayType = currentValues.get("dedicatedGatewayType");
   const instances = currentValues.get("instances");
   const hideAttributes = newValue === undefined || !(newValue as boolean);
   currentValues.set("sku", {
     value: sku.value,
+    hidden: hideAttributes,
+    disabled: dedicatedGatewayOriginallyEnabled,
+  });
+  currentValues.set("dedicatedGatewayType", {
+    value: dedicatedGatewayType.value,
     hidden: hideAttributes,
     disabled: dedicatedGatewayOriginallyEnabled,
   });
@@ -186,12 +204,29 @@ const getSkus = async (): Promise<ChoiceItem[]> => {
   return skuDropDownItems;
 };
 
+const dedicatedGatewayTypeDropDownItems: ChoiceItem[] = [
+  { labelTKey: "Integrated Cache", key: IntegratedCache },
+  { labelTKey: "Distributed Query", key: DistributedQuery },
+];
+
+const getDedicatedGatewayType = async (): Promise<ChoiceItem[]> => {
+  return dedicatedGatewayTypeDropDownItems;
+};
+
 const getInstancesMin = async (): Promise<number> => {
   return 1;
 };
 
 const getInstancesMax = async (): Promise<number> => {
   return 5;
+};
+
+const DedicatedGatewayTypeDropdownInfo: Info = {
+  messageTKey: "DedicatedGatewayTypeText",
+  link: {
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
+    textTKey: "DedicatedGatewayTypeLink",
+  },
 };
 
 const NumberOfInstancesDropdownInfo: Info = {
@@ -313,8 +348,9 @@ export default class SqlX extends SelfServeBaseClass {
         };
       } else {
         const sku = currentValues.get("sku")?.value as string;
+        const dedicatedGatewayType = currentValues.get("dedicatedGatewayType")?.value as string;
         const instances = currentValues.get("instances").value as number;
-        const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+        const operationStatusUrl = await updateDedicatedGatewayResource(sku, dedicatedGatewayType, instances);
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
@@ -335,8 +371,9 @@ export default class SqlX extends SelfServeBaseClass {
       }
     } else {
       const sku = currentValues.get("sku")?.value as string;
+      const dedicatedGatewayType = currentValues.get("dedicatedGatewayType")?.value as string;
       const instances = currentValues.get("instances").value as number;
-      const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+      const operationStatusUrl = await updateDedicatedGatewayResource(sku, dedicatedGatewayType, instances);
       return {
         operationStatusUrl: operationStatusUrl,
         portalNotification: {
@@ -362,6 +399,7 @@ export default class SqlX extends SelfServeBaseClass {
     const defaults = new Map<string, SmartUiInput>();
     defaults.set("enableDedicatedGateway", { value: false });
     defaults.set("sku", { value: CosmosD4s, hidden: true });
+    defaults.set("dedicatedGatewayType", { value: IntegratedCache, hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
     defaults.set("costPerHour", undefined);
     defaults.set("connectionString", undefined);
@@ -380,6 +418,7 @@ export default class SqlX extends SelfServeBaseClass {
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
+      defaults.set("dedicatedGatewayType", { value: response.dedicatedGatewayType || IntegratedCache, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: false });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
@@ -420,6 +459,15 @@ export default class SqlX extends SelfServeBaseClass {
     falseLabelTKey: "Deprovisioned",
   })
   enableDedicatedGateway: boolean;
+
+  @OnChange(onDedicatedGatewayTypeChange)
+  @PropertyInfo(DedicatedGatewayTypeDropdownInfo)
+  @Values({
+    labelTKey: "Dedicated Gateway Features",
+    choices: getDedicatedGatewayType,
+    placeholderTKey: "DedicatedGatewayTypePlaceHolder",
+  })
+  dedicatedGatewayType: ChoiceItem;
 
   @OnChange(onSKUChange)
   @Values({
