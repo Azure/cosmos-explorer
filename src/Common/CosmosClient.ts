@@ -266,24 +266,24 @@ export function client(): Cosmos.CosmosClient {
     },
   };
 
-  // Account details from userContext.
-  // console.log(`userContext details: ${JSON.stringify(userContext)}`);
-  console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
-  console.log(
-    `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
-      userContext?.databaseAccount?.properties?.documentEndpoint,
-    )}`,
-  );
-  console.log(
-    `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
-      userContext?.databaseAccount?.properties?.readLocations,
-    )}`,
-  );
-  console.log(
-    `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
-      userContext?.databaseAccount?.properties?.writeLocations,
-    )}`,
-  );
+  // // Account details from userContext.
+  // // console.log(`userContext details: ${JSON.stringify(userContext)}`);
+  // console.log(`userContext.databaseaccount details: ${JSON.stringify(userContext.databaseAccount)}`);
+  // console.log(
+  //   `userContext?.databaseAccount?.properties?.documentEndpoint details: ${JSON.stringify(
+  //     userContext?.databaseAccount?.properties?.documentEndpoint,
+  //   )}`,
+  // );
+  // console.log(
+  //   `userContext?.databaseAccount?.properties?.readLocations details: ${JSON.stringify(
+  //     userContext?.databaseAccount?.properties?.readLocations,
+  //   )}`,
+  // );
+  // console.log(
+  //   `userContext?.databaseAccount?.properties?.writeLocations details: ${JSON.stringify(
+  //     userContext?.databaseAccount?.properties?.writeLocations,
+  //   )}`,
+  // );
 
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
@@ -298,7 +298,7 @@ export function client(): Cosmos.CosmosClient {
   _client = new Cosmos.CosmosClient(options);
 
   // Log debug vals
-  fetchConnectedRegions(_client).catch((error) => console.error(error));
+  // fetchConnectedRegions(_client).catch((error) => console.error(error));
 
   return _client;
 }
