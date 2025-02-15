@@ -13,6 +13,7 @@ import {
   readSubComponentState,
 } from "Shared/AppStatePersistenceUtility";
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
@@ -299,7 +300,7 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     );
     if (!userContext.features.enableAadDataPlane) {
       Logger.logInfo(`AAD Feature flag is not enabled for account ${account.name}`, "Explorer/configureHostedWithAAD");
-      if (userContext.apiType === "SQL") {
+      if (isDataplaneRbacSupported(userContext.apiType)) {
         if (LocalStorageUtility.hasItem(StorageKey.DataPlaneRbacEnabled)) {
           const isDataPlaneRbacSetting = LocalStorageUtility.getEntryString(StorageKey.DataPlaneRbacEnabled);
           Logger.logInfo(
