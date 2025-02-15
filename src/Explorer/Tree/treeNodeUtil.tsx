@@ -23,7 +23,8 @@ import { useSelectedNode } from "../useSelectedNode";
 
 export const shouldShowScriptNodes = (): boolean => {
   return (
-    configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+    //configContext.platform !== Platform.Fabric && (userContext.apiType === "SQL" || userContext.apiType === "Gremlin")
+    false
   );
 };
 
