@@ -23,6 +23,7 @@ import {
 import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
 import { isDataplaneRbacSupported } from "Utils/APITypeUtils";
 import { logConsoleError } from "Utils/NotificationConsoleUtils";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { ReactTabKind, useTabs } from "hooks/useTabs";
 import { useEffect, useState } from "react";
@@ -846,13 +847,19 @@ function checkAndUpdateSelectedRegionalEndpoint() {
         writeEnabledInSelectedRegion: validWriteEndpoint ? true : false,
         refreshCosmosClient: true,
       });
+      useClientWriteEnabled.setState({ clientWriteEnabled: validWriteEndpoint ? true : false });
     } else {
       LocalStorageUtility.removeEntry(StorageKey.SelectedRegionalEndpoint);
+      updateUserContext({
+        writeEnabledInSelectedRegion: true,
+      });
+      useClientWriteEnabled.setState({ clientWriteEnabled: true });
     }
   } else {
     updateUserContext({
       writeEnabledInSelectedRegion: true,
     });
+    useClientWriteEnabled.setState({ clientWriteEnabled: true });
   }
 }
 

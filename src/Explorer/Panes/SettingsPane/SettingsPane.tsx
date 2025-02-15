@@ -39,6 +39,7 @@ import { acquireMsalTokenForAccount } from "Utils/AuthorizationUtils";
 import { logConsoleError, logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import * as PriorityBasedExecutionUtils from "Utils/PriorityBasedExecutionUtils";
 import { getReadOnlyKeys, listKeys } from "Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { useClientWriteEnabled } from "hooks/useClientWriteEnabled";
 import { useQueryCopilot } from "hooks/useQueryCopilot";
 import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
@@ -321,6 +322,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         writeEnabledInSelectedRegion: true,
         refreshCosmosClient: true,
       });
+      useClientWriteEnabled.setState({ clientWriteEnabled: true });
     } else if (
       selectedRegionalEndpoint &&
       !selectedRegionIsGlobal &&
@@ -335,6 +337,7 @@ export const SettingsPane: FunctionComponent<{ explorer: Explorer }> = ({
         writeEnabledInSelectedRegion: validWriteEndpoint ? true : false,
         refreshCosmosClient: true,
       });
+      useClientWriteEnabled.setState({ clientWriteEnabled: validWriteEndpoint ? true : false });
     }
 
     LocalStorageUtility.setEntryBoolean(StorageKey.RUThresholdEnabled, ruThresholdEnabled);
