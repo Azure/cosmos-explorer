@@ -1,6 +1,6 @@
 @import "../../../../less/Common/Constants";
 
-@ConsoleHeaderHeight: 32px;
+// @ConsoleHeaderHeight: 32px;
 @ConsoleContentsPaneHeight: 220px;
 @ConsoleStatusMaxWidth: 672px;
 
@@ -22,7 +22,7 @@
         justify-content: space-between;
         align-items: center;
         flex-shrink: 0;
-        height: @ConsoleHeaderHeight;
+        // height: @ConsoleHeaderHeight;
         width: 100%;
         background-color: @NotificationLow;
         border-top: @ButtonBorderWidth @BaseMedium solid;
@@ -38,6 +38,9 @@
         }
 
         .statusBar {
+            width: 100%;
+            padding: 6px 0px;
+
             .dataTypeIcons {
                 cursor: pointer;
                 margin: 0px @DefaultSpace 0px @MediumSpace;
@@ -76,11 +79,14 @@
                     max-width: @ConsoleStatusMaxWidth;
                 }
             }
+            &:focus {
+                outline: none;
+            }
         }
 
         .expandCollapseButton {
             cursor: pointer;
-            padding-right: 5px;
+            padding: 6px 5px 6px 0px;
 
             img {
                 width: @ExpandCollapseIconSize;

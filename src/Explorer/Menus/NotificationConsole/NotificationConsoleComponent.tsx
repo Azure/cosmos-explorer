@@ -81,9 +81,9 @@ export class NotificationConsoleComponent extends React.Component<
     }
   }
 
-  public setElememntRef = (element: HTMLElement): void => {
-    this.consoleHeaderElement = element;
-  };
+  // public setElememntRef = (element: HTMLElement): void => {
+  //   this.consoleHeaderElement = element;
+  // };
 
   public render(): JSX.Element {
     const numInProgress = this.state.allConsoleData.filter(
@@ -98,15 +98,14 @@ export class NotificationConsoleComponent extends React.Component<
 
     return (
       <div className="notificationConsoleContainer">
-        <div
-          className="notificationConsoleHeader"
-          id="notificationConsoleHeader"
-          ref={this.setElememntRef}
-          onClick={() => this.expandCollapseConsole()}
-          onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
-          tabIndex={0}
-        >
-          <div className="statusBar">
+        <div className="notificationConsoleHeader" id="notificationConsoleHeader">
+          <div
+            className="statusBar"
+            // ref={this.setElememntRef}
+            onClick={() => this.expandCollapseConsole()}
+            onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
+            tabIndex={0}
+          >
             <span className="dataTypeIcons">
               <span className="notificationConsoleHeaderIconWithData">
                 <img src={LoadingIcon} alt="In progress items" />
@@ -136,6 +135,8 @@ export class NotificationConsoleComponent extends React.Component<
             tabIndex={0}
             aria-label="Console"
             aria-expanded={this.props.isConsoleExpanded}
+            onClick={() => this.expandCollapseConsole()}
+            onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
           >
             <img
               src={this.props.isConsoleExpanded ? ChevronDownIcon : ChevronUpIcon}
@@ -259,9 +260,9 @@ export class NotificationConsoleComponent extends React.Component<
   }
 
   private onConsoleWasExpanded = (): void => {
-    if (this.props.isConsoleExpanded && this.consoleHeaderElement) {
-      this.consoleHeaderElement.focus();
-    }
+    // if (this.props.isConsoleExpanded && this.consoleHeaderElement) {
+    //   this.consoleHeaderElement.focus();
+    // }
     useNotificationConsole.getState().setConsoleAnimationFinished(true);
   };
 
