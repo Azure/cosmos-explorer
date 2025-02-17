@@ -46,6 +46,10 @@ import {
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
+  MaterializedViewComponent,
+  MaterializedViewComponentProps,
+} from "./SettingsSubComponents/MaterializedViewComponent";
+import {
   MongoIndexingPolicyComponent,
   MongoIndexingPolicyComponentProps,
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
@@ -162,6 +166,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private shouldShowComputedPropertiesEditor: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
   private shouldShowPartitionKeyEditor: boolean;
+  private isMaterializedView: boolean;
   private isVectorSearchEnabled: boolean;
   private isFullTextSearchEnabled: boolean;
   private totalThroughputUsed: number;
@@ -179,6 +184,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowComputedPropertiesEditor = userContext.apiType === "SQL";
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
       this.shouldShowPartitionKeyEditor = userContext.apiType === "SQL" && isRunningOnPublicCloud();
+      this.isMaterializedView = !!this.collection?.materializedViewDefinition();
+      console.log("Is Materialized View:", this.isMaterializedView);
       this.isVectorSearchEnabled = isVectorSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
       this.isFullTextSearchEnabled = isFullTextSearchEnabled() && !hasDatabaseSharedThroughput(this.collection);
 
@@ -1272,6 +1279,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       explorer: this.props.settingsTab.getContainer(),
     };
 
+    const materializedViewComponentProps: MaterializedViewComponentProps = {
+      collection: this.collection,
+    };
+
     const tabs: SettingsV2TabInfo[] = [];
     if (!hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
@@ -1332,6 +1343,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabs.push({
         tab: SettingsV2TabTypes.ThroughputBucketsTab,
         content: <ThroughputBucketsComponent {...throughputBucketsComponentProps} />,
+      });
+    }
+
+    if (this.isMaterializedView) {
+      tabs.push({
+        tab: SettingsV2TabTypes.MaterializedViewTab,
+        content: <MaterializedViewComponent {...materializedViewComponentProps} />,
       });
     }
 
