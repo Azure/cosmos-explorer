@@ -10,10 +10,11 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
-import { useNotebook } from "../Notebook/useNotebook";
+//import { useNotebook } from "../Notebook/useNotebook";
 import TabsBase from "./TabsBase";
+import XTermComponent from "./XTermComponent";
+
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
@@ -25,7 +26,7 @@ export interface TerminalTabOptions extends ViewModels.TabOptions {
 /**
  * Notebook terminal tab
  */
-class NotebookTerminalComponentAdapter implements ReactAdapter {
+class XTermAdapter implements ReactAdapter {
   // parameters: true: show, false: hide
   public parameters: ko.Computed<boolean>;
   constructor(
@@ -47,14 +48,14 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
         />
       );
     }
-
     return this.parameters() ? (
-      <NotebookTerminalComponent
-        notebookServerInfo={this.getNotebookServerInfo()}
-        databaseAccount={this.getDatabaseAccount()}
-        tabId={this.getTabId()}
-        username={this.getUsername()}
-      />
+      <XTermComponent />
+      // <NotebookTerminalComponent
+      //   notebookServerInfo={this.getNotebookServerInfo()}
+      //   databaseAccount={this.getDatabaseAccount()}
+      //   tabId={this.getTabId()}
+      //   username={this.getUsername()}
+      // />
     ) : (
       <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
@@ -74,28 +75,28 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
 }
 
 export default class TerminalTab extends TabsBase {
-  public readonly html = '<div style="height: 100%" data-bind="react:notebookTerminalComponentAdapter"></div>  ';
+  public readonly html = '<div style="height: 100%" data-bind="react: xtermAdapter"></div>';
   private container: Explorer;
-  private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
+  private xtermAdapter: XTermAdapter;
   private isAllPublicIPAddressesEnabled: ko.Observable<boolean>;
 
   constructor(options: TerminalTabOptions) {
     super(options);
     this.container = options.container;
     this.isAllPublicIPAddressesEnabled = ko.observable(true);
-    this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
-      () => this.getNotebookServerInfo(options),
+    this.xtermAdapter = new XTermAdapter(
+      () => null,
       () => userContext?.databaseAccount,
       () => this.tabId,
       () => this.getUsername(),
       this.isAllPublicIPAddressesEnabled,
       options.kind,
     );
-    this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
+    this.xtermAdapter.parameters = ko.computed<boolean>(() => {
       if (
         this.isTemplateReady() &&
-        useNotebook.getState().isNotebookEnabled &&
-        useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
+        // useNotebook.getState().isNotebookEnabled &&
+        // useNotebook.getState().notebookServerInfo?.notebookServerEndpoint &&
         this.isAllPublicIPAddressesEnabled()
       ) {
         return true;
@@ -134,41 +135,41 @@ export default class TerminalTab extends TabsBase {
     this.updateNavbarWithTabsButtons();
   }
 
-  private getNotebookServerInfo(options: TerminalTabOptions): DataModels.NotebookWorkspaceConnectionInfo {
-    let endpointSuffix: string;
+  // private getNotebookServerInfo(options: TerminalTabOptions): DataModels.NotebookWorkspaceConnectionInfo {
+  //   let endpointSuffix: string;
 
-    switch (options.kind) {
-      case ViewModels.TerminalKind.Default:
-        endpointSuffix = "";
-        break;
+  //   switch (options.kind) {
+  //     case ViewModels.TerminalKind.Default:
+  //       endpointSuffix = "";
+  //       break;
 
-      case ViewModels.TerminalKind.Mongo:
-        endpointSuffix = "mongo";
-        break;
+  //     case ViewModels.TerminalKind.Mongo:
+  //       endpointSuffix = "mongo";
+  //       break;
 
-      case ViewModels.TerminalKind.Cassandra:
-        endpointSuffix = "cassandra";
-        break;
+  //     case ViewModels.TerminalKind.Cassandra:
+  //       endpointSuffix = "cassandra";
+  //       break;
 
-      case ViewModels.TerminalKind.Postgres:
-        endpointSuffix = "postgresql";
-        break;
+  //     case ViewModels.TerminalKind.Postgres:
+  //       endpointSuffix = "postgresql";
+  //       break;
 
-      case ViewModels.TerminalKind.VCoreMongo:
-        endpointSuffix = "mongovcore";
-        break;
+  //     case ViewModels.TerminalKind.VCoreMongo:
+  //       endpointSuffix = "mongovcore";
+  //       break;
 
-      default:
-        throw new Error(`Terminal kind: ${options.kind} not supported`);
-    }
+  //     default:
+  //       throw new Error(`Terminal kind: ${options.kind} not supported`);
+  //   }
 
-    const info: DataModels.NotebookWorkspaceConnectionInfo = useNotebook.getState().notebookServerInfo;
-    return {
-      authToken: info.authToken,
-      notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,
-      forwardingId: info.forwardingId,
-    };
-  }
+  //   const info: DataModels.NotebookWorkspaceConnectionInfo = useNotebook.getState().notebookServerInfo;
+  //   return {
+  //     authToken: info.authToken,
+  //     notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,
+  //     forwardingId: info.forwardingId,
+  //   };
+  // }
 
   private getUsername(): string {
     if (userContext.apiType !== "VCoreMongo" || !userContext?.vcoreMongoConnectionParams?.adminLogin) {
